@@ -1,15 +1,17 @@
-from model.dao_simulation import DAOSimulation
-from visualizations.network_graph import draw_network_graph
-from visualizations.choropleth_map import draw_choropleth_map
-from visualizations.heatmap import draw_heatmap
+from model.dao_model import DAOSimulation
+from visualizations.network_graph import visualize_network_graph
+from visualizations.choropleth_map import visualize_choropleth_map
+from visualizations.heatmap import visualize_heatmap
 
-num_agents = 50
-num_steps = 100
+def main():
+    # Initialize and run the simulation
+    sim = DAOSimulation(num_members=100, width=10, height=10, num_steps=200)
+    sim.run_simulation()
 
-simulation = DAOSimulation(num_agents, num_steps)
-results = simulation.run()
+    # Visualize the results
+    visualize_network_graph(sim.dao)
+    visualize_choropleth_map(sim.dao)
+    visualize_heatmap(sim.dao)
 
-# You can use the visualization functions on the simulation model as needed, e.g.:
-# draw_network_graph(simulation.model)
-# draw_choropleth_map(simulation.model, "/path/to/world/shapefile", "Anonymous")
-# draw_heatmap(simulation.model)
+if __name__ == '__main__':
+    main()

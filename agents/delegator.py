@@ -1,19 +1,44 @@
-from .dao_member import DAOMember
+import random
+from agents.dao_member import DAOMember
+from data_structures.proposal import Proposal
 
 class Delegator(DAOMember):
-    def __init__(self, unique_id, model, tokens, reputation, location, delegation_strategy):
-        super().__init__(unique_id, model, tokens, reputation, location)
-        self.delegation_strategy = delegation_strategy
+    def __init__(self, unique_id, model, trust_threshold, expertise_threshold):
+        super().__init__(unique_id, model)
+        self.trust_threshold = trust_threshold
+        self.expertise_threshold = expertise_threshold
 
     def step(self):
-        # Delegator actions during a time step
-        self.delegate()
+        if random.random() < self.model.delegator_delegate_probability:
+            self.delegate()
 
     def delegate(self):
-        # Example "trust_based" implementation
-        if self.delegation_strategy == "trust_based":
-            candidates = self.model.dao.get_candidates()
-            trusted_candidates = [c for c in candidates if c['trust_score'] > 0.8]
-            for candidate in trusted_candidates:
-                self.tokens -= 1
-                candidate['votes'] += 1
+        candidates = self.find_candidates()
+        if candidates:
+            self.assign_delegates(candidates)
+
+    def find_candidates(self):
+        # Trust-based implementation
+        trusted_candidates = [member for member in self.model.dao_members if member.trust_score >= self.trust_threshold]
+        return trusted_candidates
+
+    def assign_delegates(self, candidates):
+        # Expertise-based implementation
+        proposal = self.choose_proposal()
+        if proposal is not None:
+            experts = [member for member in candidates if set(member.skills).intersection(set(proposal.required_skills))]
+            if experts:
+                selected_delegate = random.choice(experts)
+                self.delegate_to(selected_delegate, proposal)
+
+    def choose_proposal(self):
+        # Choose a random proposal from the list of proposals
+        if self.model.proposals:
+            proposal = random.choice(self.model.proposals)
+            return proposal
+        else:
+            return None
+
+    def delegate_to(self, delegate, proposal):
+        # Assign the selected delegate to the proposal
+        delegate.add_delegation(proposal)

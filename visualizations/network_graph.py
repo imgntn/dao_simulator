@@ -1,12 +1,35 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-def draw_network_graph(model):
+def visualize_network_graph(model):
     G = nx.Graph()
-    for agent in model.schedule.agents:
-        G.add_node(agent.unique_id)
-        for neighbor in model.grid.get_neighbors(agent):
-            G.add_edge(agent.unique_id, neighbor.unique_id)
 
-    nx.draw(G, with_labels=True, node_color="skyblue", node_size=1000, font_size=10, font_color="k", font_weight="bold")
+    for member in model.dao.members:
+        G.add_node(member.unique_id, label=type(member).__name__)
+
+    for member in model.dao.members:
+        for other_member in model.dao.members:
+            if member != other_member:
+                if other_member in member.relationships:
+                    G.add_edge(member.unique_id, other_member.unique_id)
+
+    pos = nx.spring_layout(G)
+    labels = nx.get_node_attributes(G, 'label')
+
+    plt.figure(figsize=(12, 12))
+    nx.draw(G, pos, node_color='skyblue', with_labels=True, labels=labels)
+    plt.title("DAO Network Graph")
     plt.show()
+
+if __name__ == "__main__":
+    from model.dao_model import DAOModel
+
+    # Instantiate the DAOModel with sample agents
+    model = DAOModel(n_agents=30)
+
+    # Simulate the model for some steps
+    for _ in range(50):
+        model.step()
+
+    # Visualize the network graph
+    visualize_network_graph(model)
