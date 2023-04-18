@@ -20,11 +20,17 @@ dao_simulation/
 │   ├── proposal.py
 │   ├── treasury.py
 │   └── violation.py
+├── visualizations/
+│   ├── __init__.py
+│   ├── network_graph.py
+│   ├── heat_map.py
+│   └── choropleth_map.py
 ├── tests/
 │   ├── __init__.py
 │   ├── test_agents.py
 │   ├── test_data_structures.py
-│   └── test_treasury.py
+│   ├── test_treasury.py
+│   └── test_integration.py
 ├── utils/
 │   ├── __init__.py
 │   ├── proposal_utils.py
