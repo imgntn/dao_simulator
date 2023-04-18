@@ -9,6 +9,8 @@ class Investor(DAOMember):
         self.investment_budget = investment_budget
 
     def step(self):
+        self.vote_on_random_proposal()
+        self.leave_comment_on_random_proposal()
         if random.random() < self.model.investor_investment_probability:
             self.invest()
 
@@ -36,10 +38,3 @@ class Investor(DAOMember):
         self.investment_budget -= investment_amount
         if proposal.current_funding >= proposal.funding_goal:
             proposal.funded = True
-
-        # Vote on the proposal
-        self.vote_on_proposal(proposal)
-
-        # Leave a comment on the proposal
-        sentiment = 'positive' if random.random() < 0.8 else 'neutral'
-        self.add_comment(proposal, sentiment)

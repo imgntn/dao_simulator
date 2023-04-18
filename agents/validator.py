@@ -4,33 +4,55 @@ from data_structures.proposal import Proposal
 
 
 class Validator(DAOMember):
-    def __init__(self, unique_id, model, tokens, reputation, location, voting_strategy):
-        super().__init__(unique_id, model, tokens, reputation, location, voting_strategy)
+    def __init__(
+        self,
+        unique_id,
+        model,
+        tokens,
+        reputation,
+        location,
+        voting_strategy,
+        monitoring_budget,
+    ):
+        super().__init__(
+            unique_id, model, tokens, reputation, location, voting_strategy
+        )
+        self.monitoring_budget = monitoring_budget
 
     def step(self):
-        # Validators should review and validate proposals.
-        proposal_to_validate = self.choose_proposal_to_validate()
-        if proposal_to_validate is not None:
-            self.validate_proposal(proposal_to_validate)
+        self.vote_on_random_proposal()
+        self.leave_comment_on_random_proposal()
+        self.validate_and_monitor()
 
-    def choose_proposal_to_validate(self):
-        # Choose a proposal that has not yet been validated.
-        not_validated_proposals = [
-            prop for prop in self.model.proposals if not prop.validated]
-        if not_validated_proposals:
-            return random.choice(not_validated_proposals)
-        else:
-            return None
+    def validate_and_monitor(self):
+        # Implementation of validating proposals and monitoring projects
+        for proposal in self.model.dao.proposals:
+            if proposal.status == "submitted":
+                self.validate_proposal(proposal)
+            elif proposal.status == "approved" and proposal.proposal_type == "project":
+                project = proposal.related_project
+                if not project.monitored:
+                    self.monitor_project(project)
 
     def validate_proposal(self, proposal):
-        # Check if the proposal meets certain requirements, e.g., enough collateral, realistic goals, etc.
-        # For simplicity, we'll assume the validator approves the proposal with a certain probability.
-        if random.random() < self.model.validator_approval_probability:
-            proposal.validated = True
+        # Implementation of proposal validation
+        if self.monitoring_budget > 0:
+            proposal.status = "validated"
+            self.monitoring_budget -= 1
 
-        # Vote on the proposal
-        self.vote_on_proposal(proposal)
+    def monitor_project(self, project):
+        # Implementation of project monitoring
+        if self.monitoring_budget > 0:
+            project.monitored = True
+            self.monitoring_budget -= 1
 
-        # Leave a comment on the proposal
-        sentiment = 'positive' if proposal.validated else 'negative'
-        self.add_comment(proposal, sentiment)
+    def vote_on_random_proposal(self):
+        if self.model.proposals:
+            proposal = random.choice(self.model.proposals)
+            self.vote_on_proposal(proposal)
+
+    def leave_comment_on_random_proposal(self):
+        if self.model.proposals:
+            proposal = random.choice(self.model.proposals)
+            sentiment = random.choice(["positive", "negative", "neutral"])
+            self.leave_comment(proposal, sentiment)

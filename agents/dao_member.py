@@ -10,32 +10,19 @@ class DAOMember(Agent):
         self.location = location
         self.voting_strategy = voting_strategy
 
-    def step(self):
-        proposals_to_vote_on = self.select_proposals_to_vote_on()
-        for proposal in proposals_to_vote_on:
+    def vote_on_proposal(self, proposal):
+        self.voting_strategy.vote(self, proposal)
+
+    def leave_comment(self, proposal, sentiment):
+        proposal.add_comment(self, sentiment)
+
+    def vote_on_random_proposal(self):
+        if self.model.proposals:
+            proposal = random.choice(self.model.proposals)
             self.vote_on_proposal(proposal)
 
-        proposals_to_comment_on = self.select_proposals_to_comment_on()
-        for proposal in proposals_to_comment_on:
-            self.leave_comment_on_proposal(proposal)
-
-    def select_proposals_to_vote_on(self):
-        # Implement the logic to select the proposals the agent wants to vote on
-        # based on their interests, preferences, or other criteria.
-        pass
-
-    def vote_on_proposal(self, proposal):
-        # Implement the logic for the agent to cast their vote on the given proposal.
-        # Make sure the agent votes only once on each proposal.
-        pass
-
-    def select_proposals_to_comment_on(self):
-        # Implement the logic to select the proposals the agent wants to comment on
-        # based on their interests, preferences, or other criteria.
-        pass
-
-    def leave_comment_on_proposal(self, proposal):
-        # Implement the logic for the agent to leave a comment on the given proposal.
-        # The agent may choose to leave a positive, negative, or neutral comment,
-        # depending on their evaluation of the proposal.
-        pass
+    def leave_comment_on_random_proposal(self):
+        if self.model.proposals:
+            proposal = random.choice(self.model.proposals)
+            sentiment = random.choice(["positive", "negative", "neutral"])
+            self.leave_comment(proposal, sentiment)
