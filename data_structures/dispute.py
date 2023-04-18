@@ -1,6 +1,9 @@
 class Dispute:
-    def __init__(self, dispute_id, involved_parties, description, resolution=None):
-        self.dispute_id = dispute_id
-        self.involved_parties = involved_parties
+    def __init__(self, dao, parties_involved, description):
+        self.dao = dao
+        self.parties_involved = parties_involved
         self.description = description
+        self.resolution = None
+
+    def resolve(self, resolution):
         self.resolution = resolution

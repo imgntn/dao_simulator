@@ -1,34 +1,45 @@
-import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
 
-def collect_interaction_data(model):
-    interactions = pd.DataFrame(columns=["from", "to", "count"])
 
-    for member in model.dao.members:
-        for other_member, count in member.interactions.items():
-            interactions.loc[len(interactions)] = [type(member).__name__, type(other_member).__name__, count]
+def plot_heat_map(dao):
+    # Create a DataFrame with member IDs and their respective reputation and token balances
+    data = []
+    for member in dao.members:
+        data.append(
+            {
+                "id": member.id,
+                "reputation": member.reputation,
+                "tokens": member.tokens["DAO_TOKEN"],
+            }
+        )
 
-    return interactions
+    df = pd.DataFrame(data)
 
-def visualize_heatmap(model):
-    interactions = collect_interaction_data(model)
-    interaction_matrix = interactions.pivot_table(index="from", columns="to", values="count", aggfunc="sum").fillna(0)
-    
-    plt.figure(figsize=(12, 8))
-    sns.heatmap(interaction_matrix, cmap="coolwarm_r", annot=True, fmt=".0f")
-    plt.title("Agent Interactions")
+    # Normalize reputation and token balance values
+    df["reputation"] = (df["reputation"] - df["reputation"].min()) / (
+        df["reputation"].max() - df["reputation"].min()
+    )
+    df["tokens"] = (df["tokens"] - df["tokens"].min()) / (
+        df["tokens"].max() - df["tokens"].min()
+    )
+
+    # Calculate a weighted score based on reputation and token balances
+    df["score"] = 0.5 * df["reputation"] + 0.5 * df["tokens"]
+
+    # Create a pivot table with a 10x10 grid
+    df["row"] = pd.cut(df["reputation"], bins=10, labels=False)
+    df["col"] = pd.cut(df["tokens"], bins=10, labels=False)
+    pivot_table = df.pivot_table(
+        values="score", index="row", columns="col", aggfunc="mean", fill_value=0
+    )
+
+    # Plot the heatmap
+    sns.heatmap(
+        pivot_table, cmap="coolwarm", square=True, linewidths=0.5, annot=True, fmt=".2f"
+    )
+    plt.xlabel("Token Balance")
+    plt.ylabel("Reputation")
+    plt.title("Heatmap: Member Score based on Reputation and Token Balance")
     plt.show()
-
-if __name__ == "__main__":
-    from model.dao_model import DAOModel
-
-    # Instantiate the DAOModel with sample agents
-    model = DAOModel(n_agents=30)
-
-    # Simulate the model for some steps
-    for _ in range(50):
-        model.step()
-
-    # Visualize the heatmap
-    visualize_heatmap(model)

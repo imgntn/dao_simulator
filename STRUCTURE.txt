@@ -1,0 +1,32 @@
+dao_simulation/
+├── agents/
+│   ├── __init__.py
+│   ├── arbitrator.py
+│   ├── dao_member.py
+│   ├── delegator.py
+│   ├── developer.py
+│   ├── external_partner.py
+│   ├── investor.py
+│   ├── passive_member.py
+│   ├── proposal_creator.py
+│   ├── regulator.py
+│   ├── service_provider.py
+│   └── validator.py
+├── data_structures/
+│   ├── __init__.py
+│   ├── dao.py
+│   ├── dispute.py
+│   ├── project.py
+│   ├── proposal.py
+│   ├── treasury.py
+│   └── violation.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_agents.py
+│   ├── test_data_structures.py
+│   └── test_treasury.py
+├── utils/
+│   ├── __init__.py
+│   ├── proposal_utils.py
+│   └── voting_strategies.py
+└── main.py

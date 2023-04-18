@@ -1,40 +1,24 @@
 import random
 from agents.dao_member import DAOMember
-from data_structures.proposal import Proposal
 
 
 class Investor(DAOMember):
-    def __init__(self, unique_id, model, tokens, reputation, location, voting_strategy, investment_budget):
-        super().__init__(unique_id, model, tokens, reputation, location, voting_strategy)
+    def __init__(
+        self, unique_id, model, tokens, reputation, location, investment_budget
+    ):
+        super().__init__(unique_id, model, tokens, reputation, location)
         self.investment_budget = investment_budget
 
     def step(self):
+        self.invest_in_random_proposal()
         self.vote_on_random_proposal()
-        self.leave_comment_on_random_proposal()
-        if random.random() < self.model.investor_investment_probability:
-            self.invest()
+        if random.random() < self.model.comment_probability:
+            self.leave_comment_on_random_proposal()
 
-    def invest(self):
-        proposal = self.choose_proposal()
-        if proposal is not None:
-            self.support_proposal(proposal)
-
-    def choose_proposal(self):
-        # Implementation of choosing a proposal based on the potential return on investment
-        investment_proposals = [
-            prop for prop in self.model.proposals if prop.proposal_type == "funding"]
-        if investment_proposals:
-            proposal = max(investment_proposals,
-                           key=lambda prop: prop.potential_roi)
-            return proposal
-        else:
-            return None
-
-    def support_proposal(self, proposal):
-        # Implementation of supporting a proposal
-        investment_amount = min(
-            self.investment_budget, proposal.funding_goal - proposal.current_funding)
-        proposal.current_funding += investment_amount
-        self.investment_budget -= investment_amount
-        if proposal.current_funding >= proposal.funding_goal:
-            proposal.funded = True
+    def invest_in_random_proposal(self):
+        if self.model.proposals:
+            proposal = random.choice(self.model.proposals)
+            if self.investment_budget > 0:
+                investment_amount = random.uniform(0, self.investment_budget)
+                proposal.receive_investment(self, investment_amount)
+                self.investment_budget -= investment_amount

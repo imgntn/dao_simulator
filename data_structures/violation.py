@@ -1,6 +1,9 @@
 class Violation:
-    def __init__(self, violation_id, violator, description, penalty=None):
-        self.violation_id = violation_id
+    def __init__(self, violator, project, description):
         self.violator = violator
+        self.project = project
         self.description = description
-        self.penalty = penalty
+        self.resolved = False
+
+    def resolve(self):
+        self.resolved = True
