@@ -1,7 +1,7 @@
 import unittest
-from dao_simulation.data_structures.dao import DAO
-from dao_simulation.agents import Developer, Investor, Delegator
-from dao_simulation.data_structures import Proposal
+from data_structures.dao import DAO
+from agents import Developer, Investor, Delegator
+from data_structures import Proposal
 
 
 class TestIntegration(unittest.TestCase):

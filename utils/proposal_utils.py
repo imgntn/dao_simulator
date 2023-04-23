@@ -1,5 +1,5 @@
-from dao_simulation.data_structures.proposal import Proposal
-from dao_simulation.data_structures.dao import DAO
+from data_structures.proposal import Proposal
+from data_structures.dao import DAO
 
 import random
 

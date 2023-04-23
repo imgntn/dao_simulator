@@ -26,3 +26,14 @@ class DAOMember(Agent):
             proposal = random.choice(self.model.proposals)
             sentiment = random.choice(["positive", "negative", "neutral"])
             self.leave_comment(proposal, sentiment)
+
+    def receive_revenue_share(self, amount):
+        self.tokens += amount
+
+    def decide_vote(self, topic):
+        if topic == "Topic A":
+            return "yes" if self.reputation > 50 else "no"
+        elif topic == "Topic B":
+            return "yes" if self.tokens > 200 else "no"
+        elif topic == "Topic C":
+            return "yes" if self.location == "USA" else "no"

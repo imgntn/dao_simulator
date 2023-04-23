@@ -1,17 +1,5 @@
-from dao_simulation.model import DAOSimulation
-from dao_simulation.data_structures.dao import DAO
-from dao_simulation.agents import (
-    Arbitrator,
-    Delegator,
-    Developer,
-    ExternalPartner,
-    Investor,
-    PassiveMember,
-    ProposalCreator,
-    Regulator,
-    ServiceProvider,
-    Validator,
-)
+# File: dao_simulation/main.py
+from dao_simulation import DAOSimulation
 from mesa.batchrunner import BatchRunner
 
 

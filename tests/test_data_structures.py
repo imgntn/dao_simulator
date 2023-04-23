@@ -1,5 +1,5 @@
 import unittest
-from dao_simulation.data_structures import (
+from data_structures import (
     DAO,
     Proposal,
     Project,

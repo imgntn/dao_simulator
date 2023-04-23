@@ -1,5 +1,5 @@
 import unittest
-from dao_simulation.agents import (
+from agents import (
     DAOMember,
     Developer,
     Investor,
@@ -12,7 +12,7 @@ from dao_simulation.agents import (
     ExternalPartner,
     PassiveMember,
 )
-from dao_simulation.data_structures import Proposal, Project
+from data_structures import Proposal, Project
 
 
 class TestAgents(unittest.TestCase):

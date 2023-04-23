@@ -1,5 +1,5 @@
 import unittest
-from dao_simulation.data_structures.treasury import Treasury
+from data_structures.treasury import Treasury
 
 
 class TestTreasury(unittest.TestCase):
