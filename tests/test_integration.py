@@ -2,6 +2,7 @@ import unittest
 from data_structures.dao import DAO
 from agents import Developer, Investor, Delegator
 from data_structures import Proposal
+from utils.locations import generate_random_location
 
 
 class TestIntegration(unittest.TestCase):
@@ -11,9 +12,31 @@ class TestIntegration(unittest.TestCase):
 
         # Add agents to the DAO
         for _ in range(3):
-            dao.add_member(Developer(dao))
-            dao.add_member(Investor(dao))
-            dao.add_member(Delegator(dao))
+            developer = Developer(
+                unique_id=1,
+                model=dao,
+                tokens=100,
+                reputation=10,
+                location=generate_random_location(),
+                skillset=["Python"],
+            )
+            investor = Investor(
+                unique_id=2,
+                model=dao,
+                tokens=1000,
+                reputation=20,
+                location=generate_random_location(),
+            )
+            delegator = Delegator(
+                unique_id=3,
+                model=dao,
+                tokens=500,
+                reputation=15,
+                location=generate_random_location(),
+            )
+            dao.add_member(developer)
+            dao.add_member(investor)
+            dao.add_member(delegator)
 
         # Assert the initialization has occurred correctly
         self.assertEqual(len(dao.members), 9)

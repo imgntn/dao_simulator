@@ -3,8 +3,19 @@ from agents.dao_member import DAOMember
 
 
 class Developer(DAOMember):
-    def __init__(self, unique_id, model, tokens, reputation, location, skillset):
-        super().__init__(unique_id, model, tokens, reputation, location)
+    def __init__(
+        self,
+        unique_id,
+        model,
+        tokens,
+        reputation,
+        location,
+        voting_strategy,
+        skillset=["Generic Code"],
+    ):
+        super().__init__(
+            unique_id, model, tokens, reputation, location, voting_strategy
+        )
         self.skillset = skillset
 
     def step(self):

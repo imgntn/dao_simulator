@@ -3,7 +3,15 @@ from agents.dao_member import DAOMember
 
 
 class ServiceProvider(DAOMember):
-    def __init__(self, unique_id, model, tokens, reputation, location, service_budget):
+    def __init__(
+        self,
+        unique_id,
+        model,
+        tokens,
+        reputation,
+        location,
+        service_budget=1000,  ##TODO: fix magic number
+    ):
         super().__init__(unique_id, model, tokens, reputation, location)
         self.service_budget = service_budget
 

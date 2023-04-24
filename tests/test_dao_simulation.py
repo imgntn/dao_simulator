@@ -1,4 +1,7 @@
 import unittest
+from utils.locations import generate_random_location
+from unittest.mock import patch
+import io
 from dao_simulation import DAOSimulation
 from data_structures.dao import DAO
 from agents import (
@@ -129,27 +132,105 @@ def test_expire_proposals(self):
         self.assertEqual(project_1["status"], "completed")
         self.assertEqual(project_2["status"], "completed")
 
+    def test_resolve_disputes(self):
+        # Create a test arbitrator
+        arbitrator = Arbitrator(
+            unique_id="Arbitrator_1",
+            model=self.simulation,
+            tokens=100,
+            reputation=0,
+            location=generate_random_location(),
+            arbitration_capacity=3,
+        )
 
-def test_resolve_disputes(self):
-    # Create a test arbitrator
-    arbitrator = Arbitrator(
-        unique_id="Arbitrator_1",
-        model=self.simulation,
-        tokens=100,
-        reputation=0,
-        location=generate_random_location(),
-        arbitration_capacity=3,
-    )
+        # Add test disputes
+        dispute_1 = {
+            "id": "D1",
+            "status": "unresolved",
+            "arbitrator": arbitrator,
+        }
+        dispute_2 = {
+            "id": "D2",
+            "status": "unresolved",
+            "arbitrator": arbitrator,
+        }
+        self.simulation.dao.disputes = [dispute_1, dispute_2]
 
-    # Add test disputes
-    dispute_1 = {
-        "id": "D1",
-        "status": "unresolved",
-        "arbitrator": arbitrator,
+        # Simulate 1 step
+        self.simulation.step()
+
+        # Both disputes should be resolved
+        self.assertEqual(dispute_1["status"], "resolved")
+        self.assertEqual(dispute_2["status"], "resolved")
+
+
+def test_distribute_revenue(self):
+    # Add revenue to the treasury
+    self.simulation.dao.treasury.add_revenue(1000)
+
+    # Record initial token balance of each member
+    initial_balances = {
+        member.unique_id: member.tokens for member in self.simulation.dao.members
     }
-    dispute_2 = {
-        "id": "D2",
-        "status": "unresolved",
-        "arbitrator": arbitrator,
-    }
-    self.sim
+
+    # Simulate 1 step
+    self.simulation.step()
+
+    # Check if each member received the correct revenue share
+    total_staked_tokens = sum(initial_balances.values())
+    for member in self.simulation.dao.members:
+        expected_balance = initial_balances[member.unique_id] + (
+            1000 * (initial_balances[member.unique_id] / total_staked_tokens)
+        )
+        self.assertAlmostEqual(member.tokens, expected_balance)
+
+
+def test_execute_token_buyback(self):
+    # Set treasury funds to 6000 tokens
+    self.simulation.dao.treasury.funds = 6000
+
+    # Simulate 1 step
+    self.simulation.step()
+
+    # Check if the treasury funds have decreased by 10% (600 tokens)
+    self.assertEqual(self.simulation.dao.treasury.funds, 5400)
+
+
+def test_conduct_regular_meeting(self):
+    # Replace generate_random_topic with a fixed topic
+    original_generate_random_topic = self.simulation.generate_random_topic
+    self.simulation.generate_random_topic = lambda: "Topic A"
+
+    with patch("sys.stdout", new=io.StringIO()) as fake_stdout:
+        for _ in range(30):
+            self.simulation.step()
+
+        output = fake_stdout.getvalue()
+
+    # Restore the original generate_random_topic method
+    self.simulation.generate_random_topic = original_generate_random_topic
+
+    # Check if the meeting was conducted and the majority vote was printed
+    self.assertIn("Majority voted", output)
+
+
+def test_conduct_regular_meeting(self):
+    # Replace generate_random_topic with a fixed topic
+    original_generate_random_topic = self.simulation.generate_random_topic
+    self.simulation.generate_random_topic = lambda: "Topic A"
+
+    with patch("sys.stdout", new=io.StringIO()) as fake_stdout:
+        for _ in range(30):
+            self.simulation.step()
+
+        output = fake_stdout.getvalue()
+
+    # Restore the original generate_random_topic method
+    self.simulation.generate_random_topic = original_generate_random_topic
+
+    # Check if the meeting was conducted and the majority vote was printed
+    self.assertIn("Majority voted", output)
+
+
+if __name__ == "__main__":
+    unittest.main()

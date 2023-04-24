@@ -25,8 +25,8 @@ class TestTreasury(unittest.TestCase):
         self.assertEqual(self.treasury.tokens["ETH"], 70)
 
     def test_balance(self):
-        balance_usdc = self.treasury.get_balance("USDC")
-        balance_eth = self.treasury.get_balance("ETH")
+        balance_usdc = self.treasury.get_token_balance("USDC")
+        balance_eth = self.treasury.get_token_balance("ETH")
         self.assertEqual(balance_usdc, 1000)
         self.assertEqual(balance_eth, 100)
 

@@ -12,6 +12,7 @@ class Proposal:
         self.status = "open"
         self.votes = {"yes": 0, "no": 0}
         self.comments = []
+        self.delegated_support = {}
 
     def add_vote(self, member, vote):
         if member not in self.votes:
@@ -19,3 +20,9 @@ class Proposal:
 
     def add_comment(self, member, sentiment):
         self.comments.append({"member": member, "sentiment": sentiment})
+
+    def receive_delegated_support(self, delegator, token_amount):
+        if delegator in self.delegated_support:
+            self.delegated_support[delegator] += token_amount
+        else:
+            self.delegated_support[delegator] = token_amount

@@ -12,41 +12,134 @@ from agents import (
     ExternalPartner,
     PassiveMember,
 )
-from data_structures import Proposal, Project
+from data_structures import Proposal, Project, DAO
 
 
 class TestAgents(unittest.TestCase):
     def setUp(self):
-        self.dao_member = DAOMember(1, "US")
-        self.developer = Developer(2, "US")
-        self.investor = Investor(3, "US")
-        self.delegator = Delegator(4, "US")
-        self.proposal_creator = ProposalCreator(5, "US")
-        self.validator = Validator(6, "US")
-        self.service_provider = ServiceProvider(7, "US")
-        self.arbitrator = Arbitrator(8, "US")
-        self.regulator = Regulator(9, "US")
-        self.external_partner = ExternalPartner(10, "US")
-        self.passive_member = PassiveMember(11, "US")
+        dao = DAO("Sample DAO")
+        self.dao = dao
+        self.dao_member = DAOMember(
+            1,
+            model=dao,
+            tokens=100,
+            reputation=10,
+            location="US",
+            voting_strategy="simple_majority",
+        )
+        self.developer = Developer(
+            2,
+            model=dao,
+            tokens=100,
+            reputation=10,
+            location="US",
+            voting_strategy="simple_majority",
+        )
+        self.investor = Investor(
+            3,
+            model=dao,
+            tokens=100,
+            reputation=10,
+            location="US",
+            voting_strategy="simple_majority",
+        )
+        self.delegator = Delegator(
+            4,
+            model=dao,
+            tokens=100,
+            reputation=10,
+            location="US",
+            voting_strategy="simple_majority",
+        )
+        self.proposal_creator = ProposalCreator(
+            5,
+            model=dao,
+            tokens=100,
+            reputation=10,
+            location="US",
+            voting_strategy="simple_majority",
+        )
+        self.validator = Validator(
+            6,
+            model=dao,
+            tokens=100,
+            reputation=10,
+            location="US",
+            voting_strategy="simple_majority",
+        )
+        self.service_provider = ServiceProvider(
+            7,
+            model=dao,
+            tokens=100,
+            reputation=10,
+            location="US",
+        )
+        self.arbitrator = Arbitrator(
+            8,
+            model=dao,
+            tokens=100,
+            reputation=10,
+            location="US",
+            voting_strategy="simple_majority",
+        )
+        self.regulator = Regulator(
+            9,
+            model=dao,
+            tokens=100,
+            reputation=10,
+            location="US",
+            voting_strategy="simple_majority",
+        )
+        self.external_partner = ExternalPartner(
+            10,
+            model=dao,
+            tokens=100,
+            reputation=10,
+            location="US",
+            voting_strategy="simple_majority",
+        )
+        self.passive_member = PassiveMember(
+            11,
+            model=dao,
+            tokens=100,
+            reputation=10,
+            location="US",
+            voting_strategy="simple_majority",
+        )
+
+        # Assuming you have the appropriate DAO instance and creator (DAOMember) instance
+        dao_instance = self.dao  # Replace with your DAO instance
+        creator_instance = self.dao_member  # Replace with a DAOMember instance
 
         self.proposal = Proposal(
-            1, "A new proposal", "A detailed description of the proposal", 1000, 10
+            dao=dao_instance,
+            creator=creator_instance,
+            title="A new proposal",
+            description="A detailed description of the proposal",
+            funding_goal=1000,
+            duration=10,
         )
+
         self.project = Project(
-            1, "A new project", "A detailed description of the project", 1000, 10, []
+            dao=dao_instance,
+            creator=creator_instance,
+            title="A new project",
+            description="A detailed description of the project",
+            funding_goal=1000,
+            duration=10,
         )
 
     def test_dao_member_creation(self):
-        self.assertEqual(self.dao_member.id, 1)
-        self.assertEqual(self.dao_member.country_code, "US")
+        self.assertEqual(self.dao_member.unique_id, 1)
+        self.assertEqual(self.dao_member.location, "US")
 
     def test_developer_creation(self):
-        self.assertEqual(self.developer.id, 2)
-        self.assertEqual(self.developer.country_code, "US")
+        self.assertEqual(self.developer.unique_id, 2)
+        self.assertEqual(self.developer.location, "US")
 
     def test_investor_creation(self):
-        self.assertEqual(self.investor.id, 3)
-        self.assertEqual(self.investor.country_code, "US")
+        self.assertEqual(self.investor.unique_id, 3)
+        self.assertEqual(self.investor.location, "US")
 
     def test_vote_on_proposal(self):
         self.dao_member.vote_on_proposal(self.proposal, True)
@@ -64,7 +157,7 @@ class TestAgents(unittest.TestCase):
         self.assertEqual(self.investor.investments[self.project], 500)
 
     def test_delegate_support(self):
-        self.delegator.delegate_support(self.proposal, 200)
+        self.delegator.delegate_support_to_proposal(self.proposal, 200)
         self.assertIn(self.proposal, self.delegator.delegations)
         self.assertEqual(self.delegator.delegations[self.proposal], 200)
 
@@ -101,8 +194,8 @@ class TestAgents(unittest.TestCase):
         self.assertIn(self.project, self.external_partner.collaborated_projects)
 
     def test_passive_member_creation(self):
-        self.assertEqual(self.passive_member.id, 11)
-        self.assertEqual(self.passive_member.country_code, "US")
+        self.assertEqual(self.passive_member.unique_id, 11)
+        self.assertEqual(self.passive_member.location, "US")
 
     def test_vote_on_random_proposal(self):
         self.dao_member.vote_on_random_proposal()

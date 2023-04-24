@@ -3,7 +3,15 @@ from mesa import Agent
 
 
 class DAOMember(Agent):
-    def __init__(self, unique_id, model, tokens, reputation, location, voting_strategy):
+    def __init__(
+        self,
+        unique_id,
+        model,
+        tokens,
+        reputation,
+        location,
+        voting_strategy="DAOMember Default Voting Strategy",
+    ):
         super().__init__(unique_id, model)
         self.tokens = tokens
         self.reputation = reputation

@@ -2,7 +2,8 @@ from collections import defaultdict
 
 
 class Project:
-    def __init__(self, dao, creator, title, description, funding_goal, duration):
+    # todo - fix duration being set to this default magic number
+    def __init__(self, dao, creator, title, description, funding_goal, duration=1000):
         self.dao = dao
         self.creator = creator
         self.title = title

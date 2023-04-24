@@ -4,9 +4,18 @@ from agents.dao_member import DAOMember
 
 class Investor(DAOMember):
     def __init__(
-        self, unique_id, model, tokens, reputation, location, investment_budget
+        self,
+        unique_id,
+        model,
+        tokens,
+        reputation,
+        location,
+        voting_strategy,
+        investment_budget=1000,  ##TODO, fix magic number here
     ):
-        super().__init__(unique_id, model, tokens, reputation, location)
+        super().__init__(
+            unique_id, model, tokens, reputation, location, voting_strategy
+        )
         self.investment_budget = investment_budget
 
     def step(self):

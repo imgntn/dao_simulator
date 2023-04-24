@@ -6,9 +6,18 @@ from data_structures.violation import Violation
 
 class Arbitrator(DAOMember):
     def __init__(
-        self, unique_id, model, tokens, reputation, location, arbitration_capacity
+        self,
+        unique_id,
+        model,
+        tokens,
+        reputation,
+        location,
+        voting_strategy,
+        arbitration_capacity=1000,  ##TODO: fix magic number
     ):
-        super().__init__(unique_id, model, tokens, reputation, location)
+        super().__init__(
+            unique_id, model, tokens, reputation, location, voting_strategy
+        )
         self.arbitration_capacity = arbitration_capacity
 
     def step(self):

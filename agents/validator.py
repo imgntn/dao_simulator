@@ -4,9 +4,18 @@ from agents.dao_member import DAOMember
 
 class Validator(DAOMember):
     def __init__(
-        self, unique_id, model, tokens, reputation, location, monitoring_budget
+        self,
+        unique_id,
+        model,
+        tokens,
+        reputation,
+        location,
+        voting_strategy,
+        monitoring_budget=1000,  ##TODO: fix this magic number
     ):
-        super().__init__(unique_id, model, tokens, reputation, location)
+        super().__init__(
+            unique_id, model, tokens, reputation, location, voting_strategy
+        )
         self.monitoring_budget = monitoring_budget
 
     def step(self):
