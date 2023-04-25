@@ -19,6 +19,7 @@ class Arbitrator(DAOMember):
             unique_id, model, tokens, reputation, location, voting_strategy
         )
         self.arbitration_capacity = arbitration_capacity
+        self.resolved_disputes = []
 
     def step(self):
         if self.model.disputes:
@@ -51,3 +52,6 @@ class Arbitrator(DAOMember):
                 )
                 self.model.dao.add_violation(violation)
                 dispute.member.reputation -= self.model.reputation_penalty
+
+    def resolve_dispute(self, dispute):
+        self.resolved_disputes.append(dispute)

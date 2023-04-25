@@ -1,6 +1,14 @@
 class Proposal:
     def __init__(
-        self, dao, creator, title, description, funding_goal, duration, project=None
+        self,
+        dao,
+        creator,
+        title,
+        description,
+        funding_goal,
+        duration,
+        topic="Default Topic",
+        project=None,
     ):
         self.dao = dao
         self.creator = creator
@@ -13,6 +21,7 @@ class Proposal:
         self.votes = {"yes": 0, "no": 0}
         self.comments = []
         self.delegated_support = {}
+        self.topic = topic
 
     def add_vote(self, member, vote):
         if member not in self.votes:

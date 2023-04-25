@@ -17,6 +17,7 @@ class Validator(DAOMember):
             unique_id, model, tokens, reputation, location, voting_strategy
         )
         self.monitoring_budget = monitoring_budget
+        self.monitored_projects = set()
 
     def step(self):
         self.vote_on_random_proposal()
@@ -33,4 +34,4 @@ class Validator(DAOMember):
     def monitor_project(self, project):
         # Monitor the project and report any issues or concerns.
         # This is a placeholder for the actual implementation of project monitoring.
-        pass
+        self.monitored_projects.add(project)

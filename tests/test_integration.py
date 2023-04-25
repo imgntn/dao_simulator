@@ -19,6 +19,7 @@ class TestIntegration(unittest.TestCase):
                 reputation=10,
                 location=generate_random_location(),
                 skillset=["Python"],
+                voting_strategy="Default Voting Strategy",
             )
             investor = Investor(
                 unique_id=2,
@@ -26,6 +27,7 @@ class TestIntegration(unittest.TestCase):
                 tokens=1000,
                 reputation=20,
                 location=generate_random_location(),
+                voting_strategy="Default Voting Strategy",
             )
             delegator = Delegator(
                 unique_id=3,
@@ -33,6 +35,7 @@ class TestIntegration(unittest.TestCase):
                 tokens=500,
                 reputation=15,
                 location=generate_random_location(),
+                voting_strategy="Default Voting Strategy",
             )
             dao.add_member(developer)
             dao.add_member(investor)

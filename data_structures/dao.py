@@ -11,6 +11,7 @@ class DAO:
         self.violations = []
         self.members = []
         self.treasury = Treasury()
+        self.comment_probability = 0.5
 
     def add_proposal(self, proposal):
         self.proposals.append(proposal)

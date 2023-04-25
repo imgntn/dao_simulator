@@ -14,6 +14,7 @@ class ServiceProvider(DAOMember):
     ):
         super().__init__(unique_id, model, tokens, reputation, location)
         self.service_budget = service_budget
+        self.services_provided = dict()
 
     def step(self):
         self.vote_on_random_proposal()
@@ -31,3 +32,6 @@ class ServiceProvider(DAOMember):
         # Offer service to the proposal, such as marketing, legal, or financial services.
         # This is a placeholder for the actual implementation of offering services.
         pass
+
+    def provide_service(self, project, service_type, cost):
+        self.services_provided[project] = (service_type, cost)

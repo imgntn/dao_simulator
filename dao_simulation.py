@@ -15,7 +15,8 @@ from agents import (
     Validator,
 )
 from utils.locations import generate_random_location
-from utils.voting_strategies import majority_vote
+
+# from utils.voting_strategies import majority_vote
 import random
 from settings import settings
 

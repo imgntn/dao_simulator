@@ -2,6 +2,12 @@ import random
 from mesa import Agent
 
 
+class DefaultVotingStrategy:
+    def vote(self, member, proposal):
+        vote_decision = member.decide_vote(proposal.topic)
+        member.votes[proposal] = vote_decision
+
+
 class DAOMember(Agent):
     def __init__(
         self,
@@ -10,18 +16,23 @@ class DAOMember(Agent):
         tokens,
         reputation,
         location,
-        voting_strategy="DAOMember Default Voting Strategy",
+        voting_strategy=None,
     ):
         super().__init__(unique_id, model)
         self.tokens = tokens
         self.reputation = reputation
         self.location = location
-        self.voting_strategy = voting_strategy
+        self.voting_strategy = (
+            voting_strategy if voting_strategy else DefaultVotingStrategy()
+        )
+        self.comments = {}
+        self.votes = {}
 
     def vote_on_proposal(self, proposal):
         self.voting_strategy.vote(self, proposal)
 
     def leave_comment(self, proposal, sentiment):
+        self.comments[proposal] = sentiment
         proposal.add_comment(self, sentiment)
 
     def vote_on_random_proposal(self):
