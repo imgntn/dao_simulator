@@ -22,11 +22,12 @@ from settings import settings
 
 
 class DAOSimulation(Model):
-    def __init__(self):
+    def __init__(self, steps=None):
         super().__init__()
 
         self.dao = DAO("MyDAO")
         self.schedule = RandomActivation(self)
+        self.steps = steps
 
         for i in range(settings["num_developers"]):
             developer = Developer(
