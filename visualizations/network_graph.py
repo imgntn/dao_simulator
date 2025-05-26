@@ -8,12 +8,13 @@ def plot_network_graph(dao):
 
     # Adding member and proposal nodes to the graph
     for member in dao.members:
-        G.add_node(member.id, node_type=type(member).__name__)
+        G.add_node(member.unique_id, node_type=type(member).__name__)
 
     for proposal in dao.proposals:
-        G.add_node(proposal.id, node_type="Proposal")
-        for supporter in proposal.supporters:
-            G.add_edge(supporter, proposal.id)
+        prop_id = proposal.title
+        G.add_node(prop_id, node_type="Proposal")
+        if hasattr(proposal, "creator"):
+            G.add_edge(proposal.creator.unique_id, prop_id)
 
     pos = nx.spring_layout(G)
 
@@ -27,12 +28,7 @@ def plot_network_graph(dao):
             node_colors.append("skyblue")
 
     # Customizing edge colors based on support
-    edge_colors = []
-    for edge in G.edges:
-        if edge[0] in G.nodes(data=True)[edge[1]]["supporters"]:
-            edge_colors.append("green")
-        else:
-            edge_colors.append("gray")
+    edge_colors = [data.get("color", "gray") for _, _, data in G.edges(data=True)]
 
     # Drawing the network graph
     nx.draw(

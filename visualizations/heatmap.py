@@ -9,9 +9,9 @@ def plot_heat_map(dao):
     for member in dao.members:
         data.append(
             {
-                "id": member.id,
+                "id": member.unique_id,
                 "reputation": member.reputation,
-                "tokens": member.tokens["DAO_TOKEN"],
+                "tokens": member.tokens,
             }
         )
 
