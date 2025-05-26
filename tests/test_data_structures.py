@@ -1,71 +1,37 @@
 import unittest
-from data_structures import (
-    DAO,
-    Proposal,
-    Project,
-    Dispute,
-    Treasury,
-    Violation,
-)
-
-from agents import DAOMember
-
+from data_structures import DAO, Proposal, Project, Dispute, Treasury, Violation
+from agents.dao_member import DAOMember
 
 class TestDataStructures(unittest.TestCase):
     def setUp(self):
-        dao = DAO("Sample DAO")
-        self.dao = dao
-        self.dao_member = DAOMember(
-            1,
-            model=dao,
-            tokens=100,
-            reputation=10,
-            location="US",
-            voting_strategy="simple_majority",
-        )
-        dao_instance = self.dao  # Replace with your DAO instance
-        creator_instance = self.dao_member  # Replace with a DAOMember instance
-
         self.dao = DAO("TestDAO")
-        self.proposal = Proposal(
-            dao=dao_instance,
-            creator=creator_instance,
-            title="Proposal 1",
-            description="A proposal for a new project",
-            funding_goal=100,
-            duration=5,
-        )
-        self.project = Project(
-            dao=dao_instance,
-            creator=creator_instance,
-            title="Project 1",
-            description="A project description",
-            funding_goal=500,
-            duration=10,
-        )
-        self.dispute = Dispute(
-            dao=dao_instance,
-            creator=creator_instance,
-            title="Dispute 1",
-            description="A dispute description",
-            reporting_party=creator_instance,
-            resolving_party=your_arbitrator_instance,  # Replace with an instance of a resolving party (DAOMember or other class)
-        )
+        self.member = DAOMember(1, model=None, tokens=100, reputation=10, location="US")
+        self.proposal = Proposal(self.dao, self.member, "Title", "Desc", 50, 5)
+        self.project = Project(self.dao, self.member, "Project", "Desc", 100, 10)
+        self.dispute = Dispute(self.dao, [self.member], "Problem")
         self.treasury = Treasury()
-        self.treasury.deposit("USDC", 1000)
-        self.treasury.deposit("ETH", 100)
-        self.violation = Violation(
-            dao=dao_instance,
-            creator=creator_instance,
-            title="Violation 1",
-            description="A violation description",
-            reporting_party=creator_instance,
-            resolving_party=your_regulator_instance,  # Replace with an instance of a resolving party (DAOMember or other class)
-        )
+        self.violation = Violation(self.member, self.project, "Breach")
 
-    # Keep the existing test methods without changes
-    # ...
+    def test_proposal_fields(self):
+        self.assertEqual(self.proposal.title, "Title")
 
+    def test_project_work_update(self):
+        self.project.update_work_done(self.member, 5)
+        self.assertEqual(self.project.work_done[self.member], 5)
+
+    def test_dispute_resolve(self):
+        self.dispute.resolve("Ok")
+        self.assertEqual(self.dispute.resolution, "Ok")
+
+    def test_treasury_operations(self):
+        self.treasury.deposit("DAO_TOKEN", 100)
+        self.assertEqual(self.treasury.get_token_balance("DAO_TOKEN"), 100)
+        self.treasury.withdraw("DAO_TOKEN", 40)
+        self.assertEqual(self.treasury.get_token_balance("DAO_TOKEN"), 60)
+
+    def test_violation_resolve(self):
+        self.violation.resolve()
+        self.assertTrue(self.violation.resolved)
 
 if __name__ == "__main__":
     unittest.main()

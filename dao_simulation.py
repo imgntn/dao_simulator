@@ -117,6 +117,10 @@ class DAOSimulation(Model):
             external_partner = ExternalPartner(
                 unique_id=f"ExternalPartner_{i}",
                 model=self,
+                tokens=100,
+                reputation=0,
+                location=generate_random_location(),
+                voting_strategy=None,
             )
             self.dao.add_member(external_partner)
 
@@ -214,7 +218,7 @@ class DAOSimulation(Model):
     def execute_token_buyback(self):
         buyback_amount = self.calculate_buyback_amount()
         if buyback_amount > 0:
-            self.dao.buy_back_tokens(buyback_amount)
+            self.dao.buyback_tokens(buyback_amount)
 
     def calculate_buyback_amount(self):
         # You can define your own buyback conditions here.
@@ -242,7 +246,7 @@ class DAOSimulation(Model):
 
     def collect_agents_votes(self, topic):
         votes = {"yes": 0, "no": 0}
-        for agent in self.dao.members.values():
+        for agent in self.dao.members:
             if agent.decide_vote(topic) == "yes":
                 votes["yes"] += 1
             else:
@@ -271,15 +275,11 @@ class DAOSimulation(Model):
         for _ in range(5):  # Add 5 new members every 50 steps
             if self.schedule.steps % 50 == 0:
                 if self.dao.treasury.funds >= 100:  # Check if DAO has enough funds
-                    agent_class = random.choice(
-                        agent_classes
-                    )  # Select a random agent class
+                    agent_class = random.choice(agent_classes)
                     new_agent = self.create_new_agent(agent_class, self.schedule.steps)
                     if new_agent.reputation > 25:  # Add only if reputation is above 25
                         self.dao.add_member(new_agent)
-                        self.dao.treasury.funds -= (
-                            100  # Deduct the new agent's funds from the DAO treasury
-                        )
+                        self.dao.treasury.withdraw("DAO_TOKEN", 100)
 
     def create_new_agent(self, agent_class, step):
         agent_id = f"{agent_class.__name__}_{step}"
@@ -302,16 +302,14 @@ class DAOSimulation(Model):
         elif agent_class == Arbitrator:
             agent_params.update({"arbitration_capacity": 3})
         elif agent_class == ExternalPartner:
-            del agent_params["tokens"]
-            del agent_params["reputation"]
-            del agent_params["location"]
+            agent_params.update({"voting_strategy": None})
 
         return agent_class(**agent_params)
 
     def remove_agents(self):
         agents_to_remove = []
-        for agent_id, agent in self.dao.members.items():
+        for agent in self.dao.members:
             if agent.reputation < 10:  # Remove if reputation is below 10
-                agents_to_remove.append(agent_id)
-        for agent_id in agents_to_remove:
-            self.dao.remove_member(agent_id)
+                agents_to_remove.append(agent)
+        for agent in agents_to_remove:
+            self.dao.remove_member(agent)

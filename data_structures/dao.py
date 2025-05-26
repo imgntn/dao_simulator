@@ -47,10 +47,10 @@ class DAO:
         # Placeholder for revenue distribution logic
         pass
 
-    def buyback_tokens(self, amount, token):
-        # Placeholder for token buyback logic
-        pass
+    def buyback_tokens(self, amount, token="DAO_TOKEN"):
+        self.treasury.withdraw(token, amount)
 
     def stake_tokens(self, amount, token, member):
         # Placeholder for token staking logic
         pass
+
