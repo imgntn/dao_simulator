@@ -10,7 +10,7 @@ class ExternalPartner(DAOMember):
         tokens,
         reputation,
         location,
-        voting_strategy,
+        voting_strategy=None,
     ):
         super().__init__(
             unique_id,
@@ -23,7 +23,8 @@ class ExternalPartner(DAOMember):
         self.collaborated_projects = []
 
     def step(self):
-        if random.random() < self.model.external_partner_interact_probability:
+        prob = getattr(self.model, "external_partner_interact_probability", 0.0)
+        if random.random() < prob:
             self.interact_with_dao()
 
     def interact_with_dao(self):

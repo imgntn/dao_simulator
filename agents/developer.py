@@ -10,7 +10,7 @@ class Developer(DAOMember):
         tokens,
         reputation,
         location,
-        voting_strategy,
+        voting_strategy=None,
         skillset=["Generic Code"],
     ):
         super().__init__(

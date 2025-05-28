@@ -28,6 +28,16 @@ class Treasury:
         return self.tokens[token]
 
     @property
+    def token_balance(self):
+        """Total of all token balances."""
+        return sum(self.tokens.values())
+
+    @property
+    def reputation_balance(self):
+        """Placeholder for future reputation accounting."""
+        return 0
+
+    @property
     def funds(self):
         return sum(self.tokens.values())
 

@@ -25,6 +25,6 @@ def create_random_proposal(dao: DAO, creator=None, title_prefix: str = "Proposal
 
 def submit_random_proposal(dao: DAO, creator):
     proposal = create_random_proposal(dao, creator)
-    creator.submit_proposal(dao, proposal)
+    creator.submit_proposal(proposal)
     return proposal
 

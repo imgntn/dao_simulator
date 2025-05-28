@@ -10,8 +10,8 @@ class Validator(DAOMember):
         tokens,
         reputation,
         location,
-        voting_strategy,
-        monitoring_budget=1000,  ##TODO: fix this magic number
+        voting_strategy=None,
+        monitoring_budget=100,
     ):
         super().__init__(
             unique_id, model, tokens, reputation, location, voting_strategy

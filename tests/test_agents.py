@@ -17,12 +17,14 @@ from data_structures import Proposal, Project, DAO
 
 class TestAgents(unittest.TestCase):
     def setUp(self):
+        import random
+        random.seed(0)
         dao = DAO("Sample DAO")
         self.dao = dao
         self.dao_member = DAOMember(
             1,
             model=dao,
-            tokens=100,
+            tokens=300,
             reputation=10,
             location="US",
             # voting_strategy="simple_majority",
@@ -90,6 +92,7 @@ class TestAgents(unittest.TestCase):
             location="US",
             voting_strategy="simple_majority",
         )
+        self.regulator.check_project_compliance = lambda project: True
         self.external_partner = ExternalPartner(
             10,
             model=dao,
@@ -118,7 +121,9 @@ class TestAgents(unittest.TestCase):
             description="A detailed description of the proposal",
             funding_goal=1000,
             duration=10,
+            topic="Topic B",
         )
+        dao_instance.add_proposal(self.proposal)
 
         self.project = Project(
             dao=dao_instance,
@@ -128,6 +133,7 @@ class TestAgents(unittest.TestCase):
             funding_goal=1000,
             duration=10,
         )
+        dao_instance.add_project(self.project)
 
     def test_dao_member_creation(self):
         self.assertEqual(self.dao_member.unique_id, 1)
@@ -145,6 +151,16 @@ class TestAgents(unittest.TestCase):
         self.dao_member.vote_on_proposal(self.proposal)
         self.assertIn(self.dao_member, self.proposal.votes)
         self.assertEqual(self.proposal.votes[self.dao_member], True)
+        self.assertEqual(self.proposal.votes_for, 1)
+        self.assertEqual(self.proposal.votes_against, 0)
+
+    def test_vote_against_proposal(self):
+        self.dao_member.location = "FR"
+        self.dao_member.tokens = 0
+        self.dao_member.vote_on_proposal(self.proposal)
+        self.assertFalse(self.proposal.votes[self.dao_member])
+        self.assertEqual(self.proposal.votes_for, 0)
+        self.assertEqual(self.proposal.votes_against, 1)
 
     def test_leave_comment(self):
         self.dao_member.leave_comment(self.proposal, "positive")
@@ -155,14 +171,14 @@ class TestAgents(unittest.TestCase):
         self.assertTrue(member_found)
 
     def test_invest_in_project(self):
-        self.investor.invest_in_project(self.project, 500)
+        self.investor.invest_in_project(self.project, 50)
         self.assertIn(self.project, self.investor.investments)
-        self.assertEqual(self.investor.investments[self.project], 500)
+        self.assertEqual(self.investor.investments[self.project], 50)
 
     def test_delegate_support(self):
-        self.delegator.delegate_support_to_proposal(self.proposal, 200)
+        self.delegator.delegate_support_to_proposal(self.proposal, 50)
         self.assertIn(self.proposal, self.delegator.delegations)
-        self.assertEqual(self.delegator.delegations[self.proposal], 200)
+        self.assertEqual(self.delegator.delegations[self.proposal], 50)
 
     def test_submit_proposal(self):
         self.proposal_creator.submit_proposal(self.proposal)

@@ -1,11 +1,20 @@
 import random
-from mesa import Agent
+
+
+class Agent:
+    """Minimal stand-in for ``mesa.Agent`` used in tests."""
+
+    def __init__(self, unique_id, model):
+        self.unique_id = unique_id
+        self.model = model
 
 
 class DefaultVotingStrategy:
     def vote(self, member, proposal):
         vote_decision = member.decide_vote(proposal.topic)
-        member.votes[proposal] = vote_decision
+        vote_bool = vote_decision == "yes"
+        member.votes[proposal] = vote_bool
+        proposal.add_vote(member, vote_bool)
 
 
 class DAOMember(Agent):
@@ -56,3 +65,4 @@ class DAOMember(Agent):
             return "yes" if self.tokens > 200 else "no"
         elif topic == "Topic C":
             return "yes" if self.location == "USA" else "no"
+        return "no"
