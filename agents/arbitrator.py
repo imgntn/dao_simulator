@@ -12,8 +12,8 @@ class Arbitrator(DAOMember):
         tokens,
         reputation,
         location,
-        voting_strategy,
-        arbitration_capacity=1000,  ##TODO: fix magic number
+        voting_strategy=None,
+        arbitration_capacity=10,
     ):
         super().__init__(
             unique_id, model, tokens, reputation, location, voting_strategy

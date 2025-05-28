@@ -10,8 +10,8 @@ class Delegator(DAOMember):
         tokens,
         reputation,
         location,
-        voting_strategy,
-        delegation_budget=1000,  # TODO: fix this magic number
+        voting_strategy=None,
+        delegation_budget=100,
     ):
         super().__init__(
             unique_id, model, tokens, reputation, location, voting_strategy

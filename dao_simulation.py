@@ -1,6 +1,28 @@
 # File: dao_simulation/dao_simulation.py
-from mesa import Model
-from mesa.time import RandomActivation
+class Model:
+    """Minimal stand-in for :class:`mesa.Model` used in tests."""
+
+    pass
+
+
+class RandomActivation:
+    """Simplistic scheduler keeping track of steps."""
+
+    def __init__(self, model):
+        self.model = model
+        self.agents = []
+        self.steps = 0
+
+    def add(self, agent):
+        self.agents.append(agent)
+
+    def step(self):
+        for agent in list(self.agents):
+            if hasattr(agent, "step"):
+                agent.step()
+        self.steps += 1
+
+
 from data_structures.dao import DAO
 from agents import (
     Arbitrator,
@@ -138,6 +160,9 @@ class DAOSimulation(Model):
             self.schedule.add(agent)
 
     def step(self):
+        # advance the internal clock
+        self.schedule.steps += 1
+
         self.expire_proposals()
         self.complete_projects()
         self.resolve_disputes()

@@ -10,8 +10,8 @@ class Investor(DAOMember):
         tokens,
         reputation,
         location,
-        voting_strategy,
-        investment_budget=1000,  # TODO, fix magic number here
+        voting_strategy=None,
+        investment_budget=100,
     ):
         super().__init__(
             unique_id, model, tokens, reputation, location, voting_strategy

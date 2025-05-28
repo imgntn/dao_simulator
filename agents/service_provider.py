@@ -10,7 +10,7 @@ class ServiceProvider(DAOMember):
         tokens,
         reputation,
         location,
-        service_budget=1000,  ##TODO: fix magic number
+        service_budget=100,
     ):
         super().__init__(unique_id, model, tokens, reputation, location)
         self.service_budget = service_budget
