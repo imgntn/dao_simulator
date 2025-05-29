@@ -36,3 +36,33 @@ The simulation runs in discrete time steps. During each step, the agents perform
 The DAO maintains a treasury, which holds various tokens, including its native token. The simulation models the appreciation or depreciation of these tokens over time, as well as their use within the organization. The agents' actions can influence the price of the native token, and the DAO can distribute revenue to its members through various mechanisms, such as token buybacks, staking, or revenue sharing.
 
 The simulation also includes utility functions and voting strategies that help streamline the code and make it more modular. This structure allows for easy customization and the addition of new agent classes or behaviors as needed.
+
+## Getting Started
+
+1. **Install Dependencies**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Run the Simulation**
+
+   ```bash
+   python main.py
+   ```
+
+   This executes the batch run with default values from `settings.py`. Adjust the numbers of agents by editing that file or calling `update_settings()` in your own script.
+
+3. **Optional: Launch the Mesa Visualization**
+
+   ```bash
+   python mesa_app.py
+   ```
+
+   The visualization depends on the optional Mesa components listed in `requirements.txt`.
+
+4. **Run the Tests**
+
+   ```bash
+   python -m unittest discover tests
+   ```
