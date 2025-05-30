@@ -27,6 +27,23 @@ class RandomActivation:
         self.steps += 1
 
 
+class SimpleDataCollector:
+    """Collect a few statistics from the model each step."""
+
+    def __init__(self):
+        self.model_vars = []
+
+    def collect(self, model):
+        self.model_vars.append(
+            {
+                "step": model.schedule.steps,
+                "num_members": len(model.dao.members),
+                "num_proposals": len(model.dao.proposals),
+                "num_projects": len(model.dao.projects),
+            }
+        )
+
+
 from data_structures.dao import DAO
 from agents import (
     Arbitrator,
@@ -55,7 +72,12 @@ class DAOSimulation(Model):
             "MyDAO",
             violation_probability=settings["violation_probability"],
             reputation_penalty=settings["reputation_penalty"],
+            comment_probability=settings["comment_probability"],
+            external_partner_interact_probability=settings[
+                "external_partner_interact_probability"
+            ],
         )
+        self.datacollector = SimpleDataCollector()
         self.schedule = RandomActivation(self)
 
         for i in range(settings["num_developers"]):
@@ -183,6 +205,7 @@ class DAOSimulation(Model):
 
         # Execute all agent steps via the scheduler
         self.schedule.step()
+        self.datacollector.collect(self)
 
     def expire_proposals(self):
         current_time = (
