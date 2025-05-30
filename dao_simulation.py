@@ -53,7 +53,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_developers"]):
             developer = Developer(
                 unique_id=f"Developer_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -64,7 +64,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_investors"]):
             investor = Investor(
                 unique_id=f"Investor_{i}",
-                model=self,
+                model=self.dao,
                 tokens=1000,
                 reputation=0,
                 location=generate_random_location(),
@@ -75,7 +75,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_delegators"]):
             delegator = Delegator(
                 unique_id=f"Delegator_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -86,7 +86,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_proposal_creators"]):
             proposal_creator = ProposalCreator(
                 unique_id=f"ProposalCreator_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -96,7 +96,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_validators"]):
             validator = Validator(
                 unique_id=f"Validator_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -106,7 +106,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_service_providers"]):
             service_provider = ServiceProvider(
                 unique_id=f"ServiceProvider_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -117,7 +117,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_arbitrators"]):
             arbitrator = Arbitrator(
                 unique_id=f"Arbitrator_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -128,7 +128,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_regulators"]):
             regulator = Regulator(
                 unique_id=f"Regulator_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -138,7 +138,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_external_partners"]):
             external_partner = ExternalPartner(
                 unique_id=f"ExternalPartner_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -149,7 +149,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_passive_members"]):
             passive_member = PassiveMember(
                 unique_id=f"PassiveMember_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -310,7 +310,7 @@ class DAOSimulation(Model):
         agent_id = f"{agent_class.__name__}_{step}"
         agent_params = {
             "unique_id": agent_id,
-            "model": self,
+            "model": self.dao,
             "tokens": 100,
             "reputation": 0,
             "location": generate_random_location(),

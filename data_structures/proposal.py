@@ -26,6 +26,7 @@ class Proposal:
         self.topic = topic
         self.creation_time = 0
         self.voting_period = duration
+        self.current_funding = 0
 
     def add_vote(self, member, vote):
         if member not in self.votes:
@@ -46,4 +47,8 @@ class Proposal:
 
     def receive_investment(self, investor, amount):
         """Record an investment toward the proposal."""
-        self.current_funding = getattr(self, "current_funding", 0) + amount
+        self.current_funding += amount
+
+    @property
+    def closed(self):
+        return self.status != "open"
