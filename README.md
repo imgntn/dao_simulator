@@ -23,9 +23,15 @@ The simulation models the behavior of a DAO, a decentralized organization manage
 ## Data Structures
 
 - `DAO`: Represents the Decentralized Autonomous Organization, managing members, proposals, projects, violations, and treasury.
-- `Dispute`: Represents a dispute between members or related to a project.
-- `Project`: Represents a project within the DAO, including its funding, progress, and associated members.
-- `Proposal`: Represents a proposal within the DAO, containing details about the proposal type, funding goal, current funding, and associated members.
+ - `Dispute`: Represents a dispute between members or related to a project. Disputes
+   now track their importance, related project or member, and whether they've been
+   resolved.
+ - `Project`: Represents a project within the DAO, including its funding, progress,
+   associated members, and start time. Projects can receive work contributions via
+   `receive_work`.
+ - `Proposal`: Represents a proposal within the DAO, containing details about the
+   proposal type, funding goal, current funding, and associated members. Proposals
+   expose a `closed` property to indicate whether voting has finished.
 - `Treasury`: Manages the DAO's treasury, holding its native token and tokens from other cryptocurrencies.
 - `Violation`: Represents a violation of the DAO's rules or an external regulation.
 
@@ -59,10 +65,27 @@ The simulation also includes utility functions and voting strategies that help s
    python mesa_app.py
    ```
 
-   The visualization depends on the optional Mesa components listed in `requirements.txt`.
+The visualization depends on the optional Mesa components listed in `requirements.txt`.
 
 4. **Run the Tests**
 
    ```bash
    python -m unittest discover tests
    ```
+
+## Configuration
+
+Simulation parameters are stored in `settings.py`. Besides the number of agents,
+you can tweak behaviour such as the probability that an arbitrator will detect a
+violation and the reputation penalty applied:
+
+```
+settings = {
+    ...,
+    "violation_probability": 0.1,
+    "reputation_penalty": 5,
+}
+```
+
+Call `update_settings()` or edit the file directly to experiment with different
+values.

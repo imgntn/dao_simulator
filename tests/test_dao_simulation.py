@@ -8,7 +8,19 @@ class TestDAOSimulation(unittest.TestCase):
 
     def test_dao_initialization(self):
         dao = self.simulation.dao
-        expected_members = sum(settings.settings.values())
+        agent_keys = [
+            "num_developers",
+            "num_investors",
+            "num_delegators",
+            "num_proposal_creators",
+            "num_validators",
+            "num_service_providers",
+            "num_arbitrators",
+            "num_regulators",
+            "num_external_partners",
+            "num_passive_members",
+        ]
+        expected_members = sum(settings.settings[k] for k in agent_keys)
         self.assertEqual(len(dao.members), expected_members)
 
     def test_distribute_revenue(self):

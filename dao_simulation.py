@@ -16,6 +16,10 @@ class RandomActivation:
     def add(self, agent):
         self.agents.append(agent)
 
+    def remove(self, agent):
+        if agent in self.agents:
+            self.agents.remove(agent)
+
     def step(self):
         for agent in list(self.agents):
             if hasattr(agent, "step"):
@@ -47,13 +51,17 @@ class DAOSimulation(Model):
     def __init__(self):
         super().__init__()
 
-        self.dao = DAO("MyDAO")
+        self.dao = DAO(
+            "MyDAO",
+            violation_probability=settings["violation_probability"],
+            reputation_penalty=settings["reputation_penalty"],
+        )
         self.schedule = RandomActivation(self)
 
         for i in range(settings["num_developers"]):
             developer = Developer(
                 unique_id=f"Developer_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -64,7 +72,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_investors"]):
             investor = Investor(
                 unique_id=f"Investor_{i}",
-                model=self,
+                model=self.dao,
                 tokens=1000,
                 reputation=0,
                 location=generate_random_location(),
@@ -75,7 +83,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_delegators"]):
             delegator = Delegator(
                 unique_id=f"Delegator_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -86,7 +94,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_proposal_creators"]):
             proposal_creator = ProposalCreator(
                 unique_id=f"ProposalCreator_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -96,7 +104,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_validators"]):
             validator = Validator(
                 unique_id=f"Validator_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -106,7 +114,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_service_providers"]):
             service_provider = ServiceProvider(
                 unique_id=f"ServiceProvider_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -117,7 +125,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_arbitrators"]):
             arbitrator = Arbitrator(
                 unique_id=f"Arbitrator_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -128,7 +136,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_regulators"]):
             regulator = Regulator(
                 unique_id=f"Regulator_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -138,7 +146,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_external_partners"]):
             external_partner = ExternalPartner(
                 unique_id=f"ExternalPartner_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -149,7 +157,7 @@ class DAOSimulation(Model):
         for i in range(settings["num_passive_members"]):
             passive_member = PassiveMember(
                 unique_id=f"PassiveMember_{i}",
-                model=self,
+                model=self.dao,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -173,9 +181,8 @@ class DAOSimulation(Model):
         self.remove_agents()
         ## TODO: ask for more complex examples of 1-3
 
-        # Iterate over all agents in the DAO and call their step function
-        for agent in self.dao.members:
-            agent.step()
+        # Execute all agent steps via the scheduler
+        self.schedule.step()
 
     def expire_proposals(self):
         current_time = (
@@ -183,7 +190,7 @@ class DAOSimulation(Model):
         )  # Assuming you have added schedule to the DAOSimulation class
         for proposal in self.dao.proposals:
             if (
-                proposal.status == "active"
+                proposal.status == "open"
                 and current_time > proposal.creation_time + proposal.voting_period
             ):
                 proposal.status = "expired"
@@ -200,7 +207,7 @@ class DAOSimulation(Model):
         )  # Assuming you have added schedule to the DAOSimulation class
         for project in self.dao.projects:
             if (
-                project.status == "ongoing"
+                project.status == "open"
                 and current_time >= project.start_time + project.duration
             ):
                 project.status = "completed"
@@ -210,15 +217,12 @@ class DAOSimulation(Model):
                 # to handle the reward distribution
 
     def resolve_disputes(self):
+        arbitrators = [a for a in self.dao.members if isinstance(a, Arbitrator)]
         for dispute in self.dao.disputes:
-            if dispute.status == "unresolved":
-                arbitrator = dispute.arbitrator
-                resolution = arbitrator.resolve_dispute(dispute)
-                dispute.status = "resolved"
-
-                # Update involved parties' reputations and take any necessary actions based on the dispute's outcome
-                # You may need to implement additional methods or logic in the respective agent classes
-                # to handle the updates and actions
+            if not dispute.resolved and arbitrators:
+                arbitrator = random.choice(arbitrators)
+                arbitrator.arbitrate(dispute)
+                arbitrator.resolve_dispute(dispute)
 
     def distribute_revenue(self):
         total_revenue = self.dao.treasury.get_revenue_amount()
@@ -304,13 +308,14 @@ class DAOSimulation(Model):
                     new_agent = self.create_new_agent(agent_class, self.schedule.steps)
                     if new_agent.reputation > 25:  # Add only if reputation is above 25
                         self.dao.add_member(new_agent)
+                        self.schedule.add(new_agent)
                         self.dao.treasury.withdraw("DAO_TOKEN", 100)
 
     def create_new_agent(self, agent_class, step):
         agent_id = f"{agent_class.__name__}_{step}"
         agent_params = {
             "unique_id": agent_id,
-            "model": self,
+            "model": self.dao,
             "tokens": 100,
             "reputation": 0,
             "location": generate_random_location(),
@@ -338,3 +343,4 @@ class DAOSimulation(Model):
                 agents_to_remove.append(agent)
         for agent in agents_to_remove:
             self.dao.remove_member(agent)
+            self.schedule.remove(agent)
