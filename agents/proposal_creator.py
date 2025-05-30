@@ -32,7 +32,7 @@ class ProposalCreator(DAOMember):
             duration,
             topic,
         )
-        self.model.proposals.append(proposal)
+        self.model.add_proposal(proposal)
 
     def submit_proposal(self, proposal):  # Add this method to submit a proposal
         self.submitted_proposals.append(proposal)

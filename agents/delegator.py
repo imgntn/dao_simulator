@@ -30,8 +30,9 @@ class Delegator(DAOMember):
             self.leave_comment_on_random_proposal()
 
     def delegate_support_to_proposal(self, proposal, token_amount):
-        if self.delegation_budget >= token_amount:
+        if self.delegation_budget >= token_amount and self.tokens >= token_amount:
             self.delegation_budget -= token_amount
+            self.tokens -= token_amount
             proposal.receive_delegated_support(self, token_amount)
             self.delegations[proposal] = token_amount
 

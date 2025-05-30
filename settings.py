@@ -20,6 +20,8 @@ settings = {
     "num_passive_members": 10,
     "violation_probability": 0.1,
     "reputation_penalty": 5,
+    "comment_probability": 0.5,
+    "external_partner_interact_probability": 0.0,
 }
 
 

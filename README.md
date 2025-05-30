@@ -59,7 +59,16 @@ The simulation also includes utility functions and voting strategies that help s
 
    This executes the batch run with default values from `settings.py`. Adjust the numbers of agents by editing that file or calling `update_settings()` in your own script.
 
-3. **Optional: Launch the Mesa Visualization**
+3. **Optional: Launch the Admin Panel**
+
+   ```bash
+   python admin_app.py
+   ```
+
+   The panel exposes sliders for configuring agent counts and behaviour
+   probabilities before starting the simulation.
+
+4. **Optional: Launch the Mesa Visualization**
 
    ```bash
    python mesa_app.py
@@ -67,7 +76,7 @@ The simulation also includes utility functions and voting strategies that help s
 
 The visualization depends on the optional Mesa components listed in `requirements.txt`.
 
-4. **Run the Tests**
+5. **Run the Tests**
 
    ```bash
    python -m unittest discover tests
@@ -84,6 +93,8 @@ settings = {
     ...,
     "violation_probability": 0.1,
     "reputation_penalty": 5,
+    "comment_probability": 0.5,
+    "external_partner_interact_probability": 0.0,
 }
 ```
 
