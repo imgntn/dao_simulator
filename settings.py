@@ -18,6 +18,8 @@ settings = {
     "num_regulators": 2,
     "num_external_partners": 2,
     "num_passive_members": 10,
+    "violation_probability": 0.1,
+    "reputation_penalty": 5,
 }
 
 
