@@ -24,13 +24,13 @@ class ProposalCreator(DAOMember):
         topic = "Topic A"  # You can replace this with a random or predefined topic
 
         proposal = Proposal(
-            proposal_id,
+            self.model,
             self,
             proposal_type,
             description,
             amount,
             duration,
-            topic,  # Add this line
+            topic,
         )
         self.model.proposals.append(proposal)
 

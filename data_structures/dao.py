@@ -3,7 +3,7 @@ from data_structures.treasury import Treasury
 
 
 class DAO:
-    def __init__(self, name):
+    def __init__(self, name, violation_probability=0.1, reputation_penalty=5):
         self.name = name
         self.proposals = []
         self.projects = []
@@ -12,6 +12,8 @@ class DAO:
         self.members = []
         self.treasury = Treasury()
         self.comment_probability = 0.5
+        self.violation_probability = violation_probability
+        self.reputation_penalty = reputation_penalty
 
     def add_proposal(self, proposal):
         self.proposals.append(proposal)

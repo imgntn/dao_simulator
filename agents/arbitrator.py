@@ -48,9 +48,9 @@ class Arbitrator(DAOMember):
 
             if random.random() < self.model.violation_probability:
                 violation = Violation(
-                    dispute.project, dispute.member, dispute.description
+                    dispute.member, dispute.project, dispute.description
                 )
-                self.model.dao.add_violation(violation)
+                self.model.add_violation(violation)
                 dispute.member.reputation -= self.model.reputation_penalty
 
     def resolve_dispute(self, dispute):

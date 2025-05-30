@@ -40,7 +40,9 @@ class ExternalPartner(DAOMember):
         elif interaction_type == "integration":
             self.propose_integration()
         elif interaction_type == "collaborate_on_project":
-            self.collaborate_on_project()
+            if self.model.projects:
+                project = random.choice(self.model.projects)
+                self.collaborate_on_project(project)
 
     def propose_partnership(self):
         print(f"External Partner {self.unique_id} proposes a partnership with the DAO")

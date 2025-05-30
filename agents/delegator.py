@@ -20,6 +20,11 @@ class Delegator(DAOMember):
         self.delegations = {}
 
     def step(self):
+        proposal = self.choose_proposal_to_delegate_to()
+        if proposal and self.delegation_budget > 0:
+            amount = random.uniform(0, self.delegation_budget)
+            self.delegate_support_to_proposal(proposal, amount)
+
         self.vote_on_random_proposal()
         if random.random() < self.model.comment_probability:
             self.leave_comment_on_random_proposal()
