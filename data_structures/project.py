@@ -15,9 +15,14 @@ class Project:
         self.work_done = defaultdict(float)
         self.status = "open"
         self.comments = []
+        self.start_time = 0
 
     def add_comment(self, member, sentiment):
         self.comments.append({"member": member, "sentiment": sentiment})
 
     def update_work_done(self, member, work_amount):
         self.work_done[member] += work_amount
+
+    def receive_work(self, member, work_amount):
+        """Record work contributed by a member."""
+        self.update_work_done(member, work_amount)
