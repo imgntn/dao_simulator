@@ -6,6 +6,12 @@ class TestDAOSimulation(unittest.TestCase):
     def setUp(self):
         self.simulation = DAOSimulation()
 
+    def test_step_increments_schedule(self):
+        before = self.simulation.schedule.steps
+        self.simulation.step()
+        after = self.simulation.schedule.steps
+        self.assertEqual(after - before, 1)
+
     def test_dao_initialization(self):
         dao = self.simulation.dao
         agent_keys = [
