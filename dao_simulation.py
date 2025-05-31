@@ -82,25 +82,75 @@ from settings import settings
 
 
 class DAOSimulation(Model):
-    def __init__(self, export_csv=False, csv_filename="simulation_data.csv"):
+    def __init__(
+        self,
+        export_csv: bool = False,
+        csv_filename: str = "simulation_data.csv",
+        num_developers: int | None = None,
+        num_investors: int | None = None,
+        num_delegators: int | None = None,
+        num_proposal_creators: int | None = None,
+        num_validators: int | None = None,
+        num_service_providers: int | None = None,
+        num_arbitrators: int | None = None,
+        num_regulators: int | None = None,
+        num_external_partners: int | None = None,
+        num_passive_members: int | None = None,
+        comment_probability: float | None = None,
+        external_partner_interact_probability: float | None = None,
+        violation_probability: float | None = None,
+        reputation_penalty: int | None = None,
+        **_: object,
+    ) -> None:
         super().__init__()
 
         self.export_csv = export_csv
         self.csv_filename = csv_filename
 
+        # Use provided parameters or fall back to global settings
+        self.num_developers = num_developers if num_developers is not None else settings["num_developers"]
+        self.num_investors = num_investors if num_investors is not None else settings["num_investors"]
+        self.num_delegators = num_delegators if num_delegators is not None else settings["num_delegators"]
+        self.num_proposal_creators = (
+            num_proposal_creators if num_proposal_creators is not None else settings["num_proposal_creators"]
+        )
+        self.num_validators = num_validators if num_validators is not None else settings["num_validators"]
+        self.num_service_providers = (
+            num_service_providers if num_service_providers is not None else settings["num_service_providers"]
+        )
+        self.num_arbitrators = num_arbitrators if num_arbitrators is not None else settings["num_arbitrators"]
+        self.num_regulators = num_regulators if num_regulators is not None else settings["num_regulators"]
+        self.num_external_partners = (
+            num_external_partners if num_external_partners is not None else settings["num_external_partners"]
+        )
+        self.num_passive_members = num_passive_members if num_passive_members is not None else settings["num_passive_members"]
+
+        self.comment_probability = (
+            comment_probability if comment_probability is not None else settings["comment_probability"]
+        )
+        self.external_partner_interact_probability = (
+            external_partner_interact_probability
+            if external_partner_interact_probability is not None
+            else settings["external_partner_interact_probability"]
+        )
+        self.violation_probability = (
+            violation_probability if violation_probability is not None else settings["violation_probability"]
+        )
+        self.reputation_penalty = (
+            reputation_penalty if reputation_penalty is not None else settings["reputation_penalty"]
+        )
+
         self.dao = DAO(
             "MyDAO",
-            violation_probability=settings["violation_probability"],
-            reputation_penalty=settings["reputation_penalty"],
-            comment_probability=settings["comment_probability"],
-            external_partner_interact_probability=settings[
-                "external_partner_interact_probability"
-            ],
+            violation_probability=self.violation_probability,
+            reputation_penalty=self.reputation_penalty,
+            comment_probability=self.comment_probability,
+            external_partner_interact_probability=self.external_partner_interact_probability,
         )
         self.datacollector = SimpleDataCollector()
         self.schedule = RandomActivation(self)
 
-        for i in range(settings["num_developers"]):
+        for i in range(self.num_developers):
             developer = Developer(
                 unique_id=f"Developer_{i}",
                 model=self.dao,
@@ -111,7 +161,7 @@ class DAOSimulation(Model):
             )
             self.dao.add_member(developer)
 
-        for i in range(settings["num_investors"]):
+        for i in range(self.num_investors):
             investor = Investor(
                 unique_id=f"Investor_{i}",
                 model=self.dao,
@@ -122,7 +172,7 @@ class DAOSimulation(Model):
             )
             self.dao.add_member(investor)
 
-        for i in range(settings["num_delegators"]):
+        for i in range(self.num_delegators):
             delegator = Delegator(
                 unique_id=f"Delegator_{i}",
                 model=self.dao,
@@ -133,7 +183,7 @@ class DAOSimulation(Model):
             )
             self.dao.add_member(delegator)
 
-        for i in range(settings["num_proposal_creators"]):
+        for i in range(self.num_proposal_creators):
             proposal_creator = ProposalCreator(
                 unique_id=f"ProposalCreator_{i}",
                 model=self.dao,
@@ -143,7 +193,7 @@ class DAOSimulation(Model):
             )
             self.dao.add_member(proposal_creator)
 
-        for i in range(settings["num_validators"]):
+        for i in range(self.num_validators):
             validator = Validator(
                 unique_id=f"Validator_{i}",
                 model=self.dao,
@@ -153,7 +203,7 @@ class DAOSimulation(Model):
             )
             self.dao.add_member(validator)
 
-        for i in range(settings["num_service_providers"]):
+        for i in range(self.num_service_providers):
             service_provider = ServiceProvider(
                 unique_id=f"ServiceProvider_{i}",
                 model=self.dao,
@@ -164,7 +214,7 @@ class DAOSimulation(Model):
             )
             self.dao.add_member(service_provider)
 
-        for i in range(settings["num_arbitrators"]):
+        for i in range(self.num_arbitrators):
             arbitrator = Arbitrator(
                 unique_id=f"Arbitrator_{i}",
                 model=self.dao,
@@ -175,7 +225,7 @@ class DAOSimulation(Model):
             )
             self.dao.add_member(arbitrator)
 
-        for i in range(settings["num_regulators"]):
+        for i in range(self.num_regulators):
             regulator = Regulator(
                 unique_id=f"Regulator_{i}",
                 model=self.dao,
@@ -185,7 +235,7 @@ class DAOSimulation(Model):
             )
             self.dao.add_member(regulator)
 
-        for i in range(settings["num_external_partners"]):
+        for i in range(self.num_external_partners):
             external_partner = ExternalPartner(
                 unique_id=f"ExternalPartner_{i}",
                 model=self.dao,
@@ -196,7 +246,7 @@ class DAOSimulation(Model):
             )
             self.dao.add_member(external_partner)
 
-        for i in range(settings["num_passive_members"]):
+        for i in range(self.num_passive_members):
             passive_member = PassiveMember(
                 unique_id=f"PassiveMember_{i}",
                 model=self.dao,

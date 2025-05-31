@@ -1,20 +1,27 @@
 # File: dao_simulation/main.py
 from dao_simulation import DAOSimulation
 from mesa.batchrunner import BatchRunner
+from settings import settings
 
 
 def main():
     fixed_params = {
-        "num_developers": 5,
-        "num_investors": 5,
-        "num_delegators": 5,
-        "num_proposal_creators": 5,
-        "num_validators": 5,
-        "num_service_providers": 5,
-        "num_arbitrators": 5,
-        "num_regulators": 5,
-        "num_external_partners": 5,
-        "num_passive_members": 5,
+        "num_developers": settings["num_developers"],
+        "num_investors": settings["num_investors"],
+        "num_delegators": settings["num_delegators"],
+        "num_proposal_creators": settings["num_proposal_creators"],
+        "num_validators": settings["num_validators"],
+        "num_service_providers": settings["num_service_providers"],
+        "num_arbitrators": settings["num_arbitrators"],
+        "num_regulators": settings["num_regulators"],
+        "num_external_partners": settings["num_external_partners"],
+        "num_passive_members": settings["num_passive_members"],
+        "comment_probability": settings["comment_probability"],
+        "external_partner_interact_probability": settings[
+            "external_partner_interact_probability"
+        ],
+        "violation_probability": settings["violation_probability"],
+        "reputation_penalty": settings["reputation_penalty"],
     }
 
     variable_params = {"steps": range(10, 110, 10)}
