@@ -19,6 +19,8 @@ The simulation models the behavior of a DAO, a decentralized organization manage
 - `Regulator`: Ensures compliance with external regulations and requirements.
 - `Service Provider`: Provides services to the DAO, such as marketing, legal, or financial services.
 - `Validator`: Validates proposals and monitors projects.
+- `QuadraticVotingStrategy`: Allows members to spend tokens for weighted votes
+  where casting `n` votes costs `n^2` tokens.
 
 ## Data Structures
 
@@ -62,6 +64,7 @@ The simulation also includes utility functions and voting strategies that help s
    ```
 
    This executes the batch run with default values from `settings.py`. Adjust the numbers of agents by editing that file or calling `update_settings()` in your own script.
+
 
    To log basic model statistics to a CSV file, construct the simulation with
    `export_csv=True` and specify a filename:
