@@ -59,6 +59,15 @@ The simulation also includes utility functions and voting strategies that help s
 
    This executes the batch run with default values from `settings.py`. Adjust the numbers of agents by editing that file or calling `update_settings()` in your own script.
 
+   To log basic model statistics to a CSV file, construct the simulation with
+   `export_csv=True` and specify a filename:
+
+   ```python
+   from dao_simulation import DAOSimulation
+   sim = DAOSimulation(export_csv=True, csv_filename="stats.csv")
+   sim.run(100)
+   ```
+
 3. **Optional: Launch the Admin Panel**
 
    ```bash
