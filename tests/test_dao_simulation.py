@@ -49,5 +49,26 @@ class TestDAOSimulation(unittest.TestCase):
             self.simulation.step()
         # if no exception occurs, meeting ran successfully
 
+    def test_csv_export(self):
+        import os
+        import tempfile
+
+        fd, filename = tempfile.mkstemp(suffix=".csv")
+        os.close(fd)
+        os.remove(filename)
+
+        sim = DAOSimulation(export_csv=True, csv_filename=filename)
+        sim.run(3)
+
+        self.assertTrue(os.path.exists(filename))
+        with open(filename) as f:
+            header = f.readline().strip().split(",")
+        self.assertEqual(
+            header,
+            ["step", "num_members", "num_proposals", "num_projects"],
+        )
+
+        os.remove(filename)
+
 if __name__ == "__main__":
     unittest.main()

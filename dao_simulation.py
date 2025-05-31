@@ -44,6 +44,23 @@ class SimpleDataCollector:
         )
 
 
+class CSVDataCollector:
+    """Write collected model variables to a CSV file."""
+
+    def __init__(self, filename):
+        self.filename = filename
+        self.headers = ["step", "num_members", "num_proposals", "num_projects"]
+
+    def write(self, model_vars):
+        import csv
+
+        with open(self.filename, "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=self.headers)
+            writer.writeheader()
+            for row in model_vars:
+                writer.writerow({h: row.get(h) for h in self.headers})
+
+
 from data_structures.dao import DAO
 from agents import (
     Arbitrator,
@@ -65,8 +82,11 @@ from settings import settings
 
 
 class DAOSimulation(Model):
-    def __init__(self):
+    def __init__(self, export_csv=False, csv_filename="simulation_data.csv"):
         super().__init__()
+
+        self.export_csv = export_csv
+        self.csv_filename = csv_filename
 
         self.dao = DAO(
             "MyDAO",
@@ -364,3 +384,12 @@ class DAOSimulation(Model):
         for agent in agents_to_remove:
             self.dao.remove_member(agent)
             self.schedule.remove(agent)
+
+    def run(self, steps):
+        """Run the simulation for the given number of steps."""
+        for _ in range(steps):
+            self.step()
+
+        if self.export_csv:
+            exporter = CSVDataCollector(self.csv_filename)
+            exporter.write(self.datacollector.model_vars)
