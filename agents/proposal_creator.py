@@ -18,7 +18,8 @@ class ProposalCreator(DAOMember):
     def create_proposal(self):
         proposal_id = len(self.model.proposals)
         proposal_type = random.choice(["project", "funding", "governance"])
-        description = f"Proposal {proposal_id}: {proposal_type}"
+        title = f"Proposal {proposal_id}"
+        description = f"{proposal_type} proposal {proposal_id}"
         amount = random.randint(1, 100)
         duration = random.randint(1, 50)
         topic = "Topic A"  # You can replace this with a random or predefined topic
@@ -26,7 +27,7 @@ class ProposalCreator(DAOMember):
         proposal = Proposal(
             self.model,
             self,
-            proposal_type,
+            title,
             description,
             amount,
             duration,
