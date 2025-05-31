@@ -51,6 +51,10 @@ The simulation also includes utility functions and voting strategies that help s
    pip install -r requirements.txt
    ```
 
+   The `pycountry` package is optional. When it isn't installed,
+   `generate_random_location()` uses a small built-in list of
+   country names (``["US", "FR", "ANONYMOUS"]``).
+
 2. **Run the Simulation**
 
    ```bash
