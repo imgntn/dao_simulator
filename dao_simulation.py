@@ -272,6 +272,8 @@ class DAOSimulation(Model):
 
         # Execute all agent steps via the scheduler
         self.schedule.step()
+        # Keep DAO time in sync with the scheduler
+        self.dao.current_step += 1
         self.datacollector.collect(self)
 
     def expire_proposals(self):
