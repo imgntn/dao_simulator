@@ -24,8 +24,10 @@ class DAO:
         )
         self.violation_probability = violation_probability
         self.reputation_penalty = reputation_penalty
+        self.current_step = 0
 
     def add_proposal(self, proposal):
+        proposal.creation_time = self.current_step
         self.proposals.append(proposal)
 
     def add_project(self, project):

@@ -192,6 +192,7 @@ class DAOSimulation(Model):
     def step(self):
         # advance the internal clock
         self.schedule.steps += 1
+        self.dao.current_step = self.schedule.steps
 
         self.expire_proposals()
         self.complete_projects()
