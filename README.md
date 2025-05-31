@@ -53,6 +53,10 @@ The simulation also includes utility functions and voting strategies that help s
    pip install -r requirements.txt
    ```
 
+   The `pycountry` package is optional. When it isn't installed,
+   `generate_random_location()` uses a small built-in list of
+   country names (``["US", "FR", "ANONYMOUS"]``).
+
 2. **Run the Simulation**
 
    ```bash
@@ -61,9 +65,15 @@ The simulation also includes utility functions and voting strategies that help s
 
    This executes the batch run with default values from `settings.py`. Adjust the numbers of agents by editing that file or calling `update_settings()` in your own script.
 
-   Members can use quadratic voting by passing `voting_strategy="quadratic"` when
-   creating a `DAOMember` (or subclasses) to allocate weighted votes at the cost
-   of tokens.
+
+   To log basic model statistics to a CSV file, construct the simulation with
+   `export_csv=True` and specify a filename:
+
+   ```python
+   from dao_simulation import DAOSimulation
+   sim = DAOSimulation(export_csv=True, csv_filename="stats.csv")
+   sim.run(100)
+   ```
 
 3. **Optional: Launch the Admin Panel**
 
