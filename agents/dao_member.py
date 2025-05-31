@@ -1,4 +1,5 @@
 import random
+from utils.voting_strategies import quadratic_vote
 
 
 class Agent:
@@ -13,8 +14,26 @@ class DefaultVotingStrategy:
     def vote(self, member, proposal):
         vote_decision = member.decide_vote(proposal.topic)
         vote_bool = vote_decision == "yes"
-        member.votes[proposal] = vote_bool
+        member.votes[proposal] = {"vote": vote_bool, "weight": 1}
         proposal.add_vote(member, vote_bool)
+
+
+class QuadraticVotingStrategy:
+    """Voting strategy where casting ``n`` votes costs ``n`` squared tokens."""
+
+    def __init__(self, max_cost: int = 4):
+        self.max_cost = max_cost
+
+    def vote(self, member, proposal):
+        available = min(member.tokens, self.max_cost)
+        weight = quadratic_vote(proposal, available)
+        if weight <= 0:
+            return
+        cost = weight ** 2
+        member.tokens -= cost
+        vote_bool = member.decide_vote(proposal.topic) == "yes"
+        member.votes[proposal] = {"vote": vote_bool, "weight": weight}
+        proposal.add_vote(member, vote_bool, weight)
 
 
 class DAOMember(Agent):
@@ -31,9 +50,16 @@ class DAOMember(Agent):
         self.tokens = tokens
         self.reputation = reputation
         self.location = location
-        self.voting_strategy = (
-            voting_strategy if voting_strategy else DefaultVotingStrategy()
-        )
+        if isinstance(voting_strategy, str):
+            if voting_strategy == "quadratic":
+                self.voting_strategy = QuadraticVotingStrategy()
+            else:
+                # Fallback for unknown strings and legacy values
+                self.voting_strategy = DefaultVotingStrategy()
+        else:
+            self.voting_strategy = (
+                voting_strategy if voting_strategy else DefaultVotingStrategy()
+            )
         self.comments = {}
         self.votes = {}
 

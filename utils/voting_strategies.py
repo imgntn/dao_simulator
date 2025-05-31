@@ -46,3 +46,27 @@ def majority_vote(votes):
         return majority_vote
     else:
         return None
+
+
+def quadratic_vote(proposal: Proposal, tokens: int) -> int:
+    """Return the voting weight based on quadratic voting.
+
+    The weight of the vote is the integer square root of the number of tokens
+    spent. The caller is responsible for deducting the token cost from the
+    member. The returned weight can be used to increase ``votes_for`` or
+    ``votes_against`` on the proposal.
+
+    Args:
+        proposal (Proposal): The proposal being voted on. (Unused but included
+            for consistency with other strategies.)
+        tokens (int): Number of tokens the voter is willing to spend.
+
+    Returns:
+        int: The voting weight derived from ``tokens``.
+    """
+
+    if tokens <= 0:
+        return 0
+
+    weight = int(tokens ** 0.5)
+    return weight

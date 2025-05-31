@@ -28,13 +28,24 @@ class Proposal:
         self.voting_period = duration
         self.current_funding = 0
 
-    def add_vote(self, member, vote):
+    def add_vote(self, member, vote, weight=1):
+        """Register a vote for the proposal.
+
+        Parameters
+        ----------
+        member : DAOMember
+            The member casting the vote.
+        vote : bool
+            ``True`` for a yes vote, ``False`` for a no vote.
+        weight : int, optional
+            The voting weight (defaults to 1).
+        """
         if member not in self.votes:
-            self.votes[member] = vote
+            self.votes[member] = {"vote": vote, "weight": weight}
             if vote:
-                self.votes_for += 1
+                self.votes_for += weight
             else:
-                self.votes_against += 1
+                self.votes_against += weight
 
     def add_comment(self, member, sentiment):
         self.comments.append({"member": member, "sentiment": sentiment})

@@ -150,7 +150,8 @@ class TestAgents(unittest.TestCase):
     def test_vote_on_proposal(self):
         self.dao_member.vote_on_proposal(self.proposal)
         self.assertIn(self.dao_member, self.proposal.votes)
-        self.assertEqual(self.proposal.votes[self.dao_member], True)
+        self.assertEqual(self.proposal.votes[self.dao_member]["vote"], True)
+        self.assertEqual(self.proposal.votes[self.dao_member]["weight"], 1)
         self.assertEqual(self.proposal.votes_for, 1)
         self.assertEqual(self.proposal.votes_against, 0)
 
@@ -158,9 +159,25 @@ class TestAgents(unittest.TestCase):
         self.dao_member.location = "FR"
         self.dao_member.tokens = 0
         self.dao_member.vote_on_proposal(self.proposal)
-        self.assertFalse(self.proposal.votes[self.dao_member])
+        self.assertFalse(self.proposal.votes[self.dao_member]["vote"])
+        self.assertEqual(self.proposal.votes[self.dao_member]["weight"], 1)
         self.assertEqual(self.proposal.votes_for, 0)
         self.assertEqual(self.proposal.votes_against, 1)
+
+    def test_quadratic_voting(self):
+        member = DAOMember(
+            12,
+            model=self.dao,
+            tokens=300,
+            reputation=60,
+            location="US",
+            voting_strategy="quadratic",
+        )
+        member.vote_on_proposal(self.proposal)
+        self.assertEqual(member.tokens, 296)
+        self.assertIn(member, self.proposal.votes)
+        self.assertEqual(self.proposal.votes[member]["weight"], 2)
+        self.assertEqual(self.proposal.votes_for, 2)
 
     def test_leave_comment(self):
         self.dao_member.leave_comment(self.proposal, "positive")
