@@ -190,9 +190,6 @@ class DAOSimulation(Model):
             self.schedule.add(agent)
 
     def step(self):
-        # advance the internal clock
-        self.schedule.steps += 1
-
         self.expire_proposals()
         self.complete_projects()
         self.resolve_disputes()
