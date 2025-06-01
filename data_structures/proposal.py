@@ -46,9 +46,26 @@ class Proposal:
                 self.votes_for += weight
             else:
                 self.votes_against += weight
+            if self.dao.event_logger:
+                self.dao.event_logger.log(
+                    self.dao.current_step,
+                    "vote_cast",
+                    proposal=self.title,
+                    member=member.unique_id,
+                    vote=vote,
+                    weight=weight,
+                )
 
     def add_comment(self, member, sentiment):
         self.comments.append({"member": member, "sentiment": sentiment})
+        if self.dao.event_logger:
+            self.dao.event_logger.log(
+                self.dao.current_step,
+                "comment_added",
+                proposal=self.title,
+                member=member.unique_id,
+                sentiment=sentiment,
+            )
 
     def receive_delegated_support(self, delegator, token_amount):
         if delegator in self.delegated_support:

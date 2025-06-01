@@ -1,5 +1,5 @@
 import random
-from utils.voting_strategies import quadratic_vote
+from utils.voting_strategies import quadratic_vote, register_strategy, get_strategy
 
 
 class Agent:
@@ -36,6 +36,10 @@ class QuadraticVotingStrategy:
         proposal.add_vote(member, vote_bool, weight)
 
 
+register_strategy("default", DefaultVotingStrategy)
+register_strategy("quadratic", QuadraticVotingStrategy)
+
+
 class DAOMember(Agent):
     def __init__(
         self,
@@ -51,15 +55,15 @@ class DAOMember(Agent):
         self.reputation = reputation
         self.location = location
         if isinstance(voting_strategy, str):
-            if voting_strategy == "quadratic":
-                self.voting_strategy = QuadraticVotingStrategy()
-            else:
-                # Fallback for unknown strings and legacy values
-                self.voting_strategy = DefaultVotingStrategy()
+            cls = get_strategy(voting_strategy)
+            if cls is None:
+                if voting_strategy == "quadratic":
+                    cls = QuadraticVotingStrategy
+                else:
+                    cls = DefaultVotingStrategy
+            self.voting_strategy = cls()
         else:
-            self.voting_strategy = (
-                voting_strategy if voting_strategy else DefaultVotingStrategy()
-            )
+            self.voting_strategy = voting_strategy if voting_strategy else DefaultVotingStrategy()
         self.comments = {}
         self.votes = {}
 

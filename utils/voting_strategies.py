@@ -1,6 +1,16 @@
 from data_structures.proposal import Proposal
 import random
 
+STRATEGY_REGISTRY = {}
+
+
+def register_strategy(name: str, strategy_cls) -> None:
+    STRATEGY_REGISTRY[name] = strategy_cls
+
+
+def get_strategy(name: str):
+    return STRATEGY_REGISTRY.get(name)
+
 
 def random_vote(proposal: Proposal):
     return random.choice([True, False])
@@ -70,3 +80,19 @@ def quadratic_vote(proposal: Proposal, tokens: int) -> int:
 
     weight = int(tokens ** 0.5)
     return weight
+
+
+class ThresholdStrategy:
+    """Vote yes if member tokens exceed a threshold."""
+
+    def __init__(self, threshold: int = 100):
+        self.threshold = threshold
+
+    def vote(self, member, proposal):
+        vote_bool = member.tokens >= self.threshold
+        member.votes[proposal] = {"vote": vote_bool, "weight": 1}
+        proposal.add_vote(member, vote_bool)
+
+
+# register default strategy examples
+register_strategy("threshold", ThresholdStrategy)

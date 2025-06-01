@@ -10,6 +10,7 @@ class DAO:
         reputation_penalty=5,
         comment_probability=0.5,
         external_partner_interact_probability=0.0,
+        event_logger=None,
     ):
         self.name = name
         self.proposals = []
@@ -17,7 +18,8 @@ class DAO:
         self.disputes = []
         self.violations = []
         self.members = []
-        self.treasury = Treasury()
+        self.event_logger = event_logger
+        self.treasury = Treasury(event_logger=event_logger)
         self.comment_probability = comment_probability
         self.external_partner_interact_probability = (
             external_partner_interact_probability
@@ -29,6 +31,12 @@ class DAO:
     def add_proposal(self, proposal):
         proposal.creation_time = self.current_step
         self.proposals.append(proposal)
+        if self.event_logger:
+            self.event_logger.log(
+                self.current_step,
+                "proposal_created",
+                title=proposal.title,
+            )
 
     def add_project(self, project):
         self.projects.append(project)

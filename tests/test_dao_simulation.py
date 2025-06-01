@@ -70,5 +70,12 @@ class TestDAOSimulation(unittest.TestCase):
 
         os.remove(filename)
 
+    def test_parallel_scheduler_single_worker(self):
+        sim = DAOSimulation(use_parallel=True, max_workers=1)
+        before = sim.schedule.steps
+        sim.step()
+        after = sim.schedule.steps
+        self.assertEqual(after - before, 1)
+
 if __name__ == "__main__":
     unittest.main()
