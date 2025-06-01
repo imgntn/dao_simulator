@@ -32,9 +32,25 @@ class Developer(DAOMember):
             self.reputation += work_amount / 10
 
     def choose_project_to_work_on(self):
-        projects = self.model.projects
-        if projects:
-            project = random.choice(projects)
-            return project
-        else:
+        projects = [p for p in self.model.projects if p.status == "open"]
+        if not projects:
             return None
+
+        # Score projects by skill match. Highest score wins.
+        def score(project):
+            if not project.required_skills:
+                return 0
+            overlap = set(self.skillset).intersection(project.required_skills)
+            return len(overlap) / len(project.required_skills)
+
+        best_score = -1
+        best_projects = []
+        for p in projects:
+            s = score(p)
+            if s > best_score:
+                best_score = s
+                best_projects = [p]
+            elif s == best_score:
+                best_projects.append(p)
+
+        return random.choice(best_projects)

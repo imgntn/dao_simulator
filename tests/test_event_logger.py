@@ -53,6 +53,19 @@ class TestEventLogger(unittest.TestCase):
         self.assertEqual(rows[0]["event"], "async_test")
         os.remove(fname)
 
+    def test_background_async_logging(self):
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        logger = EventLogger(fname, async_logging=True)
+        logger.log(0, "a1")
+        logger.log(1, "a2", data=2)
+        logger.close()
+        with open(fname) as f:
+            rows = list(csv.DictReader(f))
+        events = [r["event"] for r in rows]
+        self.assertEqual(events, ["a1", "a2"])
+        os.remove(fname)
+
 
 if __name__ == "__main__":
     unittest.main()

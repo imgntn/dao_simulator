@@ -250,6 +250,31 @@ class TestAgents(unittest.TestCase):
         self.developer.work_on_project()
         self.assertGreater(self.developer.reputation, before)
 
+    def test_skill_based_project_choice(self):
+        project_a = Project(
+            self.dao,
+            self.developer,
+            "A",
+            "",
+            10,
+            5,
+            required_skills=["Python"],
+        )
+        project_b = Project(
+            self.dao,
+            self.developer,
+            "B",
+            "",
+            10,
+            5,
+            required_skills=["Go"],
+        )
+        self.dao.add_project(project_a)
+        self.dao.add_project(project_b)
+        self.developer.skillset = ["Python", "SQL"]
+        chosen = self.developer.choose_project_to_work_on()
+        self.assertEqual(chosen, project_a)
+
     def test_investor_budget_adjusts_with_price(self):
         self.dao.treasury.update_token_price("DAO_TOKEN", 0.8)
         before = self.investor.investment_budget
