@@ -20,6 +20,21 @@ class TestStrategyRegistry(unittest.TestCase):
         member.vote_on_proposal(proposal)
         self.assertEqual(proposal.votes_for, 1)
 
+    def test_reputation_weighted_strategy(self):
+        dao = DAO("D")
+        member = DAOMember(
+            "m",
+            model=dao,
+            tokens=0,
+            reputation=25,
+            location="USA",
+            voting_strategy="reputation_weighted",
+        )
+        proposal = Proposal(dao, member, "t", "d", 10, 5, topic="Topic C")
+        dao.add_proposal(proposal)
+        member.vote_on_proposal(proposal)
+        self.assertEqual(proposal.votes_for, 2)
+
 
 if __name__ == "__main__":
     unittest.main()

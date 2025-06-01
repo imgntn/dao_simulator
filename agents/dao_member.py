@@ -54,6 +54,7 @@ class DAOMember(Agent):
         self.tokens = tokens
         self.reputation = reputation
         self.location = location
+        self.staked_tokens = 0
         if isinstance(voting_strategy, str):
             cls = get_strategy(voting_strategy)
             if cls is None:
@@ -73,6 +74,10 @@ class DAOMember(Agent):
     def leave_comment(self, proposal, sentiment):
         self.comments[proposal] = sentiment
         proposal.add_comment(self, sentiment)
+
+    def stake_tokens(self, amount, token="DAO_TOKEN"):
+        """Stake ``amount`` of ``token`` via the DAO."""
+        self.model.stake_tokens(amount, token, self)
 
     def vote_on_random_proposal(self):
         if self.model.proposals:
