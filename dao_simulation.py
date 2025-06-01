@@ -116,6 +116,8 @@ from utils.locations import generate_random_location
 # from utils.voting_strategies import majority_vote
 import random
 from settings import settings
+import json
+from visualizations import generate_report
 
 
 class DAOSimulation(Model):
@@ -500,6 +502,28 @@ class DAOSimulation(Model):
             self.dao.remove_member(agent)
             self.schedule.remove(agent)
 
+    def save_state(self, filename: str):
+        data = {
+            "schedule_steps": self.schedule.steps,
+            "dao": self.dao.to_dict(),
+            "collector": self.datacollector.model_vars,
+        }
+        with open(filename, "w") as f:
+            json.dump(data, f)
+
+    @classmethod
+    def load_state(cls, filename: str, **kwargs):
+        with open(filename) as f:
+            data = json.load(f)
+        sim = cls(**kwargs)
+        sim.schedule.steps = data.get("schedule_steps", 0)
+        sim.dao = DAO.from_dict(data["dao"])
+        sim.datacollector.model_vars = data.get("collector", [])
+        sim.schedule.agents = []
+        for member in sim.dao.members:
+            sim.schedule.add(member)
+        return sim
+
     def run(self, steps):
         """Run the simulation for the given number of steps."""
         for _ in range(steps):
@@ -508,5 +532,9 @@ class DAOSimulation(Model):
         if self.export_csv:
             exporter = CSVDataCollector(self.csv_filename)
             exporter.write(self.datacollector.model_vars)
+            try:
+                generate_report(self, csv_file=self.csv_filename)
+            except Exception:
+                pass
         if self.event_logging and self.event_logger:
             self.event_logger.close()

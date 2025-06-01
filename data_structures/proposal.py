@@ -46,10 +46,10 @@ class Proposal:
                 self.votes_for += weight
             else:
                 self.votes_against += weight
-            if self.dao.event_logger:
-                self.dao.event_logger.log(
-                    self.dao.current_step,
+            if self.dao.event_bus:
+                self.dao.event_bus.publish(
                     "vote_cast",
+                    step=self.dao.current_step,
                     proposal=self.title,
                     member=member.unique_id,
                     vote=vote,
@@ -58,10 +58,10 @@ class Proposal:
 
     def add_comment(self, member, sentiment):
         self.comments.append({"member": member, "sentiment": sentiment})
-        if self.dao.event_logger:
-            self.dao.event_logger.log(
-                self.dao.current_step,
+        if self.dao.event_bus:
+            self.dao.event_bus.publish(
                 "comment_added",
+                step=self.dao.current_step,
                 proposal=self.title,
                 member=member.unique_id,
                 sentiment=sentiment,
@@ -80,3 +80,39 @@ class Proposal:
     @property
     def closed(self):
         return self.status != "open"
+
+    def to_dict(self):
+        return {
+            "title": self.title,
+            "description": self.description,
+            "funding_goal": self.funding_goal,
+            "duration": self.duration,
+            "topic": self.topic,
+            "status": self.status,
+            "votes_for": self.votes_for,
+            "votes_against": self.votes_against,
+            "current_funding": self.current_funding,
+            "creator": getattr(self.creator, "unique_id", None),
+            "creation_time": self.creation_time,
+            "voting_period": self.voting_period,
+        }
+
+    @classmethod
+    def from_dict(cls, data, dao, members_by_id):
+        creator = members_by_id.get(data.get("creator"))
+        proposal = cls(
+            dao,
+            creator,
+            data.get("title"),
+            data.get("description"),
+            data.get("funding_goal"),
+            data.get("duration"),
+            topic=data.get("topic", "Default Topic"),
+        )
+        proposal.status = data.get("status", "open")
+        proposal.votes_for = data.get("votes_for", 0)
+        proposal.votes_against = data.get("votes_against", 0)
+        proposal.current_funding = data.get("current_funding", 0)
+        proposal.creation_time = data.get("creation_time", 0)
+        proposal.voting_period = data.get("voting_period", proposal.duration)
+        return proposal

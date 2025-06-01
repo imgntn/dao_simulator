@@ -44,3 +44,8 @@ class Delegator(DAOMember):
             return proposal
         else:
             return None
+
+    def to_dict(self):
+        data = super().to_dict()
+        data["delegation_budget"] = self.delegation_budget
+        return data

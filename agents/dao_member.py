@@ -106,3 +106,25 @@ class DAOMember(Agent):
         elif topic == "Topic C":
             return "yes" if self.location == "USA" else "no"
         return "no"
+
+    def to_dict(self):
+        return {
+            "class": type(self).__name__,
+            "unique_id": self.unique_id,
+            "tokens": self.tokens,
+            "reputation": self.reputation,
+            "location": self.location,
+        }
+
+    @classmethod
+    def from_dict(cls, data, model):
+        cls_map = {c.__name__: c for c in cls.__subclasses__()}
+        cls_map[cls.__name__] = cls
+        agent_cls = cls_map.get(data["class"], cls)
+        return agent_cls(
+            data["unique_id"],
+            model,
+            data.get("tokens", 0),
+            data.get("reputation", 0),
+            data.get("location", "US"),
+        )

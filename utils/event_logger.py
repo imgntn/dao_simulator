@@ -59,3 +59,7 @@ class EventLogger:
         import asyncio
 
         await asyncio.to_thread(self.log, step, event, **details)
+
+    # Event bus integration
+    def handle_event(self, event: str, step: int, **details):
+        self.log(step, event, **details)

@@ -9,3 +9,6 @@ class PassiveMember(DAOMember):
 
     def step(self):
         self.vote_on_random_proposal()
+
+    def to_dict(self):
+        return super().to_dict()
