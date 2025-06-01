@@ -21,6 +21,8 @@ The simulation models the behavior of a DAO, a decentralized organization manage
 - `Validator`: Validates proposals and monitors projects.
 - `QuadraticVotingStrategy`: Allows members to spend tokens for weighted votes
   where casting `n` votes costs `n^2` tokens.
+- `ReputationWeightedStrategy`: Scales each vote's weight according to the
+  member's reputation level.
 
 ## Data Structures
 

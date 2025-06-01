@@ -382,11 +382,13 @@ class DAOSimulation(Model):
         if total_revenue == 0:
             return
 
-        total_staked_tokens = sum(member.tokens for member in self.dao.members)
+        total_staked_tokens = sum(m.staked_tokens for m in self.dao.members)
         if total_staked_tokens == 0:
             return
 
         for member in self.dao.members:
+            if member.staked_tokens == 0:
+                continue
             revenue_share = self.calculate_revenue_share(
                 member, total_revenue, total_staked_tokens
             )
@@ -394,7 +396,7 @@ class DAOSimulation(Model):
 
     def calculate_revenue_share(self, member, total_revenue, total_staked_tokens):
         # Calculate revenue share for each member based on the ratio of their staked tokens
-        share_percentage = member.tokens / total_staked_tokens
+        share_percentage = member.staked_tokens / total_staked_tokens
         return total_revenue * share_percentage
 
     def execute_token_buyback(self):

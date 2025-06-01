@@ -96,3 +96,16 @@ class ThresholdStrategy:
 
 # register default strategy examples
 register_strategy("threshold", ThresholdStrategy)
+
+
+class ReputationWeightedStrategy:
+    """Weight votes based on ``member.reputation``."""
+
+    def vote(self, member, proposal):
+        weight = max(int(member.reputation // 10), 1)
+        vote_bool = member.decide_vote(proposal.topic) == "yes"
+        member.votes[proposal] = {"vote": vote_bool, "weight": weight}
+        proposal.add_vote(member, vote_bool, weight)
+
+
+register_strategy("reputation_weighted", ReputationWeightedStrategy)
