@@ -44,6 +44,25 @@ class ParallelActivation(RandomActivation):
         self.steps += 1
 
 
+class AsyncActivation(RandomActivation):
+    """Execute agent steps concurrently using ``asyncio``."""
+
+    async def _async_step(self):
+        import asyncio
+
+        tasks = []
+        for agent in list(self.agents):
+            if hasattr(agent, "step"):
+                tasks.append(asyncio.to_thread(agent.step))
+        await asyncio.gather(*tasks)
+        self.steps += 1
+
+    def step(self):
+        import asyncio
+
+        asyncio.run(self._async_step())
+
+
 class SimpleDataCollector:
     """Collect a few statistics from the model each step."""
 
@@ -105,6 +124,7 @@ class DAOSimulation(Model):
         export_csv: bool = False,
         csv_filename: str = "simulation_data.csv",
         use_parallel: bool = False,
+        use_async: bool = False,
         max_workers: int | None = None,
         event_logging: bool = False,
         event_log_filename: str = "events.csv",
@@ -129,6 +149,7 @@ class DAOSimulation(Model):
         self.export_csv = export_csv
         self.csv_filename = csv_filename
         self.use_parallel = use_parallel
+        self.use_async = use_async
         self.max_workers = max_workers
         self.event_logging = event_logging
         self.event_log_filename = event_log_filename
@@ -180,7 +201,9 @@ class DAOSimulation(Model):
             event_logger=self.event_logger,
         )
         self.datacollector = SimpleDataCollector()
-        if self.use_parallel:
+        if self.use_async:
+            self.schedule = AsyncActivation(self.dao)
+        elif self.use_parallel:
             self.schedule = ParallelActivation(self.dao, workers=self.max_workers)
         else:
             self.schedule = RandomActivation(self.dao)
@@ -295,6 +318,8 @@ class DAOSimulation(Model):
             self.schedule.add(agent)
 
     def step(self):
+        # Update token prices each tick to simulate a simple market.
+        self.dao.treasury.update_prices()
         self.expire_proposals()
         self.complete_projects()
         self.resolve_disputes()
@@ -325,6 +350,7 @@ class DAOSimulation(Model):
                 if proposal.votes_for > proposal.votes_against:
                     proposal.status = "approved"
                     # Additional actions based on the proposal type can be executed here
+                    proposal.creator.reputation += 5
                 else:
                     proposal.status = "rejected"
 
@@ -377,9 +403,9 @@ class DAOSimulation(Model):
             self.dao.buyback_tokens(buyback_amount)
 
     def calculate_buyback_amount(self):
-        # You can define your own buyback conditions here.
-        # For example, if the DAO's treasury has more than 5000 tokens, buy back 10% of them.
-        if self.dao.treasury.funds > 5000:
+        # Buy back tokens when treasury is flush and the price drops below 1.
+        dao_price = self.dao.treasury.get_token_price("DAO_TOKEN")
+        if self.dao.treasury.funds > 5000 and dao_price < 1:
             return self.dao.treasury.funds * 0.1
         return 0
 

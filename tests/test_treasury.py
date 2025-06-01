@@ -30,6 +30,17 @@ class TestTreasury(unittest.TestCase):
         self.assertEqual(balance_usdc, 1000)
         self.assertEqual(balance_eth, 100)
 
+    def test_update_prices(self):
+        import random
+
+        random.seed(0)
+        self.treasury.update_token_price("DAO_TOKEN", 1.0)
+        old_price = self.treasury.get_token_price("DAO_TOKEN")
+        self.treasury.update_prices(volatility=0.1)
+        new_price = self.treasury.get_token_price("DAO_TOKEN")
+        self.assertTrue(0.9 <= new_price <= 1.1)
+        self.assertNotEqual(old_price, new_price)
+
 
 if __name__ == "__main__":
     unittest.main()
