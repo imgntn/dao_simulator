@@ -27,6 +27,23 @@ class RandomActivation:
         self.steps += 1
 
 
+class ParallelActivation(RandomActivation):
+    """Execute agent steps in parallel using threads."""
+
+    def __init__(self, model, workers=None):
+        super().__init__(model)
+        self.workers = workers
+
+    def step(self):
+        from concurrent.futures import ThreadPoolExecutor
+
+        with ThreadPoolExecutor(max_workers=self.workers) as exc:
+            for agent in list(self.agents):
+                if hasattr(agent, "step"):
+                    exc.submit(agent.step)
+        self.steps += 1
+
+
 class SimpleDataCollector:
     """Collect a few statistics from the model each step."""
 
@@ -62,6 +79,7 @@ class CSVDataCollector:
 
 
 from data_structures.dao import DAO
+from utils import EventLogger
 from agents import (
     Arbitrator,
     Delegator,
@@ -86,6 +104,10 @@ class DAOSimulation(Model):
         self,
         export_csv: bool = False,
         csv_filename: str = "simulation_data.csv",
+        use_parallel: bool = False,
+        max_workers: int | None = None,
+        event_logging: bool = False,
+        event_log_filename: str = "events.csv",
         num_developers: int | None = None,
         num_investors: int | None = None,
         num_delegators: int | None = None,
@@ -106,6 +128,10 @@ class DAOSimulation(Model):
 
         self.export_csv = export_csv
         self.csv_filename = csv_filename
+        self.use_parallel = use_parallel
+        self.max_workers = max_workers
+        self.event_logging = event_logging
+        self.event_log_filename = event_log_filename
 
         # Use provided parameters or fall back to global settings
         self.num_developers = num_developers if num_developers is not None else settings["num_developers"]
@@ -140,15 +166,24 @@ class DAOSimulation(Model):
             reputation_penalty if reputation_penalty is not None else settings["reputation_penalty"]
         )
 
+        if self.event_logging:
+            self.event_logger = EventLogger(self.event_log_filename)
+        else:
+            self.event_logger = None
+
         self.dao = DAO(
             "MyDAO",
             violation_probability=self.violation_probability,
             reputation_penalty=self.reputation_penalty,
             comment_probability=self.comment_probability,
             external_partner_interact_probability=self.external_partner_interact_probability,
+            event_logger=self.event_logger,
         )
         self.datacollector = SimpleDataCollector()
-        self.schedule = RandomActivation(self)
+        if self.use_parallel:
+            self.schedule = ParallelActivation(self.dao, workers=self.max_workers)
+        else:
+            self.schedule = RandomActivation(self.dao)
 
         for i in range(self.num_developers):
             developer = Developer(
@@ -445,3 +480,5 @@ class DAOSimulation(Model):
         if self.export_csv:
             exporter = CSVDataCollector(self.csv_filename)
             exporter.write(self.datacollector.model_vars)
+        if self.event_logging and self.event_logger:
+            self.event_logger.close()
