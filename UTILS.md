@@ -5,3 +5,5 @@ This file contains utility functions to create and submit random proposals. The 
 ## voting_strategies.py
 
 This file contains voting strategies that agents can use to decide whether to vote in favor of or against a proposal. The random_vote function returns a random boolean value. The vote_based_on_budget function compares the proposal's funding requirement to the agent's budget and votes in favor if it is within budget. The vote_based_on_duration function compares the proposal's duration to the agent's maximum acceptable duration and votes in favor if it is within the acceptable duration.
+The `ReputationWeightedStrategy` weights each vote based on the member's
+reputation, granting one vote per ten reputation points (minimum of one).

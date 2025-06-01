@@ -30,6 +30,29 @@ class TestEventLogger(unittest.TestCase):
         self.assertIn("token_deposit", events)
         os.remove(fname)
 
+    def test_context_manager(self):
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        with EventLogger(fname) as logger:
+            logger.log(0, "test", data=1)
+        with open(fname) as f:
+            rows = list(csv.DictReader(f))
+        self.assertEqual(rows[0]["event"], "test")
+        os.remove(fname)
+
+    def test_log_async(self):
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        logger = EventLogger(fname)
+        import asyncio
+
+        asyncio.run(logger.log_async(0, "async_test", info=True))
+        logger.close()
+        with open(fname) as f:
+            rows = list(csv.DictReader(f))
+        self.assertEqual(rows[0]["event"], "async_test")
+        os.remove(fname)
+
 
 if __name__ == "__main__":
     unittest.main()

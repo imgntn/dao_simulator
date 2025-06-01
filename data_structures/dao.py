@@ -73,6 +73,22 @@ class DAO:
         self.treasury.withdraw(token, amount)
 
     def stake_tokens(self, amount, token, member):
-        # Placeholder for token staking logic
-        pass
+        """Stake ``amount`` of ``token`` on behalf of ``member``."""
+        if amount <= 0:
+            return 0
+        stake = min(amount, member.tokens)
+        if stake <= 0:
+            return 0
+        member.tokens -= stake
+        member.staked_tokens += stake
+        self.treasury.deposit(token, stake)
+        if self.event_logger:
+            self.event_logger.log(
+                self.current_step,
+                "tokens_staked",
+                member=member.unique_id,
+                token=token,
+                amount=stake,
+            )
+        return stake
 

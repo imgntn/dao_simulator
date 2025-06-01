@@ -22,3 +22,15 @@ class EventLogger:
     def close(self):
         if not self.file.closed:
             self.file.close()
+
+    # Context manager support
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        self.close()
+
+    async def log_async(self, step: int, event: str, **details):
+        import asyncio
+
+        await asyncio.to_thread(self.log, step, event, **details)

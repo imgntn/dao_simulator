@@ -32,14 +32,20 @@ class TestDAOSimulation(unittest.TestCase):
     def test_distribute_revenue(self):
         self.simulation.dao.treasury.add_revenue(1000)
         initial_balances = {m.unique_id: m.tokens for m in self.simulation.dao.members}
+        for m in self.simulation.dao.members:
+            m.stake_tokens(m.tokens, "DAO_TOKEN")
         self.simulation.step()
         total_staked = sum(initial_balances.values())
         for member in self.simulation.dao.members:
-            expected = initial_balances[member.unique_id] + 1000 * (initial_balances[member.unique_id] / total_staked)
+            expected = 1000 * (initial_balances[member.unique_id] / total_staked)
             self.assertAlmostEqual(member.tokens, expected)
+            self.assertEqual(member.staked_tokens, initial_balances[member.unique_id])
 
     def test_execute_token_buyback(self):
+        import random
+        random.seed(0)
         self.simulation.dao.treasury.deposit("DAO_TOKEN", 6000)
+        self.simulation.dao.treasury.update_token_price("DAO_TOKEN", 0.9)
         self.simulation.step()
         self.assertEqual(self.simulation.dao.treasury.get_token_balance("DAO_TOKEN"), 5400)
 
