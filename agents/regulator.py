@@ -35,3 +35,6 @@ class Regulator(DAOMember):
 
     def flag_proposal_for_violation(self, proposal):
         self.model.violations.append(proposal)
+
+    def to_dict(self):
+        return super().to_dict()

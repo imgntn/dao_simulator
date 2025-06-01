@@ -66,3 +66,6 @@ class ExternalPartner(DAOMember):
         )
         if project not in self.collaborated_projects:
             self.collaborated_projects.append(project)
+
+    def to_dict(self):
+        return super().to_dict()

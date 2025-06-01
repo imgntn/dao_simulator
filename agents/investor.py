@@ -50,3 +50,8 @@ class Investor(DAOMember):
             self.investment_budget *= 1.1
         else:
             self.investment_budget *= 0.9
+
+    def to_dict(self):
+        data = super().to_dict()
+        data["investment_budget"] = self.investment_budget
+        return data

@@ -2,7 +2,7 @@ from collections import defaultdict
 
 
 class Treasury:
-    def __init__(self, event_logger=None):
+    def __init__(self, event_logger=None, event_bus=None):
         self.tokens = defaultdict(float)
         # Track prices for all tokens held by the treasury.  The DAO token is
         # initialised with a default price of ``1.0`` so tests don't need to
@@ -10,10 +10,13 @@ class Treasury:
         self.token_prices = {"DAO_TOKEN": 1.0}
         self._revenue = 0.0
         self.event_logger = event_logger
+        self.event_bus = event_bus
 
     def deposit(self, token, amount):
         self.tokens[token] += amount
-        if self.event_logger:
+        if self.event_bus:
+            self.event_bus.publish("token_deposit", step=0, token=token, amount=amount)
+        elif self.event_logger:
             self.event_logger.log(0, "token_deposit", token=token, amount=amount)
 
     def withdraw(self, token, amount):
@@ -23,7 +26,9 @@ class Treasury:
         else:
             withdrawn = self.tokens[token]
             self.tokens[token] = 0
-        if self.event_logger:
+        if self.event_bus:
+            self.event_bus.publish("token_withdraw", step=0, token=token, amount=withdrawn)
+        elif self.event_logger:
             self.event_logger.log(0, "token_withdraw", token=token, amount=withdrawn)
         return withdrawn
 
@@ -42,6 +47,21 @@ class Treasury:
             new_price = price * (1 + change)
             # Prevent the price from dropping to zero.
             self.token_prices[token] = max(new_price, 0.01)
+
+    def to_dict(self):
+        return {
+            "tokens": dict(self.tokens),
+            "token_prices": self.token_prices,
+            "_revenue": self._revenue,
+        }
+
+    @classmethod
+    def from_dict(cls, data, event_bus=None):
+        t = cls(event_bus=event_bus)
+        t.tokens = defaultdict(float, data.get("tokens", {}))
+        t.token_prices = data.get("token_prices", {"DAO_TOKEN": 1.0})
+        t._revenue = data.get("_revenue", 0.0)
+        return t
 
     def get_token_value(self, token):
         """Return the total value of ``token`` held by the treasury."""

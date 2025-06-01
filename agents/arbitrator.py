@@ -56,3 +56,8 @@ class Arbitrator(DAOMember):
 
     def resolve_dispute(self, dispute):
         self.resolved_disputes.append(dispute)
+
+    def to_dict(self):
+        data = super().to_dict()
+        data["arbitration_capacity"] = self.arbitration_capacity
+        return data

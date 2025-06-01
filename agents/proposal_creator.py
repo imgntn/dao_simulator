@@ -37,3 +37,6 @@ class ProposalCreator(DAOMember):
 
     def submit_proposal(self, proposal):  # Add this method to submit a proposal
         self.submitted_proposals.append(proposal)
+
+    def to_dict(self):
+        return super().to_dict()

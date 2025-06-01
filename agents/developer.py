@@ -54,3 +54,8 @@ class Developer(DAOMember):
                 best_projects.append(p)
 
         return random.choice(best_projects)
+
+    def to_dict(self):
+        data = super().to_dict()
+        data["skillset"] = self.skillset
+        return data

@@ -36,3 +36,8 @@ class ServiceProvider(DAOMember):
 
     def provide_service(self, project, service_type, cost):
         self.services_provided[project] = (service_type, cost)
+
+    def to_dict(self):
+        data = super().to_dict()
+        data["service_budget"] = self.service_budget
+        return data

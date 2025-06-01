@@ -35,3 +35,8 @@ class Validator(DAOMember):
         # Monitor the project and report any issues or concerns.
         # This is a placeholder for the actual implementation of project monitoring.
         self.monitored_projects.add(project)
+
+    def to_dict(self):
+        data = super().to_dict()
+        data["monitoring_budget"] = self.monitoring_budget
+        return data
