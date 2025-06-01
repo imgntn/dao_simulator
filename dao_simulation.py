@@ -66,16 +66,28 @@ class AsyncActivation(RandomActivation):
 class SimpleDataCollector:
     """Collect a few statistics from the model each step."""
 
-    def __init__(self):
+    def __init__(self, dao=None):
         self.model_vars = []
+        self.event_counts = {}
+        if dao is not None:
+            dao.event_bus.subscribe("*", self._handle_event)
+
+    def _handle_event(self, event: str, **_):
+        self.event_counts[event] = self.event_counts.get(event, 0) + 1
 
     def collect(self, model):
+        members = model.dao.members
+        avg_rep = sum(m.reputation for m in members) / len(members) if members else 0
+        total_tokens = sum(m.tokens for m in members)
         self.model_vars.append(
             {
                 "step": model.schedule.steps,
-                "num_members": len(model.dao.members),
+                "num_members": len(members),
                 "num_proposals": len(model.dao.proposals),
                 "num_projects": len(model.dao.projects),
+                "avg_reputation": avg_rep,
+                "total_tokens": total_tokens,
+                "event_count": sum(self.event_counts.values()),
             }
         )
 
@@ -98,6 +110,7 @@ class CSVDataCollector:
 
 
 from data_structures.dao import DAO
+from data_structures import FundingProposal, GovernanceProposal, MembershipProposal, Project
 from utils import EventLogger
 from agents import (
     Arbitrator,
@@ -202,7 +215,7 @@ class DAOSimulation(Model):
             external_partner_interact_probability=self.external_partner_interact_probability,
             event_logger=self.event_logger,
         )
-        self.datacollector = SimpleDataCollector()
+        self.datacollector = SimpleDataCollector(self.dao)
         if self.use_async:
             self.schedule = AsyncActivation(self.dao)
         elif self.use_parallel:
@@ -347,14 +360,29 @@ class DAOSimulation(Model):
                 proposal.status == "open"
                 and current_time > proposal.creation_time + proposal.voting_period
             ):
-                proposal.status = "expired"
-                # Process the results based on the votes
                 if proposal.votes_for > proposal.votes_against:
                     proposal.status = "approved"
-                    # Additional actions based on the proposal type can be executed here
                     proposal.creator.reputation += 5
+                    self.process_approved_proposal(proposal)
                 else:
                     proposal.status = "rejected"
+
+    def process_approved_proposal(self, proposal):
+        """Execute actions based on the proposal subtype."""
+        if isinstance(proposal, FundingProposal) and proposal.project:
+            proposal.project.current_funding = proposal.funding_goal
+            self.dao.add_project(proposal.project)
+            self.dao.treasury.withdraw("DAO_TOKEN", proposal.funding_goal)
+        elif isinstance(proposal, GovernanceProposal):
+            try:
+                from settings import update_settings
+
+                update_settings(**{proposal.setting: proposal.value})
+            except KeyError:
+                pass
+        elif isinstance(proposal, MembershipProposal):
+            self.dao.add_member(proposal.new_member)
+            self.schedule.add(proposal.new_member)
 
     def complete_projects(self):
         current_time = (

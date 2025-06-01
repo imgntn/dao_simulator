@@ -118,3 +118,15 @@ settings = {
 
 Call `update_settings()` or edit the file directly to experiment with different
 values.
+
+## Command Line Interface
+
+The `cli.py` module exposes a small interface for running the simulation without
+modifying code.  For example, to run 50 steps with just two developers:
+
+```bash
+python -m cli --steps 50 --num_developers 2
+```
+
+Flags like `--use-parallel` or `--use-async` enable alternative schedulers.  Any
+`num_*` setting from `settings.py` can be overridden on the command line.

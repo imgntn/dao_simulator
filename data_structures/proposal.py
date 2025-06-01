@@ -116,3 +116,30 @@ class Proposal:
         proposal.creation_time = data.get("creation_time", 0)
         proposal.voting_period = data.get("voting_period", proposal.duration)
         return proposal
+
+
+class FundingProposal(Proposal):
+    """Proposal requesting funding for a project."""
+
+    def __init__(self, dao, creator, title, description, funding_goal, duration, project):
+        super().__init__(dao, creator, title, description, funding_goal, duration, topic="Funding", project=project)
+        self.type = "funding"
+
+
+class GovernanceProposal(Proposal):
+    """Proposal that modifies a DAO setting when approved."""
+
+    def __init__(self, dao, creator, title, description, setting, value, duration):
+        super().__init__(dao, creator, title, description, 0, duration, topic="Governance")
+        self.setting = setting
+        self.value = value
+        self.type = "governance"
+
+
+class MembershipProposal(Proposal):
+    """Proposal for adding a new member to the DAO."""
+
+    def __init__(self, dao, creator, title, description, new_member, duration):
+        super().__init__(dao, creator, title, description, 0, duration, topic="Membership")
+        self.new_member = new_member
+        self.type = "membership"
