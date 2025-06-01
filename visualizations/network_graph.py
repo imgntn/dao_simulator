@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
 
-def plot_network_graph(dao):
+def plot_network_graph(dao, show=True):
     G = nx.DiGraph()
 
     # Adding member and proposal nodes to the graph
@@ -31,9 +31,11 @@ def plot_network_graph(dao):
     edge_colors = [data.get("color", "gray") for _, _, data in G.edges(data=True)]
 
     # Drawing the network graph
+    fig, ax = plt.subplots()
     nx.draw(
         G,
         pos,
+        ax=ax,
         with_labels=True,
         node_size=2000,
         node_color=node_colors,
@@ -67,4 +69,6 @@ def plot_network_graph(dao):
     ]
     plt.legend(handles=legend_elements, loc="upper left")
 
-    plt.show()
+    if show:
+        plt.show()
+    return fig

@@ -12,6 +12,8 @@ class DAO:
         reputation_penalty=5,
         comment_probability=0.5,
         external_partner_interact_probability=0.0,
+        staking_interest_rate=0.0,
+        slash_fraction=0.0,
         event_logger=None,
     ):
         self.name = name
@@ -31,6 +33,8 @@ class DAO:
         )
         self.violation_probability = violation_probability
         self.reputation_penalty = reputation_penalty
+        self.staking_interest_rate = staking_interest_rate
+        self.slash_fraction = slash_fraction
         self.current_step = 0
 
     def add_proposal(self, proposal):
@@ -135,6 +139,40 @@ class DAO:
             )
         return to_unstake
 
+    def apply_staking_interest(self):
+        """Accrue staking interest for all members."""
+        if self.staking_interest_rate <= 0:
+            return
+        for member in self.members:
+            if member.staked_tokens > 0:
+                reward = member.staked_tokens * self.staking_interest_rate
+                member.tokens += reward
+                if self.event_bus:
+                    self.event_bus.publish(
+                        "staking_reward",
+                        step=self.current_step,
+                        member=member.unique_id,
+                        amount=reward,
+                    )
+
+    def slash_member(self, member, fraction=None):
+        """Slash a fraction of ``member``'s staked tokens."""
+        if fraction is None:
+            fraction = self.slash_fraction
+        if fraction <= 0 or member.staked_tokens <= 0:
+            return 0
+        amount = member.staked_tokens * fraction
+        member.staked_tokens -= amount
+        self.treasury.withdraw("DAO_TOKEN", amount)
+        if self.event_bus:
+            self.event_bus.publish(
+                "stake_slashed",
+                step=self.current_step,
+                member=member.unique_id,
+                amount=amount,
+            )
+        return amount
+
     def to_dict(self):
         return {
             "name": self.name,
@@ -142,11 +180,18 @@ class DAO:
             "members": [m.to_dict() for m in self.members],
             "proposals": [p.to_dict() for p in self.proposals],
             "current_step": self.current_step,
+            "staking_interest_rate": self.staking_interest_rate,
+            "slash_fraction": self.slash_fraction,
         }
 
     @classmethod
     def from_dict(cls, data, event_logger=None):
-        dao = cls(data.get("name", "DAO"), event_logger=event_logger)
+        dao = cls(
+            data.get("name", "DAO"),
+            staking_interest_rate=data.get("staking_interest_rate", 0.0),
+            slash_fraction=data.get("slash_fraction", 0.0),
+            event_logger=event_logger,
+        )
         dao.treasury = Treasury.from_dict(data.get("treasury", {}), event_bus=dao.event_bus)
         # recreate members
         dao.members = []

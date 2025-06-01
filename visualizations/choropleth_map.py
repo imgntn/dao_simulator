@@ -4,7 +4,7 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 
 
-def plot_choropleth_map(dao):
+def plot_choropleth_map(dao, show=True):
     world = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
     member_locations = {}
 
@@ -15,5 +15,8 @@ def plot_choropleth_map(dao):
             member_locations[member.location] = 1
 
     world["num_members"] = world["iso_a3"].map(member_locations).fillna(0)
-    world.plot(column="num_members", cmap="coolwarm", legend=True, figsize=(15, 10))
-    plt.show()
+    ax = world.plot(column="num_members", cmap="coolwarm", legend=True, figsize=(15, 10))
+    fig = ax.get_figure()
+    if show:
+        plt.show()
+    return fig
