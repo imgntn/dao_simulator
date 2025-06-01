@@ -22,6 +22,8 @@ settings = {
     "reputation_penalty": 5,
     "comment_probability": 0.5,
     "external_partner_interact_probability": 0.0,
+    "staking_interest_rate": 0.0,
+    "slash_fraction": 0.0,
 }
 
 

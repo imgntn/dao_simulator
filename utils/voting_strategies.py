@@ -4,6 +4,21 @@ import random
 STRATEGY_REGISTRY = {}
 
 
+def load_strategy_plugins(directory: str) -> None:
+    """Import modules from ``directory`` and register contained strategies."""
+    import importlib.util
+    from pathlib import Path
+
+    for path in Path(directory).glob("*.py"):
+        spec = importlib.util.spec_from_file_location(path.stem, path)
+        if spec and spec.loader:
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            for name, obj in module.__dict__.items():
+                if isinstance(obj, type) and hasattr(obj, "vote"):
+                    register_strategy(name.lower(), obj)
+
+
 def register_strategy(name: str, strategy_cls) -> None:
     STRATEGY_REGISTRY[name] = strategy_cls
 

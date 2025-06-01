@@ -3,7 +3,7 @@ import seaborn as sns
 import pandas as pd
 
 
-def plot_heat_map(dao):
+def plot_heat_map(dao, show=True):
     # Create a DataFrame with member IDs and their respective reputation and token balances
     data = []
     for member in dao.members:
@@ -36,10 +36,13 @@ def plot_heat_map(dao):
     )
 
     # Plot the heatmap
+    fig, ax = plt.subplots()
     sns.heatmap(
-        pivot_table, cmap="coolwarm", square=True, linewidths=0.5, annot=True, fmt=".2f"
+        pivot_table, cmap="coolwarm", square=True, linewidths=0.5, annot=True, fmt=".2f", ax=ax
     )
-    plt.xlabel("Token Balance")
-    plt.ylabel("Reputation")
-    plt.title("Heatmap: Member Score based on Reputation and Token Balance")
-    plt.show()
+    ax.set_xlabel("Token Balance")
+    ax.set_ylabel("Reputation")
+    ax.set_title("Heatmap: Member Score based on Reputation and Token Balance")
+    if show:
+        plt.show()
+    return fig

@@ -9,6 +9,8 @@ def main(argv=None):
     parser.add_argument("--use-parallel", action="store_true", dest="use_parallel", help="Enable parallel scheduler")
     parser.add_argument("--use-async", action="store_true", dest="use_async", help="Enable async scheduler")
     parser.add_argument("--max-workers", type=int, default=None)
+    parser.add_argument("--strategy-path", type=str, default=None)
+    parser.add_argument("--report-file", type=str, default=None)
     for key in settings:
         if key.startswith("num_"):
             parser.add_argument(f"--{key}", type=int, default=None)
@@ -18,7 +20,17 @@ def main(argv=None):
     if setting_updates:
         update_settings(**setting_updates)
 
-    sim = DAOSimulation(use_parallel=args.use_parallel, use_async=args.use_async, max_workers=args.max_workers)
+    if args.strategy_path:
+        from utils.voting_strategies import load_strategy_plugins
+
+        load_strategy_plugins(args.strategy_path)
+
+    sim = DAOSimulation(
+        use_parallel=args.use_parallel,
+        use_async=args.use_async,
+        max_workers=args.max_workers,
+        report_file=args.report_file,
+    )
     sim.run(args.steps)
 
 

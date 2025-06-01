@@ -157,6 +157,9 @@ class DAOSimulation(Model):
         external_partner_interact_probability: float | None = None,
         violation_probability: float | None = None,
         reputation_penalty: int | None = None,
+        staking_interest_rate: float | None = None,
+        slash_fraction: float | None = None,
+        report_file: str | None = None,
         **_: object,
     ) -> None:
         super().__init__()
@@ -168,6 +171,17 @@ class DAOSimulation(Model):
         self.max_workers = max_workers
         self.event_logging = event_logging
         self.event_log_filename = event_log_filename
+        self.staking_interest_rate = (
+            staking_interest_rate
+            if staking_interest_rate is not None
+            else settings.get("staking_interest_rate", 0.0)
+        )
+        self.slash_fraction = (
+            slash_fraction
+            if slash_fraction is not None
+            else settings.get("slash_fraction", 0.0)
+        )
+        self.report_file = report_file
 
         # Use provided parameters or fall back to global settings
         self.num_developers = num_developers if num_developers is not None else settings["num_developers"]
@@ -213,6 +227,8 @@ class DAOSimulation(Model):
             reputation_penalty=self.reputation_penalty,
             comment_probability=self.comment_probability,
             external_partner_interact_probability=self.external_partner_interact_probability,
+            staking_interest_rate=self.staking_interest_rate,
+            slash_fraction=self.slash_fraction,
             event_logger=self.event_logger,
         )
         self.datacollector = SimpleDataCollector(self.dao)
@@ -335,6 +351,7 @@ class DAOSimulation(Model):
     def step(self):
         # Update token prices each tick to simulate a simple market.
         self.dao.treasury.update_prices()
+        self.dao.apply_staking_interest()
         self.expire_proposals()
         self.complete_projects()
         self.resolve_disputes()
@@ -557,12 +574,14 @@ class DAOSimulation(Model):
         for _ in range(steps):
             self.step()
 
+        csv_arg = None
         if self.export_csv:
             exporter = CSVDataCollector(self.csv_filename)
             exporter.write(self.datacollector.model_vars)
-            try:
-                generate_report(self, csv_file=self.csv_filename)
-            except Exception:
-                pass
+            csv_arg = self.csv_filename
+        try:
+            generate_report(self, csv_file=csv_arg, html_file=self.report_file)
+        except Exception:
+            pass
         if self.event_logging and self.event_logger:
             self.event_logger.close()
