@@ -72,8 +72,8 @@ class DAO:
     def buyback_tokens(self, amount, token="DAO_TOKEN"):
         self.treasury.withdraw(token, amount)
 
-    def stake_tokens(self, amount, token, member):
-        """Stake ``amount`` of ``token`` on behalf of ``member``."""
+    def stake_tokens(self, amount, token, member, lockup_period=0):
+        """Stake ``amount`` of ``token`` on behalf of ``member`` with lockup."""
         if amount <= 0:
             return 0
         stake = min(amount, member.tokens)
@@ -81,6 +81,8 @@ class DAO:
             return 0
         member.tokens -= stake
         member.staked_tokens += stake
+        unlock_step = self.current_step + lockup_period
+        member.stake_locks.append((stake, unlock_step))
         self.treasury.deposit(token, stake)
         if self.event_logger:
             self.event_logger.log(
@@ -89,6 +91,44 @@ class DAO:
                 member=member.unique_id,
                 token=token,
                 amount=stake,
+                lockup=lockup_period,
             )
         return stake
+
+    def unstake_tokens(self, amount, token, member):
+        """Unstake tokens for ``member`` if lockup expired."""
+        if amount <= 0 or member.staked_tokens <= 0:
+            return 0
+
+        available = 0
+        for stake, unlock in member.stake_locks:
+            if self.current_step >= unlock:
+                available += stake
+        to_unstake = min(amount, available)
+        if to_unstake <= 0:
+            return 0
+
+        remaining = to_unstake
+        new_locks = []
+        for stake, unlock in member.stake_locks:
+            if self.current_step >= unlock and remaining > 0:
+                take = min(stake, remaining)
+                stake -= take
+                remaining -= take
+            if stake > 0:
+                new_locks.append((stake, unlock))
+        member.stake_locks = new_locks
+
+        member.staked_tokens -= to_unstake
+        self.treasury.withdraw(token, to_unstake)
+        member.tokens += to_unstake
+        if self.event_logger:
+            self.event_logger.log(
+                self.current_step,
+                "tokens_unstaked",
+                member=member.unique_id,
+                token=token,
+                amount=to_unstake,
+            )
+        return to_unstake
 

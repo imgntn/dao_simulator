@@ -55,6 +55,7 @@ class DAOMember(Agent):
         self.reputation = reputation
         self.location = location
         self.staked_tokens = 0
+        self.stake_locks = []  # List of (amount, unlock_step)
         if isinstance(voting_strategy, str):
             cls = get_strategy(voting_strategy)
             if cls is None:
@@ -75,9 +76,13 @@ class DAOMember(Agent):
         self.comments[proposal] = sentiment
         proposal.add_comment(self, sentiment)
 
-    def stake_tokens(self, amount, token="DAO_TOKEN"):
-        """Stake ``amount`` of ``token`` via the DAO."""
-        self.model.stake_tokens(amount, token, self)
+    def stake_tokens(self, amount, token="DAO_TOKEN", lockup_period=0):
+        """Stake ``amount`` of ``token`` via the DAO with an optional lockup."""
+        self.model.stake_tokens(amount, token, self, lockup_period)
+
+    def unstake_tokens(self, amount, token="DAO_TOKEN"):
+        """Attempt to withdraw staked tokens via the DAO."""
+        return self.model.unstake_tokens(amount, token, self)
 
     def vote_on_random_proposal(self):
         if self.model.proposals:

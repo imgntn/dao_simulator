@@ -4,7 +4,16 @@ from collections import defaultdict
 class Project:
     """Simple representation of a project managed by the DAO."""
 
-    def __init__(self, dao, creator, title, description, funding_goal, duration=30):
+    def __init__(
+        self,
+        dao,
+        creator,
+        title,
+        description,
+        funding_goal,
+        duration=30,
+        required_skills=None,
+    ):
         self.dao = dao
         self.creator = creator
         self.title = title
@@ -12,6 +21,7 @@ class Project:
         self.funding_goal = funding_goal
         self.duration = duration
         self.current_funding = 0
+        self.required_skills = required_skills or []
         self.work_done = defaultdict(float)
         self.status = "open"
         self.comments = []
