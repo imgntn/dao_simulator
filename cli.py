@@ -1,11 +1,12 @@
 import argparse
 from dao_simulation import DAOSimulation
-from settings import update_settings, settings
+from settings import update_settings, load_settings, settings
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Run DAO simulation")
     parser.add_argument("--steps", type=int, default=100, help="Number of steps to run")
+    parser.add_argument("--config", type=str, default=None, help="Path to settings file")
     parser.add_argument("--use-parallel", action="store_true", dest="use_parallel", help="Enable parallel scheduler")
     parser.add_argument("--use-async", action="store_true", dest="use_async", help="Enable async scheduler")
     parser.add_argument("--max-workers", type=int, default=None)
@@ -15,6 +16,9 @@ def main(argv=None):
         if key.startswith("num_"):
             parser.add_argument(f"--{key}", type=int, default=None)
     args = parser.parse_args(argv)
+
+    if args.config:
+        load_settings(args.config)
 
     setting_updates = {k: getattr(args, k) for k in settings if hasattr(args, k) and getattr(args, k) is not None}
     if setting_updates:

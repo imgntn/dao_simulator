@@ -36,23 +36,28 @@ class Developer(DAOMember):
         if not projects:
             return None
 
-        # Score projects by skill match. Highest score wins.
         def score(project):
-            if not project.required_skills:
-                return 0
-            overlap = set(self.skillset).intersection(project.required_skills)
-            return len(overlap) / len(project.required_skills)
+            # Skill alignment ratio
+            if project.required_skills:
+                overlap = set(self.skillset).intersection(project.required_skills)
+                skill_score = len(overlap) / len(project.required_skills)
+            else:
+                skill_score = 0
 
-        best_score = -1
-        best_projects = []
-        for p in projects:
-            s = score(p)
-            if s > best_score:
-                best_score = s
-                best_projects = [p]
-            elif s == best_score:
-                best_projects.append(p)
+            # Funding progress encourages well-funded projects
+            if project.funding_goal:
+                funding_score = project.current_funding / project.funding_goal
+            else:
+                funding_score = 0
 
+            total_work = sum(project.work_done.values())
+            progress = total_work / project.duration if project.duration else 0
+
+            return skill_score * 0.6 + funding_score * 0.3 + (1 - progress) * 0.1
+
+        scored = {p: score(p) for p in projects}
+        best_score = max(scored.values())
+        best_projects = [p for p, s in scored.items() if s == best_score]
         return random.choice(best_projects)
 
     def to_dict(self):

@@ -117,7 +117,8 @@ settings = {
 ```
 
 Call `update_settings()` or edit the file directly to experiment with different
-values.
+values.  Settings can also be loaded from a JSON or YAML file using the new
+`load_settings()` helper or the `--config` flag in `cli.py`.
 
 ## Command Line Interface
 
@@ -128,5 +129,6 @@ modifying code.  For example, to run 50 steps with just two developers:
 python -m cli --steps 50 --num_developers 2
 ```
 
-Flags like `--use-parallel` or `--use-async` enable alternative schedulers.  Any
-`num_*` setting from `settings.py` can be overridden on the command line.
+Flags like `--use-parallel` or `--use-async` enable alternative schedulers. The
+`--config` option loads settings from a JSON/YAML file. Any `num_*` setting from
+`settings.py` can still be overridden on the command line.
