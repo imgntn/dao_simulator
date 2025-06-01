@@ -27,6 +27,7 @@ class ServiceProvider(DAOMember):
             if self.service_budget > 0:
                 self.offer_service(proposal)
                 self.service_budget -= 1
+                self.reputation += 1
 
     def offer_service(self, proposal):
         # Offer service to the proposal, such as marketing, legal, or financial services.

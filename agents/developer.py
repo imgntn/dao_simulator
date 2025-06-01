@@ -29,6 +29,7 @@ class Developer(DAOMember):
         if project is not None:
             work_amount = random.uniform(0, self.reputation)
             project.receive_work(self, work_amount)
+            self.reputation += work_amount / 10
 
     def choose_project_to_work_on(self):
         projects = self.model.projects

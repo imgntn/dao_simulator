@@ -20,6 +20,7 @@ class Investor(DAOMember):
         self.investments = {}
 
     def step(self):
+        self.adjust_budget_based_on_price()
         self.invest_in_random_proposal()
         self.vote_on_random_proposal()
         if random.random() < self.model.comment_probability:
@@ -37,3 +38,15 @@ class Investor(DAOMember):
                 investment_amount = random.uniform(0, self.investment_budget)
                 proposal.receive_investment(self, investment_amount)
                 self.investment_budget -= investment_amount
+                self.reputation += investment_amount / 100
+
+    def adjust_budget_based_on_price(self):
+        """Increase or decrease investment budget based on DAO token price."""
+        try:
+            price = self.model.treasury.get_token_price("DAO_TOKEN")
+        except KeyError:
+            price = 1.0
+        if price < 1:
+            self.investment_budget *= 1.1
+        else:
+            self.investment_budget *= 0.9

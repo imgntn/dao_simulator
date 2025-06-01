@@ -245,6 +245,17 @@ class TestAgents(unittest.TestCase):
         self.dao_member.leave_comment_on_random_proposal()
         self.assertTrue(len(self.dao_member.comments) > 0)
 
+    def test_developer_reputation_increases(self):
+        before = self.developer.reputation
+        self.developer.work_on_project()
+        self.assertGreater(self.developer.reputation, before)
+
+    def test_investor_budget_adjusts_with_price(self):
+        self.dao.treasury.update_token_price("DAO_TOKEN", 0.8)
+        before = self.investor.investment_budget
+        self.investor.adjust_budget_based_on_price()
+        self.assertGreater(self.investor.investment_budget, before)
+
 
 if __name__ == "__main__":
     unittest.main()

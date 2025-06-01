@@ -77,5 +77,12 @@ class TestDAOSimulation(unittest.TestCase):
         after = sim.schedule.steps
         self.assertEqual(after - before, 1)
 
+    def test_async_scheduler(self):
+        sim = DAOSimulation(use_async=True)
+        before = sim.schedule.steps
+        sim.step()
+        after = sim.schedule.steps
+        self.assertEqual(after - before, 1)
+
 if __name__ == "__main__":
     unittest.main()
