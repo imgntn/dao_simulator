@@ -9,5 +9,19 @@ class TestSettings(unittest.TestCase):
         # restore
         settings.update_settings(num_developers=original)
 
+    def test_load_settings(self):
+        import json, tempfile, os
+
+        fd, fname = tempfile.mkstemp(suffix=".json")
+        os.close(fd)
+        with open(fname, "w") as f:
+            json.dump({"num_developers": 7}, f)
+
+        original = settings.settings["num_developers"]
+        settings.load_settings(fname)
+        self.assertEqual(settings.settings["num_developers"], 7)
+        settings.update_settings(num_developers=original)
+        os.remove(fname)
+
 if __name__ == "__main__":
     unittest.main()

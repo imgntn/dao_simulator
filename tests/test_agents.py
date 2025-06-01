@@ -275,6 +275,32 @@ class TestAgents(unittest.TestCase):
         chosen = self.developer.choose_project_to_work_on()
         self.assertEqual(chosen, project_a)
 
+    def test_project_choice_considers_funding(self):
+        project_a = Project(
+            self.dao,
+            self.developer,
+            "A",
+            "",
+            10,
+            5,
+            required_skills=["Python"],
+        )
+        project_b = Project(
+            self.dao,
+            self.developer,
+            "B",
+            "",
+            10,
+            5,
+            required_skills=["Python"],
+        )
+        project_b.current_funding = 8
+        self.dao.add_project(project_a)
+        self.dao.add_project(project_b)
+        self.developer.skillset = ["Python"]
+        chosen = self.developer.choose_project_to_work_on()
+        self.assertEqual(chosen, project_b)
+
     def test_investor_budget_adjusts_with_price(self):
         self.dao.treasury.update_token_price("DAO_TOKEN", 0.8)
         before = self.investor.investment_budget

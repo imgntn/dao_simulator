@@ -23,9 +23,13 @@ class DAO:
         self.violations = []
         self.members = []
         self.event_logger = event_logger
-        self.event_bus = EventBus()
+        async_bus = bool(event_logger and getattr(event_logger, "async_logging", False))
+        self.event_bus = EventBus(async_mode=async_bus)
         if self.event_logger:
-            self.event_bus.subscribe("*", lambda event, step, **d: self.event_logger.log(step, event, **d))
+            self.event_bus.subscribe(
+                "*",
+                lambda event, step, **d: self.event_logger.log(step, event, **d),
+            )
         self.treasury = Treasury(event_bus=self.event_bus)
         self.comment_probability = comment_probability
         self.external_partner_interact_probability = (
