@@ -88,6 +88,7 @@ class SimpleDataCollector:
                 "avg_reputation": avg_rep,
                 "total_tokens": total_tokens,
                 "event_count": sum(self.event_counts.values()),
+                "dao_token_price": model.dao.treasury.get_token_price("DAO_TOKEN"),
             }
         )
 
@@ -97,7 +98,13 @@ class CSVDataCollector:
 
     def __init__(self, filename):
         self.filename = filename
-        self.headers = ["step", "num_members", "num_proposals", "num_projects"]
+        self.headers = [
+            "step",
+            "num_members",
+            "num_proposals",
+            "num_projects",
+            "dao_token_price",
+        ]
 
     def write(self, model_vars):
         import csv
@@ -143,6 +150,7 @@ class DAOSimulation(Model):
         max_workers: int | None = None,
         event_logging: bool = False,
         event_log_filename: str = "events.csv",
+        event_db_filename: str | None = None,
         num_developers: int | None = None,
         num_investors: int | None = None,
         num_delegators: int | None = None,
@@ -171,6 +179,7 @@ class DAOSimulation(Model):
         self.max_workers = max_workers
         self.event_logging = event_logging
         self.event_log_filename = event_log_filename
+        self.event_db_filename = event_db_filename
         self.staking_interest_rate = (
             staking_interest_rate
             if staking_interest_rate is not None
@@ -216,8 +225,15 @@ class DAOSimulation(Model):
             reputation_penalty if reputation_penalty is not None else settings["reputation_penalty"]
         )
 
-        if self.event_logging:
-            self.event_logger = EventLogger(self.event_log_filename)
+        if self.event_logging or self.event_db_filename:
+            if self.event_db_filename:
+                from utils import DBEventLogger
+
+                self.event_logger = DBEventLogger(self.event_db_filename)
+            else:
+                from utils import EventLogger
+
+                self.event_logger = EventLogger(self.event_log_filename)
         else:
             self.event_logger = None
 

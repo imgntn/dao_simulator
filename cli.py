@@ -11,6 +11,8 @@ def main(argv=None):
     parser.add_argument("--use-async", action="store_true", dest="use_async", help="Enable async scheduler")
     parser.add_argument("--max-workers", type=int, default=None)
     parser.add_argument("--strategy-path", type=str, default=None)
+    parser.add_argument("--agent-plugin-path", type=str, default=None)
+    parser.add_argument("--event-db", type=str, default=None)
     parser.add_argument("--report-file", type=str, default=None)
     for key in settings:
         if key.startswith("num_"):
@@ -29,11 +31,17 @@ def main(argv=None):
 
         load_strategy_plugins(args.strategy_path)
 
+    if args.agent_plugin_path:
+        from utils.agent_plugins import load_agent_plugins
+
+        load_agent_plugins(args.agent_plugin_path)
+
     sim = DAOSimulation(
         use_parallel=args.use_parallel,
         use_async=args.use_async,
         max_workers=args.max_workers,
         report_file=args.report_file,
+        event_db_filename=args.event_db,
     )
     sim.run(args.steps)
 

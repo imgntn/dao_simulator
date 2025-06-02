@@ -2,7 +2,7 @@ import unittest
 import os
 import tempfile
 import csv
-from utils import EventLogger
+from utils import EventLogger, DBEventLogger
 from data_structures import DAO, Proposal
 from agents import DAOMember
 
@@ -64,6 +64,43 @@ class TestEventLogger(unittest.TestCase):
             rows = list(csv.DictReader(f))
         events = [r["event"] for r in rows]
         self.assertEqual(events, ["a1", "a2"])
+        os.remove(fname)
+
+    def test_db_logger(self):
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        logger = DBEventLogger(fname)
+        dao = DAO("D", event_logger=logger)
+        member = DAOMember("m", model=dao, tokens=50, reputation=0, location="US")
+        dao.add_member(member)
+        proposal = Proposal(dao, member, "t", "d", 10, 5)
+        dao.add_proposal(proposal)
+        dao.treasury.deposit("DAO_TOKEN", 5)
+        logger.close()
+        import sqlite3
+
+        conn = sqlite3.connect(fname)
+        rows = conn.execute("SELECT event FROM events").fetchall()
+        conn.close()
+        events = [r[0] for r in rows]
+        self.assertIn("proposal_created", events)
+        self.assertIn("token_deposit", events)
+        os.remove(fname)
+
+    def test_db_async_logging(self):
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        logger = DBEventLogger(fname, async_logging=True)
+        logger.log(0, "e1")
+        logger.log(1, "e2")
+        logger.close()
+        import sqlite3
+
+        conn = sqlite3.connect(fname)
+        rows = conn.execute("SELECT event FROM events").fetchall()
+        conn.close()
+        events = [r[0] for r in rows]
+        self.assertEqual(events, ["e1", "e2"])
         os.remove(fname)
 
 

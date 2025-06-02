@@ -11,9 +11,11 @@ class Treasury:
         self._revenue = 0.0
         self.event_logger = event_logger
         self.event_bus = event_bus
+        self._price_pressure = defaultdict(float)
 
     def deposit(self, token, amount):
         self.tokens[token] += amount
+        self._price_pressure[token] -= amount
         if self.event_bus:
             self.event_bus.publish("token_deposit", step=0, token=token, amount=amount)
         elif self.event_logger:
@@ -26,6 +28,7 @@ class Treasury:
         else:
             withdrawn = self.tokens[token]
             self.tokens[token] = 0
+        self._price_pressure[token] += withdrawn
         if self.event_bus:
             self.event_bus.publish("token_withdraw", step=0, token=token, amount=withdrawn)
         elif self.event_logger:
@@ -44,9 +47,12 @@ class Treasury:
 
         for token, price in list(self.token_prices.items()):
             change = random.uniform(-volatility, volatility)
+            pressure = self._price_pressure.get(token, 0.0)
+            if pressure:
+                change += 0.01 * (pressure / max(self.tokens[token], 1))
             new_price = price * (1 + change)
-            # Prevent the price from dropping to zero.
             self.token_prices[token] = max(new_price, 0.01)
+        self._price_pressure.clear()
 
     def to_dict(self):
         return {
@@ -61,6 +67,7 @@ class Treasury:
         t.tokens = defaultdict(float, data.get("tokens", {}))
         t.token_prices = data.get("token_prices", {"DAO_TOKEN": 1.0})
         t._revenue = data.get("_revenue", 0.0)
+        t._price_pressure = defaultdict(float)
         return t
 
     def get_token_value(self, token):
