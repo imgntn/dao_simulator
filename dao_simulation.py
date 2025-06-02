@@ -116,6 +116,49 @@ class CSVDataCollector:
                 writer.writerow({h: row.get(h) for h in self.headers})
 
 
+class SQLiteDataCollector:
+    """Persist collected variables to an SQLite database."""
+
+    def __init__(self, filename: str) -> None:
+        import sqlite3
+
+        self.conn = sqlite3.connect(filename)
+        self.conn.execute(
+            """CREATE TABLE IF NOT EXISTS stats (
+            step INTEGER,
+            num_members INTEGER,
+            num_proposals INTEGER,
+            num_projects INTEGER,
+            avg_reputation REAL,
+            total_tokens REAL,
+            event_count INTEGER,
+            dao_token_price REAL
+        )"""
+        )
+        self.conn.commit()
+
+    def write_row(self, row: dict) -> None:
+        self.conn.execute(
+            "INSERT INTO stats VALUES (?,?,?,?,?,?,?,?)",
+            (
+                row.get("step"),
+                row.get("num_members"),
+                row.get("num_proposals"),
+                row.get("num_projects"),
+                row.get("avg_reputation"),
+                row.get("total_tokens"),
+                row.get("event_count"),
+                row.get("dao_token_price"),
+            ),
+        )
+        self.conn.commit()
+
+    def close(self) -> None:
+        if self.conn:
+            self.conn.close()
+            self.conn = None
+
+
 from data_structures.dao import DAO
 from data_structures import FundingProposal, GovernanceProposal, MembershipProposal, Project
 from utils import EventLogger
@@ -153,6 +196,9 @@ class DAOSimulation(Model):
         event_logging: bool = False,
         event_log_filename: str = "events.csv",
         event_db_filename: str | None = None,
+        stats_db_filename: str | None = None,
+        checkpoint_interval: int | None = None,
+        checkpoint_path: str | None = None,
         num_developers: int | None = None,
         num_investors: int | None = None,
         num_delegators: int | None = None,
@@ -189,6 +235,9 @@ class DAOSimulation(Model):
         self.event_logging = event_logging
         self.event_log_filename = event_log_filename
         self.event_db_filename = event_db_filename
+        self.stats_db_filename = stats_db_filename
+        self.checkpoint_interval = checkpoint_interval or 0
+        self.checkpoint_path = checkpoint_path
         self.staking_interest_rate = (
             staking_interest_rate
             if staking_interest_rate is not None
@@ -261,6 +310,11 @@ class DAOSimulation(Model):
             event_logger=self.event_logger,
         )
         self.datacollector = SimpleDataCollector(self.dao)
+        self.stats_writer = (
+            SQLiteDataCollector(self.stats_db_filename)
+            if self.stats_db_filename
+            else None
+        )
         if self.use_async:
             self.schedule = AsyncActivation(self.dao)
         elif self.use_parallel:
@@ -417,6 +471,8 @@ class DAOSimulation(Model):
         # Keep DAO time in sync with the scheduler
         self.dao.current_step += 1
         self.datacollector.collect(self)
+        if self.stats_writer:
+            self.stats_writer.write_row(self.datacollector.model_vars[-1])
 
     def expire_proposals(self):
         current_time = (
@@ -607,7 +663,9 @@ class DAOSimulation(Model):
             json.dump(data, f)
 
     @classmethod
-    def load_state(cls, filename: str, **kwargs):
+    def load_state(cls, filename: str, *, resume: bool = False, **kwargs):
+        """Recreate a simulation from a saved state."""
+
         with open(filename) as f:
             data = json.load(f)
         sim = cls(**kwargs)
@@ -621,8 +679,16 @@ class DAOSimulation(Model):
 
     def run(self, steps):
         """Run the simulation for the given number of steps."""
+        import os
+
         for _ in range(steps):
             self.step()
+            if self.checkpoint_interval and self.checkpoint_path:
+                if self.schedule.steps % self.checkpoint_interval == 0:
+                    cp = os.path.join(
+                        self.checkpoint_path, f"checkpoint_{self.schedule.steps}.json"
+                    )
+                    self.save_state(cp)
 
         csv_arg = None
         if self.export_csv:
@@ -633,6 +699,8 @@ class DAOSimulation(Model):
             generate_report(self, csv_file=csv_arg, html_file=self.report_file)
         except Exception:
             pass
+        if self.stats_writer:
+            self.stats_writer.close()
         if self.event_logging and self.event_logger:
             self.event_logger.close()
         if hasattr(self.dao, "event_bus"):
