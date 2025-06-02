@@ -168,9 +168,14 @@ class DAOSimulation(Model):
         staking_interest_rate: float | None = None,
         slash_fraction: float | None = None,
         report_file: str | None = None,
+        seed: int | None = None,
         **_: object,
     ) -> None:
         super().__init__()
+
+        if seed is not None:
+            random.seed(seed)
+        self.seed = seed
 
         self.export_csv = export_csv
         self.csv_filename = csv_filename
@@ -601,3 +606,5 @@ class DAOSimulation(Model):
             pass
         if self.event_logging and self.event_logger:
             self.event_logger.close()
+        if hasattr(self.dao, "event_bus"):
+            self.dao.event_bus.close()

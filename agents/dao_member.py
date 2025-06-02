@@ -68,9 +68,16 @@ class DAOMember(Agent):
             self.voting_strategy = voting_strategy if voting_strategy else DefaultVotingStrategy()
         self.comments = {}
         self.votes = {}
+        self.delegates = []
 
     def vote_on_proposal(self, proposal):
         self.voting_strategy.vote(self, proposal)
+        for delegate in getattr(self, "delegates", []):
+            delegate.receive_representative_vote(
+                proposal,
+                self.votes[proposal]["vote"],
+                self.votes[proposal]["weight"],
+            )
 
     def leave_comment(self, proposal, sentiment):
         self.comments[proposal] = sentiment

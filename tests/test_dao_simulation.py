@@ -96,5 +96,12 @@ class TestDAOSimulation(unittest.TestCase):
         after = sim.schedule.steps
         self.assertEqual(after - before, 1)
 
+    def test_seed_determinism(self):
+        sim1 = DAOSimulation(seed=123)
+        sim2 = DAOSimulation(seed=123)
+        locs1 = [m.location for m in sim1.dao.members]
+        locs2 = [m.location for m in sim2.dao.members]
+        self.assertEqual(locs1, locs2)
+
 if __name__ == "__main__":
     unittest.main()
