@@ -145,12 +145,15 @@ class DAO:
 
     def apply_staking_interest(self):
         """Accrue staking interest for all members."""
-        if self.staking_interest_rate <= 0:
-            return
         for member in self.members:
             if member.staked_tokens > 0:
-                reward = member.staked_tokens * self.staking_interest_rate
+                rate = getattr(member, "staking_rate", self.staking_interest_rate)
+                if rate <= 0:
+                    continue
+                reward = member.staked_tokens * rate
                 member.tokens += reward
+                if getattr(member, "compound_stake", False):
+                    member.staked_tokens += reward
                 if self.event_bus:
                     self.event_bus.publish(
                         "staking_reward",
@@ -159,10 +162,11 @@ class DAO:
                         amount=reward,
                     )
 
-    def slash_member(self, member, fraction=None):
+    def slash_member(self, member, fraction=None, *, severity: float = 1.0):
         """Slash a fraction of ``member``'s staked tokens."""
         if fraction is None:
             fraction = self.slash_fraction
+        fraction *= max(min(severity, 1.0), 0.0)
         if fraction <= 0 or member.staked_tokens <= 0:
             return 0
         amount = member.staked_tokens * fraction

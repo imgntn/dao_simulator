@@ -28,6 +28,8 @@ def main(argv=None):
     parser.add_argument("--strategy-path", type=str, default=None)
     parser.add_argument("--agent-plugin-path", type=str, default=None)
     parser.add_argument("--oracle-plugin-path", type=str, default=None)
+    parser.add_argument("--websocket-port", type=int, default=None,
+                        help="Expose websocket dashboard on this port")
     parser.add_argument("--event-db", type=str, default=None)
     parser.add_argument("--stats-db", type=str, default=None)
     parser.add_argument("--checkpoint-path", type=str, default=None)
@@ -55,16 +57,18 @@ def main(argv=None):
         update_settings(**setting_updates)
 
     if args.strategy_path:
-        from utils.voting_strategies import load_strategy_plugins
+        from utils.voting_strategies import load_strategy_plugins, watch_strategy_plugins
 
         dir_path = validate_directory(args.strategy_path, allowed_base=Path.cwd())
         load_strategy_plugins(str(dir_path))
+        watch_strategy_plugins(str(dir_path))
 
     if args.agent_plugin_path:
-        from utils.agent_plugins import load_agent_plugins
+        from utils.agent_plugins import load_agent_plugins, watch_agent_plugins
 
         dir_path = validate_directory(args.agent_plugin_path, allowed_base=Path.cwd())
         load_agent_plugins(str(dir_path))
+        watch_agent_plugins(str(dir_path))
 
     if args.oracle_plugin_path:
         from utils.oracles import load_oracle_plugins
@@ -92,7 +96,16 @@ def main(argv=None):
     else:
         sim = DAOSimulation(**sim_kwargs)
 
+    dashboard = None
+    if args.websocket_port is not None:
+        from dashboard_server import DashboardServer
+
+        dashboard = DashboardServer(sim.dao.event_bus, port=args.websocket_port)
+        dashboard.start()
+
     sim.run(args.steps)
+    if dashboard:
+        dashboard.stop()
 
 
 if __name__ == "__main__":

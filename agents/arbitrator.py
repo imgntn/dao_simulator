@@ -53,7 +53,7 @@ class Arbitrator(DAOMember):
                 )
                 self.model.add_violation(violation)
                 dispute.member.reputation -= self.model.reputation_penalty
-                self.model.slash_member(dispute.member)
+                self.model.slash_member(dispute.member, severity=dispute.importance)
 
     def resolve_dispute(self, dispute):
         self.resolved_disputes.append(dispute)
