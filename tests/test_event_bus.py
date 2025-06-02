@@ -19,6 +19,23 @@ class TestEventBus(unittest.TestCase):
         self.assertEqual(result, [42])
         bus.close()
 
+    def test_unsubscribe_and_once(self):
+        bus = EventBus()
+        calls = []
+
+        def cb(event=None, **d):
+            calls.append("cb")
+
+        bus.subscribe("e", cb)
+        bus.unsubscribe("e", cb)
+        bus.publish("e")
+        self.assertEqual(calls, [])
+
+        bus.subscribe_once("e", cb)
+        bus.publish("e")
+        bus.publish("e")
+        self.assertEqual(calls, ["cb"])
+
 
 if __name__ == "__main__":
     unittest.main()

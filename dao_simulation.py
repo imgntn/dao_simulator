@@ -525,10 +525,22 @@ class DAOSimulation(Model):
                 and current_time >= project.start_time + project.duration
             ):
                 project.status = "completed"
-                # Release any locked funds, if applicable
-                # Distribute rewards to the involved parties, such as developers, investors, etc.
-                # You may need to implement additional methods or logic in the respective agent classes
-                # to handle the reward distribution
+                reward_pool = project.current_funding
+                if reward_pool > 0:
+                    for member in project.work_done:
+                        share = project.member_share(member)
+                        reward = reward_pool * share
+                        if reward:
+                            member.tokens += reward
+                    self.dao.treasury.withdraw("DAO_TOKEN", reward_pool)
+                    project.current_funding = 0
+                if self.dao.event_bus:
+                    self.dao.event_bus.publish(
+                        "project_completed",
+                        step=self.schedule.steps,
+                        project=project.title,
+                        reward_pool=reward_pool,
+                    )
 
     def resolve_disputes(self):
         arbitrators = [a for a in self.dao.members if isinstance(a, Arbitrator)]
