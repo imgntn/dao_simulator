@@ -28,6 +28,9 @@ class TestCLI(unittest.TestCase):
             export_csv=False,
             csv_filename="simulation_data.csv",
             event_db_filename=None,
+            stats_db_filename=None,
+            checkpoint_interval=None,
+            checkpoint_path=None,
             seed=42,
         )
 
@@ -95,6 +98,20 @@ class TestCLI(unittest.TestCase):
         mock_report.assert_called()
         os.remove(csvf)
         os.remove(htmlf)
+
+    def test_cli_loads_oracle_plugin(self):
+        import tempfile, os
+
+        with tempfile.TemporaryDirectory(dir=os.getcwd()) as tmp:
+            plugin = os.path.join(tmp, "fixed.py")
+            with open(plugin, "w") as f:
+                f.write(
+                    "class Fixed:\n    def update_prices(self, treasury,*a,**k):\n        treasury.update_token_price('DAO_TOKEN', 9.0)\n"
+                )
+            cli.main(["--steps", "0", "--oracle-plugin-path", tmp])
+            from utils.oracles import get_oracle
+
+            self.assertIsNotNone(get_oracle("fixed"))
 
 
 if __name__ == "__main__":

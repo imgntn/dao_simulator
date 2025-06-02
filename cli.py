@@ -27,7 +27,12 @@ def main(argv=None):
     parser.add_argument("--max-workers", type=int, default=None)
     parser.add_argument("--strategy-path", type=str, default=None)
     parser.add_argument("--agent-plugin-path", type=str, default=None)
+    parser.add_argument("--oracle-plugin-path", type=str, default=None)
     parser.add_argument("--event-db", type=str, default=None)
+    parser.add_argument("--stats-db", type=str, default=None)
+    parser.add_argument("--checkpoint-path", type=str, default=None)
+    parser.add_argument("--checkpoint-interval", type=int, default=None)
+    parser.add_argument("--resume-from", type=str, default=None)
     parser.add_argument("--report-file", type=str, default=None)
     parser.add_argument("--export-csv", type=str, default=None, help="Write CSV stats")
     parser.add_argument("--export-html", type=str, default=None, help="Write HTML report")
@@ -61,7 +66,13 @@ def main(argv=None):
         dir_path = validate_directory(args.agent_plugin_path, allowed_base=Path.cwd())
         load_agent_plugins(str(dir_path))
 
-    sim = DAOSimulation(
+    if args.oracle_plugin_path:
+        from utils.oracles import load_oracle_plugins
+
+        dir_path = validate_directory(args.oracle_plugin_path, allowed_base=Path.cwd())
+        load_oracle_plugins(str(dir_path))
+
+    sim_kwargs = dict(
         use_parallel=args.use_parallel,
         use_async=args.use_async,
         max_workers=args.max_workers,
@@ -69,8 +80,18 @@ def main(argv=None):
         export_csv=bool(args.export_csv),
         csv_filename=args.export_csv or "simulation_data.csv",
         event_db_filename=args.event_db,
+        stats_db_filename=args.stats_db,
+        checkpoint_interval=args.checkpoint_interval,
+        checkpoint_path=args.checkpoint_path,
         seed=args.seed,
     )
+
+    if args.resume_from:
+        state_file = validate_file(args.resume_from, allowed_base=Path.cwd())
+        sim = DAOSimulation.load_state(str(state_file), **sim_kwargs)
+    else:
+        sim = DAOSimulation(**sim_kwargs)
+
     sim.run(args.steps)
 
 
