@@ -1,6 +1,8 @@
 from pathlib import Path
 import importlib.util
-from typing import Type, Dict
+from typing import Type, Dict, Optional
+
+from .path_utils import validate_directory
 
 from agents.dao_member import DAOMember
 
@@ -16,9 +18,19 @@ def get_agent(name: str):
     return AGENT_REGISTRY.get(name)
 
 
-def load_agent_plugins(directory: str) -> None:
-    """Import modules from ``directory`` and register contained agent classes."""
-    for path in Path(directory).glob("*.py"):
+def load_agent_plugins(directory: str, *, allowed_dir: Optional[Path] = None) -> None:
+    """Import modules from ``directory`` and register contained agent classes.
+
+    Parameters
+    ----------
+    directory:
+        Directory containing agent plugins.
+    allowed_dir:
+        If provided, ``directory`` must be inside this path.
+    """
+    dir_path = validate_directory(directory, allowed_base=allowed_dir)
+
+    for path in dir_path.glob("*.py"):
         spec = importlib.util.spec_from_file_location(path.stem, path)
         if spec and spec.loader:
             module = importlib.util.module_from_spec(spec)
