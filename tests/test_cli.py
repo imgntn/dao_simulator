@@ -19,6 +19,8 @@ class TestCLI(unittest.TestCase):
             use_async=False,
             max_workers=None,
             report_file=None,
+            export_csv=False,
+            csv_filename="simulation_data.csv",
             event_db_filename=None,
             seed=42,
         )
@@ -36,6 +38,57 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(settings.settings["num_developers"], 3)
         settings.update_settings(num_developers=original)
         os.remove(fname)
+
+    @mock.patch("dao_simulation.generate_report")
+    def test_cli_export_options(self, mock_report):
+        import tempfile, os
+
+        fd, csvf = tempfile.mkstemp(suffix=".csv", dir=os.getcwd())
+        os.close(fd)
+        os.remove(csvf)
+        fd, htmlf = tempfile.mkstemp(suffix=".html", dir=os.getcwd())
+        os.close(fd)
+        os.remove(htmlf)
+
+        def fake_report(*args, **kwargs):
+            if kwargs.get("html_file"):
+                with open(kwargs["html_file"], "w") as f:
+                    f.write("hi")
+        mock_report.side_effect = fake_report
+
+        cli.main([
+            "--steps",
+            "1",
+            "--num_developers",
+            "1",
+            "--num_investors",
+            "0",
+            "--num_delegators",
+            "0",
+            "--num_proposal_creators",
+            "0",
+            "--num_validators",
+            "0",
+            "--num_service_providers",
+            "0",
+            "--num_arbitrators",
+            "0",
+            "--num_regulators",
+            "0",
+            "--num_external_partners",
+            "0",
+            "--num_passive_members",
+            "0",
+            "--export-csv",
+            csvf,
+            "--export-html",
+            htmlf,
+        ])
+        self.assertTrue(os.path.exists(csvf))
+        self.assertTrue(os.path.exists(htmlf))
+        mock_report.assert_called()
+        os.remove(csvf)
+        os.remove(htmlf)
 
 
 if __name__ == "__main__":

@@ -11,6 +11,7 @@ from agents import (
     Regulator,
     ExternalPartner,
     PassiveMember,
+    Auditor,
 )
 from data_structures import Proposal, Project, DAO
 
@@ -108,6 +109,13 @@ class TestAgents(unittest.TestCase):
             reputation=10,
             location="US",
             voting_strategy="simple_majority",
+        )
+        self.auditor = Auditor(
+            12,
+            model=dao,
+            tokens=100,
+            reputation=10,
+            location="US",
         )
 
         # Assuming you have the appropriate DAO instance and creator (DAOMember) instance
@@ -306,6 +314,19 @@ class TestAgents(unittest.TestCase):
         before = self.investor.investment_budget
         self.investor.adjust_budget_based_on_price()
         self.assertGreater(self.investor.investment_budget, before)
+
+    def test_auditor_flags_suspicious(self):
+        suspicious = Proposal(
+            dao=self.dao,
+            creator=self.dao_member,
+            title="S",
+            description="suspicious",
+            funding_goal=5000,
+            duration=1,
+        )
+        self.dao.add_proposal(suspicious)
+        self.auditor.step()
+        self.assertTrue(self.dao.disputes)
 
 
 if __name__ == "__main__":

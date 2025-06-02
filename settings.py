@@ -16,6 +16,7 @@ settings = {
     "num_service_providers": 5,
     "num_arbitrators": 2,
     "num_regulators": 2,
+    "num_auditors": 0,
     "num_external_partners": 2,
     "num_passive_members": 10,
     "violation_probability": 0.1,

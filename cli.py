@@ -29,6 +29,8 @@ def main(argv=None):
     parser.add_argument("--agent-plugin-path", type=str, default=None)
     parser.add_argument("--event-db", type=str, default=None)
     parser.add_argument("--report-file", type=str, default=None)
+    parser.add_argument("--export-csv", type=str, default=None, help="Write CSV stats")
+    parser.add_argument("--export-html", type=str, default=None, help="Write HTML report")
     parser.add_argument("--seed", type=int, default=None)
     for key in settings:
         if key.startswith("num_"):
@@ -63,7 +65,9 @@ def main(argv=None):
         use_parallel=args.use_parallel,
         use_async=args.use_async,
         max_workers=args.max_workers,
-        report_file=args.report_file,
+        report_file=args.export_html or args.report_file,
+        export_csv=bool(args.export_csv),
+        csv_filename=args.export_csv or "simulation_data.csv",
         event_db_filename=args.event_db,
         seed=args.seed,
     )

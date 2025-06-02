@@ -23,6 +23,7 @@ class TestDAOSimulation(unittest.TestCase):
             "num_service_providers",
             "num_arbitrators",
             "num_regulators",
+            "num_auditors",
             "num_external_partners",
             "num_passive_members",
         ]
