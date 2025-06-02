@@ -30,6 +30,11 @@ class TestDAOSimulation(unittest.TestCase):
         expected_members = sum(settings.settings[k] for k in agent_keys)
         self.assertEqual(len(dao.members), expected_members)
 
+    def test_liquid_delegators_created(self):
+        sim = DAOSimulation(num_liquid_delegators=2, num_delegators=0)
+        count = sum(1 for m in sim.dao.members if m.__class__.__name__ == "LiquidDelegator")
+        self.assertEqual(count, 2)
+
     def test_distribute_revenue(self):
         self.simulation.dao.treasury.add_revenue(1000)
         initial_balances = {m.unique_id: m.tokens for m in self.simulation.dao.members}

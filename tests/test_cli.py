@@ -11,6 +11,12 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(settings.settings["num_developers"], 2)
         settings.update_settings(num_developers=original)
 
+    def test_cli_liquid_delegators_flag(self):
+        original = settings.settings.get("num_liquid_delegators", 0)
+        cli.main(["--steps", "1", "--num_liquid_delegators", "1"])
+        self.assertEqual(settings.settings["num_liquid_delegators"], 1)
+        settings.update_settings(num_liquid_delegators=original)
+
     @mock.patch("cli.DAOSimulation")
     def test_cli_passes_seed(self, MockSim):
         cli.main(["--steps", "1", "--seed", "42"])

@@ -11,6 +11,7 @@ settings = {
     "num_developers": 10,
     "num_investors": 5,
     "num_delegators": 5,
+    "num_liquid_delegators": 0,
     "num_proposal_creators": 5,
     "num_validators": 5,
     "num_service_providers": 5,

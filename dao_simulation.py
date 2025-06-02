@@ -122,6 +122,7 @@ from utils import EventLogger
 from agents import (
     Arbitrator,
     Delegator,
+    LiquidDelegator,
     Developer,
     ExternalPartner,
     Investor,
@@ -155,6 +156,7 @@ class DAOSimulation(Model):
         num_developers: int | None = None,
         num_investors: int | None = None,
         num_delegators: int | None = None,
+        num_liquid_delegators: int | None = None,
         num_proposal_creators: int | None = None,
         num_validators: int | None = None,
         num_service_providers: int | None = None,
@@ -203,6 +205,9 @@ class DAOSimulation(Model):
         self.num_developers = num_developers if num_developers is not None else settings["num_developers"]
         self.num_investors = num_investors if num_investors is not None else settings["num_investors"]
         self.num_delegators = num_delegators if num_delegators is not None else settings["num_delegators"]
+        self.num_liquid_delegators = (
+            num_liquid_delegators if num_liquid_delegators is not None else settings.get("num_liquid_delegators", 0)
+        )
         self.num_proposal_creators = (
             num_proposal_creators if num_proposal_creators is not None else settings["num_proposal_creators"]
         )
@@ -295,6 +300,17 @@ class DAOSimulation(Model):
                 delegation_budget=200,
             )
             self.dao.add_member(delegator)
+
+        for i in range(self.num_liquid_delegators):
+            ldel = LiquidDelegator(
+                unique_id=f"LiquidDelegator_{i}",
+                model=self.dao,
+                tokens=100,
+                reputation=0,
+                location=generate_random_location(),
+                delegation_budget=200,
+            )
+            self.dao.add_member(ldel)
 
         for i in range(self.num_proposal_creators):
             proposal_creator = ProposalCreator(
