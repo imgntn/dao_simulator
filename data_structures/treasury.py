@@ -1,8 +1,10 @@
 from collections import defaultdict
 
+from utils import RandomWalkOracle, PriceOracle
+
 
 class Treasury:
-    def __init__(self, event_logger=None, event_bus=None):
+    def __init__(self, event_logger=None, event_bus=None, oracle: PriceOracle | None = None):
         self.tokens = defaultdict(float)
         # Track prices for all tokens held by the treasury.  The DAO token is
         # initialised with a default price of ``1.0`` so tests don't need to
@@ -12,6 +14,7 @@ class Treasury:
         self.event_logger = event_logger
         self.event_bus = event_bus
         self._price_pressure = defaultdict(float)
+        self.oracle: PriceOracle = oracle or RandomWalkOracle()
 
     def deposit(self, token, amount):
         self.tokens[token] += amount
@@ -42,17 +45,8 @@ class Treasury:
         return self.token_prices.get(token, 0.0)
 
     def update_prices(self, volatility: float = 0.05) -> None:
-        """Randomly adjust all token prices within the given volatility."""
-        import random
-
-        for token, price in list(self.token_prices.items()):
-            change = random.uniform(-volatility, volatility)
-            pressure = self._price_pressure.get(token, 0.0)
-            if pressure:
-                change += 0.01 * (pressure / max(self.tokens[token], 1))
-            new_price = price * (1 + change)
-            self.token_prices[token] = max(new_price, 0.01)
-        self._price_pressure.clear()
+        """Delegate price updates to the configured oracle."""
+        self.oracle.update_prices(self, volatility=volatility)
 
     def to_dict(self):
         return {
