@@ -71,7 +71,13 @@ class TestDAOSimulation(unittest.TestCase):
             header = f.readline().strip().split(",")
         self.assertEqual(
             header,
-            ["step", "num_members", "num_proposals", "num_projects"],
+            [
+                "step",
+                "num_members",
+                "num_proposals",
+                "num_projects",
+                "dao_token_price",
+            ],
         )
 
         os.remove(filename)

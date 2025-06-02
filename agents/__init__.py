@@ -9,3 +9,4 @@ from .proposal_creator import ProposalCreator
 from .regulator import Regulator
 from .service_provider import ServiceProvider
 from .validator import Validator
+

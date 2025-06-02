@@ -132,3 +132,6 @@ python -m cli --steps 50 --num_developers 2
 Flags like `--use-parallel` or `--use-async` enable alternative schedulers. The
 `--config` option loads settings from a JSON/YAML file. Any `num_*` setting from
 `settings.py` can still be overridden on the command line.
+`--strategy-path` and `--agent-plugin-path` allow loading custom voting
+strategies and agent types from external Python modules. Use
+`--event-db` to store events in a SQLite database instead of CSV.

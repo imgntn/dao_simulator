@@ -1,5 +1,6 @@
 import csv
 import json
+import sqlite3
 
 
 class EventLogger:
@@ -63,3 +64,37 @@ class EventLogger:
     # Event bus integration
     def handle_event(self, event: str, step: int, **details):
         self.log(step, event, **details)
+
+class DBEventLogger(EventLogger):
+    """SQLite-backed event logger."""
+
+    def __init__(self, filename: str, async_logging: bool = False):
+        self.filename = filename
+        self.async_logging = async_logging
+        self.conn = sqlite3.connect(self.filename, check_same_thread=False)
+        self.conn.execute(
+            "CREATE TABLE IF NOT EXISTS events (step INTEGER, event TEXT, details TEXT)"
+        )
+        self.conn.commit()
+        if self.async_logging:
+            import queue
+            import threading
+
+            self._queue = queue.Queue()
+            self._thread = threading.Thread(target=self._worker, daemon=True)
+            self._thread.start()
+
+    def _write(self, step: int, event: str, details: dict):
+        self.conn.execute(
+            "INSERT INTO events (step, event, details) VALUES (?, ?, ?)",
+            (step, event, json.dumps(details)),
+        )
+        self.conn.commit()
+
+    def close(self):
+        if self.async_logging:
+            self._queue.put(None)
+            self._thread.join()
+        if self.conn:
+            self.conn.close()
+            self.conn = None

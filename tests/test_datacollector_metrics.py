@@ -13,6 +13,7 @@ class TestDataCollectorMetrics(unittest.TestCase):
         self.assertIn('avg_reputation', row)
         self.assertIn('total_tokens', row)
         self.assertIn('event_count', row)
+        self.assertIn('dao_token_price', row)
 
 if __name__ == "__main__":
     unittest.main()
