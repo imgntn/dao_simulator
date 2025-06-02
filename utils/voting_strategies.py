@@ -1,15 +1,30 @@
 from data_structures.proposal import Proposal
 import random
+from pathlib import Path
+from typing import Optional
+
+from .path_utils import validate_directory
 
 STRATEGY_REGISTRY = {}
 
 
-def load_strategy_plugins(directory: str) -> None:
-    """Import modules from ``directory`` and register contained strategies."""
-    import importlib.util
-    from pathlib import Path
+def load_strategy_plugins(
+    directory: str, *, allowed_dir: Optional[Path] = None
+) -> None:
+    """Import modules from ``directory`` and register contained strategies.
 
-    for path in Path(directory).glob("*.py"):
+    Parameters
+    ----------
+    directory:
+        Directory containing strategy plugins.
+    allowed_dir:
+        If provided, ``directory`` must be inside this path.
+    """
+    import importlib.util
+
+    dir_path = validate_directory(directory, allowed_base=allowed_dir)
+
+    for path in dir_path.glob("*.py"):
         spec = importlib.util.spec_from_file_location(path.stem, path)
         if spec and spec.loader:
             module = importlib.util.module_from_spec(spec)
@@ -93,7 +108,7 @@ def quadratic_vote(proposal: Proposal, tokens: int) -> int:
     if tokens <= 0:
         return 0
 
-    weight = int(tokens ** 0.5)
+    weight = int(tokens**0.5)
     return weight
 
 

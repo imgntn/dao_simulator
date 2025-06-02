@@ -43,27 +43,30 @@ def update_settings(**kwargs):
     return settings
 
 
-def load_settings(path: str):
+from pathlib import Path
+from typing import Optional
+
+from utils.path_utils import validate_file
+
+
+def load_settings(path: str, *, allowed_dir: Optional[Path] = None):
     """Load settings from a JSON or YAML file."""
     import json
-    import os
 
-    if not os.path.exists(path):
-        raise FileNotFoundError(path)
+    file_path = validate_file(path, allowed_base=allowed_dir)
 
-    if path.endswith((".yaml", ".yml")):
+    if file_path.suffix in (".yaml", ".yml"):
         try:
             import yaml  # type: ignore
         except Exception as e:  # pragma: no cover - optional dep
             raise ImportError("PyYAML is required for YAML configs") from e
-        with open(path, "r") as f:
+        with open(file_path, "r") as f:
             data = yaml.safe_load(f) or {}
     else:
-        with open(path, "r") as f:
+        with open(file_path, "r") as f:
             data = json.load(f)
 
     if not isinstance(data, dict):
         raise ValueError("Config file must contain a mapping")
 
     return update_settings(**data)
-
