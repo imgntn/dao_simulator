@@ -17,6 +17,7 @@ class TestEventBus(unittest.TestCase):
         bus.publish("test", val=42)
         self.assertTrue(flag.wait(0.5))
         self.assertEqual(result, [42])
+        bus.close()
 
 
 if __name__ == "__main__":

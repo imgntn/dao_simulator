@@ -14,6 +14,7 @@ def main(argv=None):
     parser.add_argument("--agent-plugin-path", type=str, default=None)
     parser.add_argument("--event-db", type=str, default=None)
     parser.add_argument("--report-file", type=str, default=None)
+    parser.add_argument("--seed", type=int, default=None)
     for key in settings:
         if key.startswith("num_"):
             parser.add_argument(f"--{key}", type=int, default=None)
@@ -42,6 +43,7 @@ def main(argv=None):
         max_workers=args.max_workers,
         report_file=args.report_file,
         event_db_filename=args.event_db,
+        seed=args.seed,
     )
     sim.run(args.steps)
 

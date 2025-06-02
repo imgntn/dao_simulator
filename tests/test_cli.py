@@ -10,6 +10,18 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(settings.settings["num_developers"], 2)
         settings.update_settings(num_developers=original)
 
+    @mock.patch("cli.DAOSimulation")
+    def test_cli_passes_seed(self, MockSim):
+        cli.main(["--steps", "1", "--seed", "42"])
+        MockSim.assert_called_with(
+            use_parallel=False,
+            use_async=False,
+            max_workers=None,
+            report_file=None,
+            event_db_filename=None,
+            seed=42,
+        )
+
     def test_cli_loads_config(self):
         import json, tempfile, os
 
