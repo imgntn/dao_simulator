@@ -30,6 +30,7 @@ class Developer(DAOMember):
             work_amount = random.uniform(0, self.reputation)
             project.receive_work(self, work_amount)
             self.reputation += work_amount / 10
+            self.mark_active()
 
     def choose_project_to_work_on(self):
         projects = [p for p in self.model.projects if p.status == "open"]

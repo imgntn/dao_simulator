@@ -18,6 +18,7 @@ settings = {
     "num_arbitrators": 2,
     "num_regulators": 2,
     "num_auditors": 0,
+    "num_bounty_hunters": 0,
     "num_external_partners": 2,
     "num_passive_members": 10,
     "violation_probability": 0.1,
@@ -26,6 +27,7 @@ settings = {
     "external_partner_interact_probability": 0.0,
     "staking_interest_rate": 0.0,
     "slash_fraction": 0.0,
+    "reputation_decay_rate": 0.01,
 }
 
 

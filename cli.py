@@ -39,6 +39,7 @@ def main(argv=None):
     parser.add_argument("--export-csv", type=str, default=None, help="Write CSV stats")
     parser.add_argument("--export-html", type=str, default=None, help="Write HTML report")
     parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--matrix", type=str, default=None, help="Path to scenario matrix file")
     for key in settings:
         if key.startswith("num_"):
             parser.add_argument(f"--{key}", type=int, default=None)
@@ -77,6 +78,20 @@ def main(argv=None):
         load_oracle_plugins(str(dir_path))
         watch_oracle_plugins(str(dir_path))
 
+    def load_matrix(path: str):
+        file_path = validate_file(path, allowed_base=Path.cwd())
+        import json
+        if file_path.suffix in (".yaml", ".yml"):
+            import yaml  # type: ignore
+            with open(file_path) as f:
+                data = yaml.safe_load(f) or []
+        else:
+            with open(file_path) as f:
+                data = json.load(f)
+        if not isinstance(data, list):
+            raise ValueError("Matrix config must be a list")
+        return data
+
     sim_kwargs = dict(
         use_parallel=args.use_parallel,
         use_async=args.use_async,
@@ -90,6 +105,36 @@ def main(argv=None):
         checkpoint_path=args.checkpoint_path,
         seed=args.seed,
     )
+
+    if args.matrix:
+        matrix = load_matrix(args.matrix)
+        original = settings.copy()
+        all_rows = []
+        last_sim = None
+        for idx, cfg in enumerate(matrix):
+            if not isinstance(cfg, dict):
+                continue
+            update_settings(**{k: cfg.get(k, original.get(k, settings[k])) for k in settings if k in cfg})
+            sim = DAOSimulation(**sim_kwargs)
+            sim.run(args.steps)
+            last_sim = sim
+            for row in sim.datacollector.model_vars:
+                r = row.copy()
+                r["scenario"] = idx
+                all_rows.append(r)
+        update_settings(**original)
+        if all_rows:
+            import csv, tempfile
+
+            csv_file = args.export_csv or tempfile.NamedTemporaryFile(delete=False, suffix=".csv").name
+            with open(csv_file, "w", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=all_rows[0].keys())
+                writer.writeheader()
+                for row in all_rows:
+                    writer.writerow(row)
+            if args.export_html:
+                generate_report(last_sim, csv_file=csv_file, html_file=args.export_html)
+        return
 
     if args.resume_from:
         state_file = validate_file(args.resume_from, allowed_base=Path.cwd())

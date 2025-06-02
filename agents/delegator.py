@@ -36,6 +36,7 @@ class Delegator(DAOMember):
             proposal.receive_delegated_support(self, token_amount)
             self.delegations[proposal] = token_amount
             self.reputation += token_amount / 100
+            self.mark_active()
 
     def choose_proposal_to_delegate_to(self):
         open_proposals = [p for p in self.model.proposals if not p.closed]

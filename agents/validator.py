@@ -30,6 +30,7 @@ class Validator(DAOMember):
             if self.monitoring_budget > 0:
                 self.monitor_project(project)
                 self.monitoring_budget -= 1
+                self.mark_active()
 
     def monitor_project(self, project):
         # Monitor the project and report any issues or concerns.
