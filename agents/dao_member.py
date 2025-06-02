@@ -56,6 +56,8 @@ class DAOMember(Agent):
         self.location = location
         self.staked_tokens = 0
         self.stake_locks = []  # List of (amount, unlock_step)
+        self.staking_rate = getattr(model, "staking_interest_rate", 0.0)
+        self.compound_stake = False
         if isinstance(voting_strategy, str):
             cls = get_strategy(voting_strategy)
             if cls is None:
@@ -121,6 +123,9 @@ class DAOMember(Agent):
             "tokens": self.tokens,
             "reputation": self.reputation,
             "location": self.location,
+            "staking_rate": self.staking_rate,
+            "compound_stake": self.compound_stake,
+            "staked_tokens": self.staked_tokens,
         }
 
     @classmethod
@@ -128,10 +133,14 @@ class DAOMember(Agent):
         cls_map = {c.__name__: c for c in cls.__subclasses__()}
         cls_map[cls.__name__] = cls
         agent_cls = cls_map.get(data["class"], cls)
-        return agent_cls(
+        member = agent_cls(
             data["unique_id"],
             model,
             data.get("tokens", 0),
             data.get("reputation", 0),
             data.get("location", "US"),
         )
+        member.staking_rate = data.get("staking_rate", getattr(model, "staking_interest_rate", 0.0))
+        member.compound_stake = data.get("compound_stake", False)
+        member.staked_tokens = data.get("staked_tokens", 0)
+        return member

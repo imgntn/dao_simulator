@@ -2,6 +2,25 @@ from data_structures.proposal import Proposal
 import random
 from pathlib import Path
 from typing import Optional
+try:  # pragma: no cover - optional dependency
+    from watchdog.observers import Observer
+    from watchdog.events import FileSystemEventHandler
+except Exception:  # pragma: no cover - fallback when watchdog not installed
+    class FileSystemEventHandler:
+        pass
+
+    class Observer:
+        def schedule(self, *_, **__):
+            pass
+
+        def start(self):
+            pass
+
+        def stop(self):
+            pass
+
+        def join(self, timeout=None):
+            pass
 
 from .path_utils import validate_directory
 
@@ -32,6 +51,28 @@ def load_strategy_plugins(
             for name, obj in module.__dict__.items():
                 if isinstance(obj, type) and hasattr(obj, "vote"):
                     register_strategy(name.lower(), obj)
+
+
+class _StrategyReloadHandler(FileSystemEventHandler):
+    def __init__(self, directory: str, allowed_dir: Optional[Path]) -> None:
+        self.directory = directory
+        self.allowed_dir = allowed_dir
+
+    def on_modified(self, event):
+        if not event.is_directory and event.src_path.endswith(".py"):
+            load_strategy_plugins(self.directory, allowed_dir=self.allowed_dir)
+
+    on_created = on_modified
+
+
+def watch_strategy_plugins(directory: str, *, allowed_dir: Optional[Path] = None) -> Observer:
+    """Watch ``directory`` and reload strategy plugins on change."""
+    dir_path = validate_directory(directory, allowed_base=allowed_dir)
+    handler = _StrategyReloadHandler(directory, allowed_dir)
+    observer = Observer()
+    observer.schedule(handler, str(dir_path), recursive=False)
+    observer.start()
+    return observer
 
 
 def register_strategy(name: str, strategy_cls) -> None:

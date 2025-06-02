@@ -473,6 +473,14 @@ class DAOSimulation(Model):
         self.datacollector.collect(self)
         if self.stats_writer:
             self.stats_writer.write_row(self.datacollector.model_vars[-1])
+        if hasattr(self.dao, "event_bus"):
+            self.dao.event_bus.publish(
+                "step_end",
+                step=self.schedule.steps,
+                num_members=len(self.dao.members),
+                token_price=self.dao.treasury.get_token_price("DAO_TOKEN"),
+                recent_proposals=[p.title for p in self.dao.proposals[-5:]],
+            )
 
     def expire_proposals(self):
         current_time = (
