@@ -143,3 +143,39 @@ class MembershipProposal(Proposal):
         super().__init__(dao, creator, title, description, 0, duration, topic="Membership")
         self.new_member = new_member
         self.type = "membership"
+
+
+class BountyProposal(Proposal):
+    """Proposal representing a discrete bounty task with a token reward."""
+
+    def __init__(self, dao, creator, title, description, reward, duration):
+        super().__init__(dao, creator, title, description, 0, duration, topic="Bounty")
+        self.reward = reward
+        self.type = "bounty"
+        self.completed = False
+
+    def to_dict(self):
+        data = super().to_dict()
+        data["reward"] = self.reward
+        data["completed"] = self.completed
+        return data
+
+    @classmethod
+    def from_dict(cls, data, dao, members_by_id):
+        creator = members_by_id.get(data.get("creator"))
+        proposal = cls(
+            dao,
+            creator,
+            data.get("title"),
+            data.get("description"),
+            data.get("reward", 0),
+            data.get("duration", 0),
+        )
+        proposal.status = data.get("status", "open")
+        proposal.votes_for = data.get("votes_for", 0)
+        proposal.votes_against = data.get("votes_against", 0)
+        proposal.current_funding = data.get("current_funding", 0)
+        proposal.creation_time = data.get("creation_time", 0)
+        proposal.voting_period = data.get("voting_period", proposal.duration)
+        proposal.completed = data.get("completed", False)
+        return proposal

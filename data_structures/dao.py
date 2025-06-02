@@ -14,6 +14,7 @@ class DAO:
         external_partner_interact_probability=0.0,
         staking_interest_rate=0.0,
         slash_fraction=0.0,
+        reputation_decay_rate=0.0,
         event_logger=None,
     ):
         self.name = name
@@ -39,6 +40,7 @@ class DAO:
         self.reputation_penalty = reputation_penalty
         self.staking_interest_rate = staking_interest_rate
         self.slash_fraction = slash_fraction
+        self.reputation_decay_rate = reputation_decay_rate
         self.current_step = 0
 
     def add_proposal(self, proposal):
@@ -181,6 +183,14 @@ class DAO:
             )
         return amount
 
+    def apply_reputation_decay(self):
+        """Reduce reputation for inactive members."""
+        if self.reputation_decay_rate <= 0:
+            return
+        for member in self.members:
+            if not getattr(member, "_active", False):
+                member.reputation *= 1 - self.reputation_decay_rate
+
     def to_dict(self):
         return {
             "name": self.name,
@@ -190,6 +200,7 @@ class DAO:
             "current_step": self.current_step,
             "staking_interest_rate": self.staking_interest_rate,
             "slash_fraction": self.slash_fraction,
+            "reputation_decay_rate": self.reputation_decay_rate,
         }
 
     @classmethod
@@ -198,6 +209,7 @@ class DAO:
             data.get("name", "DAO"),
             staking_interest_rate=data.get("staking_interest_rate", 0.0),
             slash_fraction=data.get("slash_fraction", 0.0),
+            reputation_decay_rate=data.get("reputation_decay_rate", 0.0),
             event_logger=event_logger,
         )
         dao.treasury = Treasury.from_dict(data.get("treasury", {}), event_bus=dao.event_bus)

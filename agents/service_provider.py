@@ -28,6 +28,7 @@ class ServiceProvider(DAOMember):
                 self.offer_service(proposal)
                 self.service_budget -= 1
                 self.reputation += 1
+                self.mark_active()
 
     def offer_service(self, proposal):
         # Offer service to the proposal, such as marketing, legal, or financial services.

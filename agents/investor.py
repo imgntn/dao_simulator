@@ -39,6 +39,7 @@ class Investor(DAOMember):
                 proposal.receive_investment(self, investment_amount)
                 self.investment_budget -= investment_amount
                 self.reputation += investment_amount / 100
+                self.mark_active()
 
     def adjust_budget_based_on_price(self):
         """Increase or decrease investment budget based on DAO token price."""

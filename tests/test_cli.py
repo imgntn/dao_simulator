@@ -113,6 +113,17 @@ class TestCLI(unittest.TestCase):
 
             self.assertIsNotNone(get_oracle("fixed"))
 
+    def test_cli_matrix_option(self):
+        import json, tempfile, os
+
+        fd, fname = tempfile.mkstemp(suffix=".json", dir=os.getcwd())
+        os.close(fd)
+        with open(fname, "w") as f:
+            json.dump([{"num_developers": 1}, {"num_developers": 2}], f)
+
+        cli.main(["--steps", "0", "--matrix", fname])
+        os.remove(fname)
+
 
 if __name__ == "__main__":
     unittest.main()

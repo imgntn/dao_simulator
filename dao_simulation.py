@@ -160,7 +160,13 @@ class SQLiteDataCollector:
 
 
 from data_structures.dao import DAO
-from data_structures import FundingProposal, GovernanceProposal, MembershipProposal, Project
+from data_structures import (
+    FundingProposal,
+    GovernanceProposal,
+    MembershipProposal,
+    BountyProposal,
+    Project,
+)
 from utils import EventLogger
 from agents import (
     Arbitrator,
@@ -175,6 +181,7 @@ from agents import (
     ServiceProvider,
     Auditor,
     Validator,
+    BountyHunter,
 )
 from utils.locations import generate_random_location
 
@@ -209,6 +216,7 @@ class DAOSimulation(Model):
         num_arbitrators: int | None = None,
         num_regulators: int | None = None,
         num_auditors: int | None = None,
+        num_bounty_hunters: int | None = None,
         num_external_partners: int | None = None,
         num_passive_members: int | None = None,
         comment_probability: float | None = None,
@@ -217,6 +225,7 @@ class DAOSimulation(Model):
         reputation_penalty: int | None = None,
         staking_interest_rate: float | None = None,
         slash_fraction: float | None = None,
+        reputation_decay_rate: float | None = None,
         report_file: str | None = None,
         seed: int | None = None,
         **_: object,
@@ -248,6 +257,11 @@ class DAOSimulation(Model):
             if slash_fraction is not None
             else settings.get("slash_fraction", 0.0)
         )
+        self.reputation_decay_rate = (
+            reputation_decay_rate
+            if reputation_decay_rate is not None
+            else settings.get("reputation_decay_rate", 0.0)
+        )
         self.report_file = report_file
 
         # Use provided parameters or fall back to global settings
@@ -267,6 +281,9 @@ class DAOSimulation(Model):
         self.num_arbitrators = num_arbitrators if num_arbitrators is not None else settings["num_arbitrators"]
         self.num_regulators = num_regulators if num_regulators is not None else settings["num_regulators"]
         self.num_auditors = num_auditors if num_auditors is not None else settings.get("num_auditors", 0)
+        self.num_bounty_hunters = (
+            num_bounty_hunters if num_bounty_hunters is not None else settings.get("num_bounty_hunters", 0)
+        )
         self.num_external_partners = (
             num_external_partners if num_external_partners is not None else settings["num_external_partners"]
         )
@@ -307,6 +324,7 @@ class DAOSimulation(Model):
             external_partner_interact_probability=self.external_partner_interact_probability,
             staking_interest_rate=self.staking_interest_rate,
             slash_fraction=self.slash_fraction,
+            reputation_decay_rate=self.reputation_decay_rate,
             event_logger=self.event_logger,
         )
         self.datacollector = SimpleDataCollector(self.dao)
@@ -428,6 +446,16 @@ class DAOSimulation(Model):
             )
             self.dao.add_member(auditor)
 
+        for i in range(self.num_bounty_hunters):
+            hunter = BountyHunter(
+                unique_id=f"BountyHunter_{i}",
+                model=self.dao,
+                tokens=100,
+                reputation=10,
+                location=generate_random_location(),
+            )
+            self.dao.add_member(hunter)
+
         for i in range(self.num_external_partners):
             external_partner = ExternalPartner(
                 unique_id=f"ExternalPartner_{i}",
@@ -466,8 +494,12 @@ class DAOSimulation(Model):
         self.remove_agents()
         ## TODO: ask for more complex examples of 1-3
 
+        for member in self.dao.members:
+            member._active = False
+
         # Execute all agent steps via the scheduler
         self.schedule.step()
+        self.dao.apply_reputation_decay()
         # Keep DAO time in sync with the scheduler
         self.dao.current_step += 1
         self.datacollector.collect(self)
@@ -514,6 +546,9 @@ class DAOSimulation(Model):
         elif isinstance(proposal, MembershipProposal):
             self.dao.add_member(proposal.new_member)
             self.schedule.add(proposal.new_member)
+        elif isinstance(proposal, BountyProposal):
+            # Ensure funds are available for the bounty reward
+            pass
 
     def complete_projects(self):
         current_time = (

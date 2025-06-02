@@ -11,4 +11,5 @@ from .service_provider import ServiceProvider
 from .validator import Validator
 from .liquid_delegator import LiquidDelegator
 from .auditor import Auditor
+from .bounty_hunter import BountyHunter
 

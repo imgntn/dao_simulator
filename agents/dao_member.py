@@ -71,9 +71,14 @@ class DAOMember(Agent):
         self.comments = {}
         self.votes = {}
         self.delegates = []
+        self._active = False
+
+    def mark_active(self):
+        self._active = True
 
     def vote_on_proposal(self, proposal):
         self.voting_strategy.vote(self, proposal)
+        self.mark_active()
         for delegate in getattr(self, "delegates", []):
             delegate.receive_representative_vote(
                 proposal,
@@ -84,6 +89,7 @@ class DAOMember(Agent):
     def leave_comment(self, proposal, sentiment):
         self.comments[proposal] = sentiment
         proposal.add_comment(self, sentiment)
+        self.mark_active()
 
     def stake_tokens(self, amount, token="DAO_TOKEN", lockup_period=0):
         """Stake ``amount`` of ``token`` via the DAO with an optional lockup."""

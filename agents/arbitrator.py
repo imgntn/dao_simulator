@@ -46,6 +46,7 @@ class Arbitrator(DAOMember):
             dispute.resolved = True
             self.arbitration_capacity -= 1
             self.reputation += 1
+            self.mark_active()
 
             if random.random() < self.model.violation_probability:
                 violation = Violation(

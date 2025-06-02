@@ -115,7 +115,33 @@ def watch_oracle_plugins(directory: str, *, allowed_dir: Optional[Path] = None) 
     dir_path = validate_directory(directory, allowed_base=allowed_dir)
     handler = _OracleReloadHandler(directory, allowed_dir)
     # ``PollingObserver`` avoids issues with virtualised filesystems in tests
+    import threading, time
+
     observer = PollingObserver(timeout=0.1) if 'PollingObserver' in globals() else Observer()
     observer.schedule(handler, str(dir_path), recursive=False)
     observer.start()
+
+    running = True
+
+    def poll():
+        while running:
+            try:
+                load_oracle_plugins(directory, allowed_dir=allowed_dir)
+            except Exception:
+                pass
+            time.sleep(0.5)
+
+    thread = threading.Thread(target=poll, daemon=True)
+    thread.start()
+
+    orig_stop = observer.stop
+
+    def stop():
+        nonlocal running
+        running = False
+        orig_stop()
+        thread.join()
+
+    observer.stop = stop  # type: ignore[assignment]
+    observer.stop_and_join = stop  # backwards compat
     return observer
