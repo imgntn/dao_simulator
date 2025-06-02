@@ -45,3 +45,7 @@ This is the ServiceProvider agent class, which inherits from DAOMember. It has a
 ## validator.py
 
 This is the Validator agent class, which inherits from DAOMember. It has a monitoring_budget attribute that represents the budget available for monitoring projects. The step function includes voting on a random proposal, leaving a comment on a random proposal, and monitoring projects. The monitor_projects function checks if the monitoring_budget is greater than 0, and if so, monitors a randomly chosen project and reduces the monitoring_budget by 1. The monitor_project function is a placeholder for the actual implementation of project monitoring.
+
+## auditor.py
+
+This is the Auditor agent class, which inherits from DAOMember. The step function reviews open proposals and flags any with very high funding goals or suspicious descriptions by creating a Dispute. Auditors then vote on a random proposal and may leave a comment.

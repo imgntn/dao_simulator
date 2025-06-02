@@ -129,6 +129,7 @@ from agents import (
     ProposalCreator,
     Regulator,
     ServiceProvider,
+    Auditor,
     Validator,
 )
 from utils.locations import generate_random_location
@@ -159,6 +160,7 @@ class DAOSimulation(Model):
         num_service_providers: int | None = None,
         num_arbitrators: int | None = None,
         num_regulators: int | None = None,
+        num_auditors: int | None = None,
         num_external_partners: int | None = None,
         num_passive_members: int | None = None,
         comment_probability: float | None = None,
@@ -210,6 +212,7 @@ class DAOSimulation(Model):
         )
         self.num_arbitrators = num_arbitrators if num_arbitrators is not None else settings["num_arbitrators"]
         self.num_regulators = num_regulators if num_regulators is not None else settings["num_regulators"]
+        self.num_auditors = num_auditors if num_auditors is not None else settings.get("num_auditors", 0)
         self.num_external_partners = (
             num_external_partners if num_external_partners is not None else settings["num_external_partners"]
         )
@@ -344,6 +347,16 @@ class DAOSimulation(Model):
                 location=generate_random_location(),
             )
             self.dao.add_member(regulator)
+
+        for i in range(self.num_auditors):
+            auditor = Auditor(
+                unique_id=f"Auditor_{i}",
+                model=self.dao,
+                tokens=100,
+                reputation=0,
+                location=generate_random_location(),
+            )
+            self.dao.add_member(auditor)
 
         for i in range(self.num_external_partners):
             external_partner = ExternalPartner(

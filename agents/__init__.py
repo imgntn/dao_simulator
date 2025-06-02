@@ -10,4 +10,5 @@ from .regulator import Regulator
 from .service_provider import ServiceProvider
 from .validator import Validator
 from .liquid_delegator import LiquidDelegator
+from .auditor import Auditor
 

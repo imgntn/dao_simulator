@@ -135,3 +135,5 @@ Flags like `--use-parallel` or `--use-async` enable alternative schedulers. The
 `--strategy-path` and `--agent-plugin-path` allow loading custom voting
 strategies and agent types from external Python modules. Use
 `--event-db` to store events in a SQLite database instead of CSV.
+`--export-csv` and `--export-html` write collected statistics and a simple
+HTML report directly from the command line.
