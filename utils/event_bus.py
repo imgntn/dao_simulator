@@ -18,6 +18,24 @@ class EventBus:
         with self._lock:
             self._subscribers.setdefault(event, []).append(callback)
 
+    def unsubscribe(self, event: str, callback) -> None:
+        """Remove ``callback`` from ``event`` subscriptions."""
+        with self._lock:
+            callbacks = self._subscribers.get(event)
+            if callbacks and callback in callbacks:
+                callbacks.remove(callback)
+
+    def subscribe_once(self, event: str, callback) -> None:
+        """Invoke ``callback`` at most once for ``event``."""
+
+        def wrapper(*args, **kwargs):
+            try:
+                callback(*args, **kwargs)
+            finally:
+                self.unsubscribe(event, wrapper)
+
+        self.subscribe(event, wrapper)
+
     def _dispatch(self, event: str, data: dict) -> None:
         with self._lock:
             subscribers = list(self._subscribers.get(event, []))

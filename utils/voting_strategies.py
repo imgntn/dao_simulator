@@ -76,7 +76,19 @@ def watch_strategy_plugins(directory: str, *, allowed_dir: Optional[Path] = None
 
 
 def register_strategy(name: str, strategy_cls) -> None:
-    STRATEGY_REGISTRY[name] = strategy_cls
+    """Register ``strategy_cls`` under ``name``.
+
+    If a strategy with the same name already exists it will be updated in
+    place so that existing instances pick up the new behaviour.  This is
+    useful for hot-reloading during long running simulations.
+    """
+    existing = STRATEGY_REGISTRY.get(name)
+    if existing is not None:
+        for attr, val in vars(strategy_cls).items():
+            if not attr.startswith("__") or attr == "__doc__":
+                setattr(existing, attr, val)
+    else:
+        STRATEGY_REGISTRY[name] = strategy_cls
 
 
 def get_strategy(name: str):

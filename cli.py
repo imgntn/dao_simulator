@@ -71,10 +71,11 @@ def main(argv=None):
         watch_agent_plugins(str(dir_path))
 
     if args.oracle_plugin_path:
-        from utils.oracles import load_oracle_plugins
+        from utils.oracles import load_oracle_plugins, watch_oracle_plugins
 
         dir_path = validate_directory(args.oracle_plugin_path, allowed_base=Path.cwd())
         load_oracle_plugins(str(dir_path))
+        watch_oracle_plugins(str(dir_path))
 
     sim_kwargs = dict(
         use_parallel=args.use_parallel,

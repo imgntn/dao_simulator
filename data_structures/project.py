@@ -36,3 +36,12 @@ class Project:
     def receive_work(self, member, work_amount):
         """Record work contributed by a member."""
         self.update_work_done(member, work_amount)
+
+    def total_work(self) -> float:
+        return sum(self.work_done.values())
+
+    def member_share(self, member) -> float:
+        total = self.total_work()
+        if total == 0:
+            return 0.0
+        return self.work_done.get(member, 0.0) / total
