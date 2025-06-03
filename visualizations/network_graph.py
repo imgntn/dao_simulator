@@ -16,6 +16,18 @@ def plot_network_graph(dao, show=True):
         if hasattr(proposal, "creator"):
             G.add_edge(proposal.creator.unique_id, prop_id)
 
+    # Delegation links
+    delegation_edges = []
+    for member in dao.members:
+        if hasattr(member, "delegations"):
+            for prop, amount in member.delegations.items():
+                delegation_edges.append((member.unique_id, prop.title, {"weight": amount, "style": "dashed", "color": "blue"}))
+        rep = getattr(member, "representative", None)
+        if rep is not None:
+            delegation_edges.append((member.unique_id, rep.unique_id, {"style": "dashed", "color": "purple"}))
+    for u, v, d in delegation_edges:
+        G.add_edge(u, v, **d)
+
     pos = nx.spring_layout(G)
 
     # Customizing node colors based on node_type
@@ -27,22 +39,23 @@ def plot_network_graph(dao, show=True):
         else:
             node_colors.append("skyblue")
 
-    # Customizing edge colors based on support
-    edge_colors = [data.get("color", "gray") for _, _, data in G.edges(data=True)]
-
-    # Drawing the network graph
+    # Draw nodes and labels
     fig, ax = plt.subplots()
-    nx.draw(
-        G,
-        pos,
-        ax=ax,
-        with_labels=True,
-        node_size=2000,
-        node_color=node_colors,
-        edge_color=edge_colors,
-        font_size=10,
-        font_weight="bold",
-    )
+    nx.draw_networkx_nodes(G, pos, node_color=node_colors, node_size=2000, ax=ax)
+    nx.draw_networkx_labels(G, pos, font_size=10, font_weight="bold", ax=ax)
+
+    # Draw edges with style attributes
+    edges = list(G.edges(data=True))
+    for u, v, d in edges:
+        nx.draw_networkx_edges(
+            G,
+            pos,
+            edgelist=[(u, v)],
+            ax=ax,
+            edge_color=d.get("color", "gray"),
+            style=d.get("style", "solid"),
+            width=max(1, d.get("weight", 1) / 10),
+        )
 
     # Creating a legend
     legend_elements = [
@@ -65,6 +78,7 @@ def plot_network_graph(dao, show=True):
             markersize=15,
         ),
         Line2D([0], [0], color="green", label="Support", linewidth=3),
+        Line2D([0], [0], color="blue", label="Delegation", linestyle="dashed", linewidth=2),
         Line2D([0], [0], color="gray", label="No Support", linewidth=3),
     ]
     plt.legend(handles=legend_elements, loc="upper left")

@@ -1,6 +1,6 @@
 ## network_graph.py
 
-This updated version of network_graph.py customizes the node colors based on node_type and edge colors based on support. It also includes a legend to better understand the visualization.
+This updated version of network_graph.py customizes node colors based on node type and now draws delegation relationships with dashed edges. Representatives of liquid delegators and delegated proposal support are visualized so influence flows are easier to inspect. The legend explains the new edge style.
 
 ## heatmap.py
 
