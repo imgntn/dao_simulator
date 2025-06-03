@@ -534,7 +534,6 @@ class DAOSimulation(Model):
         self.conduct_regular_meeting()
         self.add_new_agents()
         self.remove_agents()
-        ## TODO: ask for more complex examples of 1-3
 
         for member in self.dao.members:
             member._active = False
@@ -770,7 +769,8 @@ class DAOSimulation(Model):
     def remove_agents(self):
         agents_to_remove = []
         for agent in self.dao.members:
-            if agent.reputation < 10:  # Remove if reputation is below 10
+            # Only cull members whose reputation dropped below zero.
+            if agent.reputation < 0:
                 agents_to_remove.append(agent)
         for agent in agents_to_remove:
             self.dao.remove_member(agent)
