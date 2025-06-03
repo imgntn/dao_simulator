@@ -80,6 +80,7 @@ class SimpleDataCollector:
         members = model.dao.members
         avg_rep = sum(m.reputation for m in members) / len(members) if members else 0
         total_tokens = sum(m.tokens for m in members)
+        gini_coeff = gini([m.tokens for m in members]) if members else 0.0
         price = model.dao.treasury.get_token_price("DAO_TOKEN")
         self.price_history.append(price)
         self.model_vars.append(
@@ -90,6 +91,7 @@ class SimpleDataCollector:
                 "num_projects": len(model.dao.projects),
                 "avg_reputation": avg_rep,
                 "total_tokens": total_tokens,
+                "gini_coefficient": gini_coeff,
                 "event_count": sum(self.event_counts.values()),
                 "dao_token_price": price,
             }
@@ -106,6 +108,7 @@ class CSVDataCollector:
             "num_members",
             "num_proposals",
             "num_projects",
+            "gini_coefficient",
             "dao_token_price",
         ]
 
@@ -134,6 +137,7 @@ class SQLiteDataCollector:
             num_projects INTEGER,
             avg_reputation REAL,
             total_tokens REAL,
+            gini_coefficient REAL,
             event_count INTEGER,
             dao_token_price REAL
         )"""
@@ -142,7 +146,7 @@ class SQLiteDataCollector:
 
     def write_row(self, row: dict) -> None:
         self.conn.execute(
-            "INSERT INTO stats VALUES (?,?,?,?,?,?,?,?)",
+            "INSERT INTO stats VALUES (?,?,?,?,?,?,?,?,?)",
             (
                 row.get("step"),
                 row.get("num_members"),
@@ -150,6 +154,7 @@ class SQLiteDataCollector:
                 row.get("num_projects"),
                 row.get("avg_reputation"),
                 row.get("total_tokens"),
+                row.get("gini_coefficient"),
                 row.get("event_count"),
                 row.get("dao_token_price"),
             ),
@@ -171,6 +176,7 @@ from data_structures import (
     Project,
 )
 from utils import EventLogger
+from utils import gini
 from agents import (
     Arbitrator,
     Delegator,

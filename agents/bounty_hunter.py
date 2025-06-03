@@ -25,5 +25,13 @@ class BountyHunter(DAOMember):
         bounty.completed = True
         reward = self.model.treasury.withdraw_locked("DAO_TOKEN", bounty.reward)
         self.tokens += reward
+        if self.model.event_bus:
+            self.model.event_bus.publish(
+                "bounty_completed",
+                step=self.model.current_step,
+                proposal=bounty.title,
+                hunter=self.unique_id,
+                reward=reward,
+            )
         self.mark_active()
 

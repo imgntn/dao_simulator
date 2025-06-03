@@ -109,6 +109,17 @@ The visualization depends on the optional Mesa components listed in `requirement
    python -m unittest discover tests
    ```
 
+7. **Visualize Delegations**
+
+   ```python
+   from visualizations.network_graph import plot_network_graph
+   from dao_simulation import DAOSimulation
+   sim = DAOSimulation(num_steps=0)
+   plot_network_graph(sim.dao)
+   ```
+
+   The network graph shows dashed edges for delegation links.
+
 ## Configuration
 
 Simulation parameters are stored in `settings.py`. Besides the number of agents,

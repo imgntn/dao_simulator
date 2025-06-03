@@ -14,6 +14,9 @@ class TestDataCollectorMetrics(unittest.TestCase):
         self.assertIn('total_tokens', row)
         self.assertIn('event_count', row)
         self.assertIn('dao_token_price', row)
+        self.assertIn('gini_coefficient', row)
+        self.assertGreaterEqual(row['gini_coefficient'], 0)
+        self.assertLessEqual(row['gini_coefficient'], 1)
 
 if __name__ == "__main__":
     unittest.main()

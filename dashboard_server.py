@@ -22,6 +22,8 @@ HTML_PAGE = """<!DOCTYPE html>
 <canvas id='chart' width='400' height='150'></canvas>
 <h2>Top Members</h2>
 <table id='topMembers'></table>
+<h2>Completed Bounties</h2>
+<ul id='bounties'></ul>
 <script>
 const ws = new WebSocket(`ws://${location.host}/ws`);
 let prices = [];
@@ -60,6 +62,11 @@ ws.onmessage = (ev) => {
       row.innerHTML = `<td>${m}</td><td>${t.toFixed(1)}</td>`;
       table.appendChild(row);
     });
+  } else if (data.event === 'bounty_completed') {
+    const list = document.getElementById('bounties');
+    const item = document.createElement('li');
+    item.textContent = `${data.hunter} completed ${data.proposal} (+${data.reward})`;
+    list.prepend(item);
   }
 };
 </script>

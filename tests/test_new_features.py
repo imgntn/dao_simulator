@@ -95,6 +95,7 @@ class TestNewFeatures(unittest.TestCase):
         self.assertTrue(bounty.completed)
         self.assertEqual(hunter.tokens, 110)
         self.assertEqual(sim.dao.treasury.get_locked_balance("DAO_TOKEN"), 0)
+        self.assertIn("bounty_completed", sim.datacollector.event_counts)
 
 if __name__ == "__main__":
     unittest.main()
