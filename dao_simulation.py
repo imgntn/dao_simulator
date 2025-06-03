@@ -83,19 +83,30 @@ class SimpleDataCollector:
         gini_coeff = gini([m.tokens for m in members]) if members else 0.0
         price = model.dao.treasury.get_token_price("DAO_TOKEN")
         self.price_history.append(price)
-        self.model_vars.append(
-            {
-                "step": model.schedule.steps,
-                "num_members": len(members),
-                "num_proposals": len(model.dao.proposals),
-                "num_projects": len(model.dao.projects),
-                "avg_reputation": avg_rep,
-                "total_tokens": total_tokens,
-                "gini_coefficient": gini_coeff,
-                "event_count": sum(self.event_counts.values()),
-                "dao_token_price": price,
-            }
-        )
+        row = {
+            "step": model.schedule.steps,
+            "num_members": len(members),
+            "num_proposals": len(model.dao.proposals),
+            "num_projects": len(model.dao.projects),
+            "avg_reputation": avg_rep,
+            "total_tokens": total_tokens,
+            "gini_coefficient": gini_coeff,
+            "event_count": sum(self.event_counts.values()),
+            "dao_token_price": price,
+        }
+        try:
+            from utils.metric_plugins import get_metrics
+
+            for func in get_metrics().values():
+                try:
+                    extra = func(model)
+                    if isinstance(extra, dict):
+                        row.update(extra)
+                except Exception:
+                    pass
+        except Exception:
+            pass
+        self.model_vars.append(row)
 
 
 class CSVDataCollector:

@@ -2,6 +2,12 @@ from .network_graph import plot_network_graph
 from .heatmap import plot_heat_map
 from .choropleth_map import plot_choropleth_map
 from .line_chart import plot_price_history
+try:
+    from .interactive_network import interactive_network
+    from .interactive_line_chart import interactive_price_history
+except Exception:  # pragma: no cover - plotly optional
+    interactive_network = None
+    interactive_price_history = None
 import pandas as pd
 import base64
 from io import BytesIO
@@ -52,6 +58,18 @@ def generate_report(simulation, csv_file=None, html_file=None):
             if fig:
                 encoded = _fig_to_base64(fig)
                 html_parts.append(f'<img src="data:image/png;base64,{encoded}"/>')
+        if interactive_network:
+            try:
+                inet = interactive_network(dao).to_html(include_plotlyjs="cdn")
+                html_parts.append(inet)
+            except Exception as exc:
+                print(f"Interactive network failed: {exc}")
+        if interactive_price_history and csv_file:
+            try:
+                iprice = interactive_price_history(df["dao_token_price"].tolist()).to_html(include_plotlyjs=False)
+                html_parts.append(iprice)
+            except Exception as exc:
+                print(f"Interactive line chart failed: {exc}")
         html_parts.append("</body></html>")
         with open(html_file, "w") as f:
             f.write("\n".join(html_parts))
