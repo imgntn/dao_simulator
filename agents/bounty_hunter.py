@@ -14,13 +14,16 @@ class BountyHunter(DAOMember):
         bounties = [
             p
             for p in self.model.proposals
-            if isinstance(p, BountyProposal) and p.status == "approved" and not p.completed
+            if isinstance(p, BountyProposal)
+            and p.status == "approved"
+            and p.reward_locked
+            and not p.completed
         ]
         if not bounties:
             return
         bounty = random.choice(bounties)
         bounty.completed = True
-        self.model.treasury.withdraw("DAO_TOKEN", bounty.reward)
-        self.tokens += bounty.reward
+        reward = self.model.treasury.withdraw_locked("DAO_TOKEN", bounty.reward)
+        self.tokens += reward
         self.mark_active()
 

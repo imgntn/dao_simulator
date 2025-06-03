@@ -10,3 +10,4 @@ from .project import Project
 from .dispute import Dispute
 from .treasury import Treasury
 from .violation import Violation
+from .market_shock import MarketShock

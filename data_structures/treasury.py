@@ -6,6 +6,7 @@ from utils import RandomWalkOracle, PriceOracle
 class Treasury:
     def __init__(self, event_logger=None, event_bus=None, oracle: PriceOracle | None = None):
         self.tokens = defaultdict(float)
+        self._locked_tokens = defaultdict(float)
         # Track prices for all tokens held by the treasury.  The DAO token is
         # initialised with a default price of ``1.0`` so tests don't need to
         # seed a price before using it.
@@ -38,6 +39,38 @@ class Treasury:
             self.event_logger.log(0, "token_withdraw", token=token, amount=withdrawn)
         return withdrawn
 
+    def lock_tokens(self, token: str, amount: float) -> float:
+        """Reserve ``amount`` of ``token`` for future payout."""
+        locked = self.withdraw(token, amount)
+        if locked > 0:
+            self._locked_tokens[token] += locked
+            if self.event_bus:
+                self.event_bus.publish(
+                    "token_locked", step=0, token=token, amount=locked
+                )
+            elif self.event_logger:
+                self.event_logger.log(0, "token_locked", token=token, amount=locked)
+        return locked
+
+    def withdraw_locked(self, token: str, amount: float) -> float:
+        """Withdraw from previously locked tokens."""
+        if self._locked_tokens[token] >= amount:
+            self._locked_tokens[token] -= amount
+            withdrawn = amount
+        else:
+            withdrawn = self._locked_tokens[token]
+            self._locked_tokens[token] = 0
+        if self.event_bus:
+            self.event_bus.publish(
+                "token_withdraw_locked", step=0, token=token, amount=withdrawn
+            )
+        elif self.event_logger:
+            self.event_logger.log(0, "token_withdraw_locked", token=token, amount=withdrawn)
+        return withdrawn
+
+    def get_locked_balance(self, token: str) -> float:
+        return self._locked_tokens[token]
+
     def update_token_price(self, token, new_price):
         self.token_prices[token] = new_price
 
@@ -51,6 +84,7 @@ class Treasury:
     def to_dict(self):
         return {
             "tokens": dict(self.tokens),
+            "locked_tokens": dict(self._locked_tokens),
             "token_prices": self.token_prices,
             "_revenue": self._revenue,
         }
@@ -59,6 +93,7 @@ class Treasury:
     def from_dict(cls, data, event_bus=None):
         t = cls(event_bus=event_bus)
         t.tokens = defaultdict(float, data.get("tokens", {}))
+        t._locked_tokens = defaultdict(float, data.get("locked_tokens", {}))
         t.token_prices = data.get("token_prices", {"DAO_TOKEN": 1.0})
         t._revenue = data.get("_revenue", 0.0)
         t._price_pressure = defaultdict(float)

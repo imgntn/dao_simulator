@@ -84,14 +84,17 @@ class TestNewFeatures(unittest.TestCase):
         )
         creator = DAOMember("c", model=sim.dao, tokens=100, reputation=0, location="US")
         sim.dao.add_member(creator)
+        sim.dao.treasury.deposit("DAO_TOKEN", 20)
         bounty = BountyProposal(sim.dao, creator, "b", "d", 10, 1)
         sim.dao.add_proposal(bounty)
         bounty.status = "approved"
+        sim.process_approved_proposal(bounty)
         sim.step()
         sim.step()
         hunter = [m for m in sim.dao.members if m.__class__.__name__ == "BountyHunter"][0]
         self.assertTrue(bounty.completed)
         self.assertEqual(hunter.tokens, 110)
+        self.assertEqual(sim.dao.treasury.get_locked_balance("DAO_TOKEN"), 0)
 
 if __name__ == "__main__":
     unittest.main()

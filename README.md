@@ -94,7 +94,16 @@ The simulation also includes utility functions and voting strategies that help s
 
 The visualization depends on the optional Mesa components listed in `requirements.txt`.
 
-5. **Run the Tests**
+5. **Optional: Start the Dashboard Server**
+
+   ```bash
+   python main.py --websocket-port 8000
+   ```
+
+   This feature requires `fastapi` and `uvicorn`. They are listed as optional
+   dependencies in `requirements.txt`.
+
+6. **Run the Tests**
 
    ```bash
    python -m unittest discover tests

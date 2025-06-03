@@ -153,11 +153,13 @@ class BountyProposal(Proposal):
         self.reward = reward
         self.type = "bounty"
         self.completed = False
+        self.reward_locked = False
 
     def to_dict(self):
         data = super().to_dict()
         data["reward"] = self.reward
         data["completed"] = self.completed
+        data["reward_locked"] = self.reward_locked
         return data
 
     @classmethod
@@ -178,4 +180,5 @@ class BountyProposal(Proposal):
         proposal.creation_time = data.get("creation_time", 0)
         proposal.voting_period = data.get("voting_period", proposal.duration)
         proposal.completed = data.get("completed", False)
+        proposal.reward_locked = data.get("reward_locked", False)
         return proposal

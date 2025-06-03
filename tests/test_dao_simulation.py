@@ -109,5 +109,29 @@ class TestDAOSimulation(unittest.TestCase):
         locs2 = [m.location for m in sim2.dao.members]
         self.assertEqual(locs1, locs2)
 
+    def test_market_shock_event(self):
+        sim = DAOSimulation(
+            num_developers=0,
+            num_investors=1,
+            num_delegators=0,
+            num_proposal_creators=0,
+            num_validators=0,
+            num_service_providers=0,
+            num_arbitrators=0,
+            num_regulators=0,
+            num_auditors=0,
+            num_bounty_hunters=0,
+            num_external_partners=0,
+            num_passive_members=0,
+            market_shock_frequency=1,
+            comment_probability=0,
+        )
+        investor = [m for m in sim.dao.members if m.__class__.__name__ == "Investor"][0]
+        investor.reputation = 20
+        initial_budget = investor.investment_budget
+        sim.step()
+        self.assertNotEqual(sim.current_shock, 0)
+        self.assertNotEqual(investor.investment_budget, initial_budget)
+
 if __name__ == "__main__":
     unittest.main()

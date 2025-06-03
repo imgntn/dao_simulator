@@ -41,6 +41,15 @@ class TestTreasury(unittest.TestCase):
         self.assertTrue(0.9 <= new_price <= 1.1)
         self.assertNotEqual(old_price, new_price)
 
+    def test_lock_and_withdraw_locked(self):
+        self.treasury.deposit("DAO_TOKEN", 50)
+        locked = self.treasury.lock_tokens("DAO_TOKEN", 30)
+        self.assertEqual(locked, 30)
+        self.assertEqual(self.treasury.get_locked_balance("DAO_TOKEN"), 30)
+        withdrawn = self.treasury.withdraw_locked("DAO_TOKEN", 20)
+        self.assertEqual(withdrawn, 20)
+        self.assertEqual(self.treasury.get_locked_balance("DAO_TOKEN"), 10)
+
 
 if __name__ == "__main__":
     unittest.main()
