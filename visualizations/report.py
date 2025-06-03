@@ -58,6 +58,12 @@ def generate_report(simulation, csv_file=None, html_file=None):
             if fig:
                 encoded = _fig_to_base64(fig)
                 html_parts.append(f'<img src="data:image/png;base64,{encoded}"/>')
+        if getattr(dao, "market_shocks", None):
+            rows = "<h2>Market Shocks</h2><ul>"
+            for s in dao.market_shocks:
+                rows += f"<li>Step {s.step}: {s.severity:+.2f}</li>"
+            rows += "</ul>"
+            html_parts.append(rows)
         if interactive_network:
             try:
                 inet = interactive_network(dao).to_html(include_plotlyjs="cdn")

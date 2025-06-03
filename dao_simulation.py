@@ -70,6 +70,7 @@ class SimpleDataCollector:
         self.model_vars = []
         self.event_counts = {}
         self.price_history: list[float] = []
+        self.gini_history: list[float] = []
         if dao is not None:
             dao.event_bus.subscribe("*", self._handle_event)
 
@@ -83,6 +84,7 @@ class SimpleDataCollector:
         gini_coeff = gini([m.tokens for m in members]) if members else 0.0
         price = model.dao.treasury.get_token_price("DAO_TOKEN")
         self.price_history.append(price)
+        self.gini_history.append(gini_coeff)
         row = {
             "step": model.schedule.steps,
             "num_members": len(members),
@@ -553,6 +555,8 @@ class DAOSimulation(Model):
                 token_price=self.dao.treasury.get_token_price("DAO_TOKEN"),
                 recent_proposals=[p.title for p in self.dao.proposals[-5:]],
                 price_history=self.datacollector.price_history,
+                gini_coefficient=self.datacollector.gini_history[-1],
+                gini_history=self.datacollector.gini_history,
                 top_members=[
                     (m.unique_id, m.tokens)
                     for m in sorted(
@@ -672,6 +676,9 @@ class DAOSimulation(Model):
         severity = factor - 1
         self.current_shock = severity
         self.dao.current_shock = severity
+        from data_structures.market_shock import MarketShock
+        shock = MarketShock(self.schedule.steps, severity)
+        self.dao.market_shocks.append(shock)
         if self.dao.event_bus:
             self.dao.event_bus.publish(
                 "market_shock",

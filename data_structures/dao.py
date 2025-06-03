@@ -42,6 +42,8 @@ class DAO:
         self.slash_fraction = slash_fraction
         self.reputation_decay_rate = reputation_decay_rate
         self.current_step = 0
+        self.market_shocks = []
+        self.current_shock = 0.0
 
     def add_proposal(self, proposal):
         proposal.creation_time = self.current_step
@@ -212,6 +214,7 @@ class DAO:
             "treasury": self.treasury.to_dict(),
             "members": [m.to_dict() for m in self.members],
             "proposals": [p.to_dict() for p in self.proposals],
+            "market_shocks": [s.to_dict() for s in self.market_shocks],
             "current_step": self.current_step,
             "staking_interest_rate": self.staking_interest_rate,
             "slash_fraction": self.slash_fraction,
@@ -236,6 +239,8 @@ class DAO:
             dao.members.append(member)
         members_by_id = {m.unique_id: m for m in dao.members}
         dao.proposals = [Proposal.from_dict(p, dao, members_by_id) for p in data.get("proposals", [])]
+        from .market_shock import MarketShock
+        dao.market_shocks = [MarketShock.from_dict(s) for s in data.get("market_shocks", [])]
         dao.current_step = data.get("current_step", 0)
         return dao
 

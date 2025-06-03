@@ -7,3 +7,8 @@ class MarketShock:
 
     def to_dict(self) -> dict:
         return {"step": self.step, "severity": self.severity}
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(data.get("step", 0), data.get("severity", 0.0))
+

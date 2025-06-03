@@ -140,6 +140,22 @@ Call `update_settings()` or edit the file directly to experiment with different
 values.  Settings can also be loaded from a JSON or YAML file using the new
 `load_settings()` helper or the `--config` flag in `cli.py`.
 
+## Price Oracles
+
+Token prices are driven by a pluggable oracle system.  The default
+`RandomWalkOracle` performs a simple random walk.  A more realistic
+`GeometricBrownianOracle` is also included and can be selected when
+constructing a `Treasury`:
+
+```python
+from data_structures.treasury import Treasury
+from utils.oracles import GeometricBrownianOracle
+treasury = Treasury(oracle=GeometricBrownianOracle(drift=0.01, volatility=0.2))
+```
+
+Custom oracles can be loaded from external modules using the
+`--oracle-plugin-path` option.
+
 ## Command Line Interface
 
 The `cli.py` module exposes a small interface for running the simulation without
@@ -159,5 +175,7 @@ strategies and agent types from external Python modules. Use
 `--export-csv` and `--export-html` write collected statistics and a simple
 HTML report directly from the command line.
 `--metric-plugin-path` loads custom metric callbacks that extend the collected statistics.
+`--oracle-plugin-path` loads Python modules that register alternative price
+oracle classes, such as the built-in `GeometricBrownianOracle`.
 `--matrix-workers` runs scenario matrices in parallel using multiple processes.
 Interactive Plotly graphs are embedded in the HTML report when `--export-html` is used and Plotly is installed.

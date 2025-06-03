@@ -20,6 +20,7 @@ HTML_PAGE = """<!DOCTYPE html>
 <ul id='proposals'></ul>
 </ul>
 <canvas id='chart' width='400' height='150'></canvas>
+<canvas id='giniChart' width='400' height='150'></canvas>
 <h2>Top Members</h2>
 <table id='topMembers'></table>
 <h2>Completed Bounties</h2>
@@ -27,6 +28,7 @@ HTML_PAGE = """<!DOCTYPE html>
 <script>
 const ws = new WebSocket(`ws://${location.host}/ws`);
 let prices = [];
+let ginis = [];
 function drawChart() {
   const c = document.getElementById('chart');
   const ctx = c.getContext('2d');
@@ -36,6 +38,20 @@ function drawChart() {
   ctx.beginPath();
   prices.forEach((p, i) => {
     const x = (i/(prices.length-1))*c.width;
+    const y = c.height - (p/max)*c.height;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+}
+function drawGini() {
+  const c = document.getElementById('giniChart');
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  if (ginis.length === 0) return;
+  const max = Math.max(...ginis);
+  ctx.beginPath();
+  ginis.forEach((p, i) => {
+    const x = (i/(ginis.length-1))*c.width;
     const y = c.height - (p/max)*c.height;
     if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
   });
@@ -54,7 +70,9 @@ ws.onmessage = (ev) => {
       list.appendChild(li);
     }
     prices = data.price_history;
+    ginis = data.gini_history;
     drawChart();
+    drawGini();
     const table = document.getElementById('topMembers');
     table.innerHTML = '';
     data.top_members.forEach(([m,t]) => {
