@@ -158,3 +158,6 @@ strategies and agent types from external Python modules. Use
 `--websocket-port` starts a small dashboard server streaming live DAO events.
 `--export-csv` and `--export-html` write collected statistics and a simple
 HTML report directly from the command line.
+`--metric-plugin-path` loads custom metric callbacks that extend the collected statistics.
+`--matrix-workers` runs scenario matrices in parallel using multiple processes.
+Interactive Plotly graphs are embedded in the HTML report when `--export-html` is used and Plotly is installed.

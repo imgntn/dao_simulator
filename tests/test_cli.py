@@ -124,6 +124,23 @@ class TestCLI(unittest.TestCase):
         cli.main(["--steps", "0", "--matrix", fname])
         os.remove(fname)
 
+    def test_cli_matrix_workers_parallel(self):
+        import json, tempfile, os
+
+        fd, fname = tempfile.mkstemp(suffix=".json", dir=os.getcwd())
+        os.close(fd)
+        with open(fname, "w") as f:
+            json.dump([{"num_developers": 1}, {"num_developers": 1}], f)
+
+        fd, csvf = tempfile.mkstemp(suffix=".csv", dir=os.getcwd())
+        os.close(fd)
+        os.remove(csvf)
+
+        cli.main(["--steps", "0", "--matrix", fname, "--matrix-workers", "2", "--export-csv", csvf])
+        self.assertTrue(os.path.exists(csvf))
+        os.remove(fname)
+        os.remove(csvf)
+
 
 if __name__ == "__main__":
     unittest.main()

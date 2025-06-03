@@ -3,7 +3,41 @@ from pathlib import Path
 
 from dao_simulation import DAOSimulation
 from settings import update_settings, load_settings, settings
+from data_structures.dao import DAO
+from typing import List, Tuple
 from utils.path_utils import validate_directory, validate_file
+from multiprocessing import Pool
+
+def _run_matrix_worker(args: Tuple[int, dict, dict, int]):
+    idx, cfg, kwargs, steps = args
+    from settings import settings, update_settings
+    original = settings.copy()
+    update_settings(**{k: cfg.get(k, original.get(k, settings[k])) for k in settings if k in cfg})
+    sim = DAOSimulation(**kwargs)
+    sim.run(steps)
+    rows = []
+    for row in sim.datacollector.model_vars:
+        r = row.copy()
+        r["scenario"] = idx
+        rows.append(r)
+    dao_data = sim.dao.to_dict()
+    return rows, dao_data
+
+def run_matrix_parallel(matrix: list, kwargs: dict, steps: int, workers: int | None = None):
+    params = [(i, cfg, kwargs, steps) for i, cfg in enumerate(matrix) if isinstance(cfg, dict)]
+    with Pool(processes=workers) as pool:
+        results = pool.map(_run_matrix_worker, params)
+    all_rows: List[dict] = []
+    last_dao = None
+    for rows, dao in results:
+        all_rows.extend(rows)
+        last_dao = dao
+    last_sim = None
+    if last_dao is not None:
+        last_sim = DAOSimulation(**kwargs)
+        last_sim.dao = DAO.from_dict(last_dao)
+    return all_rows, last_sim
+from data_structures.dao import DAO
 
 
 def main(argv=None):
@@ -28,6 +62,7 @@ def main(argv=None):
     parser.add_argument("--strategy-path", type=str, default=None)
     parser.add_argument("--agent-plugin-path", type=str, default=None)
     parser.add_argument("--oracle-plugin-path", type=str, default=None)
+    parser.add_argument("--metric-plugin-path", type=str, default=None)
     parser.add_argument("--websocket-port", type=int, default=None,
                         help="Expose websocket dashboard on this port")
     parser.add_argument("--event-db", type=str, default=None)
@@ -40,6 +75,7 @@ def main(argv=None):
     parser.add_argument("--export-html", type=str, default=None, help="Write HTML report")
     parser.add_argument("--seed", type=int, default=None)
     parser.add_argument("--matrix", type=str, default=None, help="Path to scenario matrix file")
+    parser.add_argument("--matrix-workers", type=int, default=None, help="Number of parallel workers for matrix runs")
     for key in settings:
         if key.startswith("num_"):
             parser.add_argument(f"--{key}", type=int, default=None)
@@ -78,6 +114,13 @@ def main(argv=None):
         load_oracle_plugins(str(dir_path))
         watch_oracle_plugins(str(dir_path))
 
+    if args.metric_plugin_path:
+        from utils.metric_plugins import load_metric_plugins, watch_metric_plugins
+
+        dir_path = validate_directory(args.metric_plugin_path, allowed_base=Path.cwd())
+        load_metric_plugins(str(dir_path))
+        watch_metric_plugins(str(dir_path))
+
     def load_matrix(path: str):
         file_path = validate_file(path, allowed_base=Path.cwd())
         import json
@@ -109,20 +152,26 @@ def main(argv=None):
     if args.matrix:
         matrix = load_matrix(args.matrix)
         original = settings.copy()
-        all_rows = []
-        last_sim = None
-        for idx, cfg in enumerate(matrix):
-            if not isinstance(cfg, dict):
-                continue
-            update_settings(**{k: cfg.get(k, original.get(k, settings[k])) for k in settings if k in cfg})
-            sim = DAOSimulation(**sim_kwargs)
-            sim.run(args.steps)
-            last_sim = sim
-            for row in sim.datacollector.model_vars:
-                r = row.copy()
-                r["scenario"] = idx
-                all_rows.append(r)
-        update_settings(**original)
+        if args.matrix_workers:
+            all_rows, last_sim = run_matrix_parallel(
+                matrix, sim_kwargs, args.steps, args.matrix_workers
+            )
+            update_settings(**original)
+        else:
+            all_rows = []
+            last_sim = None
+            for idx, cfg in enumerate(matrix):
+                if not isinstance(cfg, dict):
+                    continue
+                update_settings(**{k: cfg.get(k, original.get(k, settings[k])) for k in settings if k in cfg})
+                sim = DAOSimulation(**sim_kwargs)
+                sim.run(args.steps)
+                last_sim = sim
+                for row in sim.datacollector.model_vars:
+                    r = row.copy()
+                    r["scenario"] = idx
+                    all_rows.append(r)
+            update_settings(**original)
         if all_rows:
             import csv, tempfile
 

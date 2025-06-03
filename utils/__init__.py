@@ -8,3 +8,4 @@ from .oracles import (
     register_oracle,
 )
 from .stats import gini
+from .metric_plugins import register_metric, load_metric_plugins, watch_metric_plugins
