@@ -31,6 +31,32 @@ class TestReplay(unittest.TestCase):
         self.assertAlmostEqual(data["treasury"].get("DAO_TOKEN", 0), sim.dao.treasury.get_token_balance("DAO_TOKEN"))
         os.remove(fname)
 
+    def test_replay_compressed(self):
+        fd, fname = tempfile.mkstemp(suffix=".gz")
+        os.close(fd)
+        sim = DAOSimulation(
+            event_logging=True,
+            event_log_filename=fname,
+            compress_events="gzip",
+            num_developers=0,
+            num_investors=0,
+            num_delegators=0,
+            num_proposal_creators=1,
+            num_validators=0,
+            num_service_providers=0,
+            num_arbitrators=0,
+            num_regulators=0,
+            num_external_partners=0,
+            num_passive_members=0,
+            comment_probability=0,
+        )
+        sim.dao.treasury.deposit("DAO_TOKEN", 5)
+        sim.run(1)
+        data = replay.replay_log(fname)
+        self.assertEqual(data["proposals"], len(sim.dao.proposals))
+        self.assertAlmostEqual(data["treasury"].get("DAO_TOKEN", 0), sim.dao.treasury.get_token_balance("DAO_TOKEN"))
+        os.remove(fname)
+
 
 if __name__ == "__main__":
     unittest.main()
