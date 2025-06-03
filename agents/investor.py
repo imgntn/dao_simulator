@@ -47,7 +47,10 @@ class Investor(DAOMember):
             price = self.model.treasury.get_token_price("DAO_TOKEN")
         except KeyError:
             price = 1.0
-        if price < 1:
+        shock = getattr(self.model, "current_shock", 0)
+        if shock:
+            self.investment_budget *= 1 + shock
+        elif price < 1:
             self.investment_budget *= 1.1
         else:
             self.investment_budget *= 0.9

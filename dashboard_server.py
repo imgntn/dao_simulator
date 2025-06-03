@@ -19,8 +19,26 @@ HTML_PAGE = """<!DOCTYPE html>
 <li>Recent Proposals:</li>
 <ul id='proposals'></ul>
 </ul>
+<canvas id='chart' width='400' height='150'></canvas>
+<h2>Top Members</h2>
+<table id='topMembers'></table>
 <script>
 const ws = new WebSocket(`ws://${location.host}/ws`);
+let prices = [];
+function drawChart() {
+  const c = document.getElementById('chart');
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  if (prices.length === 0) return;
+  const max = Math.max(...prices);
+  ctx.beginPath();
+  prices.forEach((p, i) => {
+    const x = (i/(prices.length-1))*c.width;
+    const y = c.height - (p/max)*c.height;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+}
 ws.onmessage = (ev) => {
   const data = JSON.parse(ev.data);
   if (data.event === 'step_end') {
@@ -33,6 +51,15 @@ ws.onmessage = (ev) => {
       li.textContent = title;
       list.appendChild(li);
     }
+    prices = data.price_history;
+    drawChart();
+    const table = document.getElementById('topMembers');
+    table.innerHTML = '';
+    data.top_members.forEach(([m,t]) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${m}</td><td>${t.toFixed(1)}</td>`;
+      table.appendChild(row);
+    });
   }
 };
 </script>

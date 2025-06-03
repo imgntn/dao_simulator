@@ -69,6 +69,7 @@ class SimpleDataCollector:
     def __init__(self, dao=None):
         self.model_vars = []
         self.event_counts = {}
+        self.price_history: list[float] = []
         if dao is not None:
             dao.event_bus.subscribe("*", self._handle_event)
 
@@ -79,6 +80,8 @@ class SimpleDataCollector:
         members = model.dao.members
         avg_rep = sum(m.reputation for m in members) / len(members) if members else 0
         total_tokens = sum(m.tokens for m in members)
+        price = model.dao.treasury.get_token_price("DAO_TOKEN")
+        self.price_history.append(price)
         self.model_vars.append(
             {
                 "step": model.schedule.steps,
@@ -88,7 +91,7 @@ class SimpleDataCollector:
                 "avg_reputation": avg_rep,
                 "total_tokens": total_tokens,
                 "event_count": sum(self.event_counts.values()),
-                "dao_token_price": model.dao.treasury.get_token_price("DAO_TOKEN"),
+                "dao_token_price": price,
             }
         )
 
@@ -226,6 +229,7 @@ class DAOSimulation(Model):
         staking_interest_rate: float | None = None,
         slash_fraction: float | None = None,
         reputation_decay_rate: float | None = None,
+        market_shock_frequency: int | None = None,
         report_file: str | None = None,
         seed: int | None = None,
         **_: object,
@@ -261,6 +265,11 @@ class DAOSimulation(Model):
             reputation_decay_rate
             if reputation_decay_rate is not None
             else settings.get("reputation_decay_rate", 0.0)
+        )
+        self.market_shock_frequency = (
+            market_shock_frequency
+            if market_shock_frequency is not None
+            else settings.get("market_shock_frequency", 0)
         )
         self.report_file = report_file
 
@@ -327,6 +336,8 @@ class DAOSimulation(Model):
             reputation_decay_rate=self.reputation_decay_rate,
             event_logger=self.event_logger,
         )
+        self.current_shock = 0.0
+        self.dao.current_shock = 0.0
         self.datacollector = SimpleDataCollector(self.dao)
         self.stats_writer = (
             SQLiteDataCollector(self.stats_db_filename)
@@ -481,6 +492,10 @@ class DAOSimulation(Model):
             self.schedule.add(agent)
 
     def step(self):
+        self.current_shock = 0.0
+        self.dao.current_shock = 0.0
+        if self.market_shock_frequency and self.schedule.steps % self.market_shock_frequency == 0:
+            self.trigger_market_shock()
         # Update token prices each tick to simulate a simple market.
         self.dao.treasury.update_prices()
         self.dao.apply_staking_interest()
@@ -512,6 +527,13 @@ class DAOSimulation(Model):
                 num_members=len(self.dao.members),
                 token_price=self.dao.treasury.get_token_price("DAO_TOKEN"),
                 recent_proposals=[p.title for p in self.dao.proposals[-5:]],
+                price_history=self.datacollector.price_history,
+                top_members=[
+                    (m.unique_id, m.tokens)
+                    for m in sorted(
+                        self.dao.members, key=lambda x: x.tokens, reverse=True
+                    )[:5]
+                ],
             )
 
     def expire_proposals(self):
@@ -547,8 +569,16 @@ class DAOSimulation(Model):
             self.dao.add_member(proposal.new_member)
             self.schedule.add(proposal.new_member)
         elif isinstance(proposal, BountyProposal):
-            # Ensure funds are available for the bounty reward
-            pass
+            locked = self.dao.treasury.lock_tokens("DAO_TOKEN", proposal.reward)
+            if locked == proposal.reward:
+                proposal.reward_locked = True
+                if self.dao.event_bus:
+                    self.dao.event_bus.publish(
+                        "bounty_funded",
+                        step=self.schedule.steps,
+                        proposal=proposal.title,
+                        reward=proposal.reward,
+                    )
 
     def complete_projects(self):
         current_time = (
@@ -618,6 +648,23 @@ class DAOSimulation(Model):
         if self.dao.treasury.funds > 5000 and dao_price < 1:
             return self.dao.treasury.funds * 0.1
         return 0
+
+    def trigger_market_shock(self) -> None:
+        """Apply a sudden price change and record the severity."""
+        price = self.dao.treasury.get_token_price("DAO_TOKEN")
+        factor = 1 + random.uniform(-0.5, 0.5)
+        new_price = max(price * factor, 0.01)
+        self.dao.treasury.update_token_price("DAO_TOKEN", new_price)
+        severity = factor - 1
+        self.current_shock = severity
+        self.dao.current_shock = severity
+        if self.dao.event_bus:
+            self.dao.event_bus.publish(
+                "market_shock",
+                step=self.schedule.steps,
+                severity=severity,
+                new_price=new_price,
+            )
 
     # we will implement a regular meeting that takes
     # place every 30 steps. The meeting will involve a

@@ -28,6 +28,7 @@ settings = {
     "staking_interest_rate": 0.0,
     "slash_fraction": 0.0,
     "reputation_decay_rate": 0.01,
+    "market_shock_frequency": 0,
 }
 
 
