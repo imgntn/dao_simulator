@@ -16,14 +16,23 @@ def plot_heat_map(dao, show=True):
         )
 
     df = pd.DataFrame(data)
+    if df.empty:
+        fig, ax = plt.subplots()
+        ax.text(0.5, 0.5, "No members", ha="center", va="center")
+        ax.set_axis_off()
+        if show:
+            plt.show()
+        return fig
 
     # Normalize reputation and token balance values
-    df["reputation"] = (df["reputation"] - df["reputation"].min()) / (
-        df["reputation"].max() - df["reputation"].min()
-    )
-    df["tokens"] = (df["tokens"] - df["tokens"].min()) / (
-        df["tokens"].max() - df["tokens"].min()
-    )
+    rep_range = df["reputation"].max() - df["reputation"].min()
+    token_range = df["tokens"].max() - df["tokens"].min()
+    df["reputation"] = (
+        df["reputation"] - df["reputation"].min()
+    ) / rep_range if rep_range else 0
+    df["tokens"] = (
+        df["tokens"] - df["tokens"].min()
+    ) / token_range if token_range else 0
 
     # Calculate a weighted score based on reputation and token balances
     df["score"] = 0.5 * df["reputation"] + 0.5 * df["tokens"]

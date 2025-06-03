@@ -2,10 +2,17 @@
 
 import geopandas as gpd
 import matplotlib.pyplot as plt
+from shapely.geometry import Polygon
 
 
 def plot_choropleth_map(dao, show=True):
-    world = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
+    try:
+        from geodatasets import get_path
+        world = gpd.read_file(get_path("naturalearth.lowres"))
+    except Exception:
+        # Fallback to a simple world polygon when sample data is unavailable
+        geom = [Polygon([(-180, -90), (-180, 90), (180, 90), (180, -90)])]
+        world = gpd.GeoDataFrame({"iso_a3": ["ALL"], "num_members": [0]}, geometry=geom, crs="EPSG:4326")
     member_locations = {}
 
     for member in dao.members:
@@ -14,7 +21,9 @@ def plot_choropleth_map(dao, show=True):
         else:
             member_locations[member.location] = 1
 
-    world["num_members"] = world["iso_a3"].map(member_locations).fillna(0)
+    if "num_members" not in world.columns:
+        world["num_members"] = 0
+    world["num_members"] = world["iso_a3"].map(member_locations).fillna(world["num_members"])
     ax = world.plot(column="num_members", cmap="coolwarm", legend=True, figsize=(15, 10))
     fig = ax.get_figure()
     if show:
