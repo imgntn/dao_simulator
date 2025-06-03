@@ -1,6 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from networkx.algorithms.community import greedy_modularity_communities
 
 
 def plot_network_graph(dao, show=True):
@@ -30,14 +31,27 @@ def plot_network_graph(dao, show=True):
 
     pos = nx.spring_layout(G)
 
-    # Customizing node colors based on node_type
+    communities = []
+    try:
+        communities = list(greedy_modularity_communities(G))
+    except Exception:
+        communities = []
+    community_map = {}
+    for idx, comm in enumerate(communities):
+        for n in comm:
+            community_map[n] = idx
+
+    palette = plt.cm.get_cmap("tab10")
     node_colors = []
     for node in G.nodes(data=True):
         node_type = node[1]["node_type"]
-        if node_type == "Proposal":
-            node_colors.append("lightgreen")
+        if node[0] in community_map:
+            color = palette(community_map[node[0]] % 10)
+        elif node_type == "Proposal":
+            color = "lightgreen"
         else:
-            node_colors.append("skyblue")
+            color = "skyblue"
+        node_colors.append(color)
 
     # Draw nodes and labels
     fig, ax = plt.subplots()
@@ -81,6 +95,18 @@ def plot_network_graph(dao, show=True):
         Line2D([0], [0], color="blue", label="Delegation", linestyle="dashed", linewidth=2),
         Line2D([0], [0], color="gray", label="No Support", linewidth=3),
     ]
+    for idx, _ in enumerate(communities):
+        legend_elements.append(
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                color="w",
+                label=f"Community {idx+1}",
+                markerfacecolor=palette(idx % 10),
+                markersize=15,
+            )
+        )
     plt.legend(handles=legend_elements, loc="upper left")
 
     if show:

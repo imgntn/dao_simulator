@@ -67,6 +67,8 @@ def main(argv=None):
                         help="Expose websocket dashboard on this port")
     parser.add_argument("--event-db", type=str, default=None)
     parser.add_argument("--stats-db", type=str, default=None)
+    parser.add_argument("--compress-events", choices=["gzip", "lzma"], default=None,
+                        help="Compress event logs with the given algorithm")
     parser.add_argument("--checkpoint-path", type=str, default=None)
     parser.add_argument("--checkpoint-interval", type=int, default=None)
     parser.add_argument("--resume-from", type=str, default=None)
@@ -144,6 +146,7 @@ def main(argv=None):
         csv_filename=args.export_csv or "simulation_data.csv",
         event_db_filename=args.event_db,
         stats_db_filename=args.stats_db,
+        compress_events=args.compress_events,
         checkpoint_interval=args.checkpoint_interval,
         checkpoint_path=args.checkpoint_path,
         seed=args.seed,

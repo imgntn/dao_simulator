@@ -1,15 +1,23 @@
 import csv
 import json
 import sqlite3
+import gzip
+import lzma
 
 
 class EventLogger:
     """Simple event logger writing events to a CSV file."""
 
-    def __init__(self, filename: str, async_logging: bool = False):
+    def __init__(self, filename: str, async_logging: bool = False, compress: str | None = None):
         self.filename = filename
         self.async_logging = async_logging
-        self.file = open(self.filename, "w", newline="")
+        self.compress = compress
+        if compress == "gzip":
+            self.file = gzip.open(self.filename, "wt", newline="")
+        elif compress == "lzma":
+            self.file = lzma.open(self.filename, "wt", newline="")
+        else:
+            self.file = open(self.filename, "w", newline="")
         self.writer = csv.DictWriter(
             self.file, fieldnames=["step", "event", "details"]
         )
@@ -68,12 +76,13 @@ class EventLogger:
 class DBEventLogger(EventLogger):
     """SQLite-backed event logger."""
 
-    def __init__(self, filename: str, async_logging: bool = False):
+    def __init__(self, filename: str, async_logging: bool = False, compress: str | None = None):
         self.filename = filename
         self.async_logging = async_logging
+        self.compress = compress
         self.conn = sqlite3.connect(self.filename, check_same_thread=False)
         self.conn.execute(
-            "CREATE TABLE IF NOT EXISTS events (step INTEGER, event TEXT, details TEXT)"
+            "CREATE TABLE IF NOT EXISTS events (step INTEGER, event TEXT, details BLOB)"
         )
         self.conn.commit()
         if self.async_logging:
@@ -85,9 +94,14 @@ class DBEventLogger(EventLogger):
             self._thread.start()
 
     def _write(self, step: int, event: str, details: dict):
+        data = json.dumps(details).encode()
+        if self.compress == "gzip":
+            data = gzip.compress(data)
+        elif self.compress == "lzma":
+            data = lzma.compress(data)
         self.conn.execute(
             "INSERT INTO events (step, event, details) VALUES (?, ?, ?)",
-            (step, event, json.dumps(details)),
+            (step, event, data),
         )
         self.conn.commit()
 

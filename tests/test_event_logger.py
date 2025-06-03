@@ -103,6 +103,36 @@ class TestEventLogger(unittest.TestCase):
         self.assertEqual(events, ["e1", "e2"])
         os.remove(fname)
 
+    def test_compressed_csv_logger(self):
+        fd, fname = tempfile.mkstemp(suffix=".gz")
+        os.close(fd)
+        logger = EventLogger(fname, compress="gzip")
+        logger.log(0, "c1", foo=1)
+        logger.close()
+        import gzip
+
+        with gzip.open(fname, "rt") as f:
+            rows = list(csv.DictReader(f))
+        self.assertEqual(rows[0]["event"], "c1")
+        os.remove(fname)
+
+    def test_compressed_db_logger(self):
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        logger = DBEventLogger(fname, compress="lzma")
+        logger.log(0, "d1", foo=2)
+        logger.close()
+        import sqlite3, lzma, json
+
+        conn = sqlite3.connect(fname)
+        row = conn.execute("SELECT event, details FROM events").fetchone()
+        conn.close()
+        event, details = row
+        details = json.loads(lzma.decompress(details).decode())
+        self.assertEqual(event, "d1")
+        self.assertEqual(details["foo"], 2)
+        os.remove(fname)
+
 
 if __name__ == "__main__":
     unittest.main()

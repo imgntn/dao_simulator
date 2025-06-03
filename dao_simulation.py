@@ -224,6 +224,7 @@ class DAOSimulation(Model):
         event_log_filename: str = "events.csv",
         event_db_filename: str | None = None,
         stats_db_filename: str | None = None,
+        compress_events: str | None = None,
         checkpoint_interval: int | None = None,
         checkpoint_path: str | None = None,
         num_developers: int | None = None,
@@ -266,6 +267,7 @@ class DAOSimulation(Model):
         self.event_log_filename = event_log_filename
         self.event_db_filename = event_db_filename
         self.stats_db_filename = stats_db_filename
+        self.compress_events = compress_events
         self.checkpoint_interval = checkpoint_interval or 0
         self.checkpoint_path = checkpoint_path
         self.staking_interest_rate = (
@@ -334,11 +336,17 @@ class DAOSimulation(Model):
             if self.event_db_filename:
                 from utils import DBEventLogger
 
-                self.event_logger = DBEventLogger(self.event_db_filename)
+                self.event_logger = DBEventLogger(
+                    self.event_db_filename,
+                    compress=self.compress_events,
+                )
             else:
                 from utils import EventLogger
 
-                self.event_logger = EventLogger(self.event_log_filename)
+                self.event_logger = EventLogger(
+                    self.event_log_filename,
+                    compress=self.compress_events,
+                )
         else:
             self.event_logger = None
 
@@ -636,18 +644,7 @@ class DAOSimulation(Model):
         total_revenue = self.dao.treasury.get_revenue_amount()
         if total_revenue == 0:
             return
-
-        total_staked_tokens = sum(m.staked_tokens for m in self.dao.members)
-        if total_staked_tokens == 0:
-            return
-
-        for member in self.dao.members:
-            if member.staked_tokens == 0:
-                continue
-            revenue_share = self.calculate_revenue_share(
-                member, total_revenue, total_staked_tokens
-            )
-            member.receive_revenue_share(revenue_share)
+        self.dao.distribute_revenue(total_revenue, "DAO_TOKEN")
 
     def calculate_revenue_share(self, member, total_revenue, total_staked_tokens):
         # Calculate revenue share for each member based on the ratio of their staked tokens

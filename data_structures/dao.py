@@ -79,8 +79,23 @@ class DAO:
         self.members.remove(member)
 
     def distribute_revenue(self, amount, token):
-        # Placeholder for revenue distribution logic
-        pass
+        total_staked = sum(m.staked_tokens for m in self.members)
+        if amount <= 0 or total_staked <= 0:
+            return 0
+        for member in self.members:
+            if member.staked_tokens <= 0:
+                continue
+            share = amount * (member.staked_tokens / total_staked)
+            member.tokens += share
+            if self.event_bus:
+                self.event_bus.publish(
+                    "revenue_share",
+                    step=self.current_step,
+                    member=member.unique_id,
+                    token=token,
+                    amount=share,
+                )
+        return amount
 
     def buyback_tokens(self, amount, token="DAO_TOKEN"):
         self.treasury.withdraw(token, amount)

@@ -29,6 +29,7 @@ class TestCLI(unittest.TestCase):
             csv_filename="simulation_data.csv",
             event_db_filename=None,
             stats_db_filename=None,
+            compress_events=None,
             checkpoint_interval=None,
             checkpoint_path=None,
             seed=42,

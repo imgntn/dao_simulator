@@ -2,6 +2,8 @@ import argparse
 import csv
 import json
 import sqlite3
+import gzip
+import lzma
 from collections import defaultdict
 from pathlib import Path
 
@@ -15,12 +17,35 @@ def replay_log(path: str):
         rows = conn.execute("SELECT event, details FROM events ORDER BY step").fetchall()
         conn.close()
         for event, details in rows:
+            if isinstance(details, bytes):
+                for dec in (gzip.decompress, lzma.decompress):
+                    try:
+                        details = dec(details).decode()
+                        break
+                    except Exception:
+                        pass
             events.append((event, json.loads(details)))
     else:
-        with open(p) as f:
+        opener = open
+        if p.suffix in {".gz", ".gzip"}:
+            opener = gzip.open
+        elif p.suffix in {".xz", ".lzma"}:
+            opener = lzma.open
+        with opener(p, "rt") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                events.append((row["event"], json.loads(row["details"])))
+                text = row["details"]
+                try:
+                    data = json.loads(text)
+                except Exception:
+                    b = text.encode()
+                    for dec in (gzip.decompress, lzma.decompress):
+                        try:
+                            data = json.loads(dec(b).decode())
+                            break
+                        except Exception:
+                            pass
+                events.append((row["event"], data))
 
     proposals = 0
     treasury = defaultdict(float)
