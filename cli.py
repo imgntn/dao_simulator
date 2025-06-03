@@ -61,7 +61,12 @@ def main(argv=None):
     parser.add_argument("--max-workers", type=int, default=None)
     parser.add_argument("--strategy-path", type=str, default=None)
     parser.add_argument("--agent-plugin-path", type=str, default=None)
-    parser.add_argument("--oracle-plugin-path", type=str, default=None)
+    parser.add_argument(
+        "--oracle-plugin-path",
+        type=str,
+        default=None,
+        help="Directory containing custom oracle modules",
+    )
     parser.add_argument("--metric-plugin-path", type=str, default=None)
     parser.add_argument("--websocket-port", type=int, default=None,
                         help="Expose websocket dashboard on this port")

@@ -3,6 +3,7 @@ from .event_bus import EventBus
 from .oracles import (
     PriceOracle,
     RandomWalkOracle,
+    GeometricBrownianOracle,
     load_oracle_plugins,
     get_oracle,
     register_oracle,

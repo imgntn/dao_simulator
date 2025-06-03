@@ -54,6 +54,30 @@ class RandomWalkOracle:
         treasury._price_pressure.clear()
 
 
+class GeometricBrownianOracle:
+    """Oracle using a geometric Brownian motion model."""
+
+    def __init__(self, drift: float = 0.0, volatility: float = 0.05) -> None:
+        self.drift = drift
+        self.volatility = volatility
+
+    def update_prices(self, treasury, *_, **kwargs) -> None:
+        import random, math
+
+        mu = kwargs.get("drift", self.drift)
+        vol = kwargs.get("volatility", self.volatility)
+        for token, price in list(treasury.token_prices.items()):
+            pressure = treasury._price_pressure.get(token, 0.0)
+            adj_mu = mu
+            if pressure:
+                adj_mu += 0.01 * (pressure / max(treasury.tokens[token], 1))
+            noise = random.gauss(0, 1)
+            factor = math.exp((adj_mu - 0.5 * vol ** 2) + vol * noise)
+            new_price = price * factor
+            treasury.token_prices[token] = max(new_price, 0.01)
+        treasury._price_pressure.clear()
+
+
 ORACLE_REGISTRY: Dict[str, Type[PriceOracle]] = {}
 
 
@@ -145,3 +169,7 @@ def watch_oracle_plugins(directory: str, *, allowed_dir: Optional[Path] = None) 
     observer.stop = stop  # type: ignore[assignment]
     observer.stop_and_join = stop  # backwards compat
     return observer
+
+
+register_oracle("randomwalkoracle", RandomWalkOracle)
+register_oracle("geometricbrownianoracle", GeometricBrownianOracle)
