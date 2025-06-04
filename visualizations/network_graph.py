@@ -4,6 +4,44 @@ from matplotlib.lines import Line2D
 from networkx.algorithms.community import greedy_modularity_communities
 
 
+def compute_network_data(dao):
+    """Return nodes and edges describing the current delegation network."""
+    nodes = []
+    edges = []
+    for member in dao.members:
+        nodes.append({"id": member.unique_id, "type": "member"})
+        rep = getattr(member, "representative", None)
+        if rep is not None:
+            edges.append(
+                {
+                    "source": member.unique_id,
+                    "target": rep.unique_id,
+                    "type": "representative",
+                }
+            )
+        if hasattr(member, "delegations"):
+            for prop, amount in member.delegations.items():
+                edges.append(
+                    {
+                        "source": member.unique_id,
+                        "target": prop.title,
+                        "type": "delegation",
+                        "weight": amount,
+                    }
+                )
+    for proposal in dao.proposals:
+        nodes.append({"id": proposal.title, "type": "proposal"})
+        if hasattr(proposal, "creator"):
+            edges.append(
+                {
+                    "source": proposal.creator.unique_id,
+                    "target": proposal.title,
+                    "type": "created",
+                }
+            )
+    return {"nodes": nodes, "edges": edges}
+
+
 def plot_network_graph(dao, show=True):
     G = nx.DiGraph()
 

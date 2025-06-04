@@ -10,6 +10,7 @@ provided.
 settings = {
     "num_developers": 10,
     "num_investors": 5,
+    "num_adaptive_investors": 0,
     "num_delegators": 5,
     "num_liquid_delegators": 0,
     "num_proposal_creators": 5,
@@ -29,6 +30,8 @@ settings = {
     "slash_fraction": 0.0,
     "reputation_decay_rate": 0.01,
     "market_shock_frequency": 0,
+    "adaptive_learning_rate": 0.1,
+    "adaptive_epsilon": 0.1,
 }
 
 

@@ -79,6 +79,7 @@ def main(argv=None):
     parser.add_argument("--checkpoint-path", type=str, default=None)
     parser.add_argument("--checkpoint-interval", type=int, default=None)
     parser.add_argument("--resume-from", type=str, default=None)
+    parser.add_argument("--market-shock-file", type=str, default=None)
     parser.add_argument("--report-file", type=str, default=None)
     parser.add_argument("--export-csv", type=str, default=None, help="Write CSV stats")
     parser.add_argument("--export-html", type=str, default=None, help="Write HTML report")
@@ -156,6 +157,7 @@ def main(argv=None):
         compress_events=args.compress_events,
         checkpoint_interval=args.checkpoint_interval,
         checkpoint_path=args.checkpoint_path,
+        market_shock_file=args.market_shock_file,
         seed=args.seed,
     )
 
