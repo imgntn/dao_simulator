@@ -2,6 +2,7 @@
 
 This DAO simulation is a modular and maintainable implementation of a Decentralized Autonomous Organization. The simulation models various agent classes that interact with each other and the DAO, allowing users to explore the behavior of different types of members within the organization.
 For a more detailed introduction and FAQ, see [docs/GUIDE.md](docs/GUIDE.md).
+Diagrams illustrating the architecture can be found in [docs/DIAGRAMS.md](docs/DIAGRAMS.md).
 
 
 ## Summary
