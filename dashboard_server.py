@@ -7,10 +7,15 @@ from typing import List
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 
 HTML_PAGE = """<!DOCTYPE html>
 <html>
-<head><title>DAO Dashboard</title></head>
+<head><title>DAO Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="/static/dashboard_network.js"></script>
+</head>
 <body>
 <h1>DAO Live Metrics</h1>
 <ul>
@@ -27,6 +32,8 @@ HTML_PAGE = """<!DOCTYPE html>
 <table id='topInfluence'></table>
 <h2>Completed Bounties</h2>
 <ul id='bounties'></ul>
+<h2>Delegation Network</h2>
+<div id='network'></div>
 <script>
 const ws = new WebSocket(`ws://${location.host}/ws`);
 let prices = [];
@@ -94,6 +101,8 @@ ws.onmessage = (ev) => {
     const item = document.createElement('li');
     item.textContent = `${data.hunter} completed ${data.proposal} (+${data.reward})`;
     list.prepend(item);
+  } else if (data.event === 'network_update') {
+    window.handleNetworkUpdate(data);
   }
 };
 </script>
@@ -108,6 +117,9 @@ class DashboardServer:
         self.event_bus = event_bus
         self.port = port
         self.app = FastAPI()
+        static_dir = Path(__file__).resolve().parent / "static"
+        if static_dir.exists():
+            self.app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
         self.connections: List[WebSocket] = []
         self.loop = asyncio.new_event_loop()
         self._thread: threading.Thread | None = None

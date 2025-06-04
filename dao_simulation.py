@@ -207,6 +207,7 @@ from agents import (
     Developer,
     ExternalPartner,
     Investor,
+    AdaptiveInvestor,
     PassiveMember,
     ProposalCreator,
     Regulator,
@@ -222,6 +223,7 @@ import random
 from settings import settings
 import json
 from visualizations import generate_report
+from visualizations.network_graph import compute_network_data
 
 
 class DAOSimulation(Model):
@@ -241,6 +243,7 @@ class DAOSimulation(Model):
         checkpoint_path: str | None = None,
         num_developers: int | None = None,
         num_investors: int | None = None,
+        num_adaptive_investors: int | None = None,
         num_delegators: int | None = None,
         num_liquid_delegators: int | None = None,
         num_proposal_creators: int | None = None,
@@ -260,6 +263,9 @@ class DAOSimulation(Model):
         slash_fraction: float | None = None,
         reputation_decay_rate: float | None = None,
         market_shock_frequency: int | None = None,
+        market_shock_file: str | None = None,
+        adaptive_learning_rate: float | None = None,
+        adaptive_epsilon: float | None = None,
         report_file: str | None = None,
         seed: int | None = None,
         **_: object,
@@ -302,11 +308,27 @@ class DAOSimulation(Model):
             if market_shock_frequency is not None
             else settings.get("market_shock_frequency", 0)
         )
+        self.market_shock_schedule = {}
+        if market_shock_file is not None:
+            self.market_shock_schedule = self._load_market_shocks(market_shock_file)
+        self.adaptive_learning_rate = (
+            adaptive_learning_rate
+            if adaptive_learning_rate is not None
+            else settings.get("adaptive_learning_rate", 0.1)
+        )
+        self.adaptive_epsilon = (
+            adaptive_epsilon
+            if adaptive_epsilon is not None
+            else settings.get("adaptive_epsilon", 0.1)
+        )
         self.report_file = report_file
 
         # Use provided parameters or fall back to global settings
         self.num_developers = num_developers if num_developers is not None else settings["num_developers"]
         self.num_investors = num_investors if num_investors is not None else settings["num_investors"]
+        self.num_adaptive_investors = (
+            num_adaptive_investors if num_adaptive_investors is not None else settings.get("num_adaptive_investors", 0)
+        )
         self.num_delegators = num_delegators if num_delegators is not None else settings["num_delegators"]
         self.num_liquid_delegators = (
             num_liquid_delegators if num_liquid_delegators is not None else settings.get("num_liquid_delegators", 0)
@@ -373,6 +395,10 @@ class DAOSimulation(Model):
             reputation_decay_rate=self.reputation_decay_rate,
             event_logger=self.event_logger,
         )
+        if self.market_shock_schedule:
+            from data_structures.market_shock import MarketShock
+            for step, sev in self.market_shock_schedule.items():
+                self.dao.market_shocks.append(MarketShock(step, sev))
         self.current_shock = 0.0
         self.dao.current_shock = 0.0
         self.datacollector = SimpleDataCollector(self.dao)
@@ -409,6 +435,19 @@ class DAOSimulation(Model):
                 investment_budget=500,
             )
             self.dao.add_member(investor)
+
+        for i in range(self.num_adaptive_investors):
+            ainv = AdaptiveInvestor(
+                unique_id=f"AdaptiveInvestor_{i}",
+                model=self.dao,
+                tokens=1000,
+                reputation=0,
+                location=generate_random_location(),
+                investment_budget=500,
+                learning_rate=self.adaptive_learning_rate,
+                epsilon=self.adaptive_epsilon,
+            )
+            self.dao.add_member(ainv)
 
         for i in range(self.num_delegators):
             delegator = Delegator(
@@ -531,7 +570,10 @@ class DAOSimulation(Model):
     def step(self):
         self.current_shock = 0.0
         self.dao.current_shock = 0.0
-        if self.market_shock_frequency and self.schedule.steps % self.market_shock_frequency == 0:
+        if self.schedule.steps in self.market_shock_schedule:
+            severity = self.market_shock_schedule.pop(self.schedule.steps)
+            self.trigger_market_shock(severity)
+        elif self.market_shock_frequency and self.schedule.steps % self.market_shock_frequency == 0:
             self.trigger_market_shock()
         # Update token prices each tick to simulate a simple market.
         self.dao.treasury.update_prices()
@@ -578,6 +620,12 @@ class DAOSimulation(Model):
                         self.dao.members, key=lambda x: x.tokens, reverse=True
                     )[:5]
                 ],
+            )
+            self.dao.event_bus.publish(
+                "network_update",
+                step=self.schedule.steps,
+                **compute_network_data(self.dao),
+                centrality=self.datacollector.delegation_centrality[-1],
             )
 
     def expire_proposals(self):
@@ -682,13 +730,40 @@ class DAOSimulation(Model):
             return self.dao.treasury.funds * 0.1
         return 0
 
-    def trigger_market_shock(self) -> None:
+    def _load_market_shocks(self, path: str) -> dict[int, float]:
+        """Load a schedule of market shocks from a JSON or YAML file."""
+        import json
+        data = []
+        if path.endswith((".yaml", ".yml")):
+            try:
+                import yaml  # type: ignore
+            except Exception as e:  # pragma: no cover - optional dep
+                raise ImportError("PyYAML is required for YAML configs") from e
+            with open(path) as f:
+                data = yaml.safe_load(f) or []
+        else:
+            with open(path) as f:
+                data = json.load(f)
+        schedule: dict[int, float] = {}
+        for item in data:
+            try:
+                step = int(item.get("step", 0))
+                sev = float(item.get("severity", 0.0))
+            except Exception:
+                continue
+            schedule[step] = sev
+        return schedule
+
+    def trigger_market_shock(self, severity: float | None = None) -> None:
         """Apply a sudden price change and record the severity."""
         price = self.dao.treasury.get_token_price("DAO_TOKEN")
-        factor = 1 + random.uniform(-0.5, 0.5)
+        if severity is None:
+            factor = 1 + random.uniform(-0.5, 0.5)
+            severity = factor - 1
+        else:
+            factor = 1 + severity
         new_price = max(price * factor, 0.01)
         self.dao.treasury.update_token_price("DAO_TOKEN", new_price)
-        severity = factor - 1
         self.current_shock = severity
         self.dao.current_shock = severity
         from data_structures.market_shock import MarketShock

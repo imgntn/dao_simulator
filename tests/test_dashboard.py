@@ -43,5 +43,26 @@ class TestDashboardServer(unittest.TestCase):
         self.assertIn("gini_history", data)
         self.assertIn("top_influential", data)
 
+    def test_network_update_forwarded(self):
+        bus = EventBus()
+        server = DashboardServer(bus, port=0)
+        ws = DummyWS()
+        server.connections.append(ws)
+        t = threading.Thread(target=server.loop.run_forever, daemon=True)
+        t.start()
+        bus.publish(
+            "network_update",
+            step=1,
+            nodes=[{"id": "a", "type": "member"}],
+            edges=[],
+        )
+        time.sleep(0.1)
+        server.loop.call_soon_threadsafe(server.loop.stop)
+        t.join()
+        self.assertTrue(ws.messages)
+        data = json.loads(ws.messages[0])
+        self.assertEqual(data["event"], "network_update")
+        self.assertIn("nodes", data)
+
 if __name__ == "__main__":
     unittest.main()

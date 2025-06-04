@@ -12,4 +12,5 @@ from .validator import Validator
 from .liquid_delegator import LiquidDelegator
 from .auditor import Auditor
 from .bounty_hunter import BountyHunter
+from .adaptive_investor import AdaptiveInvestor
 

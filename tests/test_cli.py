@@ -32,6 +32,7 @@ class TestCLI(unittest.TestCase):
             compress_events=None,
             checkpoint_interval=None,
             checkpoint_path=None,
+            market_shock_file=None,
             seed=42,
         )
 
