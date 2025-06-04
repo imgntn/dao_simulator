@@ -23,6 +23,8 @@ HTML_PAGE = """<!DOCTYPE html>
 <canvas id='giniChart' width='400' height='150'></canvas>
 <h2>Top Members</h2>
 <table id='topMembers'></table>
+<h2>Most Influential</h2>
+<table id='topInfluence'></table>
 <h2>Completed Bounties</h2>
 <ul id='bounties'></ul>
 <script>
@@ -79,6 +81,13 @@ ws.onmessage = (ev) => {
       const row = document.createElement('tr');
       row.innerHTML = `<td>${m}</td><td>${t.toFixed(1)}</td>`;
       table.appendChild(row);
+    });
+    const tInf = document.getElementById('topInfluence');
+    tInf.innerHTML = '';
+    data.top_influential.forEach(([m,c]) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${m}</td><td>${c.toFixed(2)}</td>`;
+      tInf.appendChild(row);
     });
   } else if (data.event === 'bounty_completed') {
     const list = document.getElementById('bounties');

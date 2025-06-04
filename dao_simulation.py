@@ -71,6 +71,7 @@ class SimpleDataCollector:
         self.event_counts = {}
         self.price_history: list[float] = []
         self.gini_history: list[float] = []
+        self.delegation_centrality: list[dict[str, float]] = []
         if dao is not None:
             dao.event_bus.subscribe("*", self._handle_event)
 
@@ -85,6 +86,14 @@ class SimpleDataCollector:
         price = model.dao.treasury.get_token_price("DAO_TOKEN")
         self.price_history.append(price)
         self.gini_history.append(gini_coeff)
+        import networkx as nx
+        G = nx.DiGraph()
+        for m in members:
+            rep = getattr(m, "representative", None)
+            if rep is not None:
+                G.add_edge(m.unique_id, rep.unique_id)
+        centrality = nx.in_degree_centrality(G) if G.number_of_nodes() > 0 else {}
+        self.delegation_centrality.append(centrality)
         row = {
             "step": model.schedule.steps,
             "num_members": len(members),
@@ -108,6 +117,7 @@ class SimpleDataCollector:
                     pass
         except Exception:
             pass
+        row["delegation_centrality"] = centrality
         self.model_vars.append(row)
 
 
@@ -556,6 +566,12 @@ class DAOSimulation(Model):
                 price_history=self.datacollector.price_history,
                 gini_coefficient=self.datacollector.gini_history[-1],
                 gini_history=self.datacollector.gini_history,
+                delegation_centrality=self.datacollector.delegation_centrality[-1],
+                top_influential=sorted(
+                    self.datacollector.delegation_centrality[-1].items(),
+                    key=lambda x: x[1],
+                    reverse=True,
+                )[:5],
                 top_members=[
                     (m.unique_id, m.tokens)
                     for m in sorted(

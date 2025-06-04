@@ -70,6 +70,8 @@ def main(argv=None):
     parser.add_argument("--metric-plugin-path", type=str, default=None)
     parser.add_argument("--websocket-port", type=int, default=None,
                         help="Expose websocket dashboard on this port")
+    parser.add_argument("--serve", action="store_true",
+                        help="Run simulation control server")
     parser.add_argument("--event-db", type=str, default=None)
     parser.add_argument("--stats-db", type=str, default=None)
     parser.add_argument("--compress-events", choices=["gzip", "lzma"], default=None,
@@ -206,9 +208,23 @@ def main(argv=None):
         dashboard = DashboardServer(sim.dao.event_bus, port=args.websocket_port)
         dashboard.start()
 
-    sim.run(args.steps)
-    if dashboard:
-        dashboard.stop()
+    if args.serve:
+        from simulation_server import SimulationServer
+
+        server = SimulationServer(sim, port=args.websocket_port or 8001)
+        server.start()
+        try:
+            import time
+
+            while True:
+                time.sleep(0.5)
+        except KeyboardInterrupt:
+            pass
+        server.stop()
+    else:
+        sim.run(args.steps)
+        if dashboard:
+            dashboard.stop()
 
 
 if __name__ == "__main__":
