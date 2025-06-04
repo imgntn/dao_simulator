@@ -15,6 +15,7 @@ class TestDataCollectorMetrics(unittest.TestCase):
         self.assertIn('event_count', row)
         self.assertIn('dao_token_price', row)
         self.assertIn('gini_coefficient', row)
+        self.assertIn('delegation_centrality', row)
         self.assertGreaterEqual(row['gini_coefficient'], 0)
         self.assertLessEqual(row['gini_coefficient'], 1)
 

@@ -31,6 +31,8 @@ class TestDashboardServer(unittest.TestCase):
             gini_coefficient=0.1,
             gini_history=[0.1],
             top_members=[],
+            delegation_centrality={},
+            top_influential=[],
         )
         time.sleep(0.1)
         server.loop.call_soon_threadsafe(server.loop.stop)
@@ -39,6 +41,7 @@ class TestDashboardServer(unittest.TestCase):
         data = json.loads(ws.messages[0])
         self.assertIn("gini_coefficient", data)
         self.assertIn("gini_history", data)
+        self.assertIn("top_influential", data)
 
 if __name__ == "__main__":
     unittest.main()

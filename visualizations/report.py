@@ -58,6 +58,17 @@ def generate_report(simulation, csv_file=None, html_file=None):
             if fig:
                 encoded = _fig_to_base64(fig)
                 html_parts.append(f'<img src="data:image/png;base64,{encoded}"/>')
+        if simulation.datacollector.delegation_centrality:
+            top = sorted(
+                simulation.datacollector.delegation_centrality[-1].items(),
+                key=lambda x: x[1],
+                reverse=True,
+            )[:5]
+            rows = "<h2>Most Influential Members</h2><ul>"
+            for m, c in top:
+                rows += f"<li>{m}: {c:.2f}</li>"
+            rows += "</ul>"
+            html_parts.append(rows)
         if getattr(dao, "market_shocks", None):
             rows = "<h2>Market Shocks</h2><ul>"
             for s in dao.market_shocks:
