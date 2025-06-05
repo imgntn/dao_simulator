@@ -36,15 +36,15 @@ This is the ProposalCreator agent class, which inherits from DAOMember. The step
 
 ## regulator.py
 
-This is the Regulator agent class, which inherits from DAOMember. The step function includes voting on a random proposal, leaving a comment on a random proposal, and ensuring compliance of proposals. The ensure_compliance function checks the compliance of a randomly chosen proposal and flags it for violation if it's not compliant. The check_proposal_compliance function is a placeholder for actual compliance checks.
+This is the Regulator agent class, which inherits from DAOMember. The step function includes voting on a random proposal, leaving a comment on a random proposal, and ensuring compliance of proposals. The ensure_compliance function checks the compliance of a randomly chosen project and records the result. The ``check_project_compliance`` method now inspects a project's funding goal and duration, flags it for violation when requirements aren't met, and emits a ``compliance_checked`` event on the DAO's event bus.
 
 ## service_provider.py
 
-This is the ServiceProvider agent class, which inherits from DAOMember. It has a service_budget attribute that represents the budget available for providing services. The step function includes voting on a random proposal, leaving a comment on a random proposal, and providing services for proposals. The provide_services function checks if the service_budget is greater than 0, and if so, offers a service to a randomly chosen proposal and reduces the service_budget by 1. The offer_service function is a placeholder for the actual implementation of offering services to proposals.
+This is the ServiceProvider agent class, which inherits from DAOMember. It has a service_budget attribute that represents the budget available for providing services. The step function includes voting on a random proposal, leaving a comment on a random proposal, and providing services for proposals. The ``provide_services`` function checks if the service_budget is greater than 0 and, if so, offers a service to a randomly chosen proposal. ``offer_service`` now records the service in ``services_provided``, optionally increases the proposal's ``current_funding`` and the provider's reputation, and publishes a ``service_offered`` event.
 
 ## validator.py
 
-This is the Validator agent class, which inherits from DAOMember. It has a monitoring_budget attribute that represents the budget available for monitoring projects. The step function includes voting on a random proposal, leaving a comment on a random proposal, and monitoring projects. The monitor_projects function checks if the monitoring_budget is greater than 0, and if so, monitors a randomly chosen project and reduces the monitoring_budget by 1. The monitor_project function is a placeholder for the actual implementation of project monitoring.
+This is the Validator agent class, which inherits from DAOMember. It has a monitoring_budget attribute that represents the budget available for monitoring projects. The step function includes voting on a random proposal, leaving a comment on a random proposal, and monitoring projects. ``monitor_projects`` selects a project when budget allows and calls ``monitor_project``. The ``monitor_project`` method now compares the project's progress to its duration and raises a ``Dispute`` via the DAO when progress falls behind schedule. Both monitoring and dispute creation emit events (``project_monitored`` and ``project_disputed``).
 
 ## auditor.py
 

@@ -31,9 +31,24 @@ class ServiceProvider(DAOMember):
                 self.mark_active()
 
     def offer_service(self, proposal):
-        # Offer service to the proposal, such as marketing, legal, or financial services.
-        # This is a placeholder for the actual implementation of offering services.
-        pass
+        """Offer a service to ``proposal`` and record the interaction."""
+        service = random.choice(["marketing", "legal", "financial"])
+        provided = self.services_provided.setdefault(proposal, [])
+        provided.append(service)
+
+        # Simulate value added to the proposal
+        if hasattr(proposal, "current_funding"):
+            proposal.current_funding += 1
+        self.reputation += 1
+
+        if self.model.event_bus:
+            self.model.event_bus.publish(
+                "service_offered",
+                step=self.model.current_step,
+                proposal=getattr(proposal, "title", None),
+                provider=self.unique_id,
+                service=service,
+            )
 
     def provide_service(self, project, service_type, cost):
         self.services_provided[project] = (service_type, cost)
