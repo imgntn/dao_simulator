@@ -31,6 +31,14 @@ class Developer(DAOMember):
             project.receive_work(self, work_amount)
             self.reputation += work_amount / 10
             self.mark_active()
+            if self.model.event_bus:
+                self.model.event_bus.publish(
+                    "project_worked",
+                    step=self.model.current_step,
+                    project=getattr(project, "title", None),
+                    member=self.unique_id,
+                    work=work_amount,
+                )
 
     def choose_project_to_work_on(self):
         projects = [p for p in self.model.projects if p.status == "open"]

@@ -203,6 +203,7 @@ from data_structures import (
     GovernanceProposal,
     MembershipProposal,
     BountyProposal,
+    ReputationTracker,
     Project,
 )
 from utils import EventLogger
@@ -405,6 +406,7 @@ class DAOSimulation(Model):
             reputation_decay_rate=self.reputation_decay_rate,
             event_logger=self.event_logger,
         )
+        self.reputation_tracker = ReputationTracker(self.dao)
         if self.market_shock_schedule:
             from data_structures.market_shock import MarketShock
             for step, sev in self.market_shock_schedule.items():
@@ -612,6 +614,8 @@ class DAOSimulation(Model):
 
         # Execute all agent steps via the scheduler
         self.schedule.step()
+        if hasattr(self, "reputation_tracker"):
+            self.reputation_tracker.decay_reputation()
         self.dao.apply_reputation_decay()
         # Keep DAO time in sync with the scheduler
         self.dao.current_step += 1
