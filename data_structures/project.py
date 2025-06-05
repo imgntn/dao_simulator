@@ -26,6 +26,8 @@ class Project:
         self.status = "open"
         self.comments = []
         self.start_time = 0
+        # Track if funding has been locked in the treasury
+        self.funding_locked = False
 
     def add_comment(self, member, sentiment):
         self.comments.append({"member": member, "sentiment": sentiment})

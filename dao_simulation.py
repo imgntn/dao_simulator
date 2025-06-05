@@ -673,9 +673,12 @@ class DAOSimulation(Model):
     def process_approved_proposal(self, proposal):
         """Execute actions based on the proposal subtype."""
         if isinstance(proposal, FundingProposal) and proposal.project:
-            proposal.project.current_funding = proposal.funding_goal
+            locked = self.dao.treasury.lock_tokens(
+                "DAO_TOKEN", proposal.funding_goal
+            )
+            proposal.project.current_funding = locked
+            proposal.project.funding_locked = locked == proposal.funding_goal
             self.dao.add_project(proposal.project)
-            self.dao.treasury.withdraw("DAO_TOKEN", proposal.funding_goal)
         elif isinstance(proposal, GovernanceProposal):
             try:
                 from settings import update_settings
@@ -715,8 +718,9 @@ class DAOSimulation(Model):
                         reward = reward_pool * share
                         if reward:
                             member.tokens += reward
-                    self.dao.treasury.withdraw("DAO_TOKEN", reward_pool)
+                    self.dao.treasury.withdraw_locked("DAO_TOKEN", reward_pool)
                     project.current_funding = 0
+                    project.funding_locked = False
                 if self.dao.event_bus:
                     self.dao.event_bus.publish(
                         "project_completed",
