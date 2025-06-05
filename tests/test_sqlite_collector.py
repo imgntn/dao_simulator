@@ -24,11 +24,12 @@ class TestSQLiteCollector(unittest.TestCase):
         import sqlite3
 
         conn = sqlite3.connect(fname)
-        rows = conn.execute('SELECT step, gini_coefficient FROM stats').fetchall()
+        rows = conn.execute('SELECT step, gini_coefficient, reputation_gini FROM stats').fetchall()
         conn.close()
         os.remove(fname)
         self.assertEqual(len(rows), 2)
         self.assertTrue(all(0 <= r[1] <= 1 for r in rows))
+        self.assertTrue(all(0 <= r[2] <= 1 for r in rows))
 
 if __name__ == '__main__':
     unittest.main()

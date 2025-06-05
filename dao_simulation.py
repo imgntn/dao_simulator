@@ -71,6 +71,7 @@ class SimpleDataCollector:
         self.event_counts = {}
         self.price_history: list[float] = []
         self.gini_history: list[float] = []
+        self.reputation_gini_history: list[float] = []
         self.delegation_centrality: list[dict[str, float]] = []
         if dao is not None:
             dao.event_bus.subscribe("*", self._handle_event)
@@ -83,9 +84,11 @@ class SimpleDataCollector:
         avg_rep = sum(m.reputation for m in members) / len(members) if members else 0
         total_tokens = sum(m.tokens for m in members)
         gini_coeff = gini([m.tokens for m in members]) if members else 0.0
+        rep_gini = gini([m.reputation for m in members]) if members else 0.0
         price = model.dao.treasury.get_token_price("DAO_TOKEN")
         self.price_history.append(price)
         self.gini_history.append(gini_coeff)
+        self.reputation_gini_history.append(rep_gini)
         import networkx as nx
         G = nx.DiGraph()
         for m in members:
@@ -102,6 +105,7 @@ class SimpleDataCollector:
             "avg_reputation": avg_rep,
             "total_tokens": total_tokens,
             "gini_coefficient": gini_coeff,
+            "reputation_gini": rep_gini,
             "event_count": sum(self.event_counts.values()),
             "dao_token_price": price,
         }
@@ -132,6 +136,7 @@ class CSVDataCollector:
             "num_proposals",
             "num_projects",
             "gini_coefficient",
+            "reputation_gini",
             "dao_token_price",
         ]
 
@@ -161,6 +166,7 @@ class SQLiteDataCollector:
             avg_reputation REAL,
             total_tokens REAL,
             gini_coefficient REAL,
+            reputation_gini REAL,
             event_count INTEGER,
             dao_token_price REAL
         )"""
@@ -169,7 +175,7 @@ class SQLiteDataCollector:
 
     def write_row(self, row: dict) -> None:
         self.conn.execute(
-            "INSERT INTO stats VALUES (?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO stats VALUES (?,?,?,?,?,?,?,?,?,?)",
             (
                 row.get("step"),
                 row.get("num_members"),
@@ -178,6 +184,7 @@ class SQLiteDataCollector:
                 row.get("avg_reputation"),
                 row.get("total_tokens"),
                 row.get("gini_coefficient"),
+                row.get("reputation_gini"),
                 row.get("event_count"),
                 row.get("dao_token_price"),
             ),
@@ -621,6 +628,8 @@ class DAOSimulation(Model):
                 price_history=self.datacollector.price_history,
                 gini_coefficient=self.datacollector.gini_history[-1],
                 gini_history=self.datacollector.gini_history,
+                reputation_gini=self.datacollector.reputation_gini_history[-1],
+                reputation_gini_history=self.datacollector.reputation_gini_history,
                 delegation_centrality=self.datacollector.delegation_centrality[-1],
                 top_influential=sorted(
                     self.datacollector.delegation_centrality[-1].items(),

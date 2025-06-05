@@ -30,6 +30,8 @@ class TestDashboardServer(unittest.TestCase):
             price_history=[],
             gini_coefficient=0.1,
             gini_history=[0.1],
+            reputation_gini=0.2,
+            reputation_gini_history=[0.2],
             top_members=[],
             delegation_centrality={},
             top_influential=[],
@@ -41,6 +43,8 @@ class TestDashboardServer(unittest.TestCase):
         data = json.loads(ws.messages[0])
         self.assertIn("gini_coefficient", data)
         self.assertIn("gini_history", data)
+        self.assertIn("reputation_gini", data)
+        self.assertIn("reputation_gini_history", data)
         self.assertIn("top_influential", data)
 
     def test_network_update_forwarded(self):
