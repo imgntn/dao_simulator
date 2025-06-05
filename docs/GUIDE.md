@@ -14,6 +14,10 @@ The project models the behaviour of a Decentralized Autonomous Organization (DAO
 - **CLI and scripting API** – run the simulation from the command line or import `DAOSimulation` in a Python script.
 - **Optional dashboards and visualizations** – an admin panel and Mesa visualization can be launched when the related packages are installed.
 - **Plugin hooks** – extend the simulator with external agent types, metrics and oracles.
+- **Liquidity pools and staking** – experiment with token swaps and interest
+  on locked funds.
+- **Market shock events** – simulate abrupt token price changes to test
+  strategies under stress.
 
 ## Installation
 
