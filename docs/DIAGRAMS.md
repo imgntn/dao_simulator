@@ -73,3 +73,26 @@ erDiagram
 ```
 
 This entity relationship diagram outlines how the core data structures interact.
+
+## Staking Flow
+
+```mermaid
+sequenceDiagram
+    participant Member
+    participant Treasury
+    Member->>Treasury: stake tokens
+    Treasury-->>Member: accrue interest
+```
+
+## Liquidity Pool
+
+```mermaid
+sequenceDiagram
+    participant TraderA
+    participant Treasury
+    participant TraderB
+    TraderA->>Treasury: swap TokenA
+    Treasury-->>TraderA: receive TokenB
+    TraderB->>Treasury: swap TokenB
+    Treasury-->>TraderB: receive TokenA
+```

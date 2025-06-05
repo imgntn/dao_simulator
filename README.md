@@ -3,6 +3,8 @@
 This DAO simulation is a modular and maintainable implementation of a Decentralized Autonomous Organization. The simulation models various agent classes that interact with each other and the DAO, allowing users to explore the behavior of different types of members within the organization.
 For a more detailed introduction and FAQ, see [docs/GUIDE.md](docs/GUIDE.md).
 Diagrams illustrating the architecture can be found in [docs/DIAGRAMS.md](docs/DIAGRAMS.md).
+Agent summaries live in [AGENTS.md](AGENTS.md) and visualization details in
+[VISUALIZATIONS.md](VISUALIZATIONS.md).
 
 
 ## Summary
@@ -165,6 +167,18 @@ treasury = Treasury(oracle=GeometricBrownianOracle(drift=0.01, volatility=0.2))
 
 Custom oracles can be loaded from external modules using the
 `--oracle-plugin-path` option.
+
+## Additional Features
+
+Recent updates introduced several optional mechanics that enhance the realism
+of the model:
+
+- **Liquidity pools** managed by the treasury let agents swap tokens and test
+  price impact.
+- **Staking** allows members to lock tokens and earn interest over time.
+- **Market shock events** can be triggered to simulate sudden price swings.
+- **Dashboard metrics** now track delegation networks and liquidity activity in
+  real time.
 
 ## Command Line Interface
 
