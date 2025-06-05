@@ -19,6 +19,7 @@ The simulation models the behavior of a DAO, a decentralized organization manage
 - `Developer`: Contributes skills to build and maintain projects within the DAO.
 - `External Partner`: Collaborates on projects or proposals from outside the DAO.
 - `Investor`: Invests in projects and proposals within the DAO.
+- `Trader`: Swaps tokens in the DAO's liquidity pools based on price trends.
 - `Passive Member`: Passively holds tokens and participates in the DAO without taking an active role.
 - `Proposal Creator`: Creates and submits proposals to the DAO.
 - `Regulator`: Ensures compliance with external regulations and requirements.

@@ -215,6 +215,7 @@ from agents import (
     Auditor,
     Validator,
     BountyHunter,
+    Trader,
 )
 from utils.locations import generate_random_location
 
@@ -243,6 +244,7 @@ class DAOSimulation(Model):
         checkpoint_path: str | None = None,
         num_developers: int | None = None,
         num_investors: int | None = None,
+        num_traders: int | None = None,
         num_adaptive_investors: int | None = None,
         num_delegators: int | None = None,
         num_liquid_delegators: int | None = None,
@@ -326,6 +328,7 @@ class DAOSimulation(Model):
         # Use provided parameters or fall back to global settings
         self.num_developers = num_developers if num_developers is not None else settings["num_developers"]
         self.num_investors = num_investors if num_investors is not None else settings["num_investors"]
+        self.num_traders = num_traders if num_traders is not None else settings.get("num_traders", 0)
         self.num_adaptive_investors = (
             num_adaptive_investors if num_adaptive_investors is not None else settings.get("num_adaptive_investors", 0)
         )
@@ -435,6 +438,16 @@ class DAOSimulation(Model):
                 investment_budget=500,
             )
             self.dao.add_member(investor)
+
+        for i in range(self.num_traders):
+            trader = Trader(
+                unique_id=f"Trader_{i}",
+                model=self.dao,
+                tokens=100,
+                reputation=0,
+                location=generate_random_location(),
+            )
+            self.dao.add_member(trader)
 
         for i in range(self.num_adaptive_investors):
             ainv = AdaptiveInvestor(
@@ -813,6 +826,7 @@ class DAOSimulation(Model):
         agent_classes = [
             Developer,
             Investor,
+            Trader,
             Delegator,
             ProposalCreator,
             Validator,
@@ -852,6 +866,8 @@ class DAOSimulation(Model):
             agent_params.update({"service_budget": 200})
         elif agent_class == Arbitrator:
             agent_params.update({"arbitration_capacity": 3})
+        elif agent_class == Trader:
+            pass
         elif agent_class == ExternalPartner:
             agent_params.update({"voting_strategy": None})
 

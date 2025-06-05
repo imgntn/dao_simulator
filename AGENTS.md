@@ -49,3 +49,10 @@ This is the Validator agent class, which inherits from DAOMember. It has a monit
 ## auditor.py
 
 This is the Auditor agent class, which inherits from DAOMember. The step function reviews open proposals and flags any with very high funding goals or suspicious descriptions by creating a Dispute. Auditors then vote on a random proposal and may leave a comment.
+
+## trader.py
+
+This is the Trader agent class, which inherits from DAOMember. Traders monitor
+the DAO token price and react to market shocks by swapping tokens using the
+treasury's liquidity pools. They buy DAO tokens when prices trend upward and
+sell when the trend reverses, exercising the liquidity-pool logic.
