@@ -17,6 +17,7 @@ class TestDAOSimulation(unittest.TestCase):
         agent_keys = [
             "num_developers",
             "num_investors",
+            "num_traders",
             "num_delegators",
             "num_proposal_creators",
             "num_validators",

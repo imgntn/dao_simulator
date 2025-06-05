@@ -10,6 +10,7 @@ provided.
 settings = {
     "num_developers": 10,
     "num_investors": 5,
+    "num_traders": 0,
     "num_adaptive_investors": 0,
     "num_delegators": 5,
     "num_liquid_delegators": 0,
