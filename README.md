@@ -100,29 +100,22 @@ The simulation also includes utility functions and voting strategies that help s
 
 The visualization depends on the optional Mesa components listed in `requirements.txt`.
 
-5. **Optional: Start the Dashboard Server**
+5. **Launch the Web Interface**
 
    ```bash
-   python main.py --websocket-port 8000
+   python cli.py --web
    ```
 
-   This feature requires `fastapi` and `uvicorn`. They are listed as optional
-   dependencies in `requirements.txt`.
-
-6. **Optional: Start the Admin Server**
-
-   ```bash
-   python admin_server.py
-   ```
-
-   A lightweight web page for adjusting settings and stepping the simulation.
-7. **Run the Tests**
+   This command starts a FastAPI server that combines the admin controls and
+   live dashboard in a single page. Use `--websocket-port` to choose the port
+   (default is `8003`).
+6. **Run the Tests**
 
    ```bash
    python -m unittest discover tests
    ```
 
-8. **Visualize Delegations**
+7. **Visualize Delegations**
 
    ```python
    from visualizations.network_graph import plot_network_graph
