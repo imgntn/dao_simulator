@@ -14,6 +14,7 @@ from agents import (
     Auditor,
 )
 from data_structures import Proposal, Project, DAO
+from data_structures import ReputationTracker
 
 
 class TestAgents(unittest.TestCase):
@@ -22,6 +23,7 @@ class TestAgents(unittest.TestCase):
         random.seed(0)
         dao = DAO("Sample DAO")
         self.dao = dao
+        self.tracker = ReputationTracker(dao)
         self.dao_member = DAOMember(
             1,
             model=dao,
@@ -30,6 +32,7 @@ class TestAgents(unittest.TestCase):
             location="US",
             # voting_strategy="simple_majority",
         )
+        dao.add_member(self.dao_member)
         self.developer = Developer(
             2,
             model=dao,
@@ -38,6 +41,7 @@ class TestAgents(unittest.TestCase):
             location="US",
             voting_strategy="simple_majority",
         )
+        dao.add_member(self.developer)
         self.investor = Investor(
             3,
             model=dao,
@@ -46,6 +50,7 @@ class TestAgents(unittest.TestCase):
             location="US",
             voting_strategy="simple_majority",
         )
+        dao.add_member(self.investor)
         self.delegator = Delegator(
             4,
             model=dao,
@@ -77,6 +82,7 @@ class TestAgents(unittest.TestCase):
             reputation=10,
             location="US",
         )
+        dao.add_member(self.service_provider)
         self.arbitrator = Arbitrator(
             8,
             model=dao,
@@ -361,6 +367,30 @@ class TestAgents(unittest.TestCase):
         self.dao.add_proposal(suspicious)
         self.auditor.step()
         self.assertTrue(self.dao.disputes)
+
+    def test_tracker_updates_on_work(self):
+        before = self.developer.reputation
+        self.developer.work_on_project()
+        self.assertGreater(self.developer.reputation, before)
+        self.assertEqual(self.tracker.last_activity[self.developer.unique_id], self.dao.current_step)
+
+    def test_tracker_updates_on_service(self):
+        before = self.service_provider.reputation
+        self.service_provider.offer_service(self.proposal)
+        self.assertGreater(self.service_provider.reputation, before)
+        self.assertEqual(self.tracker.last_activity[self.service_provider.unique_id], self.dao.current_step)
+
+    def test_tracker_updates_on_investment(self):
+        before = self.investor.reputation
+        self.investor.invest_in_random_proposal()
+        self.assertGreater(self.investor.reputation, before)
+        self.assertEqual(self.tracker.last_activity[self.investor.unique_id], self.dao.current_step)
+
+    def test_tracker_decay(self):
+        self.developer.reputation = 10
+        self.dao.current_step += 1
+        self.tracker.decay_reputation()
+        self.assertLess(self.developer.reputation, 10)
 
 
 if __name__ == "__main__":
