@@ -57,7 +57,7 @@ plot_network_graph(sim.dao)
 
 - **Admin Panel** – `python admin_app.py` starts a small interface for configuring simulation parameters.
 - **Mesa Visualization** – `python mesa_app.py` launches an interactive view of agents as the simulation runs.
-- **Dashboard Server** – run `python main.py --websocket-port 8000` to stream events to a simple web dashboard.
+- **Unified Web Interface** – `python cli.py --web` starts a page that combines the admin controls and live dashboard.
 
 These components depend on optional packages listed in `requirements.txt`.
 

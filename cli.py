@@ -72,6 +72,8 @@ def main(argv=None):
                         help="Expose websocket dashboard on this port")
     parser.add_argument("--serve", action="store_true",
                         help="Run simulation control server")
+    parser.add_argument("--web", action="store_true",
+                        help="Launch unified web interface")
     parser.add_argument("--event-db", type=str, default=None)
     parser.add_argument("--stats-db", type=str, default=None)
     parser.add_argument("--compress-events", choices=["gzip", "lzma"], default=None,
@@ -195,6 +197,21 @@ def main(argv=None):
                     writer.writerow(row)
             if args.export_html:
                 generate_report(last_sim, csv_file=csv_file, html_file=args.export_html)
+        return
+
+    if args.web:
+        from web_server import WebServer
+
+        server = WebServer(port=args.websocket_port or 8003)
+        server.start()
+        try:
+            import time
+
+            while True:
+                time.sleep(0.5)
+        except KeyboardInterrupt:
+            pass
+        server.stop()
         return
 
     if args.resume_from:
