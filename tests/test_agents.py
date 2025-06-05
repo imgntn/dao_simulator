@@ -220,6 +220,17 @@ class TestAgents(unittest.TestCase):
             self.service_provider.services_provided[self.project], ("marketing", 300)
         )
 
+    def test_offer_service_emits_event(self):
+        events = []
+        self.dao.event_bus.subscribe(
+            "service_offered", lambda **d: events.append(d)
+        )
+        before = self.proposal.current_funding
+        self.service_provider.offer_service(self.proposal)
+        self.assertIn(self.proposal, self.service_provider.services_provided)
+        self.assertGreater(self.proposal.current_funding, before)
+        self.assertTrue(events)
+
     def test_resolve_dispute(self):
         dispute = {"proposal": self.proposal, "reason": "Unfair voting"}
         self.arbitrator.resolve_dispute(dispute)
@@ -236,6 +247,17 @@ class TestAgents(unittest.TestCase):
             self.assertIn(compliance_issue, self.regulator.compliance_ensured)
         else:
             self.assertNotIn(compliance_issue, self.regulator.compliance_ensured)
+
+    def test_check_project_compliance_flags_and_event(self):
+        events = []
+        self.dao.event_bus.subscribe(
+            "compliance_checked", lambda **d: events.append(d)
+        )
+        self.project.funding_goal = 20000
+        result = Regulator.check_project_compliance(self.regulator, self.project)
+        self.assertFalse(result)
+        self.assertIn(self.project, self.dao.violations)
+        self.assertTrue(events)
 
     def test_collaborate_on_project(self):
         self.external_partner.collaborate_on_project(self.project)
@@ -308,6 +330,18 @@ class TestAgents(unittest.TestCase):
         self.developer.skillset = ["Python"]
         chosen = self.developer.choose_project_to_work_on()
         self.assertEqual(chosen, project_b)
+
+    def test_validator_monitor_creates_dispute(self):
+        events = []
+        self.dao.event_bus.subscribe(
+            "project_disputed", lambda **d: events.append(d)
+        )
+        self.project.duration = 5
+        self.project.start_time = 0
+        self.dao.current_step = 4
+        self.validator.monitor_project(self.project)
+        self.assertTrue(self.dao.disputes)
+        self.assertTrue(events)
 
     def test_investor_budget_adjusts_with_price(self):
         self.dao.treasury.update_token_price("DAO_TOKEN", 0.8)

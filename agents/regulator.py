@@ -28,10 +28,20 @@ class Regulator(DAOMember):
             self.compliance_ensured.append(compliance_issue)
 
     def check_project_compliance(self, project):
-        # Perform some checks to determine if the project is compliant
-        # with external regulations and requirements. This is a placeholder
-        # for actual compliance checks.
-        return random.choice([True, False])
+        """Verify that ``project`` meets basic requirements."""
+        compliant = (
+            project.funding_goal <= 10000 and project.duration <= 365
+        )
+        if not compliant:
+            self.flag_proposal_for_violation(project)
+        if self.model.event_bus:
+            self.model.event_bus.publish(
+                "compliance_checked",
+                step=self.model.current_step,
+                project=getattr(project, "title", None),
+                compliant=compliant,
+            )
+        return compliant
 
     def flag_proposal_for_violation(self, proposal):
         self.model.violations.append(proposal)

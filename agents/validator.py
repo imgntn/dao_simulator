@@ -1,5 +1,6 @@
 import random
 from agents.dao_member import DAOMember
+from data_structures import Dispute
 
 
 class Validator(DAOMember):
@@ -33,9 +34,35 @@ class Validator(DAOMember):
                 self.mark_active()
 
     def monitor_project(self, project):
-        # Monitor the project and report any issues or concerns.
-        # This is a placeholder for the actual implementation of project monitoring.
+        """Monitor ``project`` and raise a dispute if progress lags."""
         self.monitored_projects.add(project)
+        progress = project.total_work()
+        elapsed = max(self.model.current_step - project.start_time, 0)
+        expected = (elapsed / project.duration) * project.duration if project.duration else 0
+        behind = progress < expected
+        if behind:
+            dispute = Dispute(
+                self.model,
+                [project.creator],
+                "Project behind schedule",
+                project=project,
+            )
+            self.model.add_dispute(dispute)
+            if self.model.event_bus:
+                self.model.event_bus.publish(
+                    "project_disputed",
+                    step=self.model.current_step,
+                    project=getattr(project, "title", None),
+                    validator=self.unique_id,
+                )
+        if self.model.event_bus:
+            self.model.event_bus.publish(
+                "project_monitored",
+                step=self.model.current_step,
+                project=getattr(project, "title", None),
+                progress=progress,
+                behind=behind,
+            )
 
     def to_dict(self):
         data = super().to_dict()
