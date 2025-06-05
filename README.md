@@ -106,13 +106,20 @@ The visualization depends on the optional Mesa components listed in `requirement
    This feature requires `fastapi` and `uvicorn`. They are listed as optional
    dependencies in `requirements.txt`.
 
-6. **Run the Tests**
+6. **Optional: Start the Admin Server**
+
+   ```bash
+   python admin_server.py
+   ```
+
+   A lightweight web page for adjusting settings and stepping the simulation.
+7. **Run the Tests**
 
    ```bash
    python -m unittest discover tests
    ```
 
-7. **Visualize Delegations**
+8. **Visualize Delegations**
 
    ```python
    from visualizations.network_graph import plot_network_graph
