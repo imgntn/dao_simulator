@@ -8,5 +8,5 @@ pycountry==24.6.1
 seaborn==0.13.2
 geopandas==1.1.0
 fastapi==0.111.0
-uvicorn==0.29.0
-watchdog==4.0.0
+uvicorn==0.34.3
+watchdog==6.0.0
