@@ -146,6 +146,11 @@ Call `update_settings()` or edit the file directly to experiment with different
 values.  Settings can also be loaded from a JSON or YAML file using the new
 `load_settings()` helper or the `--config` flag in `cli.py`.
 
+`DAOSimulation` exposes a `centrality_interval` parameter that forwards to
+`SimpleDataCollector`. Delegation centrality is recomputed only on steps divisible
+by this interval, which can speed up large runs at the cost of slightly stale
+network metrics.
+
 ## Price Oracles
 
 Token prices are driven by a pluggable oracle system.  The default

@@ -66,13 +66,15 @@ class AsyncActivation(RandomActivation):
 class SimpleDataCollector:
     """Collect a few statistics from the model each step."""
 
-    def __init__(self, dao=None):
+    def __init__(self, dao=None, *, centrality_interval: int = 1):
         self.model_vars = []
         self.event_counts = {}
         self.price_history: list[float] = []
         self.gini_history: list[float] = []
         self.reputation_gini_history: list[float] = []
         self.delegation_centrality: list[dict[str, float]] = []
+        self.centrality_interval = max(1, int(centrality_interval))
+        self.last_centrality_step: int | None = None
         if dao is not None:
             dao.event_bus.subscribe("*", self._handle_event)
 
@@ -95,7 +97,21 @@ class SimpleDataCollector:
             rep = getattr(m, "representative", None)
             if rep is not None:
                 G.add_edge(m.unique_id, rep.unique_id)
-        centrality = nx.in_degree_centrality(G) if G.number_of_nodes() > 0 else {}
+        step = model.schedule.steps
+        if (
+            self.last_centrality_step is None
+            or step % self.centrality_interval == 0
+        ):
+            centrality = (
+                nx.in_degree_centrality(G) if G.number_of_nodes() > 0 else {}
+            )
+            self.last_centrality_step = step
+        else:
+            centrality = (
+                self.delegation_centrality[-1]
+                if self.delegation_centrality
+                else {}
+            )
         self.delegation_centrality.append(centrality)
         row = {
             "step": model.schedule.steps,
@@ -278,6 +294,7 @@ class DAOSimulation(Model):
         adaptive_epsilon: float | None = None,
         report_file: str | None = None,
         seed: int | None = None,
+        centrality_interval: int = 1,
         **_: object,
     ) -> None:
         super().__init__()
@@ -413,7 +430,9 @@ class DAOSimulation(Model):
                 self.dao.market_shocks.append(MarketShock(step, sev))
         self.current_shock = 0.0
         self.dao.current_shock = 0.0
-        self.datacollector = SimpleDataCollector(self.dao)
+        self.datacollector = SimpleDataCollector(
+            self.dao, centrality_interval=centrality_interval
+        )
         self.stats_writer = (
             SQLiteDataCollector(self.stats_db_filename)
             if self.stats_db_filename
