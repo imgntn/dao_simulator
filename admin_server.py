@@ -11,12 +11,17 @@ from settings import settings, update_settings
 
 HTML_PAGE = """<!DOCTYPE html>
 <html>
-<head><title>DAO Admin</title></head>
+<head><title>DAO Admin</title>
+<link rel=\"stylesheet\" href=\"/static/style.css\" />
+</head>
 <body>
+<div class='container'>
 <h1>DAO Admin</h1>
+<div id='controls'>
 <form id='settingsForm'></form>
 <button onclick='startSim()'>Start</button>
 <button onclick='stepSim()'>Step</button>
+</div>
 <pre id='output'></pre>
 <script>
 async function loadSettings() {
@@ -43,8 +48,8 @@ async function saveSettings() {
 }
 async function startSim() { await saveSettings(); await fetch('/start', {method:'POST'}); }
 async function stepSim() { const r = await fetch('/step', {method:'POST'}); const d = await r.json(); document.getElementById('output').textContent = JSON.stringify(d,null,2); }
-loadSettings();
 </script>
+</div>
 </body>
 </html>"""
 

@@ -13,10 +13,12 @@ from pathlib import Path
 HTML_PAGE = """<!DOCTYPE html>
 <html>
 <head><title>DAO Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script src="/static/dashboard_network.js"></script>
+<link rel=\"stylesheet\" href=\"/static/style.css\" />
+<script src=\"https://cdn.jsdelivr.net/npm/d3@7\"></script>
+<script src=\"/static/dashboard_network.js\"></script>
 </head>
 <body>
+<div class='container'>
 <h1>DAO Live Metrics</h1>
 <ul>
 <li>Members: <span id='members'>0</span></li>
@@ -24,8 +26,10 @@ HTML_PAGE = """<!DOCTYPE html>
 <li>Recent Proposals:</li>
 <ul id='proposals'></ul>
 </ul>
+<div id='metrics'>
 <canvas id='chart' width='400' height='150'></canvas>
 <canvas id='giniChart' width='400' height='150'></canvas>
+</div>
 <h2>Top Members</h2>
 <table id='topMembers'></table>
 <h2>Most Influential</h2>
@@ -106,6 +110,7 @@ ws.onmessage = (ev) => {
   }
 };
 </script>
+</div>
 </body>
 </html>"""
 
