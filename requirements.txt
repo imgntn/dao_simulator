@@ -1,5 +1,5 @@
 Mesa==3.2.0
-pandas==2.2.3
+pandas==2.3.0
 numpy==2.2.6
 networkx==3.5
 tqdm==4.67.1
@@ -8,5 +8,5 @@ pycountry==24.6.1
 seaborn==0.13.2
 geopandas==1.1.0
 fastapi==0.115.12
-uvicorn==0.29.0
-watchdog==4.0.0
+uvicorn==0.34.3
+watchdog==6.0.0
