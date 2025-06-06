@@ -17,14 +17,18 @@ HTML_PAGE = """<!DOCTYPE html>
 <html>
 <head>
 <title>DAO Web Interface</title>
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script src="/static/dashboard_network.js"></script>
+<link rel=\"stylesheet\" href=\"/static/style.css\" />
+<script src=\"https://cdn.jsdelivr.net/npm/d3@7\"></script>
+<script src=\"/static/dashboard_network.js\"></script>
 </head>
 <body>
+<div class='container'>
 <h1>DAO Web Interface</h1>
+<div id='controls'>
 <form id='settingsForm'></form>
 <button onclick='startSim()'>Start</button>
 <button onclick='stepSim()'>Step</button>
+</div>
 <pre id='output'></pre>
 <h2>Live Metrics</h2>
 <ul>
@@ -33,10 +37,13 @@ HTML_PAGE = """<!DOCTYPE html>
 <li>Recent Proposals:</li>
 <ul id='proposals'></ul>
 </ul>
+<div id='metrics'>
 <canvas id='chart' width='400' height='150'></canvas>
 <canvas id='giniChart' width='400' height='150'></canvas>
+</div>
 <h2>Delegation Network</h2>
 <div id='network'></div>
+</div>
 <script>
 async function loadSettings() {
   const resp = await fetch('/settings');

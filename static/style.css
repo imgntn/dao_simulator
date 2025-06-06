@@ -1,0 +1,52 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f8f8;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+#controls {
+  margin-bottom: 20px;
+}
+
+#controls button {
+  margin-right: 5px;
+  padding: 5px 10px;
+}
+
+#settingsForm label {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+#metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+canvas {
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+#network {
+  border: 1px solid #ccc;
+  margin-top: 20px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table td,
+table th {
+  border: 1px solid #ddd;
+  padding: 4px 8px;
+}
