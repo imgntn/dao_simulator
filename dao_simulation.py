@@ -72,6 +72,7 @@ class SimpleDataCollector:
         self.price_history: list[float] = []
         self.gini_history: list[float] = []
         self.reputation_gini_history: list[float] = []
+        self.avg_token_history: list[float] = []
         self.delegation_centrality: list[dict[str, float]] = []
         self.centrality_interval = max(1, int(centrality_interval))
         self.last_centrality_step: int | None = None
@@ -85,11 +86,13 @@ class SimpleDataCollector:
         members = model.dao.members
         avg_rep = sum(m.reputation for m in members) / len(members) if members else 0
         total_tokens = sum(m.tokens for m in members)
+        avg_tokens = total_tokens / len(members) if members else 0.0
         gini_coeff = gini([m.tokens for m in members]) if members else 0.0
         rep_gini = gini([m.reputation for m in members]) if members else 0.0
         price = model.dao.treasury.get_token_price("DAO_TOKEN")
         self.price_history.append(price)
         self.gini_history.append(gini_coeff)
+        self.avg_token_history.append(avg_tokens)
         self.reputation_gini_history.append(rep_gini)
         step = model.schedule.steps
         if (
@@ -111,6 +114,7 @@ class SimpleDataCollector:
             "num_proposals": len(model.dao.proposals),
             "num_projects": len(model.dao.projects),
             "avg_reputation": avg_rep,
+            "avg_tokens": avg_tokens,
             "total_tokens": total_tokens,
             "gini_coefficient": gini_coeff,
             "reputation_gini": rep_gini,
@@ -143,6 +147,7 @@ class CSVDataCollector:
             "num_members",
             "num_proposals",
             "num_projects",
+            "avg_tokens",
             "gini_coefficient",
             "reputation_gini",
             "dao_token_price",
@@ -172,6 +177,7 @@ class SQLiteDataCollector:
             num_proposals INTEGER,
             num_projects INTEGER,
             avg_reputation REAL,
+            avg_tokens REAL,
             total_tokens REAL,
             gini_coefficient REAL,
             reputation_gini REAL,
@@ -183,13 +189,14 @@ class SQLiteDataCollector:
 
     def write_row(self, row: dict) -> None:
         self.conn.execute(
-            "INSERT INTO stats VALUES (?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO stats VALUES (?,?,?,?,?,?,?,?,?,?,?)",
             (
                 row.get("step"),
                 row.get("num_members"),
                 row.get("num_proposals"),
                 row.get("num_projects"),
                 row.get("avg_reputation"),
+                row.get("avg_tokens"),
                 row.get("total_tokens"),
                 row.get("gini_coefficient"),
                 row.get("reputation_gini"),

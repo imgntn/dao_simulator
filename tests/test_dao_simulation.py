@@ -83,6 +83,7 @@ class TestDAOSimulation(unittest.TestCase):
                 "num_members",
                 "num_proposals",
                 "num_projects",
+                "avg_tokens",
                 "gini_coefficient",
                 "reputation_gini",
                 "dao_token_price",
