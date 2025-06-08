@@ -91,20 +91,12 @@ class SimpleDataCollector:
         self.price_history.append(price)
         self.gini_history.append(gini_coeff)
         self.reputation_gini_history.append(rep_gini)
-        import networkx as nx
-        G = nx.DiGraph()
-        for m in members:
-            rep = getattr(m, "representative", None)
-            if rep is not None:
-                G.add_edge(m.unique_id, rep.unique_id)
         step = model.schedule.steps
         if (
             self.last_centrality_step is None
             or step % self.centrality_interval == 0
         ):
-            centrality = (
-                nx.in_degree_centrality(G) if G.number_of_nodes() > 0 else {}
-            )
+            centrality = in_degree_centrality(members)
             self.last_centrality_step = step
         else:
             centrality = (
@@ -223,7 +215,7 @@ from data_structures import (
     Project,
 )
 from utils import EventLogger
-from utils import gini
+from utils import gini, in_degree_centrality
 from agents import (
     Arbitrator,
     Delegator,
