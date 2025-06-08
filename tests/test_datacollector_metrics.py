@@ -14,6 +14,7 @@ class TestDataCollectorMetrics(unittest.TestCase):
         self.assertIn('total_tokens', row)
         self.assertIn('event_count', row)
         self.assertIn('dao_token_price', row)
+        self.assertIn('avg_tokens', row)
         self.assertIn('gini_coefficient', row)
         self.assertIn('reputation_gini', row)
         self.assertIn('delegation_centrality', row)
