@@ -96,3 +96,18 @@ sequenceDiagram
     TraderB->>Treasury: swap TokenB
     Treasury-->>TraderB: receive TokenA
 ```
+
+## Strategy Plugin Reloading
+
+```mermaid
+sequenceDiagram
+    participant CLI
+    participant Observer
+    participant VotingStrategies
+    CLI->>VotingStrategies: load_strategy_plugins()
+    Observer-->>VotingStrategies: file changed
+    VotingStrategies->>VotingStrategies: register_strategy()
+```
+
+The diagram shows how the `watch_strategy_plugins` helper automatically reloads
+voting strategies when source files change.
