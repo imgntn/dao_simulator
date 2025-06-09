@@ -22,14 +22,14 @@ HTML_PAGE = """<!DOCTYPE html>
 <script src=\"/static/dashboard_network.js\"></script>
 </head>
 <body>
+<header><h1>DAO Web Interface</h1></header>
 <div class='container'>
-<h1>DAO Web Interface</h1>
 <div id='controls'>
 <form id='settingsForm'></form>
 <button onclick='startSim()'>Start</button>
 <button onclick='stepSim()'>Step</button>
 </div>
-<pre id='output'></pre>
+<pre id='output' class='log'></pre>
 <h2>Live Metrics</h2>
 <ul>
 <li>Members: <span id='members'>0</span></li>
