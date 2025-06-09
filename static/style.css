@@ -1,8 +1,23 @@
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --bg-color: #f0f2f5;
+  --border-color: #ddd;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f8f8f8;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: #333;
   margin: 0;
   padding: 20px;
+}
+
+header {
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 20px;
+  margin: -20px -20px 20px;
 }
 
 .container {
@@ -11,12 +26,25 @@ body {
 }
 
 #controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
 #controls button {
-  margin-right: 5px;
-  padding: 5px 10px;
+  margin: 0;
+  padding: 6px 12px;
+  background-color: var(--primary-color);
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#controls button:hover {
+  background-color: #2980b9;
 }
 
 #settingsForm label {
@@ -31,13 +59,22 @@ body {
 }
 
 canvas {
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   background-color: #fff;
+  border-radius: 4px;
 }
 
 #network {
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   margin-top: 20px;
+}
+
+.log {
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  overflow: auto;
+  max-height: 200px;
 }
 
 table {
@@ -47,6 +84,6 @@ table {
 
 table td,
 table th {
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   padding: 4px 8px;
 }
