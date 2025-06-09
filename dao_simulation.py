@@ -872,7 +872,7 @@ class DAOSimulation(Model):
             PassiveMember,
         ]
         for _ in range(5):  # Add 5 new members every 50 steps
-            if self.schedule.steps % 50 == 0:
+            if self.schedule.steps > 0 and self.schedule.steps % 50 == 0:
                 if self.dao.treasury.funds >= 100:  # Check if DAO has enough funds
                     agent_class = random.choice(agent_classes)
                     new_agent = self.create_new_agent(agent_class, self.schedule.steps)
@@ -887,7 +887,9 @@ class DAOSimulation(Model):
             "unique_id": agent_id,
             "model": self.dao,
             "tokens": 100,
-            "reputation": 0,
+            # Give new agents a starting reputation so they can satisfy the
+            # reputation threshold in ``add_new_agents``.
+            "reputation": random.randint(0, 50),
             "location": generate_random_location(),
         }
 
