@@ -1,6 +1,6 @@
 # DAO Simulation
 
-This DAO simulation is a modular and maintainable implementation of a Decentralized Autonomous Organization. The simulation models various agent classes that interact with each other and the DAO, allowing users to explore the behavior of different types of members within the organization.
+This DAO simulation is a modular and maintainable implementation of a Decentralized Autonomous Organization. The simulation models various agent classes that interact with each other and the DAO, allowing users to explore the behavior of different types of members within the organization. An internal event bus broadcasts agent actions so dashboards and plugins can react in real time.
 For a more detailed introduction and FAQ, see [docs/GUIDE.md](docs/GUIDE.md).
 Diagrams illustrating the architecture can be found in [docs/DIAGRAMS.md](docs/DIAGRAMS.md).
 Agent summaries live in [AGENTS.md](AGENTS.md) and visualization details in
@@ -21,9 +21,14 @@ The simulation models the behavior of a DAO, a decentralized organization manage
 - `Developer`: Contributes skills to build and maintain projects within the DAO.
 - `External Partner`: Collaborates on projects or proposals from outside the DAO.
 - `Investor`: Invests in projects and proposals within the DAO.
+- `Adaptive Investor`: Learns which proposal types yield better returns and
+  adjusts investments accordingly.
+- `Bounty Hunter`: Completes bounty proposals and claims locked rewards from the
+  treasury.
 - `Trader`: Swaps tokens in the DAO's liquidity pools based on price trends.
 - `Passive Member`: Passively holds tokens and participates in the DAO without taking an active role.
 - `Proposal Creator`: Creates and submits proposals to the DAO.
+- `Liquid Delegator`: Picks a representative who votes on their behalf.
 - `Regulator`: Ensures compliance with external regulations and requirements.
 - `Service Provider`: Provides services to the DAO, such as marketing, legal, or financial services.
 - `Validator`: Validates proposals and monitors projects.
@@ -180,6 +185,10 @@ of the model:
 - **Market shock events** can be triggered to simulate sudden price swings.
 - **Dashboard metrics** now track delegation networks and liquidity activity in
   real time.
+- **Event bus** broadcasts simulation events so external dashboards or plugins
+  can subscribe.
+- **Hot-reload strategies** with the `--watch` flag when the `watchdog`
+  dependency is available.
 
 ## Command Line Interface
 

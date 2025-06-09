@@ -56,3 +56,27 @@ This is the Trader agent class, which inherits from DAOMember. Traders monitor
 the DAO token price and react to market shocks by swapping tokens using the
 treasury's liquidity pools. They buy DAO tokens when prices trend upward and
 sell when the trend reverses, exercising the liquidity-pool logic.
+
+## adaptive_investor.py
+
+The AdaptiveInvestor extends Investor and tracks the rewards of different
+proposal types. Using a simple Q-learning approach it gradually allocates more
+funds to proposals that historically improved the DAO token price.
+
+## bounty_hunter.py
+
+This agent searches for approved bounty proposals, completes the task and
+withdraws the locked reward from the treasury. Completion events are published
+on the DAO's event bus.
+
+## external_partner.py
+
+ExternalPartner represents a third party collaborating with the DAO. Based on a
+configurable probability it may propose integrations, partnerships or even
+contribute work to a random project.
+
+## liquid_delegator.py
+
+LiquidDelegator picks another member as a representative and forwards all votes
+through that representative. It can still comment on proposals while its chosen
+delegate casts the actual votes.
