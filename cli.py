@@ -76,6 +76,9 @@ def main(argv=None):
                         help="Launch unified web interface")
     parser.add_argument("--event-db", type=str, default=None)
     parser.add_argument("--stats-db", type=str, default=None)
+    parser.add_argument("--event-analytics", action="store_true", help="Print SQLite event summary")
+    parser.add_argument("--num-daos", type=int, default=1, help="Number of DAOs to simulate")
+    parser.add_argument("--enable-cross-dao", action="store_true", help="Enable cross-DAO proposals")
     parser.add_argument("--compress-events", choices=["gzip", "lzma"], default=None,
                         help="Compress event logs with the given algorithm")
     parser.add_argument("--checkpoint-path", type=str, default=None)
@@ -216,9 +219,22 @@ def main(argv=None):
 
     if args.resume_from:
         state_file = validate_file(args.resume_from, allowed_base=Path.cwd())
-        sim = DAOSimulation.load_state(str(state_file), **sim_kwargs)
+        base_sim = DAOSimulation.load_state(str(state_file), **sim_kwargs)
     else:
-        sim = DAOSimulation(**sim_kwargs)
+        base_sim = DAOSimulation(**sim_kwargs)
+
+    if args.num_daos > 1:
+        from multi_dao_simulation import MultiDAOSimulation
+
+        sim = MultiDAOSimulation(
+            num_daos=args.num_daos,
+            enable_cross_dao=args.enable_cross_dao,
+            **sim_kwargs,
+        )
+        if args.resume_from:
+            sim.daos[0] = base_sim
+    else:
+        sim = base_sim
 
     dashboard = None
     if args.websocket_port is not None:
@@ -242,6 +258,17 @@ def main(argv=None):
         server.stop()
     else:
         sim.run(args.steps)
+        if args.event_analytics:
+            loggers = []
+            if hasattr(sim, "event_logger") and sim.event_logger:
+                loggers.append(sim.event_logger)
+            if hasattr(sim, "daos"):
+                for d in sim.daos:
+                    if getattr(d, "event_logger", None):
+                        loggers.append(d.event_logger)
+            for logger in loggers:
+                if hasattr(logger, "get_summary"):
+                    print(logger.get_summary())
         if dashboard:
             dashboard.stop()
 

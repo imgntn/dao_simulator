@@ -187,6 +187,9 @@ of the model:
   real time.
 - **Event bus** broadcasts simulation events so external dashboards or plugins
   can subscribe.
+- **Multi-DAO mode** runs several DAOs in parallel with optional cross-DAO proposals.
+- **Reinforcement-learning trader** optimizes swaps using Q-learning.
+- **SQLite event analytics** summarize event counts and token flows.
 - **Hot-reload strategies** with the `--watch` flag when the `watchdog`
   dependency is available.
 
@@ -205,6 +208,9 @@ Flags like `--use-parallel` or `--use-async` enable alternative schedulers. The
 `--strategy-path` and `--agent-plugin-path` allow loading custom voting
 strategies and agent types from external Python modules. Use
 `--event-db` to store events in a SQLite database instead of CSV.
+`--event-analytics` prints a summary of logged events when using a SQLite log.
+`--num-daos` controls how many DAOs run in parallel and `--enable-cross-dao`
+activates cross-DAO proposals.
 `--websocket-port` starts a small dashboard server streaming live DAO events.
 `--export-csv` and `--export-html` write collected statistics and a simple
 HTML report directly from the command line.

@@ -57,6 +57,13 @@ the DAO token price and react to market shocks by swapping tokens using the
 treasury's liquidity pools. They buy DAO tokens when prices trend upward and
 sell when the trend reverses, exercising the liquidity-pool logic.
 
+## rl_trader.py
+
+RLTrader extends Trader with a lightweight Q-learning algorithm. It observes
+token price and liquidity depth as state, choosing between buying, selling or
+adding/removing liquidity. Rewards are based on realized profit so the agent
+gradually favours actions that increase its token holdings.
+
 ## adaptive_investor.py
 
 The AdaptiveInvestor extends Investor and tracks the rewards of different

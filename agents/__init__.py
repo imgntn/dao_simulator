@@ -14,4 +14,5 @@ from .auditor import Auditor
 from .bounty_hunter import BountyHunter
 from .adaptive_investor import AdaptiveInvestor
 from .trader import Trader
+from .rl_trader import RLTrader
 
