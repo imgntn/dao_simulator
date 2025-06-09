@@ -112,3 +112,26 @@ class DBEventLogger(EventLogger):
         if self.conn:
             self.conn.close()
             self.conn = None
+
+    def get_summary(self) -> dict:
+        """Return basic analytics for the logged events."""
+        cur = self.conn.cursor()
+        counts = {
+            row[0]: row[1]
+            for row in cur.execute("SELECT event, COUNT(*) FROM events GROUP BY event")
+        }
+        token_in = {
+            row[0]: row[1]
+            for row in cur.execute(
+                "SELECT json_extract(details,'$.token'), SUM(json_extract(details,'$.amount'))"
+                " FROM events WHERE event='token_deposit' GROUP BY json_extract(details,'$.token')"
+            )
+        }
+        token_out = {
+            row[0]: row[1]
+            for row in cur.execute(
+                "SELECT json_extract(details,'$.token'), SUM(json_extract(details,'$.amount'))"
+                " FROM events WHERE event='token_withdraw' GROUP BY json_extract(details,'$.token')"
+            )
+        }
+        return {"counts": counts, "token_in": token_in, "token_out": token_out}

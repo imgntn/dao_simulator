@@ -956,7 +956,10 @@ class DAOSimulation(Model):
                         self.checkpoint_path, f"checkpoint_{self.schedule.steps}.json"
                     )
                     self.save_state(cp)
+        self.finalize()
 
+    def finalize(self) -> None:
+        """Write outputs and close resources."""
         csv_arg = None
         if self.export_csv:
             exporter = CSVDataCollector(self.csv_filename)
