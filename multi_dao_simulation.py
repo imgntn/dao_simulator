@@ -3,6 +3,8 @@ from __future__ import annotations
 import random
 from typing import List
 
+from data_structures.bridge import Bridge
+
 from dao_simulation import DAOSimulation
 from data_structures.proposal import FundingProposal
 
@@ -13,6 +15,21 @@ class MultiDAOSimulation:
     def __init__(self, num_daos: int = 2, enable_cross_dao: bool = False, **kwargs) -> None:
         self.daos: List[DAOSimulation] = [DAOSimulation(**kwargs) for _ in range(num_daos)]
         self.enable_cross_dao = enable_cross_dao
+        self.bridges: dict[tuple[int, int], Bridge] = {}
+
+    def create_bridge(self, src: int, dst: int, *, fee_rate: float = 0.0, delay: int = 0) -> None:
+        """Add a :class:`Bridge` between two DAOs."""
+        dao_a = self.daos[src].dao
+        dao_b = self.daos[dst].dao
+        self.bridges[(src, dst)] = Bridge(dao_a, dao_b, fee_rate=fee_rate, delay=delay)
+
+    def bridge_tokens(self, src: int, dst: int, amount: float, token: str = "DAO_TOKEN") -> None:
+        """Request a token transfer over an existing bridge."""
+        bridge = self.bridges.get((src, dst))
+        if bridge is None:
+            raise ValueError("Bridge does not exist")
+        step = self.daos[src].schedule.steps
+        bridge.request_transfer(token, amount, step)
 
     def transfer_tokens(self, src: int, dst: int, amount: float, token: str = "DAO_TOKEN") -> None:
         """Move ``amount`` of ``token`` from DAO ``src`` to DAO ``dst``."""
@@ -86,6 +103,9 @@ class MultiDAOSimulation:
             sim.step()
         if self.enable_cross_dao:
             self._maybe_cross_proposal()
+        for (src, _), bridge in self.bridges.items():
+            current_step = self.daos[src].schedule.steps
+            bridge.process_pending_transfers(current_step)
 
     def run(self, steps: int) -> None:
         for _ in range(steps):

@@ -12,3 +12,4 @@ from .treasury import Treasury
 from .violation import Violation
 from .market_shock import MarketShock
 from .reputation import ReputationTracker
+from .bridge import Bridge
