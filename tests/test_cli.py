@@ -34,6 +34,7 @@ class TestCLI(unittest.TestCase):
             checkpoint_path=None,
             market_shock_file=None,
             seed=42,
+            governance_rule=None,
         )
 
     def test_cli_loads_config(self):

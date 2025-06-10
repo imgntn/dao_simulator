@@ -291,6 +291,7 @@ class DAOSimulation(Model):
         market_shock_file: str | None = None,
         adaptive_learning_rate: float | None = None,
         adaptive_epsilon: float | None = None,
+        governance_rule: str | None = None,
         report_file: str | None = None,
         seed: int | None = None,
         centrality_interval: int = 1,
@@ -347,6 +348,16 @@ class DAOSimulation(Model):
             if adaptive_epsilon is not None
             else settings.get("adaptive_epsilon", 0.1)
         )
+        from utils.governance_plugins import get_rule
+        self.governance_rule_name = (
+            governance_rule
+            if governance_rule is not None
+            else settings.get("governance_rule", "majority")
+        )
+        rule_cls = get_rule(self.governance_rule_name)
+        if rule_cls is None:
+            raise ValueError(f"Unknown governance rule: {self.governance_rule_name}")
+        self.governance_rule = rule_cls()
         self.report_file = report_file
 
         # Use provided parameters or fall back to global settings
@@ -681,12 +692,11 @@ class DAOSimulation(Model):
                 proposal.status == "open"
                 and current_time > proposal.creation_time + proposal.voting_period
             ):
-                if proposal.votes_for > proposal.votes_against:
-                    proposal.status = "approved"
+                approved = self.governance_rule.approve(proposal, self.dao)
+                proposal.status = "approved" if approved else "rejected"
+                if approved:
                     proposal.creator.reputation += 5
                     self.process_approved_proposal(proposal)
-                else:
-                    proposal.status = "rejected"
 
     def process_approved_proposal(self, proposal):
         """Execute actions based on the proposal subtype."""

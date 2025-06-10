@@ -68,6 +68,10 @@ def main(argv=None):
         help="Directory containing custom oracle modules",
     )
     parser.add_argument("--metric-plugin-path", type=str, default=None)
+    parser.add_argument("--governance-rule", type=str, default=None,
+                        help="Name of the governance rule to use")
+    parser.add_argument("--governance-plugin-path", type=str, default=None,
+                        help="Directory containing governance rule modules")
     parser.add_argument("--websocket-port", type=int, default=None,
                         help="Expose websocket dashboard on this port")
     parser.add_argument("--serve", action="store_true",
@@ -136,6 +140,13 @@ def main(argv=None):
         load_metric_plugins(str(dir_path))
         watch_metric_plugins(str(dir_path))
 
+    if args.governance_plugin_path:
+        from utils.governance_plugins import load_governance_plugins, watch_governance_plugins
+
+        dir_path = validate_directory(args.governance_plugin_path, allowed_base=Path.cwd())
+        load_governance_plugins(str(dir_path))
+        watch_governance_plugins(str(dir_path))
+
     def load_matrix(path: str):
         file_path = validate_file(path, allowed_base=Path.cwd())
         import json
@@ -164,6 +175,7 @@ def main(argv=None):
         checkpoint_path=args.checkpoint_path,
         market_shock_file=args.market_shock_file,
         seed=args.seed,
+        governance_rule=args.governance_rule,
     )
 
     if args.matrix:
