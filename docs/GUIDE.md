@@ -18,6 +18,7 @@ The project models the behaviour of a Decentralized Autonomous Organization (DAO
   on locked funds.
 - **Market shock events** – simulate abrupt token price changes to test
   strategies under stress.
+- **Cross-DAO bridges** – move tokens between DAOs with fees and transfer delays.
 
 ## Installation
 

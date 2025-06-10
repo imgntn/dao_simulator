@@ -5,6 +5,7 @@ For a more detailed introduction and FAQ, see [docs/GUIDE.md](docs/GUIDE.md).
 Diagrams illustrating the architecture can be found in [docs/DIAGRAMS.md](docs/DIAGRAMS.md).
 Agent summaries live in [AGENTS.md](AGENTS.md) and visualization details in
 [VISUALIZATIONS.md](VISUALIZATIONS.md).
+Details on token bridging are available in [docs/BRIDGING.md](docs/BRIDGING.md).
 Guidance on straightforward revenue generation can be found in
 [MONETIZATION_STEPS.md](MONETIZATION_STEPS.md).
 
@@ -200,6 +201,7 @@ of the model:
 - **Event bus** broadcasts simulation events so external dashboards or plugins
   can subscribe.
 - **Multi-DAO mode** runs several DAOs in parallel with optional cross-DAO proposals.
+- **Cross-DAO bridges** transfer tokens with configurable fees and delays.
 - **Reinforcement-learning trader** optimizes swaps using Q-learning.
 - **SQLite event analytics** summarize event counts and token flows.
 - **Hot-reload strategies** with the `--watch` flag when the `watchdog`
