@@ -33,6 +33,7 @@ settings = {
     "market_shock_frequency": 0,
     "adaptive_learning_rate": 0.1,
     "adaptive_epsilon": 0.1,
+    "governance_rule": "majority",
 }
 
 

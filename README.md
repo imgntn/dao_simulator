@@ -13,6 +13,18 @@ Guidance on straightforward revenue generation can be found in
 
 The simulation models the behavior of a DAO, a decentralized organization managed by a smart contract or a set of rules. The DAO members, represented by various agent classes, can create proposals, vote on them, invest in projects, and perform other activities. The simulation also incorporates treasury management, token pricing, and revenue distribution to model the dynamics of a real-world DAO.
 
+## Key Features
+
+- **Extensible agent system** – developers, investors, regulators and many other roles are implemented as separate classes.
+- **Pluggable voting strategies** – choose from built-in strategies or load custom modules via the command line.
+- **Treasury with price oracles** – token values can follow simple random walks or more complex market models.
+- **CLI and scripting API** – run the simulation from the command line or import `DAOSimulation` in a Python script.
+- **Optional dashboards and visualizations** – an admin panel and Mesa visualization can be launched when the related packages are installed.
+- **Plugin hooks** – extend the simulator with external agent types, metrics and oracles.
+- **Liquidity pools and staking** – experiment with token swaps and interest on locked funds.
+- **Market shock events** – simulate abrupt token price changes to test strategies under stress.
+- **Pluggable governance rules** – choose approval logic for proposals or load custom rules.
+
 ## Agent Classes
 
 - `Arbitrator`: Resolves disputes and enforces the rules of the DAO.
@@ -217,5 +229,7 @@ HTML report directly from the command line.
 `--metric-plugin-path` loads custom metric callbacks that extend the collected statistics.
 `--oracle-plugin-path` loads Python modules that register alternative price
 oracle classes, such as the built-in `GeometricBrownianOracle`.
+`--governance-rule` selects the registered rule used to approve proposals.
+`--governance-plugin-path` loads Python modules that register additional governance rules.
 `--matrix-workers` runs scenario matrices in parallel using multiple processes.
 Interactive Plotly graphs are embedded in the HTML report when `--export-html` is used and Plotly is installed.
