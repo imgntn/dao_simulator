@@ -294,6 +294,7 @@ class DAOSimulation(Model):
         governance_rule: str | None = None,
         report_file: str | None = None,
         seed: int | None = None,
+        enable_marketing: bool | None = None,
         centrality_interval: int = 1,
         **_: object,
     ) -> None:
@@ -302,6 +303,10 @@ class DAOSimulation(Model):
         if seed is not None:
             random.seed(seed)
         self.seed = seed
+
+        self.enable_marketing = (
+            enable_marketing if enable_marketing is not None else settings.get("enable_marketing", False)
+        )
 
         self.export_csv = export_csv
         self.csv_filename = csv_filename
@@ -433,6 +438,8 @@ class DAOSimulation(Model):
             reputation_decay_rate=self.reputation_decay_rate,
             event_logger=self.event_logger,
         )
+        if self.enable_marketing:
+            self.dao.treasury.deposit("DAO_TOKEN", 1000)
         self.reputation_tracker = ReputationTracker(self.dao)
         if self.market_shock_schedule:
             from data_structures.market_shock import MarketShock
@@ -634,6 +641,8 @@ class DAOSimulation(Model):
         self.resolve_disputes()
         self.distribute_revenue()
         self.execute_token_buyback()
+        if self.enable_marketing:
+            self.run_marketing_campaign()
         self.conduct_regular_meeting()
         self.add_new_agents()
         self.remove_agents()
@@ -929,6 +938,16 @@ class DAOSimulation(Model):
         for agent in agents_to_remove:
             self.dao.remove_member(agent)
             self.schedule.remove(agent)
+
+    def run_marketing_campaign(self):
+        from data_structures.marketing_events import DemandBoostCampaign, RecruitmentCampaign
+        if self.schedule.steps % 20 != 0:
+            return
+        if random.random() < 0.5:
+            camp = DemandBoostCampaign(self.dao)
+        else:
+            camp = RecruitmentCampaign(self.dao)
+        camp.execute(self)
 
     def save_state(self, filename: str):
         data = {

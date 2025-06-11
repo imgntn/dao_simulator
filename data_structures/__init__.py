@@ -13,3 +13,4 @@ from .violation import Violation
 from .market_shock import MarketShock
 from .reputation import ReputationTracker
 from .bridge import Bridge
+from .marketing_events import DemandBoostCampaign, RecruitmentCampaign
