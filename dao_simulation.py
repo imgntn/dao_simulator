@@ -354,6 +354,7 @@ class DAOSimulation(Model):
         seed: int | None = None,
         enable_marketing: bool | None = None,
         marketing_level: str | None = None,
+        scenario_file: str | None = None,
         centrality_interval: int = 1,
         **_: object,
     ) -> None:
@@ -369,6 +370,11 @@ class DAOSimulation(Model):
         self.marketing_level = (
             marketing_level if marketing_level is not None else settings.get("marketing_level", "auto")
         )
+        self.scenario_file = scenario_file
+        self.scenario: list[dict] = []
+        self._scenario_index = 0
+        if self.scenario_file:
+            self.scenario = self._load_scenario(self.scenario_file)
 
         self.export_csv = export_csv
         self.csv_filename = csv_filename
@@ -720,6 +726,7 @@ class DAOSimulation(Model):
         # Keep DAO time in sync with the scheduler
         self.dao.current_step += 1
         self.datacollector.collect(self)
+        self._check_objectives()
         if self.stats_writer:
             self.stats_writer.write_row(self.datacollector.model_vars[-1])
         if hasattr(self.dao, "event_bus"):
@@ -879,6 +886,73 @@ class DAOSimulation(Model):
                 continue
             schedule[step] = sev
         return schedule
+
+    def _check_objectives(self) -> None:
+        if not self.scenario or self._scenario_index >= len(self.scenario):
+            return
+        metrics = {
+            "step": lambda: self.schedule.steps,
+            "proposal_count": lambda: len(self.dao.proposals),
+            "approved_proposals": lambda: sum(
+                1 for p in self.dao.proposals if p.status == "approved"
+            ),
+            "member_count": lambda: len(self.dao.members),
+            "project_count": lambda: len(self.dao.projects),
+            "token_price": lambda: self.dao.treasury.get_token_price("DAO_TOKEN"),
+        }
+        changed = False
+        while self._scenario_index < len(self.scenario):
+            obj = self.scenario[self._scenario_index]
+            func = metrics.get(obj["metric"], lambda: 0)
+            try:
+                val = func()
+            except Exception:
+                break
+            if val >= obj["threshold"]:
+                obj["completed"] = True
+                self._scenario_index += 1
+                changed = True
+            else:
+                break
+        if changed and self.dao.event_bus:
+            self.dao.event_bus.publish(
+                "scenario_progress",
+                step=self.schedule.steps,
+                completed=[o["description"] for o in self.scenario if o["completed"]],
+                remaining=[o["description"] for o in self.scenario if not o["completed"]],
+            )
+
+    def _load_scenario(self, path: str) -> list[dict]:
+        """Load tutorial objectives from JSON or YAML."""
+        import json
+        if path.endswith((".yaml", ".yml")):
+            try:
+                import yaml  # type: ignore
+            except Exception as e:  # pragma: no cover - optional dep
+                raise ImportError("PyYAML is required for YAML scenarios") from e
+            with open(path) as f:
+                data = yaml.safe_load(f) or []
+        else:
+            with open(path) as f:
+                data = json.load(f)
+        if isinstance(data, dict):
+            steps = data.get("steps", [])
+        else:
+            steps = data
+        scenario = []
+        for step in steps:
+            try:
+                scenario.append(
+                    {
+                        "description": str(step.get("description", "")),
+                        "metric": str(step.get("metric", step.get("type", ""))),
+                        "threshold": float(step.get("threshold", 1)),
+                        "completed": False,
+                    }
+                )
+            except Exception:
+                continue
+        return scenario
 
     def trigger_market_shock(self, severity: float | None = None) -> None:
         """Apply a sudden price change and record the severity."""
