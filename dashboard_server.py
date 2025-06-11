@@ -14,6 +14,7 @@ HTML_PAGE = """<!DOCTYPE html>
 <html>
 <head><title>DAO Dashboard</title>
 <link rel=\"stylesheet\" href=\"/static/style.css\" />
+<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>
 <script src=\"https://cdn.jsdelivr.net/npm/d3@7\"></script>
 <script src=\"/static/dashboard_network.js\"></script>
 </head>
@@ -27,8 +28,8 @@ HTML_PAGE = """<!DOCTYPE html>
 <ul id='proposals'></ul>
 </ul>
 <div id='metrics'>
-<canvas id='chart' width='400' height='150'></canvas>
-<canvas id='giniChart' width='400' height='150'></canvas>
+<div id='chart' style='width:400px;height:250px;'></div>
+<div id='giniChart' style='width:400px;height:250px;'></div>
 </div>
 <h2>Top Members</h2>
 <table id='topMembers'></table>
@@ -40,36 +41,10 @@ HTML_PAGE = """<!DOCTYPE html>
 <div id='network'></div>
 <script>
 const ws = new WebSocket(`ws://${location.host}/ws`);
-let prices = [];
-let ginis = [];
-function drawChart() {
-  const c = document.getElementById('chart');
-  const ctx = c.getContext('2d');
-  ctx.clearRect(0,0,c.width,c.height);
-  if (prices.length === 0) return;
-  const max = Math.max(...prices);
-  ctx.beginPath();
-  prices.forEach((p, i) => {
-    const x = (i/(prices.length-1))*c.width;
-    const y = c.height - (p/max)*c.height;
-    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-  });
-  ctx.stroke();
-}
-function drawGini() {
-  const c = document.getElementById('giniChart');
-  const ctx = c.getContext('2d');
-  ctx.clearRect(0,0,c.width,c.height);
-  if (ginis.length === 0) return;
-  const max = Math.max(...ginis);
-  ctx.beginPath();
-  ginis.forEach((p, i) => {
-    const x = (i/(ginis.length-1))*c.width;
-    const y = c.height - (p/max)*c.height;
-    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-  });
-  ctx.stroke();
-}
+let priceTrace = {x: [], y: [], mode:'lines', name:'Price'};
+let giniTrace = {x: [], y: [], mode:'lines', name:'Gini'};
+Plotly.newPlot('chart', [priceTrace]);
+Plotly.newPlot('giniChart', [giniTrace]);
 ws.onmessage = (ev) => {
   const data = JSON.parse(ev.data);
   if (data.event === 'step_end') {
@@ -82,10 +57,12 @@ ws.onmessage = (ev) => {
       li.textContent = title;
       list.appendChild(li);
     }
-    prices = data.price_history;
-    ginis = data.gini_history;
-    drawChart();
-    drawGini();
+    priceTrace.x = data.price_history.map((_,i)=>i);
+    priceTrace.y = data.price_history;
+    giniTrace.x = data.gini_history.map((_,i)=>i);
+    giniTrace.y = data.gini_history;
+    Plotly.react('chart', [priceTrace]);
+    Plotly.react('giniChart', [giniTrace]);
     const table = document.getElementById('topMembers');
     table.innerHTML = '';
     data.top_members.forEach(([m,t]) => {
