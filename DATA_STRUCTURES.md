@@ -1,6 +1,6 @@
 ## dao.py
 
-The DAO class represents the DAO itself, including its name, proposals, projects, disputes, violations, members, and treasury. It has methods for adding and removing these entities. The treasury attribute is an instance of the Treasury class. The distribute_revenue, buyback_tokens, and stake_tokens methods are placeholders for revenue distribution, token buyback, and staking logic.
+The DAO class represents the DAO itself, including its name, proposals, projects, disputes, violations, members, and treasury. It has methods for adding and removing these entities. The treasury attribute is an instance of the Treasury class. The ``distribute_revenue`` method shares revenue with stakers, ``buyback_tokens`` performs treasury buybacks, and ``stake_tokens`` lets members lock tokens for rewards.
 
 ## dispute.py
 
