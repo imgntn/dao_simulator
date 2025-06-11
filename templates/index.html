@@ -3,86 +3,117 @@
 <head>
     <title>DAO Web Interface</title>
     <link rel="stylesheet" href="/static/style.css" />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="/static/dashboard_network.js"></script>
 </head>
 <body>
-<header><h1>DAO Web Interface</h1></header>
-<div class="container">
-    <div id="controls">
-        <form id="settingsForm"></form>
-        <button onclick="startSim()">Start</button>
-        <button onclick="stepSim()">Step</button>
-    </div>
-    <pre id="output" class="log"></pre>
-    <h2>Live Metrics</h2>
-    <ul>
-        <li>Members: <span id="members">0</span></li>
-        <li>DAO Token Price: <span id="price">0</span></li>
-        <li>Recent Proposals:</li>
-        <ul id="proposals"></ul>
-    </ul>
-    <div id="metrics">
-        <div id="priceChart" style="width:400px;height:250px;"></div>
-        <div id="giniChart" style="width:400px;height:250px;"></div>
-    </div>
-    <h2>Delegation Network</h2>
-    <div id="network"></div>
-</div>
+<header>
+    <h1>DAO Web Interface</h1>
+    <button id="themeToggle" @click="toggleTheme">Toggle Theme</button>
+</header>
+<main id="app" class="container">
+    <section id="controls">
+        <form id="settingsForm">
+            <div v-for="(value, key) in settings" :key="key">
+                <label>{{ key }}<input v-model="settings[key]" /></label>
+            </div>
+        </form>
+        <button @click="startSim">Start</button>
+        <button @click="stepSim">Step</button>
+    </section>
+    <section>
+        <pre id="output" class="log">{{ output }}</pre>
+    </section>
+    <section>
+        <h2>Live Metrics</h2>
+        <ul>
+            <li>Members: <span>{{ members }}</span></li>
+            <li>DAO Token Price: <span>{{ price.toFixed(2) }}</span></li>
+            <li>Recent Proposals:</li>
+            <ul>
+                <li v-for="p in proposals" :key="p">{{ p }}</li>
+            </ul>
+        </ul>
+    </section>
+    <section id="metrics">
+        <div id="priceChart"></div>
+        <div id="giniChart"></div>
+    </section>
+    <section>
+        <h2>Delegation Network</h2>
+        <div id="network"></div>
+    </section>
+</main>
 <script>
-async function loadSettings() {
-    const resp = await fetch('/settings');
-    const data = await resp.json();
-    const form = document.getElementById('settingsForm');
-    form.innerHTML = '';
-    for (const [k,v] of Object.entries(data)) {
-        const label = document.createElement('label');
-        label.textContent = k;
-        const input = document.createElement('input');
-        input.name = k;
-        input.value = v;
-        label.appendChild(input);
-        form.appendChild(label);
-        form.appendChild(document.createElement('br'));
-    }
-}
-async function saveSettings() {
-    const form = document.getElementById('settingsForm');
-    const data = {};
-    for (const el of form.elements) { if(el.name) data[el.name] = el.value; }
-    await fetch('/settings', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
-}
-async function startSim() { await saveSettings(); await fetch('/start', {method:'POST'}); }
-async function stepSim() { const r = await fetch('/step', {method:'POST'}); const d = await r.json(); document.getElementById('output').textContent = JSON.stringify(d,null,2); }
-loadSettings();
-const ws = new WebSocket(`ws://${location.host}/ws`);
-let priceTrace = {x: [], y: [], mode:'lines', name:'Price'};
-let giniTrace = {x: [], y: [], mode:'lines', name:'Gini'};
-Plotly.newPlot('priceChart', [priceTrace]);
-Plotly.newPlot('giniChart', [giniTrace]);
-ws.onmessage = (ev) => {
-    const data = JSON.parse(ev.data);
-    if (data.event === 'step_end') {
-        document.getElementById('members').textContent = data.num_members;
-        document.getElementById('price').textContent = data.token_price.toFixed(2);
-        const list = document.getElementById('proposals');
-        list.innerHTML = '';
-        for (const title of data.recent_proposals) {
-            const li = document.createElement('li');
-            li.textContent = title;
-            list.appendChild(li);
+const { createApp } = Vue;
+createApp({
+    data() {
+        return {
+            settings: {},
+            members: 0,
+            price: 0,
+            proposals: [],
+            output: ''
+        };
+    },
+    methods: {
+        async loadSettings() {
+            const resp = await fetch('/settings');
+            this.settings = await resp.json();
+        },
+        async saveSettings() {
+            await fetch('/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(this.settings)
+            });
+        },
+        async startSim() {
+            await this.saveSettings();
+            await fetch('/start', { method: 'POST' });
+        },
+        async stepSim() {
+            const r = await fetch('/step', { method: 'POST' });
+            const d = await r.json();
+            this.output = JSON.stringify(d, null, 2);
+        },
+        toggleTheme() {
+            document.body.classList.toggle('dark');
+            const t = document.body.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', t);
         }
-        priceTrace.x = data.price_history.map((_,i)=>i);
-        priceTrace.y = data.price_history;
-        giniTrace.x = data.gini_history.map((_,i)=>i);
-        giniTrace.y = data.gini_history;
-        Plotly.react('priceChart', [priceTrace]);
-        Plotly.react('giniChart', [giniTrace]);
-    } else if (data.event === 'network_update') {
-        window.handleNetworkUpdate(data);
+    },
+    mounted() {
+        this.loadSettings();
+        const priceTrace = { x: [], y: [], mode: 'lines', name: 'Price' };
+        const giniTrace = { x: [], y: [], mode: 'lines', name: 'Gini' };
+        Plotly.newPlot('priceChart', [priceTrace]);
+        Plotly.newPlot('giniChart', [giniTrace]);
+        const ws = new WebSocket(`ws://${location.host}/ws`);
+        ws.onmessage = (ev) => {
+            const data = JSON.parse(ev.data);
+            if (data.event === 'step_end') {
+                this.members = data.num_members;
+                this.price = data.token_price;
+                this.proposals = data.recent_proposals;
+                priceTrace.x = data.price_history.map((_, i) => i);
+                priceTrace.y = data.price_history;
+                giniTrace.x = data.gini_history.map((_, i) => i);
+                giniTrace.y = data.gini_history;
+                Plotly.react('priceChart', [priceTrace]);
+                Plotly.react('giniChart', [giniTrace]);
+            } else if (data.event === 'network_update') {
+                window.handleNetworkUpdate(data);
+            }
+        };
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
+            document.body.classList.add('dark');
+        }
     }
-};
+}).mount('#app');
 </script>
 </body>
 </html>
