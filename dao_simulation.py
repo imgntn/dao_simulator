@@ -79,11 +79,31 @@ class SimpleDataCollector:
         self.achievements: dict[str, str] = {}
         self.centrality_interval = max(1, int(centrality_interval))
         self.last_centrality_step: int | None = None
+        self.dao = dao
+        self.campaign_history: list[dict] = []
+        self._last_campaign: dict | None = None
         if dao is not None:
             dao.event_bus.subscribe("*", self._handle_event)
 
     def _handle_event(self, event: str, **_):
         self.event_counts[event] = self.event_counts.get(event, 0) + 1
+        if event == "marketing_campaign":
+            prev_price = _.get(
+                "old_price",
+                self.price_history[-1]
+                if self.price_history
+                else self.dao.treasury.get_token_price("DAO_TOKEN"),
+            )
+            new_price = _.get("new_price", prev_price)
+            entry = {
+                "step": self.dao.current_step,
+                "type": _.get("type"),
+                "tokens_spent": _.get("budget", 0),
+                "members_gained": len(_.get("new_members", [])),
+                "price_impact": new_price - prev_price,
+            }
+            self._last_campaign = entry
+            self.campaign_history.append(entry)
 
     def collect(self, model):
         members = model.dao.members
@@ -161,6 +181,17 @@ class SimpleDataCollector:
         row["delegation_centrality"] = centrality
         row["token_ranking"] = token_rank
         row["influence_ranking"] = influence_rank
+        if self._last_campaign:
+            row["campaign_type"] = self._last_campaign.get("type")
+            row["campaign_tokens_spent"] = self._last_campaign.get("tokens_spent", 0)
+            row["campaign_members_gained"] = self._last_campaign.get("members_gained", 0)
+            row["campaign_price_impact"] = self._last_campaign.get("price_impact", 0.0)
+            self._last_campaign = None
+        else:
+            row["campaign_type"] = None
+            row["campaign_tokens_spent"] = 0
+            row["campaign_members_gained"] = 0
+            row["campaign_price_impact"] = 0.0
         self.model_vars.append(row)
 
 
@@ -322,6 +353,7 @@ class DAOSimulation(Model):
         report_file: str | None = None,
         seed: int | None = None,
         enable_marketing: bool | None = None,
+        marketing_level: str | None = None,
         centrality_interval: int = 1,
         **_: object,
     ) -> None:
@@ -333,6 +365,9 @@ class DAOSimulation(Model):
 
         self.enable_marketing = (
             enable_marketing if enable_marketing is not None else settings.get("enable_marketing", False)
+        )
+        self.marketing_level = (
+            marketing_level if marketing_level is not None else settings.get("marketing_level", "auto")
         )
 
         self.export_csv = export_csv
@@ -705,6 +740,9 @@ class DAOSimulation(Model):
                 token_rank_history=self.datacollector.token_ranking_history,
                 influence_rank_history=self.datacollector.influence_ranking_history,
                 achievements=self.datacollector.achievements,
+                campaign_tokens_spent=self.datacollector.model_vars[-1].get("campaign_tokens_spent", 0),
+                campaign_members_gained=self.datacollector.model_vars[-1].get("campaign_members_gained", 0),
+                campaign_price_impact=self.datacollector.model_vars[-1].get("campaign_price_impact", 0.0),
             )
             self.dao.event_bus.publish(
                 "network_update",
@@ -961,13 +999,45 @@ class DAOSimulation(Model):
             self.schedule.remove(agent)
 
     def run_marketing_campaign(self):
-        from data_structures.marketing_events import DemandBoostCampaign, RecruitmentCampaign
+        from data_structures.marketing_events import (
+            DemandBoostCampaign,
+            RecruitmentCampaign,
+            SocialMediaCampaign,
+            ReferralBonusCampaign,
+        )
+
         if self.schedule.steps % 20 != 0:
             return
-        if random.random() < 0.5:
-            camp = DemandBoostCampaign(self.dao)
-        else:
-            camp = RecruitmentCampaign(self.dao)
+
+        balance = self.dao.treasury.get_token_balance("DAO_TOKEN")
+        level = self.marketing_level
+
+        if level == "low":
+            camp_cls = SocialMediaCampaign
+        elif level == "medium":
+            camp_cls = DemandBoostCampaign if balance >= 20 else SocialMediaCampaign
+        elif level == "high":
+            if balance >= 60:
+                camp_cls = random.choice([RecruitmentCampaign, ReferralBonusCampaign])
+            elif balance >= 20:
+                camp_cls = DemandBoostCampaign
+            else:
+                camp_cls = SocialMediaCampaign
+        else:  # auto
+            if balance < 50:
+                camp_cls = SocialMediaCampaign
+            elif balance < 150:
+                camp_cls = DemandBoostCampaign
+            elif balance < 300:
+                camp_cls = RecruitmentCampaign
+            else:
+                camp_cls = random.choice([
+                    RecruitmentCampaign,
+                    ReferralBonusCampaign,
+                    DemandBoostCampaign,
+                ])
+
+        camp = camp_cls(self.dao)
         camp.execute(self)
 
     def save_state(self, filename: str):

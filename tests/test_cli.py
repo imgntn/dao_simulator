@@ -36,6 +36,7 @@ class TestCLI(unittest.TestCase):
             seed=42,
             governance_rule=None,
             enable_marketing=False,
+            marketing_level=None,
         )
 
     @mock.patch("cli.DAOSimulation")
@@ -57,6 +58,29 @@ class TestCLI(unittest.TestCase):
             seed=None,
             governance_rule=None,
             enable_marketing=True,
+            marketing_level=None,
+        )
+
+    @mock.patch("cli.DAOSimulation")
+    def test_cli_marketing_level_flag(self, MockSim):
+        cli.main(["--steps", "1", "--enable-marketing", "--marketing-level", "high"])
+        MockSim.assert_called_with(
+            use_parallel=False,
+            use_async=False,
+            max_workers=None,
+            report_file=None,
+            export_csv=False,
+            csv_filename="simulation_data.csv",
+            event_db_filename=None,
+            stats_db_filename=None,
+            compress_events=None,
+            checkpoint_interval=None,
+            checkpoint_path=None,
+            market_shock_file=None,
+            seed=None,
+            governance_rule=None,
+            enable_marketing=True,
+            marketing_level="high",
         )
 
     def test_cli_loads_config(self):
