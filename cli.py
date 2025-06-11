@@ -84,6 +84,12 @@ def main(argv=None):
     parser.add_argument("--num-daos", type=int, default=1, help="Number of DAOs to simulate")
     parser.add_argument("--enable-cross-dao", action="store_true", help="Enable cross-DAO proposals")
     parser.add_argument("--enable-marketing", action="store_true", dest="enable_marketing", help="Enable marketing campaigns")
+    parser.add_argument(
+        "--marketing-level",
+        choices=["low", "medium", "high", "auto"],
+        default=None,
+        help="Intensity of marketing campaigns",
+    )
     parser.add_argument("--compress-events", choices=["gzip", "lzma"], default=None,
                         help="Compress event logs with the given algorithm")
     parser.add_argument("--checkpoint-path", type=str, default=None)
@@ -178,6 +184,7 @@ def main(argv=None):
         seed=args.seed,
         governance_rule=args.governance_rule,
         enable_marketing=args.enable_marketing,
+        marketing_level=args.marketing_level,
     )
 
     if args.matrix:

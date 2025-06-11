@@ -35,6 +35,7 @@ settings = {
     "adaptive_epsilon": 0.1,
     "governance_rule": "majority",
     "enable_marketing": False,
+    "marketing_level": "auto",
 }
 
 

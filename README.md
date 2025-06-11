@@ -233,5 +233,7 @@ HTML report directly from the command line.
 oracle classes, such as the built-in `GeometricBrownianOracle`.
 `--governance-rule` selects the registered rule used to approve proposals.
 `--governance-plugin-path` loads Python modules that register additional governance rules.
+`--enable-marketing` activates marketing campaigns and `--marketing-level`
+controls how aggressive those campaigns are.
 `--matrix-workers` runs scenario matrices in parallel using multiple processes.
 Interactive Plotly graphs are embedded in the HTML report when `--export-html` is used and Plotly is installed.

@@ -45,6 +45,9 @@ To adjust agent counts or simulation length, edit `settings.py` or provide overr
 python -m cli --steps 50 --num_developers 2
 ```
 
+Marketing features are controlled with `--enable-marketing` and the
+`--marketing-level` flag which accepts `low`, `medium`, `high` or `auto`.
+
 You can export statistics directly from the CLI using `--export-csv` or `--export-html`. Interactive network graphs can be generated in a Python session:
 
 ```python
