@@ -34,6 +34,7 @@ settings = {
     "adaptive_learning_rate": 0.1,
     "adaptive_epsilon": 0.1,
     "governance_rule": "majority",
+    "enable_marketing": False,
 }
 
 
