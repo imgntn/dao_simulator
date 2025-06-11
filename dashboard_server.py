@@ -36,6 +36,12 @@ HTML_PAGE = """<!DOCTYPE html>
 <table id='topInfluence'></table>
 <h2>Completed Bounties</h2>
 <ul id='bounties'></ul>
+<h2>Achievements</h2>
+<ul id='achievements'></ul>
+<h2>Token Ranking History</h2>
+<pre id='tokenHistory'></pre>
+<h2>Influence Ranking History</h2>
+<pre id='influenceHistory'></pre>
 <h2>Delegation Network</h2>
 <div id='network'></div>
 <script>
@@ -100,6 +106,17 @@ ws.onmessage = (ev) => {
       row.innerHTML = `<td>${m}</td><td>${c.toFixed(2)}</td>`;
       tInf.appendChild(row);
     });
+    const aList = document.getElementById('achievements');
+    aList.innerHTML = '';
+    Object.entries(data.achievements || {}).forEach(([k,v]) => {
+      const li = document.createElement('li');
+      li.textContent = `${k}: ${v}`;
+      aList.appendChild(li);
+    });
+    document.getElementById('tokenHistory').textContent =
+      JSON.stringify(data.token_rank_history.slice(-5), null, 2);
+    document.getElementById('influenceHistory').textContent =
+      JSON.stringify(data.influence_rank_history.slice(-5), null, 2);
   } else if (data.event === 'bounty_completed') {
     const list = document.getElementById('bounties');
     const item = document.createElement('li');

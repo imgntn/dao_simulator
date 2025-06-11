@@ -20,6 +20,8 @@ class TestDataCollectorMetrics(unittest.TestCase):
         self.assertIn('delegation_centrality', row)
         self.assertGreaterEqual(row['gini_coefficient'], 0)
         self.assertLessEqual(row['gini_coefficient'], 1)
+        self.assertTrue(sim.datacollector.token_ranking_history)
+        self.assertTrue(sim.datacollector.influence_ranking_history)
 
 if __name__ == "__main__":
     unittest.main()

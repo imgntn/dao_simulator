@@ -180,6 +180,16 @@ class WebServer:
         async def stats() -> Any:
             return self.sim.datacollector.model_vars if self.sim else []
 
+        @self.app.get('/leaderboard')
+        async def leaderboard() -> Any:
+            if not self.sim:
+                return {"token": [], "influence": []}
+            dc = self.sim.datacollector
+            return {
+                "token": dc.token_ranking_history[-1] if dc.token_ranking_history else [],
+                "influence": dc.influence_ranking_history[-1] if dc.influence_ranking_history else [],
+            }
+
         @self.app.websocket('/ws')
         async def websocket_endpoint(ws: WebSocket) -> None:
             await ws.accept()

@@ -35,6 +35,9 @@ class TestDashboardServer(unittest.TestCase):
             top_members=[],
             delegation_centrality={},
             top_influential=[],
+            token_rank_history=[[('a', 10)]],
+            influence_rank_history=[[('a', 1.0)]],
+            achievements={},
         )
         time.sleep(0.1)
         server.loop.call_soon_threadsafe(server.loop.stop)
@@ -46,6 +49,9 @@ class TestDashboardServer(unittest.TestCase):
         self.assertIn("reputation_gini", data)
         self.assertIn("reputation_gini_history", data)
         self.assertIn("top_influential", data)
+        self.assertIn("token_rank_history", data)
+        self.assertIn("influence_rank_history", data)
+        self.assertIn("achievements", data)
 
     def test_network_update_forwarded(self):
         bus = EventBus()

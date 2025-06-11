@@ -74,6 +74,9 @@ class SimpleDataCollector:
         self.reputation_gini_history: list[float] = []
         self.avg_token_history: list[float] = []
         self.delegation_centrality: list[dict[str, float]] = []
+        self.token_ranking_history: list[list[tuple[str, float]]] = []
+        self.influence_ranking_history: list[list[tuple[str, float]]] = []
+        self.achievements: dict[str, str] = {}
         self.centrality_interval = max(1, int(centrality_interval))
         self.last_centrality_step: int | None = None
         if dao is not None:
@@ -108,6 +111,28 @@ class SimpleDataCollector:
                 else {}
             )
         self.delegation_centrality.append(centrality)
+
+        token_rank = sorted(
+            [(m.unique_id, m.tokens) for m in members],
+            key=lambda x: x[1],
+            reverse=True,
+        )
+        influence_rank = sorted(centrality.items(), key=lambda x: x[1], reverse=True)
+        self.token_ranking_history.append(token_rank)
+        self.influence_ranking_history.append(influence_rank)
+
+        if "first_1000_tokens" not in self.achievements:
+            for mid, tok in token_rank:
+                if tok >= 1000:
+                    self.achievements["first_1000_tokens"] = mid
+                    if getattr(model.dao, "event_bus", None):
+                        model.dao.event_bus.publish(
+                            "achievement",
+                            step=model.schedule.steps,
+                            member=mid,
+                            achievement="first_1000_tokens",
+                        )
+                    break
         row = {
             "step": model.schedule.steps,
             "num_members": len(members),
@@ -134,6 +159,8 @@ class SimpleDataCollector:
         except Exception:
             pass
         row["delegation_centrality"] = centrality
+        row["token_ranking"] = token_rank
+        row["influence_ranking"] = influence_rank
         self.model_vars.append(row)
 
 
@@ -673,17 +700,11 @@ class DAOSimulation(Model):
                 reputation_gini=self.datacollector.reputation_gini_history[-1],
                 reputation_gini_history=self.datacollector.reputation_gini_history,
                 delegation_centrality=self.datacollector.delegation_centrality[-1],
-                top_influential=sorted(
-                    self.datacollector.delegation_centrality[-1].items(),
-                    key=lambda x: x[1],
-                    reverse=True,
-                )[:5],
-                top_members=[
-                    (m.unique_id, m.tokens)
-                    for m in sorted(
-                        self.dao.members, key=lambda x: x.tokens, reverse=True
-                    )[:5]
-                ],
+                top_influential=self.datacollector.influence_ranking_history[-1][:5],
+                top_members=self.datacollector.token_ranking_history[-1][:5],
+                token_rank_history=self.datacollector.token_ranking_history,
+                influence_rank_history=self.datacollector.influence_ranking_history,
+                achievements=self.datacollector.achievements,
             )
             self.dao.event_bus.publish(
                 "network_update",
