@@ -42,6 +42,13 @@
         <div id="giniChart"></div>
     </section>
     <section>
+        <h2>Tutorial Progress</h2>
+        <ul>
+            <li v-for="t in completed" :key="'c'+t">✅ {{ t }}</li>
+            <li v-for="t in remaining" :key="'r'+t">⬜ {{ t }}</li>
+        </ul>
+    </section>
+    <section>
         <h2>Delegation Network</h2>
         <div id="network"></div>
     </section>
@@ -55,7 +62,9 @@ createApp({
             members: 0,
             price: 0,
             proposals: [],
-            output: ''
+            output: '',
+            completed: [],
+            remaining: []
         };
     },
     methods: {
@@ -106,6 +115,9 @@ createApp({
                 Plotly.react('giniChart', [giniTrace]);
             } else if (data.event === 'network_update') {
                 window.handleNetworkUpdate(data);
+            } else if (data.event === 'scenario_progress') {
+                this.completed = data.completed;
+                this.remaining = data.remaining;
             }
         };
         const theme = localStorage.getItem('theme');
