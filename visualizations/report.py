@@ -33,6 +33,17 @@ def generate_report(simulation, csv_file=None, html_file=None):
             price_fig = plot_price_history(df["dao_token_price"].tolist(), show=html_file is None)
         except Exception as exc:
             print(f"Price history plot failed: {exc}")
+        leaders_path = csv_file.replace(".csv", "_leaders.csv")
+        import csv as _csv
+        with open(leaders_path, "w", newline="") as f:
+            writer = _csv.writer(f)
+            writer.writerow(["step", "type", "member", "value"])
+            for step, ranking in enumerate(simulation.datacollector.token_ranking_history):
+                for m, v in ranking:
+                    writer.writerow([step, "token", m, v])
+            for step, ranking in enumerate(simulation.datacollector.influence_ranking_history):
+                for m, v in ranking:
+                    writer.writerow([step, "influence", m, v])
     try:
         fig1 = plot_network_graph(dao, show=html_file is None)
     except Exception as exc:
@@ -58,6 +69,18 @@ def generate_report(simulation, csv_file=None, html_file=None):
             if fig:
                 encoded = _fig_to_base64(fig)
                 html_parts.append(f'<img src="data:image/png;base64,{encoded}"/>')
+        if simulation.datacollector.token_ranking_history:
+            html_parts.append("<h2>Token Leaderboard History</h2><ul>")
+            for step, ranking in enumerate(simulation.datacollector.token_ranking_history):
+                row = ", ".join(f"{m}:{t:.1f}" for m, t in ranking[:5])
+                html_parts.append(f"<li>Step {step}: {row}</li>")
+            html_parts.append("</ul>")
+        if simulation.datacollector.influence_ranking_history:
+            html_parts.append("<h2>Influence Leaderboard History</h2><ul>")
+            for step, ranking in enumerate(simulation.datacollector.influence_ranking_history):
+                row = ", ".join(f"{m}:{c:.2f}" for m, c in ranking[:5])
+                html_parts.append(f"<li>Step {step}: {row}</li>")
+            html_parts.append("</ul>")
         if simulation.datacollector.delegation_centrality:
             top = sorted(
                 simulation.datacollector.delegation_centrality[-1].items(),
