@@ -2,15 +2,25 @@
   --primary-color: #3498db;
   --secondary-color: #2ecc71;
   --bg-color: #f0f2f5;
+  --text-color: #333;
   --border-color: #ddd;
+}
+
+body.dark {
+  --primary-color: #2980b9;
+  --secondary-color: #27ae60;
+  --bg-color: #1e1e1e;
+  --text-color: #eee;
+  --border-color: #555;
 }
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--bg-color);
-  color: #333;
+  color: var(--text-color);
   margin: 0;
   padding: 20px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 header {
@@ -18,7 +28,20 @@ header {
   color: #fff;
   padding: 20px;
   margin: -20px -20px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+
+#themeToggle {
+  background: none;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 
 .container {
   max-width: 960px;
@@ -52,13 +75,26 @@ header {
   margin-right: 10px;
 }
 
+
 #metrics {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
 }
 
-canvas {
+#priceChart, #giniChart {
+  width: 100%;
+  max-width: 400px;
+  height: 250px;
+}
+
+@media (max-width: 600px) {
+  #metrics {
+    flex-direction: column;
+  }
+}
+
+canvas, #priceChart, #giniChart {
   border: 1px solid var(--border-color);
   background-color: #fff;
   border-radius: 4px;
@@ -67,6 +103,7 @@ canvas {
 #network {
   border: 1px solid var(--border-color);
   margin-top: 20px;
+  height: 300px;
 }
 
 .log {
@@ -75,6 +112,10 @@ canvas {
   padding: 10px;
   overflow: auto;
   max-height: 200px;
+}
+
+body.dark .log {
+  background-color: #222;
 }
 
 table {
