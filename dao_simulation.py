@@ -297,6 +297,7 @@ from agents import (
     Validator,
     BountyHunter,
     Trader,
+    RLTrader,
 )
 from utils.locations import generate_random_location
 
@@ -1014,6 +1015,7 @@ class DAOSimulation(Model):
             Developer,
             Investor,
             Trader,
+            RLTrader,
             Delegator,
             ProposalCreator,
             Validator,
@@ -1056,7 +1058,12 @@ class DAOSimulation(Model):
         elif agent_class == Arbitrator:
             agent_params.update({"arbitration_capacity": 3})
         elif agent_class == Trader:
-            pass
+            agent_params.update({"voting_strategy": None})
+        elif agent_class == RLTrader:
+            agent_params.update({
+                "learning_rate": self.adaptive_learning_rate,
+                "epsilon": self.adaptive_epsilon,
+            })
         elif agent_class == ExternalPartner:
             agent_params.update({"voting_strategy": None})
 
