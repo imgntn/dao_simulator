@@ -103,6 +103,35 @@ class TestEventLogger(unittest.TestCase):
         self.assertEqual(events, ["e1", "e2"])
         os.remove(fname)
 
+    def test_async_dao_logging(self):
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        logger = EventLogger(fname, async_logging=True)
+        dao = DAO("A", event_logger=logger)
+        dao.treasury.deposit("DAO_TOKEN", 1)
+        dao.event_bus.close()
+        logger.close()
+        with open(fname) as f:
+            rows = list(csv.DictReader(f))
+        self.assertEqual(rows[0]["event"], "token_deposit")
+        os.remove(fname)
+
+    def test_async_db_dao_logging(self):
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        logger = DBEventLogger(fname, async_logging=True)
+        dao = DAO("B", event_logger=logger)
+        dao.treasury.deposit("DAO_TOKEN", 2)
+        dao.event_bus.close()
+        logger.close()
+        import sqlite3
+
+        conn = sqlite3.connect(fname)
+        events = [row[0] for row in conn.execute("SELECT event FROM events")] 
+        conn.close()
+        self.assertIn("token_deposit", events)
+        os.remove(fname)
+
     def test_compressed_csv_logger(self):
         fd, fname = tempfile.mkstemp(suffix=".gz")
         os.close(fd)

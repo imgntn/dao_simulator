@@ -21,6 +21,20 @@ class TestEventAnalytics(unittest.TestCase):
         self.assertIn("token_deposit", summary["counts"])
         os.remove(fname)
 
+    def test_token_in_out_summary(self):
+        fd, fname = tempfile.mkstemp()
+        os.close(fd)
+        logger = DBEventLogger(fname)
+        dao = DAO("D", event_logger=logger)
+        dao.treasury.deposit("DAO_TOKEN", 5)
+        dao.treasury.withdraw("DAO_TOKEN", 2)
+        logger.close()
+        logger = DBEventLogger(fname)
+        summary = logger.get_summary()
+        self.assertEqual(summary["token_in"]["DAO_TOKEN"], 5)
+        self.assertEqual(summary["token_out"]["DAO_TOKEN"], 2)
+        os.remove(fname)
+
 
 if __name__ == "__main__":
     unittest.main()
