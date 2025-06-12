@@ -19,6 +19,7 @@ The project models the behaviour of a Decentralized Autonomous Organization (DAO
 - **Market shock events** – simulate abrupt token price changes to test
   strategies under stress.
 - **Cross-DAO bridges** – move tokens between DAOs with fees and transfer delays.
+- **Reinforcement learning trader** – an RLTrader agent adapts liquidity moves using Q-learning.
 
 ## Installation
 
