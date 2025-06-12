@@ -87,3 +87,12 @@ contribute work to a random project.
 LiquidDelegator picks another member as a representative and forwards all votes
 through that representative. It can still comment on proposals while its chosen
 delegate casts the actual votes.
+
+## artist.py
+
+The Artist agent mints a new NFT each step and lists it on the marketplace while still taking part in normal DAO voting and commenting.
+
+## collector.py
+
+The Collector agent checks marketplace listings every step and buys any NFTs it can afford using its token balance.
+

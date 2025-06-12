@@ -6,6 +6,7 @@ Diagrams illustrating the architecture can be found in [docs/DIAGRAMS.md](docs/D
 Agent summaries live in [AGENTS.md](AGENTS.md) and visualization details in
 [VISUALIZATIONS.md](VISUALIZATIONS.md).
 Details on token bridging are available in [docs/BRIDGING.md](docs/BRIDGING.md).
+The NFT marketplace is described in [docs/NFT_MARKETPLACE.md](docs/NFT_MARKETPLACE.md).
 Guidance on straightforward revenue generation can be found in
 [MONETIZATION_STEPS.md](MONETIZATION_STEPS.md).
 
@@ -24,6 +25,7 @@ The simulation models the behavior of a DAO, a decentralized organization manage
 - **Plugin hooks** – extend the simulator with external agent types, metrics and oracles.
 - **Liquidity pools and staking** – experiment with token swaps and interest on locked funds.
 - **Market shock events** – simulate abrupt token price changes to test strategies under stress.
+- **NFT marketplace** – artists can mint NFTs and collectors purchase them during the simulation.
 - **Pluggable governance rules** – choose approval logic for proposals or load custom rules.
 
 ## Agent Classes
@@ -40,6 +42,8 @@ The simulation models the behavior of a DAO, a decentralized organization manage
   treasury.
 - `Trader`: Swaps tokens in the DAO's liquidity pools based on price trends.
 - `RLTrader`: Uses Q-learning to adapt swap decisions over time.
+- `Artist`: Mints NFTs and lists them on the marketplace.
+- `Collector`: Buys listed NFTs when prices are affordable.
 - `Passive Member`: Passively holds tokens and participates in the DAO without taking an active role.
 - `Proposal Creator`: Creates and submits proposals to the DAO.
 - `Liquid Delegator`: Picks a representative who votes on their behalf.
@@ -220,6 +224,8 @@ python -m cli --steps 50 --num_developers 2
 Flags like `--use-parallel` or `--use-async` enable alternative schedulers. The
 `--config` option loads settings from a JSON/YAML file. Any `num_*` setting from
 `settings.py` can still be overridden on the command line.
+The new `num_artists` and `num_collectors` options control how many NFT agents
+are spawned.
 `--strategy-path` and `--agent-plugin-path` allow loading custom voting
 strategies and agent types from external Python modules. Use
 `--event-db` to store events in a SQLite database instead of CSV.

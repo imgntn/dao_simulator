@@ -278,6 +278,7 @@ from data_structures import (
     BountyProposal,
     ReputationTracker,
     Project,
+    NFTMarketplace,
 )
 from utils import EventLogger
 from utils import gini, in_degree_centrality
@@ -298,6 +299,8 @@ from agents import (
     BountyHunter,
     Trader,
     RLTrader,
+    Artist,
+    Collector,
 )
 from utils.locations import generate_random_location
 
@@ -339,6 +342,8 @@ class DAOSimulation(Model):
         num_bounty_hunters: int | None = None,
         num_external_partners: int | None = None,
         num_passive_members: int | None = None,
+        num_artists: int | None = None,
+        num_collectors: int | None = None,
         comment_probability: float | None = None,
         external_partner_interact_probability: float | None = None,
         violation_probability: float | None = None,
@@ -461,7 +466,11 @@ class DAOSimulation(Model):
         self.num_external_partners = (
             num_external_partners if num_external_partners is not None else settings["num_external_partners"]
         )
-        self.num_passive_members = num_passive_members if num_passive_members is not None else settings["num_passive_members"]
+        self.num_passive_members = (
+            num_passive_members if num_passive_members is not None else settings["num_passive_members"]
+        )
+        self.num_artists = num_artists if num_artists is not None else settings.get("num_artists", 0)
+        self.num_collectors = num_collectors if num_collectors is not None else settings.get("num_collectors", 0)
 
         self.comment_probability = (
             comment_probability if comment_probability is not None else settings["comment_probability"]
@@ -507,6 +516,7 @@ class DAOSimulation(Model):
             reputation_decay_rate=self.reputation_decay_rate,
             event_logger=self.event_logger,
         )
+        self.marketplace = NFTMarketplace(self.dao.event_bus)
         if self.enable_marketing:
             self.dao.treasury.deposit("DAO_TOKEN", 1000)
         self.reputation_tracker = ReputationTracker(self.dao)
@@ -680,6 +690,26 @@ class DAOSimulation(Model):
                 voting_strategy=None,
             )
             self.dao.add_member(external_partner)
+
+        for i in range(self.num_artists):
+            artist = Artist(
+                unique_id=f"Artist_{i}",
+                model=self.dao,
+                tokens=100,
+                reputation=0,
+                location=generate_random_location(),
+            )
+            self.dao.add_member(artist)
+
+        for i in range(self.num_collectors):
+            collector = Collector(
+                unique_id=f"Collector_{i}",
+                model=self.dao,
+                tokens=100,
+                reputation=0,
+                location=generate_random_location(),
+            )
+            self.dao.add_member(collector)
 
         for i in range(self.num_passive_members):
             passive_member = PassiveMember(
