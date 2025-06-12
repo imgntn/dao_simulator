@@ -5,7 +5,8 @@ For a more detailed introduction and FAQ, see [docs/GUIDE.md](docs/GUIDE.md).
 Diagrams illustrating the architecture can be found in [docs/DIAGRAMS.md](docs/DIAGRAMS.md).
 Agent summaries live in [AGENTS.md](AGENTS.md) and visualization details in
 [VISUALIZATIONS.md](VISUALIZATIONS.md).
-Details on token bridging are available in [docs/BRIDGING.md](docs/BRIDGING.md).
+Details on bridging tokens and NFTs are available in
+[docs/BRIDGING.md](docs/BRIDGING.md).
 The NFT marketplace is described in [docs/NFT_MARKETPLACE.md](docs/NFT_MARKETPLACE.md).
 Guidance on straightforward revenue generation can be found in
 [MONETIZATION_STEPS.md](MONETIZATION_STEPS.md).
