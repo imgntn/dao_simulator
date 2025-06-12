@@ -36,6 +36,18 @@ class TestEventBus(unittest.TestCase):
         bus.publish("e")
         self.assertEqual(calls, ["cb"])
 
+    def test_wildcard_subscription(self):
+        bus = EventBus()
+        seen = []
+
+        def cb(event=None, **d):
+            seen.append(event)
+
+        bus.subscribe("*", cb)
+        bus.publish("a")
+        bus.publish("b")
+        self.assertEqual(seen, ["a", "b"])
+
 
 if __name__ == "__main__":
     unittest.main()
