@@ -20,3 +20,18 @@ sim.run(3)
 Events `bridge_transfer_requested` and `bridge_transfer_completed` are published
 to each DAO's event bus when bridging occurs.
 
+## NFT Bridging
+
+Bridges can also transfer NFTs between DAOs. NFTs are removed from the source
+marketplace and delivered to the destination after the bridge delay.
+
+```python
+# assume `creator` minted an NFT in DAO 0
+nft = sim.daos[0].marketplace.mint_nft(creator, {"name": "Art"}, listed=False)
+sim.bridge_nft(0, 1, nft.id)
+sim.run(2)
+```
+
+During NFT transfers the events `nft_bridge_requested` and `nft_bridge_completed`
+are emitted.
+

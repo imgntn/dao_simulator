@@ -19,9 +19,16 @@ class MultiDAOSimulation:
 
     def create_bridge(self, src: int, dst: int, *, fee_rate: float = 0.0, delay: int = 0) -> None:
         """Add a :class:`Bridge` between two DAOs."""
-        dao_a = self.daos[src].dao
-        dao_b = self.daos[dst].dao
-        self.bridges[(src, dst)] = Bridge(dao_a, dao_b, fee_rate=fee_rate, delay=delay)
+        sim_a = self.daos[src]
+        sim_b = self.daos[dst]
+        self.bridges[(src, dst)] = Bridge(
+            sim_a.dao,
+            sim_b.dao,
+            fee_rate=fee_rate,
+            delay=delay,
+            src_marketplace=sim_a.marketplace,
+            dst_marketplace=sim_b.marketplace,
+        )
 
     def bridge_tokens(self, src: int, dst: int, amount: float, token: str = "DAO_TOKEN") -> None:
         """Request a token transfer over an existing bridge."""
@@ -30,6 +37,14 @@ class MultiDAOSimulation:
             raise ValueError("Bridge does not exist")
         step = self.daos[src].schedule.steps
         bridge.request_transfer(token, amount, step)
+
+    def bridge_nft(self, src: int, dst: int, nft_id: int) -> None:
+        """Request an NFT transfer over an existing bridge."""
+        bridge = self.bridges.get((src, dst))
+        if bridge is None:
+            raise ValueError("Bridge does not exist")
+        step = self.daos[src].schedule.steps
+        bridge.request_nft_transfer(nft_id, step)
 
     def transfer_tokens(self, src: int, dst: int, amount: float, token: str = "DAO_TOKEN") -> None:
         """Move ``amount`` of ``token`` from DAO ``src`` to DAO ``dst``."""
