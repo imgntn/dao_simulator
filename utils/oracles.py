@@ -110,14 +110,10 @@ def load_oracle_plugins(directory: str, *, allowed_dir: Optional[Path] = None) -
     """Import modules from ``directory`` and register contained oracle classes."""
     dir_path = validate_directory(directory, allowed_base=allowed_dir)
 
+    import runpy
     for path in dir_path.glob("*.py"):
-        module = importlib.util.module_from_spec(
-            importlib.machinery.ModuleSpec(path.stem, None)
-        )
-        with open(path) as f:
-            code = f.read()
-        exec(compile(code, str(path), "exec"), module.__dict__)
-        for obj in module.__dict__.values():
+        namespace = runpy.run_path(str(path))
+        for obj in namespace.values():
             if isinstance(obj, type) and hasattr(obj, "update_prices"):
                 register_oracle(obj.__name__.lower(), obj)
 
