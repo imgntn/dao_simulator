@@ -19,3 +19,5 @@ from .marketing_events import (
     SocialMediaCampaign,
     ReferralBonusCampaign,
 )
+from .nft import NFT, NFTMarketplace
+

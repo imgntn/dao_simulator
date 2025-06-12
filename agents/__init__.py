@@ -16,3 +16,6 @@ from .adaptive_investor import AdaptiveInvestor
 from .trader import Trader
 from .rl_trader import RLTrader
 
+from .artist import Artist
+from .collector import Collector
+
