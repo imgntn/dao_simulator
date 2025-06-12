@@ -39,6 +39,7 @@ The simulation models the behavior of a DAO, a decentralized organization manage
 - `Bounty Hunter`: Completes bounty proposals and claims locked rewards from the
   treasury.
 - `Trader`: Swaps tokens in the DAO's liquidity pools based on price trends.
+- `RLTrader`: Uses Q-learning to adapt swap decisions over time.
 - `Passive Member`: Passively holds tokens and participates in the DAO without taking an active role.
 - `Proposal Creator`: Creates and submits proposals to the DAO.
 - `Liquid Delegator`: Picks a representative who votes on their behalf.

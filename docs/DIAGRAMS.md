@@ -52,6 +52,8 @@ classDiagram
     DAOMember <|-- Auditor
     DAOMember <|-- BountyHunter
     DAOMember <|-- ExternalPartner
+    DAOMember <|-- Trader
+    Trader <|-- RLTrader
     DAOMember <|-- PassiveMember
 ```
 
