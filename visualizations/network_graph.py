@@ -79,7 +79,9 @@ def plot_network_graph(dao, show=True):
         for n in comm:
             community_map[n] = idx
 
-    palette = plt.cm.get_cmap("tab10")
+    # Using ``plt.get_cmap`` avoids the Matplotlib ``get_cmap`` deprecation
+    # warning triggered during tests.
+    palette = plt.get_cmap("tab10")
     node_colors = []
     for node in G.nodes(data=True):
         node_type = node[1]["node_type"]
@@ -91,7 +93,9 @@ def plot_network_graph(dao, show=True):
             color = "skyblue"
         node_colors.append(color)
 
-    # Draw nodes and labels
+    # Draw nodes and labels. Close any previously open figures first to
+    # prevent matplotlib from accumulating them during automated tests.
+    plt.close("all")
     fig, ax = plt.subplots()
     nx.draw_networkx_nodes(G, pos, node_color=node_colors, node_size=2000, ax=ax)
     nx.draw_networkx_labels(G, pos, font_size=10, font_weight="bold", ax=ax)
@@ -149,4 +153,7 @@ def plot_network_graph(dao, show=True):
 
     if show:
         plt.show()
+    # Close the figure to avoid warnings about too many open figures.
+    # Returning the figure still lets callers inspect it.
+    plt.close(fig)
     return fig
