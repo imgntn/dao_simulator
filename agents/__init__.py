@@ -19,3 +19,4 @@ from .rl_trader import RLTrader
 from .artist import Artist
 from .collector import Collector
 
+from .player_agent import PlayerAgent

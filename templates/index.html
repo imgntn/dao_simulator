@@ -41,6 +41,30 @@
         <div id="priceChart"></div>
         <div id="giniChart"></div>
     </section>
+    <section id="player-controls">
+        <h2>Player Controls</h2>
+        <form id="voteForm" @submit.prevent="sendVote">
+            <input v-model="voteId" placeholder="Proposal ID" />
+            <select v-model="voteValue">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+            <button type="submit">Vote</button>
+        </form>
+        <form id="commentForm" @submit.prevent="sendComment">
+            <input v-model="commentId" placeholder="Proposal ID" />
+            <input v-model="commentText" placeholder="Sentiment" />
+            <button type="submit">Comment</button>
+        </form>
+        <form id="createForm" @submit.prevent="sendCreate">
+            <button type="submit">Create Proposal</button>
+        </form>
+        <form id="delegateForm" @submit.prevent="sendDelegate">
+            <input v-model="delegateId" placeholder="Proposal ID" />
+            <input v-model.number="delegateAmount" placeholder="Amount" />
+            <button type="submit">Delegate</button>
+        </form>
+    </section>
     <section>
         <h2>Tutorial Progress</h2>
         <ul>
@@ -64,7 +88,13 @@ createApp({
             proposals: [],
             output: '',
             completed: [],
-            remaining: []
+            remaining: [],
+            voteId: '',
+            voteValue: 'yes',
+            commentId: '',
+            commentText: '',
+            delegateId: '',
+            delegateAmount: 0
         };
     },
     methods: {
@@ -87,6 +117,30 @@ createApp({
             const r = await fetch('/step', { method: 'POST' });
             const d = await r.json();
             this.output = JSON.stringify(d, null, 2);
+        },
+        async sendVote() {
+            await fetch('/player/vote', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: this.voteId, vote: this.voteValue === 'yes' })
+            });
+        },
+        async sendComment() {
+            await fetch('/player/comment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: this.commentId, sentiment: this.commentText })
+            });
+        },
+        async sendCreate() {
+            await fetch('/player/create', { method: 'POST' });
+        },
+        async sendDelegate() {
+            await fetch('/player/delegate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: this.delegateId, amount: this.delegateAmount })
+            });
         },
         toggleTheme() {
             document.body.classList.toggle('dark');

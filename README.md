@@ -137,13 +137,22 @@ The visualization depends on the optional Mesa components listed in `requirement
    This command starts a FastAPI server that combines the admin controls and
    live dashboard in a single page. Use `--websocket-port` to choose the port
    (default is `8003`).
-6. **Run the Tests**
+
+6. **Interact with the Player Agent**
+
+   When the web interface is running a player-controlled agent is available.
+   Use the forms under "Player Controls" to queue votes, comments, proposal
+   creation and delegation actions. Each simulation step processes one queued
+   action.
+
+   ![Player controls screenshot](docs/PLAYER_CONTROLS_SCREENSHOT.txt)
+7. **Run the Tests**
 
    ```bash
    python -m unittest discover tests
    ```
 
-7. **Visualize Delegations**
+8. **Visualize Delegations**
 
    ```python
    from visualizations.network_graph import plot_network_graph
