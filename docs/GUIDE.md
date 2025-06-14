@@ -73,6 +73,13 @@ match = (sum(sqrt(c_i))**2) - sum(c_i)
 
 Events `grant_contributed`, `grant_matched` and `grant_distributed` record the process for dashboards.
 
+## Guilds
+
+Members can organize into guilds that persist across steps. Each guild maintains
+its own treasury and project list. Agents may create a guild, join one, or leave
+their current guild. Guild activity publishes `guild_created`, `guild_joined`
+and `guild_left` events on the DAO's event bus.
+
 ### Optional Tools
 
 - **Admin Panel** – `python admin_app.py` starts a small interface for configuring simulation parameters.

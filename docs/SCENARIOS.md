@@ -23,8 +23,17 @@ Supported metrics are:
 - `member_count` – number of DAO members
 - `project_count` – number of active projects
 - `token_price` – current DAO token price
+- `guild_count` – number of guilds created
 
 Place the scenario file path in the `scenario_file` option when creating
 `DAOSimulation` or pass `--scenario-file` to the CLI. Progress is published via
 the `scenario_progress` event and shown on the web dashboard.
+
+### Example Guild Scenario
+
+```yaml
+- description: Form your first guild
+  metric: guild_count
+  threshold: 1
+```
 

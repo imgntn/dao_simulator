@@ -21,4 +21,5 @@ from .marketing_events import (
     ReferralBonusCampaign,
 )
 from .nft import NFT, NFTMarketplace
+from .guild import Guild
 

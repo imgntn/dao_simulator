@@ -863,6 +863,7 @@ class DAOSimulation(Model):
             "member_count": lambda: len(self.dao.members),
             "project_count": lambda: len(self.dao.projects),
             "token_price": lambda: self.dao.treasury.get_token_price("DAO_TOKEN"),
+            "guild_count": lambda: len(getattr(self.dao, "guilds", [])),
         }
         changed = False
         while self._scenario_index < len(self.scenario):
