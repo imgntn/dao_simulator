@@ -19,6 +19,7 @@ dao_simulation/
 │   ├── project.py
 │   ├── proposal.py
 │   ├── treasury.py
+│   ├── guild.py
 │   └── violation.py
 ├── visualizations/
 │   ├── __init__.py

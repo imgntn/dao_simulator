@@ -1,6 +1,7 @@
 from collections import defaultdict
 from data_structures.treasury import Treasury
 from data_structures.proposal import Proposal
+from data_structures.guild import Guild
 from utils import EventBus
 
 
@@ -23,6 +24,7 @@ class DAO:
         self.disputes = []
         self.violations = []
         self.members = []
+        self.guilds = []
         self.event_logger = event_logger
         async_bus = bool(event_logger and getattr(event_logger, "async_logging", False))
         self.event_bus = EventBus(async_mode=async_bus)
@@ -79,6 +81,34 @@ class DAO:
 
     def remove_member(self, member):
         self.members.remove(member)
+
+    def create_guild(self, name, creator=None):
+        guild = Guild(name, self, creator=creator)
+        self.guilds.append(guild)
+        if self.event_bus:
+            self.event_bus.publish(
+                "guild_created",
+                step=self.current_step,
+                guild=name,
+                creator=getattr(creator, "unique_id", None),
+            )
+        return guild
+
+    def remove_guild(self, guild):
+        if guild in self.guilds:
+            self.guilds.remove(guild)
+            if self.event_bus:
+                self.event_bus.publish(
+                    "guild_removed",
+                    step=self.current_step,
+                    guild=guild.name,
+                )
+
+    def find_guild_by_name(self, name):
+        for g in self.guilds:
+            if g.name == name:
+                return g
+        return None
 
     def distribute_revenue(self, amount, token):
         total_staked = sum(m.staked_tokens for m in self.members)
@@ -213,6 +243,7 @@ class DAO:
             "name": self.name,
             "treasury": self.treasury.to_dict(),
             "members": [m.to_dict() for m in self.members],
+            "guilds": [g.to_dict() for g in self.guilds],
             "proposals": [p.to_dict() for p in self.proposals],
             "market_shocks": [s.to_dict() for s in self.market_shocks],
             "current_step": self.current_step,
@@ -238,6 +269,7 @@ class DAO:
             member = DAOMember.from_dict(mdata, dao)
             dao.members.append(member)
         members_by_id = {m.unique_id: m for m in dao.members}
+        dao.guilds = [Guild.from_dict(g, dao, members_by_id) for g in data.get("guilds", [])]
         dao.proposals = [Proposal.from_dict(p, dao, members_by_id) for p in data.get("proposals", [])]
         from .market_shock import MarketShock
         dao.market_shocks = [MarketShock.from_dict(s) for s in data.get("market_shocks", [])]

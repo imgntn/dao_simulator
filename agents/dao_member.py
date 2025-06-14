@@ -58,6 +58,7 @@ class DAOMember(Agent):
         self.stake_locks = []  # List of (amount, unlock_step)
         self.staking_rate = getattr(model, "staking_interest_rate", 0.0)
         self.compound_stake = False
+        self.guild = None
         if isinstance(voting_strategy, str):
             cls = get_strategy(voting_strategy)
             if cls is None:
@@ -113,6 +114,23 @@ class DAOMember(Agent):
     def receive_revenue_share(self, amount):
         self.tokens += amount
 
+    # Guild interactions
+    def join_guild(self, guild):
+        if self.guild is guild:
+            return
+        if self.guild:
+            self.guild.remove_member(self)
+        guild.add_member(self)
+
+    def leave_guild(self):
+        if self.guild:
+            self.guild.remove_member(self)
+
+    def create_guild(self, name):
+        guild = self.model.create_guild(name, creator=self)
+        self.join_guild(guild)
+        return guild
+
     def decide_vote(self, topic):
         if topic == "Topic A":
             return "yes" if self.reputation > 50 else "no"
@@ -132,6 +150,7 @@ class DAOMember(Agent):
             "staking_rate": self.staking_rate,
             "compound_stake": self.compound_stake,
             "staked_tokens": self.staked_tokens,
+            "guild": self.guild.name if self.guild else None,
         }
 
     @classmethod
