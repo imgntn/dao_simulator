@@ -36,18 +36,21 @@ class Investor(DAOMember):
             proposal = random.choice(self.model.proposals)
             if self.investment_budget > 0:
                 investment_amount = random.uniform(0, self.investment_budget)
-                proposal.receive_investment(self, investment_amount)
+                if getattr(proposal, "type", "") == "quadratic_funding":
+                    proposal.contribute(self, investment_amount)
+                else:
+                    proposal.receive_investment(self, investment_amount)
+                    if self.model.event_bus:
+                        self.model.event_bus.publish(
+                            "proposal_invested",
+                            step=self.model.current_step,
+                            proposal=getattr(proposal, "title", None),
+                            investor=self.unique_id,
+                            amount=investment_amount,
+                        )
                 self.investment_budget -= investment_amount
                 self.reputation += investment_amount / 100
                 self.mark_active()
-                if self.model.event_bus:
-                    self.model.event_bus.publish(
-                        "proposal_invested",
-                        step=self.model.current_step,
-                        proposal=getattr(proposal, "title", None),
-                        investor=self.unique_id,
-                        amount=investment_amount,
-                    )
 
     def adjust_budget_based_on_price(self):
         """Increase or decrease investment budget based on DAO token price."""

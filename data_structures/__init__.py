@@ -5,6 +5,7 @@ from .proposal import (
     GovernanceProposal,
     MembershipProposal,
     BountyProposal,
+    QuadraticFundingProposal,
 )
 from .project import Project
 from .dispute import Dispute
