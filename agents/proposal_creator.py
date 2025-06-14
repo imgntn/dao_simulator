@@ -17,22 +17,41 @@ class ProposalCreator(DAOMember):
 
     def create_proposal(self):
         proposal_id = len(self.model.proposals)
-        proposal_type = random.choice(["project", "funding", "governance"])
+        proposal_type = random.choice([
+            "project",
+            "funding",
+            "governance",
+            "quadratic_funding",
+        ])
         title = f"Proposal {proposal_id}"
         description = f"{proposal_type} proposal {proposal_id}"
         amount = random.randint(1, 100)
         duration = random.randint(1, 50)
         topic = "Topic A"  # You can replace this with a random or predefined topic
 
-        proposal = Proposal(
-            self.model,
-            self,
-            title,
-            description,
-            amount,
-            duration,
-            topic,
-        )
+        if proposal_type == "quadratic_funding":
+            from data_structures import Project, QuadraticFundingProposal
+
+            project = Project(self.model, self, title, description, amount, duration)
+            proposal = QuadraticFundingProposal(
+                self.model,
+                self,
+                title,
+                description,
+                amount,
+                duration,
+                project,
+            )
+        else:
+            proposal = Proposal(
+                self.model,
+                self,
+                title,
+                description,
+                amount,
+                duration,
+                topic,
+            )
         self.model.add_proposal(proposal)
         self.mark_active()
 

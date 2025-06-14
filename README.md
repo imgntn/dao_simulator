@@ -28,6 +28,7 @@ The simulation models the behavior of a DAO, a decentralized organization manage
 - **Market shock events** – simulate abrupt token price changes to test strategies under stress.
 - **NFT marketplace** – artists can mint NFTs and collectors purchase them during the simulation.
 - **Pluggable governance rules** – choose approval logic for proposals or load custom rules.
+- **Quadratic funding rounds** – community contributions are matched from the treasury using the square-root formula.
 
 ## Agent Classes
 

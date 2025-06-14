@@ -276,6 +276,7 @@ from data_structures import (
     GovernanceProposal,
     MembershipProposal,
     BountyProposal,
+    QuadraticFundingProposal,
     ReputationTracker,
     Project,
     NFTMarketplace,
@@ -307,6 +308,7 @@ from utils.locations import generate_random_location
 
 # from utils.voting_strategies import majority_vote
 import random
+import math
 from settings import settings
 import json
 from visualizations import generate_report
@@ -841,6 +843,32 @@ class DAOSimulation(Model):
                         proposal=proposal.title,
                         reward=proposal.reward,
                     )
+        elif isinstance(proposal, QuadraticFundingProposal) and proposal.project:
+            total = proposal.current_funding
+            match = (sum(math.sqrt(c) for c in proposal.contributions.values()) ** 2) - total
+            match = max(0, match)
+            available = self.dao.treasury.get_token_balance("DAO_TOKEN")
+            match = min(match, available)
+            if match:
+                self.dao.treasury.withdraw("DAO_TOKEN", match)
+                if self.dao.event_bus:
+                    self.dao.event_bus.publish(
+                        "grant_matched",
+                        step=self.schedule.steps,
+                        proposal=proposal.title,
+                        amount=match,
+                    )
+            proposal.project.current_funding += total + match
+            self.dao.add_project(proposal.project)
+            proposal.current_funding = 0
+            if self.dao.event_bus:
+                self.dao.event_bus.publish(
+                    "grant_distributed",
+                    step=self.schedule.steps,
+                    proposal=proposal.title,
+                    project=proposal.project.title,
+                    amount=total + match,
+                )
 
     def complete_projects(self):
         current_time = (

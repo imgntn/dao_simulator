@@ -182,3 +182,66 @@ class BountyProposal(Proposal):
         proposal.completed = data.get("completed", False)
         proposal.reward_locked = data.get("reward_locked", False)
         return proposal
+
+
+class QuadraticFundingProposal(Proposal):
+    """Proposal collecting member contributions for a public-good project."""
+
+    def __init__(self, dao, creator, title, description, funding_goal, duration, project):
+        super().__init__(
+            dao,
+            creator,
+            title,
+            description,
+            funding_goal,
+            duration,
+            topic="Quadratic Funding",
+            project=project,
+        )
+        self.type = "quadratic_funding"
+        self.contributions = {}
+
+    def contribute(self, member, amount):
+        if amount <= 0 or member.tokens < amount:
+            return 0
+        member.tokens -= amount
+        self.current_funding += amount
+        self.contributions[member] = self.contributions.get(member, 0) + amount
+        if self.dao.event_bus:
+            self.dao.event_bus.publish(
+                "grant_contributed",
+                step=self.dao.current_step,
+                proposal=self.title,
+                member=member.unique_id,
+                amount=amount,
+            )
+        return amount
+
+    def to_dict(self):
+        data = super().to_dict()
+        data["contributions"] = {m.unique_id: amt for m, amt in self.contributions.items()}
+        data["type"] = self.type
+        return data
+
+    @classmethod
+    def from_dict(cls, data, dao, members_by_id):
+        creator = members_by_id.get(data.get("creator"))
+        project = data.get("project")
+        proposal = cls(
+            dao,
+            creator,
+            data.get("title"),
+            data.get("description"),
+            data.get("funding_goal", 0),
+            data.get("duration", 0),
+            project,
+        )
+        proposal.status = data.get("status", "open")
+        proposal.votes_for = data.get("votes_for", 0)
+        proposal.votes_against = data.get("votes_against", 0)
+        proposal.current_funding = data.get("current_funding", 0)
+        proposal.creation_time = data.get("creation_time", 0)
+        proposal.voting_period = data.get("voting_period", proposal.duration)
+        contribs = data.get("contributions", {})
+        proposal.contributions = {members_by_id[k]: v for k, v in contribs.items() if k in members_by_id}
+        return proposal

@@ -20,6 +20,7 @@ The project models the behaviour of a Decentralized Autonomous Organization (DAO
   strategies under stress.
 - **Cross-DAO bridges** – move tokens between DAOs with fees and transfer delays.
 - **Reinforcement learning trader** – an RLTrader agent adapts liquidity moves using Q-learning.
+- **Quadratic funding rounds** – match member contributions to public goods projects using a square-root formula.
 
 ## Installation
 
@@ -57,6 +58,20 @@ from visualizations.network_graph import plot_network_graph
 sim = DAOSimulation(num_steps=0)
 plot_network_graph(sim.dao)
 ```
+
+## Quadratic Funding Rounds
+
+Members can pool small contributions toward public-good projects. When a `QuadraticFundingProposal` is approved the DAO matches those contributions using the square-root formula:
+
+```
+match = (sum(sqrt(c_i))**2) - sum(c_i)
+```
+
+1. A proposal creator submits a `QuadraticFundingProposal` with an associated `Project`.
+2. Investors and other members call `contribute(member, amount)` to fund the proposal.
+3. After the voting period the DAO withdraws the matching amount from the treasury and deposits the total into the project.
+
+Events `grant_contributed`, `grant_matched` and `grant_distributed` record the process for dashboards.
 
 ### Optional Tools
 
