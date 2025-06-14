@@ -33,6 +33,7 @@ class TestCLI(unittest.TestCase):
             checkpoint_interval=None,
             checkpoint_path=None,
             market_shock_file=None,
+            events_file=None,
             scenario_file=None,
             seed=42,
             governance_rule=None,
@@ -56,6 +57,7 @@ class TestCLI(unittest.TestCase):
             checkpoint_interval=None,
             checkpoint_path=None,
             market_shock_file=None,
+            events_file=None,
             scenario_file=None,
             seed=None,
             governance_rule=None,
@@ -79,11 +81,36 @@ class TestCLI(unittest.TestCase):
             checkpoint_interval=None,
             checkpoint_path=None,
             market_shock_file=None,
+            events_file=None,
             scenario_file=None,
             seed=None,
             governance_rule=None,
             enable_marketing=True,
             marketing_level="high",
+        )
+
+    @mock.patch("cli.DAOSimulation")
+    def test_cli_events_file_flag(self, MockSim):
+        cli.main(["--steps", "1", "--events-file", "events.yaml"])
+        MockSim.assert_called_with(
+            use_parallel=False,
+            use_async=False,
+            max_workers=None,
+            report_file=None,
+            export_csv=False,
+            csv_filename="simulation_data.csv",
+            event_db_filename=None,
+            stats_db_filename=None,
+            compress_events=None,
+            checkpoint_interval=None,
+            checkpoint_path=None,
+            market_shock_file=None,
+            events_file="events.yaml",
+            scenario_file=None,
+            seed=None,
+            governance_rule=None,
+            enable_marketing=False,
+            marketing_level=None,
         )
 
     def test_cli_loads_config(self):
