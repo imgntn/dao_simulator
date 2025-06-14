@@ -57,10 +57,15 @@ class TestDAOSimulation(unittest.TestCase):
         self.assertEqual(self.simulation.dao.treasury.get_token_balance("DAO_TOKEN"), 5400)
 
     def test_conduct_regular_meeting(self):
+        events = []
+        self.simulation.dao.event_bus.subscribe(
+            "meeting_result", lambda **d: events.append(d)
+        )
         self.simulation.generate_random_topic = lambda: "Topic A"
         for _ in range(30):
             self.simulation.step()
-        # if no exception occurs, meeting ran successfully
+        self.assertEqual(len(events), 1)
+        self.assertIn(events[0]["result"], ["yes", "no"])
 
     def test_csv_export(self):
         import os

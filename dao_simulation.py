@@ -1075,9 +1075,17 @@ class DAOSimulation(Model):
 
     def process_meeting_votes(self, votes):
         if votes["yes"] > votes["no"]:
-            print("Majority voted yes on the topic.")
+            self.dao.event_bus.publish(
+                "meeting_result",
+                step=self.schedule.steps,
+                result="yes",
+            )
         else:
-            print("Majority voted no on the topic.")
+            self.dao.event_bus.publish(
+                "meeting_result",
+                step=self.schedule.steps,
+                result="no",
+            )
 
     def add_new_agents(self):
         agent_classes = [
