@@ -547,185 +547,79 @@ class DAOSimulation(Model):
         else:
             self.schedule = RandomActivation(self.dao)
 
-        for i in range(self.num_developers):
-            developer = Developer(
-                unique_id=f"Developer_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-                skillset=["Python", "JavaScript"],
-            )
-            self.dao.add_member(developer)
+        agent_map = {
+            Developer: {
+                "count": self.num_developers,
+                "params": {"tokens": 100, "reputation": 0, "skillset": ["Python", "JavaScript"]},
+            },
+            Investor: {
+                "count": self.num_investors,
+                "params": {"tokens": 1000, "reputation": 0, "investment_budget": 500},
+            },
+            Trader: {"count": self.num_traders, "params": {"tokens": 100, "reputation": 0}},
+            AdaptiveInvestor: {
+                "count": self.num_adaptive_investors,
+                "params": {
+                    "tokens": 1000,
+                    "reputation": 0,
+                    "investment_budget": 500,
+                    "learning_rate": self.adaptive_learning_rate,
+                    "epsilon": self.adaptive_epsilon,
+                },
+            },
+            Delegator: {
+                "count": self.num_delegators,
+                "params": {"tokens": 100, "reputation": 0, "delegation_budget": 200},
+            },
+            LiquidDelegator: {
+                "count": self.num_liquid_delegators,
+                "params": {"tokens": 100, "reputation": 0, "delegation_budget": 200},
+            },
+            ProposalCreator: {
+                "count": self.num_proposal_creators,
+                "params": {"tokens": 100, "reputation": 0},
+            },
+            Validator: {
+                "count": self.num_validators,
+                "params": {"tokens": 100, "reputation": 0},
+            },
+            ServiceProvider: {
+                "count": self.num_service_providers,
+                "params": {"tokens": 100, "reputation": 0, "service_budget": 200},
+            },
+            Arbitrator: {
+                "count": self.num_arbitrators,
+                "params": {"tokens": 100, "reputation": 0, "arbitration_capacity": 3},
+            },
+            Regulator: {"count": self.num_regulators, "params": {"tokens": 100, "reputation": 0}},
+            Auditor: {"count": self.num_auditors, "params": {"tokens": 100, "reputation": 0}},
+            BountyHunter: {
+                "count": self.num_bounty_hunters,
+                "params": {"tokens": 100, "reputation": 10},
+            },
+            ExternalPartner: {
+                "count": self.num_external_partners,
+                "params": {"tokens": 100, "reputation": 0, "voting_strategy": None},
+            },
+            Artist: {"count": self.num_artists, "params": {"tokens": 100, "reputation": 0}},
+            Collector: {"count": self.num_collectors, "params": {"tokens": 100, "reputation": 0}},
+            PassiveMember: {"count": self.num_passive_members, "params": {"tokens": 100, "reputation": 0}},
+        }
 
-        for i in range(self.num_investors):
-            investor = Investor(
-                unique_id=f"Investor_{i}",
-                model=self.dao,
-                tokens=1000,
-                reputation=0,
-                location=generate_random_location(),
-                investment_budget=500,
-            )
-            self.dao.add_member(investor)
-
-        for i in range(self.num_traders):
-            trader = Trader(
-                unique_id=f"Trader_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-            )
-            self.dao.add_member(trader)
-
-        for i in range(self.num_adaptive_investors):
-            ainv = AdaptiveInvestor(
-                unique_id=f"AdaptiveInvestor_{i}",
-                model=self.dao,
-                tokens=1000,
-                reputation=0,
-                location=generate_random_location(),
-                investment_budget=500,
-                learning_rate=self.adaptive_learning_rate,
-                epsilon=self.adaptive_epsilon,
-            )
-            self.dao.add_member(ainv)
-
-        for i in range(self.num_delegators):
-            delegator = Delegator(
-                unique_id=f"Delegator_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-                delegation_budget=200,
-            )
-            self.dao.add_member(delegator)
-
-        for i in range(self.num_liquid_delegators):
-            ldel = LiquidDelegator(
-                unique_id=f"LiquidDelegator_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-                delegation_budget=200,
-            )
-            self.dao.add_member(ldel)
-
-        for i in range(self.num_proposal_creators):
-            proposal_creator = ProposalCreator(
-                unique_id=f"ProposalCreator_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-            )
-            self.dao.add_member(proposal_creator)
-
-        for i in range(self.num_validators):
-            validator = Validator(
-                unique_id=f"Validator_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-            )
-            self.dao.add_member(validator)
-
-        for i in range(self.num_service_providers):
-            service_provider = ServiceProvider(
-                unique_id=f"ServiceProvider_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-                service_budget=200,
-            )
-            self.dao.add_member(service_provider)
-
-        for i in range(self.num_arbitrators):
-            arbitrator = Arbitrator(
-                unique_id=f"Arbitrator_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-                arbitration_capacity=3,
-            )
-            self.dao.add_member(arbitrator)
-
-        for i in range(self.num_regulators):
-            regulator = Regulator(
-                unique_id=f"Regulator_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-            )
-            self.dao.add_member(regulator)
-
-        for i in range(self.num_auditors):
-            auditor = Auditor(
-                unique_id=f"Auditor_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-            )
-            self.dao.add_member(auditor)
-
-        for i in range(self.num_bounty_hunters):
-            hunter = BountyHunter(
-                unique_id=f"BountyHunter_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=10,
-                location=generate_random_location(),
-            )
-            self.dao.add_member(hunter)
-
-        for i in range(self.num_external_partners):
-            external_partner = ExternalPartner(
-                unique_id=f"ExternalPartner_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-                voting_strategy=None,
-            )
-            self.dao.add_member(external_partner)
-
-        for i in range(self.num_artists):
-            artist = Artist(
-                unique_id=f"Artist_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-            )
-            self.dao.add_member(artist)
-
-        for i in range(self.num_collectors):
-            collector = Collector(
-                unique_id=f"Collector_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-            )
-            self.dao.add_member(collector)
-
-        for i in range(self.num_passive_members):
-            passive_member = PassiveMember(
-                unique_id=f"PassiveMember_{i}",
-                model=self.dao,
-                tokens=100,
-                reputation=0,
-                location=generate_random_location(),
-            )
-            self.dao.add_member(passive_member)
+        for cls, spec in agent_map.items():
+            base = spec.get("params", {})
+            for i in range(spec.get("count", 0)):
+                params = {
+                    "unique_id": f"{cls.__name__}_{i}",
+                    "model": self.dao,
+                    "tokens": base.get("tokens", 100),
+                    "reputation": base.get("reputation", 0),
+                    "location": generate_random_location(),
+                }
+                extra = {k: v for k, v in base.items() if k not in {"tokens", "reputation"}}
+                params.update(extra)
+                agent = cls(**params)
+                self.dao.add_member(agent)
 
         for agent in self.dao.members:
             self.schedule.add(agent)
