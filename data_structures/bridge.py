@@ -20,7 +20,7 @@ class Bridge:
         self._pending_nfts: list[tuple[int, object]] = []
 
     def request_transfer(self, token: str, amount: float, step: int) -> None:
-        withdrawn = self.src_dao.treasury.withdraw(token, amount)
+        withdrawn = self.src_dao.treasury.withdraw(token, amount, step=step)
         transferred = withdrawn * (1 - self.fee_rate)
         if self.fee_rate > 0 and withdrawn > 0:
             self.src_dao.treasury.add_revenue(withdrawn - transferred)
@@ -63,7 +63,7 @@ class Bridge:
         remaining: list[tuple[int, str, float]] = []
         for arrival, token, amount in self._pending:
             if step >= arrival:
-                self.dst_dao.treasury.deposit(token, amount)
+                self.dst_dao.treasury.deposit(token, amount, step=step)
                 if self.dst_dao.event_bus:
                     self.dst_dao.event_bus.publish(
                         "bridge_transfer_completed",
