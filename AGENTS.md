@@ -96,6 +96,12 @@ The Artist agent mints a new NFT each step and lists it on the marketplace while
 
 The Collector agent checks marketplace listings every step and buys any NFTs it can afford using its token balance.
 
+## player_agent.py
+
+PlayerAgent represents a human user. Actions such as voting, commenting,
+creating proposals or delegating support are queued via the web API. One action
+is processed each simulation step.
+
 ## Guilds
 
 Guilds are persistent sub-DAOs formed by members. Each guild has its own treasury and project list. Members may create a guild, join one, or leave their current guild. Guild events are published on the DAO's event bus for dashboards and analytics.

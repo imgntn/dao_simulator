@@ -56,14 +56,14 @@ class WebServer:
 
         @self.app.post('/start')
         async def start_sim() -> Dict[str, Any]:
-            self.sim = DAOSimulation()
+            self.sim = DAOSimulation(enable_player=True)
             self.sim.dao.event_bus.subscribe('*', self._on_event)
             return {'started': True}
 
         @self.app.post('/step')
         async def step_sim() -> Dict[str, Any]:
             if self.sim is None:
-                self.sim = DAOSimulation()
+                self.sim = DAOSimulation(enable_player=True)
                 self.sim.dao.event_bus.subscribe('*', self._on_event)
             self.sim.step()
             return {'step': self.sim.schedule.steps}
@@ -81,6 +81,49 @@ class WebServer:
                 "token": dc.token_ranking_history[-1] if dc.token_ranking_history else [],
                 "influence": dc.influence_ranking_history[-1] if dc.influence_ranking_history else [],
             }
+
+        @self.app.post('/player/vote')
+        async def player_vote(request: Request) -> Dict[str, Any]:
+            if not self.sim or not getattr(self.sim, 'player', None):
+                return {"error": "no simulation"}
+            data = await request.json()
+            pid = int(data.get('id', -1))
+            vote = bool(data.get('vote', True))
+            if 0 <= pid < len(self.sim.dao.proposals):
+                proposal = self.sim.dao.proposals[pid]
+                self.sim.player.enqueue('vote', proposal=proposal, vote=vote)
+            return {"queued": "vote"}
+
+        @self.app.post('/player/comment')
+        async def player_comment(request: Request) -> Dict[str, Any]:
+            if not self.sim or not getattr(self.sim, 'player', None):
+                return {"error": "no simulation"}
+            data = await request.json()
+            pid = int(data.get('id', -1))
+            sentiment = data.get('sentiment', 'neutral')
+            if 0 <= pid < len(self.sim.dao.proposals):
+                proposal = self.sim.dao.proposals[pid]
+                self.sim.player.enqueue('comment', proposal=proposal, sentiment=sentiment)
+            return {"queued": "comment"}
+
+        @self.app.post('/player/create')
+        async def player_create() -> Dict[str, Any]:
+            if not self.sim or not getattr(self.sim, 'player', None):
+                return {"error": "no simulation"}
+            self.sim.player.enqueue('create_proposal')
+            return {"queued": "create"}
+
+        @self.app.post('/player/delegate')
+        async def player_delegate(request: Request) -> Dict[str, Any]:
+            if not self.sim or not getattr(self.sim, 'player', None):
+                return {"error": "no simulation"}
+            data = await request.json()
+            pid = int(data.get('id', -1))
+            amount = float(data.get('amount', 0))
+            if 0 <= pid < len(self.sim.dao.proposals):
+                proposal = self.sim.dao.proposals[pid]
+                self.sim.player.enqueue('delegate', proposal=proposal, amount=amount)
+            return {"queued": "delegate"}
 
         @self.app.websocket('/ws')
         async def websocket_endpoint(ws: WebSocket) -> None:

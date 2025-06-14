@@ -364,6 +364,7 @@ class DAOSimulation(Model):
         events_file: str | None = None,
         enable_marketing: bool | None = None,
         marketing_level: str | None = None,
+        enable_player: bool | None = None,
         scenario_file: str | None = None,
         centrality_interval: int = 1,
         **_: object,
@@ -379,6 +380,9 @@ class DAOSimulation(Model):
         )
         self.marketing_level = (
             marketing_level if marketing_level is not None else settings.get("marketing_level", "auto")
+        )
+        self.enable_player = (
+            enable_player if enable_player is not None else settings.get("enable_player", False)
         )
         self.scenario_file = scenario_file
         self.scenario: list[dict] = []
@@ -623,6 +627,19 @@ class DAOSimulation(Model):
 
         for agent in self.dao.members:
             self.schedule.add(agent)
+
+        self.player = None
+        if self.enable_player:
+            from agents import PlayerAgent
+            self.player = PlayerAgent(
+                "Player",
+                model=self.dao,
+                tokens=100,
+                reputation=0,
+                location=generate_random_location(),
+            )
+            self.dao.add_member(self.player)
+            self.schedule.add(self.player)
 
     def step(self):
         self.current_shock = 0.0

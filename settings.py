@@ -38,6 +38,7 @@ settings = {
     "governance_rule": "majority",
     "enable_marketing": False,
     "marketing_level": "auto",
+    "enable_player": False,
 }
 
 
