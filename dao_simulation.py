@@ -524,7 +524,7 @@ class DAOSimulation(Model):
         )
         self.marketplace = NFTMarketplace(self.dao.event_bus)
         if self.enable_marketing:
-            self.dao.treasury.deposit("DAO_TOKEN", 1000)
+            self.dao.treasury.deposit("DAO_TOKEN", 1000, step=self.dao.current_step)
         self.reputation_tracker = ReputationTracker(self.dao)
         if self.market_shock_schedule:
             from data_structures.market_shock import MarketShock
@@ -817,7 +817,7 @@ class DAOSimulation(Model):
         """Execute actions based on the proposal subtype."""
         if isinstance(proposal, FundingProposal) and proposal.project:
             locked = self.dao.treasury.lock_tokens(
-                "DAO_TOKEN", proposal.funding_goal
+                "DAO_TOKEN", proposal.funding_goal, step=self.schedule.steps
             )
             proposal.project.current_funding = locked
             proposal.project.funding_locked = locked == proposal.funding_goal
@@ -833,7 +833,9 @@ class DAOSimulation(Model):
             self.dao.add_member(proposal.new_member)
             self.schedule.add(proposal.new_member)
         elif isinstance(proposal, BountyProposal):
-            locked = self.dao.treasury.lock_tokens("DAO_TOKEN", proposal.reward)
+            locked = self.dao.treasury.lock_tokens(
+                "DAO_TOKEN", proposal.reward, step=self.schedule.steps
+            )
             if locked == proposal.reward:
                 proposal.reward_locked = True
                 if self.dao.event_bus:
@@ -850,7 +852,7 @@ class DAOSimulation(Model):
             available = self.dao.treasury.get_token_balance("DAO_TOKEN")
             match = min(match, available)
             if match:
-                self.dao.treasury.withdraw("DAO_TOKEN", match)
+                self.dao.treasury.withdraw("DAO_TOKEN", match, step=self.schedule.steps)
                 if self.dao.event_bus:
                     self.dao.event_bus.publish(
                         "grant_matched",
@@ -887,7 +889,9 @@ class DAOSimulation(Model):
                         reward = reward_pool * share
                         if reward:
                             member.tokens += reward
-                    self.dao.treasury.withdraw_locked("DAO_TOKEN", reward_pool)
+                    self.dao.treasury.withdraw_locked(
+                        "DAO_TOKEN", reward_pool, step=self.schedule.steps
+                    )
                     project.current_funding = 0
                     project.funding_locked = False
                 if self.dao.event_bus:
@@ -1098,7 +1102,9 @@ class DAOSimulation(Model):
                     if new_agent.reputation > 25:  # Add only if reputation is above 25
                         self.dao.add_member(new_agent)
                         self.schedule.add(new_agent)
-                        self.dao.treasury.withdraw("DAO_TOKEN", 100)
+                        self.dao.treasury.withdraw(
+                            "DAO_TOKEN", 100, step=self.schedule.steps
+                        )
 
     def create_new_agent(self, agent_class, step):
         agent_id = f"{agent_class.__name__}_{step}"

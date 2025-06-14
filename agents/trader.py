@@ -30,14 +30,14 @@ class Trader(DAOMember):
         if amount <= 0:
             self.last_price = price
             return
-        treasury.deposit(sell, amount)
+        treasury.deposit(sell, amount, step=self.model.current_step)
         try:
             out = treasury.swap(sell, buy, amount)
         except ValueError:
-            treasury.withdraw(sell, amount)
+            treasury.withdraw(sell, amount, step=self.model.current_step)
             self.last_price = price
             return
-        gained = treasury.withdraw(buy, out)
+        gained = treasury.withdraw(buy, out, step=self.model.current_step)
         self.tokens -= amount
         self.tokens += gained
         self.last_price = price

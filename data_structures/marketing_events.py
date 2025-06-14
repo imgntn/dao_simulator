@@ -20,7 +20,9 @@ class DemandBoostCampaign(MarketingCampaign):
         self.price_boost = price_boost
 
     def execute(self, sim):
-        spent = self.dao.treasury.withdraw("DAO_TOKEN", self.budget)
+        spent = self.dao.treasury.withdraw(
+            "DAO_TOKEN", self.budget, step=self.dao.current_step
+        )
         old_price = self.dao.treasury.get_token_price("DAO_TOKEN")
         new_price = old_price * (1 + self.price_boost)
         self.dao.treasury.update_token_price("DAO_TOKEN", new_price)
@@ -45,7 +47,9 @@ class RecruitmentCampaign(MarketingCampaign):
     def execute(self, sim):
         from agents.passive_member import PassiveMember
 
-        spent = self.dao.treasury.withdraw("DAO_TOKEN", self.budget)
+        spent = self.dao.treasury.withdraw(
+            "DAO_TOKEN", self.budget, step=self.dao.current_step
+        )
         price = self.dao.treasury.get_token_price("DAO_TOKEN")
         new_ids = []
         for i in range(self.recruits):
@@ -74,7 +78,9 @@ class SocialMediaCampaign(MarketingCampaign):
         self.price_boost = price_boost
 
     def execute(self, sim):
-        spent = self.dao.treasury.withdraw("DAO_TOKEN", self.budget)
+        spent = self.dao.treasury.withdraw(
+            "DAO_TOKEN", self.budget, step=self.dao.current_step
+        )
         old_price = self.dao.treasury.get_token_price("DAO_TOKEN")
         new_price = old_price * (1 + self.price_boost)
         self.dao.treasury.update_token_price("DAO_TOKEN", new_price)
@@ -100,7 +106,9 @@ class ReferralBonusCampaign(MarketingCampaign):
     def execute(self, sim):
         from agents.passive_member import PassiveMember
 
-        spent = self.dao.treasury.withdraw("DAO_TOKEN", self.budget)
+        spent = self.dao.treasury.withdraw(
+            "DAO_TOKEN", self.budget, step=self.dao.current_step
+        )
         price = self.dao.treasury.get_token_price("DAO_TOKEN")
         new_ids = []
         referrer = random.choice(self.dao.members) if self.dao.members else None

@@ -89,15 +89,15 @@ class Treasury:
         self.oracle: PriceOracle = oracle or RandomWalkOracle()
         self.pools: dict[tuple[str, str], LiquidityPool] = {}
 
-    def deposit(self, token, amount):
+    def deposit(self, token, amount, *, step: int = 0):
         self.tokens[token] += amount
         self._price_pressure[token] -= amount
         if self.event_bus:
-            self.event_bus.publish("token_deposit", step=0, token=token, amount=amount)
+            self.event_bus.publish("token_deposit", step=step, token=token, amount=amount)
         elif self.event_logger:
-            self.event_logger.log(0, "token_deposit", token=token, amount=amount)
+            self.event_logger.log(step, "token_deposit", token=token, amount=amount)
 
-    def withdraw(self, token, amount):
+    def withdraw(self, token, amount, *, step: int = 0):
         if self.tokens[token] >= amount:
             self.tokens[token] -= amount
             withdrawn = amount
@@ -106,25 +106,25 @@ class Treasury:
             self.tokens[token] = 0
         self._price_pressure[token] += withdrawn
         if self.event_bus:
-            self.event_bus.publish("token_withdraw", step=0, token=token, amount=withdrawn)
+            self.event_bus.publish("token_withdraw", step=step, token=token, amount=withdrawn)
         elif self.event_logger:
-            self.event_logger.log(0, "token_withdraw", token=token, amount=withdrawn)
+            self.event_logger.log(step, "token_withdraw", token=token, amount=withdrawn)
         return withdrawn
 
-    def lock_tokens(self, token: str, amount: float) -> float:
+    def lock_tokens(self, token: str, amount: float, *, step: int = 0) -> float:
         """Reserve ``amount`` of ``token`` for future payout."""
-        locked = self.withdraw(token, amount)
+        locked = self.withdraw(token, amount, step=step)
         if locked > 0:
             self._locked_tokens[token] += locked
             if self.event_bus:
                 self.event_bus.publish(
-                    "token_locked", step=0, token=token, amount=locked
+                    "token_locked", step=step, token=token, amount=locked
                 )
             elif self.event_logger:
-                self.event_logger.log(0, "token_locked", token=token, amount=locked)
+                self.event_logger.log(step, "token_locked", token=token, amount=locked)
         return locked
 
-    def withdraw_locked(self, token: str, amount: float) -> float:
+    def withdraw_locked(self, token: str, amount: float, *, step: int = 0) -> float:
         """Withdraw from previously locked tokens."""
         if self._locked_tokens[token] >= amount:
             self._locked_tokens[token] -= amount
@@ -134,10 +134,10 @@ class Treasury:
             self._locked_tokens[token] = 0
         if self.event_bus:
             self.event_bus.publish(
-                "token_withdraw_locked", step=0, token=token, amount=withdrawn
+                "token_withdraw_locked", step=step, token=token, amount=withdrawn
             )
         elif self.event_logger:
-            self.event_logger.log(0, "token_withdraw_locked", token=token, amount=withdrawn)
+            self.event_logger.log(step, "token_withdraw_locked", token=token, amount=withdrawn)
         return withdrawn
 
     def get_locked_balance(self, token: str) -> float:

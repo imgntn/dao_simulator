@@ -100,7 +100,7 @@ class DAO:
         return amount
 
     def buyback_tokens(self, amount, token="DAO_TOKEN"):
-        self.treasury.withdraw(token, amount)
+        self.treasury.withdraw(token, amount, step=self.current_step)
 
     def stake_tokens(self, amount, token, member, lockup_period=0):
         """Stake ``amount`` of ``token`` on behalf of ``member`` with lockup."""
@@ -113,7 +113,7 @@ class DAO:
         member.staked_tokens += stake
         unlock_step = self.current_step + lockup_period
         member.stake_locks.append((stake, unlock_step))
-        self.treasury.deposit(token, stake)
+        self.treasury.deposit(token, stake, step=self.current_step)
         if self.event_bus:
             self.event_bus.publish(
                 "tokens_staked",
@@ -150,7 +150,7 @@ class DAO:
         member.stake_locks = new_locks
 
         member.staked_tokens -= to_unstake
-        self.treasury.withdraw(token, to_unstake)
+        self.treasury.withdraw(token, to_unstake, step=self.current_step)
         member.tokens += to_unstake
         if self.event_bus:
             self.event_bus.publish(
@@ -190,7 +190,7 @@ class DAO:
             return 0
         amount = member.staked_tokens * fraction
         member.staked_tokens -= amount
-        self.treasury.withdraw("DAO_TOKEN", amount)
+        self.treasury.withdraw("DAO_TOKEN", amount, step=self.current_step)
         if self.event_bus:
             self.event_bus.publish(
                 "stake_slashed",

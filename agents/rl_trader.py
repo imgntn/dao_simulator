@@ -47,21 +47,21 @@ class RLTrader(DAOMember):
         treasury = self.model.treasury
         if action == "buy" and self.tokens > 0:
             amt = min(1, self.tokens)
-            treasury.deposit("USDC", amt)
+            treasury.deposit("USDC", amt, step=self.model.current_step)
             out = treasury.swap("USDC", "DAO_TOKEN", amt)
             self.tokens -= amt
-            self.tokens += treasury.withdraw("DAO_TOKEN", out)
+            self.tokens += treasury.withdraw("DAO_TOKEN", out, step=self.model.current_step)
             reward = treasury.get_token_price("DAO_TOKEN") * out - amt
         elif action == "sell" and self.tokens > 0:
             amt = min(1, self.tokens)
-            treasury.deposit("DAO_TOKEN", amt)
+            treasury.deposit("DAO_TOKEN", amt, step=self.model.current_step)
             out = treasury.swap("DAO_TOKEN", "USDC", amt)
             self.tokens -= amt
-            self.tokens += treasury.withdraw("USDC", out)
+            self.tokens += treasury.withdraw("USDC", out, step=self.model.current_step)
             reward = out - treasury.get_token_price("DAO_TOKEN") * amt
         elif action == "add_lp" and self.tokens >= 2:
-            treasury.deposit("DAO_TOKEN", 1)
-            treasury.deposit("USDC", 1)
+            treasury.deposit("DAO_TOKEN", 1, step=self.model.current_step)
+            treasury.deposit("USDC", 1, step=self.model.current_step)
             treasury.add_liquidity("DAO_TOKEN", "USDC", 1, 1)
         elif action == "remove_lp":
             treasury.remove_liquidity("DAO_TOKEN", "USDC", 0.1)

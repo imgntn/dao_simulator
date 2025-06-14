@@ -50,8 +50,10 @@ class MultiDAOSimulation:
         """Move ``amount`` of ``token`` from DAO ``src`` to DAO ``dst``."""
         dao_a = self.daos[src].dao
         dao_b = self.daos[dst].dao
-        withdrawn = dao_a.treasury.withdraw(token, amount)
-        dao_b.treasury.deposit(token, withdrawn)
+        step_src = self.daos[src].schedule.steps
+        step_dst = self.daos[dst].schedule.steps
+        withdrawn = dao_a.treasury.withdraw(token, amount, step=step_src)
+        dao_b.treasury.deposit(token, withdrawn, step=step_dst)
         if dao_a.event_bus:
             dao_a.event_bus.publish(
                 "cross_dao_token_transfer",
