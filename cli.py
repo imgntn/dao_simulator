@@ -96,6 +96,8 @@ def main(argv=None):
     parser.add_argument("--checkpoint-interval", type=int, default=None)
     parser.add_argument("--resume-from", type=str, default=None)
     parser.add_argument("--market-shock-file", type=str, default=None)
+    parser.add_argument("--events-file", type=str, default=None,
+                        help="Event schedule YAML/JSON")
     parser.add_argument("--scenario-file", type=str, default=None,
                         help="Tutorial scenario YAML/JSON")
     parser.add_argument("--report-file", type=str, default=None)
@@ -183,6 +185,7 @@ def main(argv=None):
         checkpoint_interval=args.checkpoint_interval,
         checkpoint_path=args.checkpoint_path,
         market_shock_file=args.market_shock_file,
+        events_file=args.events_file,
         scenario_file=args.scenario_file,
         seed=args.seed,
         governance_rule=args.governance_rule,

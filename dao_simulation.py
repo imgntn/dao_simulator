@@ -281,6 +281,7 @@ from data_structures import (
     NFTMarketplace,
 )
 from utils import EventLogger
+from utils.event_engine import EventEngine
 from utils import gini, in_degree_centrality
 from agents import (
     Arbitrator,
@@ -358,6 +359,7 @@ class DAOSimulation(Model):
         governance_rule: str | None = None,
         report_file: str | None = None,
         seed: int | None = None,
+        events_file: str | None = None,
         enable_marketing: bool | None = None,
         marketing_level: str | None = None,
         scenario_file: str | None = None,
@@ -381,6 +383,8 @@ class DAOSimulation(Model):
         self._scenario_index = 0
         if self.scenario_file:
             self.scenario = self._load_scenario(self.scenario_file)
+        self.events_file = events_file
+        self.event_engine = EventEngine(events_file) if events_file else None
 
         self.export_csv = export_csv
         self.csv_filename = csv_filename
@@ -748,6 +752,9 @@ class DAOSimulation(Model):
 
         for member in self.dao.members:
             member._active = False
+
+        if self.event_engine:
+            self.event_engine.trigger_events(self.schedule.steps, self)
 
         # Execute all agent steps via the scheduler
         self.schedule.step()
