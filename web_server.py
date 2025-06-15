@@ -12,6 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from dao_simulation import DAOSimulation
+from utils.event_engine import EventEngine
 from settings import settings, update_settings
 
 
@@ -57,6 +58,8 @@ class WebServer:
         @self.app.post('/start')
         async def start_sim() -> Dict[str, Any]:
             self.sim = DAOSimulation(enable_player=True)
+            # Allow scheduling events through the API
+            self.sim.event_engine = EventEngine(None)
             self.sim.dao.event_bus.subscribe('*', self._on_event)
             return {'started': True}
 
@@ -81,6 +84,22 @@ class WebServer:
                 "token": dc.token_ranking_history[-1] if dc.token_ranking_history else [],
                 "influence": dc.influence_ranking_history[-1] if dc.influence_ranking_history else [],
             }
+
+        @self.app.get('/events')
+        async def list_events() -> Any:
+            if not self.sim or not self.sim.event_engine:
+                return []
+            return self.sim.event_engine.list_events()
+
+        @self.app.post('/events')
+        async def add_event(request: Request) -> Dict[str, Any]:
+            if not self.sim or not self.sim.event_engine:
+                return {"error": "no simulation"}
+            data = await request.json()
+            if not isinstance(data, dict) or 'step' not in data or 'type' not in data:
+                return {"error": "invalid event"}
+            self.sim.event_engine.add_event(data)
+            return {"added": True}
 
         @self.app.post('/player/vote')
         async def player_vote(request: Request) -> Dict[str, Any]:

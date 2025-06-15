@@ -128,3 +128,15 @@ table th {
   border: 1px solid var(--border-color);
   padding: 4px 8px;
 }
+
+#event-scheduler form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+#event-scheduler input,
+#event-scheduler select {
+  padding: 4px;
+}

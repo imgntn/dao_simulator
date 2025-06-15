@@ -33,3 +33,11 @@ Each entry requires a `step` field which matches the simulation step number and 
 Pass the file path to `DAOSimulation(events_file="path.yaml")` or use the
 `--events-file` argument on the CLI. Events are checked each step before agents
 act, allowing scripted scenarios or external influences.
+
+The engine can also start with no file by passing `None`. In this mode events
+may be added at runtime using `add_event` or through the web server's
+`/events` endpoint. `GET /events` lists everything currently scheduled so the
+dashboard can display upcoming actions.
+
+This documentation and accompanying code are under a private, all-rights-reserved license.
+

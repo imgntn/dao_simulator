@@ -1,8 +1,9 @@
 class EventEngine:
     """Load and trigger events from a YAML or JSON configuration."""
 
-    def __init__(self, path: str):
-        self.events = self._load(path)
+    def __init__(self, path: str | None = None) -> None:
+        """Initialize the engine with an optional file path."""
+        self.events: list[dict] = self._load(path) if path else []
         self.by_step: dict[int, list[dict]] = {}
         for evt in self.events:
             step = int(evt.get("step", 0))
@@ -38,6 +39,16 @@ class EventEngine:
                 self._run_campaign(evt, sim)
             elif etype == "create_proposal":
                 self._create_proposal(evt, sim)
+
+    def add_event(self, event: dict) -> None:
+        """Schedule a new event at runtime."""
+        self.events.append(event)
+        step = int(event.get("step", 0))
+        self.by_step.setdefault(step, []).append(event)
+
+    def list_events(self) -> list:
+        """Return all loaded events."""
+        return list(self.events)
 
     def _run_campaign(self, evt: dict, sim) -> None:
         from data_structures.marketing_events import (
