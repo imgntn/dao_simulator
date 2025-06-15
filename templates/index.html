@@ -65,6 +65,24 @@
             <button type="submit">Delegate</button>
         </form>
     </section>
+    <section id="event-scheduler">
+        <h2>Event Scheduler</h2>
+        <form @submit.prevent="submitEvent">
+            <input v-model.number="eventStep" placeholder="Step" />
+            <select v-model="eventType">
+                <option value="market_shock">Market Shock</option>
+                <option value="marketing_campaign">Marketing Campaign</option>
+                <option value="create_proposal">Create Proposal</option>
+            </select>
+            <input v-model.number="eventSeverity" placeholder="Severity" />
+            <input v-model="eventCampaignType" placeholder="Campaign Type" />
+            <input v-model.number="eventBudget" placeholder="Budget" />
+            <button type="submit">Schedule</button>
+        </form>
+        <ul>
+            <li v-for="(e, i) in events" :key="i">Step {{ e.step }}: {{ e.type }}</li>
+        </ul>
+    </section>
     <section>
         <h2>Tutorial Progress</h2>
         <ul>
@@ -94,7 +112,13 @@ createApp({
             commentId: '',
             commentText: '',
             delegateId: '',
-            delegateAmount: 0
+            delegateAmount: 0,
+            eventStep: 0,
+            eventType: 'market_shock',
+            eventSeverity: 0.1,
+            eventCampaignType: 'social_media',
+            eventBudget: 50,
+            events: []
         };
     },
     methods: {
@@ -142,6 +166,25 @@ createApp({
                 body: JSON.stringify({ id: this.delegateId, amount: this.delegateAmount })
             });
         },
+        async loadEvents() {
+            const r = await fetch('/events');
+            this.events = await r.json();
+        },
+        async submitEvent() {
+            const evt = {
+                step: this.eventStep,
+                type: this.eventType,
+                severity: this.eventSeverity,
+                campaign_type: this.eventCampaignType,
+                budget: this.eventBudget
+            };
+            await fetch('/events', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(evt)
+            });
+            this.loadEvents();
+        },
         toggleTheme() {
             document.body.classList.toggle('dark');
             const t = document.body.classList.contains('dark') ? 'dark' : 'light';
@@ -150,6 +193,7 @@ createApp({
     },
     mounted() {
         this.loadSettings();
+        this.loadEvents();
         const priceTrace = { x: [], y: [], mode: 'lines', name: 'Price' };
         const giniTrace = { x: [], y: [], mode: 'lines', name: 'Gini' };
         Plotly.newPlot('priceChart', [priceTrace]);

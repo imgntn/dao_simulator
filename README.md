@@ -217,6 +217,8 @@ of the model:
   real time.
 - **Event bus** broadcasts simulation events so external dashboards or plugins
   can subscribe.
+- **Event scheduler** lets you add new events at runtime via the `/events` API
+  or dashboard form.
 - **Multi-DAO mode** runs several DAOs in parallel with optional cross-DAO proposals.
 - **Cross-DAO bridges** transfer tokens with configurable fees and delays.
 - **Reinforcement-learning trader** optimizes swaps using Q-learning.
@@ -256,3 +258,6 @@ oracle classes, such as the built-in `GeometricBrownianOracle`.
 controls how aggressive those campaigns are.
 `--matrix-workers` runs scenario matrices in parallel using multiple processes.
 Interactive Plotly graphs are embedded in the HTML report when `--export-html` is used and Plotly is installed.
+
+All code in this repository is provided under a private, all-rights-reserved license.
+
