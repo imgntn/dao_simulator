@@ -66,6 +66,16 @@ header {
   cursor: pointer;
 }
 
+#delayControl {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+#delayControl input[type=range] {
+  width: 120px;
+}
+
 #controls button:hover {
   background-color: #2980b9;
 }

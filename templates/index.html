@@ -22,6 +22,10 @@
         </form>
         <button @click="startSim">Start</button>
         <button @click="stepSim">Step</button>
+        <button @click="toggleAutoRun">{{ autoRunning ? 'Pause' : 'Play' }}</button>
+        <label id="delayControl">Delay
+            <input type="range" min="100" max="2000" step="100" v-model.number="runInterval" />
+        </label>
     </section>
     <section>
         <pre id="output" class="log">{{ output }}</pre>
@@ -118,7 +122,9 @@ createApp({
             eventSeverity: 0.1,
             eventCampaignType: 'social_media',
             eventBudget: 50,
-            events: []
+            events: [],
+            autoRunning: false,
+            runInterval: 1000
         };
     },
     methods: {
@@ -185,6 +191,21 @@ createApp({
             });
             this.loadEvents();
         },
+        toggleAutoRun() {
+            if (this.autoRunning) {
+                clearInterval(this._autoTimer);
+                this.autoRunning = false;
+            } else {
+                this.autoRunning = true;
+                this._autoTimer = setInterval(() => {
+                    fetch('/run', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ steps: 1 })
+                    });
+                }, this.runInterval);
+            }
+        },
         toggleTheme() {
             document.body.classList.toggle('dark');
             const t = document.body.classList.contains('dark') ? 'dark' : 'light';
@@ -194,6 +215,7 @@ createApp({
     mounted() {
         this.loadSettings();
         this.loadEvents();
+        this._autoTimer = null;
         const priceTrace = { x: [], y: [], mode: 'lines', name: 'Price' };
         const giniTrace = { x: [], y: [], mode: 'lines', name: 'Gini' };
         Plotly.newPlot('priceChart', [priceTrace]);

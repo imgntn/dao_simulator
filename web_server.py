@@ -71,6 +71,17 @@ class WebServer:
             self.sim.step()
             return {'step': self.sim.schedule.steps}
 
+        @self.app.post('/run')
+        async def run_sim(request: Request) -> Dict[str, Any]:
+            data = await request.json()
+            steps = int(data.get('steps', 1)) if isinstance(data, dict) else 1
+            if self.sim is None:
+                self.sim = DAOSimulation(enable_player=True)
+                self.sim.dao.event_bus.subscribe('*', self._on_event)
+            for _ in range(steps):
+                self.sim.step()
+            return {'step': self.sim.schedule.steps}
+
         @self.app.get('/stats')
         async def stats() -> Any:
             return self.sim.datacollector.model_vars if self.sim else []
