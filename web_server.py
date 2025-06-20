@@ -155,6 +155,44 @@ class WebServer:
                 self.sim.player.enqueue('delegate', proposal=proposal, amount=amount)
             return {"queued": "delegate"}
 
+        @self.app.post('/player/swap')
+        async def player_swap(request: Request) -> Dict[str, Any]:
+            if not self.sim or not getattr(self.sim, 'player', None):
+                return {"error": "no simulation"}
+            data = await request.json()
+            t_in = data.get('token_in')
+            t_out = data.get('token_out')
+            amount = float(data.get('amount', 0))
+            self.sim.player.enqueue('swap', token_in=t_in, token_out=t_out, amount=amount)
+            return {"queued": "swap"}
+
+        @self.app.post('/player/add_liquidity')
+        async def player_add_liquidity(request: Request) -> Dict[str, Any]:
+            if not self.sim or not getattr(self.sim, 'player', None):
+                return {"error": "no simulation"}
+            data = await request.json()
+            ta = data.get('token_a')
+            tb = data.get('token_b')
+            amt_a = float(data.get('amount_a', 0))
+            amt_b = float(data.get('amount_b', 0))
+            self.sim.player.enqueue(
+                'add_liquidity', token_a=ta, token_b=tb, amount_a=amt_a, amount_b=amt_b
+            )
+            return {"queued": "add_liquidity"}
+
+        @self.app.post('/player/remove_liquidity')
+        async def player_remove_liquidity(request: Request) -> Dict[str, Any]:
+            if not self.sim or not getattr(self.sim, 'player', None):
+                return {"error": "no simulation"}
+            data = await request.json()
+            ta = data.get('token_a')
+            tb = data.get('token_b')
+            share = float(data.get('share', 0))
+            self.sim.player.enqueue(
+                'remove_liquidity', token_a=ta, token_b=tb, share=share
+            )
+            return {"queued": "remove_liquidity"}
+
         @self.app.websocket('/ws')
         async def websocket_endpoint(ws: WebSocket) -> None:
             await ws.accept()

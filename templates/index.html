@@ -68,6 +68,26 @@
             <input v-model.number="delegateAmount" placeholder="Amount" />
             <button type="submit">Delegate</button>
         </form>
+        <h3>DEX</h3>
+        <form id="swapForm" @submit.prevent="sendSwap">
+            <input v-model="swapIn" placeholder="Token In" />
+            <input v-model="swapOut" placeholder="Token Out" />
+            <input v-model.number="swapAmount" placeholder="Amount" />
+            <button type="submit">Swap</button>
+        </form>
+        <form id="addLPForm" @submit.prevent="sendAddLiquidity">
+            <input v-model="addTokenA" placeholder="Token A" />
+            <input v-model="addTokenB" placeholder="Token B" />
+            <input v-model.number="addAmountA" placeholder="Amount A" />
+            <input v-model.number="addAmountB" placeholder="Amount B" />
+            <button type="submit">Add Liquidity</button>
+        </form>
+        <form id="removeLPForm" @submit.prevent="sendRemoveLiquidity">
+            <input v-model="removeTokenA" placeholder="Token A" />
+            <input v-model="removeTokenB" placeholder="Token B" />
+            <input v-model.number="removeShare" placeholder="Share" />
+            <button type="submit">Remove Liquidity</button>
+        </form>
     </section>
     <section id="event-scheduler">
         <h2>Event Scheduler</h2>
@@ -117,6 +137,16 @@ createApp({
             commentText: '',
             delegateId: '',
             delegateAmount: 0,
+            swapIn: '',
+            swapOut: '',
+            swapAmount: 0,
+            addTokenA: '',
+            addTokenB: '',
+            addAmountA: 0,
+            addAmountB: 0,
+            removeTokenA: '',
+            removeTokenB: '',
+            removeShare: 0,
             eventStep: 0,
             eventType: 'market_shock',
             eventSeverity: 0.1,
@@ -170,6 +200,27 @@ createApp({
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: this.delegateId, amount: this.delegateAmount })
+            });
+        },
+        async sendSwap() {
+            await fetch('/player/swap', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token_in: this.swapIn, token_out: this.swapOut, amount: this.swapAmount })
+            });
+        },
+        async sendAddLiquidity() {
+            await fetch('/player/add_liquidity', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token_a: this.addTokenA, token_b: this.addTokenB, amount_a: this.addAmountA, amount_b: this.addAmountB })
+            });
+        },
+        async sendRemoveLiquidity() {
+            await fetch('/player/remove_liquidity', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token_a: this.removeTokenA, token_b: this.removeTokenB, share: this.removeShare })
             });
         },
         async loadEvents() {

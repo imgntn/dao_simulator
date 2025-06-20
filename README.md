@@ -25,6 +25,7 @@ The simulation models the behavior of a DAO, a decentralized organization manage
 - **Optional dashboards and visualizations** – an admin panel and Mesa visualization can be launched when the related packages are installed.
 - **Plugin hooks** – extend the simulator with external agent types, metrics and oracles.
 - **Liquidity pools and staking** – experiment with token swaps and interest on locked funds.
+- **Player-operated DEX** – queue swaps or liquidity changes through the web interface.
 - **Market shock events** – simulate abrupt token price changes to test strategies under stress.
 - **NFT marketplace** – artists can mint NFTs and collectors purchase them during the simulation.
 - **Pluggable governance rules** – choose approval logic for proposals or load custom rules.
@@ -222,6 +223,7 @@ of the model:
 - **Multi-DAO mode** runs several DAOs in parallel with optional cross-DAO proposals.
 - **Cross-DAO bridges** transfer tokens with configurable fees and delays.
 - **Reinforcement-learning trader** optimizes swaps using Q-learning.
+- **DEX endpoints** expose swap and liquidity actions for the player agent.
 - **SQLite event analytics** summarize event counts and token flows.
 - **Hot-reload strategies** with the `--watch` flag when the `watchdog`
   dependency is available.
