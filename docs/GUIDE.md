@@ -73,6 +73,20 @@ match = (sum(sqrt(c_i))**2) - sum(c_i)
 
 Events `grant_contributed`, `grant_matched` and `grant_distributed` record the process for dashboards.
 
+## DEX Operations
+
+The player-controlled agent can interact with the treasury's liquidity pools directly.
+Use the following HTTP endpoints when the web server is running:
+
+```
+POST /player/swap            {"token_in": "DAO_TOKEN", "token_out": "USDC", "amount": 1}
+POST /player/add_liquidity   {"token_a": "DAO_TOKEN", "token_b": "USDC", "amount_a": 5, "amount_b": 5}
+POST /player/remove_liquidity {"token_a": "DAO_TOKEN", "token_b": "USDC", "share": 0.25}
+```
+
+Each call enqueues the respective action on the player agent and will be executed
+on the next simulation step.
+
 ## Guilds
 
 Members can organize into guilds that persist across steps. Each guild maintains
