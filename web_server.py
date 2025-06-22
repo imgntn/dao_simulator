@@ -13,6 +13,7 @@ from fastapi.templating import Jinja2Templates
 
 from dao_simulation import DAOSimulation
 from utils.event_engine import EventEngine
+from utils.news_feed import NewsFeed
 from settings import settings, update_settings
 
 
@@ -32,6 +33,7 @@ class WebServer:
         self.connections: List[WebSocket] = []
         self.loop = asyncio.new_event_loop()
         self._thread: threading.Thread | None = None
+        self.news_feed: NewsFeed | None = None
         self._register_routes()
 
     def _register_routes(self) -> None:
@@ -61,6 +63,7 @@ class WebServer:
             # Allow scheduling events through the API
             self.sim.event_engine = EventEngine(None)
             self.sim.dao.event_bus.subscribe('*', self._on_event)
+            self.news_feed = NewsFeed(self.sim.dao.event_bus)
             return {'started': True}
 
         @self.app.post('/step')
@@ -68,6 +71,7 @@ class WebServer:
             if self.sim is None:
                 self.sim = DAOSimulation(enable_player=True)
                 self.sim.dao.event_bus.subscribe('*', self._on_event)
+                self.news_feed = NewsFeed(self.sim.dao.event_bus)
             self.sim.step()
             return {'step': self.sim.schedule.steps}
 
@@ -78,6 +82,7 @@ class WebServer:
             if self.sim is None:
                 self.sim = DAOSimulation(enable_player=True)
                 self.sim.dao.event_bus.subscribe('*', self._on_event)
+                self.news_feed = NewsFeed(self.sim.dao.event_bus)
             for _ in range(steps):
                 self.sim.step()
             return {'step': self.sim.schedule.steps}
@@ -101,6 +106,12 @@ class WebServer:
             if not self.sim or not self.sim.event_engine:
                 return []
             return self.sim.event_engine.list_events()
+
+        @self.app.get('/news')
+        async def get_news() -> Any:
+            if not self.news_feed:
+                return []
+            return list(self.news_feed.summaries)
 
         @self.app.post('/events')
         async def add_event(request: Request) -> Dict[str, Any]:

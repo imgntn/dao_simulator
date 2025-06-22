@@ -99,6 +99,7 @@ and `guild_left` events on the DAO's event bus.
 - **Admin Panel** – `python admin_app.py` starts a small interface for configuring simulation parameters.
 - **Mesa Visualization** – `python mesa_app.py` launches an interactive view of agents as the simulation runs.
 - **Unified Web Interface** – `python cli.py --web` starts a page that combines the admin controls and live dashboard.
+- **News Feed** – the dashboard displays short summaries of notable events each step.
 
 These components depend on optional packages listed in `requirements.txt`.
 

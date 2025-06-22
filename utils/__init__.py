@@ -1,5 +1,6 @@
 from .event_logger import EventLogger, DBEventLogger
 from .event_bus import EventBus
+from .news_feed import NewsFeed
 from .oracles import (
     PriceOracle,
     RandomWalkOracle,

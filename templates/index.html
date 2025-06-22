@@ -45,6 +45,12 @@
         <div id="priceChart"></div>
         <div id="giniChart"></div>
     </section>
+    <section id="news-feed">
+        <h2>News Feed</h2>
+        <ul>
+            <li v-for="(n, i) in news" :key="i">{{ n }}</li>
+        </ul>
+    </section>
     <section id="player-controls">
         <h2>Player Controls</h2>
         <form id="voteForm" @submit.prevent="sendVote">
@@ -128,6 +134,7 @@ createApp({
             members: 0,
             price: 0,
             proposals: [],
+            news: [],
             output: '',
             completed: [],
             remaining: [],
@@ -266,6 +273,7 @@ createApp({
     mounted() {
         this.loadSettings();
         this.loadEvents();
+        fetch('/news').then(r => r.json()).then(d => { this.news = d; });
         this._autoTimer = null;
         const priceTrace = { x: [], y: [], mode: 'lines', name: 'Price' };
         const giniTrace = { x: [], y: [], mode: 'lines', name: 'Gini' };
@@ -289,6 +297,9 @@ createApp({
             } else if (data.event === 'scenario_progress') {
                 this.completed = data.completed;
                 this.remaining = data.remaining;
+            } else if (data.event === 'news_update') {
+                this.news.unshift(data.summary);
+                if (this.news.length > 20) this.news.pop();
             }
         };
         const theme = localStorage.getItem('theme');

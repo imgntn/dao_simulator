@@ -31,6 +31,7 @@ The simulation models the behavior of a DAO, a decentralized organization manage
 - **Pluggable governance rules** – choose approval logic for proposals or load custom rules.
 - **Quadratic funding rounds** – community contributions are matched from the treasury using the square-root formula.
 - **Guilds** – members can form persistent sub-groups with their own treasuries and projects.
+- **News feed dashboard** – step summaries highlight recent proposals, NFTs and guild activity.
 
 ## Agent Classes
 
