@@ -18,5 +18,6 @@ from .rl_trader import RLTrader
 
 from .artist import Artist
 from .collector import Collector
+from .speculator import Speculator
 
 from .player_agent import PlayerAgent

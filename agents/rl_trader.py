@@ -63,8 +63,10 @@ class RLTrader(DAOMember):
             treasury.deposit("DAO_TOKEN", 1, step=self.model.current_step)
             treasury.deposit("USDC", 1, step=self.model.current_step)
             treasury.add_liquidity("DAO_TOKEN", "USDC", 1, 1)
+            reward = 0.01
         elif action == "remove_lp":
             treasury.remove_liquidity("DAO_TOKEN", "USDC", 0.1)
+            reward = -0.01
         self._update_q(reward, state)
         self.prev_state = state
         self.prev_action = action

@@ -32,6 +32,7 @@ The simulation models the behavior of a DAO, a decentralized organization manage
 - **Quadratic funding rounds** – community contributions are matched from the treasury using the square-root formula.
 - **Guilds** – members can form persistent sub-groups with their own treasuries and projects.
 - **News feed dashboard** – step summaries highlight recent proposals, NFTs and guild activity.
+- **Prediction market** – members bet on proposal outcomes and share in the winnings.
 
 ## Agent Classes
 

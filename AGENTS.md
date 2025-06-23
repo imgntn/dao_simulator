@@ -96,6 +96,10 @@ The Artist agent mints a new NFT each step and lists it on the marketplace while
 
 The Collector agent checks marketplace listings every step and buys any NFTs it can afford using its token balance.
 
+## speculator.py
+
+The Speculator participates in the prediction market. It occasionally creates predictions about whether proposals will pass and bets DAO tokens on existing predictions.
+
 ## player_agent.py
 
 PlayerAgent represents a human user. Actions such as voting, commenting,

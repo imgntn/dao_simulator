@@ -25,6 +25,7 @@ settings = {
     "num_passive_members": 10,
     "num_artists": 0,
     "num_collectors": 0,
+    "num_speculators": 0,
     "violation_probability": 0.1,
     "reputation_penalty": 5,
     "comment_probability": 0.5,

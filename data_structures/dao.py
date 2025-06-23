@@ -2,6 +2,7 @@ from collections import defaultdict
 from data_structures.treasury import Treasury
 from data_structures.proposal import Proposal
 from data_structures.guild import Guild
+from data_structures.prediction_market import PredictionMarket
 from utils import EventBus
 
 
@@ -34,6 +35,9 @@ class DAO:
                 lambda event, step, **d: self.event_logger.log(step, event, **d),
             )
         self.treasury = Treasury(event_bus=self.event_bus)
+        self.prediction_market = PredictionMarket(
+            self, self.treasury, event_bus=self.event_bus
+        )
         self.comment_probability = comment_probability
         self.external_partner_interact_probability = (
             external_partner_interact_probability
@@ -237,6 +241,12 @@ class DAO:
         for member in self.members:
             if not getattr(member, "_active", False):
                 member.reputation *= 1 - self.reputation_decay_rate
+
+    def increment_step(self):
+        """Advance DAO time and resolve pending predictions."""
+        self.current_step += 1
+        if getattr(self, "prediction_market", None):
+            self.prediction_market.resolve_predictions(self.current_step)
 
     def to_dict(self):
         return {
