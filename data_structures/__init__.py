@@ -22,4 +22,5 @@ from .marketing_events import (
 )
 from .nft import NFT, NFTMarketplace
 from .guild import Guild
+from .prediction_market import PredictionMarket
 

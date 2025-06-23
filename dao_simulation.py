@@ -303,6 +303,7 @@ from agents import (
     RLTrader,
     Artist,
     Collector,
+    Speculator,
 )
 from utils.locations import generate_random_location
 
@@ -347,6 +348,7 @@ class DAOSimulation(Model):
         num_passive_members: int | None = None,
         num_artists: int | None = None,
         num_collectors: int | None = None,
+        num_speculators: int | None = None,
         comment_probability: float | None = None,
         external_partner_interact_probability: float | None = None,
         violation_probability: float | None = None,
@@ -481,6 +483,7 @@ class DAOSimulation(Model):
         )
         self.num_artists = num_artists if num_artists is not None else settings.get("num_artists", 0)
         self.num_collectors = num_collectors if num_collectors is not None else settings.get("num_collectors", 0)
+        self.num_speculators = num_speculators if num_speculators is not None else settings.get("num_speculators", 0)
 
         self.comment_probability = (
             comment_probability if comment_probability is not None else settings["comment_probability"]
@@ -607,6 +610,7 @@ class DAOSimulation(Model):
             },
             Artist: {"count": self.num_artists, "params": {"tokens": 100, "reputation": 0}},
             Collector: {"count": self.num_collectors, "params": {"tokens": 100, "reputation": 0}},
+            Speculator: {"count": self.num_speculators, "params": {"tokens": 100, "reputation": 0}},
             PassiveMember: {"count": self.num_passive_members, "params": {"tokens": 100, "reputation": 0}},
         }
 
@@ -675,7 +679,7 @@ class DAOSimulation(Model):
             self.reputation_tracker.decay_reputation()
         self.dao.apply_reputation_decay()
         # Keep DAO time in sync with the scheduler
-        self.dao.current_step += 1
+        self.dao.increment_step()
         self.datacollector.collect(self)
         self._check_objectives()
         if self.stats_writer:

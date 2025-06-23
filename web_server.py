@@ -33,6 +33,7 @@ class WebServer:
         self.connections: List[WebSocket] = []
         self.loop = asyncio.new_event_loop()
         self._thread: threading.Thread | None = None
+        self._server = None
         self.news_feed: NewsFeed | None = None
         self._register_routes()
 
@@ -227,8 +228,13 @@ class WebServer:
     def start(self) -> None:
         import uvicorn
 
+        config = uvicorn.Config(
+            self.app, host="127.0.0.1", port=self.port, loop="asyncio", log_level="warning"
+        )
+        self._server = uvicorn.Server(config)
+
         def run() -> None:
-            uvicorn.run(self.app, host='127.0.0.1', port=self.port, loop='asyncio')
+            self._server.run()
 
         self._thread = threading.Thread(target=run, daemon=True)
         self._thread.start()
@@ -238,8 +244,10 @@ class WebServer:
         for ws in list(self.connections):
             asyncio.run_coroutine_threadsafe(ws.close(), self.loop)
         self.loop.call_soon_threadsafe(self.loop.stop)
+        if self._server:
+            self._server.should_exit = True
         if self._thread and self._thread.is_alive():
-            self._thread.join(timeout=0.5)
+            self._thread.join(timeout=1)
 
 
 if __name__ == '__main__':  # pragma: no cover - manual usage
