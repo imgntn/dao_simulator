@@ -18,6 +18,19 @@ class TestNewsFeed(unittest.TestCase):
         self.assertTrue(feed.summaries)
         self.assertEqual(captured[0], feed.summaries[0])
 
+    def test_trending_counts(self):
+        bus = EventBus()
+        feed = NewsFeed(bus)
+        bus.publish("proposal_created", step=0)
+        bus.publish("nft_minted", step=0)
+        bus.publish("step_end", step=1)
+        bus.publish("proposal_created", step=1)
+        bus.publish("step_end", step=2)
+        trending = feed.get_trending(2)
+        self.assertEqual(trending[0][0], "proposal")
+        self.assertEqual(trending[0][1], 2)
+        self.assertEqual(trending[1][0], "created")
+
     def test_news_endpoint(self):
         server = WebServer(port=8136)
         server.start()
@@ -30,6 +43,10 @@ class TestNewsFeed(unittest.TestCase):
             data = r.json()
             self.assertIsInstance(data, list)
             self.assertTrue(data)
+            r = httpx.get("http://localhost:8136/trending")
+            self.assertEqual(r.status_code, 200)
+            tdata = r.json()
+            self.assertIsInstance(tdata, list)
         finally:
             server.stop()
             time.sleep(0.6)

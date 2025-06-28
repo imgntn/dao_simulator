@@ -1,6 +1,26 @@
 from collections import Counter, deque
 from typing import Deque, List
 
+# very small set just to filter obvious filler words
+STOPWORDS = {
+    "the",
+    "a",
+    "an",
+    "and",
+    "or",
+    "to",
+    "of",
+    "in",
+    "on",
+    "at",
+    "for",
+    "with",
+    "is",
+    "no",
+    "not",
+    "step",
+}
+
 
 class NewsFeed:
     """Collect notable events and publish short summaries."""
@@ -9,8 +29,13 @@ class NewsFeed:
         self.event_bus = event_bus
         self.max_items = max_items
         self._counts: Counter[str] = Counter()
+        self.word_counts: Counter[str] = Counter()
         self.summaries: Deque[str] = deque(maxlen=max_items)
         self.event_bus.subscribe("*", self._handle)
+
+    def get_trending(self, n: int = 10) -> List[tuple[str, int]]:
+        """Return top ``n`` words by occurrence in summaries."""
+        return self.word_counts.most_common(n)
 
     def _handle(self, event: str, **data) -> None:
         if event == "step_end":
@@ -26,6 +51,12 @@ class NewsFeed:
             else:
                 summary = f"Step {step}: no notable activity"
             self.summaries.appendleft(summary)
+            # update trending words
+            for tok in summary.lower().split():
+                tok = tok.strip(".,:;!?\"'\n\r")
+                if not tok or tok in STOPWORDS or tok.isdigit():
+                    continue
+                self.word_counts[tok] += 1
             self.event_bus.publish("news_update", step=step, summary=summary)
             self._counts.clear()
         else:

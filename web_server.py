@@ -114,6 +114,12 @@ class WebServer:
                 return []
             return list(self.news_feed.summaries)
 
+        @self.app.get('/trending')
+        async def trending() -> Any:
+            if not self.news_feed:
+                return []
+            return self.news_feed.get_trending()
+
         @self.app.post('/events')
         async def add_event(request: Request) -> Dict[str, Any]:
             if not self.sim or not self.sim.event_engine:

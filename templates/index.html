@@ -51,6 +51,12 @@
             <li v-for="(n, i) in news" :key="i">{{ n }}</li>
         </ul>
     </section>
+    <section id="trending">
+        <h2>Trending Topics</h2>
+        <ul>
+            <li v-for="(t, i) in trending" :key="i">{{ t[0] }} ({{ t[1] }})</li>
+        </ul>
+    </section>
     <section id="player-controls">
         <h2>Player Controls</h2>
         <form id="voteForm" @submit.prevent="sendVote">
@@ -135,6 +141,7 @@ createApp({
             price: 0,
             proposals: [],
             news: [],
+            trending: [],
             output: '',
             completed: [],
             remaining: [],
@@ -234,6 +241,10 @@ createApp({
             const r = await fetch('/events');
             this.events = await r.json();
         },
+        async updateTrending() {
+            const r = await fetch('/trending');
+            this.trending = await r.json();
+        },
         async submitEvent() {
             const evt = {
                 step: this.eventStep,
@@ -274,6 +285,7 @@ createApp({
         this.loadSettings();
         this.loadEvents();
         fetch('/news').then(r => r.json()).then(d => { this.news = d; });
+        this.updateTrending();
         this._autoTimer = null;
         const priceTrace = { x: [], y: [], mode: 'lines', name: 'Price' };
         const giniTrace = { x: [], y: [], mode: 'lines', name: 'Gini' };
@@ -300,6 +312,7 @@ createApp({
             } else if (data.event === 'news_update') {
                 this.news.unshift(data.summary);
                 if (this.news.length > 20) this.news.pop();
+                this.updateTrending();
             }
         };
         const theme = localStorage.getItem('theme');
