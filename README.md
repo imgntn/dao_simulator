@@ -229,6 +229,8 @@ of the model:
 - **SQLite event analytics** summarize event counts and token flows.
 - **Hot-reload strategies** with the `--watch` flag when the `watchdog`
   dependency is available.
+- **Trending topics** in the dashboard show a simple word cloud of recent news
+  summaries.
 
 ## Command Line Interface
 
