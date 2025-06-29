@@ -367,6 +367,8 @@ class DAOSimulation(Model):
         enable_marketing: bool | None = None,
         marketing_level: str | None = None,
         enable_player: bool | None = None,
+        token_emission_rate: float | None = None,
+        token_burn_rate: float | None = None,
         scenario_file: str | None = None,
         centrality_interval: int = 1,
         **_: object,
@@ -385,6 +387,12 @@ class DAOSimulation(Model):
         )
         self.enable_player = (
             enable_player if enable_player is not None else settings.get("enable_player", False)
+        )
+        self.token_emission_rate = (
+            token_emission_rate if token_emission_rate is not None else settings.get("token_emission_rate", 0.0)
+        )
+        self.token_burn_rate = (
+            token_burn_rate if token_burn_rate is not None else settings.get("token_burn_rate", 0.0)
         )
         self.scenario_file = scenario_file
         self.scenario: list[dict] = []
@@ -655,6 +663,14 @@ class DAOSimulation(Model):
             self.trigger_market_shock()
         # Update token prices each tick to simulate a simple market.
         self.dao.treasury.update_prices()
+        if self.token_emission_rate:
+            self.dao.treasury.mint_tokens(
+                "DAO_TOKEN", self.token_emission_rate, step=self.schedule.steps
+            )
+        if self.token_burn_rate:
+            self.dao.treasury.burn_tokens(
+                "DAO_TOKEN", self.token_burn_rate, step=self.schedule.steps
+            )
         self.dao.apply_staking_interest()
         self.expire_proposals()
         self.complete_projects()

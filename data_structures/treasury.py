@@ -140,6 +140,28 @@ class Treasury:
             self.event_logger.log(step, "token_withdraw_locked", token=token, amount=withdrawn)
         return withdrawn
 
+    def mint_tokens(self, token: str, amount: float, *, step: int = 0) -> None:
+        if amount <= 0:
+            return
+        self.tokens[token] += amount
+        self._price_pressure[token] += amount
+        if self.event_bus:
+            self.event_bus.publish("token_minted", step=step, token=token, amount=amount)
+        elif self.event_logger:
+            self.event_logger.log(step, "token_minted", token=token, amount=amount)
+
+    def burn_tokens(self, token: str, amount: float, *, step: int = 0) -> float:
+        burn = min(amount, self.tokens[token])
+        if burn <= 0:
+            return 0.0
+        self.tokens[token] -= burn
+        self._price_pressure[token] -= burn
+        if self.event_bus:
+            self.event_bus.publish("token_burned", step=step, token=token, amount=burn)
+        elif self.event_logger:
+            self.event_logger.log(step, "token_burned", token=token, amount=burn)
+        return burn
+
     def get_locked_balance(self, token: str) -> float:
         return self._locked_tokens[token]
 

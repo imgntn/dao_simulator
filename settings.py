@@ -40,6 +40,8 @@ settings = {
     "enable_marketing": False,
     "marketing_level": "auto",
     "enable_player": False,
+    "token_emission_rate": 0.0,
+    "token_burn_rate": 0.0,
 }
 
 
