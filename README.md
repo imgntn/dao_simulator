@@ -27,6 +27,7 @@ The simulation models the behavior of a DAO, a decentralized organization manage
 - **Liquidity pools and staking** – experiment with token swaps and interest on locked funds.
 - **Player-operated DEX** – queue swaps or liquidity changes through the web interface.
 - **Market shock events** – simulate abrupt token price changes to test strategies under stress.
+- **Token emission schedule** – mint or burn DAO tokens each step to model inflation or deflation.
 - **NFT marketplace** – artists can mint NFTs and collectors purchase them during the simulation.
 - **Pluggable governance rules** – choose approval logic for proposals or load custom rules.
 - **Quadratic funding rounds** – community contributions are matched from the treasury using the square-root formula.
@@ -179,6 +180,8 @@ settings = {
     "reputation_penalty": 5,
     "comment_probability": 0.5,
     "external_partner_interact_probability": 0.0,
+    "token_emission_rate": 0.0,
+    "token_burn_rate": 0.0,
 }
 ```
 
@@ -229,6 +232,7 @@ of the model:
 - **SQLite event analytics** summarize event counts and token flows.
 - **Hot-reload strategies** with the `--watch` flag when the `watchdog`
   dependency is available.
+- **Token emission controls** let the treasury mint or burn tokens every step.
 - **Trending topics** in the dashboard show a simple word cloud of recent news
   summaries.
 

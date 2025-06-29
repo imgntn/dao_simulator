@@ -23,5 +23,9 @@ class TestSettings(unittest.TestCase):
         settings.update_settings(num_developers=original)
         os.remove(fname)
 
+    def test_emission_settings_exist(self):
+        self.assertIn("token_emission_rate", settings.settings)
+        self.assertIn("token_burn_rate", settings.settings)
+
 if __name__ == "__main__":
     unittest.main()
