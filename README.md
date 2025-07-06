@@ -90,7 +90,7 @@ The simulation also includes utility functions and voting strategies that help s
 1. **Install Dependencies**
 
    ```bash
-   pip install -r requirements.txt
+   pip install -e .
    ```
 
    The `pycountry` package is optional. When it isn't installed,
@@ -100,10 +100,10 @@ The simulation also includes utility functions and voting strategies that help s
 2. **Run the Simulation**
 
    ```bash
-   python main.py
+   dao-sim
    ```
 
-   This executes the batch run with default values from `settings.py`. Adjust the numbers of agents by editing that file or calling `update_settings()` in your own script.
+   Running the command without arguments uses default settings from `settings.py`. Adjust the numbers of agents by editing that file or calling `update_settings()` in your own script.
 
 
    To log basic model statistics to a CSV file, construct the simulation with
@@ -238,11 +238,11 @@ of the model:
 
 ## Command Line Interface
 
-The `cli.py` module exposes a small interface for running the simulation without
+The `dao-sim` command exposes a small interface for running the simulation without
 modifying code.  For example, to run 50 steps with just two developers:
 
 ```bash
-python -m cli --steps 50 --num_developers 2
+dao-sim --steps 50 --num_developers 2
 ```
 
 Flags like `--use-parallel` or `--use-async` enable alternative schedulers. The
