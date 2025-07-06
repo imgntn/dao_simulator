@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dao-simulator"
+version = "0.1.0"
+description = "Private DAO simulation"
+dependencies = [
+    "Mesa==3.2.0",
+    "pandas==2.3.0",
+    "...",
+]
+requires-python = ">=3.10"
+license = {text = "All rights reserved"}
+
+[project.scripts]
+dao-sim = "cli:main"
