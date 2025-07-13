@@ -142,7 +142,16 @@ The visualization depends on the optional Mesa components listed in `requirement
    live dashboard in a single page. Use `--websocket-port` to choose the port
    (default is `8003`).
 
-6. **Interact with the Player Agent**
+6. **Install Dependencies via `setup.sh`**
+
+   From the repository root run:
+
+   ```bash
+   ./setup.sh
+   ```
+
+   This helper script creates a virtual environment and installs all required packages.
+7. **Interact with the Player Agent**
 
    When the web interface is running a player-controlled agent is available.
    Use the forms under "Player Controls" to queue votes, comments, proposal
@@ -150,13 +159,13 @@ The visualization depends on the optional Mesa components listed in `requirement
    action.
 
    ![Player controls screenshot](docs/PLAYER_CONTROLS_SCREENSHOT.txt)
-7. **Run the Tests**
+8. **Run the Tests**
 
    ```bash
    python -m unittest discover tests
    ```
 
-8. **Visualize Delegations**
+9. **Visualize Delegations**
 
    ```python
    from visualizations.network_graph import plot_network_graph
