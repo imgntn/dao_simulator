@@ -113,3 +113,31 @@ sequenceDiagram
 
 The diagram shows how the `watch_strategy_plugins` helper automatically reloads
 voting strategies when source files change.
+
+## Cross-DAO Bridging
+
+```mermaid
+sequenceDiagram
+    participant DAO1
+    participant Bridge
+    participant DAO2
+    DAO1->>Bridge: request transfer
+    Bridge-->>DAO1: lock tokens
+    Bridge->>DAO2: deliver after delay
+    DAO2-->>Bridge: confirm receipt
+```
+
+Transfers move through a bridge object that queues them for delivery after the configured delay.
+
+## Event Engine Workflow
+
+```mermaid
+flowchart TD
+    A[Load events file] --> B{Each step}
+    B --> C[Check pending events]
+    C --> D[Trigger actions]
+    D --> E[Publish to EventBus]
+    B -->|next step| B
+```
+
+The event engine processes scheduled actions before agents act each step.

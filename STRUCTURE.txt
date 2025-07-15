@@ -1,40 +1,81 @@
 dao_simulation/
 ├── agents/
 │   ├── __init__.py
+│   ├── adaptive_investor.py
 │   ├── arbitrator.py
+│   ├── artist.py
+│   ├── auditor.py
+│   ├── bounty_hunter.py
+│   ├── collector.py
 │   ├── dao_member.py
 │   ├── delegator.py
 │   ├── developer.py
 │   ├── external_partner.py
 │   ├── investor.py
+│   ├── liquid_delegator.py
 │   ├── passive_member.py
+│   ├── player_agent.py
 │   ├── proposal_creator.py
 │   ├── regulator.py
+│   ├── rl_trader.py
 │   ├── service_provider.py
+│   ├── speculator.py
+│   ├── trader.py
 │   └── validator.py
 ├── data_structures/
 │   ├── __init__.py
+│   ├── bridge.py
 │   ├── dao.py
 │   ├── dispute.py
+│   ├── guild.py
+│   ├── market_shock.py
+│   ├── marketing_events.py
+│   ├── nft.py
+│   ├── prediction_market.py
 │   ├── project.py
 │   ├── proposal.py
+│   ├── reputation.py
 │   ├── treasury.py
-│   ├── guild.py
 │   └── violation.py
-├── visualizations/
-│   ├── __init__.py
-│   ├── network_graph.py
-│   ├── heatmap.py
-│   └── choropleth_map.py
-├── tests/
-│   ├── __init__.py
-│   ├── test_agents.py
-│   ├── test_data_structures.py
-│   ├── test_treasury.py
-│   ├── test_integration.py
-│   └── test_new_features.py
 ├── utils/
 │   ├── __init__.py
+│   ├── agent_plugins.py
+│   ├── event_bus.py
+│   ├── event_engine.py
+│   ├── event_logger.py
+│   ├── governance_plugins.py
+│   ├── locations.py
+│   ├── metric_plugins.py
+│   ├── news_feed.py
+│   ├── oracles.py
+│   ├── path_utils.py
 │   ├── proposal_utils.py
+│   ├── stats.py
 │   └── voting_strategies.py
-└── main.py
+├── visualizations/
+│   ├── __init__.py
+│   ├── choropleth_map.py
+│   ├── heatmap.py
+│   ├── interactive_line_chart.py
+│   ├── interactive_network.py
+│   ├── line_chart.py
+│   ├── network_graph.py
+│   └── report.py
+├── admin_app.py
+├── admin_server.py
+├── dashboard_server.py
+├── simulation_server.py
+├── mesa_app.py
+├── web_server.py
+├── cli.py
+├── dao_simulation.py
+├── multi_dao_simulation.py
+├── replay.py
+├── main.py
+├── settings.py
+├── tests/
+│   └── ...
+├── docs/
+│   └── ...
+└── static/
+    └── ...
