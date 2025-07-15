@@ -17,6 +17,7 @@ def plot_heat_map(dao, show=True):
 
     df = pd.DataFrame(data)
     if df.empty:
+        plt.close("all")
         fig, ax = plt.subplots()
         ax.text(0.5, 0.5, "No members", ha="center", va="center")
         ax.set_axis_off()
@@ -45,6 +46,7 @@ def plot_heat_map(dao, show=True):
     )
 
     # Plot the heatmap
+    plt.close("all")
     fig, ax = plt.subplots()
     sns.heatmap(
         pivot_table, cmap="coolwarm", square=True, linewidths=0.5, annot=True, fmt=".2f", ax=ax
@@ -54,4 +56,5 @@ def plot_heat_map(dao, show=True):
     ax.set_title("Heatmap: Member Score based on Reputation and Token Balance")
     if show:
         plt.show()
+    plt.close(fig)
     return fig
