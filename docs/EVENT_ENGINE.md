@@ -41,3 +41,4 @@ dashboard can display upcoming actions.
 
 This documentation and accompanying code are under a private, all-rights-reserved license.
 
+A flowchart of this process can be found in [docs/DIAGRAMS.md](DIAGRAMS.md).

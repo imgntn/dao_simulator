@@ -2,7 +2,7 @@
 
 This DAO simulation is a modular and maintainable implementation of a Decentralized Autonomous Organization. The simulation models various agent classes that interact with each other and the DAO, allowing users to explore the behavior of different types of members within the organization. An internal event bus broadcasts agent actions so dashboards and plugins can react in real time.
 For a more detailed introduction and FAQ, see [docs/GUIDE.md](docs/GUIDE.md).
-Diagrams illustrating the architecture can be found in [docs/DIAGRAMS.md](docs/DIAGRAMS.md).
+Diagrams illustrating the architecture, bridging flow and event engine can be found in [docs/DIAGRAMS.md](docs/DIAGRAMS.md).
 Agent summaries live in [AGENTS.md](AGENTS.md) and visualization details in
 [VISUALIZATIONS.md](VISUALIZATIONS.md).
 Details on bridging tokens and NFTs are available in

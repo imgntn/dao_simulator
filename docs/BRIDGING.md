@@ -35,3 +35,4 @@ sim.run(2)
 During NFT transfers the events `nft_bridge_requested` and `nft_bridge_completed`
 are emitted.
 
+A sequence diagram of the bridging process is available in [docs/DIAGRAMS.md](DIAGRAMS.md).

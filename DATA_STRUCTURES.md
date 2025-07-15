@@ -39,3 +39,27 @@ most_popular_voting_strategy: This function chooses the proposal with the highes
 least_popular_voting_strategy: This function chooses the proposal with the lowest total votes.
 most_funded_voting_strategy: This function chooses the proposal with the highest funding requested.
 least_funded_voting_strategy: This function chooses the proposal with the lowest funding requested.
+
+## bridge.py
+
+Defines the `Bridge` class used in multi-DAO mode. It queues token and NFT transfers between DAOs, applying a fee and optional delay before delivery.
+
+## guild.py
+
+Represents persistent sub-DAOs. Each guild has its own treasury and project list and publishes events when members join or leave.
+
+## nft.py
+
+Stores NFT metadata and ownership information for the marketplace. NFTs can be minted, listed and traded by artist and collector agents.
+
+## reputation.py
+
+Tracks member reputation earned from successful projects and penalized by violations. Reputation weights some voting strategies.
+
+## marketing_events.py and market_shock.py
+
+Support scripted marketing campaigns and market shock events used by the event engine.
+
+## prediction_market.py
+
+Implements prediction market logic where members bet DAO tokens on proposal outcomes.
