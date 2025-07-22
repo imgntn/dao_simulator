@@ -16,6 +16,11 @@ Guidance on straightforward revenue generation can be found in
 
 The simulation models the behavior of a DAO, a decentralized organization managed by a smart contract or a set of rules. The DAO members, represented by various agent classes, can create proposals, vote on them, invest in projects, and perform other activities. The simulation also incorporates treasury management, token pricing, and revenue distribution to model the dynamics of a real-world DAO.
 
+## ELI5
+
+Imagine a giant playground where each agent is a different toy. Some toys build projects, others vote on ideas, and a few make sure everyone follows the rules. The tokens are like play money. Running the simulator lets us see how these toys interact so we can learn about a real DAO without risking real money.
+
+
 ## Key Features
 
 - **Extensible agent system** – developers, investors, regulators and many other roles are implemented as separate classes.
