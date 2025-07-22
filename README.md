@@ -140,7 +140,8 @@ The visualization depends on the optional Mesa components listed in `requirement
 
    This command starts a FastAPI server that combines the admin controls and
    live dashboard in a single page. Use `--websocket-port` to choose the port
-   (default is `8003`).
+   (default is `8003`). Visit `/marketing` for a lightweight overview of the
+   simulator aimed at newcomers.
 
 6. **Install Dependencies via `setup.sh`**
 

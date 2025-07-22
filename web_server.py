@@ -42,6 +42,10 @@ class WebServer:
         async def index(request: Request) -> HTMLResponse:
             return self.templates.TemplateResponse('index.html', {'request': request})
 
+        @self.app.get('/marketing', response_class=HTMLResponse)
+        async def marketing(request: Request) -> HTMLResponse:
+            return self.templates.TemplateResponse('marketing.html', {'request': request})
+
         @self.app.get('/settings')
         async def get_settings() -> Dict[str, Any]:
             return settings
