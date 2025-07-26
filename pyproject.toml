@@ -27,3 +27,26 @@ license = {text = "All rights reserved"}
 
 [project.scripts]
 dao-sim = "cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+packages = [
+    "agents",
+    "data_structures",
+    "utils",
+    "visualizations",
+]
+py-modules = [
+    "admin_app",
+    "admin_server",
+    "cli",
+    "dao_simulation",
+    "dashboard_server",
+    "main",
+    "mesa_app",
+    "multi_dao_simulation",
+    "replay",
+    "settings",
+    "simulation_server",
+    "web_server",
+]
