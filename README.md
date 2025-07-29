@@ -95,6 +95,9 @@ The simulation also includes utility functions and voting strategies that help s
 1. **Install Dependencies**
 
    ```bash
+   py -m pip install -e .
+
+   (aka:)
    pip install -e .
    ```
 
