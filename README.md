@@ -103,7 +103,11 @@ The simulation also includes utility functions and voting strategies that help s
 
    The `pycountry` package is optional. When it isn't installed,
    `generate_random_location()` uses a small built-in list of
-   country names (``["US", "FR", "ANONYMOUS"]``).
+  country names (``["US", "FR", "ANONYMOUS"]``).
+
+   Installing in editable mode also registers the `dao-sim` command so it can
+   be executed directly from the shell when your environment's `bin` directory
+   is included in `PATH`.
 
 2. **Run the Simulation**
 
