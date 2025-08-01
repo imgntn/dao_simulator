@@ -27,6 +27,7 @@ license = {text = "All rights reserved"}
 
 [project.scripts]
 dao-sim = "cli:main"
+dashboard = "dashboard:main"
 
 [tool.setuptools]
 package-dir = {"" = "."}
@@ -50,4 +51,5 @@ py-modules = [
     "simulation_server",
     "web_server",
     "launcher",
+    "dashboard",
 ]
