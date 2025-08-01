@@ -49,4 +49,5 @@ py-modules = [
     "settings",
     "simulation_server",
     "web_server",
+    "launcher",
 ]

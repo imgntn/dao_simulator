@@ -127,7 +127,16 @@ The simulation also includes utility functions and voting strategies that help s
    sim.run(100)
    ```
 
-3. **Optional: Launch the Admin Panel**
+3. **Use the Launcher Menu**
+
+   ```bash
+   python launcher.py
+   ```
+
+   This simple menu lets you start the CLI, the simulation control server or the
+   unified web dashboard from one place.
+
+4. **Optional: Launch the Admin Panel**
 
    ```bash
    python admin_app.py
@@ -136,7 +145,7 @@ The simulation also includes utility functions and voting strategies that help s
    The panel exposes sliders for configuring agent counts and behaviour
    probabilities before starting the simulation.
 
-4. **Optional: Launch the Mesa Visualization**
+5. **Optional: Launch the Mesa Visualization**
 
    ```bash
    python mesa_app.py
@@ -144,7 +153,7 @@ The simulation also includes utility functions and voting strategies that help s
 
 The visualization depends on the optional Mesa components listed in `requirements.txt`.
 
-5. **Launch the Web Interface**
+6. **Launch the Web Interface**
 
    ```bash
    python cli.py --web
@@ -155,7 +164,7 @@ The visualization depends on the optional Mesa components listed in `requirement
    (default is `8003`). Visit `/marketing` for a lightweight overview of the
    simulator aimed at newcomers.
 
-6. **Install Dependencies via `setup.sh`**
+7. **Install Dependencies via `setup.sh`**
 
    From the repository root run:
 
@@ -164,7 +173,7 @@ The visualization depends on the optional Mesa components listed in `requirement
    ```
 
    This helper script creates a virtual environment and installs all required packages.
-7. **Interact with the Player Agent**
+8. **Interact with the Player Agent**
 
    When the web interface is running a player-controlled agent is available.
    Use the forms under "Player Controls" to queue votes, comments, proposal
@@ -172,13 +181,13 @@ The visualization depends on the optional Mesa components listed in `requirement
    action.
 
    ![Player controls screenshot](docs/PLAYER_CONTROLS_SCREENSHOT.txt)
-8. **Run the Tests**
+9. **Run the Tests**
 
    ```bash
    python -m unittest discover tests
    ```
 
-9. **Visualize Delegations**
+10. **Visualize Delegations**
 
    ```python
    from visualizations.network_graph import plot_network_graph
