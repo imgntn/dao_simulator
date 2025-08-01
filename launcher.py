@@ -2,10 +2,12 @@ import subprocess
 import sys
 
 MENU = {
-    '1': ('Run CLI Simulation', ['python', 'cli.py']),
-    '2': ('Start Simulation Server', ['python', 'cli.py', '--serve']),
-    '3': ('Launch Web Interface', ['python', 'cli.py', '--web']),
-    '4': ('Quit', None),
+    '1': ('Run CLI Simulation', [sys.executable, 'cli.py']),
+    '2': ('Start Simulation Server', [sys.executable, 'cli.py', '--serve']),
+    '3': ('Launch Dashboard', [sys.executable, 'dashboard.py']),
+    '4': ('Launch Admin Panel', [sys.executable, 'admin_app.py']),
+    '5': ('Launch Visualization', [sys.executable, 'mesa_app.py']),
+    '6': ('Quit', None),
 }
 
 

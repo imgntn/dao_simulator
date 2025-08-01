@@ -133,8 +133,8 @@ The simulation also includes utility functions and voting strategies that help s
    python launcher.py
    ```
 
-   This simple menu lets you start the CLI, the simulation control server or the
-   unified web dashboard from one place.
+   The menu now launches the CLI, the simulation control server, the unified
+   dashboard, and optional visualizations from one place.
 
 4. **Optional: Launch the Admin Panel**
 
@@ -156,13 +156,12 @@ The visualization depends on the optional Mesa components listed in `requirement
 6. **Launch the Web Interface**
 
    ```bash
-   python cli.py --web
+   python dashboard.py
    ```
 
-   This command starts a FastAPI server that combines the admin controls and
-   live dashboard in a single page. Use `--websocket-port` to choose the port
-   (default is `8003`). Visit `/marketing` for a lightweight overview of the
-   simulator aimed at newcomers.
+   This command opens the unified dashboard in your browser. Use `--port` to
+   choose the port (default is `8003`). Visit `/marketing` for a lightweight
+   overview of the simulator aimed at newcomers.
 
 7. **Install Dependencies via `setup.sh`**
 
