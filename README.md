@@ -133,8 +133,9 @@ The simulation also includes utility functions and voting strategies that help s
    python launcher.py
    ```
 
-   The menu now launches the CLI, the simulation control server, the unified
-   dashboard, and optional visualizations from one place.
+   The menu now launches each task in its own terminal window so the launcher
+   remains available after starting the CLI, servers, dashboard, or optional
+   visualizations.
 
 4. **Optional: Launch the Admin Panel**
 
