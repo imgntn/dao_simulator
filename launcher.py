@@ -1,3 +1,5 @@
+import shutil
+import shlex
 import subprocess
 import sys
 
@@ -14,6 +16,43 @@ MENU = {
 }
 
 
+def launch_in_terminal(cmd: list[str]) -> None:
+    """Launch command in a new terminal window."""
+    if sys.platform.startswith("win"):
+        subprocess.Popen([
+            "start",
+            "cmd",
+            "/k",
+            " ".join(cmd),
+        ], shell=True)
+        return
+
+    quoted = " ".join(shlex.quote(c) for c in cmd)
+
+    if sys.platform == "darwin":
+        subprocess.Popen([
+            "osascript",
+            "-e",
+            f'tell application "Terminal" to do script "{quoted}"',
+        ])
+        return
+
+    terminals = [
+        ["x-terminal-emulator", "-e"],
+        ["gnome-terminal", "--"],
+        ["konsole", "-e"],
+        ["xfce4-terminal", "-e"],
+        ["xterm", "-e"],
+    ]
+    for term in terminals:
+        path = shutil.which(term[0])
+        if path:
+            subprocess.Popen([path, *term[1:], *cmd])
+            return
+    print("No supported terminal emulator found; running in background.")
+    subprocess.Popen(cmd)
+
+
 def main() -> None:
     while True:
         print("\nDAO Simulator Launcher")
@@ -27,13 +66,11 @@ def main() -> None:
         if cmd is None:
             print("Exiting.")
             break
-        print(f'Running: {" ".join(cmd)}')
+        print(f'Launching: {" ".join(cmd)}')
         try:
-            subprocess.run(cmd, check=True)
-        except KeyboardInterrupt:
-            print("\nInterrupted.")
-        except subprocess.CalledProcessError as e:
-            print(f"Error: {e}")
+            launch_in_terminal(cmd)
+        except Exception as e:
+            print(f"Error launching command: {e}")
 
 
 if __name__ == "__main__":
