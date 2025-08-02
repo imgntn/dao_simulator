@@ -1,139 +1,156 @@
-# Basic admin panel using Mesa's sliders to configure the simulation.
+"""Admin panel for configuring simulation parameters via sliders."""
 
-try:
-    from mesa.visualization.ModularVisualization import ModularServer
-    from mesa.visualization.UserParam import UserSettableParameter
+import os
+import subprocess
+import sys
+
+try:  # pragma: no cover - visualization only
+    from mesa.visualization import Slider, SolaraViz
 except Exception:  # pragma: no cover - visualization only
-    ModularServer = None
-    UserSettableParameter = None
+    Slider = None
+    SolaraViz = None
 
 from dao_simulation import DAOSimulation
 from settings import settings
 
 
-def launch_admin(port: int = 8522):  # pragma: no cover - manual usage
-    if ModularServer is None or UserSettableParameter is None:
+def _build_model_params():
+    if Slider is None:
         raise RuntimeError("Mesa visualization dependencies are not installed.")
 
-    model_params = {
-        "num_developers": UserSettableParameter(
-            "slider",
+    return {
+        "num_developers": Slider(
             "Developers",
-            settings["num_developers"],
-            0,
-            20,
-            1,
+            value=settings["num_developers"],
+            min=0,
+            max=20,
+            step=1,
         ),
-        "num_investors": UserSettableParameter(
-            "slider",
+        "num_investors": Slider(
             "Investors",
-            settings["num_investors"],
-            0,
-            20,
-            1,
+            value=settings["num_investors"],
+            min=0,
+            max=20,
+            step=1,
         ),
-        "num_delegators": UserSettableParameter(
-            "slider",
+        "num_delegators": Slider(
             "Delegators",
-            settings["num_delegators"],
-            0,
-            20,
-            1,
+            value=settings["num_delegators"],
+            min=0,
+            max=20,
+            step=1,
         ),
-        "num_proposal_creators": UserSettableParameter(
-            "slider",
+        "num_proposal_creators": Slider(
             "Creators",
-            settings["num_proposal_creators"],
-            0,
-            20,
-            1,
+            value=settings["num_proposal_creators"],
+            min=0,
+            max=20,
+            step=1,
         ),
-        "num_validators": UserSettableParameter(
-            "slider",
+        "num_validators": Slider(
             "Validators",
-            settings["num_validators"],
-            0,
-            20,
-            1,
+            value=settings["num_validators"],
+            min=0,
+            max=20,
+            step=1,
         ),
-        "num_service_providers": UserSettableParameter(
-            "slider",
+        "num_service_providers": Slider(
             "Service Providers",
-            settings["num_service_providers"],
-            0,
-            20,
-            1,
+            value=settings["num_service_providers"],
+            min=0,
+            max=20,
+            step=1,
         ),
-        "num_arbitrators": UserSettableParameter(
-            "slider",
+        "num_arbitrators": Slider(
             "Arbitrators",
-            settings["num_arbitrators"],
-            0,
-            10,
-            1,
+            value=settings["num_arbitrators"],
+            min=0,
+            max=10,
+            step=1,
         ),
-        "num_regulators": UserSettableParameter(
-            "slider",
+        "num_regulators": Slider(
             "Regulators",
-            settings["num_regulators"],
-            0,
-            10,
-            1,
+            value=settings["num_regulators"],
+            min=0,
+            max=10,
+            step=1,
         ),
-        "num_external_partners": UserSettableParameter(
-            "slider",
+        "num_external_partners": Slider(
             "External Partners",
-            settings["num_external_partners"],
-            0,
-            10,
-            1,
+            value=settings["num_external_partners"],
+            min=0,
+            max=10,
+            step=1,
         ),
-        "num_passive_members": UserSettableParameter(
-            "slider",
+        "num_passive_members": Slider(
             "Passive Members",
-            settings["num_passive_members"],
-            0,
-            20,
-            1,
+            value=settings["num_passive_members"],
+            min=0,
+            max=20,
+            step=1,
         ),
-        "comment_probability": UserSettableParameter(
-            "slider",
+        "comment_probability": Slider(
             "Comment Probability",
-            settings["comment_probability"],
-            0.0,
-            1.0,
-            0.05,
+            value=settings["comment_probability"],
+            min=0.0,
+            max=1.0,
+            step=0.05,
         ),
-        "external_partner_interact_probability": UserSettableParameter(
-            "slider",
+        "external_partner_interact_probability": Slider(
             "Partner Interaction",
-            settings["external_partner_interact_probability"],
-            0.0,
-            1.0,
-            0.05,
+            value=settings["external_partner_interact_probability"],
+            min=0.0,
+            max=1.0,
+            step=0.05,
         ),
-        "violation_probability": UserSettableParameter(
-            "slider",
+        "violation_probability": Slider(
             "Violation Probability",
-            settings["violation_probability"],
-            0.0,
-            1.0,
-            0.05,
+            value=settings["violation_probability"],
+            min=0.0,
+            max=1.0,
+            step=0.05,
         ),
-        "reputation_penalty": UserSettableParameter(
-            "slider",
+        "reputation_penalty": Slider(
             "Reputation Penalty",
-            settings["reputation_penalty"],
-            0,
-            20,
-            1,
+            value=settings["reputation_penalty"],
+            min=0,
+            max=20,
+            step=1,
         ),
     }
 
-    server = ModularServer(DAOSimulation, [], "DAO Admin Panel", model_params)
-    server.port = port
-    server.launch()
+
+def build_page():  # pragma: no cover - manual usage
+    if SolaraViz is None:
+        raise RuntimeError("Mesa visualization dependencies are not installed.")
+
+    model_params = _build_model_params()
+    model = DAOSimulation()
+    return SolaraViz(model, model_params=model_params, name="DAO Admin Panel")
 
 
-if __name__ == "__main__":  # pragma: no cover - manual usage
+page = build_page() if Slider and SolaraViz else None
+
+
+def launch_admin(port: int = 8522):  # pragma: no cover - manual usage
+    if Slider is None or SolaraViz is None:
+        raise RuntimeError("Mesa visualization dependencies are not installed.")
+
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "solara",
+            "run",
+            os.path.abspath(__file__),
+            "--port",
+            str(port),
+        ],
+        check=True,
+    )
+
+
+if (
+    __name__ == "__main__" and "SOLARA_APP" not in os.environ
+):  # pragma: no cover - manual usage
     launch_admin()
