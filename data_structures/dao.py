@@ -38,6 +38,9 @@ class DAO:
         self.prediction_market = PredictionMarket(
             self, self.treasury, event_bus=self.event_bus
         )
+        # ``marketplace`` gets assigned by :class:`DAOSimulation` once created
+        # so agents can access ``self.model.marketplace`` during their step.
+        self.marketplace = None
         self.comment_probability = comment_probability
         self.external_partner_interact_probability = (
             external_partner_interact_probability
@@ -284,5 +287,6 @@ class DAO:
         from .market_shock import MarketShock
         dao.market_shocks = [MarketShock.from_dict(s) for s in data.get("market_shocks", [])]
         dao.current_step = data.get("current_step", 0)
+        dao.marketplace = None
         return dao
 
