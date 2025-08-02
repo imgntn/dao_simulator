@@ -19,11 +19,13 @@ MENU = {
 def launch_in_terminal(cmd: list[str]) -> None:
     """Launch command in a new terminal window."""
     if sys.platform.startswith("win"):
+        # Use list2cmdline to ensure paths with spaces are properly quoted
+        cmd_str = subprocess.list2cmdline(cmd)
         subprocess.Popen([
             "start",
             "cmd",
             "/k",
-            " ".join(cmd),
+            cmd_str,
         ], shell=True)
         return
 
