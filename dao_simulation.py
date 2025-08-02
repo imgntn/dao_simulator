@@ -538,6 +538,9 @@ class DAOSimulation(Model):
             event_logger=self.event_logger,
         )
         self.marketplace = NFTMarketplace(self.dao.event_bus)
+        # expose the marketplace on the DAO so agents using ``self.model`` can
+        # access it
+        self.dao.marketplace = self.marketplace
         if self.enable_marketing:
             self.dao.treasury.deposit("DAO_TOKEN", 1000, step=self.dao.current_step)
         self.reputation_tracker = ReputationTracker(self.dao)
@@ -1150,6 +1153,8 @@ class DAOSimulation(Model):
         sim = cls(**kwargs)
         sim.schedule.steps = data.get("schedule_steps", 0)
         sim.dao = DAO.from_dict(data["dao"])
+        sim.marketplace = NFTMarketplace(sim.dao.event_bus)
+        sim.dao.marketplace = sim.marketplace
         sim.datacollector.model_vars = data.get("collector", [])
         sim.schedule.agents = []
         for member in sim.dao.members:
