@@ -541,8 +541,14 @@ class DAOSimulation(Model):
         # expose the marketplace on the DAO so agents using ``self.model`` can
         # access it
         self.dao.marketplace = self.marketplace
+        
+        # Initialize treasury with substantial funding for project support
+        initial_treasury_funding = 50000  # Increased from 1000 to support multiple projects
+        self.dao.treasury.deposit("DAO_TOKEN", initial_treasury_funding, step=self.dao.current_step)
+        
         if self.enable_marketing:
-            self.dao.treasury.deposit("DAO_TOKEN", 1000, step=self.dao.current_step)
+            # Additional marketing budget on top of base funding
+            self.dao.treasury.deposit("DAO_TOKEN", 10000, step=self.dao.current_step)
         self.reputation_tracker = ReputationTracker(self.dao)
         if self.market_shock_schedule:
             from data_structures.market_shock import MarketShock
@@ -750,12 +756,26 @@ class DAOSimulation(Model):
     def process_approved_proposal(self, proposal):
         """Execute actions based on the proposal subtype."""
         if isinstance(proposal, FundingProposal) and proposal.project:
+            # Ensure treasury maintains minimum reserves
+            treasury_balance = self.dao.treasury.get_token_balance("DAO_TOKEN")
+            min_reserve = 10000  # Minimum treasury balance to maintain
+            max_funding = min(proposal.funding_goal, max(0, treasury_balance - min_reserve))
+            
             locked = self.dao.treasury.lock_tokens(
-                "DAO_TOKEN", proposal.funding_goal, step=self.schedule.steps
+                "DAO_TOKEN", max_funding, step=self.schedule.steps
             )
             proposal.project.current_funding = locked
             proposal.project.funding_locked = locked == proposal.funding_goal
-            self.dao.add_project(proposal.project)
+            if locked > 0:  # Only add project if it received some funding
+                self.dao.add_project(proposal.project)
+                if self.dao.event_bus:
+                    self.dao.event_bus.publish(
+                        "project_funded",
+                        step=self.schedule.steps,
+                        project=proposal.project.title,
+                        amount=locked,
+                        requested=proposal.funding_goal,
+                    )
         elif isinstance(proposal, GovernanceProposal):
             try:
                 from settings import update_settings
@@ -783,9 +803,14 @@ class DAOSimulation(Model):
             total = proposal.current_funding
             match = (sum(math.sqrt(c) for c in proposal.contributions.values()) ** 2) - total
             match = max(0, match)
-            available = self.dao.treasury.get_token_balance("DAO_TOKEN")
-            match = min(match, available)
-            if match:
+            
+            # Respect treasury reserves for quadratic funding matching
+            treasury_balance = self.dao.treasury.get_token_balance("DAO_TOKEN")
+            min_reserve = 10000  # Same minimum reserve as regular funding
+            available_for_matching = max(0, treasury_balance - min_reserve)
+            match = min(match, available_for_matching)
+            
+            if match > 0:
                 self.dao.treasury.withdraw("DAO_TOKEN", match, step=self.schedule.steps)
                 if self.dao.event_bus:
                     self.dao.event_bus.publish(

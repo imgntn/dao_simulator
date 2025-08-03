@@ -40,7 +40,7 @@ settings = {
     "enable_marketing": False,
     "marketing_level": "auto",
     "enable_player": False,
-    "token_emission_rate": 0.0,
+    "token_emission_rate": 100.0,  # Mint 100 tokens per step to fund ongoing operations
     "token_burn_rate": 0.0,
 }
 
