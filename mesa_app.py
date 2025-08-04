@@ -1,3 +1,4 @@
+import sys
 from dao_simulation import DAOSimulation
 
 # Mesa visualization imports are optional because the full mesa
@@ -5,11 +6,10 @@ from dao_simulation import DAOSimulation
 # installed when running the tests. We only import them when the
 # application is executed directly.
 try:
-    from mesa.visualization.ModularVisualization import ModularServer
-    from mesa.visualization.modules import NetworkModule
+    from mesa.visualization import SolaraViz, make_space_component
 except Exception:  # pragma: no cover - visualization only
-    ModularServer = None
-    NetworkModule = None
+    SolaraViz = None
+    make_space_component = None
 
 
 AGENT_COLORS = {
@@ -27,37 +27,51 @@ AGENT_COLORS = {
 }
 
 
-def network_portrayal(model):
-    """Return nodes and edges for the current DAO state."""
-    nodes = []
-    edges = []
-    for member in model.dao.members:
-        nodes.append(
-            {
-                "id": member.unique_id,
-                "label": member.unique_id,
-                "color": AGENT_COLORS.get(type(member).__name__, "#000000"),
-            }
-        )
+def agent_portrayal(agent):
+    """Return portrayal dict for an agent."""
+    return {
+        "color": AGENT_COLORS.get(type(agent).__name__, "#000000"),
+        "size": 10,
+        "label": f"{type(agent).__name__}_{agent.unique_id}",
+    }
 
-    for proposal in model.dao.proposals:
-        prop_id = proposal.title
-        nodes.append({"id": prop_id, "label": prop_id, "color": AGENT_COLORS["Proposal"]})
-        if hasattr(proposal, "creator"):
-            edges.append({"source": proposal.creator.unique_id, "target": prop_id})
 
-    return {"nodes": nodes, "edges": edges}
+def create_visualization():
+    """Create the visualization page."""
+    if SolaraViz is None:
+        return None
+    
+    model = DAOSimulation()
+    return SolaraViz(
+        model,
+        components=[make_space_component(agent_portrayal)],
+        name="DAO Simulation Visualization",
+    )
+
+
+# Create the page for Solara to serve
+page = create_visualization()
 
 
 def launch_server(port: int = 8521):  # pragma: no cover - visualization only
-    if ModularServer is None or NetworkModule is None:
+    if SolaraViz is None:
         raise RuntimeError("Mesa visualization dependencies are not installed.")
-
-    network = NetworkModule(network_portrayal, 600, 600)
-    server = ModularServer(DAOSimulation, [network], "DAO Simulation")
-    server.port = port
-    server.launch()
+    
+    # Launch with subprocess to control port
+    import subprocess
+    import os
+    
+    subprocess.run([
+        sys.executable, "-m", "solara", "run", 
+        os.path.abspath(__file__), "--port", str(port)
+    ], check=True)
 
 
 if __name__ == "__main__":  # pragma: no cover - manual usage
-    launch_server()
+    # When run directly, parse port from first numeric argument
+    port = 8521
+    for arg in sys.argv[1:]:
+        if arg.isdigit():
+            port = int(arg)
+            break
+    launch_server(port)

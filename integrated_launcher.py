@@ -90,12 +90,12 @@ class IntegratedLauncher:
         print(f"📈 Starting Mesa visualization on port {port}...")
         try:
             proc = subprocess.Popen(
-                [sys.executable, "mesa_app.py"],
+                [sys.executable, "mesa_app.py", str(port)],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL
             )
             self.processes.append(proc)
-            time.sleep(3)
+            time.sleep(5)  # Give more time for Solara to start
             
             viz_url = f"http://localhost:{port}"
             print(f"   📊 Visualization: {viz_url}")
@@ -129,17 +129,14 @@ class IntegratedLauncher:
         print()
         
         if urls.get('dashboard'):
-            print(f"📊 DASHBOARD: {urls['dashboard']}")
+            print(f"📊 UNIFIED DASHBOARD & ADMIN: {urls['dashboard']}")
             print("   - Real-time metrics and charts")
             print("   - Agent activity monitoring") 
             print("   - Treasury and token tracking")
-            print()
-            
-        if urls.get('admin'):
-            print(f"⚙️  ADMIN PANEL: {urls['admin']}")
             print("   - Configure simulation parameters")
             print("   - Control agent behaviors")
-            print("   - Manage simulation settings")
+            print("   - Player controls and interaction")
+            print("   - Event scheduling and management")
             print()
             
         if urls.get('viz'):
@@ -193,7 +190,8 @@ class IntegratedLauncher:
         # Launch web interfaces
         urls = {}
         urls['dashboard'] = self.launch_dashboard()
-        urls['admin'] = self.launch_admin_panel()  
+        # The admin panel is built into the dashboard, no need for separate launch
+        # urls['admin'] = self.launch_admin_panel()  
         urls['viz'] = self.launch_mesa_viz()
         
         # Open browser windows if requested
