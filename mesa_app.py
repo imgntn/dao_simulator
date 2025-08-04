@@ -41,11 +41,28 @@ def create_visualization():
     if SolaraViz is None:
         return None
     
-    model = DAOSimulation()
+    # Create model with minimal agents to prevent performance issues
+    model = DAOSimulation(
+        num_developers=5,
+        num_investors=3,
+        num_delegators=2,
+        num_proposal_creators=2,
+        num_validators=2,
+        num_service_providers=1,
+        num_arbitrators=1,
+        num_regulators=1,
+        num_external_partners=1,
+        num_passive_members=3,
+        enable_marketing=False,
+        event_logging=False
+    )
+    
     return SolaraViz(
         model,
         components=[make_space_component(agent_portrayal)],
         name="DAO Simulation Visualization",
+        # Disable auto-play to prevent continuous stepping
+        play_interval=None,
     )
 
 
