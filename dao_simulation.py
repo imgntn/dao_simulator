@@ -371,7 +371,8 @@ class DAOSimulation(Model):
         token_burn_rate: float | None = None,
         scenario_file: str | None = None,
         centrality_interval: int = 1,
-        **_: object,
+        _: object = None,
+        **kwargs: object,
     ) -> None:
         super().__init__()
         
@@ -1265,3 +1266,8 @@ class DAOSimulation(Model):
             self.event_logger.close()
         if hasattr(self.dao, "event_bus"):
             self.dao.event_bus.close()
+
+    @property
+    def steps(self):
+        """Mesa visualization compatibility property."""
+        return self.schedule.steps
