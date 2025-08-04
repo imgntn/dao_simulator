@@ -45,11 +45,12 @@ class IntegratedLauncher:
             try:
                 proc.terminate()
                 proc.wait(timeout=5)
-            except:
+            except (OSError, subprocess.TimeoutExpired) as e:
+                print(f"Warning: Failed to terminate process gracefully: {e}")
                 try:
                     proc.kill()
-                except:
-                    pass
+                except (OSError, ProcessLookupError) as kill_e:
+                    print(f"Warning: Failed to kill process: {kill_e}")
                     
     def launch_dashboard(self, port: int = 8003):
         """Launch the web dashboard."""

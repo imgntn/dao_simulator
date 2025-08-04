@@ -6,7 +6,7 @@ import threading
 from pathlib import Path
 from typing import Any, Dict, List
 
-from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -14,6 +14,10 @@ from fastapi.templating import Jinja2Templates
 from dao_simulation import DAOSimulation
 from utils.event_engine import EventEngine
 from utils.news_feed import NewsFeed
+from utils.validation import (
+    ValidationError, sanitize_simulation_steps, sanitize_proposal_id, 
+    sanitize_agent_id, sanitize_token_amount, validate_string, validate_json_dict
+)
 from settings import settings, update_settings
 
 
@@ -82,8 +86,15 @@ class WebServer:
 
         @self.app.post('/run')
         async def run_sim(request: Request) -> Dict[str, Any]:
-            data = await request.json()
-            steps = int(data.get('steps', 1)) if isinstance(data, dict) else 1
+            try:
+                data = await request.json()
+                data = validate_json_dict(data)
+                steps = sanitize_simulation_steps(data.get('steps', 1))
+            except ValidationError as e:
+                raise HTTPException(status_code=400, detail=str(e))
+            except Exception:
+                raise HTTPException(status_code=400, detail="Invalid request data")
+            
             if self.sim is None:
                 self.sim = DAOSimulation(enable_player=True)
                 self.sim.dao.event_bus.subscribe('*', self._on_event)
@@ -137,14 +148,24 @@ class WebServer:
         @self.app.post('/player/vote')
         async def player_vote(request: Request) -> Dict[str, Any]:
             if not self.sim or not getattr(self.sim, 'player', None):
-                return {"error": "no simulation"}
-            data = await request.json()
-            pid = int(data.get('id', -1))
-            vote = bool(data.get('vote', True))
+                raise HTTPException(status_code=400, detail="No simulation running")
+            
+            try:
+                data = await request.json()
+                data = validate_json_dict(data, required_keys=['id', 'vote'])
+                pid = sanitize_proposal_id(data.get('id'))
+                vote = bool(data.get('vote', True))
+            except ValidationError as e:
+                raise HTTPException(status_code=400, detail=str(e))
+            except Exception:
+                raise HTTPException(status_code=400, detail="Invalid request data")
+            
             if 0 <= pid < len(self.sim.dao.proposals):
                 proposal = self.sim.dao.proposals[pid]
                 self.sim.player.enqueue('vote', proposal=proposal, vote=vote)
-            return {"queued": "vote"}
+                return {"queued": "vote"}
+            else:
+                raise HTTPException(status_code=404, detail="Proposal not found")
 
         @self.app.post('/player/comment')
         async def player_comment(request: Request) -> Dict[str, Any]:

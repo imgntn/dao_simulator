@@ -3,7 +3,8 @@
     "allow": [
       "Bash(python:*)",
       "Bash(timeout:*)",
-      "Bash(solara run:*)"
+      "Bash(solara run:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

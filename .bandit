@@ -1,0 +1,5 @@
+[bandit]
+exclude_dirs = ["/tests"]
+skips = ["B101"]  # Skip assert_used test as it's common in testing
+confidence = HIGH
+severity = MEDIUM

@@ -6,6 +6,7 @@ from settings import update_settings, load_settings, settings
 from data_structures.dao import DAO
 from typing import List, Tuple
 from utils.path_utils import validate_directory, validate_file
+from utils.validation import ValidationError, sanitize_simulation_steps
 from multiprocessing import Pool
 
 def _run_matrix_worker(args: Tuple[int, dict, dict, int]):
@@ -110,6 +111,12 @@ def main(argv=None):
         if key.startswith("num_"):
             parser.add_argument(f"--{key}", type=int, default=None)
     args = parser.parse_args(argv)
+    
+    # Validate steps parameter
+    try:
+        args.steps = sanitize_simulation_steps(args.steps)
+    except ValidationError as e:
+        parser.error(f"Invalid steps parameter: {e}")
 
     if args.config:
         cfg_path = validate_file(args.config, allowed_base=Path.cwd())

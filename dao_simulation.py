@@ -147,7 +147,7 @@ class SimpleDataCollector:
 
         if "first_1000_tokens" not in self.achievements:
             for mid, tok in token_rank:
-                if tok >= 1000:
+                if tok >= FIRST_1000_TOKENS_THRESHOLD:
                     self.achievements["first_1000_tokens"] = mid
                     if getattr(model.dao, "event_bus", None):
                         model.dao.event_bus.publish(
@@ -172,16 +172,26 @@ class SimpleDataCollector:
         }
         try:
             from utils.metric_plugins import get_metrics
+            from utils.logging_config import get_logger
+            logger = get_logger(__name__)
 
             for func in get_metrics().values():
                 try:
                     extra = func(model)
                     if isinstance(extra, dict):
                         row.update(extra)
-                except Exception:
-                    pass
-        except Exception:
-            pass
+                except (AttributeError, TypeError, ValueError) as e:
+                    logger.warning(f"Metric function {func.__name__} failed: {e}")
+                except Exception as e:
+                    logger.error(f"Unexpected error in metric function {func.__name__}: {e}")
+        except ImportError as e:
+            from utils.logging_config import get_logger
+            logger = get_logger(__name__)
+            logger.debug(f"Metric plugins not available: {e}")
+        except Exception as e:
+            from utils.logging_config import get_logger
+            logger = get_logger(__name__)
+            logger.error(f"Unexpected error loading metric plugins: {e}")
         row["delegation_centrality"] = centrality
         row["token_ranking"] = token_rank
         row["influence_ranking"] = influence_rank
@@ -274,48 +284,94 @@ class SQLiteDataCollector:
             self.conn = None
 
 
-from data_structures.dao import DAO
-from data_structures import (
-    FundingProposal,
-    GovernanceProposal,
-    MembershipProposal,
-    BountyProposal,
-    QuadraticFundingProposal,
-    ReputationTracker,
-    Project,
-    NFTMarketplace,
-)
-from utils import EventLogger
-from utils.event_engine import EventEngine
-from utils import gini, in_degree_centrality
+# Standard library imports
+import json
+import math
+import random
+
+# Local imports
 from agents import (
+    AdaptiveInvestor,
     Arbitrator,
+    Artist,
+    Auditor,
+    BountyHunter,
+    Collector,
     Delegator,
-    LiquidDelegator,
     Developer,
     ExternalPartner,
     Investor,
-    AdaptiveInvestor,
+    LiquidDelegator,
     PassiveMember,
     ProposalCreator,
+    RLTrader,
     Regulator,
     ServiceProvider,
-    Auditor,
-    Validator,
-    BountyHunter,
-    Trader,
-    RLTrader,
-    Artist,
-    Collector,
     Speculator,
+    Trader,
+    Validator,
 )
-from utils.locations import generate_random_location
-
-# from utils.voting_strategies import majority_vote
-import random
-import math
+from constants import (
+    ADAPTIVE_INVESTOR_BUDGET,
+    ADAPTIVE_INVESTOR_TOKENS,
+    ARBITRATOR_CAPACITY,
+    ARBITRATOR_TOKENS,
+    ARTIST_TOKENS,
+    AUDITOR_TOKENS,
+    BOUNTY_HUNTER_REPUTATION,
+    BOUNTY_HUNTER_TOKENS,
+    BUYBACK_FUND_THRESHOLD,
+    BUYBACK_PERCENTAGE,
+    BUYBACK_PRICE_THRESHOLD,
+    COLLECTOR_TOKENS,
+    DEFAULT_ADAPTIVE_EPSILON,
+    DEFAULT_ADAPTIVE_LEARNING_RATE,
+    DEFAULT_AGENT_REPUTATION,
+    DEFAULT_AGENT_TOKENS,
+    DELEGATOR_BUDGET,
+    DELEGATOR_TOKENS,
+    DEVELOPER_TOKENS,
+    EXTERNAL_PARTNER_TOKENS,
+    FIRST_1000_TOKENS_THRESHOLD,
+    INITIAL_TREASURY_FUNDING,
+    INVESTOR_BUDGET,
+    INVESTOR_TOKENS,
+    LIQUID_DELEGATOR_BUDGET,
+    LIQUID_DELEGATOR_TOKENS,
+    MARKETING_BUDGET_BOOST,
+    MARKET_SHOCK_RANGE,
+    MIN_TOKEN_PRICE,
+    MIN_TREASURY_RESERVE,
+    NEW_MEMBER_COST,
+    NEW_MEMBER_FUND_REQUIREMENT,
+    NEW_MEMBER_INTERVAL,
+    NEW_MEMBERS_PER_INTERVAL,
+    PASSIVE_MEMBER_TOKENS,
+    PLAYER_TOKENS,
+    PROPOSAL_CREATOR_TOKENS,
+    REGULATOR_TOKENS,
+    SERVICE_PROVIDER_BUDGET,
+    SERVICE_PROVIDER_TOKENS,
+    SPECULATOR_TOKENS,
+    TRADER_TOKENS,
+    VALIDATOR_TOKENS,
+)
+from data_structures import (
+    BountyProposal,
+    FundingProposal,
+    GovernanceProposal,
+    MembershipProposal,
+    NFTMarketplace,
+    Project,
+    QuadraticFundingProposal,
+    ReputationTracker,
+)
+from data_structures.dao import DAO
 from settings import settings
-import json
+from utils import EventLogger, gini, in_degree_centrality
+from utils.agent_manager import AgentManager
+from utils.event_engine import EventEngine
+from utils.locations import generate_random_location
 from visualizations import generate_report
 from visualizations.network_graph import compute_network_data
 
@@ -465,12 +521,12 @@ class DAOSimulation(Model):
         self.adaptive_learning_rate = (
             adaptive_learning_rate
             if adaptive_learning_rate is not None
-            else settings.get("adaptive_learning_rate", 0.1)
+            else settings.get("adaptive_learning_rate", DEFAULT_ADAPTIVE_LEARNING_RATE)
         )
         self.adaptive_epsilon = (
             adaptive_epsilon
             if adaptive_epsilon is not None
-            else settings.get("adaptive_epsilon", 0.1)
+            else settings.get("adaptive_epsilon", DEFAULT_ADAPTIVE_EPSILON)
         )
         from utils.governance_plugins import get_rule
         self.governance_rule_name = (
@@ -568,12 +624,12 @@ class DAOSimulation(Model):
         self.dao.marketplace = self.marketplace
         
         # Initialize treasury with substantial funding for project support
-        initial_treasury_funding = 50000  # Increased from 1000 to support multiple projects
+        initial_treasury_funding = INITIAL_TREASURY_FUNDING  # Increased from 1000 to support multiple projects
         self.dao.treasury.deposit("DAO_TOKEN", initial_treasury_funding, step=self.dao.current_step)
         
         if self.enable_marketing:
             # Additional marketing budget on top of base funding
-            self.dao.treasury.deposit("DAO_TOKEN", 10000, step=self.dao.current_step)
+            self.dao.treasury.deposit("DAO_TOKEN", MARKETING_BUDGET_BOOST, step=self.dao.current_step)
         self.reputation_tracker = ReputationTracker(self.dao)
         if self.market_shock_schedule:
             from data_structures.market_shock import MarketShock
@@ -584,6 +640,9 @@ class DAOSimulation(Model):
         self.datacollector = SimpleDataCollector(
             self.dao, centrality_interval=centrality_interval
         )
+        
+        # Agent management
+        self.agent_manager = AgentManager(self)
         self.stats_writer = (
             SQLiteDataCollector(self.stats_db_filename)
             if self.stats_db_filename
@@ -599,19 +658,19 @@ class DAOSimulation(Model):
         agent_map = {
             Developer: {
                 "count": self.num_developers,
-                "params": {"tokens": 100, "reputation": 0, "skillset": ["Python", "JavaScript"]},
+                "params": {"tokens": DEVELOPER_TOKENS, "reputation": DEFAULT_AGENT_REPUTATION, "skillset": ["Python", "JavaScript"]},
             },
             Investor: {
                 "count": self.num_investors,
-                "params": {"tokens": 1000, "reputation": 0, "investment_budget": 500},
+                "params": {"tokens": INVESTOR_TOKENS, "reputation": DEFAULT_AGENT_REPUTATION, "investment_budget": INVESTOR_BUDGET},
             },
-            Trader: {"count": self.num_traders, "params": {"tokens": 100, "reputation": 0}},
+            Trader: {"count": self.num_traders, "params": {"tokens": TRADER_TOKENS, "reputation": DEFAULT_AGENT_REPUTATION}},
             AdaptiveInvestor: {
                 "count": self.num_adaptive_investors,
                 "params": {
-                    "tokens": 1000,
-                    "reputation": 0,
-                    "investment_budget": 500,
+                    "tokens": ADAPTIVE_INVESTOR_TOKENS,
+                    "reputation": DEFAULT_AGENT_REPUTATION,
+                    "investment_budget": ADAPTIVE_INVESTOR_BUDGET,
                     "learning_rate": self.adaptive_learning_rate,
                     "epsilon": self.adaptive_epsilon,
                 },
@@ -687,7 +746,7 @@ class DAOSimulation(Model):
             self.player = PlayerAgent(
                 "Player",
                 model=self,
-                tokens=100,
+                tokens=PLAYER_TOKENS,
                 reputation=0,
                 location=generate_random_location(),
             )
@@ -797,7 +856,7 @@ class DAOSimulation(Model):
         if isinstance(proposal, FundingProposal) and proposal.project:
             # Ensure treasury maintains minimum reserves
             treasury_balance = self.dao.treasury.get_token_balance("DAO_TOKEN")
-            min_reserve = 10000  # Minimum treasury balance to maintain
+            min_reserve = MIN_TREASURY_RESERVE  # Minimum treasury balance to maintain
             max_funding = min(proposal.funding_goal, max(0, treasury_balance - min_reserve))
             
             locked = self.dao.treasury.lock_tokens(
@@ -852,7 +911,7 @@ class DAOSimulation(Model):
             
             # Respect treasury reserves for quadratic funding matching
             treasury_balance = self.dao.treasury.get_token_balance("DAO_TOKEN")
-            min_reserve = 10000  # Same minimum reserve as regular funding
+            min_reserve = MIN_TREASURY_RESERVE  # Same minimum reserve as regular funding
             available_for_matching = max(0, treasury_balance - min_reserve)
             match = min(match, available_for_matching)
             
@@ -908,7 +967,7 @@ class DAOSimulation(Model):
                     )
 
     def resolve_disputes(self):
-        arbitrators = [a for a in self.dao.members if isinstance(a, Arbitrator)]
+        arbitrators = self.agent_manager.get_agents_by_type('Arbitrator')
         for dispute in self.dao.disputes:
             if not dispute.resolved and arbitrators:
                 arbitrator = random.choice(arbitrators)
@@ -934,8 +993,8 @@ class DAOSimulation(Model):
     def calculate_buyback_amount(self):
         # Buy back tokens when treasury is flush and the price drops below 1.
         dao_price = self.dao.treasury.get_token_price("DAO_TOKEN")
-        if self.dao.treasury.funds > 5000 and dao_price < 1:
-            return self.dao.treasury.funds * 0.1
+        if self.dao.treasury.funds > BUYBACK_FUND_THRESHOLD and dao_price < BUYBACK_PRICE_THRESHOLD:
+            return self.dao.treasury.funds * BUYBACK_PERCENTAGE
         return 0
 
     def _load_market_shocks(self, path: str) -> dict[int, float]:
@@ -957,7 +1016,10 @@ class DAOSimulation(Model):
             try:
                 step = int(item.get("step", 0))
                 sev = float(item.get("severity", 0.0))
-            except Exception:
+            except (ValueError, TypeError) as e:
+                from utils.logging_config import get_logger
+                logger = get_logger(__name__)
+                logger.warning(f"Invalid shock data item {item}: {e}")
                 continue
             schedule[step] = sev
         return schedule
@@ -1026,7 +1088,10 @@ class DAOSimulation(Model):
                         "completed": False,
                     }
                 )
-            except Exception:
+            except (ValueError, TypeError, AttributeError) as e:
+                from utils.logging_config import get_logger
+                logger = get_logger(__name__)
+                logger.warning(f"Invalid scenario step {step}: {e}")
                 continue
         return scenario
 
@@ -1034,11 +1099,11 @@ class DAOSimulation(Model):
         """Apply a sudden price change and record the severity."""
         price = self.dao.treasury.get_token_price("DAO_TOKEN")
         if severity is None:
-            factor = 1 + random.uniform(-0.5, 0.5)
+            factor = 1 + random.uniform(-MARKET_SHOCK_RANGE, MARKET_SHOCK_RANGE)
             severity = factor - 1
         else:
             factor = 1 + severity
-        new_price = max(price * factor, 0.01)
+        new_price = max(price * factor, MIN_TOKEN_PRICE)
         self.dao.treasury.update_token_price("DAO_TOKEN", new_price)
         self.current_shock = severity
         self.dao.current_shock = severity
@@ -1108,24 +1173,7 @@ class DAOSimulation(Model):
             ExternalPartner,
             PassiveMember,
         ]
-        for _ in range(5):  # Add 5 new members every 50 steps
-            if self.schedule.steps > 0 and self.schedule.steps % 50 == 0:
-                if self.dao.treasury.funds >= 100:  # Check if DAO has enough funds
-                    agent_class = random.choice(agent_classes)
-                    new_agent = self.create_new_agent(agent_class, self.schedule.steps)
-                    if new_agent.reputation > 25:  # Add only if reputation is above 25
-                        self.dao.add_member(new_agent)
-                        self.schedule.add(new_agent)
-                        # Add new agent to the space for visualization
-                        if self.space is not None:
-                            # Place new agent randomly on the grid
-                            import random
-                            x = random.randrange(self.space.width)
-                            y = random.randrange(self.space.height)
-                            self.space.place_agent(new_agent, (x, y))
-                        self.dao.treasury.withdraw(
-                            "DAO_TOKEN", 100, step=self.schedule.steps
-                        )
+        self.agent_manager.add_new_members()
 
     def create_new_agent(self, agent_class, step):
         agent_id = f"{agent_class.__name__}_{step}"
@@ -1170,6 +1218,7 @@ class DAOSimulation(Model):
         for agent in agents_to_remove:
             self.dao.remove_member(agent)
             self.schedule.remove(agent)
+            self.agent_manager.invalidate_cache()
             # Remove agent from the space for visualization
             if self.space is not None:
                 self.space.remove_agent(agent)
@@ -1272,8 +1321,18 @@ class DAOSimulation(Model):
             csv_arg = self.csv_filename
         try:
             generate_report(self, csv_file=csv_arg, html_file=self.report_file)
-        except Exception:
-            pass
+        except ImportError as e:
+            from utils.logging_config import get_logger
+            logger = get_logger(__name__)
+            logger.warning(f"Report generation dependencies not available: {e}")
+        except (OSError, IOError) as e:
+            from utils.logging_config import get_logger
+            logger = get_logger(__name__)
+            logger.error(f"Failed to write report file: {e}")
+        except Exception as e:
+            from utils.logging_config import get_logger
+            logger = get_logger(__name__)
+            logger.error(f"Unexpected error generating report: {e}")
         if self.stats_writer:
             self.stats_writer.close()
         if self.event_logging and self.event_logger:
