@@ -374,6 +374,18 @@ class DAOSimulation(Model):
         **_: object,
     ) -> None:
         super().__init__()
+        
+        # Add space attribute for Mesa visualization compatibility
+        # Use a simple NetworkGrid since this is a network-based model
+        try:
+            from mesa.space import NetworkGrid
+            import networkx as nx
+            # Create a simple network graph for visualization
+            G = nx.Graph()
+            self.space = NetworkGrid(G)
+        except ImportError:
+            # Fallback to a minimal space object if NetworkGrid is not available
+            self.space = None
 
         if seed is not None:
             random.seed(seed)
@@ -648,6 +660,10 @@ class DAOSimulation(Model):
 
         for agent in self.dao.members:
             self.schedule.add(agent)
+            # Add agent to the space for visualization
+            if self.space is not None:
+                self.space.G.add_node(agent.unique_id, agent=[])
+                self.space.place_agent(agent, agent.unique_id)
 
         self.player = None
         if self.enable_player:
@@ -661,6 +677,10 @@ class DAOSimulation(Model):
             )
             self.dao.add_member(self.player)
             self.schedule.add(self.player)
+            # Add player to the space for visualization
+            if self.space is not None:
+                self.space.G.add_node(self.player.unique_id, agent=[])
+                self.space.place_agent(self.player, self.player.unique_id)
 
     def step(self):
         self.current_shock = 0.0
@@ -786,6 +806,10 @@ class DAOSimulation(Model):
         elif isinstance(proposal, MembershipProposal):
             self.dao.add_member(proposal.new_member)
             self.schedule.add(proposal.new_member)
+            # Add new member to the space for visualization
+            if self.space is not None:
+                self.space.G.add_node(proposal.new_member.unique_id, agent=[])
+                self.space.place_agent(proposal.new_member, proposal.new_member.unique_id)
         elif isinstance(proposal, BountyProposal):
             locked = self.dao.treasury.lock_tokens(
                 "DAO_TOKEN", proposal.reward, step=self.schedule.steps
@@ -1070,6 +1094,10 @@ class DAOSimulation(Model):
                     if new_agent.reputation > 25:  # Add only if reputation is above 25
                         self.dao.add_member(new_agent)
                         self.schedule.add(new_agent)
+                        # Add new agent to the space for visualization
+                        if self.space is not None:
+                            self.space.G.add_node(new_agent.unique_id, agent=[])
+                            self.space.place_agent(new_agent, new_agent.unique_id)
                         self.dao.treasury.withdraw(
                             "DAO_TOKEN", 100, step=self.schedule.steps
                         )
@@ -1117,6 +1145,10 @@ class DAOSimulation(Model):
         for agent in agents_to_remove:
             self.dao.remove_member(agent)
             self.schedule.remove(agent)
+            # Remove agent from the space for visualization
+            if self.space is not None and agent.unique_id in self.space.G.nodes:
+                self.space.remove_agent(agent)
+                self.space.G.remove_node(agent.unique_id)
 
     def run_marketing_campaign(self):
         from data_structures.marketing_events import (
@@ -1184,6 +1216,10 @@ class DAOSimulation(Model):
         sim.schedule.agents = []
         for member in sim.dao.members:
             sim.schedule.add(member)
+            # Add member to the space for visualization
+            if sim.space is not None:
+                sim.space.G.add_node(member.unique_id, agent=[])
+                sim.space.place_agent(member, member.unique_id)
         return sim
 
     def run(self, steps):

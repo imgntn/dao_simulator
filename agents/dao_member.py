@@ -73,6 +73,8 @@ class DAOMember(Agent):
         self.votes = {}
         self.delegates = []
         self._active = False
+        # Add pos attribute for Mesa visualization compatibility
+        self.pos = None
 
     def mark_active(self):
         self._active = True
