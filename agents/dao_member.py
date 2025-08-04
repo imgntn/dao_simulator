@@ -1,13 +1,16 @@
 import random
 from utils.voting_strategies import quadratic_vote, register_strategy, get_strategy
 
+try:
+    from mesa import Agent
+except ImportError:
+    # Fallback for testing environments without Mesa
+    class Agent:
+        """Minimal stand-in for ``mesa.Agent`` used in tests."""
 
-class Agent:
-    """Minimal stand-in for ``mesa.Agent`` used in tests."""
-
-    def __init__(self, unique_id, model):
-        self.unique_id = unique_id
-        self.model = model
+        def __init__(self, unique_id, model):
+            self.unique_id = unique_id
+            self.model = model
 
 
 class DefaultVotingStrategy:
@@ -50,7 +53,14 @@ class DAOMember(Agent):
         location,
         voting_strategy=None,
     ):
-        super().__init__(unique_id, model)
+        # Mesa Agent expects (unique_id, model) but may have different signature
+        # Try Mesa's signature first, fallback to simple init
+        try:
+            super().__init__(unique_id, model)
+        except TypeError:
+            # Fallback for custom Agent class or different Mesa versions
+            self.unique_id = unique_id
+            self.model = model
         self.tokens = tokens
         self.reputation = reputation
         self.location = location

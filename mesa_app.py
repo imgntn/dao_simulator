@@ -70,25 +70,6 @@ def create_visualization():
 page = create_visualization()
 
 
-def launch_server(port: int = 8521):  # pragma: no cover - visualization only
-    if SolaraViz is None:
-        raise RuntimeError("Mesa visualization dependencies are not installed.")
-    
-    # Launch with subprocess to control port
-    import subprocess
-    import os
-    
-    subprocess.run([
-        sys.executable, "-m", "solara", "run", 
-        os.path.abspath(__file__), "--port", str(port)
-    ], check=True)
-
-
 if __name__ == "__main__":  # pragma: no cover - manual usage
-    # When run directly, parse port from first numeric argument
-    port = 8521
-    for arg in sys.argv[1:]:
-        if arg.isdigit():
-            port = int(arg)
-            break
-    launch_server(port)
+    print("To run the visualization, use: solara run mesa_app.py --port 8521")
+    print("Direct execution creates a recursive loop. Use the solara command instead.")

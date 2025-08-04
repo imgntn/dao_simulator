@@ -1,8 +1,12 @@
 # File: dao_simulation/dao_simulation.py
-class Model:
-    """Minimal stand-in for :class:`mesa.Model` used in tests."""
+try:
+    from mesa import Model
+except ImportError:
+    # Fallback for testing environments without Mesa
+    class Model:
+        """Minimal stand-in for :class:`mesa.Model` used in tests."""
 
-    pass
+        pass
 
 
 class RandomActivation:
@@ -374,7 +378,17 @@ class DAOSimulation(Model):
         _: object = None,
         **kwargs: object,
     ) -> None:
-        super().__init__()
+        try:
+            # Try to initialize Mesa Model which sets up random number generator
+            super().__init__(seed=seed)
+        except TypeError:
+            # Fallback for custom Model class
+            super().__init__()
+            
+        # Ensure random attribute exists for Mesa visualization compatibility
+        import random as random_module
+        if not hasattr(self, 'random'):
+            self.random = random_module.Random(seed)
         
         # Add space attribute for Mesa visualization compatibility
         # Use a simple MultiGrid since SolaraViz doesn't support NetworkGrid
@@ -387,7 +401,7 @@ class DAOSimulation(Model):
             self.space = None
 
         if seed is not None:
-            random.seed(seed)
+            random_module.seed(seed)
         self.seed = seed
 
         self.enable_marketing = (
@@ -647,7 +661,7 @@ class DAOSimulation(Model):
             for i in range(spec.get("count", 0)):
                 params = {
                     "unique_id": f"{cls.__name__}_{i}",
-                    "model": self.dao,
+                    "model": self,
                     "tokens": base.get("tokens", 100),
                     "reputation": base.get("reputation", 0),
                     "location": generate_random_location(),
@@ -672,7 +686,7 @@ class DAOSimulation(Model):
             from agents import PlayerAgent
             self.player = PlayerAgent(
                 "Player",
-                model=self.dao,
+                model=self,
                 tokens=100,
                 reputation=0,
                 location=generate_random_location(),
@@ -1271,3 +1285,9 @@ class DAOSimulation(Model):
     def steps(self):
         """Mesa visualization compatibility property."""
         return self.schedule.steps
+        
+    @steps.setter
+    def steps(self, value):
+        """Allow Mesa to set the steps value."""
+        # Mesa Model.__init__ sets this, but we delegate to schedule
+        pass
