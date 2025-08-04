@@ -376,15 +376,13 @@ class DAOSimulation(Model):
         super().__init__()
         
         # Add space attribute for Mesa visualization compatibility
-        # Use a simple NetworkGrid since this is a network-based model
+        # Use a simple MultiGrid since SolaraViz doesn't support NetworkGrid
         try:
-            from mesa.space import NetworkGrid
-            import networkx as nx
-            # Create a simple network graph for visualization
-            G = nx.Graph()
-            self.space = NetworkGrid(G)
+            from mesa.space import MultiGrid
+            # Create a simple 10x10 grid for visualization compatibility
+            self.space = MultiGrid(10, 10, torus=True)
         except ImportError:
-            # Fallback to a minimal space object if NetworkGrid is not available
+            # Fallback to a minimal space object if Mesa is not available
             self.space = None
 
         if seed is not None:
@@ -662,8 +660,11 @@ class DAOSimulation(Model):
             self.schedule.add(agent)
             # Add agent to the space for visualization
             if self.space is not None:
-                self.space.G.add_node(agent.unique_id, agent=[])
-                self.space.place_agent(agent, agent.unique_id)
+                # Place agents randomly on the grid
+                import random
+                x = random.randrange(self.space.width)
+                y = random.randrange(self.space.height)
+                self.space.place_agent(agent, (x, y))
 
         self.player = None
         if self.enable_player:
@@ -679,8 +680,11 @@ class DAOSimulation(Model):
             self.schedule.add(self.player)
             # Add player to the space for visualization
             if self.space is not None:
-                self.space.G.add_node(self.player.unique_id, agent=[])
-                self.space.place_agent(self.player, self.player.unique_id)
+                # Place player randomly on the grid
+                import random
+                x = random.randrange(self.space.width)
+                y = random.randrange(self.space.height)
+                self.space.place_agent(self.player, (x, y))
 
     def step(self):
         self.current_shock = 0.0
@@ -808,8 +812,11 @@ class DAOSimulation(Model):
             self.schedule.add(proposal.new_member)
             # Add new member to the space for visualization
             if self.space is not None:
-                self.space.G.add_node(proposal.new_member.unique_id, agent=[])
-                self.space.place_agent(proposal.new_member, proposal.new_member.unique_id)
+                # Place new member randomly on the grid
+                import random
+                x = random.randrange(self.space.width)
+                y = random.randrange(self.space.height)
+                self.space.place_agent(proposal.new_member, (x, y))
         elif isinstance(proposal, BountyProposal):
             locked = self.dao.treasury.lock_tokens(
                 "DAO_TOKEN", proposal.reward, step=self.schedule.steps
@@ -1096,8 +1103,11 @@ class DAOSimulation(Model):
                         self.schedule.add(new_agent)
                         # Add new agent to the space for visualization
                         if self.space is not None:
-                            self.space.G.add_node(new_agent.unique_id, agent=[])
-                            self.space.place_agent(new_agent, new_agent.unique_id)
+                            # Place new agent randomly on the grid
+                            import random
+                            x = random.randrange(self.space.width)
+                            y = random.randrange(self.space.height)
+                            self.space.place_agent(new_agent, (x, y))
                         self.dao.treasury.withdraw(
                             "DAO_TOKEN", 100, step=self.schedule.steps
                         )
@@ -1146,9 +1156,8 @@ class DAOSimulation(Model):
             self.dao.remove_member(agent)
             self.schedule.remove(agent)
             # Remove agent from the space for visualization
-            if self.space is not None and agent.unique_id in self.space.G.nodes:
+            if self.space is not None:
                 self.space.remove_agent(agent)
-                self.space.G.remove_node(agent.unique_id)
 
     def run_marketing_campaign(self):
         from data_structures.marketing_events import (
@@ -1218,8 +1227,11 @@ class DAOSimulation(Model):
             sim.schedule.add(member)
             # Add member to the space for visualization
             if sim.space is not None:
-                sim.space.G.add_node(member.unique_id, agent=[])
-                sim.space.place_agent(member, member.unique_id)
+                # Place member randomly on the grid
+                import random
+                x = random.randrange(sim.space.width)
+                y = random.randrange(sim.space.height)
+                sim.space.place_agent(member, (x, y))
         return sim
 
     def run(self, steps):
