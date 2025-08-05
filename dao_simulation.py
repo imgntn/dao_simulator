@@ -1350,3 +1350,13 @@ class DAOSimulation(Model):
         """Allow Mesa to set the steps value."""
         # Mesa Model.__init__ sets this, but we delegate to schedule
         pass
+        
+    def __getattr__(self, name):
+        """
+        Automatically delegate missing attributes to the DAO object.
+        This provides backward compatibility for agents expecting to access DAO 
+        attributes/methods directly on the model (e.g., self.model.treasury).
+        """
+        if hasattr(self.dao, name):
+            return getattr(self.dao, name)
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
