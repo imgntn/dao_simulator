@@ -39,7 +39,17 @@ class WebServer:
         self._thread: threading.Thread | None = None
         self._server = None
         self.news_feed: NewsFeed | None = None
+        self._auto_started = False
         self._register_routes()
+
+    def _ensure_simulation(self) -> None:
+        """Ensure a simulation is running and connected to the event bus for live updates."""
+        if self.sim is None:
+            self.sim = DAOSimulation(enable_player=True)
+            self.sim.event_engine = EventEngine(None)
+            self.sim.dao.event_bus.subscribe('*', self._on_event)
+            self.news_feed = NewsFeed(self.sim.dao.event_bus)
+            self._auto_started = True
 
     def _register_routes(self) -> None:
         @self.app.get('/', response_class=HTMLResponse)
@@ -68,19 +78,18 @@ class WebServer:
 
         @self.app.post('/start')
         async def start_sim() -> Dict[str, Any]:
-            self.sim = DAOSimulation(enable_player=True)
-            # Allow scheduling events through the API
-            self.sim.event_engine = EventEngine(None)
-            self.sim.dao.event_bus.subscribe('*', self._on_event)
-            self.news_feed = NewsFeed(self.sim.dao.event_bus)
+            if self.sim is None or not self._auto_started:
+                self.sim = DAOSimulation(enable_player=True)
+                # Allow scheduling events through the API
+                self.sim.event_engine = EventEngine(None)
+                self.sim.dao.event_bus.subscribe('*', self._on_event)
+                self.news_feed = NewsFeed(self.sim.dao.event_bus)
+                self._auto_started = False
             return {'started': True}
 
         @self.app.post('/step')
         async def step_sim() -> Dict[str, Any]:
-            if self.sim is None:
-                self.sim = DAOSimulation(enable_player=True)
-                self.sim.dao.event_bus.subscribe('*', self._on_event)
-                self.news_feed = NewsFeed(self.sim.dao.event_bus)
+            self._ensure_simulation()
             self.sim.step()
             return {'step': self.sim.schedule.steps}
 
@@ -95,10 +104,7 @@ class WebServer:
             except Exception:
                 raise HTTPException(status_code=400, detail="Invalid request data")
             
-            if self.sim is None:
-                self.sim = DAOSimulation(enable_player=True)
-                self.sim.dao.event_bus.subscribe('*', self._on_event)
-                self.news_feed = NewsFeed(self.sim.dao.event_bus)
+            self._ensure_simulation()
             for _ in range(steps):
                 self.sim.step()
             return {'step': self.sim.schedule.steps}
@@ -240,6 +246,9 @@ class WebServer:
         async def websocket_endpoint(ws: WebSocket) -> None:
             await ws.accept()
             self.connections.append(ws)
+            # Auto-initialize simulation for live updates when first client connects
+            if len(self.connections) == 1:
+                self._ensure_simulation()
             try:
                 while True:
                     await ws.receive_text()

@@ -146,6 +146,10 @@ class IntegratedLauncher:
             print("   - Agent relationship maps")
             print("   - Dynamic simulation view")
             print()
+        else:
+            print("📈 VISUALIZATION: Disabled")
+            print("   - Mesa visualization on port 8005 is disabled")
+            print()
             
         print("💡 TERMINAL OBSERVER:")
         print("   - Live step-by-step updates")
@@ -193,7 +197,9 @@ class IntegratedLauncher:
         urls['dashboard'] = self.launch_dashboard()
         # The admin panel is built into the dashboard, no need for separate launch
         # urls['admin'] = self.launch_admin_panel()  
-        urls['viz'] = self.launch_mesa_viz()
+        # Disable Mesa visualization as requested
+        # urls['viz'] = self.launch_mesa_viz()
+        urls['viz'] = None
         
         # Open browser windows if requested
         if open_browser:
