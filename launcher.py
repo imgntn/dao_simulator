@@ -16,8 +16,13 @@ MENU = {
 }
 
 
-def launch_in_terminal(cmd: list[str]) -> None:
-    """Launch command in a new terminal window."""
+def launch_in_terminal(cmd: list[str], background: bool = False) -> None:
+    """Launch command in a new terminal window or background."""
+    if background:
+        print(f"Running in background: {' '.join(cmd)}")
+        subprocess.Popen(cmd)
+        return
+        
     if sys.platform.startswith("win"):
         # Use list2cmdline to ensure paths with spaces are properly quoted
         cmd_str = subprocess.list2cmdline(cmd)
@@ -56,6 +61,10 @@ def launch_in_terminal(cmd: list[str]) -> None:
 
 
 def main() -> None:
+    import os
+    # Check if we're in testing mode (set NO_TERMINAL_WINDOWS env var during tests)
+    background_mode = os.environ.get('NO_TERMINAL_WINDOWS', '').lower() in ('1', 'true', 'yes')
+    
     while True:
         print("\nDAO Simulator Launcher")
         for k, (name, _) in MENU.items():
@@ -70,7 +79,7 @@ def main() -> None:
             break
         print(f'Launching: {" ".join(cmd)}')
         try:
-            launch_in_terminal(cmd)
+            launch_in_terminal(cmd, background=background_mode)
         except Exception as e:
             print(f"Error launching command: {e}")
 

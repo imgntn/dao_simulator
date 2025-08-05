@@ -67,6 +67,21 @@ class IntegratedLauncher:
         print(f"   📊 Dashboard: {dashboard_url}")
         return dashboard_url
         
+    def launch_dashboard_no_browser(self, port: int = 8003):
+        """Launch the web dashboard without opening browser."""
+        print(f"🌐 Starting web dashboard on port {port}...")
+        proc = subprocess.Popen(
+            [sys.executable, "dashboard.py", "--port", str(port), "--no-browser"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+        self.processes.append(proc)
+        time.sleep(3)  # Give dashboard time to start
+        
+        dashboard_url = f"http://localhost:{port}"
+        print(f"   📊 Dashboard: {dashboard_url}")
+        return dashboard_url
+        
     def launch_admin_panel(self, port: int = 8004):
         """Launch the admin control panel."""
         print(f"⚙️  Starting admin panel on port {port}...")
@@ -194,7 +209,7 @@ class IntegratedLauncher:
         
         # Launch web interfaces
         urls = {}
-        urls['dashboard'] = self.launch_dashboard()
+        urls['dashboard'] = self.launch_dashboard_no_browser()
         # The admin panel is built into the dashboard, no need for separate launch
         # urls['admin'] = self.launch_admin_panel()  
         # Disable Mesa visualization as requested
@@ -208,6 +223,8 @@ class IntegratedLauncher:
                 if url:
                     webbrowser.open_new_tab(url)
                     time.sleep(1)
+        else:
+            print("🌐 Browser windows disabled (use --no-browser was specified or open_browser=False)")
                     
         # Print usage guide
         self.print_usage_guide(urls)
@@ -263,7 +280,7 @@ class IntegratedLauncher:
         print("🌐 Starting dashboard-only mode...")
         
         urls = {}
-        urls['dashboard'] = self.launch_dashboard()
+        urls['dashboard'] = self.launch_dashboard_no_browser()
         
         print(f"\n📊 Dashboard available at: {urls['dashboard']}")
         print("🛑 Press Ctrl+C to stop")

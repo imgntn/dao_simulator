@@ -4,7 +4,9 @@
       "Bash(python:*)",
       "Bash(timeout:*)",
       "Bash(solara run:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(pytest:*)",
+      "Bash(pip install:*)"
     ],
     "deny": []
   }
