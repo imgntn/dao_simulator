@@ -11,7 +11,18 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
 template_dir = Path(__file__).resolve().parent / "templates"
-HTML_PAGE = (template_dir / "index.html").read_text()
+HTML_PAGE: str | None = None
+
+
+def _load_html_page() -> str:
+    global HTML_PAGE
+    if HTML_PAGE is not None:
+        return HTML_PAGE
+    try:
+        HTML_PAGE = (template_dir / "index.html").read_text()
+    except Exception:
+        HTML_PAGE = "<html><body><h1>Dashboard</h1></body></html>"
+    return HTML_PAGE
 
 
 class DashboardServer:
@@ -31,7 +42,7 @@ class DashboardServer:
 
         @self.app.get("/")
         async def index():
-            return HTMLResponse(HTML_PAGE)
+            return HTMLResponse(_load_html_page())
 
         @self.app.websocket("/ws")
         async def websocket_endpoint(ws: WebSocket):

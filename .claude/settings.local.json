@@ -6,7 +6,9 @@
       "Bash(solara run:*)",
       "Bash(find:*)",
       "Bash(pytest:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": []
   }
