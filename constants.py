@@ -72,3 +72,22 @@ MAX_TOKEN_AMOUNT = 1_000_000_000
 # Logging Configuration
 LOG_MAX_BYTES = 10_000_000  # 10MB
 LOG_BACKUP_COUNT = 5
+
+# Bridge Configuration
+DEFAULT_BRIDGE_FEE_RATE = 0.1  # 10% fee for cross-DAO transfers
+DEFAULT_BRIDGE_DELAY = 1  # Steps to wait before processing bridge transfers
+
+# Test Configuration Constants
+TEST_PORT_BASE = 8125  # Base port for test servers
+TEST_TOKEN_AMOUNT_TINY = 5  # Small amounts for testing
+TEST_TOKEN_AMOUNT_SMALL = 10
+TEST_TOKEN_AMOUNT_MEDIUM = 100  
+TEST_TOKEN_AMOUNT_LARGE = 1000
+TEST_TOKEN_AMOUNT_EXTRA_LARGE = 6000
+TEST_BRIDGE_FEE_RATE = 0.1  # 10% bridge fee for tests
+TEST_PROJECT_FUNDING_GOAL = 1000  # Standard project funding goal for tests
+TEST_REVENUE_AMOUNT = 1000  # Standard revenue amount for tests
+
+# Default Token Emission/Burn Rates (moved from settings for consistency)
+DEFAULT_TOKEN_EMISSION_RATE = 100.0  # Default tokens minted per step
+DEFAULT_TOKEN_BURN_RATE = 0.0  # Default tokens burned per step

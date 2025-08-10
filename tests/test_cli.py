@@ -187,7 +187,7 @@ class TestCLI(unittest.TestCase):
                 f.write(
                     "class Fixed:\n    def update_prices(self, treasury,*a,**k):\n        treasury.update_token_price('DAO_TOKEN', 9.0)\n"
                 )
-            cli.main(["--steps", "0", "--oracle-plugin-path", tmp])
+            cli.main(["--steps", "1", "--oracle-plugin-path", tmp])
             from utils.oracles import get_oracle
 
             self.assertIsNotNone(get_oracle("fixed"))
@@ -200,7 +200,7 @@ class TestCLI(unittest.TestCase):
         with open(fname, "w") as f:
             json.dump([{"num_developers": 1}, {"num_developers": 2}], f)
 
-        cli.main(["--steps", "0", "--matrix", fname])
+        cli.main(["--steps", "1", "--matrix", fname])
         os.remove(fname)
 
     def test_cli_matrix_workers_parallel(self):
@@ -215,7 +215,7 @@ class TestCLI(unittest.TestCase):
         os.close(fd)
         os.remove(csvf)
 
-        cli.main(["--steps", "0", "--matrix", fname, "--matrix-workers", "2", "--export-csv", csvf])
+        cli.main(["--steps", "1", "--matrix", fname, "--matrix-workers", "2", "--export-csv", csvf])
         self.assertTrue(os.path.exists(csvf))
         os.remove(fname)
         os.remove(csvf)

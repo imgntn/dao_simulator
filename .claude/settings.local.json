@@ -8,7 +8,8 @@
       "Bash(pytest:*)",
       "Bash(pip install:*)",
       "Bash(rm:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }

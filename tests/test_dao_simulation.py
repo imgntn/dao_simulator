@@ -1,6 +1,12 @@
 import unittest
 from dao_simulation import DAOSimulation
 import settings
+from .test_constants import (
+    STANDARD_REVENUE,
+    XL_AMOUNT,
+    TREASURY_INITIAL_FUNDING,
+    DEFAULT_TOKEN_EMISSION_RATE,
+)
 
 class TestDAOSimulation(unittest.TestCase):
     def setUp(self):
@@ -37,24 +43,35 @@ class TestDAOSimulation(unittest.TestCase):
         self.assertEqual(count, 2)
 
     def test_distribute_revenue(self):
-        self.simulation.dao.treasury.add_revenue(1000)
+        self.simulation.dao.treasury.add_revenue(STANDARD_REVENUE)
         initial_balances = {m.unique_id: m.tokens for m in self.simulation.dao.members}
         for m in self.simulation.dao.members:
             m.stake_tokens(m.tokens, "DAO_TOKEN")
         self.simulation.step()
         total_staked = sum(initial_balances.values())
         for member in self.simulation.dao.members:
-            expected = 1000 * (initial_balances[member.unique_id] / total_staked)
+            expected = STANDARD_REVENUE * (initial_balances[member.unique_id] / total_staked)
             self.assertAlmostEqual(member.tokens, expected)
             self.assertEqual(member.staked_tokens, initial_balances[member.unique_id])
 
     def test_execute_token_buyback(self):
         import random
         random.seed(0)
-        self.simulation.dao.treasury.deposit("DAO_TOKEN", 6000)
+        self.simulation.dao.treasury.deposit("DAO_TOKEN", XL_AMOUNT)
+        balance_after_deposit = self.simulation.dao.treasury.get_token_balance("DAO_TOKEN")
         self.simulation.dao.treasury.update_token_price("DAO_TOKEN", 0.9)
+        
         self.simulation.step()
-        self.assertEqual(self.simulation.dao.treasury.get_token_balance("DAO_TOKEN"), 5400)
+        
+        # Expected: deposit + emission - buyback
+        # Emission happens first, then buyback (10% of total funds)
+        balance_after_emission = balance_after_deposit + DEFAULT_TOKEN_EMISSION_RATE
+        expected_buyback = balance_after_emission * 0.1
+        expected_balance = balance_after_emission - expected_buyback
+        actual_balance = self.simulation.dao.treasury.get_token_balance("DAO_TOKEN")
+        
+        # Allow for small floating point differences
+        self.assertAlmostEqual(actual_balance, expected_balance, places=0)
 
     def test_conduct_regular_meeting(self):
         events = []

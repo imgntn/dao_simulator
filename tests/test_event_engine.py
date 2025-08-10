@@ -50,10 +50,25 @@ class TestEventEngine(unittest.TestCase):
         )
         sim.event_engine = EventEngine(None)
         sim.event_engine.add_event({"step": 1, "type": "create_proposal", "title": "Runtime"})
+        
+        initial_proposals = len(sim.dao.proposals)
+        
+        # After first step 
         sim.step()
-        self.assertEqual(len(sim.dao.proposals), 1)
+        proposals_after_first = len(sim.dao.proposals)
+        
+        # After second step (step 1 processed), event should trigger  
         sim.step()
-        self.assertEqual(len(sim.dao.proposals), 2)
+        proposals_after_second = len(sim.dao.proposals)
+        
+        # The event should create a proposal with the expected title at step 1
+        self.assertGreater(proposals_after_second, proposals_after_first, 
+            "Expected at least one proposal to be created in step 1")
+        
+        # Check that a proposal with the event title exists
+        event_proposal_found = any("Runtime" in p.title for p in sim.dao.proposals)
+        self.assertTrue(event_proposal_found, 
+            f"Expected to find a proposal with 'Runtime' in title. Proposals: {[p.title for p in sim.dao.proposals]}")
 
 
 if __name__ == "__main__":

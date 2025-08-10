@@ -7,6 +7,8 @@ the dictionary.  To make customisation easier a small helper function is
 provided.
 """
 
+from constants import DEFAULT_TOKEN_EMISSION_RATE, DEFAULT_TOKEN_BURN_RATE
+
 settings = {
     "num_developers": 10,
     "num_investors": 5,
@@ -40,8 +42,8 @@ settings = {
     "enable_marketing": False,
     "marketing_level": "auto",
     "enable_player": False,
-    "token_emission_rate": 100.0,  # Mint 100 tokens per step to fund ongoing operations
-    "token_burn_rate": 0.0,
+    "token_emission_rate": DEFAULT_TOKEN_EMISSION_RATE,  # Mint tokens per step to fund ongoing operations
+    "token_burn_rate": DEFAULT_TOKEN_BURN_RATE,
 }
 
 

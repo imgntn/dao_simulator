@@ -1,5 +1,6 @@
 import unittest
 from dao_simulation import DAOSimulation
+from .test_constants import get_clean_dao_simulation, TINY_AMOUNT, SMALL_AMOUNT
 
 class TestTokenEmission(unittest.TestCase):
     def _base_sim(self, **kwargs):
@@ -21,20 +22,27 @@ class TestTokenEmission(unittest.TestCase):
         )
 
     def test_emission_increases_balance(self):
-        sim = self._base_sim(token_emission_rate=10)
+        # Use clean simulation with specific emission rate
+        sim = get_clean_dao_simulation(token_emission_rate=SMALL_AMOUNT)
         before = sim.dao.treasury.get_token_balance("DAO_TOKEN")
         sim.step()
         after = sim.dao.treasury.get_token_balance("DAO_TOKEN")
-        self.assertEqual(after - before, 10)
+        self.assertEqual(after - before, SMALL_AMOUNT)
         self.assertIn("token_minted", sim.datacollector.event_counts)
 
     def test_burn_decreases_balance(self):
-        sim = self._base_sim(token_burn_rate=5)
-        sim.dao.treasury.deposit("DAO_TOKEN", 5)
+        # Use clean simulation to avoid initial treasury funding confusion
+        sim = get_clean_dao_simulation(token_burn_rate=TINY_AMOUNT)
+        
+        # Add tokens to burn
+        sim.dao.treasury.deposit("DAO_TOKEN", TINY_AMOUNT)
         before = sim.dao.treasury.get_token_balance("DAO_TOKEN")
+        
         sim.step()
         after = sim.dao.treasury.get_token_balance("DAO_TOKEN")
-        self.assertEqual(before - after, 5)
+        
+        # The balance should decrease by the burn amount
+        self.assertEqual(before - after, TINY_AMOUNT)
         self.assertIn("token_burned", sim.datacollector.event_counts)
 
 if __name__ == "__main__":

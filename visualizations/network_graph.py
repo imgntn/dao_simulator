@@ -14,7 +14,7 @@ def _make_signature(nodes, edges):
     m.update(str(len(nodes)).encode())
     m.update(str(len(edges)).encode())
     m.update(
-        ",".join(sorted(n["id"] for n in nodes)).encode()
+        ",".join(sorted(str(n["id"]) for n in nodes)).encode()
     )
     return m.hexdigest()[:12]
 

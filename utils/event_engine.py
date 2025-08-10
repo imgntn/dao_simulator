@@ -92,7 +92,7 @@ class EventEngine:
         creator = sim.dao.members[0] if sim.dao.members else None
         title = evt.get("title", "Event Proposal")
         proposal = create_random_proposal(sim.dao, creator, title_prefix=title)
-        if creator:
-            creator.submit_proposal(proposal)
-        else:
+        if proposal:
             sim.dao.add_proposal(proposal)
+            if creator:
+                creator.submit_proposal(proposal)
