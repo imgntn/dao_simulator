@@ -290,6 +290,14 @@ class WebServer:
             self._thread.join(timeout=1)
 
 
+def create_app(simulation: DAOSimulation = None) -> FastAPI:
+    """Factory function to create a web server FastAPI app."""
+    server = WebServer()
+    if simulation:
+        server.sim = simulation
+    return server.app
+
+
 if __name__ == '__main__':  # pragma: no cover - manual usage
     server = WebServer()
     server.start()

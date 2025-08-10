@@ -80,3 +80,13 @@ class DashboardServer:
         self.loop.call_soon_threadsafe(self.loop.stop)
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=0.5)
+
+
+def create_dashboard_app(event_bus=None) -> FastAPI:
+    """Factory function to create a dashboard server FastAPI app."""
+    # Create a minimal event bus if none provided
+    if event_bus is None:
+        from utils.event_bus import EventBus
+        event_bus = EventBus()
+    server = DashboardServer(event_bus)
+    return server.app
