@@ -1,5 +1,12 @@
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
 venv/
 *.egg-info/
 build/
+dist/
 tmp*.json
+tmp*.csv
+trace_output.txt
+*.log
