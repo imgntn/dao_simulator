@@ -729,6 +729,18 @@ class DAOSimulation(Model):
                 params.update(extra)
                 agent = cls(**params)
                 self.dao.add_member(agent)
+                
+                # Emit event for visualization
+                if hasattr(self.dao, 'event_bus') and self.dao.event_bus:
+                    self.dao.event_bus.publish(
+                        'agent_created',
+                        step=self.dao.current_step,
+                        agent_id=agent.unique_id,
+                        agent_type=cls.__name__,
+                        tokens=agent.tokens,
+                        reputation=agent.reputation,
+                        location=getattr(agent, 'location', 'Unknown')
+                    )
 
         for agent in self.dao.members:
             self.schedule.add(agent)

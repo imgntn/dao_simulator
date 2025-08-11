@@ -21,6 +21,17 @@ class DefaultVotingStrategy:
         vote_bool = vote_decision == "yes"
         member.votes[proposal] = {"vote": vote_bool, "weight": 1}
         proposal.add_vote(member, vote_bool)
+        
+        # Emit event for visualization
+        if hasattr(member.model, 'event_bus') and member.model.event_bus:
+            member.model.event_bus.publish(
+                'proposal_voted',
+                step=member.model.current_step,
+                agent_id=member.unique_id,
+                proposal_id=getattr(proposal, 'unique_id', id(proposal)),
+                vote=vote_decision,
+                weight=1
+            )
 
 
 class QuadraticVotingStrategy:
@@ -36,9 +47,21 @@ class QuadraticVotingStrategy:
             return
         cost = weight ** 2
         member.tokens -= cost
-        vote_bool = member.decide_vote(proposal) == "yes"
+        vote_decision = member.decide_vote(proposal)
+        vote_bool = vote_decision == "yes"
         member.votes[proposal] = {"vote": vote_bool, "weight": weight}
         proposal.add_vote(member, vote_bool, weight)
+        
+        # Emit event for visualization
+        if hasattr(member.model, 'event_bus') and member.model.event_bus:
+            member.model.event_bus.publish(
+                'proposal_voted',
+                step=member.model.current_step,
+                agent_id=member.unique_id,
+                proposal_id=getattr(proposal, 'unique_id', id(proposal)),
+                vote=vote_decision,
+                weight=weight
+            )
 
 
 register_strategy("default", DefaultVotingStrategy)

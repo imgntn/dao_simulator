@@ -60,6 +60,10 @@ class WebServer:
         async def marketing(request: Request) -> HTMLResponse:
             return self.templates.TemplateResponse('marketing.html', {'request': request})
 
+        @self.app.get('/visualization3d', response_class=HTMLResponse)
+        async def visualization3d(request: Request) -> HTMLResponse:
+            return self.templates.TemplateResponse('visualization3d.html', {'request': request})
+
         @self.app.get('/settings')
         async def get_settings() -> Dict[str, Any]:
             return settings
@@ -258,10 +262,120 @@ class WebServer:
                 if ws in self.connections:
                     self.connections.remove(ws)
 
+        @self.app.websocket('/ws/visualization')
+        async def visualization_websocket(ws: WebSocket) -> None:
+            await ws.accept()
+            self.connections.append(ws)
+            
+            # Initialize simulation if needed
+            if not self.sim:
+                self._ensure_simulation()
+            
+            # Send initial state to new visualization client
+            await self._send_initial_state(ws)
+            
+            try:
+                while True:
+                    data = await ws.receive_text()
+                    # Handle any commands from visualization client if needed
+                    try:
+                        command = json.loads(data)
+                        await self._handle_viz_command(ws, command)
+                    except json.JSONDecodeError:
+                        pass
+            except WebSocketDisconnect:
+                pass
+            finally:
+                if ws in self.connections:
+                    self.connections.remove(ws)
+
+    async def _send_initial_state(self, ws: WebSocket) -> None:
+        """Send current simulation state to new visualization client."""
+        if not self.sim:
+            return
+        
+        # Send existing agents
+        for i, agent in enumerate(self.sim.dao.members):
+            await ws.send_text(json.dumps({
+                'event': 'agent_created',
+                'step': self.sim.schedule.steps,
+                'agent_id': getattr(agent, 'unique_id', f'agent_{i}'),
+                'agent_type': agent.__class__.__name__,
+                'tokens': getattr(agent, 'tokens', 100),
+                'reputation': getattr(agent, 'reputation', 50)
+            }))
+        
+        # Send existing proposals
+        for i, proposal in enumerate(self.sim.dao.proposals):
+            await ws.send_text(json.dumps({
+                'event': 'proposal_created',
+                'step': self.sim.schedule.steps,
+                'proposal_id': f'proposal_{i}',
+                'title': getattr(proposal, 'title', f'Proposal {i}'),
+                'funding_goal': getattr(proposal, 'funding_goal', 1000),
+                'current_funding': getattr(proposal, 'current_funding', 0)
+            }))
+        
+        # Send treasury info
+        treasury_value = sum(self.sim.dao.treasury.get_token_value(token) 
+                             for token in self.sim.dao.treasury.tokens.keys())
+        await ws.send_text(json.dumps({
+            'event': 'step_complete',
+            'step': self.sim.schedule.steps,
+            'treasury_value': treasury_value,
+            'active_proposals': len([p for p in self.sim.dao.proposals if not getattr(p, 'closed', False)]),
+            'total_agents': len(self.sim.dao.members)
+        }))
+
+    async def _handle_viz_command(self, ws: WebSocket, command: dict) -> None:
+        """Handle commands from visualization client."""
+        cmd_type = command.get('type')
+        
+        if cmd_type == 'step':
+            # Step the simulation
+            if self.sim:
+                self.sim.step()
+                await ws.send_text(json.dumps({
+                    'event': 'step_complete',
+                    'step': self.sim.schedule.steps
+                }))
+        
+        elif cmd_type == 'reset':
+            # Reset simulation
+            self._ensure_simulation()
+            await self._send_initial_state(ws)
+
     def _on_event(self, **data: Any) -> None:
         if not self.connections:
             return
-        msg = json.dumps(data)
+        
+        # Enhance event data for visualization
+        enhanced_data = dict(data)
+        
+        # Add agent metadata for visualization events
+        if 'agent_id' in data and self.sim:
+            agent_id = data['agent_id']
+            # Find agent by unique_id
+            for agent in self.sim.dao.members:
+                if getattr(agent, 'unique_id', None) == agent_id:
+                    enhanced_data['agent_type'] = agent.__class__.__name__
+                    enhanced_data['tokens'] = getattr(agent, 'tokens', 100)
+                    enhanced_data['reputation'] = getattr(agent, 'reputation', 50)
+                    break
+        
+        # Add proposal metadata
+        if 'proposal_id' in data and self.sim:
+            proposal_id = data['proposal_id']
+            try:
+                # Try to find proposal by ID (assuming it's an index)
+                if isinstance(proposal_id, int) and 0 <= proposal_id < len(self.sim.dao.proposals):
+                    proposal = self.sim.dao.proposals[proposal_id]
+                    enhanced_data['funding_goal'] = getattr(proposal, 'funding_goal', 1000)
+                    enhanced_data['current_funding'] = getattr(proposal, 'current_funding', 0)
+            except (ValueError, IndexError):
+                pass
+        
+        msg = json.dumps(enhanced_data)
         for ws in list(self.connections):
             asyncio.run_coroutine_threadsafe(ws.send_text(msg), self.loop)
 
