@@ -18,7 +18,7 @@ class PlayerAgent(DAOMember):
         step = getattr(self.model, "current_step", 0)
         treasury.deposit(token_in, amount, step=step)
         try:
-            out = treasury.swap(token_in, token_out, amount)
+            out = treasury.swap(token_in, token_out, amount, step=step)
         except ValueError:
             treasury.withdraw(token_in, amount, step=step)
             return 0.0
@@ -32,14 +32,14 @@ class PlayerAgent(DAOMember):
         step = getattr(self.model, "current_step", 0)
         treasury.deposit(token_a, amt_a, step=step)
         treasury.deposit(token_b, amt_b, step=step)
-        treasury.add_liquidity(token_a, token_b, amt_a, amt_b)
+        treasury.add_liquidity(token_a, token_b, amt_a, amt_b, step=step)
 
     def _treasury_remove_liquidity(
         self, token_a: str, token_b: str, share: float
     ) -> tuple[float, float]:
         treasury = self.model.treasury
-        amt_a, amt_b = treasury.remove_liquidity(token_a, token_b, share)
         step = getattr(self.model, "current_step", 0)
+        amt_a, amt_b = treasury.remove_liquidity(token_a, token_b, share, step=step)
         gained_a = treasury.withdraw(token_a, amt_a, step=step)
         gained_b = treasury.withdraw(token_b, amt_b, step=step)
         return gained_a, gained_b

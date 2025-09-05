@@ -54,6 +54,10 @@ class WebServer:
     def _register_routes(self) -> None:
         @self.app.get('/', response_class=HTMLResponse)
         async def index(request: Request) -> HTMLResponse:
+            return self.templates.TemplateResponse('index_new.html', {'request': request})
+        
+        @self.app.get('/technical', response_class=HTMLResponse)
+        async def technical(request: Request) -> HTMLResponse:
             return self.templates.TemplateResponse('index.html', {'request': request})
 
         @self.app.get('/marketing', response_class=HTMLResponse)
@@ -63,6 +67,10 @@ class WebServer:
         @self.app.get('/visualization3d', response_class=HTMLResponse)
         async def visualization3d(request: Request) -> HTMLResponse:
             return self.templates.TemplateResponse('visualization3d.html', {'request': request})
+
+        @self.app.get('/dashboard', response_class=HTMLResponse)
+        async def dashboard(request: Request) -> HTMLResponse:
+            return self.templates.TemplateResponse('dashboard.html', {'request': request})
 
         @self.app.get('/settings')
         async def get_settings() -> Dict[str, Any]:

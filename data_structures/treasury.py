@@ -13,20 +13,20 @@ class LiquidityPool:
         self.reserve_b = 0.0
         self.event_bus = event_bus
 
-    def add_liquidity(self, amount_a: float, amount_b: float) -> None:
+    def add_liquidity(self, amount_a: float, amount_b: float, *, step: int = 0) -> None:
         self.reserve_a += amount_a
         self.reserve_b += amount_b
         if self.event_bus:
             self.event_bus.publish(
                 "liquidity_added",
-                step=0,
+                step=step,
                 token_a=self.token_a,
                 token_b=self.token_b,
                 amount_a=amount_a,
                 amount_b=amount_b,
             )
 
-    def remove_liquidity(self, share: float) -> tuple[float, float]:
+    def remove_liquidity(self, share: float, *, step: int = 0) -> tuple[float, float]:
         share = max(min(share, 1.0), 0.0)
         amount_a = self.reserve_a * share
         amount_b = self.reserve_b * share
@@ -35,7 +35,7 @@ class LiquidityPool:
         if self.event_bus:
             self.event_bus.publish(
                 "liquidity_removed",
-                step=0,
+                step=step,
                 token_a=self.token_a,
                 token_b=self.token_b,
                 amount_a=amount_a,
@@ -43,7 +43,7 @@ class LiquidityPool:
             )
         return amount_a, amount_b
 
-    def swap(self, token_in: str, amount_in: float) -> float:
+    def swap(self, token_in: str, amount_in: float, *, step: int = 0) -> float:
         if token_in == self.token_a:
             in_reserve, out_reserve = self.reserve_a, self.reserve_b
             k = in_reserve * out_reserve
@@ -65,7 +65,7 @@ class LiquidityPool:
         if self.event_bus:
             self.event_bus.publish(
                 "token_swap",
-                step=0,
+                step=step,
                 token_in=token_in,
                 token_out=t_out,
                 amount_in=amount_in,
@@ -218,6 +218,11 @@ class Treasury:
         """Total of all token balances."""
         return sum(self.tokens.values())
 
+    # Backwards-compat alias expected by some visualization tests
+    @property
+    def holdings(self):
+        return dict(self.tokens)
+
     @property
     def reputation_balance(self):
         """Placeholder for future reputation accounting."""
@@ -248,27 +253,27 @@ class Treasury:
     def create_pool(self, token_a: str, token_b: str) -> LiquidityPool:
         return self._get_pool(token_a, token_b, create=True)
 
-    def add_liquidity(self, token_a: str, token_b: str, amt_a: float, amt_b: float) -> None:
+    def add_liquidity(self, token_a: str, token_b: str, amt_a: float, amt_b: float, *, step: int = 0) -> None:
         pool = self._get_pool(token_a, token_b, create=True)
-        self.withdraw(token_a, amt_a)
-        self.withdraw(token_b, amt_b)
-        pool.add_liquidity(amt_a, amt_b)
+        self.withdraw(token_a, amt_a, step=step)
+        self.withdraw(token_b, amt_b, step=step)
+        pool.add_liquidity(amt_a, amt_b, step=step)
 
-    def remove_liquidity(self, token_a: str, token_b: str, share: float) -> tuple[float, float]:
+    def remove_liquidity(self, token_a: str, token_b: str, share: float, *, step: int = 0) -> tuple[float, float]:
         pool = self._get_pool(token_a, token_b)
         if pool is None:
             return 0.0, 0.0
-        amt_a, amt_b = pool.remove_liquidity(share)
-        self.deposit(pool.token_a, amt_a)
-        self.deposit(pool.token_b, amt_b)
+        amt_a, amt_b = pool.remove_liquidity(share, step=step)
+        self.deposit(pool.token_a, amt_a, step=step)
+        self.deposit(pool.token_b, amt_b, step=step)
         return amt_a, amt_b
 
-    def swap(self, token_in: str, token_out: str, amount_in: float) -> float:
+    def swap(self, token_in: str, token_out: str, amount_in: float, *, step: int = 0) -> float:
         pool = self._get_pool(token_in, token_out)
         if pool is None:
             raise ValueError("Pool does not exist")
-        self.withdraw(token_in, amount_in)
-        amount_out = pool.swap(token_in, amount_in)
-        self.deposit(token_out, amount_out)
+        self.withdraw(token_in, amount_in, step=step)
+        amount_out = pool.swap(token_in, amount_in, step=step)
+        self.deposit(token_out, amount_out, step=step)
         return amount_out
 

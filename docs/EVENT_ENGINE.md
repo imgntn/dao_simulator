@@ -39,6 +39,20 @@ may be added at runtime using `add_event` or through the web server's
 `/events` endpoint. `GET /events` lists everything currently scheduled so the
 dashboard can display upcoming actions.
 
+## Related runtime events
+
+The event bus publishes many runtime events that dashboards can consume. Recent
+additions include:
+
+- `violation_created` — emitted when regulators or arbitrators create a
+  violation (fields: `step`, `project`, `violator`, `description`).
+- `project_monitored` and `project_disputed` — validators track project
+  progress and raise disputes when behind schedule.
+- `liquidity_added`, `liquidity_removed`, `token_swap` — AMM events now include
+  the simulation `step` for accurate timelines.
+- `integration_proposed`, `partnership_proposed`, `collaboration_proposed`,
+  `project_collaborated` — external partner interactions.
+
 This documentation and accompanying code are under a private, all-rights-reserved license.
 
 A flowchart of this process can be found in [docs/DIAGRAMS.md](DIAGRAMS.md).

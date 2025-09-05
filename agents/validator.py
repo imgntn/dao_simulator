@@ -36,10 +36,13 @@ class Validator(DAOMember):
     def monitor_project(self, project):
         """Monitor ``project`` and raise a dispute if progress lags."""
         self.monitored_projects.add(project)
-        progress = project.total_work()
-        elapsed = max(self.model.current_step - project.start_time, 0)
-        expected = (elapsed / project.duration) * project.duration if project.duration else 0
-        behind = progress < expected
+        total = project.total_work()
+        dur = max(getattr(project, "duration", 0), 1)
+        elapsed = max(self.model.current_step - getattr(project, "start_time", 0), 0)
+        progress_ratio = total / dur
+        elapsed_ratio = min(elapsed / dur, 1.0)
+        epsilon = 0.05
+        behind = progress_ratio + epsilon < elapsed_ratio
         if behind:
             dispute = Dispute(
                 self.model,
@@ -60,7 +63,7 @@ class Validator(DAOMember):
                 "project_monitored",
                 step=self.model.current_step,
                 project=getattr(project, "title", None),
-                progress=progress,
+                progress=total,
                 behind=behind,
             )
 

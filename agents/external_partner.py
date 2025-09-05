@@ -48,22 +48,40 @@ class ExternalPartner(DAOMember):
             self.collaborate_on_project(project)
 
     def propose_partnership(self):
-        print(f"External Partner {self.unique_id} proposes a partnership with the DAO")
+        if self.model.event_bus:
+            self.model.event_bus.publish(
+                "partnership_proposed",
+                step=self.model.current_step,
+                partner=self.unique_id,
+            )
 
     def propose_collaboration(self):
-        print(
-            f"External Partner {self.unique_id} proposes a collaboration with the DAO"
-        )
+        if self.model.event_bus:
+            self.model.event_bus.publish(
+                "collaboration_proposed",
+                step=self.model.current_step,
+                partner=self.unique_id,
+            )
 
     def propose_integration(self):
-        print(f"External Partner {self.unique_id} proposes an integration with the DAO")
+        if self.model.event_bus:
+            self.model.event_bus.publish(
+                "integration_proposed",
+                step=self.model.current_step,
+                partner=self.unique_id,
+            )
 
     def collaborate_on_project(self, project):
         work_amount = random.uniform(0, 10)  # Adjust the range as needed
         project.update_work_done(self, work_amount)
-        print(
-            f"External Partner {self.unique_id} collaborated on project {project.title} and contributed {work_amount:.2f} work units"
-        )
+        if self.model.event_bus:
+            self.model.event_bus.publish(
+                "project_collaborated",
+                step=self.model.current_step,
+                partner=self.unique_id,
+                project=getattr(project, "title", None),
+                work=work_amount,
+            )
         if project not in self.collaborated_projects:
             self.collaborated_projects.append(project)
 

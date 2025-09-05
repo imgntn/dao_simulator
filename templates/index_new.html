@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAO Simulation Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .header {
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .header h1::before {
+            content: "🏛️";
+            font-size: 1.2em;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .interfaces-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .interface-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .interface-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        }
+
+        .interface-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .interface-card:hover::before {
+            left: 100%;
+        }
+
+        .interface-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .interface-title {
+            font-size: 1.6em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .interface-description {
+            color: #666;
+            font-size: 1em;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .interface-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        .interface-features li {
+            color: #555;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .interface-features li::before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .interface-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .interface-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .interface-card.cozy {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            color: #2d3436;
+        }
+
+        .interface-card.cozy .interface-title {
+            color: #2d3436;
+        }
+
+        .interface-card.cozy .interface-button {
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+            box-shadow: 0 4px 15px rgba(253, 121, 168, 0.3);
+        }
+
+        .interface-card.cozy .interface-button:hover {
+            box-shadow: 0 6px 20px rgba(253, 121, 168, 0.4);
+        }
+
+        .interface-card.technical {
+            background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%);
+        }
+
+        .interface-card.technical .interface-button {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+        }
+
+        .interface-card.technical .interface-button:hover {
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.4);
+        }
+
+        .interface-card.advanced {
+            background: linear-gradient(135deg, #c8a2c8 0%, #e6dee6 100%);
+        }
+
+        .interface-card.advanced .interface-button {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        .interface-card.advanced .interface-button:hover {
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+        }
+
+        .footer {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9em;
+            margin-top: 30px;
+        }
+
+        .footer a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #f44336;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected {
+            background: #4caf50;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5em;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .interfaces-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .interface-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Status indicator -->
+    <div class="status-indicator" id="statusIndicator">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Connecting...</span>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>DAO Simulation Hub</h1>
+            <p>Choose your preferred interface to explore and interact with the DAO simulation</p>
+        </div>
+
+        <!-- Interface options -->
+        <div class="interfaces-grid">
+            <!-- Cozy Dashboard -->
+            <div class="interface-card cozy" onclick="window.open('/dashboard', '_blank')">
+                <div class="interface-icon">🏠</div>
+                <div class="interface-title">Cozy Dashboard</div>
+                <div class="interface-description">
+                    A warm, game-like interface inspired by classic management games like Lemmings. 
+                    Perfect for casual exploration and delightful interaction with your DAO simulation.
+                </div>
+                <ul class="interface-features">
+                    <li>Cute agent sprites walking around</li>
+                    <li>Floating proposal bubbles</li>
+                    <li>Cozy woodland background</li>
+                    <li>Real-time vote animations</li>
+                    <li>Easy-to-use simulation controls</li>
+                </ul>
+                <a href="/dashboard" class="interface-button">Enter Cozy World</a>
+            </div>
+
+            <!-- Technical Dashboard -->
+            <div class="interface-card technical" onclick="window.open('/', '_blank')">
+                <div class="interface-icon">📊</div>
+                <div class="interface-title">Technical Dashboard</div>
+                <div class="interface-description">
+                    The original comprehensive interface with detailed charts, metrics, and full control over 
+                    all simulation parameters. Ideal for researchers and advanced users.
+                </div>
+                <ul class="interface-features">
+                    <li>Live price & Gini coefficient charts</li>
+                    <li>Detailed agent and proposal lists</li>
+                    <li>Player controls (voting, trading)</li>
+                    <li>Event scheduler & news feed</li>
+                    <li>Network visualization</li>
+                </ul>
+                <a href="/" class="interface-button">View Technical Data</a>
+            </div>
+
+            <!-- 3D Visualization -->
+            <div class="interface-card advanced" onclick="window.open('/visualization3d', '_blank')">
+                <div class="interface-icon">🌐</div>
+                <div class="interface-title">3D Visualization</div>
+                <div class="interface-description">
+                    An immersive 3D particle system that visualizes agents, proposals, and their interactions 
+                    in a beautiful space-like environment with GPU acceleration.
+                </div>
+                <ul class="interface-features">
+                    <li>GPU-accelerated particle system</li>
+                    <li>3D agent and proposal rendering</li>
+                    <li>Real-time connection lines</li>
+                    <li>Bloom effects and post-processing</li>
+                    <li>Interactive camera controls</li>
+                </ul>
+                <a href="/visualization3d" class="interface-button">Enter 3D Space</a>
+            </div>
+
+            <!-- Marketing Interface -->
+            <div class="interface-card" onclick="window.open('/marketing', '_blank')">
+                <div class="interface-icon">📢</div>
+                <div class="interface-title">Marketing Dashboard</div>
+                <div class="interface-description">
+                    Specialized interface for managing marketing campaigns, analyzing their effectiveness, 
+                    and understanding member acquisition and token price impacts.
+                </div>
+                <ul class="interface-features">
+                    <li>Campaign management tools</li>
+                    <li>Member acquisition metrics</li>
+                    <li>Price impact analysis</li>
+                    <li>Marketing ROI tracking</li>
+                    <li>Campaign scheduling</li>
+                </ul>
+                <a href="/marketing" class="interface-button">Manage Marketing</a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>
+                DAO Simulation Framework | 
+                <a href="https://github.com/your-repo" target="_blank">Documentation</a> | 
+                <a href="/settings" target="_blank">Global Settings</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Connection status management
+        let ws = null;
+        const wsUrl = 'ws://localhost:8003/ws';
+
+        const elements = {
+            statusDot: document.getElementById('statusDot'),
+            statusText: document.getElementById('statusText')
+        };
+
+        function connectWebSocket() {
+            try {
+                ws = new WebSocket(wsUrl);
+                
+                ws.onopen = () => {
+                    console.log('Connected to DAO simulation');
+                    elements.statusDot.classList.add('connected');
+                    elements.statusText.textContent = 'Simulation Active';
+                };
+                
+                ws.onclose = () => {
+                    console.log('Disconnected from simulation');
+                    elements.statusDot.classList.remove('connected');
+                    elements.statusText.textContent = 'Disconnected';
+                    setTimeout(connectWebSocket, 3000);
+                };
+                
+                ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    elements.statusText.textContent = 'Connection Error';
+                };
+            } catch (error) {
+                console.error('Failed to connect:', error);
+                elements.statusText.textContent = 'Cannot Connect';
+                setTimeout(connectWebSocket, 3000);
+            }
+        }
+
+        // Initialize connection check
+        document.addEventListener('DOMContentLoaded', () => {
+            connectWebSocket();
+            
+            // Also try to start the simulation
+            fetch('/start', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => console.log('Simulation initialized:', data))
+                .catch(err => console.log('Simulation may already be running'));
+        });
+
+        // Add hover effects to cards
+        document.querySelectorAll('.interface-card').forEach(card => {
+            card.addEventListener('mouseenter', (e) => {
+                e.currentTarget.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', (e) => {
+                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

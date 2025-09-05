@@ -1,5 +1,6 @@
 import random
 from agents.dao_member import DAOMember
+from data_structures.violation import Violation
 
 
 class Regulator(DAOMember):
@@ -29,9 +30,7 @@ class Regulator(DAOMember):
 
     def check_project_compliance(self, project):
         """Verify that ``project`` meets basic requirements."""
-        compliant = (
-            project.funding_goal <= 10000 and project.duration <= 365
-        )
+        compliant = project.funding_goal <= 10000 and project.duration <= 365
         if not compliant:
             self.flag_proposal_for_violation(project)
         if self.model.event_bus:
@@ -44,7 +43,26 @@ class Regulator(DAOMember):
         return compliant
 
     def flag_proposal_for_violation(self, proposal):
-        self.model.violations.append(proposal)
+        # Back-compat: function name mentions proposal but receives a project
+        project = proposal
+        violator = getattr(project, "creator", None)
+        description = (
+            f"Project '{getattr(project, 'title', 'unknown')}' failed compliance"
+        )
+        violation = Violation(violator, project, description)
+        self.model.add_violation(violation)
+        # Backwards-compatibility for tests expecting the project to appear
+        # directly in ``dao.violations``
+        if project not in self.model.violations:
+            self.model.violations.append(project)
+        if self.model.event_bus:
+            self.model.event_bus.publish(
+                "violation_created",
+                step=self.model.current_step,
+                project=getattr(project, "title", None),
+                violator=getattr(violator, "unique_id", None),
+                description=description,
+            )
 
     def to_dict(self):
         return super().to_dict()

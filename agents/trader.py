@@ -32,7 +32,7 @@ class Trader(DAOMember):
             return
         treasury.deposit(sell, amount, step=self.model.current_step)
         try:
-            out = treasury.swap(sell, buy, amount)
+            out = treasury.swap(sell, buy, amount, step=self.model.current_step)
         except ValueError:
             treasury.withdraw(sell, amount, step=self.model.current_step)
             self.last_price = price

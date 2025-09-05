@@ -1,6 +1,6 @@
 ## arbitrator.py
 
-This is the Arbitrator agent class, which inherits from DAOMember. The step function includes handling disputes, voting on a random proposal, and leaving comments on proposals. The handle_dispute function selects a dispute to arbitrate based on importance and resolves it. If there is a violation, it creates a Violation object and applies the reputation penalty to the involved member.
+This is the Arbitrator agent class, which inherits from DAOMember. The step function includes handling disputes, voting on a random proposal, and leaving comments on proposals. The handle_dispute function selects a dispute to arbitrate based on importance and resolves it. If there is a violation, it creates a Violation object and applies the reputation penalty to the involved member. When violations are created, a `violation_created` event is emitted on the DAO's event bus with the violator, project and description.
 
 ## delegator.py
 
@@ -24,7 +24,7 @@ This is the Developer agent class, which inherits from DAOMember. The step funct
 
 ## investor.py
 
-This is the Investor agent class, which inherits from DAOMember. The step function includes investing in a random proposal, voting on a random proposal, and leaving comments on proposals. The invest_in_random_proposal function selects a proposal to invest in, calculates an investment amount based on the investor's budget, and updates the budget accordingly.
+This is the Investor agent class, which inherits from DAOMember. The step function includes investing in a random open proposal, voting on a random open proposal, and optionally leaving comments. The invest_in_random_proposal function selects an open proposal to invest in, calculates an investment amount based on the investor's budget, and updates the budget accordingly. The budget is clamped to non-negative values.
 
 ## passive_member.py
 
@@ -32,11 +32,11 @@ This is the PassiveMember agent class, which inherits from DAOMember. The step f
 
 ## proposal_creator.py
 
-This is the ProposalCreator agent class, which inherits from DAOMember. The step function includes voting on a random proposal, leaving a comment on a random proposal, and creating a new proposal. The create_proposal function generates a proposal with a unique ID, random type, description, amount, and duration, and adds it to the model's proposals list.
+This is the ProposalCreator agent class, which inherits from DAOMember. The step function includes voting on a random open proposal, optionally leaving a comment (based on `comment_probability`), and creating a new proposal after a cooldown. The create_proposal function generates a proposal with a stable `unique_id`, random type, description, amount, and duration, and adds it to the DAO.
 
 ## regulator.py
 
-This is the Regulator agent class, which inherits from DAOMember. The step function includes voting on a random proposal, leaving a comment on a random proposal, and ensuring compliance of proposals. The ensure_compliance function checks the compliance of a randomly chosen project and records the result. The ``check_project_compliance`` method now inspects a project's funding goal and duration, flags it for violation when requirements aren't met, and emits a ``compliance_checked`` event on the DAO's event bus.
+This is the Regulator agent class, which inherits from DAOMember. The step function includes voting on a random open proposal, optionally leaving a comment, and ensuring compliance of proposals. The ensure_compliance function checks the compliance of a randomly chosen project and records the result. The `check_project_compliance` method inspects a project's funding goal and duration, flags it for violation when requirements aren't met, and emits a `compliance_checked` event. When violations are flagged a `Violation` is added to the DAO and a `violation_created` event is published. For backward compatibility some analytics still expect the project to be present in `dao.violations`.
 
 ## service_provider.py
 
@@ -44,7 +44,7 @@ This is the ServiceProvider agent class, which inherits from DAOMember. It has a
 
 ## validator.py
 
-This is the Validator agent class, which inherits from DAOMember. It has a monitoring_budget attribute that represents the budget available for monitoring projects. The step function includes voting on a random proposal, leaving a comment on a random proposal, and monitoring projects. ``monitor_projects`` selects a project when budget allows and calls ``monitor_project``. The ``monitor_project`` method now compares the project's progress to its duration and raises a ``Dispute`` via the DAO when progress falls behind schedule. Both monitoring and dispute creation emit events (``project_monitored`` and ``project_disputed``).
+This is the Validator agent class, which inherits from DAOMember. It has a monitoring_budget attribute that represents the budget available for monitoring projects. The step function includes voting on a random open proposal, optionally leaving a comment, and monitoring projects. `monitor_projects` selects a project when budget allows and calls `monitor_project`. The method compares the project's progress ratio to elapsed ratio (with a small tolerance) and raises a `Dispute` via the DAO when progress falls behind schedule. Both monitoring and dispute creation emit events (`project_monitored` and `project_disputed`).
 
 ## auditor.py
 
@@ -80,7 +80,8 @@ on the DAO's event bus.
 
 ExternalPartner represents a third party collaborating with the DAO. Based on a
 configurable probability it may propose integrations, partnerships or even
-contribute work to a random project.
+contribute work to a random project. Interactions publish events (`integration_proposed`,
+`partnership_proposed`, `collaboration_proposed`, `project_collaborated`) instead of printing to stdout.
 
 ## liquid_delegator.py
 
@@ -109,4 +110,8 @@ is processed each simulation step.
 ## Guilds
 
 Guilds are persistent sub-DAOs formed by members. Each guild has its own treasury and project list. Members may create a guild, join one, or leave their current guild. Guild events are published on the DAO's event bus for dashboards and analytics.
+
+## Notes on Voting/Commenting
+
+- Agents only vote and comment on proposals that are `open` and within their voting window (`creation_time + voting_period`). This keeps analytics and tests consistent with governance timing.
 

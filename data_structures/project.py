@@ -47,3 +47,41 @@ class Project:
         if total == 0:
             return 0.0
         return self.work_done.get(member, 0.0) / total
+
+    def to_dict(self):
+        return {
+            "title": self.title,
+            "description": self.description,
+            "funding_goal": self.funding_goal,
+            "duration": self.duration,
+            "current_funding": self.current_funding,
+            "required_skills": list(self.required_skills or []),
+            "status": self.status,
+            "comments": [
+                {"member": getattr(c.get("member"), "unique_id", None), "sentiment": c.get("sentiment")}
+                for c in self.comments
+            ],
+            "start_time": self.start_time,
+            "funding_locked": getattr(self, "funding_locked", False),
+            "creator": getattr(self.creator, "unique_id", None),
+        }
+
+    @classmethod
+    def from_dict(cls, data, dao, members_by_id):
+        creator = members_by_id.get(data.get("creator"))
+        proj = cls(
+            dao,
+            creator,
+            data.get("title"),
+            data.get("description"),
+            data.get("funding_goal", 0),
+            duration=data.get("duration", 0),
+            required_skills=data.get("required_skills", []),
+        )
+        proj.current_funding = data.get("current_funding", 0)
+        proj.status = data.get("status", "open")
+        proj.start_time = data.get("start_time", 0)
+        proj.funding_locked = data.get("funding_locked", False)
+        # Comments can’t be fully restored without member objects; skip or map IDs
+        proj.comments = []
+        return proj

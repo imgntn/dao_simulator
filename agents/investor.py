@@ -32,8 +32,9 @@ class Investor(DAOMember):
             self.investment_budget -= investment_amount
 
     def invest_in_random_proposal(self):
-        if self.model.proposals:
-            proposal = random.choice(self.model.proposals)
+        open_props = [p for p in self.model.proposals if getattr(p, "status", "open") == "open"]
+        if open_props:
+            proposal = random.choice(open_props)
             if self.investment_budget > 0:
                 investment_amount = random.uniform(0, self.investment_budget)
                 if getattr(proposal, "type", "") == "quadratic_funding":
@@ -65,6 +66,8 @@ class Investor(DAOMember):
             self.investment_budget *= 1.1
         else:
             self.investment_budget *= 0.9
+        if self.investment_budget < 0:
+            self.investment_budget = 0
 
     def to_dict(self):
         data = super().to_dict()

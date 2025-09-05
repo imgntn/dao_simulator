@@ -184,8 +184,11 @@ The visualization depends on the optional Mesa components listed in `requirement
 9. **Run the Tests**
 
    ```bash
-   python -m unittest discover tests
+   pytest -q
    ```
+
+   Pytest is configured via `pytest.ini` and `tests/conftest.py` to run from the
+   repository root with importlib mode, and to use a non-interactive Matplotlib backend.
 
 10. **Visualize Delegations**
 

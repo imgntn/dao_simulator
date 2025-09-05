@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAO Simulation - Cozy Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Cozy background elements */
+        .background-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 226, 0.2) 0%, transparent 50%);
+            animation: backgroundPulse 10s ease-in-out infinite;
+        }
+
+        @keyframes backgroundPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Main container */
+        .dashboard-container {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            height: 100vh;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* Header with cozy simulation info */
+        .simulation-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .simulation-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: headerShimmer 8s ease-in-out infinite;
+        }
+
+        @keyframes headerShimmer {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+
+        .header-title {
+            font-size: 2.5em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 2;
+        }
+
+        .header-title::before {
+            content: "🏛️";
+            font-size: 1.2em;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 25px;
+            z-index: 2;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* Main dashboard grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr 320px;
+            gap: 20px;
+            height: 100%;
+        }
+
+        /* Panel styling */
+        .panel {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #8b4513;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid rgba(139,69,19,0.1);
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Agent panel */
+        .agent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .agent-item {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .agent-item:hover {
+            transform: translateX(5px);
+            border-color: #ff6b6b;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .agent-item.active {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            border-color: #ff6b6b;
+        }
+
+        .agent-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .agent-details {
+            flex: 1;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .agent-meta {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Simulation canvas area */
+        .simulation-canvas {
+            position: relative;
+            background: linear-gradient(180deg, #87CEEB 0%, #98FB98 100%);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .simulation-ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(180deg, #90EE90 0%, #228B22 100%);
+            border-top: 3px solid #6b8e23;
+        }
+
+        .simulation-sky {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+        }
+
+        .floating-clouds {
+            position: absolute;
+            width: 100%;
+            height: 60%;
+            background-image: 
+                radial-gradient(ellipse at 25% 25%, rgba(255,255,255,0.8) 15%, transparent 15%),
+                radial-gradient(ellipse at 75% 35%, rgba(255,255,255,0.6) 12%, transparent 12%);
+            animation: cloudsMove 15s linear infinite;
+        }
+
+        @keyframes cloudsMove {
+            0% { transform: translateX(-10%); }
+            100% { transform: translateX(10%); }
+        }
+
+        .agent-sprite {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .agent-sprite:hover {
+            transform: scale(1.3);
+            z-index: 20;
+        }
+
+        .proposal-bubble {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            animation: proposalPulse 2s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 5;
+        }
+
+        @keyframes proposalPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .vote-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4caf50, transparent);
+            animation: voteLine 2s ease-out;
+            z-index: 1;
+        }
+
+        .vote-line.no {
+            background: linear-gradient(90deg, transparent, #f44336, transparent);
+        }
+
+        @keyframes voteLine {
+            0% { opacity: 0; width: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; width: 100%; }
+        }
+
+        /* Controls panel */
+        .controls-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .control-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 15px;
+            font-family: inherit;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .control-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .control-button:active {
+            transform: translateY(-1px);
+        }
+
+        .control-button.secondary {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #8b4513;
+            box-shadow: 0 4px 15px rgba(252, 182, 159, 0.3);
+        }
+
+        .control-button.secondary:hover {
+            box-shadow: 0 8px 25px rgba(252, 182, 159, 0.4);
+        }
+
+        .proposals-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .proposal-card {
+            background: linear-gradient(135deg, #e3ffe7 0%, #d9e7ff 100%);
+            border-radius: 15px;
+            padding: 18px;
+            border: 2px solid rgba(76, 175, 80, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .proposal-card:hover {
+            border-color: #4caf50;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);
+        }
+
+        .proposal-title {
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .proposal-meta {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .proposal-progress {
+            background: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .proposal-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50 0%, #8bc34a 100%);
+            transition: width 0.5s ease;
+        }
+
+        .vote-status {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8em;
+            color: #555;
+        }
+
+        /* Status indicators */
+        .connection-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #f44336;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected {
+            background: #4caf50;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.4s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #f44336 0%, #ef5350 100%);
+        }
+
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 300px 1fr 280px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: 300px 1fr 300px;
+            }
+            
+            .header-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-decoration"></div>
+    
+    <div class="dashboard-container">
+        <!-- Header with simulation overview -->
+        <header class="simulation-header">
+            <div class="header-title">DAO Simulation Dashboard</div>
+            <div class="header-stats">
+                <div class="stat-card">
+                    <span class="stat-value" id="stepCount">0</span>
+                    <span class="stat-label">Simulation Step</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="memberCount">0</span>
+                    <span class="stat-label">Active Members</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="treasuryValue">0</span>
+                    <span class="stat-label">Treasury Value</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="proposalCount">0</span>
+                    <span class="stat-label">Active Proposals</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main dashboard -->
+        <div class="dashboard-grid">
+            <!-- Left panel: Agent list -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span>👥</span> DAO Members
+                </div>
+                <div class="panel-content">
+                    <div class="agent-list" id="agentList">
+                        <!-- Agents will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Simulation visualization -->
+            <div class="panel simulation-canvas" id="simulationCanvas">
+                <div class="simulation-sky"></div>
+                <div class="floating-clouds"></div>
+                <div class="simulation-ground"></div>
+                <!-- Agent sprites and proposal bubbles will appear here -->
+            </div>
+
+            <!-- Right panel: Controls and proposals -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span>🎮</span> Simulation Controls
+                </div>
+                <div class="panel-content">
+                    <div class="controls-grid">
+                        <button class="control-button" id="stepBtn">
+                            <span>⏩</span> Step Forward
+                        </button>
+                        <button class="control-button" id="runBtn">
+                            <span>🏃‍♂️</span> Run 10 Steps
+                        </button>
+                        <button class="control-button secondary" id="pauseBtn">
+                            <span>⏸️</span> Pause
+                        </button>
+                        <button class="control-button secondary" id="resetBtn">
+                            <span>🔄</span> Reset
+                        </button>
+                    </div>
+                    
+                    <div style="margin: 25px 0;">
+                        <div class="panel-header" style="background: none; padding: 10px 0; border: none;">
+                            <span>📋</span> Active Proposals
+                        </div>
+                        <div class="proposals-list" id="proposalsList">
+                            <!-- Proposals will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Connection status -->
+    <div class="connection-indicator" id="connectionStatus">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Connecting...</span>
+    </div>
+
+    <!-- Notification system -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Dashboard state
+        const dashboardState = {
+            agents: new Map(),
+            proposals: new Map(),
+            currentStep: 0,
+            connected: false,
+            paused: false
+        };
+
+        // WebSocket connection
+        let ws = null;
+        const wsUrl = 'ws://localhost:8003/ws';
+
+        // DOM elements
+        const elements = {
+            stepCount: document.getElementById('stepCount'),
+            memberCount: document.getElementById('memberCount'),
+            treasuryValue: document.getElementById('treasuryValue'),
+            proposalCount: document.getElementById('proposalCount'),
+            agentList: document.getElementById('agentList'),
+            proposalsList: document.getElementById('proposalsList'),
+            simulationCanvas: document.getElementById('simulationCanvas'),
+            connectionStatus: document.getElementById('connectionStatus'),
+            statusDot: document.getElementById('statusDot'),
+            statusText: document.getElementById('statusText'),
+            notification: document.getElementById('notification'),
+            stepBtn: document.getElementById('stepBtn'),
+            runBtn: document.getElementById('runBtn'),
+            pauseBtn: document.getElementById('pauseBtn'),
+            resetBtn: document.getElementById('resetBtn')
+        };
+
+        // Agent type configurations
+        const agentTypes = {
+            'Developer': { emoji: '👨‍💻', color: '#2196f3' },
+            'Investor': { emoji: '💰', color: '#ff9800' },
+            'Validator': { emoji: '✅', color: '#4caf50' },
+            'Trader': { emoji: '📈', color: '#9c27b0' },
+            'AdaptiveInvestor': { emoji: '🧠', color: '#00bcd4' },
+            'Arbitrator': { emoji: '⚖️', color: '#f44336' },
+            'Regulator': { emoji: '📋', color: '#795548' },
+            'ServiceProvider': { emoji: '🛠️', color: '#607d8b' },
+            'BountyHunter': { emoji: '🎯', color: '#ff5722' },
+            'Artist': { emoji: '🎨', color: '#e91e63' },
+            'Collector': { emoji: '🏆', color: '#ffc107' },
+            'Speculator': { emoji: '🎲', color: '#9c27b0' },
+            'PassiveMember': { emoji: '😴', color: '#9e9e9e' },
+            'default': { emoji: '👤', color: '#666666' }
+        };
+
+        // Initialize dashboard
+        function initDashboard() {
+            console.log('Initializing DAO Simulation Dashboard...');
+            
+            setupEventListeners();
+            connectWebSocket();
+            startSimulation();
+        }
+
+        // Setup UI event listeners
+        function setupEventListeners() {
+            elements.stepBtn.addEventListener('click', stepSimulation);
+            elements.runBtn.addEventListener('click', () => runSimulation(10));
+            elements.pauseBtn.addEventListener('click', togglePause);
+            elements.resetBtn.addEventListener('click', resetSimulation);
+        }
+
+        // WebSocket connection management
+        function connectWebSocket() {
+            try {
+                ws = new WebSocket(wsUrl);
+                
+                ws.onopen = () => {
+                    console.log('Connected to DAO simulation');
+                    dashboardState.connected = true;
+                    updateConnectionStatus(true);
+                };
+                
+                ws.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    handleSimulationEvent(data);
+                };
+                
+                ws.onclose = () => {
+                    console.log('Disconnected from simulation');
+                    dashboardState.connected = false;
+                    updateConnectionStatus(false);
+                    setTimeout(connectWebSocket, 3000);
+                };
+                
+                ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    showNotification('Connection error! Reconnecting...', 'error');
+                };
+            } catch (error) {
+                console.error('Failed to connect:', error);
+                updateConnectionStatus(false);
+                setTimeout(connectWebSocket, 3000);
+            }
+        }
+
+        // Start the simulation
+        function startSimulation() {
+            fetch('/start', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    console.log('Simulation started:', data);
+                    showNotification('Simulation initialized! 🏛️');
+                })
+                .catch(err => console.error('Failed to start simulation:', err));
+        }
+
+        // Handle incoming simulation events
+        function handleSimulationEvent(data) {
+            switch (data.event) {
+                case 'agent_created':
+                    addAgent(data);
+                    break;
+                case 'proposal_created':
+                    addProposal(data);
+                    break;
+                case 'proposal_voted':
+                    handleVote(data);
+                    break;
+                case 'step_end':
+                    updateSimulationStep(data);
+                    break;
+                case 'project_funded':
+                    showNotification(`Project funded: ${data.project} 💰`);
+                    break;
+                case 'achievement':
+                    showNotification(`🏆 Achievement: ${data.achievement}!`);
+                    break;
+                default:
+                    console.log('Unhandled event:', data);
+            }
+        }
+
+        // Add agent to the dashboard
+        function addAgent(agentData) {
+            const agent = {
+                id: agentData.agent_id || `agent_${dashboardState.agents.size}`,
+                type: agentData.agent_type || 'default',
+                tokens: agentData.tokens || 100,
+                reputation: agentData.reputation || 0,
+                active: false,
+                x: Math.random() * 80 + 10,
+                y: Math.random() * 30 + 50 // Keep agents on the ground area
+            };
+            
+            dashboardState.agents.set(agent.id, agent);
+            
+            // Update UI
+            updateAgentList();
+            createAgentSprite(agent);
+            
+            // Update stats
+            elements.memberCount.textContent = dashboardState.agents.size;
+        }
+
+        // Add proposal to the dashboard
+        function addProposal(proposalData) {
+            const proposal = {
+                id: proposalData.proposal_id || `proposal_${dashboardState.proposals.size}`,
+                title: proposalData.title || 'New Proposal',
+                funding_goal: proposalData.funding_goal || 1000,
+                current_funding: proposalData.current_funding || 0,
+                votes_yes: 0,
+                votes_no: 0,
+                x: Math.random() * 60 + 20,
+                y: Math.random() * 40 + 20
+            };
+            
+            dashboardState.proposals.set(proposal.id, proposal);
+            
+            // Update UI
+            updateProposalsList();
+            createProposalBubble(proposal);
+            
+            // Update stats
+            elements.proposalCount.textContent = dashboardState.proposals.size;
+        }
+
+        // Handle voting events
+        function handleVote(voteData) {
+            const agent = dashboardState.agents.get(voteData.agent_id);
+            const proposal = dashboardState.proposals.get(voteData.proposal_id);
+            
+            if (agent && proposal) {
+                // Update vote counts
+                if (voteData.vote === 'yes') {
+                    proposal.votes_yes++;
+                } else {
+                    proposal.votes_no++;
+                }
+                
+                // Mark agent as active
+                agent.active = true;
+                
+                // Create visual vote line
+                createVoteLine(agent, proposal, voteData.vote === 'yes');
+                
+                // Update UI
+                updateAgentList();
+                updateProposalsList();
+                
+                setTimeout(() => {
+                    agent.active = false;
+                    updateAgentList();
+                }, 2000);
+            }
+        }
+
+        // Update simulation step information
+        function updateSimulationStep(stepData) {
+            dashboardState.currentStep = stepData.step || 0;
+            elements.stepCount.textContent = dashboardState.currentStep;
+            
+            if (stepData.treasury_value !== undefined) {
+                elements.treasuryValue.textContent = Math.round(stepData.treasury_value).toLocaleString();
+            }
+            
+            if (stepData.num_members !== undefined) {
+                elements.memberCount.textContent = stepData.num_members;
+            }
+        }
+
+        // Create agent sprite in the simulation canvas
+        function createAgentSprite(agent) {
+            const sprite = document.createElement('div');
+            sprite.className = 'agent-sprite';
+            sprite.id = `sprite-${agent.id}`;
+            sprite.style.left = `${agent.x}%`;
+            sprite.style.bottom = `${agent.y}%`;
+            sprite.innerHTML = agentTypes[agent.type]?.emoji || agentTypes.default.emoji;
+            sprite.style.background = agentTypes[agent.type]?.color || agentTypes.default.color;
+            sprite.title = `${agent.type} - ${agent.tokens} tokens - ${agent.reputation} reputation`;
+            
+            sprite.addEventListener('click', () => {
+                showNotification(`${agent.type}: ${agent.tokens} tokens, ${agent.reputation} reputation`);
+            });
+            
+            elements.simulationCanvas.appendChild(sprite);
+            
+            // Animate in
+            sprite.style.transform = 'scale(0)';
+            requestAnimationFrame(() => {
+                sprite.style.transform = 'scale(1)';
+            });
+        }
+
+        // Create proposal bubble in the simulation canvas
+        function createProposalBubble(proposal) {
+            const bubble = document.createElement('div');
+            bubble.className = 'proposal-bubble';
+            bubble.id = `bubble-${proposal.id}`;
+            bubble.style.left = `${proposal.x}%`;
+            bubble.style.top = `${proposal.y}%`;
+            bubble.innerHTML = '💡';
+            bubble.title = `${proposal.title} - ${proposal.current_funding}/${proposal.funding_goal}`;
+            
+            bubble.addEventListener('click', () => {
+                showNotification(`${proposal.title}: ${proposal.current_funding}/${proposal.funding_goal} funded`);
+            });
+            
+            elements.simulationCanvas.appendChild(bubble);
+        }
+
+        // Create vote line animation
+        function createVoteLine(agent, proposal, isYes) {
+            const line = document.createElement('div');
+            line.className = `vote-line ${isYes ? '' : 'no'}`;
+            
+            // Position line from agent to proposal
+            const agentElement = document.getElementById(`sprite-${agent.id}`);
+            const proposalElement = document.getElementById(`bubble-${proposal.id}`);
+            
+            if (agentElement && proposalElement) {
+                const canvasRect = elements.simulationCanvas.getBoundingClientRect();
+                const agentRect = agentElement.getBoundingClientRect();
+                const proposalRect = proposalElement.getBoundingClientRect();
+                
+                const startX = agentRect.left - canvasRect.left + agentRect.width / 2;
+                const startY = agentRect.top - canvasRect.top + agentRect.height / 2;
+                const endX = proposalRect.left - canvasRect.left + proposalRect.width / 2;
+                const endY = proposalRect.top - canvasRect.top + proposalRect.height / 2;
+                
+                const distance = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
+                const angle = Math.atan2(endY - startY, endX - startX);
+                
+                line.style.left = `${startX}px`;
+                line.style.top = `${startY}px`;
+                line.style.width = `${distance}px`;
+                line.style.transform = `rotate(${angle}rad)`;
+                
+                elements.simulationCanvas.appendChild(line);
+                
+                // Remove line after animation
+                setTimeout(() => line.remove(), 2000);
+            }
+        }
+
+        // Update agent list UI
+        function updateAgentList() {
+            elements.agentList.innerHTML = '';
+            
+            dashboardState.agents.forEach(agent => {
+                const item = document.createElement('div');
+                item.className = `agent-item ${agent.active ? 'active' : ''}`;
+                
+                const agentInfo = agentTypes[agent.type] || agentTypes.default;
+                
+                item.innerHTML = `
+                    <div class="agent-avatar" style="background: ${agentInfo.color}20;">
+                        ${agentInfo.emoji}
+                    </div>
+                    <div class="agent-details">
+                        <div class="agent-name">${agent.type}</div>
+                        <div class="agent-meta">
+                            <span>💰 ${agent.tokens}</span>
+                            <span>⭐ ${agent.reputation}</span>
+                        </div>
+                    </div>
+                `;
+                
+                item.addEventListener('click', () => {
+                    showNotification(`${agent.type} selected - ${agent.tokens} tokens, ${agent.reputation} reputation`);
+                });
+                
+                elements.agentList.appendChild(item);
+            });
+        }
+
+        // Update proposals list UI
+        function updateProposalsList() {
+            elements.proposalsList.innerHTML = '';
+            
+            dashboardState.proposals.forEach(proposal => {
+                const card = document.createElement('div');
+                card.className = 'proposal-card';
+                
+                const progress = Math.min(100, (proposal.current_funding / proposal.funding_goal) * 100);
+                const totalVotes = proposal.votes_yes + proposal.votes_no;
+                
+                card.innerHTML = `
+                    <div class="proposal-title">${proposal.title}</div>
+                    <div class="proposal-meta">
+                        Funding: ${proposal.current_funding} / ${proposal.funding_goal}
+                    </div>
+                    <div class="proposal-progress">
+                        <div class="proposal-progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="vote-status">
+                        <span>👍 ${proposal.votes_yes}</span>
+                        <span>👎 ${proposal.votes_no}</span>
+                    </div>
+                `;
+                
+                elements.proposalsList.appendChild(card);
+            });
+        }
+
+        // Simulation control functions
+        function stepSimulation() {
+            fetch('/step', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    console.log('Step completed:', data.step);
+                    showNotification('Simulation stepped forward ⏩');
+                })
+                .catch(err => {
+                    showNotification('Failed to step simulation', 'error');
+                    console.error(err);
+                });
+        }
+
+        function runSimulation(steps) {
+            fetch('/run', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ steps })
+            })
+            .then(r => r.json())
+            .then(data => {
+                console.log(`${steps} steps completed:`, data.step);
+                showNotification(`Ran ${steps} simulation steps 🏃‍♂️`);
+            })
+            .catch(err => {
+                showNotification('Failed to run simulation', 'error');
+                console.error(err);
+            });
+        }
+
+        function togglePause() {
+            dashboardState.paused = !dashboardState.paused;
+            elements.pauseBtn.innerHTML = dashboardState.paused ? 
+                '<span>▶️</span> Resume' : '<span>⏸️</span> Pause';
+            showNotification(dashboardState.paused ? 'Simulation paused ⏸️' : 'Simulation resumed ▶️');
+        }
+
+        function resetSimulation() {
+            if (confirm('Are you sure you want to reset the simulation?')) {
+                // Clear current state
+                dashboardState.agents.clear();
+                dashboardState.proposals.clear();
+                
+                // Clear UI
+                elements.agentList.innerHTML = '';
+                elements.proposalsList.innerHTML = '';
+                elements.simulationCanvas.querySelectorAll('.agent-sprite, .proposal-bubble').forEach(el => el.remove());
+                
+                // Reset stats
+                elements.memberCount.textContent = '0';
+                elements.proposalCount.textContent = '0';
+                elements.stepCount.textContent = '0';
+                elements.treasuryValue.textContent = '0';
+                
+                // Restart simulation
+                startSimulation();
+                showNotification('Simulation reset 🔄');
+            }
+        }
+
+        // UI helper functions
+        function updateConnectionStatus(connected) {
+            if (connected) {
+                elements.statusDot.classList.add('connected');
+                elements.statusText.textContent = 'Connected';
+            } else {
+                elements.statusDot.classList.remove('connected');
+                elements.statusText.textContent = 'Disconnected';
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            elements.notification.textContent = message;
+            elements.notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                elements.notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

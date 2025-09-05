@@ -27,6 +27,7 @@ class Proposal:
         self.creation_time = 0
         self.voting_period = duration
         self.current_funding = 0
+        self.unique_id = None
 
     def add_vote(self, member, vote, weight=1):
         """Register a vote for the proposal.
@@ -83,6 +84,7 @@ class Proposal:
 
     def to_dict(self):
         return {
+            "unique_id": self.unique_id,
             "title": self.title,
             "description": self.description,
             "funding_goal": self.funding_goal,
@@ -115,6 +117,7 @@ class Proposal:
         proposal.current_funding = data.get("current_funding", 0)
         proposal.creation_time = data.get("creation_time", 0)
         proposal.voting_period = data.get("voting_period", proposal.duration)
+        proposal.unique_id = data.get("unique_id")
         return proposal
 
 
@@ -181,6 +184,7 @@ class BountyProposal(Proposal):
         proposal.voting_period = data.get("voting_period", proposal.duration)
         proposal.completed = data.get("completed", False)
         proposal.reward_locked = data.get("reward_locked", False)
+        proposal.unique_id = data.get("unique_id")
         return proposal
 
 
@@ -244,4 +248,5 @@ class QuadraticFundingProposal(Proposal):
         proposal.voting_period = data.get("voting_period", proposal.duration)
         contribs = data.get("contributions", {})
         proposal.contributions = {members_by_id[k]: v for k, v in contribs.items() if k in members_by_id}
+        proposal.unique_id = data.get("unique_id")
         return proposal

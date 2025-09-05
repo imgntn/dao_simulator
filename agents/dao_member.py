@@ -145,13 +145,21 @@ class DAOMember(Agent):
         return self.model.unstake_tokens(amount, token, self)
 
     def vote_on_random_proposal(self):
-        if self.model.proposals:
-            proposal = random.choice(self.model.proposals)
+        open_props = [
+            p
+            for p in self.model.proposals
+            if getattr(p, "status", "open") == "open"
+            and self.model.current_step <= getattr(p, "creation_time", 0)
+            + getattr(p, "voting_period", getattr(p, "duration", 0))
+        ]
+        if open_props:
+            proposal = random.choice(open_props)
             self.vote_on_proposal(proposal)
 
     def leave_comment_on_random_proposal(self):
-        if self.model.proposals:
-            proposal = random.choice(self.model.proposals)
+        open_props = [p for p in self.model.proposals if getattr(p, "status", "open") == "open"]
+        if open_props:
+            proposal = random.choice(open_props)
             sentiment = random.choice(["positive", "negative", "neutral"])
             self.leave_comment(proposal, sentiment)
 

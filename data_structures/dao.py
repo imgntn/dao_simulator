@@ -56,6 +56,8 @@ class DAO:
 
     def add_proposal(self, proposal):
         proposal.creation_time = self.current_step
+        if not getattr(proposal, "unique_id", None):
+            proposal.unique_id = f"proposal_{len(self.proposals)}"
         self.proposals.append(proposal)
         if self.event_bus:
             self.event_bus.publish(

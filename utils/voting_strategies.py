@@ -100,7 +100,7 @@ def random_vote(proposal: Proposal):
 
 
 def vote_based_on_budget(proposal: Proposal, budget: float):
-    if proposal.funding_required <= budget:
+    if getattr(proposal, "funding_goal", 0) <= budget:
         return True
     return False
 

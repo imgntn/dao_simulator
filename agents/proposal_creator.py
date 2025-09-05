@@ -14,7 +14,8 @@ class ProposalCreator(DAOMember):
 
     def step(self):
         self.vote_on_random_proposal()
-        self.leave_comment_on_random_proposal()
+        if random.random() < self.model.comment_probability:
+            self.leave_comment_on_random_proposal()
         # Only create proposals with reasonable frequency
         if self.model.current_step - self.last_proposal_step >= self.proposal_cooldown:
             if random.random() < 0.3:  # 30% chance to create proposal when cooldown is over

@@ -55,6 +55,14 @@ class Arbitrator(DAOMember):
                 self.model.add_violation(violation)
                 dispute.member.reputation -= self.model.reputation_penalty
                 self.model.slash_member(dispute.member, severity=dispute.importance)
+                if self.model.event_bus:
+                    self.model.event_bus.publish(
+                        "violation_created",
+                        step=self.model.current_step,
+                        project=getattr(dispute.project, "title", None),
+                        violator=getattr(dispute.member, "unique_id", None),
+                        description=dispute.description,
+                    )
 
     def resolve_dispute(self, dispute):
         self.resolved_disputes.append(dispute)
