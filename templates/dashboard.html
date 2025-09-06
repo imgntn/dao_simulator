@@ -578,6 +578,15 @@
                             <!-- Proposals will be populated here -->
                         </div>
                     </div>
+
+                    <div style="margin: 15px 0;">
+                        <div class="panel-header" style="background: none; padding: 10px 0; border: none;">
+                            <span>📰</span> Recent Events
+                        </div>
+                        <ul id="recentEvents" style="list-style: none; padding-left: 0; max-height: 200px; overflow-y: auto;">
+                            <!-- Recent events go here -->
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -713,18 +722,59 @@
                     break;
                 case 'proposal_created':
                     addProposal(data);
+                    pushRecentEvent({ step: data.step ?? 0, type: 'proposal', text: `Proposal created: ${data.title || data.proposal_id}`});
                     break;
                 case 'proposal_voted':
                     handleVote(data);
+                    pushRecentEvent({ step: data.step ?? 0, type: 'vote', text: `Vote ${data.vote || ''} on ${data.proposal_id}`});
                     break;
                 case 'step_end':
                     updateSimulationStep(data);
                     break;
                 case 'project_funded':
                     showNotification(`Project funded: ${data.project} 💰`);
+                    pushRecentEvent({ step: data.step ?? 0, type: 'funding', text: `Project funded: ${data.project} (${data.amount || ''})`});
                     break;
+                case 'compliance_checked': {
+                    const note = data.compliant ? 'compliant' : 'non-compliant';
+                    showNotification(`Compliance checked: ${data.project || 'project'} (${note})`);
+                    pushRecentEvent({ step: data.step ?? 0, type: 'compliance', text: `Compliance: ${data.project || 'project'} (${note})`});
+                    break;
+                }
+                case 'violation_created': {
+                    showNotification(`⚠️ Violation: ${data.description || 'policy breach'} by ${data.violator || 'member'}`);
+                    pushRecentEvent({ step: data.step ?? 0, type: 'violation', text: `Violation: ${data.description || ''} (${data.violator || ''})`});
+                    break;
+                }
+                case 'project_disputed': {
+                    showNotification(`⚖️ Dispute raised on ${data.project || 'project'}`);
+                    pushRecentEvent({ step: data.step ?? 0, type: 'dispute', text: `Dispute: ${data.project || 'project'}`});
+                    break;
+                }
+                case 'project_monitored': {
+                    const status = data.behind ? 'behind' : 'on-track';
+                    showNotification(`🛰️ Monitored: ${data.project || 'project'} (${status})`);
+                    pushRecentEvent({ step: data.step ?? 0, type: 'monitor', text: `Monitored: ${data.project || 'project'} (${status})`});
+                    break;
+                }
+                case 'service_offered': {
+                    showNotification(`🛠️ Service: ${data.service || 'service'} on ${data.proposal || 'proposal'}`);
+                    pushRecentEvent({ step: data.step ?? 0, type: 'service', text: `Service: ${data.service || 'service'} → ${data.proposal || 'proposal'}`});
+                    break;
+                }
+                case 'nft_minted': {
+                    showNotification(`🎨 NFT minted${data.token_id ? ' #' + data.token_id : ''}`);
+                    pushRecentEvent({ step: data.step ?? 0, type: 'nft', text: `NFT minted ${data.token_id ? '#' + data.token_id : ''}`});
+                    break;
+                }
+                case 'nft_sold': {
+                    showNotification(`💎 NFT sold${data.token_id ? ' #' + data.token_id : ''}${data.price ? ' for ' + data.price : ''}`);
+                    pushRecentEvent({ step: data.step ?? 0, type: 'nft', text: `NFT sold ${data.token_id ? '#' + data.token_id : ''}${data.price ? ' for ' + data.price : ''}`});
+                    break;
+                }
                 case 'achievement':
                     showNotification(`🏆 Achievement: ${data.achievement}!`);
+                    pushRecentEvent({ step: data.step ?? 0, type: 'achievement', text: `Achievement: ${data.achievement}`});
                     break;
                 default:
                     console.log('Unhandled event:', data);
@@ -1034,6 +1084,42 @@
             setTimeout(() => {
                 elements.notification.classList.remove('show');
             }, 3000);
+        }
+
+        // Recent events list
+        const recentEvents = [];
+        function pushRecentEvent(e) {
+            recentEvents.unshift(e);
+            if (recentEvents.length > 12) recentEvents.pop();
+            updateRecentEvents();
+        }
+        function badgeForType(t) {
+            const map = {
+                proposal: { label: 'Proposal', color: '#6c5ce7' },
+                vote: { label: 'Vote', color: '#2ecc71' },
+                funding: { label: 'Funding', color: '#00b894' },
+                compliance: { label: 'Compliance', color: '#0984e3' },
+                violation: { label: 'Violation', color: '#d63031' },
+                dispute: { label: 'Dispute', color: '#e17055' },
+                monitor: { label: 'Monitor', color: '#00a8ff' },
+                service: { label: 'Service', color: '#00cec9' },
+                nft: { label: 'NFT', color: '#fd79a8' },
+                achievement: { label: 'Achievement', color: '#f1c40f' },
+            };
+            return map[t] || { label: 'Event', color: '#95a5a6' };
+        }
+
+        function updateRecentEvents() {
+            const ul = document.getElementById('recentEvents');
+            if (!ul) return;
+            ul.innerHTML = '';
+            recentEvents.forEach(ev => {
+                const li = document.createElement('li');
+                const b = badgeForType(ev.type);
+                const badge = `<span style="display:inline-block; padding:2px 6px; margin-right:8px; border-radius:10px; background:${b.color}; color:white; font-size:12px;">${b.label}</span>`;
+                li.innerHTML = `${badge}<span style="opacity:0.7; font-size:12px; margin-right:8px;">[${ev.step}]</span>${ev.text}`;
+                ul.appendChild(li);
+            });
         }
 
         // Initialize when page loads

@@ -127,6 +127,26 @@
             <label>Auto-Rotate:</label>
             <input type="checkbox" id="auto-rotate" checked>
         </div>
+        <div class="control-group">
+            <label>Line Decay:</label>
+            <input type="range" id="line-decay" min="0.90" max="0.999" value="0.995" step="0.001">
+        </div>
+        <div class="control-group">
+            <button id="clear-edges" style="padding:6px 10px; border-radius:4px; border:none; cursor:pointer;">Clear Edges</button>
+        </div>
+        <hr style="border-color: rgba(255,255,255,0.1); margin: 10px 0;">
+        <div class="control-group">
+            <label>Show Monitoring:</label>
+            <input type="checkbox" id="show-monitoring" checked>
+        </div>
+        <div class="control-group">
+            <label>Show Service:</label>
+            <input type="checkbox" id="show-service" checked>
+        </div>
+        <div class="control-group">
+            <label>Show Dispute:</label>
+            <input type="checkbox" id="show-dispute" checked>
+        </div>
     </div>
 
     <div id="connection-status">
@@ -134,7 +154,7 @@
     </div>
 
     <div id="legend">
-        <h3 style="margin-top: 0;">Agent Types</h3>
+        <h3 style="margin-top: 0;">Legend</h3>
         <div class="legend-item">
             <div class="legend-color" style="background: #4488ff;"></div>
             <span>Developer</span>
@@ -154,6 +174,27 @@
         <div class="legend-item">
             <div class="legend-color" style="background: #fff;"></div>
             <span>Other</span>
+        </div>
+        <hr style="border-color: rgba(255,255,255,0.1);">
+        <div class="legend-item">
+            <div class="legend-color" style="background: #00ff00; border-radius: 2px;"></div>
+            <span>Vote Yes</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ff0000; border-radius: 2px;"></div>
+            <span>Vote No</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #00ffff; border-radius: 2px;"></div>
+            <span>Service</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #00aaff; border-radius: 2px;"></div>
+            <span>Monitoring</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ffa500; border-radius: 2px;"></div>
+            <span>Dispute</span>
         </div>
     </div>
 
@@ -413,6 +454,24 @@
                 case 'proposal_invested':
                     highlightInvestment(params);
                     break;
+                case 'service_offered':
+                    visualizeService(params);
+                    break;
+                case 'project_disputed':
+                    visualizeDispute(params);
+                    break;
+                case 'project_monitored':
+                    visualizeMonitoring(params);
+                    break;
+                case 'compliance_checked':
+                    visualizeCompliance(params);
+                    break;
+                case 'violation_created':
+                    visualizeViolation(params);
+                    break;
+                case 'step_end':
+                    // Update any step-based stats if needed
+                    break;
                 case 'step_complete':
                     updateStats(params);
                     break;
@@ -519,6 +578,8 @@
             edgeGeometry.attributes.opacity.needsUpdate = true;
             
             activeEdgeCount++;
+            // Limit draw range to active segments
+            edgeGeometry.setDrawRange(0, activeEdgeCount * 2);
             document.getElementById('vote-count').textContent = activeEdgeCount;
             
             // Fade out edge over time
@@ -543,6 +604,113 @@
             matrix.setPosition(proposal.position);
             proposalMesh.setMatrixAt(proposal.index, matrix);
             proposalMesh.instanceMatrix.needsUpdate = true;
+        }
+
+        function findProposalByTitle(title) {
+            if (!title) return null;
+            for (const [_, p] of proposals) {
+                if (p.title === title) return p;
+            }
+            return null;
+        }
+
+        function createGenericConnection(agentId, proposalRef, colorHex, lineType) {
+            // Respect toggles
+            if (lineType === 'monitoring' && !document.getElementById('show-monitoring').checked) return;
+            if (lineType === 'service' && !document.getElementById('show-service').checked) return;
+            if (lineType === 'dispute' && !document.getElementById('show-dispute').checked) return;
+            const agent = agents.get(agentId);
+            const proposal = typeof proposalRef === 'string' ? proposals.get(proposalRef) : proposalRef;
+            if (!agent || !proposal) return;
+
+            if (activeEdgeCount >= MAX_EDGES) return;
+            const startIdx = activeEdgeCount * 6;
+            const colorIdx = activeEdgeCount * 6;
+            const opacityIdx = activeEdgeCount * 2;
+
+            edgePositions[startIdx] = agent.position.x;
+            edgePositions[startIdx + 1] = agent.position.y;
+            edgePositions[startIdx + 2] = agent.position.z;
+            edgePositions[startIdx + 3] = proposal.position.x;
+            edgePositions[startIdx + 4] = proposal.position.y;
+            edgePositions[startIdx + 5] = proposal.position.z;
+
+            const color = new THREE.Color(colorHex);
+            edgeColors[colorIdx] = color.r;
+            edgeColors[colorIdx + 1] = color.g;
+            edgeColors[colorIdx + 2] = color.b;
+            edgeColors[colorIdx + 3] = color.r;
+            edgeColors[colorIdx + 4] = color.g;
+            edgeColors[colorIdx + 5] = color.b;
+
+            edgeOpacities[opacityIdx] = 1.0;
+            edgeOpacities[opacityIdx + 1] = 1.0;
+
+            edgeGeometry.attributes.position.needsUpdate = true;
+            edgeGeometry.attributes.color.needsUpdate = true;
+            edgeGeometry.attributes.opacity.needsUpdate = true;
+            activeEdgeCount++;
+        }
+
+        function visualizeService(params) {
+            const { provider, proposal, proposal_id } = params;
+            const prop = proposals.get(proposal_id) || findProposalByTitle(proposal);
+            createGenericConnection(provider, prop, 0x00ffff, 'service'); // cyan
+        }
+
+        function visualizeDispute(params) {
+            const { validator, project, proposal_id } = params;
+            const prop = proposals.get(proposal_id) || findProposalByTitle(project);
+            createGenericConnection(validator, prop, 0xffa500, 'dispute'); // orange
+        }
+
+        function visualizeMonitoring(params) {
+            const { project, validator, proposal_id } = params;
+            const prop = proposals.get(proposal_id) || findProposalByTitle(project);
+            createGenericConnection(validator, prop, 0x00aaff, 'monitoring'); // blue
+        }
+
+        function visualizeCompliance(params) {
+            const { project, compliant } = params;
+            const prop = findProposalByTitle(project);
+            if (!prop) return;
+            // brief scale pulse to indicate check
+            const matrix = new THREE.Matrix4();
+            const s = compliant ? 1.2 : 1.5;
+            matrix.makeScale(s, s, s);
+            matrix.setPosition(prop.position);
+            proposalMesh.setMatrixAt(prop.index, matrix);
+            proposalMesh.instanceMatrix.needsUpdate = true;
+            setTimeout(() => {
+                const m2 = new THREE.Matrix4();
+                m2.setPosition(prop.position);
+                proposalMesh.setMatrixAt(prop.index, m2);
+                proposalMesh.instanceMatrix.needsUpdate = true;
+            }, 600);
+        }
+
+        function visualizeViolation(params) {
+            const { violator } = params;
+            const agent = agents.get(violator);
+            if (!agent) return;
+            const idx = agent.index;
+            const prev = [agentColors[idx * 3], agentColors[idx * 3 + 1], agentColors[idx * 3 + 2]];
+            // flash red and grow size briefly
+            const red = new THREE.Color(0xff0000);
+            agentColors[idx * 3] = red.r;
+            agentColors[idx * 3 + 1] = red.g;
+            agentColors[idx * 3 + 2] = red.b;
+            agentSizes[idx] = Math.max(agentSizes[idx], 4.0);
+            agentGeometry.attributes.color.needsUpdate = true;
+            agentGeometry.attributes.size.needsUpdate = true;
+            setTimeout(() => {
+                agentColors[idx * 3] = prev[0];
+                agentColors[idx * 3 + 1] = prev[1];
+                agentColors[idx * 3 + 2] = prev[2];
+                agentSizes[idx] *= 0.5;
+                agentGeometry.attributes.color.needsUpdate = true;
+                agentGeometry.attributes.size.needsUpdate = true;
+            }, 800);
         }
 
         function updateStats(params) {
@@ -648,10 +816,11 @@
             proposalMesh.rotation.y += deltaTime * 0.5;
             proposalMesh.rotation.x += deltaTime * 0.3;
             
-            // Fade edges
+            // Fade edges using adjustable decay
+            const decay = parseFloat(document.getElementById('line-decay').value || '0.995');
             for (let i = 0; i < activeEdgeCount * 2; i++) {
                 if (edgeOpacities[i] > 0.01) {
-                    edgeOpacities[i] *= 0.995;
+                    edgeOpacities[i] *= decay;
                 }
             }
             edgeGeometry.attributes.opacity.needsUpdate = true;
@@ -671,6 +840,31 @@
         // Start animation and WebSocket connection
         animate();
         connectWebSocket();
+
+        // Keyboard shortcuts for layer toggles
+        // m = monitoring, s = service, d = dispute, e = edges, p = particles, r = auto-rotate
+        window.addEventListener('keydown', (e) => {
+            const k = (e.key || '').toLowerCase();
+            const toggle = (id) => {
+                const el = document.getElementById(id);
+                if (el) { el.checked = !el.checked; }
+            };
+            if (k === 'm') toggle('show-monitoring');
+            else if (k === 's') toggle('show-service');
+            else if (k === 'd') toggle('show-dispute');
+            else if (k === 'e') toggle('show-edges');
+            else if (k === 'p') toggle('show-particles');
+            else if (k === 'r') toggle('auto-rotate');
+        });
+
+        // Clear edges control
+        document.getElementById('clear-edges').addEventListener('click', () => {
+            activeEdgeCount = 0;
+            edgeGeometry.setDrawRange(0, 0);
+            // also zero out opacities to avoid stray lines
+            for (let i = 0; i < edgeOpacities.length; i++) edgeOpacities[i] = 0;
+            edgeGeometry.attributes.opacity.needsUpdate = true;
+        });
 
         // Generate some test data if not connected
         setTimeout(() => {

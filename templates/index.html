@@ -54,6 +54,37 @@
             <li v-for="(n, i) in news" :key="i">{{ n }}</li>
         </ul>
     </section>
+    <section id="event-ticker">
+        <h2>Event Ticker</h2>
+        <div style="margin:8px 0; display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+            <label><input type="checkbox" v-model="filterAll" @change="toggleAllFilters"> All</label>
+            <label v-for="(on, key) in filters" :key="'f-'+key" style="display:inline-flex; align-items:center; gap:6px;">
+                <input type="checkbox" v-model="filters[key]">
+                <span style="display:inline-block; padding:2px 6px; border-radius:10px; color:white; font-size:12px;" :style="{background: badgeForType(key).color}">{{ badgeForType(key).label }}</span>
+            </label>
+            <button @click="copyFiltered" style="margin-left:auto; padding:6px 10px; border:none; border-radius:6px; background:#6c5ce7; color:white; cursor:pointer;">Copy Filtered (NDJSON)</button>
+            <button @click="downloadFiltered" style="padding:6px 10px; border:none; border-radius:6px; background:#2ecc71; color:white; cursor:pointer;">Download</button>
+            <button @click="downloadFilteredCSV" style="padding:6px 10px; border:none; border-radius:6px; background:#3498db; color:white; cursor:pointer;">CSV</button>
+            <span v-if="copyStatus" style="margin-left:8px; font-size:12px; color:#2ecc71;">{{ copyStatus }}</span>
+        </div>
+        <ul>
+            <li v-for="(e, i) in filteredEvents" :key="'e'+i">
+                <span style="display:inline-block; padding:2px 6px; margin-right:8px; border-radius:10px; color:white; font-size:12px;" :style="{background: badgeForType(e.type).color}">{{ badgeForType(e.type).label }}</span>
+                <strong>[Step {{ e.step }}]</strong> {{ e.text }}
+            </li>
+        </ul>
+    </section>
+    <section id="ops-counters">
+        <h2>Ops Counters</h2>
+        <ul>
+            <li>Violations: {{ violationCount }}</li>
+            <li>Disputes: {{ disputesRaised }}</li>
+            <li>Compliance Checks: {{ complianceChecks }}</li>
+            <li>Projects Monitored: {{ monitoredCount }}</li>
+            <li>Services Offered: {{ servicesOffered }}</li>
+            <li>NFT Sales: {{ nftSales }}</li>
+        </ul>
+    </section>
     <section id="trending">
         <h2>Trending Topics</h2>
         <ul>
@@ -145,6 +176,16 @@ createApp({
             proposals: [],
             news: [],
             trending: [],
+            eventsLog: [],
+            filters: { proposal: true, vote: true, funding: true, compliance: true, violation: true, dispute: true, monitor: true, service: true, nft: true, achievement: true },
+            filterAll: true,
+            copyStatus: '',
+            violationCount: 0,
+            disputesRaised: 0,
+            complianceChecks: 0,
+            servicesOffered: 0,
+            monitoredCount: 0,
+            nftSales: 0,
             output: '',
             completed: [],
             remaining: [],
@@ -174,7 +215,153 @@ createApp({
             runInterval: 1000
         };
     },
+    mounted() {
+        this.loadSettings();
+        this.loadEvents();
+        fetch('/news').then(r => r.json()).then(d => { this.news = d; });
+        this.updateTrending();
+        this._autoTimer = null;
+        const priceTrace = { x: [], y: [], mode: 'lines', name: 'Price' };
+        const giniTrace = { x: [], y: [], mode: 'lines', name: 'Gini' };
+        Plotly.newPlot('priceChart', [priceTrace]);
+        Plotly.newPlot('giniChart', [giniTrace]);
+        const ws = new WebSocket(`ws://${location.host}/ws`);
+        ws.onmessage = (ev) => {
+            const data = JSON.parse(ev.data);
+            if (data.event === 'step_end') {
+                this.members = data.num_members;
+                this.price = data.token_price;
+                this.proposals = data.recent_proposals;
+                priceTrace.x = data.price_history.map((_, i) => i);
+                priceTrace.y = data.price_history;
+                giniTrace.x = data.gini_history.map((_, i) => i);
+                giniTrace.y = data.gini_history;
+                Plotly.react('priceChart', [priceTrace]);
+                Plotly.react('giniChart', [giniTrace]);
+            } else if (data.event === 'violation_created') {
+                this.violationCount += 1;
+                this.pushEvent({ type: 'violation', step: data.step, text: `Violation: ${data.description || 'policy breach'} (project: ${data.project || 'unknown'}, violator: ${data.violator || 'n/a'})` });
+            } else if (data.event === 'compliance_checked') {
+                this.complianceChecks += 1;
+                const note = data.compliant ? 'compliant' : 'non-compliant';
+                this.pushEvent({ type: 'compliance', step: data.step, text: `Compliance checked: ${data.project || 'project'} (${note})` });
+            } else if (data.event === 'project_disputed') {
+                this.disputesRaised += 1;
+                this.pushEvent({ type: 'dispute', step: data.step, text: `Dispute raised on ${data.project || 'project'} by ${data.validator || 'validator'}` });
+            } else if (data.event === 'project_monitored') {
+                this.monitoredCount += 1;
+                const status = data.behind ? 'behind' : 'on-track';
+                this.pushEvent({ type: 'monitor', step: data.step, text: `Project monitored: ${data.project || 'project'} (${status})` });
+            } else if (data.event === 'service_offered') {
+                this.servicesOffered += 1;
+                this.pushEvent({ type: 'service', step: data.step, text: `Service offered: ${data.service || 'service'} to ${data.proposal || 'proposal'} by ${data.provider || 'provider'}` });
+            } else if (data.event === 'nft_minted') {
+                this.pushEvent({ type: 'nft', step: data.step, text: `NFT minted by ${data.artist || 'artist'}: ${data.token_id || ''}` });
+            } else if (data.event === 'nft_sold') {
+                this.nftSales += 1;
+                this.pushEvent({ type: 'nft', step: data.step, text: `NFT sold: ${data.token_id || ''} for ${data.price || ''}` });
+            } else if (data.event === 'proposal_voted') {
+                const v = data.vote || 'vote';
+                this.pushEvent({ type: 'vote', step: data.step, text: `Vote: ${v} on proposal ${data.proposal_id}` });
+            } else if (data.event === 'proposal_created') {
+                this.pushEvent({ type: 'proposal', step: data.step, text: `Proposal created: ${data.title || data.proposal_id}` });
+            } else if (data.event === 'project_funded') {
+                this.pushEvent({ type: 'funding', step: data.step, text: `Project funded: ${data.project} (${data.amount || ''})` });
+            } else if (data.event === 'network_update') {
+                window.handleNetworkUpdate(data);
+            } else if (data.event === 'scenario_progress') {
+                this.completed = data.completed;
+                this.remaining = data.remaining;
+            } else if (data.event === 'news_update') {
+                this.news.unshift(data.summary);
+                if (this.news.length > 20) this.news.pop();
+                this.updateTrending();
+            }
+        };
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
+            document.body.classList.add('dark');
+        }
+    },
+    computed: {
+        filteredEvents() {
+            return this.eventsLog.filter(e => this.filters[e.type] !== false);
+        }
+    },
     methods: {
+        badgeForType(t) {
+            const map = {
+                proposal: { label: 'Proposal', color: '#6c5ce7' },
+                vote: { label: 'Vote', color: '#2ecc71' },
+                funding: { label: 'Funding', color: '#00b894' },
+                compliance: { label: 'Compliance', color: '#0984e3' },
+                violation: { label: 'Violation', color: '#d63031' },
+                dispute: { label: 'Dispute', color: '#e17055' },
+                monitor: { label: 'Monitor', color: '#00a8ff' },
+                service: { label: 'Service', color: '#00cec9' },
+                nft: { label: 'NFT', color: '#fd79a8' },
+                achievement: { label: 'Achievement', color: '#f1c40f' },
+            };
+            return map[t] || { label: 'Event', color: '#95a5a6' };
+        },
+        toggleAllFilters() {
+            const on = this.filterAll;
+            Object.keys(this.filters).forEach(k => { this.filters[k] = on; });
+        },
+        downloadFiltered() {
+            const lines = this.filteredEvents.map(e => JSON.stringify({ step: e.step ?? 0, type: e.type || 'event', text: e.text }));
+            const ndjson = lines.join('\n');
+            const blob = new Blob([ndjson], { type: 'application/x-ndjson' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const lastStep = (this.filteredEvents[0]?.step ?? 0);
+            const ts = new Date().toISOString().replace(/[:.]/g, '-');
+            a.href = url;
+            a.download = `events_filtered_step_${lastStep}_${ts}.ndjson`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        },
+        downloadFilteredCSV() {
+            const rows = this.filteredEvents.map(e => ({ step: e.step ?? 0, type: e.type || 'event', text: String(e.text ?? '') }));
+            const esc = (s) => '"' + String(s).replace(/"/g, '""').replace(/\r?\n/g, ' ') + '"';
+            const csv = ['step,type,text'].concat(rows.map(r => [r.step, r.type, esc(r.text)].join(','))).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const lastStep = (this.filteredEvents[0]?.step ?? 0);
+            const ts = new Date().toISOString().replace(/[:.]/g, '-');
+            a.href = url;
+            a.download = `events_filtered_step_${lastStep}_${ts}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        },
+        async copyFiltered() {
+            try {
+                const lines = this.filteredEvents.map(e => JSON.stringify({ step: e.step ?? 0, type: e.type || 'event', text: e.text }));
+                const ndjson = lines.join('\n');
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(ndjson);
+                } else {
+                    // Fallback
+                    const ta = document.createElement('textarea');
+                    ta.value = ndjson;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                }
+                this.copyStatus = 'Copied!';
+                setTimeout(() => { this.copyStatus = ''; }, 1500);
+            } catch (err) {
+                this.copyStatus = 'Copy failed';
+                setTimeout(() => { this.copyStatus = ''; }, 2000);
+                console.error('Copy failed', err);
+            }
+        },
         async loadSettings() {
             const resp = await fetch('/settings');
             this.settings = await resp.json();
@@ -282,45 +469,10 @@ createApp({
             document.body.classList.toggle('dark');
             const t = document.body.classList.contains('dark') ? 'dark' : 'light';
             localStorage.setItem('theme', t);
-        }
-    },
-    mounted() {
-        this.loadSettings();
-        this.loadEvents();
-        fetch('/news').then(r => r.json()).then(d => { this.news = d; });
-        this.updateTrending();
-        this._autoTimer = null;
-        const priceTrace = { x: [], y: [], mode: 'lines', name: 'Price' };
-        const giniTrace = { x: [], y: [], mode: 'lines', name: 'Gini' };
-        Plotly.newPlot('priceChart', [priceTrace]);
-        Plotly.newPlot('giniChart', [giniTrace]);
-        const ws = new WebSocket(`ws://${location.host}/ws`);
-        ws.onmessage = (ev) => {
-            const data = JSON.parse(ev.data);
-            if (data.event === 'step_end') {
-                this.members = data.num_members;
-                this.price = data.token_price;
-                this.proposals = data.recent_proposals;
-                priceTrace.x = data.price_history.map((_, i) => i);
-                priceTrace.y = data.price_history;
-                giniTrace.x = data.gini_history.map((_, i) => i);
-                giniTrace.y = data.gini_history;
-                Plotly.react('priceChart', [priceTrace]);
-                Plotly.react('giniChart', [giniTrace]);
-            } else if (data.event === 'network_update') {
-                window.handleNetworkUpdate(data);
-            } else if (data.event === 'scenario_progress') {
-                this.completed = data.completed;
-                this.remaining = data.remaining;
-            } else if (data.event === 'news_update') {
-                this.news.unshift(data.summary);
-                if (this.news.length > 20) this.news.pop();
-                this.updateTrending();
-            }
-        };
-        const theme = localStorage.getItem('theme');
-        if (theme === 'dark') {
-            document.body.classList.add('dark');
+        },
+        pushEvent(e) {
+            this.eventsLog.unshift(e);
+            if (this.eventsLog.length > 50) this.eventsLog.pop();
         }
     }
 }).mount('#app');

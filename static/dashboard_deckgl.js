@@ -41,6 +41,19 @@
     });
   }
 
+  function edgeColor(type) {
+    switch (type) {
+      case 'delegation':
+        return [0, 0, 255]; // blue
+      case 'representative':
+        return [128, 0, 128]; // purple
+      case 'created':
+        return [0, 200, 0]; // green
+      default:
+        return [128, 128, 128]; // gray
+    }
+  }
+
   function buildEdgeData(edges, nodes) {
     const map = {};
     nodes.forEach((n) => {
@@ -54,7 +67,7 @@
         return {
           source: s.position,
           target: t.position,
-          color: e.type === 'delegation' ? [0, 0, 255] : [128, 128, 128],
+          color: edgeColor(e.type),
           width: Math.max(1, (e.weight || 1) / 10),
         };
       })
@@ -70,8 +83,14 @@
       radiusScale: 1,
       radiusMinPixels: 2,
       getPosition: (d) => d.position,
-      getFillColor: (d) => (d.type === 'proposal' ? [144, 238, 144] : [135, 206, 235]),
-      getRadius: 4,
+      getFillColor: (d) => {
+        if (d.type === 'cluster') return [255, 165, 0]; // orange for clusters
+        return d.type === 'proposal' ? [144, 238, 144] : [135, 206, 235];
+      },
+      getRadius: (d) => {
+        if (d.type === 'cluster') return Math.max(4, Math.sqrt(d.size || 1));
+        return 4;
+      },
       onHover: (info) => {
         const tip = document.getElementById('deckgl-tooltip');
         if (!tip) return;
@@ -103,18 +122,24 @@
   function handleNetworkUpdate(data) {
     const rawNodes = Array.isArray(data.nodes) ? data.nodes : [];
     const rawEdges = Array.isArray(data.edges) ? data.edges : [];
-    // If the server provided positions use them, otherwise fall back to a
-    // cheap client-side grid layout.
-    if (rawNodes.length && rawNodes[0].position) {
-      // Ensure positions are numeric arrays of length 2 or 3
-      nodeData = rawNodes.map((n) => {
+    const visibleNodes = Array.isArray(data.visible_nodes) ? data.visible_nodes : null;
+    const visibleEdges = Array.isArray(data.visible_edges) ? data.visible_edges : null;
+
+    // Prefer cluster-level LOD if provided for large graphs
+    const useVisible = visibleNodes && visibleEdges && ((rawNodes && rawNodes.length > 1000) || data.clusters);
+    const nodesIn = useVisible ? visibleNodes : rawNodes;
+    const edgesIn = useVisible ? visibleEdges : rawEdges;
+
+    // If the server provided positions use them, otherwise fall back to a grid layout.
+    if (nodesIn.length && nodesIn[0].position) {
+      nodeData = nodesIn.map((n) => {
         const pos = Array.isArray(n.position) ? n.position.slice(0, 3) : [0, 0, 0];
         return Object.assign({}, n, {position: pos});
       });
     } else {
-      nodeData = layoutGrid(rawNodes);
+      nodeData = layoutGrid(nodesIn);
     }
-    edgeData = buildEdgeData(rawEdges, nodeData);
+    edgeData = buildEdgeData(edgesIn, nodeData);
     if (!deckInstance) initDeck();
     updateLayers();
   }
