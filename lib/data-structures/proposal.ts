@@ -193,7 +193,7 @@ export class MembershipProposal extends Proposal {
 
 export class BountyProposal extends Proposal {
   bountyAmount: number;
-  required Skills: string[];
+  requiredSkills: string[];
   completed: boolean = false;
 
   constructor(

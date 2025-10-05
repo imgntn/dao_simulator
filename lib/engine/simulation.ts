@@ -1,11 +1,11 @@
 // DAOSimulation - Main simulation orchestrator
 // Port from dao_simulation.py
 
-import { DAOModel } from './model';
+import { Model } from './model';
 import { RandomActivation, ParallelActivation, AsyncActivation } from './scheduler';
-import { DataCollector } from './data-collector';
+import { SimpleDataCollector } from './data-collector';
 import { DAO } from '../data-structures/dao';
-import { Marketplace } from '../data-structures/nft';
+import { NFTMarketplace } from '../data-structures/nft';
 import { ReputationTracker } from '../data-structures/reputation';
 import { MarketShock } from '../data-structures/market-shock';
 import { EventEngine } from '../utils/event-engine';
@@ -52,7 +52,7 @@ export interface DAOSimulationConfig extends Partial<SimulationSettings> {
   centralityInterval?: number;
 }
 
-export class DAOSimulation extends DAOModel {
+export class DAOSimulation extends Model {
   exportCsv: boolean;
   csvFilename: string;
   useParallel: boolean;
@@ -109,9 +109,9 @@ export class DAOSimulation extends DAOModel {
 
   // Components
   eventLogger: EventLogger | IndexedDBEventLogger | null = null;
-  marketplace: Marketplace;
+  marketplace: NFTMarketplace;
   reputationTracker: ReputationTracker;
-  dataCollector: DataCollector;
+  dataCollector: SimpleDataCollector;
   agentManager: AgentManager;
   eventEngine?: EventEngine;
   currentShock: number = 0;
@@ -218,7 +218,7 @@ export class DAOSimulation extends DAOModel {
     }
 
     // Initialize marketplace
-    this.marketplace = new Marketplace(this.eventBus);
+    this.marketplace = new NFTMarketplace(this.eventBus);
     this.dao.marketplace = this.marketplace;
 
     // Initialize treasury with funding
@@ -243,7 +243,7 @@ export class DAOSimulation extends DAOModel {
     }
 
     // Initialize data collector
-    this.dataCollector = new DataCollector(
+    this.dataCollector = new SimpleDataCollector(
       this.dao,
       config.centralityInterval ?? 1
     );
