@@ -1,0 +1,457 @@
+// DAOSimulation - Main simulation orchestrator
+// Port from dao_simulation.py
+
+import { DAOModel } from './model';
+import { RandomActivation, ParallelActivation, AsyncActivation } from './scheduler';
+import { DataCollector } from './data-collector';
+import { DAO } from '../data-structures/dao';
+import { Marketplace } from '../data-structures/nft';
+import { ReputationTracker } from '../data-structures/reputation';
+import { MarketShock } from '../data-structures/market-shock';
+import { EventEngine } from '../utils/event-engine';
+import { EventLogger, IndexedDBEventLogger } from '../utils/event-logger';
+import { AgentManager } from '../utils/agent-manager';
+import { settings, SimulationSettings } from '../config/settings';
+import * as constants from '../config/constants';
+import { getRule } from '../utils/governance-plugins';
+import {
+  Developer,
+  Investor,
+  Trader,
+  AdaptiveInvestor,
+  Delegator,
+  LiquidDelegator,
+  ProposalCreator,
+  Validator,
+  ServiceProvider,
+  Arbitrator,
+  Regulator,
+  Auditor,
+  BountyHunter,
+  ExternalPartner,
+  PassiveMember,
+  Artist,
+  Collector,
+  Speculator,
+} from '../agents';
+
+export interface DAOSimulationConfig extends Partial<SimulationSettings> {
+  exportCsv?: boolean;
+  csvFilename?: string;
+  useParallel?: boolean;
+  useAsync?: boolean;
+  maxWorkers?: number;
+  eventLogging?: boolean;
+  eventLogFilename?: string;
+  useIndexedDB?: boolean;
+  checkpointInterval?: number;
+  marketShockSchedule?: Record<number, number>;
+  eventsFile?: string | any[];
+  reportFile?: string;
+  seed?: number;
+  centralityInterval?: number;
+}
+
+export class DAOSimulation extends DAOModel {
+  exportCsv: boolean;
+  csvFilename: string;
+  useParallel: boolean;
+  useAsync: boolean;
+  maxWorkers?: number;
+  eventLogging: boolean;
+  eventLogFilename: string;
+  useIndexedDB: boolean;
+  checkpointInterval: number;
+  marketShockSchedule: Record<number, number>;
+  reportFile?: string;
+  seed?: number;
+
+  // Simulation settings
+  enableMarketing: boolean;
+  marketingLevel: string;
+  enablePlayer: boolean;
+  tokenEmissionRate: number;
+  tokenBurnRate: number;
+  stakingInterestRate: number;
+  slashFraction: number;
+  reputationDecayRate: number;
+  marketShockFrequency: number;
+  adaptiveLearningRate: number;
+  adaptiveEpsilon: number;
+  governanceRuleName: string;
+  governanceRule: any;
+
+  // Agent counts
+  numDevelopers: number;
+  numInvestors: number;
+  numTraders: number;
+  numAdaptiveInvestors: number;
+  numDelegators: number;
+  numLiquidDelegators: number;
+  numProposalCreators: number;
+  numValidators: number;
+  numServiceProviders: number;
+  numArbitrators: number;
+  numRegulators: number;
+  numAuditors: number;
+  numBountyHunters: number;
+  numExternalPartners: number;
+  numPassiveMembers: number;
+  numArtists: number;
+  numCollectors: number;
+  numSpeculators: number;
+
+  // Probabilities and parameters
+  commentProbability: number;
+  externalPartnerInteractProbability: number;
+  violationProbability: number;
+  reputationPenalty: number;
+
+  // Components
+  eventLogger: EventLogger | IndexedDBEventLogger | null = null;
+  marketplace: Marketplace;
+  reputationTracker: ReputationTracker;
+  dataCollector: DataCollector;
+  agentManager: AgentManager;
+  eventEngine?: EventEngine;
+  currentShock: number = 0;
+
+  constructor(config: DAOSimulationConfig = {}) {
+    // Create DAO first
+    const dao = new DAO(
+      'MyDAO',
+      config.violation_probability ?? settings.violation_probability,
+      config.reputation_penalty ?? settings.reputation_penalty,
+      config.comment_probability ?? settings.comment_probability,
+      config.external_partner_interact_probability ?? settings.external_partner_interact_probability,
+      config.staking_interest_rate ?? settings.staking_interest_rate,
+      config.slash_fraction ?? settings.slash_fraction,
+      config.reputation_decay_rate ?? settings.reputation_decay_rate
+    );
+
+    super(dao);
+
+    // Set seed if provided
+    if (config.seed !== undefined) {
+      this.seed = config.seed;
+      Math.random = (() => {
+        let seed = config.seed!;
+        return () => {
+          seed = (seed * 9301 + 49297) % 233280;
+          return seed / 233280;
+        };
+      })();
+    }
+
+    // Configuration
+    this.exportCsv = config.exportCsv ?? false;
+    this.csvFilename = config.csvFilename ?? 'simulation_data.csv';
+    this.useParallel = config.useParallel ?? false;
+    this.useAsync = config.useAsync ?? false;
+    this.maxWorkers = config.maxWorkers;
+    this.eventLogging = config.eventLogging ?? false;
+    this.eventLogFilename = config.eventLogFilename ?? 'events.csv';
+    this.useIndexedDB = config.useIndexedDB ?? true;
+    this.checkpointInterval = config.checkpointInterval ?? 0;
+    this.marketShockSchedule = config.marketShockSchedule ?? {};
+    this.reportFile = config.reportFile;
+
+    // Settings
+    this.enableMarketing = config.enable_marketing ?? settings.enable_marketing;
+    this.marketingLevel = config.marketing_level ?? settings.marketing_level;
+    this.enablePlayer = config.enable_player ?? settings.enable_player;
+    this.tokenEmissionRate = config.token_emission_rate ?? settings.token_emission_rate;
+    this.tokenBurnRate = config.token_burn_rate ?? settings.token_burn_rate;
+    this.stakingInterestRate = config.staking_interest_rate ?? settings.staking_interest_rate;
+    this.slashFraction = config.slash_fraction ?? settings.slash_fraction;
+    this.reputationDecayRate = config.reputation_decay_rate ?? settings.reputation_decay_rate;
+    this.marketShockFrequency = config.market_shock_frequency ?? settings.market_shock_frequency;
+    this.adaptiveLearningRate = config.adaptive_learning_rate ?? settings.adaptive_learning_rate;
+    this.adaptiveEpsilon = config.adaptive_epsilon ?? settings.adaptive_epsilon;
+
+    // Governance
+    this.governanceRuleName = config.governance_rule ?? settings.governance_rule;
+    const ruleClass = getRule(this.governanceRuleName);
+    if (!ruleClass) {
+      throw new Error(`Unknown governance rule: ${this.governanceRuleName}`);
+    }
+    this.governanceRule = new ruleClass();
+
+    // Agent counts
+    this.numDevelopers = config.num_developers ?? settings.num_developers;
+    this.numInvestors = config.num_investors ?? settings.num_investors;
+    this.numTraders = config.num_traders ?? settings.num_traders;
+    this.numAdaptiveInvestors = config.num_adaptive_investors ?? settings.num_adaptive_investors;
+    this.numDelegators = config.num_delegators ?? settings.num_delegators;
+    this.numLiquidDelegators = config.num_liquid_delegators ?? settings.num_liquid_delegators;
+    this.numProposalCreators = config.num_proposal_creators ?? settings.num_proposal_creators;
+    this.numValidators = config.num_validators ?? settings.num_validators;
+    this.numServiceProviders = config.num_service_providers ?? settings.num_service_providers;
+    this.numArbitrators = config.num_arbitrators ?? settings.num_arbitrators;
+    this.numRegulators = config.num_regulators ?? settings.num_regulators;
+    this.numAuditors = config.num_auditors ?? settings.num_auditors;
+    this.numBountyHunters = config.num_bounty_hunters ?? settings.num_bounty_hunters;
+    this.numExternalPartners = config.num_external_partners ?? settings.num_external_partners;
+    this.numPassiveMembers = config.num_passive_members ?? settings.num_passive_members;
+    this.numArtists = config.num_artists ?? settings.num_artists;
+    this.numCollectors = config.num_collectors ?? settings.num_collectors;
+    this.numSpeculators = config.num_speculators ?? settings.num_speculators;
+
+    // Probabilities
+    this.commentProbability = config.comment_probability ?? settings.comment_probability;
+    this.externalPartnerInteractProbability = config.external_partner_interact_probability ?? settings.external_partner_interact_probability;
+    this.violationProbability = config.violation_probability ?? settings.violation_probability;
+    this.reputationPenalty = config.reputation_penalty ?? settings.reputation_penalty;
+
+    // Initialize event logger
+    if (this.eventLogging) {
+      if (this.useIndexedDB && typeof window !== 'undefined') {
+        this.eventLogger = new IndexedDBEventLogger('dao-simulation-events');
+      } else {
+        this.eventLogger = new EventLogger();
+      }
+
+      // Subscribe to all events
+      this.eventBus.subscribe('*', (event: string, data: any) => {
+        this.eventLogger!.handleEvent(event, data);
+      });
+    }
+
+    // Initialize marketplace
+    this.marketplace = new Marketplace(this.eventBus);
+    this.dao.marketplace = this.marketplace;
+
+    // Initialize treasury with funding
+    const initialFunding = constants.INITIAL_TREASURY_FUNDING;
+    this.dao.treasury.deposit('DAO_TOKEN', initialFunding, this.currentStep);
+
+    if (this.enableMarketing) {
+      this.dao.treasury.deposit('DAO_TOKEN', constants.MARKETING_BUDGET_BOOST, this.currentStep);
+    }
+
+    // Initialize reputation tracker
+    this.reputationTracker = new ReputationTracker(this.dao, this.reputationDecayRate);
+
+    // Load market shocks
+    if (Object.keys(this.marketShockSchedule).length > 0) {
+      for (const [stepStr, severity] of Object.entries(this.marketShockSchedule)) {
+        const step = parseInt(stepStr);
+        const shock = new MarketShock(step, severity);
+        (this.dao as any).marketShocks = (this.dao as any).marketShocks || [];
+        (this.dao as any).marketShocks.push(shock);
+      }
+    }
+
+    // Initialize data collector
+    this.dataCollector = new DataCollector(
+      this.dao,
+      config.centralityInterval ?? 1
+    );
+
+    // Initialize agent manager
+    this.agentManager = new AgentManager(this);
+
+    // Initialize scheduler
+    if (this.useAsync) {
+      this.scheduler = new AsyncActivation(this);
+    } else if (this.useParallel) {
+      this.scheduler = new ParallelActivation(this, this.maxWorkers);
+    } else {
+      this.scheduler = new RandomActivation(this);
+    }
+
+    // Initialize event engine
+    if (config.eventsFile) {
+      if (Array.isArray(config.eventsFile)) {
+        this.eventEngine = new EventEngine(config.eventsFile);
+      } else if (typeof config.eventsFile === 'string') {
+        // Load from JSON string
+        this.eventEngine = new EventEngine();
+        this.eventEngine.loadFromJson(config.eventsFile);
+      }
+    }
+
+    // Create agents
+    this.initializeAgents();
+  }
+
+  /**
+   * Initialize all agents based on configuration
+   */
+  private initializeAgents(): void {
+    const agentConfigs = [
+      { class: Developer, count: this.numDevelopers, params: {} },
+      { class: Investor, count: this.numInvestors, params: { investmentBudget: constants.INVESTOR_BUDGET } },
+      { class: Trader, count: this.numTraders, params: {} },
+      { class: AdaptiveInvestor, count: this.numAdaptiveInvestors, params: { investmentBudget: constants.ADAPTIVE_INVESTOR_BUDGET, learningRate: this.adaptiveLearningRate, epsilon: this.adaptiveEpsilon } },
+      { class: Delegator, count: this.numDelegators, params: { delegationBudget: constants.DELEGATOR_BUDGET } },
+      { class: LiquidDelegator, count: this.numLiquidDelegators, params: { delegationBudget: constants.LIQUID_DELEGATOR_BUDGET } },
+      { class: ProposalCreator, count: this.numProposalCreators, params: {} },
+      { class: Validator, count: this.numValidators, params: {} },
+      { class: ServiceProvider, count: this.numServiceProviders, params: { serviceBudget: constants.SERVICE_PROVIDER_BUDGET } },
+      { class: Arbitrator, count: this.numArbitrators, params: { arbitrationCapacity: constants.ARBITRATOR_CAPACITY } },
+      { class: Regulator, count: this.numRegulators, params: {} },
+      { class: Auditor, count: this.numAuditors, params: {} },
+      { class: BountyHunter, count: this.numBountyHunters, params: {} },
+      { class: ExternalPartner, count: this.numExternalPartners, params: {} },
+      { class: PassiveMember, count: this.numPassiveMembers, params: {} },
+      { class: Artist, count: this.numArtists, params: {} },
+      { class: Collector, count: this.numCollectors, params: {} },
+      { class: Speculator, count: this.numSpeculators, params: {} },
+    ];
+
+    for (const config of agentConfigs) {
+      for (let i = 0; i < config.count; i++) {
+        const agent = this.agentManager.createAgent(
+          config.class as any,
+          `${config.class.name}_${i}`,
+          config.params
+        );
+        this.dao.addMember(agent);
+        this.scheduler.add(agent);
+      }
+    }
+  }
+
+  /**
+   * Trigger a market shock
+   */
+  triggerMarketShock(severity: number): void {
+    const oldPrice = this.dao.treasury.getTokenPrice('DAO_TOKEN');
+    const newPrice = Math.max(constants.MIN_TOKEN_PRICE, oldPrice * (1 + severity));
+
+    this.dao.treasury.updateTokenPrice('DAO_TOKEN', newPrice);
+    this.currentShock = severity;
+    (this.dao as any).currentShock = severity;
+
+    this.eventBus.publish('market_shock', {
+      step: this.currentStep,
+      severity,
+      oldPrice,
+      newPrice,
+    });
+  }
+
+  /**
+   * Perform treasury buybacks if conditions are met
+   */
+  performBuybacks(): void {
+    const treasury = this.dao.treasury;
+    const price = treasury.getTokenPrice('DAO_TOKEN');
+    const funds = treasury.funds;
+
+    if (
+      funds >= constants.BUYBACK_FUND_THRESHOLD &&
+      price < constants.BUYBACK_PRICE_THRESHOLD
+    ) {
+      const buybackAmount = funds * constants.BUYBACK_PERCENTAGE;
+      const bought = buybackAmount / price;
+
+      treasury.withdraw('DAO_TOKEN', buybackAmount, this.currentStep);
+
+      this.eventBus.publish('buyback_executed', {
+        step: this.currentStep,
+        amount: buybackAmount,
+        tokens: bought,
+        price,
+      });
+    }
+  }
+
+  /**
+   * Step the simulation forward
+   */
+  step(): void {
+    // Process scheduled events
+    if (this.eventEngine) {
+      this.eventEngine.triggerEvents(this.currentStep, this);
+    }
+
+    // Check for scheduled market shocks
+    if (this.marketShockSchedule[this.currentStep]) {
+      this.triggerMarketShock(this.marketShockSchedule[this.currentStep]);
+    }
+
+    // Random market shocks
+    if (this.marketShockFrequency > 0 && Math.random() < 1 / this.marketShockFrequency) {
+      const severity = (Math.random() - 0.5) * constants.MARKET_SHOCK_RANGE;
+      this.triggerMarketShock(severity);
+    }
+
+    // Token emission
+    if (this.tokenEmissionRate > 0) {
+      this.dao.treasury.deposit('DAO_TOKEN', this.tokenEmissionRate, this.currentStep);
+    }
+
+    // Token burning
+    if (this.tokenBurnRate > 0) {
+      this.dao.treasury.withdraw('DAO_TOKEN', this.tokenBurnRate, this.currentStep);
+    }
+
+    // Step agents
+    this.scheduler.step();
+
+    // Agent lifecycle management
+    this.agentManager.addNewMembers();
+    this.agentManager.cullMembers();
+
+    // Reputation decay
+    this.reputationTracker.decayReputation();
+
+    // Treasury buybacks
+    this.performBuybacks();
+
+    // Collect data
+    this.dataCollector.collect(this);
+
+    // Update step counter
+    this.currentStep++;
+
+    // Emit step_end event
+    this.eventBus.publish('step_end', { step: this.currentStep });
+
+    // Checkpoint if needed
+    if (this.checkpointInterval > 0 && this.currentStep % this.checkpointInterval === 0) {
+      this.saveCheckpoint();
+    }
+  }
+
+  /**
+   * Run simulation for multiple steps
+   */
+  run(steps: number): void {
+    for (let i = 0; i < steps; i++) {
+      this.step();
+    }
+  }
+
+  /**
+   * Save checkpoint (stub for now)
+   */
+  saveCheckpoint(): void {
+    // TODO: Implement checkpoint saving
+    console.log(`Checkpoint at step ${this.currentStep}`);
+  }
+
+  /**
+   * Export data to CSV
+   */
+  exportToCSV(): string {
+    return this.dataCollector.toCSV();
+  }
+
+  /**
+   * Get simulation summary
+   */
+  getSummary(): any {
+    return {
+      step: this.currentStep,
+      members: this.dao.members.length,
+      proposals: this.dao.proposals.length,
+      projects: this.dao.projects.length,
+      tokenPrice: this.dao.treasury.getTokenPrice('DAO_TOKEN'),
+      treasuryFunds: this.dao.treasury.funds,
+      dataCollector: this.dataCollector.getLatestData(),
+    };
+  }
+}

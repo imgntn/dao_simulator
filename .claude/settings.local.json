@@ -9,7 +9,12 @@
       "Bash(pip install:*)",
       "Bash(rm:*)",
       "Bash(mkdir:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npm install:*)",
+      "Bash(ls:*)",
+      "Bash(mv:*)",
+      "Bash(npm update:*)"
     ],
     "deny": []
   }

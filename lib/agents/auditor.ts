@@ -1,0 +1,69 @@
+// Auditor Agent - flags suspicious proposals and creates disputes
+// Port from agents/auditor.py
+
+import { DAOMember } from './base';
+import type { DAOModel } from '../engine/model';
+import { Dispute } from '../data-structures/dispute';
+
+export class Auditor extends DAOMember {
+  constructor(
+    uniqueId: string,
+    model: DAOModel,
+    tokens: number = 100,
+    reputation: number = 50,
+    location: string = 'node_0',
+    votingStrategy: any = null
+  ) {
+    super(uniqueId, model, tokens, reputation, location, votingStrategy);
+  }
+
+  /**
+   * Review proposals for suspicious activity
+   */
+  reviewProposals(): void {
+    for (const proposal of this.model.dao.proposals) {
+      if (proposal.status !== 'open') {
+        continue;
+      }
+
+      // Flag high-value or suspicious proposals
+      const isSuspicious =
+        (proposal.fundingGoal || 0) > 1000 ||
+        proposal.description.toLowerCase().includes('suspicious');
+
+      if (isSuspicious && proposal.creator) {
+        const dispute = new Dispute({
+          model: this.model,
+          parties: [proposal.creator],
+          description: `Audit flag for ${proposal.title}`,
+          importance: 1,
+          project: proposal.project,
+          member: proposal.creator,
+        });
+
+        this.model.dao.addDispute(dispute);
+
+        // Emit event
+        if (this.model.eventBus) {
+          this.model.eventBus.publish('dispute_created', {
+            step: this.model.currentStep,
+            disputeId: dispute.uniqueId,
+            agentId: this.uniqueId,
+            proposalId: proposal.uniqueId,
+            reason: 'audit_flag',
+          });
+        }
+      }
+    }
+  }
+
+  step(): void {
+    this.reviewProposals();
+    this.voteOnRandomProposal();
+
+    // Occasionally leave comments
+    if (Math.random() < (this.model.dao.commentProbability || 0.1)) {
+      this.leaveCommentOnRandomProposal();
+    }
+  }
+}
