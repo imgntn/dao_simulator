@@ -5,6 +5,7 @@ import { Model } from './model';
 import { RandomActivation, ParallelActivation, AsyncActivation } from './scheduler';
 import { SimpleDataCollector } from './data-collector';
 import { DAO } from '../data-structures/dao';
+import { EventBus } from '../utils/event-bus';
 import { NFTMarketplace } from '../data-structures/nft';
 import { ReputationTracker } from '../data-structures/reputation';
 import { MarketShock } from '../data-structures/market-shock';
@@ -53,6 +54,9 @@ export interface DAOSimulationConfig extends Partial<SimulationSettings> {
 }
 
 export class DAOSimulation extends Model {
+  dao: DAO;
+  scheduler: any;
+  eventBus: EventBus;
   exportCsv: boolean;
   csvFilename: string;
   useParallel: boolean;
@@ -117,8 +121,10 @@ export class DAOSimulation extends Model {
   currentShock: number = 0;
 
   constructor(config: DAOSimulationConfig = {}) {
-    // Create DAO first
-    const dao = new DAO(
+    super();
+
+    // Create DAO
+    this.dao = new DAO(
       'MyDAO',
       config.violation_probability ?? settings.violation_probability,
       config.reputation_penalty ?? settings.reputation_penalty,
@@ -129,7 +135,8 @@ export class DAOSimulation extends Model {
       config.reputation_decay_rate ?? settings.reputation_decay_rate
     );
 
-    super(dao);
+    // Use the DAO's event bus
+    this.eventBus = this.dao.eventBus;
 
     // Set seed if provided
     if (config.seed !== undefined) {
@@ -171,11 +178,11 @@ export class DAOSimulation extends Model {
 
     // Governance
     this.governanceRuleName = config.governance_rule ?? settings.governance_rule;
-    const ruleClass = getRule(this.governanceRuleName);
-    if (!ruleClass) {
+    const rule = getRule(this.governanceRuleName);
+    if (!rule) {
       throw new Error(`Unknown governance rule: ${this.governanceRuleName}`);
     }
-    this.governanceRule = new ruleClass();
+    this.governanceRule = rule;
 
     // Agent counts
     this.numDevelopers = config.num_developers ?? settings.num_developers;
@@ -212,8 +219,8 @@ export class DAOSimulation extends Model {
       }
 
       // Subscribe to all events
-      this.eventBus.subscribe('*', (event: string, data: any) => {
-        this.eventLogger!.handleEvent(event, data);
+      this.eventBus.subscribe('*', (data: any) => {
+        this.eventLogger!.handleEvent(data.event, data);
       });
     }
 
@@ -253,11 +260,11 @@ export class DAOSimulation extends Model {
 
     // Initialize scheduler
     if (this.useAsync) {
-      this.scheduler = new AsyncActivation(this);
+      this.scheduler = new AsyncActivation();
     } else if (this.useParallel) {
-      this.scheduler = new ParallelActivation(this, this.maxWorkers);
+      this.scheduler = new ParallelActivation(this.maxWorkers);
     } else {
-      this.scheduler = new RandomActivation(this);
+      this.scheduler = new RandomActivation();
     }
 
     // Initialize event engine
@@ -402,7 +409,7 @@ export class DAOSimulation extends Model {
     this.performBuybacks();
 
     // Collect data
-    this.dataCollector.collect(this);
+    this.dataCollector.collect(this.dao);
 
     // Update step counter
     this.currentStep++;
@@ -437,7 +444,10 @@ export class DAOSimulation extends Model {
    * Export data to CSV
    */
   exportToCSV(): string {
-    return this.dataCollector.toCSV();
+    if (this.eventLogger) {
+      return this.eventLogger.toCSV();
+    }
+    return '';
   }
 
   /**
@@ -451,7 +461,7 @@ export class DAOSimulation extends Model {
       projects: this.dao.projects.length,
       tokenPrice: this.dao.treasury.getTokenPrice('DAO_TOKEN'),
       treasuryFunds: this.dao.treasury.funds,
-      dataCollector: this.dataCollector.getLatestData(),
+      dataCollector: this.dataCollector.getLatestStats(),
     };
   }
 }

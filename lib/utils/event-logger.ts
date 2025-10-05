@@ -34,8 +34,7 @@ export class EventLogger {
    * Handle event from event bus
    */
   handleEvent(event: string, data: Record<string, any>): void {
-    const step = data.step || 0;
-    const { step: _step, ...details } = data;
+    const { step = 0, ...details } = data;
     this.log(step, event, details);
   }
 

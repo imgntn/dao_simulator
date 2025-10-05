@@ -1,6 +1,5 @@
 // Proposal data structures
 
-import type { EventBus } from '../utils/event-bus';
 import type { DAO } from './dao';
 import type { Project } from './project';
 

@@ -148,7 +148,7 @@ export class RLTrader extends DAOMember {
           reward = -0.01; // Small negative reward for removing liquidity
           break;
       }
-    } catch (error) {
+    } catch {
       // Action failed, give small negative reward
       reward = -0.05;
     }

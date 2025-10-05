@@ -49,7 +49,8 @@ export class NewsFeed {
   /**
    * Handle events and generate summaries
    */
-  private handleEvent(event: string, data: Record<string, any>): void {
+  private handleEvent(data: Record<string, any>): void {
+    const event = data.event;
     if (event === 'step_end') {
       const step = data.step || 0;
       let summary: string;

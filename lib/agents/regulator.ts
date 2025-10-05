@@ -1,7 +1,6 @@
 // Regulator Agent - ensures compliance
 
 import { DAOMember } from './base';
-import type { DAOSimulation } from '../simulation';
 import type { Project } from '../data-structures/project';
 import { Violation } from '../data-structures/violation';
 

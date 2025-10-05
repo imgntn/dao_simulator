@@ -17,7 +17,10 @@
       "Bash(npm update:*)",
       "Bash(npx playwright:*)",
       "Bash(npm run test:e2e:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npm run build:*)",
+      "Bash(cd:*)",
+      "Bash(npm run lint:*)"
     ],
     "deny": []
   }

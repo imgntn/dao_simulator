@@ -5,7 +5,7 @@ export { Proposal } from './proposal';
 export { Treasury, LiquidityPool } from './treasury';
 export { Project } from './project';
 export { Guild } from './guild';
-export { NFT, Marketplace } from './nft';
+export { NFT, NFTMarketplace } from './nft';
 export { Dispute } from './dispute';
 export { Violation } from './violation';
 export { Bridge } from './bridge';

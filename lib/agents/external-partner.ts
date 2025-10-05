@@ -132,8 +132,11 @@ export class ExternalPartner extends DAOMember {
 
   toDict(): any {
     return {
-      ...super.toDict(),
-      collaboratedProjects: this.collaboratedProjects.map((p) => p.uniqueId),
+      uniqueId: this.uniqueId,
+      tokens: this.tokens,
+      reputation: this.reputation,
+      location: this.location,
+      collaboratedProjects: this.collaboratedProjects.map((p) => p.title),
     };
   }
 }

@@ -21,16 +21,16 @@ export function createRandomProposal(
   const fundingRequired = Math.round((Math.random() * 100 + 1) * 100) / 100;
   const duration = Math.floor(Math.random() * 12) + 1;
 
-  return new Proposal({
+  return new Proposal(
     dao,
-    creator,
+    creator?.uniqueId || '',
     title,
     description,
-    fundingGoal: fundingRequired,
+    fundingRequired,
     duration,
     topic,
-    project,
-  });
+    project || null
+  );
 }
 
 /**
@@ -38,7 +38,7 @@ export function createRandomProposal(
  */
 export function submitRandomProposal(dao: DAO, creator: DAOMember): Proposal {
   const proposal = createRandomProposal(dao, creator);
-  creator.submitProposal(proposal);
+  dao.addProposal(proposal);
   return proposal;
 }
 

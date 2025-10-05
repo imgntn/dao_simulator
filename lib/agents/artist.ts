@@ -17,6 +17,8 @@ export class Artist extends DAOMember {
   }
 
   step(): void {
+    if (!this.model.dao.marketplace) return;
+
     // Mint an NFT with metadata
     const metadata = {
       name: `NFT_${this.model.currentStep}_${this.uniqueId}`,
@@ -27,15 +29,15 @@ export class Artist extends DAOMember {
     const price = Math.random() * 10 + 1; // Random price between 1 and 11
 
     // Mint NFT (not listed initially)
-    const nft = this.model.dao.marketplace.mintNft(
-      this.uniqueId,
+    const nft = this.model.dao.marketplace.mintNFT(
+      this,
       metadata,
       price,
       false
     );
 
     // List the NFT for sale
-    this.model.dao.marketplace.listNft(nft.id, price, this.model.currentStep);
+    this.model.dao.marketplace.listNFT(nft.id, price, this.model.currentStep);
 
     // Participate in governance
     this.voteOnRandomProposal();

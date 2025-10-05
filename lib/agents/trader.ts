@@ -1,14 +1,14 @@
 // Trader Agent - swaps tokens in liquidity pools
 
 import { DAOMember } from './base';
-import type { DAOSimulation } from '../simulation';
+import type { DAOModel } from '../engine/model';
 
 export class Trader extends DAOMember {
   lastPrice: number;
 
   constructor(
     uniqueId: string,
-    model: DAOSimulation,
+    model: DAOModel,
     tokens: number,
     reputation: number,
     location: string,
@@ -67,7 +67,7 @@ export class Trader extends DAOMember {
       this.tokens -= amount;
       this.tokens += gained;
       this.markActive();
-    } catch (error) {
+    } catch {
       // Swap failed, return deposited tokens
       treasury.withdraw(sell, amount, this.model.currentStep);
     }

@@ -1,7 +1,7 @@
 // Service Provider Agent - offers services to proposals
 
 import { DAOMember } from './base';
-import type { DAOSimulation } from '../simulation';
+import type { DAOModel } from '../engine/model';
 import type { Proposal } from '../data-structures/proposal';
 
 export class ServiceProvider extends DAOMember {
@@ -10,7 +10,7 @@ export class ServiceProvider extends DAOMember {
 
   constructor(
     uniqueId: string,
-    model: DAOSimulation,
+    model: DAOModel,
     tokens: number,
     reputation: number,
     location: string,

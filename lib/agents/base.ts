@@ -5,11 +5,11 @@ import type { Proposal } from '../data-structures/proposal';
 import type { Guild } from '../data-structures/guild';
 import type { VotingStrategy } from '../utils/voting-strategies';
 import { getStrategy, DefaultVotingStrategy } from '../utils/voting-strategies';
-import type { DAOSimulation } from '../simulation';
+import type { DAOModel } from '../engine/model';
 
 export class DAOMember implements Agent {
   uniqueId: string;
-  model: DAOSimulation;
+  model: DAOModel;
   tokens: number;
   reputation: number;
   location: string;
@@ -29,7 +29,7 @@ export class DAOMember implements Agent {
 
   constructor(
     uniqueId: string,
-    model: DAOSimulation,
+    model: DAOModel,
     tokens: number,
     reputation: number,
     location: string,
@@ -227,7 +227,7 @@ export class DAOMember implements Agent {
   /**
    * Receive vote from a representative (for liquid delegation)
    */
-  receiveRepresentativeVote(proposal: Proposal, vote: boolean, weight: number): void {
+  receiveRepresentativeVote(_proposal: Proposal, _vote: boolean, _weight: number): void {
     // Override in subclasses if needed
   }
 

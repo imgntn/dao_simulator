@@ -171,17 +171,13 @@ export class EventEngine {
    * Create a proposal from event configuration
    */
   private createProposal(evt: EventConfig, sim: DAOModel): void {
-    const creator = sim.dao.members.length > 0 ? sim.dao.members[0] : null;
+    const creator = sim.dao.members.length > 0 ? sim.dao.members[0] : undefined;
     const title = evt.title || 'Event Proposal';
 
     const proposal = createRandomProposal(sim.dao, creator, title);
 
     if (proposal) {
       sim.dao.addProposal(proposal);
-
-      if (creator) {
-        creator.submitProposal(proposal);
-      }
     }
   }
 

@@ -3,7 +3,6 @@
 
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
-import type { Proposal } from '../data-structures/proposal';
 
 export class BountyHunter extends DAOMember {
   constructor(

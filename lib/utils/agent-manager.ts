@@ -249,7 +249,7 @@ export class AgentManager {
       // Add only if reputation is above threshold
       if (newAgent.reputation > 25) {
         this.simulation.dao.addMember(newAgent);
-        this.simulation.scheduler.add(newAgent);
+        this.simulation.schedule.add(newAgent);
         this.invalidateCache();
 
         // Deduct cost from treasury
@@ -276,7 +276,7 @@ export class AgentManager {
 
     for (const agent of agentsToRemove) {
       this.simulation.dao.removeMember(agent);
-      this.simulation.scheduler.remove(agent);
+      this.simulation.schedule.remove(agent);
       this.invalidateCache();
     }
   }

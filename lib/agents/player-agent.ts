@@ -40,7 +40,7 @@ export class PlayerAgent extends DAOMember {
       const out = treasury.swap(tokenIn, tokenOut, amount, step);
       const gained = treasury.withdraw(tokenOut, out, step);
       return gained;
-    } catch (error) {
+    } catch {
       // Swap failed, refund
       treasury.withdraw(tokenIn, amount, step);
       return 0;

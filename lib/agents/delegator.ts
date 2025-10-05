@@ -1,7 +1,7 @@
 // Delegator Agent - delegates support to proposals
 
 import { DAOMember } from './base';
-import type { DAOSimulation } from '../simulation';
+import type { DAOModel } from '../engine/model';
 import type { Proposal } from '../data-structures/proposal';
 
 export class Delegator extends DAOMember {
@@ -10,7 +10,7 @@ export class Delegator extends DAOMember {
 
   constructor(
     uniqueId: string,
-    model: DAOSimulation,
+    model: DAOModel,
     tokens: number,
     reputation: number,
     location: string,

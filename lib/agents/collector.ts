@@ -18,15 +18,17 @@ export class Collector extends DAOMember {
 
   step(): void {
     // Try to buy an affordable NFT
-    const listings = this.model.dao.marketplace.getListedNfts();
-    const affordable = listings.filter((nft) => nft.price <= this.tokens);
+    if (this.model.dao.marketplace) {
+      const listings = this.model.dao.marketplace.getListedNFTs();
+      const affordable = listings.filter((nft) => nft.price <= this.tokens);
 
-    if (affordable.length > 0) {
-      const nft = affordable[Math.floor(Math.random() * affordable.length)];
-      const bought = this.model.dao.marketplace.buyNft(this.uniqueId, nft.id);
+      if (affordable.length > 0) {
+        const nft = affordable[Math.floor(Math.random() * affordable.length)];
+        const bought = this.model.dao.marketplace.buyNFT(this, nft.id);
 
-      if (bought) {
-        this.markActive();
+        if (bought) {
+          this.markActive();
+        }
       }
     }
 

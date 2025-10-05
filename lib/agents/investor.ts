@@ -1,8 +1,7 @@
 // Investor Agent
 
 import { DAOMember } from './base';
-import type { DAOSimulation } from '../simulation';
-import type { Proposal } from '../data-structures/proposal';
+import type { DAOModel } from '../engine/model';
 
 export class Investor extends DAOMember {
   investmentBudget: number;
@@ -10,7 +9,7 @@ export class Investor extends DAOMember {
 
   constructor(
     uniqueId: string,
-    model: DAOSimulation,
+    model: DAOModel,
     tokens: number,
     reputation: number,
     location: string,

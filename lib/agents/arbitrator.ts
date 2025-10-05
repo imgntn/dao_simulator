@@ -1,7 +1,7 @@
 // Arbitrator Agent - resolves disputes
 
 import { DAOMember } from './base';
-import type { DAOSimulation } from '../simulation';
+import type { DAOModel } from '../engine/model';
 import type { Dispute } from '../data-structures/dispute';
 import { Violation } from '../data-structures/violation';
 
@@ -11,7 +11,7 @@ export class Arbitrator extends DAOMember {
 
   constructor(
     uniqueId: string,
-    model: DAOSimulation,
+    model: DAOModel,
     tokens: number,
     reputation: number,
     location: string,

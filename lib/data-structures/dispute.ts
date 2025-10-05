@@ -12,6 +12,7 @@ export class Dispute {
   member: string | null; // Member unique ID
   resolution: string | null = null;
   resolved: boolean = false;
+  uniqueId: string = '';
 
   constructor(
     dao: DAO,

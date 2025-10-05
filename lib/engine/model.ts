@@ -1,6 +1,7 @@
 // Base Model class - replacement for Mesa's Model
 
 import type { Model as IModel, Scheduler } from '@/types/simulation';
+import type { DAO } from '../data-structures/dao';
 import { RandomActivation } from './scheduler';
 
 /**
@@ -28,4 +29,12 @@ export abstract class Model implements IModel {
       this.step();
     }
   }
+}
+
+/**
+ * Model interface with DAO property - used by agents
+ */
+export interface DAOModel extends IModel {
+  dao: DAO;
+  eventBus: import('../utils/event-bus').EventBus;
 }

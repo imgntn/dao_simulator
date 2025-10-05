@@ -2,6 +2,7 @@
 
 import { EventBus } from '../utils/event-bus';
 import { Treasury } from './treasury';
+import { PredictionMarket } from './prediction-market';
 import type { Proposal } from './proposal';
 import type { Project } from './project';
 import type { Dispute } from './dispute';
@@ -9,70 +10,6 @@ import type { Violation } from './violation';
 import type { Guild } from './guild';
 import type { DAOMember } from '../agents/base';
 import type { NFTMarketplace } from './nft';
-
-export class PredictionMarket {
-  dao: DAO;
-  treasury: Treasury;
-  eventBus: EventBus | null;
-  markets: Map<string, any> = new Map();
-
-  constructor(dao: DAO, treasury: Treasury, eventBus: EventBus | null = null) {
-    this.dao = dao;
-    this.treasury = treasury;
-    this.eventBus = eventBus;
-  }
-
-  createMarket(proposalId: string, outcomeOptions: string[]): void {
-    this.markets.set(proposalId, {
-      outcomes: outcomeOptions,
-      bets: new Map(),
-      totalPool: 0,
-    });
-  }
-
-  placeBet(proposalId: string, memberId: string, outcome: string, amount: number): boolean {
-    const market = this.markets.get(proposalId);
-    if (!market) return false;
-
-    if (!market.bets.has(memberId)) {
-      market.bets.set(memberId, {});
-    }
-
-    const memberBets = market.bets.get(memberId);
-    memberBets[outcome] = (memberBets[outcome] || 0) + amount;
-    market.totalPool += amount;
-
-    return true;
-  }
-
-  resolveMarket(proposalId: string, winningOutcome: string): void {
-    const market = this.markets.get(proposalId);
-    if (!market) return;
-
-    // Distribute winnings proportionally
-    const totalWinningBets = Array.from(market.bets.values()).reduce(
-      (sum, bets) => sum + (bets[winningOutcome] || 0),
-      0
-    );
-
-    if (totalWinningBets > 0) {
-      for (const [memberId, bets] of market.bets.entries()) {
-        const winningBet = bets[winningOutcome] || 0;
-        if (winningBet > 0) {
-          const payout = (winningBet / totalWinningBets) * market.totalPool;
-          // Payout would be distributed to the member
-          if (this.eventBus) {
-            this.eventBus.publish('prediction_payout', {
-              step: this.dao.currentStep,
-              member: memberId,
-              amount: payout,
-            });
-          }
-        }
-      }
-    }
-  }
-}
 
 export class DAO {
   name: string;

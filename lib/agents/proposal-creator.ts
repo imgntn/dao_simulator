@@ -1,7 +1,6 @@
 // Proposal Creator Agent
 
 import { DAOMember } from './base';
-import type { DAOSimulation } from '../simulation';
 import { Proposal } from '../data-structures/proposal';
 
 export class ProposalCreator extends DAOMember {

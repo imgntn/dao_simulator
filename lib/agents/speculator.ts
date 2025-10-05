@@ -32,7 +32,7 @@ export class Speculator extends DAOMember {
       Math.floor(Math.random() * openProposals.length)
     ];
     const question = `Will '${proposal.title}' pass?`;
-    const resolveStep = proposal.createdAt + (proposal.votingPeriod || 10);
+    const resolveStep = proposal.creationTime + (proposal.votingPeriod || 10);
 
     this.model.dao.predictionMarket.createPrediction(
       question,
@@ -61,7 +61,7 @@ export class Speculator extends DAOMember {
     }
 
     const placed = this.model.dao.predictionMarket.placeBet(
-      this.uniqueId,
+      this,
       prediction,
       choice,
       amount

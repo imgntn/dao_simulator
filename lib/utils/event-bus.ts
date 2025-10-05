@@ -38,7 +38,7 @@ export class EventBus implements IEventBus {
    * Publish an event to all subscribers
    */
   publish(event: string, data: Omit<EventData, 'event'>): void {
-    const eventData: EventData = { event, ...data };
+    const eventData = { event, ...data } as EventData;
 
     // Notify specific event subscribers
     const eventCallbacks = this.subscribers.get(event);

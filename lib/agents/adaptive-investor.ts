@@ -10,6 +10,7 @@ export class AdaptiveInvestor extends Investor {
   epsilon: number;
   qTable: Map<string, number> = new Map();
   lastPrice: number | null = null;
+  investmentTypes: Map<string, string> = new Map();
 
   constructor(
     uniqueId: string,
@@ -39,7 +40,7 @@ export class AdaptiveInvestor extends Investor {
    * Choose a proposal using epsilon-greedy strategy
    */
   chooseProposal(): Proposal | null {
-    const openProposals = this.model.dao.proposals.filter((p) => !p.closed);
+    const openProposals = this.model.dao.proposals.filter((p: Proposal) => !p.closed);
     if (openProposals.length === 0) {
       return null;
     }
@@ -51,7 +52,7 @@ export class AdaptiveInvestor extends Investor {
     }
 
     // Exploit: choose proposal type with highest Q-value
-    return openProposals.reduce((best, proposal) => {
+    return openProposals.reduce((best: Proposal, proposal: Proposal) => {
       const proposalType = (proposal as any).type || 'default';
       const proposalQValue = this.qTable.get(proposalType) || 0;
       const bestType = (best as any).type || 'default';
@@ -76,10 +77,8 @@ export class AdaptiveInvestor extends Investor {
 
     // Track investment with type information
     const proposalType = (proposal as any).type || 'default';
-    this.investments.set(proposal.uniqueId, {
-      amount,
-      type: proposalType,
-    });
+    this.investments.set(proposal.uniqueId, amount);
+    this.investmentTypes.set(proposal.uniqueId, proposalType);
 
     this.reputation += amount / 100;
     this.markActive();
@@ -111,9 +110,9 @@ export class AdaptiveInvestor extends Investor {
     this.lastPrice = price;
 
     // Update Q-values for each investment
-    for (const [proposalId, info] of this.investments.entries()) {
-      const reward = delta * info.amount;
-      const proposalType = info.type;
+    for (const [proposalId, amount] of this.investments.entries()) {
+      const proposalType = this.investmentTypes.get(proposalId) || 'default';
+      const reward = delta * amount;
       const oldQValue = this.qTable.get(proposalType) || 0;
 
       // Q-learning update: Q(s,a) = Q(s,a) + α * (reward - Q(s,a))
@@ -124,10 +123,11 @@ export class AdaptiveInvestor extends Investor {
 
       // Remove closed proposals from investments
       const proposal = this.model.dao.proposals.find(
-        (p) => p.uniqueId === proposalId
+        (p: Proposal) => p.uniqueId === proposalId
       );
       if (proposal && proposal.status !== 'open') {
         this.investments.delete(proposalId);
+        this.investmentTypes.delete(proposalId);
       }
     }
   }

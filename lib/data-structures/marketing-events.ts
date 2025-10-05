@@ -86,7 +86,7 @@ export class RecruitmentCampaign extends MarketingCampaign {
       );
 
       this.dao.addMember(member);
-      sim.scheduler.add(member);
+      sim.schedule.add(member);
       newIds.push(uid);
     }
 
@@ -187,7 +187,7 @@ export class ReferralBonusCampaign extends MarketingCampaign {
       );
 
       this.dao.addMember(member);
-      sim.scheduler.add(member);
+      sim.schedule.add(member);
       newIds.push(uid);
     }
 

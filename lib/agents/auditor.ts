@@ -32,14 +32,14 @@ export class Auditor extends DAOMember {
         proposal.description.toLowerCase().includes('suspicious');
 
       if (isSuspicious && proposal.creator) {
-        const dispute = new Dispute({
-          model: this.model,
-          parties: [proposal.creator],
-          description: `Audit flag for ${proposal.title}`,
-          importance: 1,
-          project: proposal.project,
-          member: proposal.creator,
-        });
+        const dispute = new Dispute(
+          this.model.dao,
+          [proposal.creator],
+          `Audit flag for ${proposal.title}`,
+          1,
+          proposal.project || null,
+          proposal.creator
+        );
 
         this.model.dao.addDispute(dispute);
 

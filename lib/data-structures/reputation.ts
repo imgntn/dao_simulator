@@ -31,8 +31,9 @@ export class ReputationTracker {
   /**
    * Handle reputation-affecting events
    */
-  private handleEvent(event: string, data: Record<string, any>): void {
+  private handleEvent(data: Record<string, any>): void {
     const currentStep = (this.dao as any).currentStep || 0;
+    const event = data.event;
 
     switch (event) {
       case 'project_worked': {

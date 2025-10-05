@@ -1,7 +1,7 @@
 // Developer Agent
 
 import { DAOMember } from './base';
-import type { DAOSimulation } from '../simulation';
+import type { DAOModel } from '../engine/model';
 import type { Project } from '../data-structures/project';
 
 export class Developer extends DAOMember {
@@ -9,7 +9,7 @@ export class Developer extends DAOMember {
 
   constructor(
     uniqueId: string,
-    model: DAOSimulation,
+    model: DAOModel,
     tokens: number,
     reputation: number,
     location: string,

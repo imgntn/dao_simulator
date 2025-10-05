@@ -26,7 +26,7 @@ async function runGovernanceSimulation() {
     const proposals = simulation.dao.proposals;
     const approved = proposals.filter(p => p.status === 'approved').length;
     const rejected = proposals.filter(p => p.status === 'rejected').length;
-    const pending = proposals.filter(p => p.status === 'pending').length;
+    const pending = proposals.filter(p => p.status === 'open').length;
 
     console.log(`  Total Proposals: ${proposals.length}`);
     console.log(`  ✅ Approved: ${approved} (${(approved / proposals.length * 100).toFixed(1)}%)`);
