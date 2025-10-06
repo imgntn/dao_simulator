@@ -51,7 +51,7 @@ export function listRules(): string[] {
  * Simple majority rule - approve if votes_for > votes_against
  */
 export class MajorityRule extends GovernanceRule {
-  approve(proposal: Proposal, _dao: DAO): boolean {
+  approve(proposal: Proposal): boolean {
     return proposal.votesFor > proposal.votesAgainst;
   }
 }
@@ -91,7 +91,7 @@ export class SupermajorityRule extends GovernanceRule {
     this.threshold = threshold;
   }
 
-  approve(proposal: Proposal, _dao: DAO): boolean {
+  approve(proposal: Proposal): boolean {
     const totalVotes = proposal.votesFor + proposal.votesAgainst;
     if (totalVotes === 0) {
       return false;

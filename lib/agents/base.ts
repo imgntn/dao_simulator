@@ -229,6 +229,7 @@ export class DAOMember implements Agent {
    */
   receiveRepresentativeVote(_proposal: Proposal, _vote: boolean, _weight: number): void {
     // Override in subclasses if needed
+    // Unused parameters prefixed with underscore to indicate intentional non-use
   }
 
   /**

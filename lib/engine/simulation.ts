@@ -141,13 +141,9 @@ export class DAOSimulation extends Model {
     // Set seed if provided
     if (config.seed !== undefined) {
       this.seed = config.seed;
-      Math.random = (() => {
-        let seed = config.seed!;
-        return () => {
-          seed = (seed * 9301 + 49297) % 233280;
-          return seed / 233280;
-        };
-      })();
+      // Use improved seeded random generator
+      const { setSeed } = require('../utils/random');
+      setSeed(config.seed);
     }
 
     // Configuration
@@ -433,11 +429,40 @@ export class DAOSimulation extends Model {
   }
 
   /**
-   * Save checkpoint (stub for now)
+   * Save checkpoint
    */
-  saveCheckpoint(): void {
-    // TODO: Implement checkpoint saving
-    console.log(`Checkpoint at step ${this.currentStep}`);
+  async saveCheckpoint(): Promise<string> {
+    const { checkpointManager } = await import('../utils/checkpoint');
+    const checkpointId = await checkpointManager.saveCheckpoint(this);
+
+    this.eventBus.publish('checkpoint_saved', {
+      step: this.currentStep,
+      checkpointId,
+    });
+
+    return checkpointId;
+  }
+
+  /**
+   * Load checkpoint and restore state
+   */
+  async loadCheckpoint(checkpointId: string): Promise<boolean> {
+    const { checkpointManager } = await import('../utils/checkpoint');
+    const checkpoint = await checkpointManager.loadCheckpoint(checkpointId);
+
+    if (!checkpoint) {
+      return false;
+    }
+
+    // Restore state (simplified - could be more comprehensive)
+    this.currentStep = checkpoint.step;
+
+    this.eventBus.publish('checkpoint_loaded', {
+      step: this.currentStep,
+      checkpointId,
+    });
+
+    return true;
   }
 
   /**

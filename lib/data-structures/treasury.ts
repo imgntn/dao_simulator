@@ -231,10 +231,11 @@ export class Treasury {
     return this.tokenPrices.get(token) || 0;
   }
 
-  updatePrices(_volatility: number = 0.05): void {
+  updatePrices(volatility: number = 0.05): void {
     // Update prices for all tokens using the oracle
+    // Note: volatility parameter reserved for future use with oracle configuration
     for (const token of this.tokens.keys()) {
-      this.oracle.updatePrice(token, 0);
+      this.oracle.updatePrice(token, volatility);
       const newPrice = this.oracle.getPrice(token);
       this.updateTokenPrice(token, newPrice);
     }

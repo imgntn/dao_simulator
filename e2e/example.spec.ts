@@ -7,47 +7,42 @@ test.describe('Homepage', () => {
     // Wait for the page to load
     await page.waitForLoadState('networkidle');
 
-    // Check that the page title is present
-    await expect(page).toHaveTitle(/Create Next App/i);
+    // Check that the main heading is present
+    await expect(page.getByRole('heading', { name: /DAO Simulator/i })).toBeVisible();
   });
 
-  test('displays Next.js logo', async ({ page }) => {
+  test('displays main title', async ({ page }) => {
     await page.goto('/');
 
-    // Check for Next.js logo
-    const logo = page.locator('img[alt="Next.js logo"]');
-    await expect(logo).toBeVisible();
+    // Check for DAO Simulator title
+    const title = page.getByRole('heading', { name: /DAO Simulator/i });
+    await expect(title).toBeVisible();
   });
 
   test('displays main content elements', async ({ page }) => {
     await page.goto('/');
 
-    // Check for the instructional text
-    await expect(page.getByText('Get started by editing')).toBeVisible();
-    await expect(page.getByText('app/page.tsx')).toBeVisible();
+    // Check for the descriptive text
+    await expect(page.getByText(/Real-time decentralized governance visualization/i)).toBeVisible();
+    await expect(page.getByText(/Experience the beauty of distributed decision-making/i)).toBeVisible();
   });
 
-  test('has working external links', async ({ page }) => {
+  test('has working dashboard link', async ({ page }) => {
     await page.goto('/');
 
-    // Check that external links exist and have proper attributes
-    const deployLink = page.getByRole('link', { name: /Deploy now/i });
-    await expect(deployLink).toBeVisible();
-    await expect(deployLink).toHaveAttribute('target', '_blank');
-    await expect(deployLink).toHaveAttribute('rel', 'noopener noreferrer');
-
-    const docsLink = page.getByRole('link', { name: /Read our docs/i });
-    await expect(docsLink).toBeVisible();
-    await expect(docsLink).toHaveAttribute('target', '_blank');
+    // Check that dashboard link exists
+    const dashboardLink = page.getByRole('link', { name: /Launch Dashboard/i });
+    await expect(dashboardLink).toBeVisible();
+    await expect(dashboardLink).toHaveAttribute('href', '/dashboard');
   });
 
-  test('footer links are present', async ({ page }) => {
+  test('feature cards are present', async ({ page }) => {
     await page.goto('/');
 
-    // Check footer links
-    await expect(page.getByRole('link', { name: /Learn/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Examples/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Go to nextjs.org/i })).toBeVisible();
+    // Check feature cards
+    await expect(page.getByText(/3D Network Graphs/i)).toBeVisible();
+    await expect(page.getByText(/Real-time Analytics/i)).toBeVisible();
+    await expect(page.getByText(/Agent-Based Simulation/i)).toBeVisible();
   });
 
   test('responsive layout works', async ({ page }) => {

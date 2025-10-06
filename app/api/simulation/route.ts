@@ -3,9 +3,15 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { DAOSimulation } from '@/lib/engine/simulation';
+import { createSimulationStore, InMemorySimulationStore } from '@/lib/utils/redis-store';
+import { requireAuth } from '@/lib/auth';
 
-// Store active simulations in memory (use Redis/DB in production)
-const simulations = new Map<string, DAOSimulation>();
+// Create simulation store (Redis in production, in-memory for dev)
+const simulationStore = createSimulationStore();
+
+// Legacy in-memory fallback
+const isInMemory = simulationStore instanceof InMemorySimulationStore;
+const simulations = isInMemory ? (simulationStore as InMemorySimulationStore) : null;
 
 /**
  * GET /api/simulation
@@ -16,28 +22,39 @@ export async function GET(request: NextRequest) {
   const id = searchParams.get('id');
 
   if (id) {
-    const simulation = simulations.get(id);
-    if (!simulation) {
-      return NextResponse.json(
-        { error: 'Simulation not found' },
-        { status: 404 }
-      );
-    }
+    if (isInMemory && simulations) {
+      const simulation = simulations.getSimulation(id);
+      if (!simulation) {
+        return NextResponse.json(
+          { error: 'Simulation not found' },
+          { status: 404 }
+        );
+      }
 
-    return NextResponse.json({
-      id,
-      summary: simulation.getSummary(),
-      step: simulation.currentStep,
-    });
+      return NextResponse.json({
+        id,
+        summary: simulation.getSummary(),
+        step: simulation.currentStep,
+      });
+    } else {
+      const data = await simulationStore.load(id);
+      if (!data) {
+        return NextResponse.json(
+          { error: 'Simulation not found' },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json({
+        id,
+        step: data.step,
+        summary: data.daoState,
+      });
+    }
   }
 
   // List all simulations
-  const list = Array.from(simulations.entries()).map(([id, sim]) => ({
-    id,
-    step: sim.currentStep,
-    members: sim.dao.members.length,
-  }));
-
+  const list = await simulationStore.list();
   return NextResponse.json({ simulations: list });
 }
 
@@ -46,12 +63,18 @@ export async function GET(request: NextRequest) {
  * Create a new simulation
  */
 export async function POST(request: NextRequest) {
+  // Check authentication
+  const authError = await requireAuth(request);
+  if (authError) return authError;
+
   try {
     const config = await request.json();
     const id = `sim_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     const simulation = new DAOSimulation(config);
-    simulations.set(id, simulation);
+
+    // Save to store
+    await simulationStore.save(id, simulation);
 
     return NextResponse.json({
       id,
@@ -71,10 +94,21 @@ export async function POST(request: NextRequest) {
  * Step simulation forward or run multiple steps
  */
 export async function PUT(request: NextRequest) {
+  // Check authentication
+  const authError = await requireAuth(request);
+  if (authError) return authError;
+
   try {
     const { id, action, steps } = await request.json();
 
-    const simulation = simulations.get(id);
+    if (!isInMemory || !simulations) {
+      return NextResponse.json(
+        { error: 'Simulation stepping only supported in-memory mode' },
+        { status: 400 }
+      );
+    }
+
+    const simulation = simulations.getSimulation(id);
     if (!simulation) {
       return NextResponse.json(
         { error: 'Simulation not found' },
@@ -99,6 +133,9 @@ export async function PUT(request: NextRequest) {
         );
     }
 
+    // Update stored state
+    await simulationStore.save(id, simulation);
+
     return NextResponse.json({
       id,
       summary: simulation.getSummary(),
@@ -116,6 +153,10 @@ export async function PUT(request: NextRequest) {
  * Delete a simulation
  */
 export async function DELETE(request: NextRequest) {
+  // Check authentication
+  const authError = await requireAuth(request);
+  if (authError) return authError;
+
   const searchParams = request.nextUrl.searchParams;
   const id = searchParams.get('id');
 
@@ -126,7 +167,7 @@ export async function DELETE(request: NextRequest) {
     );
   }
 
-  const deleted = simulations.delete(id);
+  const deleted = await simulationStore.delete(id);
 
   if (!deleted) {
     return NextResponse.json(

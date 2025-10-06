@@ -30,7 +30,8 @@ export class RandomWalkOracle extends BasePriceOracle {
     this.volatility = volatility;
   }
 
-  updatePrice(token: string, _step: number): void {
+  updatePrice(token: string, _step?: number): void {
+    // _step parameter reserved for future time-based price modeling
     const currentPrice = this.getPrice(token);
     // Random walk: price can go up or down by volatility percentage
     const change = (Math.random() - 0.5) * 2 * this.volatility;
@@ -52,7 +53,8 @@ export class GeometricBrownianOracle extends BasePriceOracle {
     this.volatility = volatility;
   }
 
-  updatePrice(token: string, _step: number): void {
+  updatePrice(token: string, _step?: number): void {
+    // _step parameter reserved for advanced time-series modeling
     const currentPrice = this.getPrice(token);
     const dt = 1; // time step
 
@@ -74,8 +76,8 @@ export class GeometricBrownianOracle extends BasePriceOracle {
  * Fixed Price Oracle - price never changes
  */
 export class FixedPriceOracle extends BasePriceOracle {
-  updatePrice(_token: string, _step: number): void {
-    // Price stays constant
+  updatePrice(): void {
+    // Price stays constant - no parameters needed
   }
 }
 
