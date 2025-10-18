@@ -25,13 +25,6 @@ export default function Home() {
             <span className="relative z-10">Launch Dashboard</span>
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 opacity-0 group-hover:opacity-100 blur transition-opacity duration-300"></div>
           </Link>
-
-          <a
-            href="/api/simulation"
-            className="px-8 py-4 border-2 border-purple-500 rounded-full font-bold text-lg text-purple-400 hover:bg-purple-500 hover:text-white transition-all duration-300"
-          >
-            API Docs
-          </a>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 text-left">
@@ -57,29 +50,6 @@ export default function Home() {
             <p className="text-gray-400">
               Watch autonomous agents interact, vote, and shape the future of your DAO
             </p>
-          </div>
-        </div>
-
-        <div className="mt-16 p-6 bg-gradient-to-r from-blue-900/20 to-purple-900/20 backdrop-blur-lg rounded-lg border border-blue-500/30">
-          <h3 className="text-2xl font-bold text-white mb-4">Technologies</h3>
-          <div className="flex flex-wrap justify-center gap-4 text-sm">
-            {[
-              'Next.js 15',
-              'React 19',
-              'Three.js',
-              'Socket.IO',
-              'Recharts',
-              'TypeScript',
-              'Tailwind CSS',
-              'Python',
-            ].map((tech) => (
-              <span
-                key={tech}
-                className="px-4 py-2 bg-gray-800/80 rounded-full text-gray-300 border border-gray-700"
-              >
-                {tech}
-              </span>
-            ))}
           </div>
         </div>
 

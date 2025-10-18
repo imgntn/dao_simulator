@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack -p 7884",
     "build": "next build --turbopack",
     "start": "next start",
+    "server": "npx tsx server.ts",
     "lint": "eslint",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",

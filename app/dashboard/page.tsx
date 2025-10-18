@@ -48,6 +48,12 @@ export default function DashboardPage() {
               <div className="text-sm text-gray-300">
                 Step: <span className="font-mono font-bold text-blue-400">{step}</span>
               </div>
+              <a
+                href="/api/simulation"
+                className="px-4 py-2 border border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-white rounded-lg transition-colors text-sm"
+              >
+                API Docs
+              </a>
               <button
                 onClick={reset}
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"

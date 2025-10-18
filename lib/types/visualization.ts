@@ -8,7 +8,9 @@ export interface DAOMember {
 }
 
 export interface DAOProposal {
+  id: string;
   title: string;
+  type?: string;
   creator?: string;
   votes_for: number;
   votes_against: number;

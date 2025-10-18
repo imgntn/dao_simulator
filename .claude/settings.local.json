@@ -22,7 +22,10 @@
       "Bash(cd:*)",
       "Bash(npm run lint:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm run dev:*)",
+      "Bash(lsof:*)",
+      "Bash(npx tsx:*)"
     ],
     "deny": []
   }
