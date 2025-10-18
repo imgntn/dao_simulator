@@ -74,6 +74,9 @@ export class DAO {
   }
 
   addProject(project: Project): void {
+    if (!project.uniqueId) {
+      project.uniqueId = `project_${this.projects.length}`;
+    }
     this.projects.push(project);
   }
 

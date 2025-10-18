@@ -58,12 +58,14 @@ export interface ProposalData {
 }
 
 export interface ProjectData {
+  uniqueId: string;
   title: string;
   description?: string;
   fundingGoal: number;
   currentFunding: number;
   duration: number;
   startTime: number;
+  status: string;
   progress: number;
   members: string[];
   skills: string[];
@@ -243,6 +245,7 @@ export interface SnapshotData {
     votingPeriod: number;
   }>;
   projects: Array<{
+    uniqueId: string;
     title: string;
     progress: number;
     duration: number;

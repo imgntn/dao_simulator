@@ -5,6 +5,7 @@ import type { DAO } from './dao';
 export class Project {
   dao: DAO;
   creator: string; // Creator's unique ID
+  uniqueId: string;
   title: string;
   description: string;
   fundingGoal: number;
@@ -28,6 +29,7 @@ export class Project {
   ) {
     this.dao = dao;
     this.creator = creator;
+    this.uniqueId = '';  // Will be set by DAO when added
     this.title = title;
     this.description = description;
     this.fundingGoal = fundingGoal;
@@ -66,6 +68,7 @@ export class Project {
 
   toDict(): any {
     return {
+      uniqueId: this.uniqueId,
       title: this.title,
       description: this.description,
       fundingGoal: this.fundingGoal,
@@ -94,6 +97,7 @@ export class Project {
       data.requiredSkills || []
     );
 
+    project.uniqueId = data.uniqueId || '';
     project.currentFunding = data.currentFunding || 0;
     project.status = data.status || 'open';
     project.startTime = data.startTime || 0;

@@ -64,7 +64,7 @@ function broadcastSimulationStep() {
       dao_token_price: tokenPrice,
       treasury_balance: simulation.dao.treasury.funds,
       total_members: simulation.dao.members.length,
-      active_proposals: simulation.dao.proposals.filter(p => p.status === 'active').length,
+      active_proposals: simulation.dao.proposals.filter(p => p.status === 'open').length,
       ...summary
     });
 
@@ -75,8 +75,8 @@ function broadcastSimulationStep() {
       const location = locations[idx % locations.length];
 
       return {
-        id: m.unique_id,
-        type: m.type,
+        id: m.uniqueId,
+        type: m.constructor.name,
         tokens: m.tokens,
         reputation: (m as any).reputation || Math.random() * 100,
         location: location
@@ -86,13 +86,13 @@ function broadcastSimulationStep() {
 
     // Broadcast proposals data
     const proposals = simulation.dao.proposals.map((p, idx) => ({
-      id: p.id,
-      title: (p as any).title || `Proposal ${p.id}`,
+      id: p.uniqueId,
+      title: (p as any).title || `Proposal ${p.uniqueId}`,
       type: p.type,
       status: p.status,
-      votes_for: p.votes_for || 0,
-      votes_against: p.votes_against || 0,
-      creator: p.creator?.unique_id || `member_${idx}`
+      votes_for: p.votesFor || 0,
+      votes_against: p.votesAgainst || 0,
+      creator: p.creator || `member_${idx}`
     }));
     io.emit('proposals_update', { proposals });
 
@@ -119,7 +119,7 @@ function broadcastSimulationStep() {
     simulation.dao.members.forEach(m => {
       if ((m as any).representative) {
         networkEdges.push({
-          source: m.unique_id,
+          source: m.uniqueId,
           target: (m as any).representative,
           type: 'representative',
           weight: 1
@@ -138,7 +138,7 @@ function broadcastSimulationStep() {
       .sort((a, b) => b.tokens - a.tokens)
       .slice(0, 10)
       .map(m => ({
-        member: m.unique_id,
+        member: m.uniqueId,
         value: m.tokens
       }));
 
@@ -146,7 +146,7 @@ function broadcastSimulationStep() {
       .sort((a, b) => ((b as any).reputation || 0) - ((a as any).reputation || 0))
       .slice(0, 10)
       .map(m => ({
-        member: m.unique_id,
+        member: m.uniqueId,
         value: (m as any).reputation || 0
       }));
 
@@ -159,18 +159,6 @@ function broadcastSimulationStep() {
     console.error('❌ Error in simulation step:', error.message);
     stopSimulation();
   }
-}
-
-function getColorForType(type: string): string {
-  const colors: Record<string, string> = {
-    Developer: '#3b82f6',
-    Investor: '#10b981',
-    Trader: '#f59e0b',
-    Validator: '#8b5cf6',
-    ProposalCreator: '#ec4899',
-    PassiveMember: '#6b7280',
-  };
-  return colors[type] || '#9ca3af';
 }
 
 function startSimulation(stepsPerSecond: number = 1) {

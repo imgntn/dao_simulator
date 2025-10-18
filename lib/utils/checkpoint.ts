@@ -137,7 +137,7 @@ export class CheckpointManager {
       })),
       projects: dao.projects.map(p => ({
         uniqueId: p.uniqueId,
-        name: p.name,
+        title: p.title,
         status: p.status,
       })),
       disputes: dao.disputes,
@@ -190,9 +190,9 @@ export class CheckpointManager {
         allRequest.onsuccess = () => {
           const all = allRequest.result;
           if (all.length > this.maxCheckpoints) {
-            all.sort((a, b) => a.timestamp - b.timestamp);
+            all.sort((a: SimulationCheckpoint, b: SimulationCheckpoint) => a.timestamp - b.timestamp);
             const toDelete = all.slice(0, all.length - this.maxCheckpoints);
-            toDelete.forEach(cp => store.delete(cp.id));
+            toDelete.forEach((cp: SimulationCheckpoint) => store.delete(cp.id));
           }
         };
 
