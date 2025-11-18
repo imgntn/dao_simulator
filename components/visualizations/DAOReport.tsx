@@ -37,7 +37,9 @@ export function DAOReport({
       priceChange,
       treasuryBalance: latest.treasury_balance,
       totalMembers: members.length,
-      activeProposals: proposals.filter(p => p.status === 'active').length,
+      activeProposals: proposals.filter(
+        (p) => p.status === 'active' || p.status === 'open'
+      ).length,
     };
   }, [simulationData, members, proposals]);
 

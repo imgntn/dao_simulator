@@ -11,26 +11,50 @@
 
 import { Server } from 'socket.io';
 import { DAOSimulation } from './lib/engine/simulation';
+import { createSimulationStore, InMemorySimulationStore, rehydrateSimulation } from './lib/utils/redis-store';
 
-const PORT = process.argv.includes('--port')
-  ? parseInt(process.argv[process.argv.indexOf('--port') + 1])
+const args = process.argv.slice(2);
+const PORT = args.includes('--port')
+  ? parseInt(args[args.indexOf('--port') + 1])
   : 8003;
+const AUTO_START = process.env.AUTO_START_SIMULATION === 'true' || args.includes('--auto-start');
+const REHYDRATE_ON_START = process.env.REHYDRATE_ON_START !== 'false';
+const SOCKET_SIM_ID = process.env.SOCKET_SIM_ID || 'socket_sim';
 
-console.log('🚀 Starting DAO Simulation WebSocket Server...');
+console.log('Starting DAO Simulation WebSocket Server...');
 
 const io = new Server(PORT, {
   cors: {
     origin: '*',
-    methods: ['GET', 'POST']
-  }
+    methods: ['GET', 'POST'],
+  },
 });
 
 let simulation: DAOSimulation | null = null;
 let running = false;
 let intervalId: NodeJS.Timeout | null = null;
+let eventBusUnsubscribe: (() => void) | null = null;
+const simulationStore = createSimulationStore();
+const persistenceEnabled = !(simulationStore instanceof InMemorySimulationStore);
 
-function createSimulation(config: any = {}) {
-  console.log('📊 Creating new simulation...');
+function emitSimulationStatus(): void {
+  io.emit('simulation_status', {
+    running,
+    step: simulation?.currentStep ?? 0,
+  });
+}
+
+async function persistSimulation(id: string, instance: DAOSimulation) {
+  if (!simulationStore || !instance) return;
+  try {
+    await simulationStore.save(id, instance);
+  } catch (error: any) {
+    console.error('Failed to persist simulation:', error?.message ?? error);
+  }
+}
+
+async function createSimulation(config: any = {}) {
+  console.log('Creating new simulation...');
 
   const defaultConfig = {
     num_developers: 10,
@@ -44,8 +68,27 @@ function createSimulation(config: any = {}) {
   };
 
   simulation = new DAOSimulation({ ...defaultConfig, ...config });
-  console.log(`✅ Simulation created with ${simulation.dao.members.length} members`);
+  console.log(`Simulation created with ${simulation.dao.members.length} members`);
+  await persistSimulation(SOCKET_SIM_ID, simulation);
 
+  if (eventBusUnsubscribe) {
+    eventBusUnsubscribe();
+  }
+
+  const shockListener = (data: any) => {
+    io.emit('market_shock', {
+      step: data.step ?? simulation?.currentStep ?? 0,
+      severity: data.severity ?? 0,
+      oldPrice: data.oldPrice,
+      newPrice: data.newPrice,
+    });
+  };
+  simulation.eventBus.subscribe('market_shock', shockListener);
+  eventBusUnsubscribe = () => {
+    simulation?.eventBus.unsubscribe('market_shock', shockListener);
+  };
+
+  emitSimulationStatus();
   return simulation;
 }
 
@@ -54,6 +97,7 @@ function broadcastSimulationStep() {
 
   try {
     simulation.step();
+    void persistSimulation(SOCKET_SIM_ID, simulation);
 
     const summary = simulation.getSummary();
     const tokenPrice = simulation.dao.treasury.getTokenPrice('DAO_TOKEN');
@@ -73,13 +117,15 @@ function broadcastSimulationStep() {
       // Generate random locations for visualization
       const locations = ['North America', 'Europe', 'Asia', 'South America', 'Africa', 'Oceania'];
       const location = locations[idx % locations.length];
+      const reputation = typeof (m as any).reputation === 'number' ? (m as any).reputation : 0;
 
       return {
         id: m.uniqueId,
+        unique_id: m.uniqueId,
         type: m.constructor.name,
         tokens: m.tokens,
-        reputation: (m as any).reputation || Math.random() * 100,
-        location: location
+        reputation,
+        location
       };
     });
     io.emit('members_update', { members });
@@ -156,14 +202,14 @@ function broadcastSimulationStep() {
     });
 
   } catch (error: any) {
-    console.error('❌ Error in simulation step:', error.message);
+    console.error('Error in simulation step:', error?.message ?? error);
     stopSimulation();
   }
 }
 
 function startSimulation(stepsPerSecond: number = 1) {
   if (running) {
-    console.log('⚠️  Simulation already running');
+    console.log('Simulation already running');
     return;
   }
 
@@ -171,79 +217,122 @@ function startSimulation(stepsPerSecond: number = 1) {
     createSimulation();
   }
 
-  console.log(`▶️  Starting simulation at ${stepsPerSecond} steps/second`);
+  console.log(`Starting simulation at ${stepsPerSecond} steps/second`);
   running = true;
 
   const interval = 1000 / stepsPerSecond;
   intervalId = setInterval(broadcastSimulationStep, interval);
+  emitSimulationStatus();
 }
 
 function stopSimulation() {
   if (!running) {
-    console.log('⚠️  Simulation not running');
+    console.log('Simulation not running');
     return;
   }
 
-  console.log('⏸️  Stopping simulation');
+  console.log('Stopping simulation');
   running = false;
 
   if (intervalId) {
     clearInterval(intervalId);
     intervalId = null;
   }
+  emitSimulationStatus();
 }
 
 function resetSimulation() {
   stopSimulation();
   simulation = null;
-  console.log('🔄 Simulation reset');
+  if (eventBusUnsubscribe) {
+    eventBusUnsubscribe();
+    eventBusUnsubscribe = null;
+  }
+  console.log('Simulation reset');
+  emitSimulationStatus();
+  if (persistenceEnabled) {
+    void simulationStore.delete(SOCKET_SIM_ID);
+  }
+}
+
+async function rehydrateSimulationFromStore(): Promise<boolean> {
+  if (!REHYDRATE_ON_START) return false;
+
+  try {
+    const snapshot = await simulationStore.load(SOCKET_SIM_ID);
+    if (!snapshot) {
+      return false;
+    }
+
+    simulation = rehydrateSimulation(snapshot);
+    console.log(`Rehydrated simulation ${SOCKET_SIM_ID} at step ${simulation.currentStep}`);
+    emitSimulationStatus();
+    return true;
+  } catch (error: any) {
+    console.error('Failed to rehydrate simulation:', error?.message ?? error);
+    return false;
+  }
 }
 
 // Socket.IO event handlers
 io.on('connection', (socket) => {
-  console.log(`🔌 Client connected: ${socket.id}`);
+  console.log(`Client connected: ${socket.id}`);
+  socket.emit('simulation_status', {
+    running,
+    step: simulation?.currentStep ?? 0,
+  });
 
-  socket.on('start_simulation', (config: any = {}) => {
-    console.log('📡 Received start_simulation command');
+  socket.on('start_simulation', async (config: any = {}) => {
+    console.log('Received start_simulation command');
     if (!simulation) {
-      createSimulation(config.simulationConfig);
+      await createSimulation(config.simulationConfig);
     }
     startSimulation(config.stepsPerSecond || 1);
-    socket.emit('simulation_started', { success: true });
+    io.emit('simulation_started', { success: true });
   });
 
   socket.on('stop_simulation', () => {
-    console.log('📡 Received stop_simulation command');
+    console.log('Received stop_simulation command');
     stopSimulation();
-    socket.emit('simulation_stopped', { success: true });
+    io.emit('simulation_stopped', { success: true });
   });
 
   socket.on('reset_simulation', () => {
-    console.log('📡 Received reset_simulation command');
+    console.log('Received reset_simulation command');
     resetSimulation();
-    socket.emit('simulation_reset', { success: true });
+    io.emit('simulation_reset', { success: true });
   });
 
-  socket.on('step_simulation', () => {
+  socket.on('step_simulation', async () => {
     if (!simulation) {
-      createSimulation();
+      await createSimulation();
     }
     broadcastSimulationStep();
   });
 
   socket.on('disconnect', () => {
-    console.log(`🔌 Client disconnected: ${socket.id}`);
+    console.log(`Client disconnected: ${socket.id}`);
   });
 });
 
-// Auto-start simulation on server startup
-createSimulation();
-startSimulation(2); // 2 steps per second
+// Bootstrap: try to rehydrate, then auto-start if requested
+(async () => {
+  const restored = await rehydrateSimulationFromStore();
 
-console.log(`✅ WebSocket server running on port ${PORT}`);
-console.log(`📊 Dashboard should connect to: http://localhost:${PORT}`);
-console.log(`\n🎮 Commands available via Socket.IO:`);
-console.log(`   - start_simulation`);
-console.log(`   - stop_simulation`);
-console.log(`   - reset_simulation`);
-console.log(`   - step_simulation`);
+  if (AUTO_START) {
+    if (!restored) {
+      await createSimulation();
+    }
+    startSimulation(2); // 2 steps per second
+  } else if (!restored) {
+    console.log('Auto-start disabled. Awaiting start_simulation command.');
+  }
+
+  console.log(`WebSocket server running on port ${PORT}`);
+  console.log(`Dashboard should connect to: http://localhost:${PORT}`);
+  console.log(`\nCommands available via Socket.IO:`);
+  console.log(`   - start_simulation`);
+  console.log(`   - stop_simulation`);
+  console.log(`   - reset_simulation`);
+  console.log(`   - step_simulation`);
+})();

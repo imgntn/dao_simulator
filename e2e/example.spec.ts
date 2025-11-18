@@ -40,9 +40,9 @@ test.describe('Homepage', () => {
     await page.goto('/');
 
     // Check feature cards
-    await expect(page.getByText(/3D Network Graphs/i)).toBeVisible();
-    await expect(page.getByText(/Real-time Analytics/i)).toBeVisible();
-    await expect(page.getByText(/Agent-Based Simulation/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /3D Network Graphs/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Real-time Analytics/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Agent-Based Simulation/i })).toBeVisible();
   });
 
   test('responsive layout works', async ({ page }) => {

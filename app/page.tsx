@@ -29,7 +29,7 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 text-left">
           <div className="p-6 bg-gray-800/50 backdrop-blur-lg rounded-lg border border-gray-700 hover:border-purple-500 transition-all duration-300">
-            <div className="text-4xl mb-4">🌐</div>
+            <div className="text-2xl font-semibold mb-4 text-purple-300">3D</div>
             <h3 className="text-xl font-bold text-white mb-2">3D Network Graphs</h3>
             <p className="text-gray-400">
               Visualize complex governance networks in stunning 3D with WebGL and Three.js
@@ -37,7 +37,7 @@ export default function Home() {
           </div>
 
           <div className="p-6 bg-gray-800/50 backdrop-blur-lg rounded-lg border border-gray-700 hover:border-blue-500 transition-all duration-300">
-            <div className="text-4xl mb-4">📊</div>
+            <div className="text-2xl font-semibold mb-4 text-blue-300">Live</div>
             <h3 className="text-xl font-bold text-white mb-2">Real-time Analytics</h3>
             <p className="text-gray-400">
               Live price charts, heatmaps, and comprehensive reports updated via WebSocket
@@ -45,7 +45,7 @@ export default function Home() {
           </div>
 
           <div className="p-6 bg-gray-800/50 backdrop-blur-lg rounded-lg border border-gray-700 hover:border-pink-500 transition-all duration-300">
-            <div className="text-4xl mb-4">⚡</div>
+            <div className="text-2xl font-semibold mb-4 text-pink-300">Agents</div>
             <h3 className="text-xl font-bold text-white mb-2">Agent-Based Simulation</h3>
             <p className="text-gray-400">
               Watch autonomous agents interact, vote, and shape the future of your DAO

@@ -218,6 +218,14 @@ export interface DataCollectorData {
   influenceRankingHistory: Array<Array<[string, number]>>;
   achievements: Map<string, string>;
   campaignHistory: any[];
+  history: Array<{
+    step: number;
+    memberCount: number;
+    proposalCount: number;
+    projectCount: number;
+    tokenPrice: number;
+    treasuryFunds: number;
+  }>;
 }
 
 // WebSocket Events

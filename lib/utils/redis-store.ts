@@ -3,6 +3,43 @@
 import Redis from 'ioredis';
 import type { DAOSimulation } from '../engine/simulation';
 
+export function snapshotConfig(simulation: DAOSimulation): any {
+  return {
+    numDevelopers: simulation.numDevelopers,
+    numInvestors: simulation.numInvestors,
+    numTraders: simulation.numTraders,
+    governanceRule: simulation.governanceRuleName,
+    enableMarketing: simulation.enableMarketing,
+    tokenEmissionRate: simulation.tokenEmissionRate,
+    tokenBurnRate: simulation.tokenBurnRate,
+    stakingInterestRate: simulation.stakingInterestRate,
+    marketShockFrequency: simulation.marketShockFrequency,
+    seed: simulation.seed,
+  };
+}
+
+export function snapshotDAOState(simulation: DAOSimulation): any {
+  const dao = simulation.dao;
+  const treasury: any = (dao as any).treasury;
+  const treasuryFunds = treasury?.funds ?? 0;
+  const tokenPrice = typeof treasury?.getTokenPrice === 'function'
+    ? treasury.getTokenPrice('DAO_TOKEN')
+    : 0;
+  return {
+    name: dao.name,
+    members: (dao.members || []).map(m => ({
+      uniqueId: m.uniqueId,
+      tokens: m.tokens,
+      reputation: m.reputation,
+      stakedTokens: (m as any).stakedTokens,
+    })),
+    proposals: Array.isArray(dao.proposals) ? dao.proposals.length : 0,
+    projects: Array.isArray(dao.projects) ? dao.projects.length : 0,
+    treasuryFunds,
+    tokenPrice,
+  };
+}
+
 export interface SimulationStore {
   save(id: string, simulation: DAOSimulation): Promise<void>;
   load(id: string): Promise<any | null>;
@@ -44,8 +81,8 @@ export class RedisSimulationStore implements SimulationStore {
     const data = {
       id,
       step: simulation.currentStep,
-      config: this.serializeConfig(simulation),
-      daoState: this.serializeDAOState(simulation),
+      config: snapshotConfig(simulation),
+      daoState: snapshotDAOState(simulation),
       timestamp: Date.now(),
     };
 
@@ -96,36 +133,6 @@ export class RedisSimulationStore implements SimulationStore {
     return simulations;
   }
 
-  private serializeConfig(simulation: DAOSimulation): any {
-    return {
-      numDevelopers: simulation.numDevelopers,
-      numInvestors: simulation.numInvestors,
-      numTraders: simulation.numTraders,
-      governanceRule: simulation.governanceRuleName,
-      enableMarketing: simulation.enableMarketing,
-      tokenEmissionRate: simulation.tokenEmissionRate,
-      tokenBurnRate: simulation.tokenBurnRate,
-      stakingInterestRate: simulation.stakingInterestRate,
-      marketShockFrequency: simulation.marketShockFrequency,
-    };
-  }
-
-  private serializeDAOState(simulation: DAOSimulation): any {
-    const dao = simulation.dao;
-    return {
-      name: dao.name,
-      members: dao.members.map(m => ({
-        uniqueId: m.uniqueId,
-        tokens: m.tokens,
-        reputation: m.reputation,
-        stakedTokens: m.stakedTokens,
-      })),
-      proposals: dao.proposals.length,
-      projects: dao.projects.length,
-      treasuryFunds: dao.treasury.funds,
-      tokenPrice: dao.treasury.getTokenPrice('DAO_TOKEN'),
-    };
-  }
 }
 
 /**
@@ -139,6 +146,8 @@ export class InMemorySimulationStore implements SimulationStore {
       id,
       step: simulation.currentStep,
       simulation, // Store the actual instance
+      daoState: snapshotDAOState(simulation),
+      config: snapshotConfig(simulation),
       timestamp: Date.now(),
     };
     this.store.set(id, data);
@@ -187,4 +196,42 @@ export function createSimulationStore(): SimulationStore {
   }
 
   return new InMemorySimulationStore();
+}
+
+/**
+ * Rehydrate a DAOSimulation instance from a serialized snapshot saved by a SimulationStore.
+ * Note: Because the snapshot only contains aggregated DAO state, the rehydrated simulation
+ * uses fresh agent instances seeded with the stored config and copies basic balances/metrics.
+ */
+export function rehydrateSimulation(snapshot: any): DAOSimulation {
+  if (snapshot?.simulation) {
+    return snapshot.simulation as DAOSimulation;
+  }
+
+  const simulation = new DAOSimulation(snapshot?.config || {});
+  simulation.currentStep = snapshot?.step || 0;
+
+  const daoState = snapshot?.daoState;
+  if (daoState) {
+    // Restore high-level treasury state
+    if (typeof daoState.treasuryFunds === 'number') {
+      simulation.dao.treasury.tokens = new Map([['DAO_TOKEN', daoState.treasuryFunds]]);
+    }
+    if (typeof daoState.tokenPrice === 'number') {
+      simulation.dao.treasury.tokenPrices = new Map([['DAO_TOKEN', daoState.tokenPrice]]);
+    }
+
+    // Restore member-level balances where possible (best-effort)
+    if (Array.isArray(daoState.members) && daoState.members.length) {
+      for (let i = 0; i < simulation.dao.members.length && i < daoState.members.length; i++) {
+        const saved = daoState.members[i];
+        const member = simulation.dao.members[i] as any;
+        if (typeof saved.tokens === 'number') member.tokens = saved.tokens;
+        if (typeof saved.reputation === 'number') member.reputation = saved.reputation;
+        if (typeof saved.stakedTokens === 'number') member.stakedTokens = saved.stakedTokens;
+      }
+    }
+  }
+
+  return simulation;
 }

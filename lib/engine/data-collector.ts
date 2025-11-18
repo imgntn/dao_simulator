@@ -15,6 +15,14 @@ export class SimpleDataCollector implements DataCollectorData {
   influenceRankingHistory: Array<Array<[string, number]>> = [];
   achievements: Map<string, string> = new Map();
   campaignHistory: any[] = [];
+  history: Array<{
+    step: number;
+    memberCount: number;
+    proposalCount: number;
+    projectCount: number;
+    tokenPrice: number;
+    treasuryFunds: number;
+  }> = [];
 
   private centralityInterval: number;
   private lastCentralityStep: number | null = null;
@@ -121,6 +129,18 @@ export class SimpleDataCollector implements DataCollectorData {
       numProjects: dao.projects.length,
       numMembers: dao.members.length,
     });
+
+    this.history.push({
+      step,
+      memberCount: dao.members.length,
+      proposalCount: dao.proposals.length,
+      projectCount: dao.projects.length,
+      tokenPrice: price,
+      treasuryFunds: dao.treasury.funds,
+    });
+    if (this.history.length > 5000) {
+      this.history.shift();
+    }
   }
 
   /**
@@ -182,6 +202,7 @@ export class SimpleDataCollector implements DataCollectorData {
     this.influenceRankingHistory = [];
     this.achievements.clear();
     this.campaignHistory = [];
+    this.history = [];
     this.lastCentralityStep = null;
     this.lastCampaign = null;
   }

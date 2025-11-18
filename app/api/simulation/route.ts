@@ -13,6 +13,17 @@ const simulationStore = createSimulationStore();
 const isInMemory = simulationStore instanceof InMemorySimulationStore;
 const simulations = isInMemory ? (simulationStore as InMemorySimulationStore) : null;
 
+// Keep live simulation instances in-process so stepping works even when Redis is enabled
+const liveSimulations = new Map<string, DAOSimulation>();
+
+const getLiveSimulation = (id: string): DAOSimulation | null => {
+  return liveSimulations.get(id) || (isInMemory && simulations ? simulations.getSimulation(id) : null);
+};
+
+const trackSimulation = (id: string, simulation: DAOSimulation) => {
+  liveSimulations.set(id, simulation);
+};
+
 /**
  * GET /api/simulation
  * List all active simulations or get a specific simulation state
@@ -22,35 +33,28 @@ export async function GET(request: NextRequest) {
   const id = searchParams.get('id');
 
   if (id) {
-    if (isInMemory && simulations) {
-      const simulation = simulations.getSimulation(id);
-      if (!simulation) {
-        return NextResponse.json(
-          { error: 'Simulation not found' },
-          { status: 404 }
-        );
-      }
-
+    const liveSimulation = getLiveSimulation(id);
+    if (liveSimulation) {
       return NextResponse.json({
         id,
-        summary: simulation.getSummary(),
-        step: simulation.currentStep,
-      });
-    } else {
-      const data = await simulationStore.load(id);
-      if (!data) {
-        return NextResponse.json(
-          { error: 'Simulation not found' },
-          { status: 404 }
-        );
-      }
-
-      return NextResponse.json({
-        id,
-        step: data.step,
-        summary: data.daoState,
+        summary: liveSimulation.getSummary(),
+        step: liveSimulation.currentStep,
       });
     }
+
+    const data = await simulationStore.load(id);
+    if (!data) {
+      return NextResponse.json(
+        { error: 'Simulation not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      id,
+      step: data.step,
+      summary: data.daoState ?? data.simulation?.getSummary?.() ?? null,
+    });
   }
 
   // List all simulations
@@ -74,6 +78,7 @@ export async function POST(request: NextRequest) {
     const simulation = new DAOSimulation(config);
 
     // Save to store
+    trackSimulation(id, simulation);
     await simulationStore.save(id, simulation);
 
     return NextResponse.json({
@@ -101,17 +106,10 @@ export async function PUT(request: NextRequest) {
   try {
     const { id, action, steps } = await request.json();
 
-    if (!isInMemory || !simulations) {
-      return NextResponse.json(
-        { error: 'Simulation stepping only supported in-memory mode' },
-        { status: 400 }
-      );
-    }
-
-    const simulation = simulations.getSimulation(id);
+    const simulation = getLiveSimulation(id);
     if (!simulation) {
       return NextResponse.json(
-        { error: 'Simulation not found' },
+        { error: 'Simulation not found or not active in this process' },
         { status: 404 }
       );
     }
@@ -134,6 +132,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Update stored state
+    trackSimulation(id, simulation);
     await simulationStore.save(id, simulation);
 
     return NextResponse.json({
@@ -168,6 +167,7 @@ export async function DELETE(request: NextRequest) {
   }
 
   const deleted = await simulationStore.delete(id);
+  liveSimulations.delete(id);
 
   if (!deleted) {
     return NextResponse.json(

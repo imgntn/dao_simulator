@@ -66,15 +66,29 @@ function generateCSV(simulation: any, dataCollector: any): string {
   const headers = ['step', 'members', 'proposals', 'projects', 'tokenPrice', 'treasuryFunds'];
   const rows = [headers.join(',')];
 
-  if (dataCollector?.history) {
-    for (const snapshot of dataCollector.history) {
+  const snapshots =
+    dataCollector?.history?.length
+      ? dataCollector.history
+      : Array.isArray(dataCollector?.modelVars)
+        ? dataCollector.modelVars.map((vars: any) => ({
+            step: vars.step ?? 0,
+            memberCount: vars.numMembers ?? 0,
+            proposalCount: vars.numProposals ?? 0,
+            projectCount: vars.numProjects ?? 0,
+            tokenPrice: vars.price ?? 0,
+            treasuryFunds: simulation.dao?.treasury?.funds ?? 0,
+          }))
+        : [];
+
+  if (snapshots.length > 0) {
+    for (const snapshot of snapshots) {
       const row = [
-        snapshot.step || 0,
-        snapshot.memberCount || 0,
-        snapshot.proposalCount || 0,
-        snapshot.projectCount || 0,
-        snapshot.tokenPrice?.toFixed(4) || '0',
-        snapshot.treasuryFunds?.toFixed(2) || '0',
+        snapshot.step ?? 0,
+        snapshot.memberCount ?? 0,
+        snapshot.proposalCount ?? 0,
+        snapshot.projectCount ?? 0,
+        (snapshot.tokenPrice ?? 0).toFixed(4),
+        (snapshot.treasuryFunds ?? 0).toFixed(2),
       ];
       rows.push(row.join(','));
     }
@@ -98,19 +112,34 @@ function generateCSV(simulation: any, dataCollector: any): string {
  * Generate JSON export from simulation data
  */
 function generateJSON(simulation: any, dataCollector: any): any {
-  if (dataCollector?.history) {
+  const derivedHistory =
+    dataCollector?.history?.length
+      ? dataCollector.history
+      : Array.isArray(dataCollector?.modelVars)
+        ? dataCollector.modelVars.map((vars: any) => ({
+            step: vars.step ?? 0,
+            memberCount: vars.numMembers ?? 0,
+            proposalCount: vars.numProposals ?? 0,
+            projectCount: vars.numProjects ?? 0,
+            tokenPrice: vars.price ?? 0,
+            treasuryFunds: simulation.dao?.treasury?.funds ?? 0,
+          }))
+        : [];
+
+  if (derivedHistory.length > 0) {
     return {
       id: simulation.id || 'unknown',
       currentStep: simulation.currentStep || 0,
-      history: dataCollector.history,
-      summary: dataCollector.getLatestStats(),
+      history: derivedHistory,
+      summary: dataCollector.getLatestStats?.(),
+    };
+  } else {
+    return {
+      id: simulation.id || 'unknown',
+      currentStep: simulation.step || 0,
+      daoState: simulation.daoState,
+      config: simulation.config,
+      history: [],
     };
   }
-
-  return {
-    id: simulation.id || 'unknown',
-    currentStep: simulation.step || 0,
-    daoState: simulation.daoState,
-    config: simulation.config,
-  };
 }

@@ -8,10 +8,14 @@
     "start": "next start",
     "server": "npx tsx server.ts",
     "lint": "eslint",
+    "test": "npm run test:unit",
+    "test:unit": "vitest run --coverage",
+    "test:unit:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
-    "test:e2e:report": "playwright show-report"
+    "test:e2e:report": "playwright show-report",
+    "examples": "tsx examples/run-scenarios.ts"
   },
   "dependencies": {
     "@auth/core": "^0.34.2",
@@ -38,9 +42,12 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^4.0.8",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.20.6",
+    "typescript": "^5",
+    "vitest": "^4.0.8"
   }
 }

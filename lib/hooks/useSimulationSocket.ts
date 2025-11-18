@@ -7,6 +7,7 @@ import type { SimulationData, NetworkData, DAOMember, DAOProposal, LeaderboardEn
 interface SimulationState {
   connected: boolean;
   step: number;
+  running: boolean;
   priceHistory: Array<{ step: number; price: number }>;
   simulationData: SimulationData[];
   networkData: NetworkData | null;
@@ -17,20 +18,23 @@ interface SimulationState {
   marketShocks: MarketShock[];
 }
 
+const buildInitialState = (connected: boolean): SimulationState => ({
+  connected,
+  running: false,
+  step: 0,
+  priceHistory: [],
+  simulationData: [],
+  networkData: null,
+  members: [],
+  proposals: [],
+  tokenLeaderboard: [],
+  influenceLeaderboard: [],
+  marketShocks: [],
+});
+
 export function useSimulationSocket(url: string = 'http://localhost:8003') {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [state, setState] = useState<SimulationState>({
-    connected: false,
-    step: 0,
-    priceHistory: [],
-    simulationData: [],
-    networkData: null,
-    members: [],
-    proposals: [],
-    tokenLeaderboard: [],
-    influenceLeaderboard: [],
-    marketShocks: [],
-  });
+  const [state, setState] = useState<SimulationState>(() => buildInitialState(false));
 
   useEffect(() => {
     const socketInstance = io(url, {
@@ -40,13 +44,12 @@ export function useSimulationSocket(url: string = 'http://localhost:8003') {
       reconnectionAttempts: 5,
     });
 
-    socketInstance.on('connect', () => {
-      setState(prev => ({ ...prev, connected: true }));
-    });
+    const setConnection = (connectedValue: boolean) => {
+      setState(prev => ({ ...prev, connected: connectedValue }));
+    };
 
-    socketInstance.on('disconnect', () => {
-      setState(prev => ({ ...prev, connected: false }));
-    });
+    socketInstance.on('connect', () => setConnection(true));
+    socketInstance.on('disconnect', () => setConnection(false));
 
     socketInstance.on('simulation_step', (data: any) => {
       setState(prev => {
@@ -100,6 +103,26 @@ export function useSimulationSocket(url: string = 'http://localhost:8003') {
       }));
     });
 
+    socketInstance.on('simulation_started', () => {
+      setState(prev => ({ ...prev, running: true }));
+    });
+
+    socketInstance.on('simulation_stopped', () => {
+      setState(prev => ({ ...prev, running: false }));
+    });
+
+    socketInstance.on('simulation_status', (data: { running: boolean; step?: number }) => {
+      setState(prev => ({
+        ...prev,
+        running: data.running,
+        step: typeof data.step === 'number' ? data.step : prev.step,
+      }));
+    });
+
+    socketInstance.on('simulation_reset', () => {
+      setState(prev => buildInitialState(prev.connected));
+    });
+
     setSocket(socketInstance);
 
     return () => {
@@ -107,20 +130,51 @@ export function useSimulationSocket(url: string = 'http://localhost:8003') {
     };
   }, [url]);
 
-  const reset = useCallback(() => {
-    setState({
-      connected: socket?.connected || false,
-      step: 0,
-      priceHistory: [],
-      simulationData: [],
-      networkData: null,
-      members: [],
-      proposals: [],
-      tokenLeaderboard: [],
-      influenceLeaderboard: [],
-      marketShocks: [],
-    });
-  }, [socket]);
+  const resetLocalState = useCallback((connected: boolean, running: boolean) => {
+    const next = buildInitialState(connected);
+    next.running = running;
+    setState(next);
+  }, []);
 
-  return { ...state, socket, reset };
+  const emit = useCallback(
+    (event: string, payload?: any) => {
+      if (socket) {
+        socket.emit(event, payload);
+      }
+    },
+    [socket]
+  );
+
+  const startSimulation = useCallback(
+    (options?: { stepsPerSecond?: number; simulationConfig?: Record<string, any> }) => {
+      emit('start_simulation', {
+        stepsPerSecond: options?.stepsPerSecond,
+        simulationConfig: options?.simulationConfig,
+      });
+    },
+    [emit]
+  );
+
+  const stopSimulation = useCallback(() => {
+    emit('stop_simulation');
+  }, [emit]);
+
+  const stepSimulation = useCallback(() => {
+    emit('step_simulation');
+  }, [emit]);
+
+  const reset = useCallback(() => {
+    const connected = socket?.connected || false;
+    emit('reset_simulation');
+    resetLocalState(connected, false);
+  }, [emit, resetLocalState, socket]);
+
+  return {
+    ...state,
+    socket,
+    reset,
+    startSimulation,
+    stopSimulation,
+    stepSimulation,
+  };
 }
