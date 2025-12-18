@@ -47,6 +47,11 @@ type OpsLogEntry = {
   severity?: 'info' | 'warning' | 'incident' | 'critical';
 };
 
+type SimulationConfig = {
+  seed?: number | string;
+  [key: string]: any;
+};
+
 export default function DashboardPage() {
   const {
     connected,
@@ -195,7 +200,14 @@ export default function DashboardPage() {
     return;
   }, [marketShocks]);
 
-  const presets = useMemo(
+  const presets = useMemo<
+    Array<{
+      id: string;
+      name: string;
+      description: string;
+      config: SimulationConfig;
+    }>
+  >(
     () => [
       {
         id: 'balanced',
@@ -239,8 +251,8 @@ export default function DashboardPage() {
     []
   );
 
-  const presetConfig = useMemo(() => {
-    return presets.find(preset => preset.id === selectedPreset)?.config ?? {};
+  const presetConfig = useMemo<SimulationConfig>(() => {
+    return presets.find((preset) => preset.id === selectedPreset)?.config ?? {};
   }, [presets, selectedPreset]);
 
   const challenges = useMemo(
@@ -336,7 +348,7 @@ export default function DashboardPage() {
   );
 
   const applyStrategy = useCallback(
-    (config: Record<string, any>) => {
+    (config: SimulationConfig) => {
       const base = config ?? {};
       if (!selectedStrategy) return base;
       return selectedStrategy.overlay(base);

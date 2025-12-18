@@ -1,7 +1,7 @@
 // Redis-based persistent storage for simulations
 
 import Redis from 'ioredis';
-import type { DAOSimulation } from '../engine/simulation';
+import { DAOSimulation } from '../engine/simulation';
 
 export function snapshotConfig(simulation: DAOSimulation): any {
   return {
