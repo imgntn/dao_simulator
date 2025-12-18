@@ -8,5 +8,4 @@ startCommand = "npm run start"
 
 [[services]]
 name = "socket-server"
-buildCommand = "npm run server:build"
-startCommand = "npm run server:start -- --port ${PORT:-8003}"
+dockerfilePath = "Dockerfile.socket"
