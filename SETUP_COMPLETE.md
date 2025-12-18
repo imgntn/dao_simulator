@@ -48,25 +48,25 @@ Your DAO Simulator is now **production-ready** with all 8 recommendations fully 
 
 ### 🚀 Quick Start
 
-The server is **already running** at http://localhost:3000!
+The server is **already running** at http://localhost:7884!
 
 #### Test the API:
 ```bash
 # Create simulation (with auth)
-curl -X POST http://localhost:3000/api/simulation \
+curl -X POST http://localhost:7884/api/simulation \
   -H "X-API-Key: dao_sim_2024_secure_api_key_change_in_production" \
   -H "Content-Type: application/json" \
   -d '{"num_developers": 10, "num_investors": 5}'
 
 # List simulations
-curl http://localhost:3000/api/simulation
+curl http://localhost:7884/api/simulation
 
 # Export data
-curl http://localhost:3000/api/simulation/data?id=sim_xxx&format=csv
+curl http://localhost:7884/api/simulation/data?id=sim_xxx&format=csv
 ```
 
 #### Access the Dashboard:
-1. Visit http://localhost:3000
+1. Visit http://localhost:7884
 2. Click "Launch Dashboard"
 3. Login with:
    - **Username**: `admin`
@@ -112,7 +112,7 @@ Your `.env.local` is configured with:
 - ✅ GET endpoints: **ACCESSIBLE** (no auth required for reads)
 
 **Dev Server:**
-- ✅ Running on http://localhost:3000
+- ✅ Running on http://localhost:7884
 - ✅ Turbopack enabled (fast refresh)
 - ✅ Environment loaded from `.env.local`
 

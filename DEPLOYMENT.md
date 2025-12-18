@@ -9,7 +9,9 @@ npm install
 npm run dev
 ```
 
-Visit http://localhost:3000
+Visit http://localhost:7884
+
+> Requires Node.js 22+ (Next.js 16).
 
 ## 🔐 API Authentication
 
@@ -19,7 +21,7 @@ All mutation endpoints (POST, PUT, DELETE) require authentication:
 
 ```bash
 # Create a simulation
-curl -X POST http://localhost:3000/api/simulation \
+curl -X POST http://localhost:7884/api/simulation \
   -H "X-API-Key: dao_sim_2024_secure_api_key_change_in_production" \
   -H "Content-Type: application/json" \
   -d '{"num_developers": 10, "num_investors": 5}'
@@ -115,6 +117,15 @@ services:
 ```bash
 docker-compose up -d
 ```
+
+## Running `server.ts` (Socket.IO) in Production
+
+The WebSocket broadcaster is a separate process from Next.js. Pick one of these approaches:
+
+- **Keep `tsx` available**: install it in production or keep dev deps (`npm install --production=false`) and run `node --loader tsx server.ts --port 8003`.
+- **Precompile (recommended)**: `npm run server:build` (uses `tsconfig.server.json`) then start with `npm run server:start -- --port 8003`.
+
+Run it under a supervisor (pm2/systemd/Railway worker) alongside the Next.js app. If you use a custom `PORT` for Next.js, keep the Socket.IO port separate (default 8003).
 
 ## 🔑 Generating Secure Keys
 

@@ -40,9 +40,9 @@ All Python visualizations have been fully ported to modern React/Next.js:
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the landing page.
+Open [http://localhost:7884](http://localhost:7884) to see the landing page.
 
-Navigate to [http://localhost:3000/dashboard](http://localhost:3000/dashboard) to view the dashboard.
+Navigate to [http://localhost:7884/dashboard](http://localhost:7884/dashboard) to view the dashboard.
 
 ### Production Build
 
