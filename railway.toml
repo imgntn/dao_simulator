@@ -1,0 +1,12 @@
+[project]
+name = "dao_simulator_private"
+
+[[services]]
+name = "dao_simulator_private"
+buildCommand = "npm run build"
+startCommand = "npm run start"
+
+[[services]]
+name = "socket-server"
+buildCommand = "npm run server:build"
+startCommand = "npm run server:start -- --port ${PORT:-8003}"
