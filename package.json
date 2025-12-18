@@ -7,8 +7,10 @@
   },
   "scripts": {
     "dev": "next dev --turbopack -p 7884",
-    "build": "next build --turbopack",
-    "start": "next start",
+    "build": "node scripts/build.js",
+    "build:next": "next build --turbopack",
+    "start": "node scripts/start.js",
+    "start:next": "next start",
     "server": "npx tsx server.ts",
     "server:build": "tsc -p tsconfig.server.json",
     "server:start": "node dist/server.js",
