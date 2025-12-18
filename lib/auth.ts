@@ -1,9 +1,9 @@
-// Authentication configuration for NextAuth.js
+// Authentication configuration for NextAuth.js (v5)
 
-import type { NextAuthOptions } from 'next-auth';
+import type { NextAuthConfig } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-export const authOptions: NextAuthOptions = {
+export const authConfig: NextAuthConfig = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -32,9 +32,6 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  pages: {
-    signIn: '/auth/signin',
-  },
   session: {
     strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 24 hours
