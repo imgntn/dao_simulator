@@ -12,6 +12,8 @@ npm run server     # Socket.IO simulation stream on http://localhost:8003
 
 Requires Node.js 22+ (Next.js 16).
 
+For production, set `NEXT_PUBLIC_SOCKET_URL` on the dashboard service to your deployed socket server (Railway socket service URL/port).
+
 Open [http://localhost:7884](http://localhost:7884) and launch the dashboard. Use the control deck (start/stop/step/reset plus speed selector) to drive the simulation in real-time; the UI syncs with the Socket.IO status events and now mirrors the CLI workflow.
 
 ## Highlights

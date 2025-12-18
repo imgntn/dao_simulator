@@ -32,7 +32,11 @@ const buildInitialState = (connected: boolean): SimulationState => ({
   marketShocks: [],
 });
 
-export function useSimulationSocket(url: string = 'http://localhost:8003') {
+const defaultSocketUrl =
+  (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SOCKET_URL) ||
+  'http://localhost:8003';
+
+export function useSimulationSocket(url: string = defaultSocketUrl) {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [state, setState] = useState<SimulationState>(() => buildInitialState(false));
 
