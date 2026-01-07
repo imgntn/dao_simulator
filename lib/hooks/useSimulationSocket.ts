@@ -35,6 +35,22 @@ const buildInitialState = (connected: boolean): SimulationState => ({
 const defaultSocketUrl =
   (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SOCKET_URL) ||
   'http://localhost:8003';
+const socketApiKey =
+  (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SOCKET_API_KEY) ||
+  undefined;
+const MAX_HISTORY = 600;
+const MAX_SIM_DATA = 1200;
+const MAX_LEADERBOARD = 120;
+const MAX_SHOCKS = 200;
+
+function appendCapped<T>(list: T[], item: T, max: number): T[] {
+  if (list.length < max) {
+    return [...list, item];
+  }
+  const next = list.slice(list.length - max + 1);
+  next.push(item);
+  return next;
+}
 
 export function useSimulationSocket(url: string = defaultSocketUrl) {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -46,6 +62,7 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionAttempts: 5,
+      auth: socketApiKey ? { apiKey: socketApiKey } : undefined,
     });
 
     const setConnection = (connectedValue: boolean) => {
@@ -66,16 +83,17 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
           ...data,
         };
 
-        const newPriceHistory = [
-          ...prev.priceHistory,
+        const newPriceHistory = appendCapped(
+          prev.priceHistory,
           { step: newSimData.step, price: newSimData.dao_token_price },
-        ];
+          MAX_HISTORY
+        );
 
         return {
           ...prev,
           step: newSimData.step,
           priceHistory: newPriceHistory,
-          simulationData: [...prev.simulationData, newSimData],
+          simulationData: appendCapped(prev.simulationData, newSimData, MAX_SIM_DATA),
         };
       });
     });
@@ -95,15 +113,19 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
     socketInstance.on('leaderboard_update', (data: any) => {
       setState(prev => ({
         ...prev,
-        tokenLeaderboard: data.token ? [...prev.tokenLeaderboard, data.token] : prev.tokenLeaderboard,
-        influenceLeaderboard: data.influence ? [...prev.influenceLeaderboard, data.influence] : prev.influenceLeaderboard,
+        tokenLeaderboard: data.token
+          ? appendCapped(prev.tokenLeaderboard, data.token, MAX_LEADERBOARD)
+          : prev.tokenLeaderboard,
+        influenceLeaderboard: data.influence
+          ? appendCapped(prev.influenceLeaderboard, data.influence, MAX_LEADERBOARD)
+          : prev.influenceLeaderboard,
       }));
     });
 
     socketInstance.on('market_shock', (data: MarketShock) => {
       setState(prev => ({
         ...prev,
-        marketShocks: [...prev.marketShocks, data],
+        marketShocks: appendCapped(prev.marketShocks, data, MAX_SHOCKS),
       }));
     });
 

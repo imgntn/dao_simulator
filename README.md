@@ -12,7 +12,7 @@ npm run server     # Socket.IO simulation stream on http://localhost:8003
 
 Requires Node.js 22+ (Next.js 16).
 
-For production, set `NEXT_PUBLIC_SOCKET_URL` on the dashboard service to your deployed socket server (Railway socket service URL/port).
+For production, set `NEXT_PUBLIC_SOCKET_URL` on the dashboard service to your deployed socket server (Railway socket service URL/port). If `API_KEY` is set on the socket server, set `NEXT_PUBLIC_SOCKET_API_KEY` on the dashboard as well.
 
 Open [http://localhost:7884](http://localhost:7884) and launch the dashboard. Use the control deck (start/stop/step/reset plus speed selector) to drive the simulation in real-time; the UI syncs with the Socket.IO status events and now mirrors the CLI workflow.
 
@@ -73,6 +73,7 @@ legacy-python/      Archived Python implementation for reference
 - Set `NEXTAUTH_SECRET`, `API_KEY`, and `ADMIN_*` creds before deploying.
 - Use `REDIS_URL` + `USE_REDIS=true` to persist simulations/checkpoints server-side; otherwise the system falls back to the in-memory store (suitable for local dev only).
 - `AUTO_START_SIMULATION` controls whether the Socket.IO server starts the loop immediately; `REHYDRATE_ON_START` (default true) attempts to reload the last stored simulation (`SOCKET_SIM_ID`, default `socket_sim`) from Redis on boot so stepping can resume after restarts.
+- Set `SOCKET_ALLOWED_ORIGINS` (comma-separated) or `NEXTAUTH_URL` so the Socket.IO server only accepts browser connections from trusted origins.
 - See `DEPLOYMENT.md` for Railway/Vercel/docker instructions plus the security checklist.
 
 ## Release Notes

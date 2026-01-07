@@ -13,16 +13,26 @@ interface NetworkGraph3DProps {
   title?: string;
 }
 
-function NetworkNode3D({ node, color, onClick, showLabel }: {
+function NetworkNode3D({
+  node,
+  color,
+  onClick,
+  showLabel,
+  detail,
+  enableHover,
+}: {
   node: NetworkNode;
   color: string;
   onClick?: () => void;
   showLabel?: boolean;
+  detail: number;
+  enableHover: boolean;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
   useFrame((state) => {
+    if (!enableHover) return;
     if (meshRef.current && hovered) {
       meshRef.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 3) * 0.1);
     } else if (meshRef.current) {
@@ -38,10 +48,10 @@ function NetworkNode3D({ node, color, onClick, showLabel }: {
       <mesh
         ref={meshRef}
         onClick={onClick}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
+        onPointerOver={enableHover ? () => setHovered(true) : undefined}
+        onPointerOut={enableHover ? () => setHovered(false) : undefined}
       >
-        <sphereGeometry args={[size, 32, 32]} />
+        <sphereGeometry args={[size, detail, detail]} />
         <meshStandardMaterial
           color={color}
           emissive={color}
@@ -65,10 +75,16 @@ function NetworkNode3D({ node, color, onClick, showLabel }: {
   );
 }
 
-function NetworkEdge3D({ edge, nodes }: { edge: NetworkEdge; nodes: NetworkNode[] }) {
+function NetworkEdge3D({
+  edge,
+  nodeLookup,
+}: {
+  edge: NetworkEdge;
+  nodeLookup: Map<string, NetworkNode>;
+}) {
   const points = useMemo(() => {
-    const sourceNode = nodes.find(n => n.id === edge.source);
-    const targetNode = nodes.find(n => n.id === edge.target);
+    const sourceNode = nodeLookup.get(edge.source);
+    const targetNode = nodeLookup.get(edge.target);
 
     if (!sourceNode?.position || !targetNode?.position) return [];
 
@@ -76,7 +92,7 @@ function NetworkEdge3D({ edge, nodes }: { edge: NetworkEdge; nodes: NetworkNode[
       new THREE.Vector3(...sourceNode.position),
       new THREE.Vector3(...targetNode.position),
     ];
-  }, [edge, nodes]);
+  }, [edge, nodeLookup]);
 
   const color = useMemo(() => {
     switch (edge.type) {
@@ -116,6 +132,10 @@ function NetworkScene({ data, interactive, showLabels }: {
 
   const displayNodes = data.visible_nodes || data.nodes;
   const displayEdges = data.visible_edges || data.edges;
+  const nodeLookup = useMemo(() => new Map(displayNodes.map(node => [node.id, node])), [displayNodes]);
+  const nodeDetail = displayNodes.length > 400 ? 8 : displayNodes.length > 200 ? 12 : 16;
+  const allowLabels = showLabels && displayNodes.length <= 200;
+  const enableHover = interactive && displayNodes.length <= 250;
 
   const getNodeColor = (node: NetworkNode) => {
     switch (node.type) {
@@ -133,7 +153,7 @@ function NetworkScene({ data, interactive, showLabels }: {
       <pointLight position={[-10, -10, -10]} intensity={0.5} />
 
       {displayEdges.map((edge, i) => (
-        <NetworkEdge3D key={`edge-${i}`} edge={edge} nodes={displayNodes} />
+        <NetworkEdge3D key={`edge-${i}`} edge={edge} nodeLookup={nodeLookup} />
       ))}
 
       {displayNodes.map((node) => (
@@ -141,7 +161,9 @@ function NetworkScene({ data, interactive, showLabels }: {
           key={node.id}
           node={node}
           color={getNodeColor(node)}
-          showLabel={showLabels}
+          showLabel={allowLabels}
+          detail={nodeDetail}
+          enableHover={enableHover}
         />
       ))}
     </group>
@@ -161,6 +183,9 @@ export function NetworkGraph3D({
       </div>
     );
   }
+
+  const dpr = data.nodes.length > 400 ? 1 : 1.5;
+  const enableAntialias = data.nodes.length <= 300;
 
   return (
     <div className="w-full h-[600px] p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
@@ -182,7 +207,11 @@ export function NetworkGraph3D({
         </div>
       </div>
       <div className="w-full h-[calc(100%-3rem)] bg-gray-900 rounded">
-        <Canvas camera={{ position: [50, 50, 50], fov: 60 }}>
+        <Canvas
+          camera={{ position: [50, 50, 50], fov: 60 }}
+          dpr={dpr}
+          gl={{ antialias: enableAntialias }}
+        >
           <NetworkScene data={data} interactive={interactive} showLabels={showLabels} />
           {interactive && <OrbitControls enableDamping dampingFactor={0.05} />}
         </Canvas>

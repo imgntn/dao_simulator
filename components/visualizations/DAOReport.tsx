@@ -27,8 +27,9 @@ export function DAOReport({
     if (simulationData.length === 0) return null;
 
     const latest = simulationData[simulationData.length - 1];
-    const priceChange = simulationData.length > 1
-      ? ((latest.dao_token_price - simulationData[0].dao_token_price) / simulationData[0].dao_token_price) * 100
+    const basePrice = simulationData[0]?.dao_token_price ?? 0;
+    const priceChange = simulationData.length > 1 && basePrice !== 0
+      ? ((latest.dao_token_price - basePrice) / basePrice) * 100
       : 0;
 
     return {
@@ -70,7 +71,7 @@ export function DAOReport({
               ${stats.currentPrice.toFixed(2)}
             </p>
             <p className={`text-sm ${stats.priceChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {stats.priceChange >= 0 ? '↑' : '↓'} {Math.abs(stats.priceChange).toFixed(2)}%
+              {stats.priceChange >= 0 ? 'Up' : 'Down'} {Math.abs(stats.priceChange).toFixed(2)}%
             </p>
           </div>
           <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">

@@ -2,9 +2,10 @@
 
 ## 🚀 Quick Start (Development)
 
-Environment variables are already configured in `.env.local`:
+Copy the example env file and update values:
 
 ```bash
+cp .env.example .env.local
 npm install
 npm run dev
 ```
@@ -22,17 +23,14 @@ All mutation endpoints (POST, PUT, DELETE) require authentication:
 ```bash
 # Create a simulation
 curl -X POST http://localhost:7884/api/simulation \
-  -H "X-API-Key: dao_sim_2024_secure_api_key_change_in_production" \
+  -H "X-API-Key: your-api-key-here" \
   -H "Content-Type: application/json" \
   -d '{"num_developers": 10, "num_investors": 5}'
 ```
 
 ### Admin Dashboard Login
 
-- **Username**: `admin`
-- **Password**: `daosim2024!`
-
-(Change these in production!)
+Set `ADMIN_USERNAME` and `ADMIN_PASSWORD` in your environment before logging in.
 
 ## 📦 Production Deployment
 
@@ -127,6 +125,8 @@ The WebSocket broadcaster is a separate process from Next.js. Pick one of these 
 
 Run it under a supervisor (pm2/systemd/Railway worker) alongside the Next.js app. If you use a custom `PORT` for Next.js, keep the Socket.IO port separate (default 8003).
 
+If `API_KEY` is set, pass it to the dashboard via `NEXT_PUBLIC_SOCKET_API_KEY`. Set `SOCKET_ALLOWED_ORIGINS` (comma-separated) or `NEXTAUTH_URL` so browser connections are limited to trusted origins.
+
 ## 🔑 Generating Secure Keys
 
 ```bash
@@ -186,7 +186,8 @@ curl -X POST https://your-domain.com/api/simulation \
   -d '{"num_developers": 15, "governance_rule": "quorum"}'
 
 # Export data
-curl https://your-domain.com/api/simulation/data?id=sim_123&format=csv
+curl https://your-domain.com/api/simulation/data?id=sim_123&format=csv \
+  -H "X-API-Key: your-production-key"
 ```
 
 ## 🔒 Security Checklist
@@ -239,13 +240,16 @@ redis-cli KEYS "dao-sim:*"
 | API_KEY | Yes* | - | API authentication key |
 | NEXTAUTH_SECRET | Yes | - | NextAuth JWT secret |
 | NEXTAUTH_URL | Yes | - | App URL for OAuth |
+| NEXT_PUBLIC_SOCKET_URL | Yes | - | Dashboard Socket.IO URL |
+| NEXT_PUBLIC_SOCKET_API_KEY | Yes* | - | Dashboard Socket.IO auth key |
+| SOCKET_ALLOWED_ORIGINS | Yes | - | Socket.IO CORS allowlist |
 | ADMIN_USERNAME | No | admin | Admin login username |
 | ADMIN_PASSWORD | Yes | - | Admin login password |
 | REDIS_URL | No | - | Redis connection string |
 | USE_REDIS | No | false | Enable Redis storage |
 | NODE_ENV | No | development | Environment mode |
 
-*In development, API_KEY is optional (bypassed)
+*In development, API_KEY is optional (bypassed). When API_KEY is set, NEXT_PUBLIC_SOCKET_API_KEY should match it for the dashboard.
 
 ## 🎉 Success!
 

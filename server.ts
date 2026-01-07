@@ -10,22 +10,111 @@
  */
 
 import { Server } from 'socket.io';
+import type { Socket } from 'socket.io';
 import { DAOSimulation } from './lib/engine/simulation';
 import { createSimulationStore, InMemorySimulationStore, rehydrateSimulation } from './lib/utils/redis-store';
 
 const args = process.argv.slice(2);
-const PORT = args.includes('--port')
-  ? parseInt(args[args.indexOf('--port') + 1])
-  : 8003;
+const portIndex = args.indexOf('--port');
+const portValue = portIndex !== -1 ? args[portIndex + 1] : undefined;
+const parsedPort = portValue ? Number.parseInt(portValue, 10) : NaN;
+const PORT = Number.isFinite(parsedPort) && parsedPort > 0 ? parsedPort : 8003;
+if (portIndex !== -1 && !portValue) {
+  console.warn('Missing value for --port. Falling back to default 8003.');
+} else if (portIndex !== -1 && (!Number.isFinite(parsedPort) || parsedPort <= 0)) {
+  console.warn(`Invalid port "${portValue}". Falling back to default 8003.`);
+}
 const AUTO_START = process.env.AUTO_START_SIMULATION === 'true' || args.includes('--auto-start');
 const REHYDRATE_ON_START = process.env.REHYDRATE_ON_START !== 'false';
 const SOCKET_SIM_ID = process.env.SOCKET_SIM_ID || 'socket_sim';
+const MAX_STEPS_PER_SECOND = 60;
+
+function hashToUnit(input: string): number {
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) {
+    hash = (hash * 31 + input.charCodeAt(i)) | 0;
+  }
+  return Math.abs(hash) / 0x7fffffff;
+}
+
+function normalizeStepsPerSecond(value: number | undefined): number {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return 1;
+  }
+  return Math.min(parsed, MAX_STEPS_PER_SECOND);
+}
+
+function parseAllowedOrigins(value?: string): string[] {
+  if (!value) return [];
+  return value
+    .split(',')
+    .map(origin => origin.trim())
+    .filter(Boolean);
+}
+
+function resolveAllowedOrigins(): string[] | '*' {
+  const fromEnv = parseAllowedOrigins(process.env.SOCKET_ALLOWED_ORIGINS);
+  if (fromEnv.length > 0) {
+    return fromEnv;
+  }
+
+  const nextAuthUrl = process.env.NEXTAUTH_URL;
+  if (nextAuthUrl) {
+    try {
+      return [new URL(nextAuthUrl).origin];
+    } catch (error: any) {
+      console.warn(`Invalid NEXTAUTH_URL "${nextAuthUrl}".`, error?.message ?? error);
+    }
+  }
+
+  return process.env.NODE_ENV === 'development' ? '*' : [];
+}
+
+function getSocketApiKey(socket: Socket): string | undefined {
+  const authKey = (socket.handshake.auth as { apiKey?: string } | undefined)?.apiKey;
+  const queryKey = typeof socket.handshake.query?.apiKey === 'string'
+    ? socket.handshake.query.apiKey
+    : undefined;
+  const headerValue = socket.handshake.headers['x-api-key'];
+  const headerKey = Array.isArray(headerValue) ? headerValue[0] : headerValue;
+
+  return authKey || queryKey || headerKey;
+}
+
+function isSocketAuthorized(socket: Socket): boolean {
+  const requiredApiKey = process.env.API_KEY;
+  if (!requiredApiKey && process.env.NODE_ENV === 'development') {
+    return true;
+  }
+  if (!requiredApiKey) {
+    return false;
+  }
+  return getSocketApiKey(socket) === requiredApiKey;
+}
 
 console.log('Starting DAO Simulation WebSocket Server...');
 
+const allowedOrigins = resolveAllowedOrigins();
+if (Array.isArray(allowedOrigins) && allowedOrigins.length === 0) {
+  console.warn('No allowed origins configured. Set SOCKET_ALLOWED_ORIGINS or NEXTAUTH_URL to enable browser access.');
+}
+
 const io = new Server(PORT, {
   cors: {
-    origin: '*',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins === '*') {
+        callback(null, true);
+        return;
+      }
+
+      if (Array.isArray(allowedOrigins) && allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error('Not allowed by CORS'), false);
+    },
     methods: ['GET', 'POST'],
   },
 });
@@ -36,6 +125,15 @@ let intervalId: NodeJS.Timeout | null = null;
 let eventBusUnsubscribe: (() => void) | null = null;
 const simulationStore = createSimulationStore();
 const persistenceEnabled = !(simulationStore instanceof InMemorySimulationStore);
+
+io.use((socket, next) => {
+  if (isSocketAuthorized(socket)) {
+    next();
+    return;
+  }
+  console.warn(`Socket auth failed for ${socket.id}`);
+  next(new Error('Unauthorized'));
+});
 
 function emitSimulationStatus(): void {
   io.emit('simulation_status', {
@@ -146,7 +244,7 @@ function broadcastSimulationStep() {
     const networkNodes = members.map((m, idx) => {
       const angle = (idx / members.length) * Math.PI * 2;
       const radius = 20;
-      const height = (Math.random() - 0.5) * 10;
+      const height = (hashToUnit(String(m.id)) - 0.5) * 10;
 
       return {
         id: m.id,
@@ -217,10 +315,14 @@ function startSimulation(stepsPerSecond: number = 1) {
     createSimulation();
   }
 
-  console.log(`Starting simulation at ${stepsPerSecond} steps/second`);
+  const safeStepsPerSecond = normalizeStepsPerSecond(stepsPerSecond);
+  if (stepsPerSecond !== undefined && safeStepsPerSecond !== stepsPerSecond) {
+    console.warn(`Invalid stepsPerSecond "${stepsPerSecond}". Using ${safeStepsPerSecond}.`);
+  }
+  console.log(`Starting simulation at ${safeStepsPerSecond} steps/second`);
   running = true;
 
-  const interval = 1000 / stepsPerSecond;
+  const interval = 1000 / safeStepsPerSecond;
   intervalId = setInterval(broadcastSimulationStep, interval);
   emitSimulationStatus();
 }
@@ -287,7 +389,7 @@ io.on('connection', (socket) => {
     if (!simulation) {
       await createSimulation(config.simulationConfig);
     }
-    startSimulation(config.stepsPerSecond || 1);
+    startSimulation(config.stepsPerSecond);
     io.emit('simulation_started', { success: true });
   });
 
