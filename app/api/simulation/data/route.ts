@@ -3,11 +3,15 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createSimulationStore, InMemorySimulationStore } from '@/lib/utils/redis-store';
+import { requireAuth } from '@/lib/auth';
 
 const simulationStore = createSimulationStore();
 const isInMemory = simulationStore instanceof InMemorySimulationStore;
 
 export async function GET(request: NextRequest) {
+  const authError = await requireAuth(request);
+  if (authError) return authError;
+
   const searchParams = request.nextUrl.searchParams;
   const id = searchParams.get('id');
   const format = searchParams.get('format') || 'json';
@@ -131,7 +135,7 @@ function generateJSON(simulation: any, dataCollector: any): any {
       id: simulation.id || 'unknown',
       currentStep: simulation.currentStep || 0,
       history: derivedHistory,
-      summary: dataCollector.getLatestStats?.(),
+      summary: dataCollector?.getLatestStats?.(),
     };
   } else {
     return {

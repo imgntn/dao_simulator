@@ -70,6 +70,9 @@ export default function DashboardPage() {
     stopSimulation,
     stepSimulation,
   } = useSimulationSocket();
+  const socketUrl =
+    (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SOCKET_URL) ||
+    'http://localhost:8003';
 
   const [showLabels, setShowLabels] = useState(false);
   const [interactiveNetwork, setInteractiveNetwork] = useState(true);
@@ -664,16 +667,6 @@ export default function DashboardPage() {
   ]);
 
   useEffect(() => {
-    if (marketShocks.length > 0) {
-      const latestShock = marketShocks[marketShocks.length - 1];
-      setRecentShock(latestShock);
-      const timer = setTimeout(() => setRecentShock(null), 3000);
-      return () => clearTimeout(timer);
-    }
-    return;
-  }, [marketShocks]);
-
-  useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
       // Ignore typing inside form fields
       const target = event.target as HTMLElement | null;
@@ -1256,7 +1249,7 @@ export default function DashboardPage() {
                 Start a simulation to see real-time visualizations
               </p>
               <p className="text-sm text-gray-500">
-                Connect to WebSocket at <code className="bg-gray-800 px-2 py-1 rounded">localhost:8003</code>
+                Connect to WebSocket at <code className="bg-gray-800 px-2 py-1 rounded">{socketUrl}</code>
               </p>
             </div>
           </section>

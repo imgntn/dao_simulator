@@ -5,6 +5,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { DAOSimulation } from '@/lib/engine/simulation';
 import { createSimulationStore, InMemorySimulationStore } from '@/lib/utils/redis-store';
 import { requireAuth } from '@/lib/auth';
+import {
+  CreateSimulationRequestSchema,
+  StepSimulationRequestSchema,
+  SimulationIdSchema,
+  validateRequest,
+} from '@/lib/validation/schemas';
 
 // Create simulation store (Redis in production, in-memory for dev)
 const simulationStore = createSimulationStore();
@@ -71,8 +77,14 @@ export async function POST(request: NextRequest) {
   const authError = await requireAuth(request);
   if (authError) return authError;
 
+  // Validate request body
+  const validation = await validateRequest(request, CreateSimulationRequestSchema);
+  if (!validation.success) {
+    return validation.response;
+  }
+
   try {
-    const config = await request.json();
+    const config = validation.data;
     const id = `sim_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     const simulation = new DAOSimulation(config);
@@ -86,9 +98,10 @@ export async function POST(request: NextRequest) {
       message: 'Simulation created successfully',
       summary: simulation.getSummary(),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to create simulation';
     return NextResponse.json(
-      { error: error.message || 'Failed to create simulation' },
+      { error: message },
       { status: 400 }
     );
   }
@@ -103,8 +116,14 @@ export async function PUT(request: NextRequest) {
   const authError = await requireAuth(request);
   if (authError) return authError;
 
+  // Validate request body
+  const validation = await validateRequest(request, StepSimulationRequestSchema);
+  if (!validation.success) {
+    return validation.response;
+  }
+
   try {
-    const { id, action, steps } = await request.json();
+    const { id, action, steps } = validation.data;
 
     const simulation = getLiveSimulation(id);
     if (!simulation) {
@@ -123,12 +142,6 @@ export async function PUT(request: NextRequest) {
         const numSteps = steps || 10;
         simulation.run(numSteps);
         break;
-
-      default:
-        return NextResponse.json(
-          { error: 'Invalid action' },
-          { status: 400 }
-        );
     }
 
     // Update stored state
@@ -139,9 +152,10 @@ export async function PUT(request: NextRequest) {
       id,
       summary: simulation.getSummary(),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to step simulation';
     return NextResponse.json(
-      { error: error.message || 'Failed to step simulation' },
+      { error: message },
       { status: 400 }
     );
   }

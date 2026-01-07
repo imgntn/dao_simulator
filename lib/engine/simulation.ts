@@ -15,6 +15,7 @@ import { AgentManager } from '../utils/agent-manager';
 import { settings, SimulationSettings } from '../config/settings';
 import * as constants from '../config/constants';
 import { getRule } from '../utils/governance-plugins';
+import { setSeed } from '../utils/random';
 import {
   Developer,
   Investor,
@@ -142,7 +143,6 @@ export class DAOSimulation extends Model {
     if (config.seed !== undefined) {
       this.seed = config.seed;
       // Use improved seeded random generator
-      const { setSeed } = require('../utils/random');
       setSeed(config.seed);
     }
 

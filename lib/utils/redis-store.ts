@@ -2,8 +2,15 @@
 
 import Redis from 'ioredis';
 import { DAOSimulation } from '../engine/simulation';
+import type {
+  SimulationConfigSnapshot,
+  DAOStateSnapshot,
+  MemberSnapshot,
+  SimulationSnapshot,
+  SimulationListItem,
+} from '../types/simulation';
 
-export function snapshotConfig(simulation: DAOSimulation): any {
+export function snapshotConfig(simulation: DAOSimulation): SimulationConfigSnapshot {
   return {
     numDevelopers: simulation.numDevelopers,
     numInvestors: simulation.numInvestors,
@@ -18,21 +25,24 @@ export function snapshotConfig(simulation: DAOSimulation): any {
   };
 }
 
-export function snapshotDAOState(simulation: DAOSimulation): any {
+export function snapshotDAOState(simulation: DAOSimulation): DAOStateSnapshot {
   const dao = simulation.dao;
-  const treasury: any = (dao as any).treasury;
+  const treasury = dao.treasury;
   const treasuryFunds = treasury?.funds ?? 0;
   const tokenPrice = typeof treasury?.getTokenPrice === 'function'
     ? treasury.getTokenPrice('DAO_TOKEN')
     : 0;
+
+  const members: MemberSnapshot[] = (dao.members || []).map(m => ({
+    uniqueId: m.uniqueId,
+    tokens: m.tokens,
+    reputation: m.reputation,
+    stakedTokens: 'stakedTokens' in m ? (m as { stakedTokens?: number }).stakedTokens : undefined,
+  }));
+
   return {
     name: dao.name,
-    members: (dao.members || []).map(m => ({
-      uniqueId: m.uniqueId,
-      tokens: m.tokens,
-      reputation: m.reputation,
-      stakedTokens: (m as any).stakedTokens,
-    })),
+    members,
     proposals: Array.isArray(dao.proposals) ? dao.proposals.length : 0,
     projects: Array.isArray(dao.projects) ? dao.projects.length : 0,
     treasuryFunds,
@@ -42,9 +52,9 @@ export function snapshotDAOState(simulation: DAOSimulation): any {
 
 export interface SimulationStore {
   save(id: string, simulation: DAOSimulation): Promise<void>;
-  load(id: string): Promise<any | null>;
+  load(id: string): Promise<SimulationSnapshot | null>;
   delete(id: string): Promise<boolean>;
-  list(): Promise<Array<{ id: string; step: number; members: number }>>;
+  list(): Promise<SimulationListItem[]>;
 }
 
 /**
@@ -78,7 +88,7 @@ export class RedisSimulationStore implements SimulationStore {
   async save(id: string, simulation: DAOSimulation): Promise<void> {
     const key = this.keyPrefix + id;
 
-    const data = {
+    const data: SimulationSnapshot = {
       id,
       step: simulation.currentStep,
       config: snapshotConfig(simulation),
@@ -93,7 +103,7 @@ export class RedisSimulationStore implements SimulationStore {
     await this.client.sadd(this.indexKey, id);
   }
 
-  async load(id: string): Promise<any | null> {
+  async load(id: string): Promise<SimulationSnapshot | null> {
     const key = this.keyPrefix + id;
     const data = await this.client.get(key);
 
@@ -101,7 +111,7 @@ export class RedisSimulationStore implements SimulationStore {
       return null;
     }
 
-    return JSON.parse(data);
+    return JSON.parse(data) as SimulationSnapshot;
   }
 
   async delete(id: string): Promise<boolean> {
@@ -115,9 +125,9 @@ export class RedisSimulationStore implements SimulationStore {
     return result > 0;
   }
 
-  async list(): Promise<Array<{ id: string; step: number; members: number }>> {
+  async list(): Promise<SimulationListItem[]> {
     const ids = await this.client.smembers(this.indexKey);
-    const simulations = [];
+    const simulations: SimulationListItem[] = [];
 
     for (const id of ids) {
       const data = await this.load(id);
@@ -136,13 +146,20 @@ export class RedisSimulationStore implements SimulationStore {
 }
 
 /**
+ * Extended snapshot type for in-memory store that keeps the actual simulation instance
+ */
+interface InMemorySnapshot extends SimulationSnapshot {
+  simulation: DAOSimulation;
+}
+
+/**
  * In-memory simulation store for development
  */
 export class InMemorySimulationStore implements SimulationStore {
-  private store = new Map<string, any>();
+  private store = new Map<string, InMemorySnapshot>();
 
   async save(id: string, simulation: DAOSimulation): Promise<void> {
-    const data = {
+    const data: InMemorySnapshot = {
       id,
       step: simulation.currentStep,
       simulation, // Store the actual instance
@@ -153,7 +170,7 @@ export class InMemorySimulationStore implements SimulationStore {
     this.store.set(id, data);
   }
 
-  async load(id: string): Promise<any | null> {
+  async load(id: string): Promise<SimulationSnapshot | null> {
     return this.store.get(id) || null;
   }
 
@@ -161,8 +178,8 @@ export class InMemorySimulationStore implements SimulationStore {
     return this.store.delete(id);
   }
 
-  async list(): Promise<Array<{ id: string; step: number; members: number }>> {
-    const result = [];
+  async list(): Promise<SimulationListItem[]> {
+    const result: SimulationListItem[] = [];
 
     for (const [id, data] of this.store.entries()) {
       result.push({
@@ -203,15 +220,20 @@ export function createSimulationStore(): SimulationStore {
  * Note: Because the snapshot only contains aggregated DAO state, the rehydrated simulation
  * uses fresh agent instances seeded with the stored config and copies basic balances/metrics.
  */
-export function rehydrateSimulation(snapshot: any): DAOSimulation {
-  if (snapshot?.simulation) {
-    return snapshot.simulation as DAOSimulation;
+export function rehydrateSimulation(snapshot: SimulationSnapshot | null): DAOSimulation {
+  if (!snapshot) {
+    return new DAOSimulation({});
   }
 
-  const simulation = new DAOSimulation(snapshot?.config || {});
-  simulation.currentStep = snapshot?.step || 0;
+  // If the snapshot contains the actual simulation instance (in-memory store)
+  if ('simulation' in snapshot && snapshot.simulation instanceof DAOSimulation) {
+    return snapshot.simulation;
+  }
 
-  const daoState = snapshot?.daoState;
+  const simulation = new DAOSimulation(snapshot.config || {});
+  simulation.currentStep = snapshot.step || 0;
+
+  const daoState = snapshot.daoState;
   if (daoState) {
     // Restore high-level treasury state
     if (typeof daoState.treasuryFunds === 'number') {
@@ -225,10 +247,12 @@ export function rehydrateSimulation(snapshot: any): DAOSimulation {
     if (Array.isArray(daoState.members) && daoState.members.length) {
       for (let i = 0; i < simulation.dao.members.length && i < daoState.members.length; i++) {
         const saved = daoState.members[i];
-        const member = simulation.dao.members[i] as any;
+        const member = simulation.dao.members[i];
         if (typeof saved.tokens === 'number') member.tokens = saved.tokens;
         if (typeof saved.reputation === 'number') member.reputation = saved.reputation;
-        if (typeof saved.stakedTokens === 'number') member.stakedTokens = saved.stakedTokens;
+        if (typeof saved.stakedTokens === 'number' && 'stakedTokens' in member) {
+          (member as { stakedTokens: number }).stakedTokens = saved.stakedTokens;
+        }
       }
     }
   }
