@@ -190,11 +190,11 @@ async function createSimulation(config: any = {}) {
   return simulation;
 }
 
-function broadcastSimulationStep() {
+async function broadcastSimulationStep() {
   if (!simulation) return;
 
   try {
-    simulation.step();
+    await simulation.step();
     void persistSimulation(SOCKET_SIM_ID, simulation);
 
     const summary = simulation.getSummary();

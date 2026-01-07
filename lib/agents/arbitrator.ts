@@ -4,10 +4,13 @@ import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
 import type { Dispute } from '../data-structures/dispute';
 import { Violation } from '../data-structures/violation';
+import { random } from '../utils/random';
 
 export class Arbitrator extends DAOMember {
   arbitrationCapacity: number;
+  private maxArbitrationCapacity: number;
   resolvedDisputes: Dispute[] = [];
+  private capacityRegenRate: number;
 
   constructor(
     uniqueId: string,
@@ -16,21 +19,40 @@ export class Arbitrator extends DAOMember {
     reputation: number,
     location: string,
     votingStrategy?: string,
-    arbitrationCapacity: number = 10
+    arbitrationCapacity: number = 10,
+    capacityRegenRate: number = 0.1 // 10% of max capacity regenerates per step
   ) {
     super(uniqueId, model, tokens, reputation, location, votingStrategy);
     this.arbitrationCapacity = arbitrationCapacity;
+    this.maxArbitrationCapacity = arbitrationCapacity;
+    this.capacityRegenRate = capacityRegenRate;
   }
 
   step(): void {
+    // Regenerate some capacity each step (prevents permanent depletion)
+    this.regenerateCapacity();
+
     if (this.model.dao && this.model.dao.disputes.length > 0) {
       this.handleDispute();
     }
 
     this.voteOnRandomProposal();
 
-    if (Math.random() < (this.model.dao?.commentProbability || 0.5)) {
+    if (random() < (this.model.dao?.commentProbability || 0.5)) {
       this.leaveCommentOnRandomProposal();
+    }
+  }
+
+  /**
+   * Regenerate arbitration capacity over time
+   */
+  private regenerateCapacity(): void {
+    if (this.arbitrationCapacity < this.maxArbitrationCapacity) {
+      const regen = this.maxArbitrationCapacity * this.capacityRegenRate;
+      this.arbitrationCapacity = Math.min(
+        this.maxArbitrationCapacity,
+        this.arbitrationCapacity + regen
+      );
     }
   }
 
@@ -56,11 +78,19 @@ export class Arbitrator extends DAOMember {
 
     dispute.resolved = true;
     this.arbitrationCapacity -= 1;
-    this.reputation += 1;
     this.markActive();
 
+    // Publish dispute resolved event (reputation tracking handled via events if needed)
+    if (this.model.eventBus) {
+      this.model.eventBus.publish('dispute_resolved', {
+        step: this.model.currentStep,
+        arbitrator: this.uniqueId,
+        dispute: dispute.description,
+      });
+    }
+
     // Check if violation should be created
-    if (Math.random() < this.model.dao.violationProbability && dispute.member) {
+    if (random() < this.model.dao.violationProbability && dispute.member) {
       const violation = new Violation(dispute.member, dispute.project, dispute.description);
       this.model.dao.addViolation(violation);
 

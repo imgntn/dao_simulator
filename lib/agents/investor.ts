@@ -2,6 +2,7 @@
 
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
+import { random, randomChoice } from '../utils/random';
 
 export class Investor extends DAOMember {
   investmentBudget: number;
@@ -25,7 +26,7 @@ export class Investor extends DAOMember {
     this.investInRandomProposal();
     this.voteOnRandomProposal();
 
-    if (Math.random() < (this.model.dao?.commentProbability || 0.5)) {
+    if (random() < (this.model.dao?.commentProbability || 0.5)) {
       this.leaveCommentOnRandomProposal();
     }
   }
@@ -36,8 +37,8 @@ export class Investor extends DAOMember {
     const openProps = this.model.dao.proposals.filter(p => p.status === 'open');
     if (openProps.length === 0 || this.investmentBudget <= 0) return;
 
-    const proposal = openProps[Math.floor(Math.random() * openProps.length)];
-    const investmentAmount = Math.random() * this.investmentBudget;
+    const proposal = randomChoice(openProps);
+    const investmentAmount = random() * this.investmentBudget;
 
     proposal.receiveInvestment(this.uniqueId, investmentAmount);
 
@@ -51,7 +52,7 @@ export class Investor extends DAOMember {
     }
 
     this.investmentBudget -= investmentAmount;
-    this.reputation += investmentAmount / 100;
+    // Note: Reputation is updated by ReputationTracker via 'proposal_invested' event
     this.markActive();
   }
 

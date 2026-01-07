@@ -344,18 +344,18 @@ describe('Agent interactions', () => {
     expect(memberTypes.filter(t => t === 'PassiveMember').length).toBe(3);
   });
 
-  it('should run simulation step without errors', () => {
-    expect(() => simulation.step()).not.toThrow();
+  it('should run simulation step without errors', async () => {
+    await expect(simulation.step()).resolves.not.toThrow();
   });
 
-  it('should run multiple simulation steps', () => {
-    expect(() => simulation.run(10)).not.toThrow();
+  it('should run multiple simulation steps', async () => {
+    await expect(simulation.run(10)).resolves.not.toThrow();
     expect(simulation.currentStep).toBe(10);
   });
 
-  it('should handle proposals being created and voted on', () => {
+  it('should handle proposals being created and voted on', async () => {
     // Run enough steps for proposals to be created
-    simulation.run(20);
+    await simulation.run(20);
 
     // Should have some proposals
     expect(simulation.dao.proposals.length).toBeGreaterThan(0);

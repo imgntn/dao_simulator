@@ -6,6 +6,7 @@ import type { Guild } from '../data-structures/guild';
 import type { VotingStrategy } from '../utils/voting-strategies';
 import { getStrategy, DefaultVotingStrategy } from '../utils/voting-strategies';
 import type { DAOModel } from '../engine/model';
+import { random, randomChoice } from '../utils/random';
 
 export class DAOMember implements Agent {
   uniqueId: string;
@@ -41,7 +42,7 @@ export class DAOMember implements Agent {
     this.reputation = reputation;
     this.location = location;
     this.stakingRate = model.dao?.stakingInterestRate || 0;
-    this.optimism = Math.random();
+    this.optimism = random();
 
     // Set voting strategy
     if (typeof votingStrategy === 'string') {
@@ -101,7 +102,7 @@ export class DAOMember implements Agent {
     });
 
     if (openProps.length > 0) {
-      const proposal = openProps[Math.floor(Math.random() * openProps.length)];
+      const proposal = randomChoice(openProps);
       this.voteOnProposal(proposal);
     }
   }
@@ -111,8 +112,8 @@ export class DAOMember implements Agent {
 
     const openProps = this.model.dao.proposals.filter(p => p.status === 'open');
     if (openProps.length > 0) {
-      const proposal = openProps[Math.floor(Math.random() * openProps.length)];
-      const sentiment = ['positive', 'negative', 'neutral'][Math.floor(Math.random() * 3)];
+      const proposal = randomChoice(openProps);
+      const sentiment = randomChoice(['positive', 'negative', 'neutral']);
       this.leaveComment(proposal, sentiment);
     }
   }
@@ -165,10 +166,10 @@ export class DAOMember implements Agent {
       // String-based heuristics for certain topics
       if (pTopic && typeof pTopic === 'string') {
         if (pTopic.toLowerCase().includes('topic b')) {
-          return Math.random() < 0.7 ? 'yes' : 'no';
+          return random() < 0.7 ? 'yes' : 'no';
         }
         if (pTopic.toLowerCase().includes('topic a')) {
-          return Math.random() < 0.3 ? 'yes' : 'no';
+          return random() < 0.3 ? 'yes' : 'no';
         }
       }
 
@@ -193,27 +194,62 @@ export class DAOMember implements Agent {
 
       belief = clamp(belief);
 
-      return Math.random() < belief ? 'yes' : 'no';
+      return random() < belief ? 'yes' : 'no';
     }
 
     // String-based topic
     const topicStr = typeof topic === 'string' ? topic : '';
     if (topicStr.toLowerCase().includes('topic b')) {
-      return Math.random() < 0.7 ? 'yes' : 'no';
+      return random() < 0.7 ? 'yes' : 'no';
     }
     if (topicStr.toLowerCase().includes('topic a')) {
-      return Math.random() < 0.3 ? 'yes' : 'no';
+      return random() < 0.3 ? 'yes' : 'no';
     }
 
     // Default: random decision
-    return Math.random() < 0.5 ? 'yes' : 'no';
+    return random() < 0.5 ? 'yes' : 'no';
+  }
+
+  /**
+   * Check if delegating to target would create a circular delegation
+   */
+  private wouldCreateCircularDelegation(target: DAOMember, visited: Set<string> = new Set()): boolean {
+    // If we've seen this member before, we found a cycle
+    if (visited.has(target.uniqueId)) {
+      return true;
+    }
+
+    // If target is delegating back to us (directly or indirectly), it's circular
+    if (target.delegations.has(this.uniqueId)) {
+      return true;
+    }
+
+    // Check transitively
+    visited.add(target.uniqueId);
+    for (const delegateId of target.delegations.keys()) {
+      const delegateMember = this.model.dao?.members.find(m => m.uniqueId === delegateId);
+      if (delegateMember && this.wouldCreateCircularDelegation(delegateMember, visited)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
    * Delegate tokens to another member
+   * Prevents circular delegations where A -> B -> A would create infinite loops
    */
   delegate(amount: number, delegate: DAOMember): void {
     if (amount <= 0 || amount > this.tokens) return;
+
+    // Prevent self-delegation
+    if (delegate.uniqueId === this.uniqueId) return;
+
+    // Prevent circular delegation
+    if (this.wouldCreateCircularDelegation(delegate)) {
+      return;
+    }
 
     this.tokens -= amount;
     const current = this.delegations.get(delegate.uniqueId) || 0;

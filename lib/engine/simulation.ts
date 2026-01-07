@@ -363,8 +363,10 @@ export class DAOSimulation extends Model {
 
   /**
    * Step the simulation forward
+   * Note: When using async schedulers (ParallelActivation, AsyncActivation),
+   * this method MUST be awaited to ensure agents complete their steps.
    */
-  step(): void {
+  async step(): Promise<void> {
     // Process scheduled events
     if (this.eventEngine) {
       this.eventEngine.triggerEvents(this.currentStep, this);
@@ -391,8 +393,11 @@ export class DAOSimulation extends Model {
       this.dao.treasury.withdraw('DAO_TOKEN', this.tokenBurnRate, this.currentStep);
     }
 
-    // Step agents
-    this.scheduler.step();
+    // Step agents - await to handle async schedulers
+    const result = this.scheduler.step();
+    if (result instanceof Promise) {
+      await result;
+    }
 
     // Agent lifecycle management
     this.agentManager.addNewMembers();
@@ -415,16 +420,16 @@ export class DAOSimulation extends Model {
 
     // Checkpoint if needed
     if (this.checkpointInterval > 0 && this.currentStep % this.checkpointInterval === 0) {
-      this.saveCheckpoint();
+      await this.saveCheckpoint();
     }
   }
 
   /**
    * Run simulation for multiple steps
    */
-  run(steps: number): void {
+  async run(steps: number): Promise<void> {
     for (let i = 0; i < steps; i++) {
-      this.step();
+      await this.step();
     }
   }
 

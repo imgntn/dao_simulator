@@ -208,12 +208,12 @@ export async function PUT(request: NextRequest) {
 
       switch (action) {
         case 'step':
-          simulation.step();
+          await simulation.step();
           break;
 
         case 'run': {
           const numSteps = steps || 10;
-          simulation.run(numSteps);
+          await simulation.run(numSteps);
           break;
         }
       }

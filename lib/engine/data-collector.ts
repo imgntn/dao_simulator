@@ -2,36 +2,107 @@
 
 import type { DataCollectorData, EventData } from '@/types/simulation';
 import type { DAO } from '../data-structures/dao';
+import { CircularBuffer } from '../utils/circular-buffer';
+
+// Maximum history entries to keep (prevents unbounded memory growth)
+const MAX_HISTORY_SIZE = 5000;
+
+export interface HistoryEntry {
+  step: number;
+  memberCount: number;
+  proposalCount: number;
+  projectCount: number;
+  tokenPrice: number;
+  treasuryFunds: number;
+}
+
+export interface ModelVarEntry {
+  step: number;
+  price: number;
+  gini: number;
+  repGini: number;
+  avgTokens: number;
+  numProposals: number;
+  numProjects: number;
+  numMembers: number;
+}
+
+export interface CampaignEntry {
+  step: number;
+  oldPrice: number;
+  newPrice: number;
+  priceChange: number;
+  oldMembers: number;
+  newMembers: number;
+  memberChange: number;
+}
 
 export class SimpleDataCollector implements DataCollectorData {
-  modelVars: any[] = [];
+  private _modelVars: CircularBuffer<ModelVarEntry>;
   eventCounts: Map<string, number> = new Map();
-  priceHistory: number[] = [];
-  giniHistory: number[] = [];
-  reputationGiniHistory: number[] = [];
-  avgTokenHistory: number[] = [];
-  delegationCentrality: Array<Map<string, number>> = [];
-  tokenRankingHistory: Array<Array<[string, number]>> = [];
-  influenceRankingHistory: Array<Array<[string, number]>> = [];
+  private _priceHistory: CircularBuffer<number>;
+  private _giniHistory: CircularBuffer<number>;
+  private _reputationGiniHistory: CircularBuffer<number>;
+  private _avgTokenHistory: CircularBuffer<number>;
+  private _delegationCentrality: CircularBuffer<Map<string, number>>;
+  private _tokenRankingHistory: CircularBuffer<Array<[string, number]>>;
+  private _influenceRankingHistory: CircularBuffer<Array<[string, number]>>;
   achievements: Map<string, string> = new Map();
-  campaignHistory: any[] = [];
-  history: Array<{
-    step: number;
-    memberCount: number;
-    proposalCount: number;
-    projectCount: number;
-    tokenPrice: number;
-    treasuryFunds: number;
-  }> = [];
+  private _campaignHistory: CircularBuffer<CampaignEntry>;
+  private _history: CircularBuffer<HistoryEntry>;
+
+  // Getters for backward compatibility - returns arrays from circular buffers
+  get modelVars(): ModelVarEntry[] {
+    return this._modelVars.toArray();
+  }
+  get priceHistory(): number[] {
+    return this._priceHistory.toArray();
+  }
+  get giniHistory(): number[] {
+    return this._giniHistory.toArray();
+  }
+  get reputationGiniHistory(): number[] {
+    return this._reputationGiniHistory.toArray();
+  }
+  get avgTokenHistory(): number[] {
+    return this._avgTokenHistory.toArray();
+  }
+  get delegationCentrality(): Array<Map<string, number>> {
+    return this._delegationCentrality.toArray();
+  }
+  get tokenRankingHistory(): Array<Array<[string, number]>> {
+    return this._tokenRankingHistory.toArray();
+  }
+  get influenceRankingHistory(): Array<Array<[string, number]>> {
+    return this._influenceRankingHistory.toArray();
+  }
+  get campaignHistory(): CampaignEntry[] {
+    return this._campaignHistory.toArray();
+  }
+  get history(): HistoryEntry[] {
+    return this._history.toArray();
+  }
 
   private centralityInterval: number;
   private lastCentralityStep: number | null = null;
   private dao: DAO | null = null;
-  private lastCampaign: any = null;
+  private lastCampaign: CampaignEntry | null = null;
 
   constructor(dao?: DAO, centralityInterval: number = 1) {
     this.centralityInterval = Math.max(1, Math.floor(centralityInterval));
     this.dao = dao || null;
+
+    // Initialize all circular buffers with bounded capacity
+    this._modelVars = new CircularBuffer<ModelVarEntry>(MAX_HISTORY_SIZE);
+    this._priceHistory = new CircularBuffer<number>(MAX_HISTORY_SIZE);
+    this._giniHistory = new CircularBuffer<number>(MAX_HISTORY_SIZE);
+    this._reputationGiniHistory = new CircularBuffer<number>(MAX_HISTORY_SIZE);
+    this._avgTokenHistory = new CircularBuffer<number>(MAX_HISTORY_SIZE);
+    this._delegationCentrality = new CircularBuffer<Map<string, number>>(MAX_HISTORY_SIZE);
+    this._tokenRankingHistory = new CircularBuffer<Array<[string, number]>>(MAX_HISTORY_SIZE);
+    this._influenceRankingHistory = new CircularBuffer<Array<[string, number]>>(MAX_HISTORY_SIZE);
+    this._campaignHistory = new CircularBuffer<CampaignEntry>(MAX_HISTORY_SIZE);
+    this._history = new CircularBuffer<HistoryEntry>(MAX_HISTORY_SIZE);
 
     if (dao && dao.eventBus) {
       dao.eventBus.subscribe('*', this.handleEvent.bind(this));
@@ -43,15 +114,16 @@ export class SimpleDataCollector implements DataCollectorData {
     this.eventCounts.set(event, (this.eventCounts.get(event) || 0) + 1);
 
     if (event === 'marketing_campaign') {
+      const latestPrice = this._priceHistory.latest();
       const prevPrice =
-        (data as any).oldPrice ||
-        (this.priceHistory.length > 0
-          ? this.priceHistory[this.priceHistory.length - 1]
+        (data as Record<string, unknown>).oldPrice as number ||
+        (latestPrice !== undefined
+          ? latestPrice
           : this.dao?.treasury.getTokenPrice('DAO_TOKEN') || 100);
 
-      const newPrice = (data as any).newPrice || this.dao?.treasury.getTokenPrice('DAO_TOKEN') || 100;
-      const prevMembers = (data as any).oldMembers || 0;
-      const newMembers = (data as any).newMembers || 0;
+      const newPrice = (data as Record<string, unknown>).newPrice as number || this.dao?.treasury.getTokenPrice('DAO_TOKEN') || 100;
+      const prevMembers = (data as Record<string, unknown>).oldMembers as number || 0;
+      const newMembers = (data as Record<string, unknown>).newMembers as number || 0;
 
       this.lastCampaign = {
         step: data.step,
@@ -62,7 +134,7 @@ export class SimpleDataCollector implements DataCollectorData {
         newMembers: newMembers,
         memberChange: newMembers - prevMembers,
       };
-      this.campaignHistory.push(this.lastCampaign);
+      this._campaignHistory.push(this.lastCampaign);
     }
   }
 
@@ -78,35 +150,37 @@ export class SimpleDataCollector implements DataCollectorData {
 
     // Collect token price
     const price = dao.treasury.getTokenPrice('DAO_TOKEN');
-    this.priceHistory.push(price);
+    this._priceHistory.push(price);
 
     // Calculate Gini coefficient for token distribution
     const tokenBalances = dao.members.map(m => m.tokens);
     const gini = this.calculateGini(tokenBalances);
-    this.giniHistory.push(gini);
+    this._giniHistory.push(gini);
 
     // Calculate Gini coefficient for reputation
     const reputations = dao.members.map(m => m.reputation);
     const repGini = this.calculateGini(reputations);
-    this.reputationGiniHistory.push(repGini);
+    this._reputationGiniHistory.push(repGini);
 
     // Calculate average tokens
-    const avgTokens = tokenBalances.reduce((a, b) => a + b, 0) / tokenBalances.length;
-    this.avgTokenHistory.push(avgTokens);
+    const avgTokens = tokenBalances.length > 0
+      ? tokenBalances.reduce((a, b) => a + b, 0) / tokenBalances.length
+      : 0;
+    this._avgTokenHistory.push(avgTokens);
 
     // Token rankings
     const tokenRanking = dao.members
       .map(m => [m.uniqueId, m.tokens] as [string, number])
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10);
-    this.tokenRankingHistory.push(tokenRanking);
+    this._tokenRankingHistory.push(tokenRanking);
 
     // Influence rankings (reputation)
     const influenceRanking = dao.members
       .map(m => [m.uniqueId, m.reputation] as [string, number])
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10);
-    this.influenceRankingHistory.push(influenceRanking);
+    this._influenceRankingHistory.push(influenceRanking);
 
     // Delegation centrality (only on interval)
     if (
@@ -114,12 +188,12 @@ export class SimpleDataCollector implements DataCollectorData {
       step - this.lastCentralityStep >= this.centralityInterval
     ) {
       const centrality = this.calculateDelegationCentrality(dao);
-      this.delegationCentrality.push(centrality);
+      this._delegationCentrality.push(centrality);
       this.lastCentralityStep = step;
     }
 
     // Store model variables
-    this.modelVars.push({
+    this._modelVars.push({
       step,
       price,
       gini,
@@ -130,7 +204,8 @@ export class SimpleDataCollector implements DataCollectorData {
       numMembers: dao.members.length,
     });
 
-    this.history.push({
+    // Store history entry (CircularBuffer handles automatic eviction)
+    this._history.push({
       step,
       memberCount: dao.members.length,
       proposalCount: dao.proposals.length,
@@ -138,9 +213,6 @@ export class SimpleDataCollector implements DataCollectorData {
       tokenPrice: price,
       treasuryFunds: dao.treasury.funds,
     });
-    if (this.history.length > 5000) {
-      this.history.shift();
-    }
   }
 
   /**
@@ -183,26 +255,26 @@ export class SimpleDataCollector implements DataCollectorData {
   /**
    * Get the latest statistics
    */
-  getLatestStats() {
-    return this.modelVars.length > 0 ? this.modelVars[this.modelVars.length - 1] : null;
+  getLatestStats(): ModelVarEntry | null {
+    return this._modelVars.latest() || null;
   }
 
   /**
    * Reset all collected data
    */
   reset(): void {
-    this.modelVars = [];
+    this._modelVars.clear();
     this.eventCounts.clear();
-    this.priceHistory = [];
-    this.giniHistory = [];
-    this.reputationGiniHistory = [];
-    this.avgTokenHistory = [];
-    this.delegationCentrality = [];
-    this.tokenRankingHistory = [];
-    this.influenceRankingHistory = [];
+    this._priceHistory.clear();
+    this._giniHistory.clear();
+    this._reputationGiniHistory.clear();
+    this._avgTokenHistory.clear();
+    this._delegationCentrality.clear();
+    this._tokenRankingHistory.clear();
+    this._influenceRankingHistory.clear();
     this.achievements.clear();
-    this.campaignHistory = [];
-    this.history = [];
+    this._campaignHistory.clear();
+    this._history.clear();
     this.lastCentralityStep = null;
     this.lastCampaign = null;
   }

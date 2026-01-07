@@ -3,6 +3,7 @@
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
 import type { Project } from '../data-structures/project';
+import { random, randomChoice } from '../utils/random';
 
 export class Developer extends DAOMember {
   skillset: string[];
@@ -24,7 +25,7 @@ export class Developer extends DAOMember {
     this.workOnProject();
     this.voteOnRandomProposal();
 
-    if (Math.random() < (this.model.dao?.commentProbability || 0.5)) {
+    if (random() < (this.model.dao?.commentProbability || 0.5)) {
       this.leaveCommentOnRandomProposal();
     }
   }
@@ -33,9 +34,9 @@ export class Developer extends DAOMember {
     const project = this.chooseProjectToWorkOn();
     if (!project) return;
 
-    const workAmount = Math.random() * this.reputation;
+    const workAmount = random() * this.reputation;
     project.receiveWork(this.uniqueId, workAmount);
-    this.reputation += workAmount / 10;
+    // Note: Reputation is updated by ReputationTracker via 'project_worked' event
     this.markActive();
 
     if (this.model.eventBus) {
@@ -79,6 +80,6 @@ export class Developer extends DAOMember {
     const maxScore = Math.max(...scored.map(s => s.score));
     const bestProjects = scored.filter(s => s.score === maxScore);
 
-    return bestProjects[Math.floor(Math.random() * bestProjects.length)].project;
+    return randomChoice(bestProjects).project;
   }
 }

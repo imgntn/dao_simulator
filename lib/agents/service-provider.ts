@@ -37,7 +37,7 @@ export class ServiceProvider extends DAOMember {
     if (this.serviceBudget > 0) {
       this.offerService(proposal);
       this.serviceBudget -= 1;
-      this.reputation += 1;
+      // Note: Reputation is updated by ReputationTracker via 'service_offered' event
       this.markActive();
     }
   }
@@ -52,7 +52,7 @@ export class ServiceProvider extends DAOMember {
 
     // Add value to proposal
     proposal.currentFunding += 1;
-    this.reputation += 1;
+    // Note: Reputation is updated by ReputationTracker via 'service_offered' event
 
     if (this.model.eventBus) {
       this.model.eventBus.publish('service_offered', {

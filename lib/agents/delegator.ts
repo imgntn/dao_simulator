@@ -6,7 +6,7 @@ import type { Proposal } from '../data-structures/proposal';
 
 export class Delegator extends DAOMember {
   delegationBudget: number;
-  delegations: Map<string, number> = new Map(); // proposalId -> amount
+  proposalDelegations: Map<string, number> = new Map(); // proposalId -> amount delegated to that proposal
 
   constructor(
     uniqueId: string,
@@ -40,8 +40,8 @@ export class Delegator extends DAOMember {
       this.delegationBudget -= tokenAmount;
       this.tokens -= tokenAmount;
       proposal.receiveDelegatedSupport(this.uniqueId, tokenAmount);
-      this.delegations.set(proposal.uniqueId, tokenAmount);
-      this.reputation += tokenAmount / 100;
+      this.proposalDelegations.set(proposal.uniqueId, tokenAmount);
+      // Note: Reputation not modified here - could be tracked via events if needed
       this.markActive();
     }
   }
