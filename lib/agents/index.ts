@@ -1,4 +1,4 @@
-// Agent exports
+// Agent exports - Core agents
 
 export { DAOMember } from './base';
 export { Developer } from './developer';
@@ -10,9 +10,9 @@ export { Arbitrator } from './arbitrator';
 export { PassiveMember } from './passive-member';
 export { Delegator } from './delegator';
 export { ServiceProvider } from './service-provider';
-export { Regulator } from './regulator';
+export { Regulator, type ComplianceConfig } from './regulator';
 
-// Additional agents (to be fully implemented)
+// Specialized agents
 export { AdaptiveInvestor } from './adaptive-investor';
 export { BountyHunter } from './bounty-hunter';
 export { Artist } from './artist';
@@ -23,3 +23,9 @@ export { Speculator } from './speculator';
 export { ExternalPartner } from './external-partner';
 export { RLTrader } from './rl-trader';
 export { PlayerAgent } from './player-agent';
+
+// New specialized agents
+export { GovernanceExpert } from './governance-expert';
+export { RiskManager } from './risk-manager';
+export { MarketMaker } from './market-maker';
+export { Whistleblower } from './whistleblower';

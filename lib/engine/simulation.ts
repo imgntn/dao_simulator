@@ -35,6 +35,11 @@ import {
   Artist,
   Collector,
   Speculator,
+  RLTrader,
+  GovernanceExpert,
+  RiskManager,
+  MarketMaker,
+  Whistleblower,
 } from '../agents';
 
 export interface DAOSimulationConfig extends Partial<SimulationSettings> {
@@ -105,6 +110,11 @@ export class DAOSimulation extends Model {
   numArtists: number;
   numCollectors: number;
   numSpeculators: number;
+  numRLTraders: number;
+  numGovernanceExperts: number;
+  numRiskManagers: number;
+  numMarketMakers: number;
+  numWhistleblowers: number;
 
   // Probabilities and parameters
   commentProbability: number;
@@ -199,6 +209,11 @@ export class DAOSimulation extends Model {
     this.numArtists = config.num_artists ?? settings.num_artists;
     this.numCollectors = config.num_collectors ?? settings.num_collectors;
     this.numSpeculators = config.num_speculators ?? settings.num_speculators;
+    this.numRLTraders = config.num_rl_traders ?? settings.num_rl_traders ?? 0;
+    this.numGovernanceExperts = config.num_governance_experts ?? settings.num_governance_experts ?? 0;
+    this.numRiskManagers = config.num_risk_managers ?? settings.num_risk_managers ?? 0;
+    this.numMarketMakers = config.num_market_makers ?? settings.num_market_makers ?? 0;
+    this.numWhistleblowers = config.num_whistleblowers ?? settings.num_whistleblowers ?? 0;
 
     // Probabilities
     this.commentProbability = config.comment_probability ?? settings.comment_probability;
@@ -301,6 +316,11 @@ export class DAOSimulation extends Model {
       { class: Artist, count: this.numArtists, params: {} },
       { class: Collector, count: this.numCollectors, params: {} },
       { class: Speculator, count: this.numSpeculators, params: {} },
+      { class: RLTrader, count: this.numRLTraders, params: { learningRate: this.adaptiveLearningRate, epsilon: this.adaptiveEpsilon } },
+      { class: GovernanceExpert, count: this.numGovernanceExperts, params: {} },
+      { class: RiskManager, count: this.numRiskManagers, params: {} },
+      { class: MarketMaker, count: this.numMarketMakers, params: {} },
+      { class: Whistleblower, count: this.numWhistleblowers, params: {} },
     ];
 
     for (const config of agentConfigs) {

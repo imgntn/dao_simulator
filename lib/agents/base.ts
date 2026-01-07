@@ -263,7 +263,6 @@ export class DAOMember implements Agent {
   /**
    * Receive vote from a representative (for liquid delegation)
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   receiveRepresentativeVote(_proposal: Proposal, _vote: boolean, _weight: number): void {
     // Override in subclasses if needed
     // Unused parameters prefixed with underscore to indicate intentional non-use

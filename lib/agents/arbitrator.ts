@@ -97,10 +97,11 @@ export class Arbitrator extends DAOMember {
       // Penalize the violator
       const violator = this.model.dao.members.find(m => m.uniqueId === dispute.member);
       if (violator) {
-        violator.reputation -= this.model.dao.reputationPenalty;
+        violator.reputation = Math.max(0, violator.reputation - this.model.dao.reputationPenalty);
 
-        // Slash staked tokens
-        const slashAmount = violator.stakedTokens * (this.model.dao.slashFraction * dispute.importance);
+        // Slash staked tokens (clamped to available staked tokens)
+        const rawSlash = violator.stakedTokens * (this.model.dao.slashFraction * dispute.importance);
+        const slashAmount = Math.min(rawSlash, violator.stakedTokens);
         if (slashAmount > 0) {
           violator.stakedTokens -= slashAmount;
         }
