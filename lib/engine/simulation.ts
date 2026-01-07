@@ -15,7 +15,7 @@ import { AgentManager } from '../utils/agent-manager';
 import { settings, SimulationSettings } from '../config/settings';
 import * as constants from '../config/constants';
 import { getRule } from '../utils/governance-plugins';
-import { setSeed } from '../utils/random';
+import { setSeed, random } from '../utils/random';
 import {
   Developer,
   Investor,
@@ -398,8 +398,8 @@ export class DAOSimulation extends Model {
     }
 
     // Random market shocks
-    if (this.marketShockFrequency > 0 && Math.random() < 1 / this.marketShockFrequency) {
-      const severity = (Math.random() - 0.5) * constants.MARKET_SHOCK_RANGE;
+    if (this.marketShockFrequency > 0 && random() < 1 / this.marketShockFrequency) {
+      const severity = (random() - 0.5) * constants.MARKET_SHOCK_RANGE;
       this.triggerMarketShock(severity);
     }
 

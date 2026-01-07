@@ -4,6 +4,7 @@ import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
 import type { Project } from '../data-structures/project';
 import { Dispute } from '../data-structures/dispute';
+import { randomChoice } from '../utils/random';
 
 export class Validator extends DAOMember {
   monitoringBudget: number;
@@ -31,9 +32,7 @@ export class Validator extends DAOMember {
   monitorProjects(): void {
     if (!this.model.dao || this.model.dao.projects.length === 0) return;
 
-    const project = this.model.dao.projects[
-      Math.floor(Math.random() * this.model.dao.projects.length)
-    ];
+    const project = randomChoice(this.model.dao.projects);
 
     if (this.monitoringBudget > 0) {
       this.monitorProject(project);

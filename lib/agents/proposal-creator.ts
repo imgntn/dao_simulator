@@ -2,16 +2,17 @@
 
 import { DAOMember } from './base';
 import { Proposal } from '../data-structures/proposal';
+import { random, randomChoice, randomInt } from '../utils/random';
 
 export class ProposalCreator extends DAOMember {
   step(): void {
-    if (Math.random() < 0.3) {
+    if (random() < 0.3) {
       this.createRandomProposal();
     }
 
     this.voteOnRandomProposal();
 
-    if (Math.random() < (this.model.dao?.commentProbability || 0.5)) {
+    if (random() < (this.model.dao?.commentProbability || 0.5)) {
       this.leaveCommentOnRandomProposal();
     }
   }
@@ -27,12 +28,12 @@ export class ProposalCreator extends DAOMember {
       'Community',
       'Infrastructure',
     ];
-    const topic = topics[Math.floor(Math.random() * topics.length)];
+    const topic = randomChoice(topics);
 
-    const title = `${topic} Proposal ${Math.floor(Math.random() * 1000)}`;
+    const title = `${topic} Proposal ${randomInt(0, 999)}`;
     const description = `A proposal about ${topic.toLowerCase()}`;
-    const fundingGoal = Math.random() * 1000 + 100;
-    const duration = Math.floor(Math.random() * 20) + 10;
+    const fundingGoal = random() * 1000 + 100;
+    const duration = randomInt(10, 30);
 
     const proposal = new Proposal(
       this.model.dao,

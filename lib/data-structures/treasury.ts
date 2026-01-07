@@ -304,11 +304,22 @@ export class Treasury {
     return this.getPool(tokenA, tokenB, true)!;
   }
 
-  addLiquidity(tokenA: string, tokenB: string, amtA: number, amtB: number, step: number = 0): void {
+  addLiquidity(tokenA: string, tokenB: string, amtA: number, amtB: number, step: number = 0): number {
     const pool = this.getPool(tokenA, tokenB, true)!;
     this.withdraw(tokenA, amtA, step);
     this.withdraw(tokenB, amtB, step);
     pool.addLiquidity(amtA, amtB, step);
+    // Return LP tokens proportional to liquidity added
+    return Math.sqrt(amtA * amtB);
+  }
+
+  /**
+   * Get the price ratio of tokenA to tokenB in a pool
+   */
+  getPoolPrice(poolKey: string): number | null {
+    const pool = this.pools.get(poolKey);
+    if (!pool || pool.reserveA === 0) return null;
+    return pool.reserveB / pool.reserveA;
   }
 
   removeLiquidity(tokenA: string, tokenB: string, share: number, step: number = 0): [number, number] {

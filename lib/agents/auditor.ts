@@ -4,6 +4,7 @@
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
 import { Dispute } from '../data-structures/dispute';
+import { random } from '../utils/random';
 
 export class Auditor extends DAOMember {
   constructor(
@@ -62,7 +63,7 @@ export class Auditor extends DAOMember {
     this.voteOnRandomProposal();
 
     // Occasionally leave comments
-    if (Math.random() < (this.model.dao.commentProbability || 0.1)) {
+    if (random() < (this.model.dao.commentProbability || 0.1)) {
       this.leaveCommentOnRandomProposal();
     }
   }

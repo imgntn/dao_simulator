@@ -25,6 +25,7 @@ import {
 } from '../agents';
 import { generateRandomLocation } from './locations';
 import * as constants from '../config/constants';
+import { randomChoice } from './random';
 
 type AgentClass = new (
   uniqueId: string,
@@ -237,9 +238,7 @@ export class AgentManager {
       }
 
       // Choose random agent type
-      const agentClass = agentClasses[
-        Math.floor(Math.random() * agentClasses.length)
-      ];
+      const agentClass = randomChoice(agentClasses);
 
       const newAgent = this.createAgent(
         agentClass,

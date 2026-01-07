@@ -4,6 +4,7 @@
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
 import type { Project } from '../data-structures/project';
+import { random, randomChoice } from '../utils/random';
 
 export class ExternalPartner extends DAOMember {
   collaboratedProjects: Project[] = [];
@@ -30,8 +31,7 @@ export class ExternalPartner extends DAOMember {
       'collaborate_on_project',
     ];
 
-    const interactionType =
-      interactionTypes[Math.floor(Math.random() * interactionTypes.length)];
+    const interactionType = randomChoice(interactionTypes);
 
     switch (interactionType) {
       case 'partnership':
@@ -93,11 +93,7 @@ export class ExternalPartner extends DAOMember {
       return;
     }
 
-    const project =
-      this.model.dao.projects[
-        Math.floor(Math.random() * this.model.dao.projects.length)
-      ];
-
+    const project = randomChoice(this.model.dao.projects);
     this.collaborateOnProject(project);
   }
 
@@ -105,7 +101,7 @@ export class ExternalPartner extends DAOMember {
    * Collaborate on a specific project
    */
   collaborateOnProject(project: Project): void {
-    const workAmount = Math.random() * 10;
+    const workAmount = random() * 10;
     project.updateWorkDone(this.uniqueId, workAmount);
 
     if (this.model.eventBus) {
@@ -125,7 +121,7 @@ export class ExternalPartner extends DAOMember {
   step(): void {
     const probability = (this.model.dao as any).externalPartnerInteractProbability || 0.0;
 
-    if (Math.random() < probability) {
+    if (random() < probability) {
       this.interactWithDao();
     }
   }
