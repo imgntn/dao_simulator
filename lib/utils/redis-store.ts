@@ -111,7 +111,15 @@ export class RedisSimulationStore implements SimulationStore {
       return null;
     }
 
-    return JSON.parse(data) as SimulationSnapshot;
+    try {
+      return JSON.parse(data) as SimulationSnapshot;
+    } catch (error) {
+      console.error(`Failed to parse simulation data for ${id}:`, error);
+      // Remove corrupted data from Redis
+      await this.client.del(key);
+      await this.client.srem(this.indexKey, id);
+      return null;
+    }
   }
 
   async delete(id: string): Promise<boolean> {

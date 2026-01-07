@@ -4,24 +4,76 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSimulationStore, InMemorySimulationStore } from '@/lib/utils/redis-store';
 import { requireAuth } from '@/lib/auth';
+import { validateId, FormatSchema } from '@/lib/validation/schemas';
 
 const simulationStore = createSimulationStore();
 const isInMemory = simulationStore instanceof InMemorySimulationStore;
+
+// Type definitions for export data
+interface HistorySnapshot {
+  step: number;
+  memberCount: number;
+  proposalCount: number;
+  projectCount: number;
+  tokenPrice: number;
+  treasuryFunds: number;
+}
+
+interface DataCollectorLike {
+  history?: HistorySnapshot[];
+  modelVars?: Array<{
+    step?: number;
+    numMembers?: number;
+    numProposals?: number;
+    numProjects?: number;
+    price?: number;
+  }>;
+  getLatestStats?: () => Record<string, unknown>;
+}
+
+interface SimulationLike {
+  id?: string;
+  currentStep?: number;
+  step?: number;
+  dao?: {
+    treasury?: {
+      funds?: number;
+    };
+  };
+  daoState?: {
+    members?: unknown[];
+    proposals?: number;
+    projects?: number;
+    tokenPrice?: number;
+    treasuryFunds?: number;
+  };
+  config?: Record<string, unknown>;
+  dataCollector?: DataCollectorLike;
+}
 
 export async function GET(request: NextRequest) {
   const authError = await requireAuth(request);
   if (authError) return authError;
 
   const searchParams = request.nextUrl.searchParams;
-  const id = searchParams.get('id');
-  const format = searchParams.get('format') || 'json';
 
-  if (!id) {
+  // Validate ID
+  const idValidation = validateId(searchParams.get('id'));
+  if (!idValidation.success) {
+    return idValidation.response;
+  }
+  const id = idValidation.data;
+
+  // Validate format
+  const formatParam = searchParams.get('format') || 'json';
+  const formatResult = FormatSchema.safeParse(formatParam);
+  if (!formatResult.success) {
     return NextResponse.json(
-      { error: 'Simulation ID required' },
+      { error: 'Invalid format. Must be "csv" or "json"' },
       { status: 400 }
     );
   }
+  const format = formatResult.data;
 
   // Get simulation data
   let simulationData = null;
@@ -66,15 +118,15 @@ export async function GET(request: NextRequest) {
 /**
  * Generate CSV export from simulation data
  */
-function generateCSV(simulation: any, dataCollector: any): string {
+function generateCSV(simulation: SimulationLike, dataCollector: DataCollectorLike | null): string {
   const headers = ['step', 'members', 'proposals', 'projects', 'tokenPrice', 'treasuryFunds'];
   const rows = [headers.join(',')];
 
-  const snapshots =
+  const snapshots: HistorySnapshot[] =
     dataCollector?.history?.length
       ? dataCollector.history
       : Array.isArray(dataCollector?.modelVars)
-        ? dataCollector.modelVars.map((vars: any) => ({
+        ? dataCollector.modelVars.map((vars) => ({
             step: vars.step ?? 0,
             memberCount: vars.numMembers ?? 0,
             proposalCount: vars.numProposals ?? 0,
@@ -112,15 +164,24 @@ function generateCSV(simulation: any, dataCollector: any): string {
   return rows.join('\n');
 }
 
+interface ExportData {
+  id: string;
+  currentStep: number;
+  history: HistorySnapshot[];
+  summary?: Record<string, unknown>;
+  daoState?: SimulationLike['daoState'];
+  config?: Record<string, unknown>;
+}
+
 /**
  * Generate JSON export from simulation data
  */
-function generateJSON(simulation: any, dataCollector: any): any {
-  const derivedHistory =
+function generateJSON(simulation: SimulationLike, dataCollector: DataCollectorLike | null): ExportData {
+  const derivedHistory: HistorySnapshot[] =
     dataCollector?.history?.length
       ? dataCollector.history
       : Array.isArray(dataCollector?.modelVars)
-        ? dataCollector.modelVars.map((vars: any) => ({
+        ? dataCollector.modelVars.map((vars) => ({
             step: vars.step ?? 0,
             memberCount: vars.numMembers ?? 0,
             proposalCount: vars.numProposals ?? 0,

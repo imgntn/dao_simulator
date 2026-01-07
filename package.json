@@ -25,7 +25,7 @@
     "examples": "tsx examples/run-scenarios.ts"
   },
   "dependencies": {
-    "@auth/core": "^0.34.3",
+    "@auth/core": "^0.41.1",
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.3.0",
     "@types/three": "^0.180.0",
@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.55.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
@@ -52,9 +53,13 @@
     "@vitest/coverage-v8": "^4.0.8",
     "eslint": "^9",
     "eslint-config-next": "^16.0.10",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^17.0.0",
     "tailwindcss": "^4",
     "tsx": "^4.20.6",
     "typescript": "^5",
+    "typescript-eslint": "^8.52.0",
     "vitest": "^4.0.8"
   }
 }

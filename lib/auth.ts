@@ -147,7 +147,9 @@ export const authConfig: NextAuthConfig = {
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).id = token.id;
+        // Extend session user with id from JWT token
+        const userWithId = session.user as typeof session.user & { id?: string | unknown };
+        userWithId.id = token.id;
       }
       return session;
     },

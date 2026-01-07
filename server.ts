@@ -417,6 +417,60 @@ io.on('connection', (socket) => {
   });
 });
 
+// Graceful shutdown handler
+let isShuttingDown = false;
+
+async function gracefulShutdown(signal: string) {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+
+  console.log(`\nReceived ${signal}. Starting graceful shutdown...`);
+
+  // Stop simulation loop
+  if (running) {
+    stopSimulation();
+  }
+
+  // Persist final state if we have a simulation
+  if (simulation && persistenceEnabled) {
+    console.log('Persisting final simulation state...');
+    await persistSimulation(SOCKET_SIM_ID, simulation);
+  }
+
+  // Notify all connected clients
+  io.emit('server_shutdown', { message: 'Server is shutting down' });
+
+  // Close all socket connections gracefully
+  console.log('Closing client connections...');
+  io.close((err) => {
+    if (err) {
+      console.error('Error closing Socket.IO server:', err);
+    }
+    console.log('Socket.IO server closed');
+    process.exit(0);
+  });
+
+  // Force exit after 5 seconds if graceful shutdown hangs
+  setTimeout(() => {
+    console.error('Graceful shutdown timed out. Forcing exit.');
+    process.exit(1);
+  }, 5000);
+}
+
+// Register shutdown handlers
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Handle uncaught errors
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  gracefulShutdown('uncaughtException');
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
 // Bootstrap: try to rehydrate, then auto-start if requested
 (async () => {
   const restored = await rehydrateSimulationFromStore();
@@ -437,4 +491,5 @@ io.on('connection', (socket) => {
   console.log(`   - stop_simulation`);
   console.log(`   - reset_simulation`);
   console.log(`   - step_simulation`);
+  console.log(`\nPress Ctrl+C to gracefully shutdown`);
 })();

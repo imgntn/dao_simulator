@@ -165,3 +165,37 @@ export function validateQueryParam(
 // Query parameter schemas
 export const SimulationIdSchema = z.string().min(1).max(100);
 export const FormatSchema = z.enum(['csv', 'json']);
+
+/**
+ * Validate simulation ID from query params
+ * Returns validated ID or error response
+ */
+export function validateId(
+  id: string | null
+): { success: true; data: string } | { success: false; response: Response } {
+  if (!id) {
+    return {
+      success: false,
+      response: new Response(
+        JSON.stringify({ error: 'Simulation ID required' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      ),
+    };
+  }
+
+  const result = SimulationIdSchema.safeParse(id);
+  if (!result.success) {
+    return {
+      success: false,
+      response: new Response(
+        JSON.stringify({
+          error: 'Invalid simulation ID',
+          details: result.error.issues[0]?.message || 'ID must be 1-100 characters',
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      ),
+    };
+  }
+
+  return { success: true, data: result.data };
+}

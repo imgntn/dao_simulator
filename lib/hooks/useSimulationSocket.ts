@@ -65,14 +65,16 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
       auth: socketApiKey ? { apiKey: socketApiKey } : undefined,
     });
 
-    const setConnection = (connectedValue: boolean) => {
-      setState(prev => ({ ...prev, connected: connectedValue }));
+    // Define all event handlers so they can be properly cleaned up
+    const handleConnect = () => {
+      setState(prev => ({ ...prev, connected: true }));
     };
 
-    socketInstance.on('connect', () => setConnection(true));
-    socketInstance.on('disconnect', () => setConnection(false));
+    const handleDisconnect = () => {
+      setState(prev => ({ ...prev, connected: false }));
+    };
 
-    socketInstance.on('simulation_step', (data: any) => {
+    const handleSimulationStep = (data: Partial<SimulationData>) => {
       setState(prev => {
         const newSimData: SimulationData = {
           step: data.step || prev.step + 1,
@@ -96,21 +98,21 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
           simulationData: appendCapped(prev.simulationData, newSimData, MAX_SIM_DATA),
         };
       });
-    });
+    };
 
-    socketInstance.on('network_update', (data: NetworkData) => {
+    const handleNetworkUpdate = (data: NetworkData) => {
       setState(prev => ({ ...prev, networkData: data }));
-    });
+    };
 
-    socketInstance.on('members_update', (data: { members: DAOMember[] }) => {
+    const handleMembersUpdate = (data: { members: DAOMember[] }) => {
       setState(prev => ({ ...prev, members: data.members }));
-    });
+    };
 
-    socketInstance.on('proposals_update', (data: { proposals: DAOProposal[] }) => {
+    const handleProposalsUpdate = (data: { proposals: DAOProposal[] }) => {
       setState(prev => ({ ...prev, proposals: data.proposals }));
-    });
+    };
 
-    socketInstance.on('leaderboard_update', (data: any) => {
+    const handleLeaderboardUpdate = (data: { token?: LeaderboardEntry[]; influence?: LeaderboardEntry[] }) => {
       setState(prev => ({
         ...prev,
         tokenLeaderboard: data.token
@@ -120,38 +122,65 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
           ? appendCapped(prev.influenceLeaderboard, data.influence, MAX_LEADERBOARD)
           : prev.influenceLeaderboard,
       }));
-    });
+    };
 
-    socketInstance.on('market_shock', (data: MarketShock) => {
+    const handleMarketShock = (data: MarketShock) => {
       setState(prev => ({
         ...prev,
         marketShocks: appendCapped(prev.marketShocks, data, MAX_SHOCKS),
       }));
-    });
+    };
 
-    socketInstance.on('simulation_started', () => {
+    const handleSimulationStarted = () => {
       setState(prev => ({ ...prev, running: true }));
-    });
+    };
 
-    socketInstance.on('simulation_stopped', () => {
+    const handleSimulationStopped = () => {
       setState(prev => ({ ...prev, running: false }));
-    });
+    };
 
-    socketInstance.on('simulation_status', (data: { running: boolean; step?: number }) => {
+    const handleSimulationStatus = (data: { running: boolean; step?: number }) => {
       setState(prev => ({
         ...prev,
         running: data.running,
         step: typeof data.step === 'number' ? data.step : prev.step,
       }));
-    });
+    };
 
-    socketInstance.on('simulation_reset', () => {
+    const handleSimulationReset = () => {
       setState(prev => buildInitialState(prev.connected));
-    });
+    };
+
+    // Register all event listeners
+    socketInstance.on('connect', handleConnect);
+    socketInstance.on('disconnect', handleDisconnect);
+    socketInstance.on('simulation_step', handleSimulationStep);
+    socketInstance.on('network_update', handleNetworkUpdate);
+    socketInstance.on('members_update', handleMembersUpdate);
+    socketInstance.on('proposals_update', handleProposalsUpdate);
+    socketInstance.on('leaderboard_update', handleLeaderboardUpdate);
+    socketInstance.on('market_shock', handleMarketShock);
+    socketInstance.on('simulation_started', handleSimulationStarted);
+    socketInstance.on('simulation_stopped', handleSimulationStopped);
+    socketInstance.on('simulation_status', handleSimulationStatus);
+    socketInstance.on('simulation_reset', handleSimulationReset);
 
     setSocket(socketInstance);
 
+    // Cleanup: remove all event listeners and disconnect
     return () => {
+      socketInstance.off('connect', handleConnect);
+      socketInstance.off('disconnect', handleDisconnect);
+      socketInstance.off('simulation_step', handleSimulationStep);
+      socketInstance.off('network_update', handleNetworkUpdate);
+      socketInstance.off('members_update', handleMembersUpdate);
+      socketInstance.off('proposals_update', handleProposalsUpdate);
+      socketInstance.off('leaderboard_update', handleLeaderboardUpdate);
+      socketInstance.off('market_shock', handleMarketShock);
+      socketInstance.off('simulation_started', handleSimulationStarted);
+      socketInstance.off('simulation_stopped', handleSimulationStopped);
+      socketInstance.off('simulation_status', handleSimulationStatus);
+      socketInstance.off('simulation_reset', handleSimulationReset);
       socketInstance.disconnect();
     };
   }, [url]);
@@ -163,7 +192,7 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
   }, []);
 
   const emit = useCallback(
-    (event: string, payload?: any) => {
+    (event: string, payload?: Record<string, unknown>) => {
       if (socket) {
         socket.emit(event, payload);
       }
@@ -172,7 +201,7 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
   );
 
   const startSimulation = useCallback(
-    (options?: { stepsPerSecond?: number; simulationConfig?: Record<string, any> }) => {
+    (options?: { stepsPerSecond?: number; simulationConfig?: Record<string, unknown> }) => {
       emit('start_simulation', {
         stepsPerSecond: options?.stepsPerSecond,
         simulationConfig: options?.simulationConfig,

@@ -8,8 +8,8 @@ import { requireAuth } from '@/lib/auth';
 import {
   CreateSimulationRequestSchema,
   StepSimulationRequestSchema,
-  SimulationIdSchema,
   validateRequest,
+  validateId,
 } from '@/lib/validation/schemas';
 
 // Create simulation store (Redis in production, in-memory for dev)
@@ -20,14 +20,85 @@ const isInMemory = simulationStore instanceof InMemorySimulationStore;
 const simulations = isInMemory ? (simulationStore as InMemorySimulationStore) : null;
 
 // Keep live simulation instances in-process so stepping works even when Redis is enabled
-const liveSimulations = new Map<string, DAOSimulation>();
+// Each entry has a lastAccessed timestamp for TTL-based cleanup
+interface LiveSimEntry {
+  simulation: DAOSimulation;
+  lastAccessed: number;
+}
+
+const liveSimulations = new Map<string, LiveSimEntry>();
+
+// TTL for simulation instances (30 minutes)
+const SIMULATION_TTL_MS = 30 * 60 * 1000;
+// Cleanup interval (5 minutes)
+const CLEANUP_INTERVAL_MS = 5 * 60 * 1000;
+// Maximum concurrent simulations
+const MAX_SIMULATIONS = 100;
+
+// Simple lock mechanism to prevent race conditions on simulation access
+const simulationLocks = new Set<string>();
+
+async function withSimulationLock<T>(id: string, fn: () => Promise<T>): Promise<T> {
+  // Wait for any existing operation on this simulation to complete
+  const maxWait = 5000; // 5 second timeout
+  const start = Date.now();
+
+  while (simulationLocks.has(id)) {
+    if (Date.now() - start > maxWait) {
+      throw new Error('Timeout waiting for simulation lock');
+    }
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+
+  simulationLocks.add(id);
+  try {
+    return await fn();
+  } finally {
+    simulationLocks.delete(id);
+  }
+}
+
+// Cleanup stale simulations periodically
+if (typeof setInterval !== 'undefined') {
+  setInterval(() => {
+    const now = Date.now();
+    for (const [id, entry] of liveSimulations.entries()) {
+      if (now - entry.lastAccessed > SIMULATION_TTL_MS) {
+        liveSimulations.delete(id);
+      }
+    }
+  }, CLEANUP_INTERVAL_MS);
+}
 
 const getLiveSimulation = (id: string): DAOSimulation | null => {
-  return liveSimulations.get(id) || (isInMemory && simulations ? simulations.getSimulation(id) : null);
+  const entry = liveSimulations.get(id);
+  if (entry) {
+    entry.lastAccessed = Date.now();
+    return entry.simulation;
+  }
+  return isInMemory && simulations ? simulations.getSimulation(id) : null;
 };
 
 const trackSimulation = (id: string, simulation: DAOSimulation) => {
-  liveSimulations.set(id, simulation);
+  // Enforce max simulations limit - remove oldest if at capacity
+  if (liveSimulations.size >= MAX_SIMULATIONS && !liveSimulations.has(id)) {
+    let oldestId: string | null = null;
+    let oldestTime = Infinity;
+    for (const [entryId, entry] of liveSimulations.entries()) {
+      if (entry.lastAccessed < oldestTime) {
+        oldestTime = entry.lastAccessed;
+        oldestId = entryId;
+      }
+    }
+    if (oldestId) {
+      liveSimulations.delete(oldestId);
+    }
+  }
+
+  liveSimulations.set(id, {
+    simulation,
+    lastAccessed: Date.now(),
+  });
 };
 
 /**
@@ -122,35 +193,39 @@ export async function PUT(request: NextRequest) {
     return validation.response;
   }
 
+  const { id, action, steps } = validation.data;
+
   try {
-    const { id, action, steps } = validation.data;
+    // Use lock to prevent race conditions with concurrent requests
+    return await withSimulationLock(id, async () => {
+      const simulation = getLiveSimulation(id);
+      if (!simulation) {
+        return NextResponse.json(
+          { error: 'Simulation not found or not active in this process' },
+          { status: 404 }
+        );
+      }
 
-    const simulation = getLiveSimulation(id);
-    if (!simulation) {
-      return NextResponse.json(
-        { error: 'Simulation not found or not active in this process' },
-        { status: 404 }
-      );
-    }
+      switch (action) {
+        case 'step':
+          simulation.step();
+          break;
 
-    switch (action) {
-      case 'step':
-        simulation.step();
-        break;
+        case 'run': {
+          const numSteps = steps || 10;
+          simulation.run(numSteps);
+          break;
+        }
+      }
 
-      case 'run':
-        const numSteps = steps || 10;
-        simulation.run(numSteps);
-        break;
-    }
+      // Update stored state
+      trackSimulation(id, simulation);
+      await simulationStore.save(id, simulation);
 
-    // Update stored state
-    trackSimulation(id, simulation);
-    await simulationStore.save(id, simulation);
-
-    return NextResponse.json({
-      id,
-      summary: simulation.getSummary(),
+      return NextResponse.json({
+        id,
+        summary: simulation.getSummary(),
+      });
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Failed to step simulation';
@@ -171,14 +246,11 @@ export async function DELETE(request: NextRequest) {
   if (authError) return authError;
 
   const searchParams = request.nextUrl.searchParams;
-  const id = searchParams.get('id');
-
-  if (!id) {
-    return NextResponse.json(
-      { error: 'Simulation ID required' },
-      { status: 400 }
-    );
+  const idValidation = validateId(searchParams.get('id'));
+  if (!idValidation.success) {
+    return idValidation.response;
   }
+  const id = idValidation.data;
 
   const deleted = await simulationStore.delete(id);
   liveSimulations.delete(id);
