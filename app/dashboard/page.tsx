@@ -1,15 +1,58 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { PriceLineChart } from '@/components/visualizations/PriceLineChart';
-import { MemberHeatmap } from '@/components/visualizations/MemberHeatmap';
-import { NetworkGraph3D } from '@/components/visualizations/NetworkGraph3D';
-import { ChoroplethMap } from '@/components/visualizations/ChoroplethMap';
 import { DAOReport } from '@/components/visualizations/DAOReport';
 import { ScenarioCard } from '@/components/visualizations/ScenarioCard';
-import { CozyMap } from '@/components/visualizations/CozyMap';
 import { RunSummaryModal } from '@/components/visualizations/RunSummaryModal';
 import { useSimulationSocket } from '@/lib/hooks/useSimulationSocket';
+
+// Dynamic imports for heavy visualization components (loaded only when needed)
+const NetworkGraph3DWrapper = dynamic(
+  () => import('@/components/visualizations/NetworkGraph3DWrapper').then((mod) => mod.NetworkGraph3DWrapper),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[600px] bg-gray-800 rounded-lg flex items-center justify-center animate-pulse">
+        <div className="text-center">
+          <div className="w-12 h-12 mx-auto mb-3 rounded-full border-4 border-gray-700 border-t-blue-500 animate-spin" />
+          <p className="text-gray-500 text-sm">Loading 3D network...</p>
+        </div>
+      </div>
+    ),
+  }
+);
+
+const MemberHeatmap = dynamic(
+  () => import('@/components/visualizations/MemberHeatmap').then((mod) => mod.MemberHeatmap),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[400px] bg-gray-800 rounded-lg animate-pulse" />
+    ),
+  }
+);
+
+const ChoroplethMap = dynamic(
+  () => import('@/components/visualizations/ChoroplethMap').then((mod) => mod.ChoroplethMap),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[400px] bg-gray-800 rounded-lg animate-pulse" />
+    ),
+  }
+);
+
+const CozyMap = dynamic(
+  () => import('@/components/visualizations/CozyMap').then((mod) => mod.CozyMap),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[300px] bg-gray-800 rounded-lg animate-pulse" />
+    ),
+  }
+);
 
 type OutcomeCause =
   | 'missions_completed'
@@ -745,10 +788,12 @@ export default function DashboardPage() {
                   {running ? 'Running' : 'Paused'}
                 </span>
                 <span className="text-gray-500">|</span>
-                <span>
-                  Speed:
+                <label className="flex items-center gap-1">
+                  <span id="speed-label">Speed:</span>
                   <select
-                    className="ml-1 bg-gray-900 border border-gray-700 rounded px-2 py-1 text-gray-200"
+                    aria-labelledby="speed-label"
+                    aria-describedby="speed-description"
+                    className="ml-1 bg-gray-900 border border-gray-700 rounded px-2 py-1 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     value={stepsPerSecond}
                     onChange={(event) => setStepsPerSecond(Number(event.target.value))}
                   >
@@ -758,7 +803,10 @@ export default function DashboardPage() {
                       </option>
                     ))}
                   </select>
-                </span>
+                  <span id="speed-description" className="sr-only">
+                    Simulation speed multiplier. Higher values run faster.
+                  </span>
+                </label>
               </div>
               <div className="text-sm text-gray-300">
                 Step: <span className="font-mono font-bold text-blue-400">{step}</span>
@@ -1091,7 +1139,7 @@ export default function DashboardPage() {
                   </label>
                 </div>
               </div>
-              <NetworkGraph3D
+              <NetworkGraph3DWrapper
                 data={networkData}
                 interactive={interactiveNetwork}
                 showLabels={showLabels}
