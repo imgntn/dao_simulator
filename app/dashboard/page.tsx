@@ -6,7 +6,10 @@ import { PriceLineChart } from '@/components/visualizations/PriceLineChart';
 import { DAOReport } from '@/components/visualizations/DAOReport';
 import { ScenarioCard } from '@/components/visualizations/ScenarioCard';
 import { RunSummaryModal } from '@/components/visualizations/RunSummaryModal';
+import { TokenTracker } from '@/components/visualizations/TokenTracker';
+import { DashboardNav } from '@/components/dashboard/DashboardNav';
 import { useSimulationSocket } from '@/lib/hooks/useSimulationSocket';
+import { generateDAOIdentity, generateMemberIdentity, type DAOIdentity } from '@/lib/utils/name-generator';
 
 // Dynamic imports for heavy visualization components (loaded only when needed)
 const NetworkGraph3DWrapper = dynamic(
@@ -162,6 +165,8 @@ export default function DashboardPage() {
     | null
   >(null);
   const [runLog, setRunLog] = useState<OpsLogEntry[]>([]);
+  const [daoIdentity] = useState<DAOIdentity>(() => generateDAOIdentity(42)); // Consistent seed
+  const [navCollapsed, setNavCollapsed] = useState(true);
   const tutorialSteps = [
     'Pick a strategy preset or a daily/weekly challenge to begin.',
     'Press Start (Space) to stream the sim; use Step (F) to advance manually.',
@@ -642,9 +647,12 @@ export default function DashboardPage() {
         activity = 'resting';
       }
 
+      // Generate cute name for member
+      const identity = generateMemberIdentity(member.unique_id, 42);
+
       return {
         id: member.unique_id,
-        name: member.unique_id.substring(0, 8),
+        name: `${identity.avatar} ${identity.handle}`,
         activity,
         floor,
         reputation: member.reputation,
@@ -801,6 +809,12 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      {/* Navigation sidebar */}
+      <DashboardNav
+        collapsed={navCollapsed}
+        onToggleCollapse={() => setNavCollapsed(!navCollapsed)}
+      />
+
       {runSummary && (
         <RunSummaryModal
           open={showSummary}
@@ -824,14 +838,18 @@ export default function DashboardPage() {
       )}
 
       {/* Header */}
-      <header className="bg-gray-800/50 backdrop-blur-lg border-b border-gray-700 sticky top-0 z-50">
-        <div className="max-w-[1920px] mx-auto px-6 py-4">
+      <header className="bg-gray-800/50 backdrop-blur-lg border-b border-gray-700 sticky top-12 z-40">
+        <div className="max-w-[1920px] mx-auto px-6 py-4 pl-16">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
-                DAO Simulator Dashboard
+                {daoIdentity.name}
               </h1>
-              <p className="text-gray-400 mt-1">Real-time governance visualization</p>
+              <p className="text-gray-400 mt-1 flex items-center gap-2">
+                <span>{daoIdentity.tokenSymbol}</span>
+                <span className="text-gray-600">•</span>
+                <span className="italic">&quot;{daoIdentity.motto}&quot;</span>
+              </p>
             </div>
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
@@ -930,7 +948,7 @@ export default function DashboardPage() {
       </header>
 
       {/* Main Dashboard */}
-      <main className="max-w-[1920px] mx-auto px-6 py-8 space-y-8">
+      <main className="max-w-[1920px] mx-auto px-6 pt-16 pb-8 pl-16 space-y-8">
         {(lastCompleted || recentShock) && (
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/5 to-green-500/10 blur-xl rounded-2xl" />
@@ -985,32 +1003,43 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Scenario / Objectives */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <ScenarioCard
-            scenarioName={selectedStrategy ? `Live Sandbox – ${selectedStrategy.name}` : 'Live Sandbox'}
-            missions={missions}
-            step={step}
-            status={running ? 'running' : 'paused'}
-          />
-          <div className="p-4 rounded-xl bg-gray-800/60 border border-gray-700 shadow-lg flex flex-col justify-between gap-3">
-            <div>
-              <p className="text-xs uppercase tracking-wide text-gray-400">Connection</p>
-              <h3 className="text-lg font-semibold text-white">Socket.IO Status</h3>
+        {/* Controls & Token Section */}
+        <section id="section-controls" className="scroll-mt-24">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Missions */}
+            <div id="section-missions" className="lg:col-span-2 scroll-mt-24">
+              <ScenarioCard
+                scenarioName={selectedStrategy ? `${daoIdentity.name} – ${selectedStrategy.name}` : daoIdentity.name}
+                missions={missions}
+                step={step}
+                status={running ? 'running' : 'paused'}
+              />
             </div>
-              <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${connected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
-                <div>
-                  <p className="text-sm text-gray-300">{connected ? 'Connected to simulation stream' : 'Disconnected'}</p>
-                  <p className="text-xs text-gray-500">Steps per second: {stepsPerSecond}x</p>
-                </div>
-              </div>
-            <div className="text-xs text-gray-400 space-y-1">
-              <p>Use Start/Stop to control the run. Reset clears local progress.</p>
-              <p>Goals track this session only. Hotkeys: Space (start/stop), F (step), R (reset).</p>
+            {/* Token Tracker */}
+            <div id="section-token" className="scroll-mt-24">
+              <TokenTracker
+                daoIdentity={daoIdentity}
+                currentPrice={latest?.dao_token_price ?? 1}
+                priceHistory={priceHistory}
+                treasury={latest?.treasury_balance ?? 0}
+                holders={members.length}
+              />
             </div>
           </div>
         </section>
+
+        {/* DAO Tower - Cozy 3D Visualization */}
+        {!visualsPaused && towerMembers.length > 0 && (
+          <section id="section-tower" className="w-full scroll-mt-24">
+            <div className="bg-gray-800 rounded-lg shadow-lg p-4">
+              <DAOTowerWrapper
+                members={towerMembers}
+                totalFloors={6}
+                title={`${daoIdentity.name} HQ`}
+              />
+            </div>
+          </section>
+        )}
 
         {/* Operations Log */}
         {runLog.length > 0 && (
@@ -1137,7 +1166,7 @@ export default function DashboardPage() {
         </section>
 
         {/* Report Section */}
-        <section className="w-full">
+        <section id="section-report" className="w-full scroll-mt-24">
           <DAOReport
             simulationData={simulationData}
             tokenLeaderboard={tokenLeaderboard}
@@ -1149,7 +1178,7 @@ export default function DashboardPage() {
         </section>
 
         {/* Price Chart - Full Width */}
-        <section className={`w-full transition-all ${recentShock ? 'border border-red-500/60 shadow-[0_0_30px_rgba(239,68,68,0.35)] rounded-xl p-1 relative overflow-hidden' : ''}`}>
+        <section id="section-price" className={`w-full scroll-mt-24 transition-all ${recentShock ? 'border border-red-500/60 shadow-[0_0_30px_rgba(239,68,68,0.35)] rounded-xl p-1 relative overflow-hidden' : ''}`}>
           {recentShock && (
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               <div className="h-64 w-64 rounded-full bg-red-500/15 animate-ping" />
@@ -1164,7 +1193,7 @@ export default function DashboardPage() {
 
         {/* Network Visualization - Full Width */}
         {!visualsPaused && networkData && networkData.nodes.length > 0 && (
-          <section className="w-full relative">
+          <section id="section-network" className="w-full scroll-mt-24 relative">
             {recentShock && (
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                 <div className="h-64 w-64 rounded-full bg-red-500/10 animate-ping" />
@@ -1205,19 +1234,6 @@ export default function DashboardPage() {
           </section>
         )}
 
-        {/* DAO Tower - Cozy 3D Visualization */}
-        {!visualsPaused && towerMembers.length > 0 && (
-          <section className="w-full">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
-              <DAOTowerWrapper
-                members={towerMembers}
-                totalFloors={6}
-                title="DAO Tower"
-              />
-            </div>
-          </section>
-        )}
-
         {visualsPaused && (
           <section className="w-full">
             <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-6 text-gray-300">
@@ -1229,7 +1245,7 @@ export default function DashboardPage() {
 
         {/* Two Column Layout - Heatmap and Choropleth */}
         {!visualsPaused && members.length > 0 && (
-          <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <section id="section-heatmap" className="grid grid-cols-1 lg:grid-cols-2 gap-8 scroll-mt-24">
             <div className={recentShock ? 'animate-pulse relative overflow-hidden' : ''}>
               {recentShock && <div className="pointer-events-none absolute inset-0 bg-red-500/10 rounded-lg animate-ping" />}
               <MemberHeatmap members={members} />
@@ -1243,7 +1259,7 @@ export default function DashboardPage() {
 
         {/* Org History & KPIs */}
         {orgStats && (
-          <section className="w-full">
+          <section id="section-history" className="w-full scroll-mt-24">
             <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-4 mb-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-lg font-semibold text-white">Org History & KPIs</h3>
