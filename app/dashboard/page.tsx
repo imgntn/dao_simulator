@@ -54,6 +54,21 @@ const CozyMap = dynamic(
   }
 );
 
+const DAOTowerWrapper = dynamic(
+  () => import('@/components/visualizations/DAOTowerWrapper').then((mod) => mod.DAOTowerWrapper),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[600px] bg-gray-800 rounded-lg flex items-center justify-center animate-pulse">
+        <div className="text-center">
+          <div className="w-12 h-12 mx-auto mb-3 rounded-full border-4 border-gray-700 border-t-pink-500 animate-spin" />
+          <p className="text-gray-500 text-sm">Building the DAO tower...</p>
+        </div>
+      </div>
+    ),
+  }
+);
+
 type OutcomeCause =
   | 'missions_completed'
   | 'treasury_insolvency'
@@ -595,6 +610,48 @@ export default function DashboardPage() {
       },
     ];
   }, [baseline, latest, step, selectedPreset]);
+
+  // Transform members to tower format - assign floors based on reputation and activities based on behavior
+  const towerMembers = useMemo(() => {
+    if (members.length === 0) return [];
+
+    // Sort by reputation to assign floors
+    const sorted = [...members].sort((a, b) => (b.reputation || 0) - (a.reputation || 0));
+    const maxRep = sorted[0]?.reputation || 1;
+
+    type TowerActivity = 'voting' | 'proposing' | 'discussing' | 'coding' | 'reviewing' | 'resting' | 'trading' | 'chatting';
+
+    return sorted.map((member) => {
+      // Assign floor based on reputation percentile (0-5)
+      const repRatio = (member.reputation || 0) / maxRep;
+      const floor = Math.min(5, Math.floor(repRatio * 6));
+
+      // Derive activity from member properties
+      let activity: TowerActivity = 'chatting';
+      if (member.delegations && Object.keys(member.delegations).length > 0) {
+        activity = 'voting';
+      } else if (member.representative) {
+        activity = 'discussing';
+      } else if ((member.tokens || 0) > 100) {
+        activity = 'trading';
+      } else if ((member.reputation || 0) > maxRep * 0.8) {
+        activity = 'reviewing';
+      } else if ((member.reputation || 0) > maxRep * 0.5) {
+        activity = 'proposing';
+      } else if (floor === 5) {
+        activity = 'resting';
+      }
+
+      return {
+        id: member.unique_id,
+        name: member.unique_id.substring(0, 8),
+        activity,
+        floor,
+        reputation: member.reputation,
+        tokens: member.tokens,
+      };
+    });
+  }, [members]);
 
   useEffect(() => {
     const nextCompleted = new Set(completedMissions);
@@ -1147,6 +1204,20 @@ export default function DashboardPage() {
             </div>
           </section>
         )}
+
+        {/* DAO Tower - Cozy 3D Visualization */}
+        {!visualsPaused && towerMembers.length > 0 && (
+          <section className="w-full">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
+              <DAOTowerWrapper
+                members={towerMembers}
+                totalFloors={6}
+                title="DAO Tower"
+              />
+            </div>
+          </section>
+        )}
+
         {visualsPaused && (
           <section className="w-full">
             <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-6 text-gray-300">
