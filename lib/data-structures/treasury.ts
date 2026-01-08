@@ -234,12 +234,39 @@ export class Treasury {
   }
 
   updatePrices(volatility: number = 0.05): void {
-    // Update prices for all tokens using the oracle
-    // Note: volatility parameter reserved for future use with oracle configuration
+    // Update prices for all tokens using both oracle randomness AND market pressure
     for (const token of this.tokens.keys()) {
+      // Get accumulated price pressure (positive = selling pressure, negative = buying pressure)
+      const pressure = this.pricePressure.get(token) || 0;
+      const currentPrice = this.getTokenPrice(token);
+      const supply = this.tokens.get(token) || 1;
+
+      // Calculate market-driven price adjustment based on pressure relative to supply
+      // Pressure is normalized by supply to prevent wild swings with large treasuries
+      const pressureRatio = pressure / Math.max(supply, 1000);
+
+      // Price impact: positive pressure (selling) decreases price, negative (buying) increases
+      // Capped at ±5% per step to prevent extreme movements
+      const pressureImpact = Math.max(-0.05, Math.min(0.05, -pressureRatio * 0.1));
+
+      // Apply random walk from oracle for market noise
       this.oracle.updatePrice(token, volatility);
-      const newPrice = this.oracle.getPrice(token);
+      const oraclePrice = this.oracle.getPrice(token);
+
+      // Blend oracle randomness with market pressure effects
+      // 70% oracle movement + 30% pressure-based adjustment
+      const oracleChange = (oraclePrice - currentPrice) / currentPrice;
+      const blendedChange = oracleChange * 0.7 + pressureImpact * 0.3;
+
+      // Calculate new price with floor to prevent negative/zero prices
+      const newPrice = Math.max(0.0001, currentPrice * (1 + blendedChange));
+
+      // Sync oracle with the blended price for consistency
+      this.oracle.setPrice(token, newPrice);
       this.updateTokenPrice(token, newPrice);
+
+      // Decay pressure over time (80% retained each step) to model market absorption
+      this.pricePressure.set(token, pressure * 0.8);
     }
   }
 

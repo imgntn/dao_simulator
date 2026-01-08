@@ -189,7 +189,7 @@ const NetworkEdge3D = memo(function NetworkEdge3D({
 
   if (points.length === 0) return null;
 
-  const lineWidth = edge.weight ? Math.min(edge.weight / 10, 3) : 1;
+  const lineWidth = edge.weight ? Math.min(edge.weight / 10, 6) + 2 : 3;
   const opacity = isHighlighted ? 1 : hovered ? 0.9 : 0.6;
 
   return (

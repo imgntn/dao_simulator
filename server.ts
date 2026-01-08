@@ -241,7 +241,8 @@ async function broadcastSimulationStep() {
     io.emit('proposals_update', { proposals });
 
     // Broadcast network data with proper 3D positions
-    const networkNodes = members.map((m, idx) => {
+    // Member nodes - arranged in a ring
+    const memberNodes = members.map((m, idx) => {
       const angle = (idx / members.length) * Math.PI * 2;
       const radius = 20;
       const height = (hashToUnit(String(m.id)) - 0.5) * 10;
@@ -258,8 +259,60 @@ async function broadcastSimulationStep() {
       };
     });
 
-    // Create edges based on delegations and representatives
+    // Proposal nodes - arranged in inner ring above members
+    const proposalNodes = proposals.map((p, idx) => {
+      const angle = (idx / Math.max(proposals.length, 1)) * Math.PI * 2;
+      const radius = 10; // Inner ring
+      const height = 5 + (hashToUnit(p.id) * 5); // Above the members
+
+      return {
+        id: p.id,
+        type: 'proposal' as const,
+        position: [
+          Math.cos(angle) * radius,
+          height,
+          Math.sin(angle) * radius
+        ] as [number, number, number],
+        size: Math.log((p.votes_for + p.votes_against) + 2) * 1.5
+      };
+    });
+
+    // Create cluster nodes based on member types
+    const membersByType = new Map<string, string[]>();
+    simulation.dao.members.forEach(m => {
+      const type = m.constructor.name;
+      if (!membersByType.has(type)) {
+        membersByType.set(type, []);
+      }
+      membersByType.get(type)!.push(m.uniqueId);
+    });
+
+    const clusterNodes: any[] = [];
+    let clusterIdx = 0;
+    membersByType.forEach((memberIds, type) => {
+      if (memberIds.length >= 2) {
+        const angle = (clusterIdx / membersByType.size) * Math.PI * 2;
+        const radius = 30; // Outer ring for clusters
+        clusterNodes.push({
+          id: `cluster_${type}`,
+          type: 'cluster' as const,
+          position: [
+            Math.cos(angle) * radius,
+            0,
+            Math.sin(angle) * radius
+          ] as [number, number, number],
+          size: memberIds.length
+        });
+        clusterIdx++;
+      }
+    });
+
+    const networkNodes = [...memberNodes, ...proposalNodes, ...clusterNodes];
+
+    // Create edges
     const networkEdges: any[] = [];
+
+    // Representative edges (member -> representative)
     simulation.dao.members.forEach(m => {
       if ((m as any).representative) {
         networkEdges.push({
@@ -271,9 +324,58 @@ async function broadcastSimulationStep() {
       }
     });
 
+    // Delegation edges (member -> delegatee)
+    simulation.dao.members.forEach(m => {
+      const delegations = (m as any).delegations;
+      if (delegations && typeof delegations === 'object') {
+        Object.entries(delegations).forEach(([targetId, weight]) => {
+          if (typeof weight === 'number' && weight > 0) {
+            networkEdges.push({
+              source: m.uniqueId,
+              target: targetId,
+              type: 'delegation',
+              weight
+            });
+          }
+        });
+      }
+    });
+
+    // Created edges (proposal -> creator)
+    proposals.forEach(p => {
+      if (p.creator) {
+        networkEdges.push({
+          source: p.creator,
+          target: p.id,
+          type: 'created',
+          weight: 1
+        });
+      }
+    });
+
+    // Aggregated edges (cluster -> member)
+    membersByType.forEach((memberIds, type) => {
+      if (memberIds.length >= 2) {
+        memberIds.forEach(memberId => {
+          networkEdges.push({
+            source: `cluster_${type}`,
+            target: memberId,
+            type: 'aggregated',
+            weight: 0.5
+          });
+        });
+      }
+    });
+
     const networkData = {
       nodes: networkNodes,
-      edges: networkEdges
+      edges: networkEdges,
+      clusters: Array.from(membersByType.entries()).map(([type, memberIds]) => ({
+        id: `cluster_${type}`,
+        members: memberIds,
+        size: memberIds.length,
+        position: [0, 0, 0] as [number, number, number]
+      }))
     };
     io.emit('network_update', networkData);
 
