@@ -1,13 +1,26 @@
 'use client';
 
-import { useMemo } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useMemo, useState, useCallback } from 'react';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  ReferenceLine,
+  Brush,
+} from 'recharts';
 
 interface PriceLineChartProps {
   data: Array<{ step: number; price: number }>;
   title?: string;
   interactive?: boolean;
   isLoading?: boolean;
+  thresholds?: { warning?: number; critical?: number };
+  onDataPointClick?: (step: number, price: number) => void;
 }
 
 // Loading skeleton component
@@ -54,12 +67,58 @@ function EmptyState({ title }: { title: string }) {
   );
 }
 
+// Stats summary component
+function PriceStats({
+  current,
+  min,
+  max,
+  change,
+  changePercent,
+}: {
+  current: number;
+  min: number;
+  max: number;
+  change: number;
+  changePercent: number;
+}) {
+  const isPositive = change >= 0;
+
+  return (
+    <div className="flex items-center gap-4 text-xs">
+      <div className="flex items-center gap-1">
+        <span className="text-gray-400">Current:</span>
+        <span className="text-white font-semibold">${current.toFixed(4)}</span>
+      </div>
+      <div className={`flex items-center gap-1 ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d={isPositive ? 'M5 10l7-7m0 0l7 7m-7-7v18' : 'M19 14l-7 7m0 0l-7-7m7 7V3'}
+          />
+        </svg>
+        <span>{isPositive ? '+' : ''}{changePercent.toFixed(2)}%</span>
+      </div>
+      <div className="flex items-center gap-1 text-gray-400">
+        <span>Range:</span>
+        <span className="text-gray-300">${min.toFixed(4)} - ${max.toFixed(4)}</span>
+      </div>
+    </div>
+  );
+}
+
 export function PriceLineChart({
   data,
   title = 'DAO Token Price History',
   interactive = false,
   isLoading = false,
+  thresholds,
+  onDataPointClick,
 }: PriceLineChartProps) {
+  // Track brush range for potential future use (zoom state)
+  const [, setBrushRange] = useState<{ startIndex?: number; endIndex?: number }>({});
+
   // Memoize chart data transformation
   const chartData = useMemo(() => {
     return data.map((item, index) => ({
@@ -67,6 +126,38 @@ export function PriceLineChart({
       price: item.price,
     }));
   }, [data]);
+
+  // Calculate statistics
+  const stats = useMemo(() => {
+    if (chartData.length === 0) return null;
+
+    const prices = chartData.map((d) => d.price);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+    const currentPrice = prices[prices.length - 1];
+    const startPrice = prices[0];
+    const change = currentPrice - startPrice;
+    const changePercent = startPrice !== 0 ? (change / startPrice) * 100 : 0;
+
+    return {
+      minPrice,
+      maxPrice,
+      currentPrice,
+      change,
+      changePercent,
+    };
+  }, [chartData]);
+
+  // Handle data point click
+  const handleClick = useCallback(
+    (data: { activePayload?: Array<{ payload: { step: number; price: number } }> }) => {
+      if (onDataPointClick && data.activePayload?.[0]) {
+        const { step, price } = data.activePayload[0].payload;
+        onDataPointClick(step, price);
+      }
+    },
+    [onDataPointClick]
+  );
 
   // Show loading state
   if (isLoading) {
@@ -78,11 +169,9 @@ export function PriceLineChart({
     return <EmptyState title={title} />;
   }
 
-  // Calculate min/max for better Y-axis scaling
-  const prices = chartData.map((d) => d.price);
-  const minPrice = Math.min(...prices);
-  const maxPrice = Math.max(...prices);
-  const padding = (maxPrice - minPrice) * 0.1 || 0.1;
+  // Calculate Y-axis domain with padding
+  const yMin = stats ? Math.max(0, stats.minPrice - (stats.maxPrice - stats.minPrice) * 0.1) : 0;
+  const yMax = stats ? stats.maxPrice + (stats.maxPrice - stats.minPrice) * 0.1 : 1;
 
   return (
     <div
@@ -90,27 +179,62 @@ export function PriceLineChart({
       role="img"
       aria-label={`${title} chart showing ${data.length} data points`}
     >
-      <h3 className="text-xl font-bold mb-4 text-white">{title}</h3>
-      <div className="h-[calc(100%-2.5rem)]">
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h3 className="text-xl font-bold text-white">{title}</h3>
+          <p className="text-xs text-gray-500">{data.length} data points</p>
+        </div>
+        {stats && (
+          <PriceStats
+            current={stats.currentPrice}
+            min={stats.minPrice}
+            max={stats.maxPrice}
+            change={stats.change}
+            changePercent={stats.changePercent}
+          />
+        )}
+      </div>
+
+      <div className="h-[calc(100%-3.5rem)]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            aria-label={title}
+            margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
+            onClick={interactive ? handleClick : undefined}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
             <XAxis
               dataKey="step"
               label={{ value: 'Step', position: 'insideBottom', offset: -5, fill: '#9CA3AF' }}
               stroke="#9CA3AF"
-              tick={{ fill: '#9CA3AF' }}
+              tick={{ fill: '#9CA3AF', fontSize: 11 }}
             />
             <YAxis
-              domain={[Math.max(0, minPrice - padding), maxPrice + padding]}
+              domain={[yMin, yMax]}
               label={{ value: 'Price', angle: -90, position: 'insideLeft', fill: '#9CA3AF' }}
               stroke="#9CA3AF"
-              tick={{ fill: '#9CA3AF' }}
+              tick={{ fill: '#9CA3AF', fontSize: 11 }}
+              tickFormatter={(value) => `$${value.toFixed(2)}`}
             />
+
+            {/* Threshold reference lines */}
+            {thresholds?.warning && (
+              <ReferenceLine
+                y={thresholds.warning}
+                stroke="#F59E0B"
+                strokeDasharray="5 5"
+                label={{ value: 'Warning', fill: '#F59E0B', fontSize: 10, position: 'right' }}
+              />
+            )}
+            {thresholds?.critical && (
+              <ReferenceLine
+                y={thresholds.critical}
+                stroke="#EF4444"
+                strokeDasharray="5 5"
+                label={{ value: 'Critical', fill: '#EF4444', fontSize: 10, position: 'right' }}
+              />
+            )}
+
             <Tooltip
               contentStyle={{
                 backgroundColor: '#1F2937',
@@ -119,34 +243,45 @@ export function PriceLineChart({
               }}
               labelStyle={{ color: '#F9FAFB' }}
               itemStyle={{ color: '#60A5FA' }}
-              formatter={(value: number) => [value.toFixed(4), 'Price']}
+              formatter={(value: number) => [`$${value.toFixed(4)}`, 'Price']}
               labelFormatter={(label) => `Step ${label}`}
             />
-            <Legend
-              wrapperStyle={{ color: '#9CA3AF' }}
-            />
+            <Legend wrapperStyle={{ color: '#9CA3AF' }} />
+
             <Line
               type="monotone"
               dataKey="price"
               stroke="#3B82F6"
               strokeWidth={2}
-              dot={interactive ? { fill: '#3B82F6', r: 4 } : false}
-              activeDot={interactive ? { r: 6 } : false}
+              dot={interactive ? { fill: '#3B82F6', r: 3, cursor: 'pointer' } : false}
+              activeDot={interactive ? { r: 6, stroke: '#1D4ED8', strokeWidth: 2 } : false}
               name="Token Price"
               animationDuration={300}
             />
+
+            {/* Brush for zooming (only for larger datasets) */}
+            {data.length > 50 && (
+              <Brush
+                dataKey="step"
+                height={20}
+                stroke="#4B5563"
+                fill="#1F2937"
+                onChange={(range) => setBrushRange(range)}
+              />
+            )}
           </LineChart>
         </ResponsiveContainer>
       </div>
 
       {/* Screen reader description */}
-      <div className="sr-only">
+      <div className="sr-only" role="status">
         Price chart showing {data.length} data points.
-        Current price: {chartData[chartData.length - 1]?.price.toFixed(4) ?? 'N/A'}.
-        {minPrice !== maxPrice && (
-          <>
-            Range: {minPrice.toFixed(4)} to {maxPrice.toFixed(4)}.
-          </>
+        Current price: ${stats?.currentPrice.toFixed(4) ?? 'N/A'}.
+        {stats && stats.minPrice !== stats.maxPrice && (
+          `Range: $${stats.minPrice.toFixed(4)} to $${stats.maxPrice.toFixed(4)}.`
+        )}
+        {stats && (
+          `Price change: ${stats.change >= 0 ? '+' : ''}${stats.changePercent.toFixed(2)}%.`
         )}
       </div>
     </div>
