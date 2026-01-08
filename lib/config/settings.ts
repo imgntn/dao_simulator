@@ -26,6 +26,11 @@ export interface SimulationSettings {
   num_artists: number;
   num_collectors: number;
   num_speculators: number;
+  num_rl_traders: number;
+  num_governance_experts: number;
+  num_risk_managers: number;
+  num_market_makers: number;
+  num_whistleblowers: number;
 
   // Behavior probabilities
   violation_probability: number;
@@ -60,22 +65,27 @@ export interface SimulationSettings {
 export const defaultSettings: SimulationSettings = {
   num_developers: 10,
   num_investors: 5,
-  num_traders: 0,
-  num_adaptive_investors: 0,
+  num_traders: 2,
+  num_adaptive_investors: 2,
   num_delegators: 5,
-  num_liquid_delegators: 0,
+  num_liquid_delegators: 2,
   num_proposal_creators: 5,
   num_validators: 5,
-  num_service_providers: 5,
+  num_service_providers: 3,
   num_arbitrators: 2,
   num_regulators: 2,
-  num_auditors: 0,
-  num_bounty_hunters: 0,
+  num_auditors: 2,
+  num_bounty_hunters: 2,
   num_external_partners: 2,
   num_passive_members: 10,
-  num_artists: 0,
-  num_collectors: 0,
-  num_speculators: 0,
+  num_artists: 2,
+  num_collectors: 2,
+  num_speculators: 2,
+  num_rl_traders: 2,
+  num_governance_experts: 2,
+  num_risk_managers: 2,
+  num_market_makers: 2,
+  num_whistleblowers: 1,
   violation_probability: 0.1,
   reputation_penalty: 5,
   comment_probability: 0.5,

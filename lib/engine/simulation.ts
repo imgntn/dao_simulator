@@ -209,11 +209,11 @@ export class DAOSimulation extends Model {
     this.numArtists = config.num_artists ?? settings.num_artists;
     this.numCollectors = config.num_collectors ?? settings.num_collectors;
     this.numSpeculators = config.num_speculators ?? settings.num_speculators;
-    this.numRLTraders = config.num_rl_traders ?? settings.num_rl_traders ?? 0;
-    this.numGovernanceExperts = config.num_governance_experts ?? settings.num_governance_experts ?? 0;
-    this.numRiskManagers = config.num_risk_managers ?? settings.num_risk_managers ?? 0;
-    this.numMarketMakers = config.num_market_makers ?? settings.num_market_makers ?? 0;
-    this.numWhistleblowers = config.num_whistleblowers ?? settings.num_whistleblowers ?? 0;
+    this.numRLTraders = config.num_rl_traders ?? settings.num_rl_traders;
+    this.numGovernanceExperts = config.num_governance_experts ?? settings.num_governance_experts;
+    this.numRiskManagers = config.num_risk_managers ?? settings.num_risk_managers;
+    this.numMarketMakers = config.num_market_makers ?? settings.num_market_makers;
+    this.numWhistleblowers = config.num_whistleblowers ?? settings.num_whistleblowers;
 
     // Probabilities
     this.commentProbability = config.comment_probability ?? settings.comment_probability;

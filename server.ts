@@ -154,12 +154,37 @@ async function persistSimulation(id: string, instance: DAOSimulation) {
 async function createSimulation(config: any = {}) {
   console.log('Creating new simulation...');
 
+  // Create a diverse simulation with all agent types represented
   const defaultConfig = {
+    // Core governance agents
     num_developers: 10,
     num_investors: 5,
     num_proposal_creators: 5,
     num_validators: 5,
     num_passive_members: 10,
+    // Delegation agents
+    num_delegators: 5,
+    num_liquid_delegators: 2,
+    // Service & oversight agents
+    num_service_providers: 3,
+    num_arbitrators: 2,
+    num_regulators: 2,
+    num_auditors: 2,
+    num_external_partners: 2,
+    // Economic agents
+    num_traders: 2,
+    num_adaptive_investors: 2,
+    num_speculators: 2,
+    num_rl_traders: 2,
+    num_market_makers: 2,
+    num_risk_managers: 2,
+    // Creative & community agents
+    num_artists: 2,
+    num_collectors: 2,
+    num_bounty_hunters: 2,
+    num_governance_experts: 2,
+    num_whistleblowers: 1,
+    // Behavior settings
     comment_probability: 0.5,
     governance_rule: 'majority' as const,
     eventLogging: true,
