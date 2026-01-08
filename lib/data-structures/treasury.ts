@@ -117,6 +117,8 @@ export class Treasury {
     this.oracle = oracle || new RandomWalkOracle();
     this.tokenPrices.set('DAO_TOKEN', 1.0); // Default price
     this.tokens.set('DAO_TOKEN', 0);
+    // Sync oracle price with treasury initial price
+    this.oracle.setPrice('DAO_TOKEN', 1.0);
   }
 
   deposit(token: string, amount: number, step: number = 0): void {

@@ -426,6 +426,9 @@ export class DAOSimulation extends Model {
     // Reputation decay
     this.reputationTracker.decayReputation();
 
+    // Update token prices with market dynamics
+    this.dao.treasury.updatePrices(0.02); // 2% volatility per step
+
     // Treasury buybacks
     this.performBuybacks();
 
