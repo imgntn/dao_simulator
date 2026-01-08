@@ -35,6 +35,7 @@ export interface EventBus {
 
 export interface PriceOracle {
   getPrice(token: string): number;
+  setPrice(token: string, price: number): void;
   updatePrice(token: string, step: number): void;
 }
 

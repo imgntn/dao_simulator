@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useMemo, useState, useCallback, memo } from 'react';
+import { useRef, useMemo, useState, useCallback, memo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Line, Text, Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -19,18 +19,49 @@ interface NodeDetailPanelProps {
   onClose: () => void;
 }
 
+// Extended node interface for display
+interface ExtendedNodeInfo {
+  node: NetworkNode;
+  connectedEdges: NetworkEdge[];
+  connectedNodes: string[];
+}
+
 // Node detail panel shown when a node is selected
-function NodeDetailPanel({ node, onClose }: NodeDetailPanelProps) {
+function NodeDetailPanel({ node, edges, onClose }: NodeDetailPanelProps & { edges: NetworkEdge[] }) {
+  // Find edges connected to this node
+  const connectedEdges = edges.filter(e => e.source === node.id || e.target === node.id);
+  const incomingCount = connectedEdges.filter(e => e.target === node.id).length;
+  const outgoingCount = connectedEdges.filter(e => e.source === node.id).length;
+
+  const typeLabels: Record<string, string> = {
+    member: 'DAO Member',
+    proposal: 'Governance Proposal',
+    cluster: 'Member Cluster',
+  };
+
+  const typeDescriptions: Record<string, string> = {
+    member: 'A participant in the DAO with voting power',
+    proposal: 'A governance proposal being voted on',
+    cluster: 'A group of similar member types',
+  };
+
   return (
-    <div className="absolute top-4 right-4 w-64 bg-gray-900/95 border border-gray-700 rounded-lg p-4 shadow-xl z-10">
+    <div className="absolute top-4 right-4 w-72 bg-gray-900/95 border border-gray-700 rounded-lg p-4 shadow-xl z-10">
       <div className="flex justify-between items-start mb-3">
         <div>
-          <span className="text-xs uppercase tracking-wide text-gray-500">
-            {node.type}
+          <span className={`text-xs uppercase tracking-wide px-2 py-0.5 rounded ${
+            node.type === 'member' ? 'bg-blue-500/20 text-blue-400' :
+            node.type === 'proposal' ? 'bg-green-500/20 text-green-400' :
+            'bg-pink-500/20 text-pink-400'
+          }`}>
+            {typeLabels[node.type] || node.type}
           </span>
-          <h4 className="text-sm font-semibold text-white break-all">
+          <h4 className="text-sm font-semibold text-white break-all mt-2">
             {node.id}
           </h4>
+          <p className="text-xs text-gray-500 mt-1">
+            {typeDescriptions[node.type] || ''}
+          </p>
         </div>
         <button
           onClick={onClose}
@@ -42,25 +73,127 @@ function NodeDetailPanel({ node, onClose }: NodeDetailPanelProps) {
           </svg>
         </button>
       </div>
-      <div className="space-y-2 text-sm">
-        <div className="flex justify-between">
-          <span className="text-gray-400">Type</span>
-          <span className="text-white capitalize">{node.type}</span>
+
+      <div className="space-y-3 text-sm border-t border-gray-700 pt-3">
+        {/* Connection stats */}
+        <div>
+          <p className="text-xs text-gray-500 mb-1 font-medium">Connections</p>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="bg-gray-800 rounded p-2 text-center">
+              <p className="text-lg font-bold text-white">{connectedEdges.length}</p>
+              <p className="text-xs text-gray-400">Total</p>
+            </div>
+            <div className="bg-gray-800 rounded p-2 text-center">
+              <p className="text-lg font-bold text-green-400">{incomingCount}</p>
+              <p className="text-xs text-gray-400">In</p>
+            </div>
+            <div className="bg-gray-800 rounded p-2 text-center">
+              <p className="text-lg font-bold text-blue-400">{outgoingCount}</p>
+              <p className="text-xs text-gray-400">Out</p>
+            </div>
+          </div>
         </div>
+
+        {/* Node properties */}
+        {node.size && (
+          <div className="flex justify-between">
+            <span className="text-gray-400">
+              {node.type === 'member' ? 'Token Weight' : node.type === 'cluster' ? 'Member Count' : 'Vote Weight'}
+            </span>
+            <span className="text-white font-medium">{node.size.toFixed(1)}</span>
+          </div>
+        )}
+
         {node.position && (
           <div className="flex justify-between">
             <span className="text-gray-400">Position</span>
             <span className="text-white font-mono text-xs">
-              [{node.position.map(p => p.toFixed(1)).join(', ')}]
+              [{node.position.map(p => p.toFixed(0)).join(', ')}]
             </span>
           </div>
         )}
-        {node.size && (
-          <div className="flex justify-between">
-            <span className="text-gray-400">Size</span>
-            <span className="text-white">{node.size}</span>
+
+        {/* Edge breakdown by type */}
+        {connectedEdges.length > 0 && (
+          <div>
+            <p className="text-xs text-gray-500 mb-1 font-medium">Connection Types</p>
+            <div className="space-y-1">
+              {['delegation', 'representative', 'created', 'aggregated'].map(type => {
+                const count = connectedEdges.filter(e => e.type === type).length;
+                if (count === 0) return null;
+                const colors: Record<string, string> = {
+                  delegation: 'bg-blue-500',
+                  representative: 'bg-purple-500',
+                  created: 'bg-green-500',
+                  aggregated: 'bg-amber-500',
+                };
+                return (
+                  <div key={type} className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${colors[type]}`} />
+                    <span className="text-gray-300 capitalize text-xs">{type}</span>
+                    <span className="text-gray-500 text-xs ml-auto">{count}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// Network statistics panel
+function NetworkStatsPanel({ data }: { data: NetworkData }) {
+  const stats = useMemo(() => {
+    const nodes = data.visible_nodes || data.nodes;
+    const edges = data.visible_edges || data.edges;
+
+    const memberCount = nodes.filter(n => n.type === 'member').length;
+    const proposalCount = nodes.filter(n => n.type === 'proposal').length;
+    const clusterCount = nodes.filter(n => n.type === 'cluster').length;
+
+    const edgesByType = {
+      delegation: edges.filter(e => e.type === 'delegation').length,
+      representative: edges.filter(e => e.type === 'representative').length,
+      created: edges.filter(e => e.type === 'created').length,
+      aggregated: edges.filter(e => e.type === 'aggregated').length,
+    };
+
+    // Calculate average connections per node
+    const avgConnections = nodes.length > 0 ? (edges.length * 2 / nodes.length).toFixed(1) : '0';
+
+    return { memberCount, proposalCount, clusterCount, edgesByType, avgConnections, totalEdges: edges.length };
+  }, [data]);
+
+  return (
+    <div className="absolute top-4 left-4 bg-gray-900/90 border border-gray-700 rounded-lg p-3 text-xs z-10">
+      <p className="text-gray-400 mb-2 font-medium">Network Stats</p>
+      <div className="space-y-2">
+        <div className="grid grid-cols-3 gap-2">
+          <div className="text-center">
+            <p className="text-lg font-bold text-blue-400">{stats.memberCount}</p>
+            <p className="text-gray-500">Members</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold text-green-400">{stats.proposalCount}</p>
+            <p className="text-gray-500">Proposals</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold text-pink-400">{stats.clusterCount}</p>
+            <p className="text-gray-500">Clusters</p>
+          </div>
+        </div>
+        <div className="border-t border-gray-700 pt-2 mt-2">
+          <div className="flex justify-between">
+            <span className="text-gray-400">Total Edges</span>
+            <span className="text-white">{stats.totalEdges}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-400">Avg Connections</span>
+            <span className="text-white">{stats.avgConnections}</span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -205,62 +338,42 @@ const NetworkEdge3D = memo(function NetworkEdge3D({
   );
 });
 
-// Camera controls component for zoom buttons
-function CameraControls({ onZoomIn, onZoomOut, onReset }: {
+// Zoom controls component - rendered outside canvas as regular HTML
+function ZoomControls({ onZoomIn, onZoomOut, onReset }: {
   onZoomIn: () => void;
   onZoomOut: () => void;
   onReset: () => void;
 }) {
-  const { camera } = useThree();
-
-  const handleZoomIn = useCallback(() => {
-    camera.position.multiplyScalar(0.8);
-    onZoomIn();
-  }, [camera, onZoomIn]);
-
-  const handleZoomOut = useCallback(() => {
-    camera.position.multiplyScalar(1.25);
-    onZoomOut();
-  }, [camera, onZoomOut]);
-
-  const handleReset = useCallback(() => {
-    camera.position.set(50, 50, 50);
-    camera.lookAt(0, 0, 0);
-    onReset();
-  }, [camera, onReset]);
-
   return (
-    <Html position={[0, 0, 0]} style={{ pointerEvents: 'none' }}>
-      <div className="fixed bottom-4 left-4 flex flex-col gap-1" style={{ pointerEvents: 'auto' }}>
-        <button
-          onClick={handleZoomIn}
-          className="w-8 h-8 bg-gray-800 hover:bg-gray-700 text-white rounded border border-gray-600 flex items-center justify-center transition-colors"
-          aria-label="Zoom in"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m6-6H6" />
-          </svg>
-        </button>
-        <button
-          onClick={handleZoomOut}
-          className="w-8 h-8 bg-gray-800 hover:bg-gray-700 text-white rounded border border-gray-600 flex items-center justify-center transition-colors"
-          aria-label="Zoom out"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 12H6" />
-          </svg>
-        </button>
-        <button
-          onClick={handleReset}
-          className="w-8 h-8 bg-gray-800 hover:bg-gray-700 text-white rounded border border-gray-600 flex items-center justify-center transition-colors"
-          aria-label="Reset view"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-        </button>
-      </div>
-    </Html>
+    <div className="absolute bottom-4 left-4 flex flex-col gap-1 z-10">
+      <button
+        onClick={onZoomIn}
+        className="w-8 h-8 bg-gray-800 hover:bg-gray-700 text-white rounded border border-gray-600 flex items-center justify-center transition-colors"
+        aria-label="Zoom in"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m6-6H6" />
+        </svg>
+      </button>
+      <button
+        onClick={onZoomOut}
+        className="w-8 h-8 bg-gray-800 hover:bg-gray-700 text-white rounded border border-gray-600 flex items-center justify-center transition-colors"
+        aria-label="Zoom out"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 12H6" />
+        </svg>
+      </button>
+      <button
+        onClick={onReset}
+        className="w-8 h-8 bg-gray-800 hover:bg-gray-700 text-white rounded border border-gray-600 flex items-center justify-center transition-colors"
+        aria-label="Reset view"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+      </button>
+    </div>
   );
 }
 
@@ -338,14 +451,6 @@ function NetworkScene({
           enableHover={enableHover}
         />
       ))}
-
-      {interactive && (
-        <CameraControls
-          onZoomIn={() => {}}
-          onZoomOut={() => {}}
-          onReset={() => {}}
-        />
-      )}
     </group>
   );
 }
@@ -401,6 +506,26 @@ function NetworkEmptyState({ title }: { title: string }) {
   );
 }
 
+// Camera controller that responds to external zoom commands
+function CameraController({ zoomCommand }: { zoomCommand: 'in' | 'out' | 'reset' | null }) {
+  const { camera } = useThree();
+
+  useEffect(() => {
+    if (!zoomCommand) return;
+
+    if (zoomCommand === 'in') {
+      camera.position.multiplyScalar(0.8);
+    } else if (zoomCommand === 'out') {
+      camera.position.multiplyScalar(1.25);
+    } else if (zoomCommand === 'reset') {
+      camera.position.set(50, 50, 50);
+      camera.lookAt(0, 0, 0);
+    }
+  }, [zoomCommand, camera]);
+
+  return null;
+}
+
 export function NetworkGraph3D({
   data,
   interactive = true,
@@ -409,6 +534,7 @@ export function NetworkGraph3D({
   onNodeSelect,
 }: NetworkGraph3DProps) {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [zoomCommand, setZoomCommand] = useState<'in' | 'out' | 'reset' | null>(null);
 
   const handleNodeSelect = useCallback((nodeId: string | null) => {
     setSelectedNodeId(nodeId);
@@ -422,6 +548,13 @@ export function NetworkGraph3D({
     () => selectedNodeId ? data.nodes.find(n => n.id === selectedNodeId) : null,
     [selectedNodeId, data.nodes]
   );
+
+  // Handle zoom commands with auto-reset
+  const handleZoom = useCallback((command: 'in' | 'out' | 'reset') => {
+    setZoomCommand(command);
+    // Reset command after a short delay so it can be triggered again
+    setTimeout(() => setZoomCommand(null), 100);
+  }, []);
 
   if (!data || !data.nodes || data.nodes.length === 0) {
     return <NetworkEmptyState title={title} />;
@@ -478,37 +611,51 @@ export function NetworkGraph3D({
             onNodeSelect={handleNodeSelect}
           />
           {interactive && <OrbitControls enableDamping dampingFactor={0.05} />}
+          <CameraController zoomCommand={zoomCommand} />
         </Canvas>
 
-        {/* Node detail panel */}
+        {/* Network stats panel - top left */}
+        <NetworkStatsPanel data={data} />
+
+        {/* Zoom controls - bottom left */}
+        {interactive && (
+          <ZoomControls
+            onZoomIn={() => handleZoom('in')}
+            onZoomOut={() => handleZoom('out')}
+            onReset={() => handleZoom('reset')}
+          />
+        )}
+
+        {/* Node detail panel - top right */}
         {selectedNode && (
           <NodeDetailPanel
             node={selectedNode}
+            edges={displayEdges}
             onClose={() => handleNodeSelect(null)}
           />
         )}
-      </div>
 
-      {/* Edge type legend */}
-      <div className="absolute bottom-6 right-6 bg-gray-900/90 border border-gray-700 rounded-lg p-2 text-xs">
-        <p className="text-gray-400 mb-1 font-medium">Edge Types</p>
-        <div className="grid grid-cols-2 gap-x-3 gap-y-1">
-          <span className="flex items-center gap-1">
-            <div className="w-4 h-0.5 bg-blue-500" aria-hidden="true" />
-            <span className="text-gray-300">Delegation</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <div className="w-4 h-0.5 bg-purple-500" aria-hidden="true" />
-            <span className="text-gray-300">Representative</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <div className="w-4 h-0.5 bg-green-500" aria-hidden="true" />
-            <span className="text-gray-300">Created</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <div className="w-4 h-0.5 bg-amber-500" aria-hidden="true" />
-            <span className="text-gray-300">Aggregated</span>
-          </span>
+        {/* Edge type legend - bottom right */}
+        <div className="absolute bottom-4 right-4 bg-gray-900/90 border border-gray-700 rounded-lg p-2 text-xs z-10">
+          <p className="text-gray-400 mb-1 font-medium">Edge Types</p>
+          <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+            <span className="flex items-center gap-1">
+              <div className="w-4 h-0.5 bg-blue-500" aria-hidden="true" />
+              <span className="text-gray-300">Delegation</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <div className="w-4 h-0.5 bg-purple-500" aria-hidden="true" />
+              <span className="text-gray-300">Representative</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <div className="w-4 h-0.5 bg-green-500" aria-hidden="true" />
+              <span className="text-gray-300">Created</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <div className="w-4 h-0.5 bg-amber-500" aria-hidden="true" />
+              <span className="text-gray-300">Aggregated</span>
+            </span>
+          </div>
         </div>
       </div>
 
