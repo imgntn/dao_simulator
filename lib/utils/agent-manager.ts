@@ -45,84 +45,84 @@ export class AgentManager {
   private cacheDirty: boolean = true;
 
   // Agent configuration templates
-  agentConfigs: Map<AgentClass, AgentConfig> = new Map([
-    [Developer, {
+  agentConfigs: Map<AgentClass, AgentConfig> = new Map<AgentClass, AgentConfig>([
+    [Developer as AgentClass, {
       tokens: constants.DEVELOPER_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
       skillset: ['TypeScript', 'JavaScript', 'Solidity'],
     }],
-    [Investor, {
+    [Investor as AgentClass, {
       tokens: constants.INVESTOR_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
       investmentBudget: constants.INVESTOR_BUDGET,
     }],
-    [Trader, {
+    [Trader as AgentClass, {
       tokens: constants.TRADER_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
     }],
-    [AdaptiveInvestor, {
+    [AdaptiveInvestor as AgentClass, {
       tokens: constants.ADAPTIVE_INVESTOR_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
       investmentBudget: constants.ADAPTIVE_INVESTOR_BUDGET,
     }],
-    [Delegator, {
+    [Delegator as AgentClass, {
       tokens: constants.DELEGATOR_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
       delegationBudget: constants.DELEGATOR_BUDGET,
     }],
-    [LiquidDelegator, {
+    [LiquidDelegator as AgentClass, {
       tokens: constants.LIQUID_DELEGATOR_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
       delegationBudget: constants.LIQUID_DELEGATOR_BUDGET,
     }],
-    [ProposalCreator, {
+    [ProposalCreator as AgentClass, {
       tokens: constants.PROPOSAL_CREATOR_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
     }],
-    [Validator, {
+    [Validator as AgentClass, {
       tokens: constants.VALIDATOR_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
     }],
-    [ServiceProvider, {
+    [ServiceProvider as AgentClass, {
       tokens: constants.SERVICE_PROVIDER_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
       serviceBudget: constants.SERVICE_PROVIDER_BUDGET,
     }],
-    [Arbitrator, {
+    [Arbitrator as AgentClass, {
       tokens: constants.ARBITRATOR_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
       arbitrationCapacity: constants.ARBITRATOR_CAPACITY,
     }],
-    [Regulator, {
+    [Regulator as AgentClass, {
       tokens: constants.REGULATOR_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
     }],
-    [Auditor, {
+    [Auditor as AgentClass, {
       tokens: constants.AUDITOR_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
     }],
-    [BountyHunter, {
+    [BountyHunter as AgentClass, {
       tokens: constants.BOUNTY_HUNTER_TOKENS,
       reputation: constants.BOUNTY_HUNTER_REPUTATION,
     }],
-    [ExternalPartner, {
+    [ExternalPartner as AgentClass, {
       tokens: constants.EXTERNAL_PARTNER_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
       votingStrategy: null,
     }],
-    [Artist, {
+    [Artist as AgentClass, {
       tokens: constants.ARTIST_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
     }],
-    [Collector, {
+    [Collector as AgentClass, {
       tokens: constants.COLLECTOR_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
     }],
-    [Speculator, {
+    [Speculator as AgentClass, {
       tokens: constants.SPECULATOR_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
     }],
-    [PassiveMember, {
+    [PassiveMember as AgentClass, {
       tokens: constants.PASSIVE_MEMBER_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
     }],
