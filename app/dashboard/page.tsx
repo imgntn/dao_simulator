@@ -197,6 +197,7 @@ export default function DashboardPage() {
   const [runLog, setRunLog] = useState<OpsLogEntry[]>([]);
   const [daoIdentity] = useState<DAOIdentity>(() => generateDAOIdentity(42)); // Consistent seed
   const [navCollapsed, setNavCollapsed] = useState(true);
+  const [activeTab, setActiveTab] = useState<'overview' | '3d' | 'charts' | 'strategy' | 'reports'>('overview');
   const tutorialSteps = [
     'Pick a strategy preset or a daily/weekly challenge to begin.',
     'Press Start (Space) to stream the sim; use Step (F) to advance manually.',
@@ -1012,7 +1013,8 @@ export default function DashboardPage() {
       </header>
 
       {/* Main Dashboard */}
-      <main className="max-w-[1920px] mx-auto px-6 pt-16 pb-8 pl-16 space-y-8">
+      <main className="max-w-[1920px] mx-auto px-6 pt-16 pb-8 pl-16 space-y-6">
+        {/* Notifications */}
         {(lastCompleted || recentShock) && (
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/5 to-green-500/10 blur-xl rounded-2xl" />
@@ -1030,14 +1032,8 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {lastCompleted && (
-          <div className="p-3 rounded-lg bg-green-900/40 border border-green-700 text-green-200 text-sm">
-            Mission completed: <span className="font-semibold">{lastCompleted}</span>
-          </div>
-        )}
-
-        {/* Tutorial */}
-        {showTutorial && (
+        {/* Tutorial - Only show on overview tab */}
+        {showTutorial && activeTab === 'overview' && (
           <div className="p-4 rounded-xl bg-blue-900/40 border border-blue-700 text-sm text-blue-100 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div className="space-y-1">
               <p className="font-semibold text-blue-50">Quick start</p>
@@ -1067,480 +1063,547 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Controls & Token Section */}
-        <section id="section-controls" className="scroll-mt-24">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Missions */}
-            <div id="section-missions" className="lg:col-span-2 scroll-mt-24">
-              <ScenarioCard
-                scenarioName={selectedStrategy ? `${daoIdentity.name} – ${selectedStrategy.name}` : daoIdentity.name}
-                missions={missions}
-                step={step}
+        {/* Tab Navigation */}
+        <div className="flex flex-wrap gap-2 border-b border-gray-700 pb-4">
+          {[
+            { id: 'overview' as const, label: 'Overview', icon: '📊' },
+            { id: '3d' as const, label: '3D View', icon: '🏛️' },
+            { id: 'charts' as const, label: 'Charts', icon: '📈' },
+            { id: 'strategy' as const, label: 'Strategy', icon: '🎯' },
+            { id: 'reports' as const, label: 'Reports', icon: '📋' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
+                activeTab === tab.id
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
+                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white'
+              }`}
+            >
+              <span>{tab.icon}</span>
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* ==================== OVERVIEW TAB ==================== */}
+        {activeTab === 'overview' && (
+          <>
+            {/* Controls & Token Section */}
+            <section id="section-controls" className="scroll-mt-24">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Missions */}
+                <div id="section-missions" className="lg:col-span-2 scroll-mt-24">
+                  <ScenarioCard
+                    scenarioName={selectedStrategy ? `${daoIdentity.name} – ${selectedStrategy.name}` : daoIdentity.name}
+                    missions={missions}
+                    step={step}
+                    status={running ? 'running' : 'paused'}
+                  />
+                </div>
+                {/* Token Tracker */}
+                <div id="section-token" className="scroll-mt-24">
+                  <TokenTracker
+                    daoIdentity={daoIdentity}
+                    currentPrice={latest?.dao_token_price ?? 1}
+                    priceHistory={priceHistory}
+                    treasury={latest?.treasury_balance ?? 0}
+                    holders={members.length}
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* DAO Map - Overview */}
+            <section className="w-full">
+              <h3 className="text-lg font-semibold text-white mb-2">DAO Map</h3>
+              <CozyMap
+                treasury={Math.round(latest?.treasury_balance ?? 0)}
+                proposals={(latest as any)?.proposals ?? latest?.active_proposals ?? 0}
+                members={members.length}
+                shocks={marketShocks.length}
                 status={running ? 'running' : 'paused'}
               />
-            </div>
-            {/* Token Tracker */}
-            <div id="section-token" className="scroll-mt-24">
-              <TokenTracker
-                daoIdentity={daoIdentity}
-                currentPrice={latest?.dao_token_price ?? 1}
-                priceHistory={priceHistory}
-                treasury={latest?.treasury_balance ?? 0}
-                holders={members.length}
-              />
-            </div>
-          </div>
-        </section>
+            </section>
 
-        {/* DAO City View - Multi-DAO Visualization */}
-        {viewMode === 'city' && !visualsPaused && (
-          <section id="section-city" className="w-full scroll-mt-24">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* 3D City View */}
-              <div className="lg:col-span-2 bg-gray-800 rounded-lg shadow-lg overflow-hidden h-[600px]">
-                {city.cityNetworkData ? (
-                  <DAOCity3D
-                    data={city.cityNetworkData}
-                    onDaoSelect={setSelectedDaoId}
-                    selectedDaoId={selectedDaoId}
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    <div className="text-center">
-                      <p className="text-lg mb-2">DAO City</p>
-                      <p className="text-sm">Start the city simulation to see the visualization</p>
+            {/* Operations Log */}
+            {runLog.length > 0 && (
+              <section className="w-full">
+                <div className="p-4 rounded-xl bg-gray-800/60 border border-gray-700 shadow-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-semibold text-white">Operations Log</h3>
+                    <span className="text-xs text-gray-400">Most recent {Math.min(runLog.length, 12)} events</span>
+                  </div>
+                  <div className="space-y-2 text-sm text-gray-200 max-h-64 overflow-y-auto pr-1">
+                    {[...runLog]
+                      .slice(-12)
+                      .sort((a, b) => (a.step ?? 0) - (b.step ?? 0))
+                      .map((entry, idx) => (
+                        <div
+                          key={`${entry.label}-${idx}`}
+                          className={`flex items-center justify-between rounded border px-2 py-1 ${
+                            entry.severity === 'critical'
+                              ? 'border-red-500 bg-red-900/40'
+                              : entry.severity === 'incident'
+                              ? 'border-amber-500 bg-amber-900/30'
+                              : entry.severity === 'warning'
+                              ? 'border-yellow-500 bg-yellow-900/30'
+                              : 'border-gray-700 bg-gray-900/60'
+                          }`}
+                        >
+                          <div>
+                            <p className="text-[11px] text-gray-400">
+                              {typeof entry.step === 'number' ? `Step ${entry.step}` : 'Event'}
+                            </p>
+                            <p className="font-semibold">{entry.label}</p>
+                          </div>
+                          <p className="text-xs text-gray-200 text-right max-w-xs truncate">{entry.value}</p>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </section>
+            )}
+          </>
+        )}
+
+        {/* ==================== 3D VIEW TAB ==================== */}
+        {activeTab === '3d' && (
+          <>
+            {/* DAO City View - Multi-DAO Visualization */}
+            {viewMode === 'city' && !visualsPaused && (
+              <section id="section-city" className="w-full scroll-mt-24">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* 3D City View */}
+                  <div className="lg:col-span-2 bg-gray-800 rounded-lg shadow-lg overflow-hidden h-[600px]">
+                    {city.cityNetworkData ? (
+                      <DAOCity3D
+                        data={city.cityNetworkData}
+                        onDaoSelect={setSelectedDaoId}
+                        selectedDaoId={selectedDaoId}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <div className="text-center">
+                          <p className="text-lg mb-2">DAO City</p>
+                          <p className="text-sm">Start the city simulation to see the visualization</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Token Rankings */}
+                  <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                    <TokenRankingBoard
+                      rankings={city.tokenRankings}
+                      totalMarketCap={city.totalMarketCap}
+                      totalVolume={city.totalVolume}
+                      onTokenSelect={(symbol) => {
+                        const dao = city.daos.find(d => d.tokenSymbol === symbol);
+                        if (dao) setSelectedDaoId(dao.id);
+                      }}
+                      compact={false}
+                    />
+                  </div>
+                </div>
+
+                {/* City Stats Bar */}
+                {city.daos.length > 0 && (
+                  <div className="mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    {city.daos.map(dao => (
+                      <button
+                        key={dao.id}
+                        onClick={() => setSelectedDaoId(dao.id === selectedDaoId ? null : dao.id)}
+                        className={`p-3 rounded-lg border transition-colors ${
+                          selectedDaoId === dao.id
+                            ? 'border-white bg-gray-700'
+                            : 'border-gray-700 bg-gray-800 hover:border-gray-600'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 mb-1">
+                          <div
+                            className="w-3 h-3 rounded-full"
+                            style={{ backgroundColor: dao.color }}
+                          />
+                          <span className="font-medium text-white text-sm">{dao.name}</span>
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          <span className="font-mono">${dao.tokenSymbol}</span>
+                          <span className="mx-1">•</span>
+                          <span>{dao.memberCount} members</span>
+                        </div>
+                        <div className="text-xs text-green-400 font-mono mt-1">
+                          ${dao.tokenPrice.toFixed(4)}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Inter-DAO Proposals */}
+                {city.interDaoProposals.length > 0 && (
+                  <div className="mt-4 bg-gray-800 rounded-lg p-4">
+                    <h3 className="text-lg font-semibold text-white mb-3">Inter-DAO Proposals</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {city.interDaoProposals.slice(0, 6).map(proposal => (
+                        <div
+                          key={proposal.uniqueId}
+                          className="p-3 rounded border border-gray-700 bg-gray-900/50"
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs uppercase text-gray-500">
+                              {proposal.proposalType}
+                            </span>
+                            <span className={`text-xs px-2 py-0.5 rounded ${
+                              proposal.status === 'open' ? 'bg-blue-500/20 text-blue-400' :
+                              proposal.status === 'approved' ? 'bg-green-500/20 text-green-400' :
+                              proposal.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
+                              'bg-purple-500/20 text-purple-400'
+                            }`}>
+                              {proposal.status}
+                            </span>
+                          </div>
+                          <p className="text-sm font-medium text-white">{proposal.title}</p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            {proposal.participatingDaos.join(' + ')}
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
-              </div>
+              </section>
+            )}
 
-              {/* Token Rankings */}
-              <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-                <TokenRankingBoard
-                  rankings={city.tokenRankings}
-                  totalMarketCap={city.totalMarketCap}
-                  totalVolume={city.totalVolume}
-                  onTokenSelect={(symbol) => {
-                    const dao = city.daos.find(d => d.tokenSymbol === symbol);
-                    if (dao) setSelectedDaoId(dao.id);
-                  }}
-                  compact={false}
-                />
-              </div>
-            </div>
+            {/* DAO Tower - Cozy 3D Visualization (Single DAO mode) */}
+            {viewMode === 'single' && !visualsPaused && towerMembers.length > 0 && (
+              <section id="section-tower" className="w-full scroll-mt-24">
+                <div className="bg-gray-800 rounded-lg shadow-lg p-4">
+                  <DAOTowerWrapper
+                    members={towerMembers}
+                    totalFloors={6}
+                    title={`${daoIdentity.name} HQ`}
+                  />
+                </div>
+              </section>
+            )}
 
-            {/* City Stats Bar */}
-            {city.daos.length > 0 && (
-              <div className="mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {city.daos.map(dao => (
+            {/* Network Visualization */}
+            {!visualsPaused && networkData && networkData.nodes.length > 0 && (
+              <section id="section-network" className="w-full scroll-mt-24 relative">
+                {recentShock && (
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                    <div className="h-64 w-64 rounded-full bg-red-500/10 animate-ping" />
+                  </div>
+                )}
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 relative overflow-hidden">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                      Network Graph - {networkData.nodes.length} nodes, {networkData.edges.length} edges
+                    </h3>
+                    <div className="flex gap-4">
+                      <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                        <input
+                          type="checkbox"
+                          checked={showLabels}
+                          onChange={(e) => setShowLabels(e.target.checked)}
+                          className="rounded"
+                        />
+                        Show Labels
+                      </label>
+                      <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                        <input
+                          type="checkbox"
+                          checked={interactiveNetwork}
+                          onChange={(e) => setInteractiveNetwork(e.target.checked)}
+                          className="rounded"
+                        />
+                        Interactive
+                      </label>
+                    </div>
+                  </div>
+                  <NetworkGraph3DWrapper
+                    data={networkData}
+                    interactive={interactiveNetwork}
+                    showLabels={showLabels}
+                  />
+                </div>
+              </section>
+            )}
+
+            {visualsPaused && (
+              <section className="w-full">
+                <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-6 text-gray-300">
+                  <h3 className="text-lg font-semibold text-white mb-2">Visuals paused</h3>
+                  <p className="text-sm text-gray-400">Network, heatmaps, and maps are hidden to reduce load. Resume visuals to see them again.</p>
+                </div>
+              </section>
+            )}
+          </>
+        )}
+
+        {/* ==================== CHARTS TAB ==================== */}
+        {activeTab === 'charts' && (
+          <>
+            {/* Price Chart */}
+            <section id="section-price" className={`w-full scroll-mt-24 transition-all ${recentShock ? 'border border-red-500/60 shadow-[0_0_30px_rgba(239,68,68,0.35)] rounded-xl p-1 relative overflow-hidden' : ''}`}>
+              {recentShock && (
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <div className="h-64 w-64 rounded-full bg-red-500/15 animate-ping" />
+                </div>
+              )}
+              <PriceLineChart
+                data={priceHistory}
+                title="DAO Token Price History"
+                interactive={true}
+              />
+            </section>
+
+            {/* Heatmap and Choropleth */}
+            {!visualsPaused && members.length > 0 && (
+              <section id="section-heatmap" className="grid grid-cols-1 lg:grid-cols-2 gap-8 scroll-mt-24">
+                <div className={recentShock ? 'animate-pulse relative overflow-hidden' : ''}>
+                  {recentShock && <div className="pointer-events-none absolute inset-0 bg-red-500/10 rounded-lg animate-ping" />}
+                  <MemberHeatmap members={members} />
+                </div>
+                <div className={recentShock ? 'animate-pulse relative overflow-hidden' : ''}>
+                  {recentShock && <div className="pointer-events-none absolute inset-0 bg-red-500/10 rounded-lg animate-ping" />}
+                  <ChoroplethMap members={members} />
+                </div>
+              </section>
+            )}
+
+            {visualsPaused && (
+              <section className="w-full">
+                <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-6 text-gray-300">
+                  <h3 className="text-lg font-semibold text-white mb-2">Visuals paused</h3>
+                  <p className="text-sm text-gray-400">Heatmaps and geographic charts are hidden to reduce load. Resume visuals to see them again.</p>
+                </div>
+              </section>
+            )}
+          </>
+        )}
+
+        {/* ==================== STRATEGY TAB ==================== */}
+        {activeTab === 'strategy' && (
+          <>
+            {/* Strategy Playbooks */}
+            <section className="space-y-4">
+              <h3 className="text-lg font-semibold text-white">Strategy Playbooks</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {strategies.map((strategy) => (
                   <button
-                    key={dao.id}
-                    onClick={() => setSelectedDaoId(dao.id === selectedDaoId ? null : dao.id)}
-                    className={`p-3 rounded-lg border transition-colors ${
-                      selectedDaoId === dao.id
-                        ? 'border-white bg-gray-700'
-                        : 'border-gray-700 bg-gray-800 hover:border-gray-600'
+                    key={strategy.id}
+                    onClick={() => setSelectedStrategyId(strategy.id)}
+                    className={`p-4 rounded-lg border transition-colors text-left ${
+                      selectedStrategyId === strategy.id
+                        ? 'border-emerald-500 bg-emerald-500/10 text-white'
+                        : 'border-gray-700 bg-gray-800/50 text-gray-200 hover:border-emerald-400'
                     }`}
                   >
-                    <div className="flex items-center gap-2 mb-1">
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: dao.color }}
-                      />
-                      <span className="font-medium text-white text-sm">{dao.name}</span>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-semibold">{strategy.name}</h4>
+                      {selectedStrategyId === strategy.id && (
+                        <span className="text-xs text-emerald-300">Active</span>
+                      )}
                     </div>
-                    <div className="text-xs text-gray-400">
-                      <span className="font-mono">${dao.tokenSymbol}</span>
-                      <span className="mx-1">•</span>
-                      <span>{dao.memberCount} members</span>
-                    </div>
-                    <div className="text-xs text-green-400 font-mono mt-1">
-                      ${dao.tokenPrice.toFixed(4)}
-                    </div>
+                    <p className="text-sm text-gray-400">{strategy.description}</p>
                   </button>
                 ))}
               </div>
-            )}
+            </section>
 
-            {/* Inter-DAO Proposals */}
-            {city.interDaoProposals.length > 0 && (
-              <div className="mt-4 bg-gray-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-white mb-3">Inter-DAO Proposals</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {city.interDaoProposals.slice(0, 6).map(proposal => (
-                    <div
-                      key={proposal.uniqueId}
-                      className="p-3 rounded border border-gray-700 bg-gray-900/50"
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs uppercase text-gray-500">
-                          {proposal.proposalType}
-                        </span>
-                        <span className={`text-xs px-2 py-0.5 rounded ${
-                          proposal.status === 'open' ? 'bg-blue-500/20 text-blue-400' :
-                          proposal.status === 'approved' ? 'bg-green-500/20 text-green-400' :
-                          proposal.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
-                          'bg-purple-500/20 text-purple-400'
-                        }`}>
-                          {proposal.status}
-                        </span>
-                      </div>
-                      <p className="text-sm font-medium text-white">{proposal.title}</p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        {proposal.participatingDaos.join(' + ')}
-                      </p>
+            {/* Simulation Presets */}
+            <section className="space-y-4">
+              <h3 className="text-lg font-semibold text-white">Simulation Presets</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {presets.map((preset) => (
+                  <button
+                    key={preset.id}
+                    onClick={() => setSelectedPreset(preset.id)}
+                    className={`p-4 rounded-lg border transition-colors text-left ${
+                      selectedPreset === preset.id
+                        ? 'border-blue-500 bg-blue-500/10 text-white'
+                        : 'border-gray-700 bg-gray-800/50 text-gray-200 hover:border-blue-400'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-semibold">{preset.name}</h4>
+                      {selectedPreset === preset.id && <span className="text-xs text-blue-300">Selected</span>}
                     </div>
-                  ))}
-                </div>
+                    <p className="text-sm text-gray-400">{preset.description}</p>
+                  </button>
+                ))}
               </div>
-            )}
-          </section>
-        )}
+            </section>
 
-        {/* DAO Tower - Cozy 3D Visualization (Single DAO mode) */}
-        {viewMode === 'single' && !visualsPaused && towerMembers.length > 0 && (
-          <section id="section-tower" className="w-full scroll-mt-24">
-            <div className="bg-gray-800 rounded-lg shadow-lg p-4">
-              <DAOTowerWrapper
-                members={towerMembers}
-                totalFloors={6}
-                title={`${daoIdentity.name} HQ`}
-              />
-            </div>
-          </section>
-        )}
-
-        {/* Operations Log */}
-        {runLog.length > 0 && (
-          <section className="w-full">
-            <div className="p-4 rounded-xl bg-gray-800/60 border border-gray-700 shadow-lg">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-semibold text-white">Operations Log</h3>
-                <span className="text-xs text-gray-400">Most recent {Math.min(runLog.length, 12)} events</span>
-              </div>
-              <div className="space-y-2 text-sm text-gray-200 max-h-64 overflow-y-auto pr-1">
-                {[...runLog]
-                  .slice(-12)
-                  .sort((a, b) => (a.step ?? 0) - (b.step ?? 0))
-                  .map((entry, idx) => (
-                    <div
-                      key={`${entry.label}-${idx}`}
-                      className={`flex items-center justify-between rounded border px-2 py-1 ${
-                        entry.severity === 'critical'
-                          ? 'border-red-500 bg-red-900/40'
-                          : entry.severity === 'incident'
-                          ? 'border-amber-500 bg-amber-900/30'
-                          : entry.severity === 'warning'
-                          ? 'border-yellow-500 bg-yellow-900/30'
-                          : 'border-gray-700 bg-gray-900/60'
-                      }`}
-                    >
+            {/* Challenge Presets */}
+            <section className="space-y-4">
+              <h3 className="text-lg font-semibold text-white">Challenges</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {challenges.map((challenge) => (
+                  <div
+                    key={challenge.id}
+                    className="p-4 rounded-lg border border-purple-600/50 bg-purple-900/10 text-gray-100 flex flex-col gap-3"
+                  >
+                    <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[11px] text-gray-400">
-                          {typeof entry.step === 'number' ? `Step ${entry.step}` : 'Event'}
-                        </p>
-                        <p className="font-semibold">{entry.label}</p>
+                        <p className="text-xs uppercase tracking-wide text-purple-300">{challenge.id.toUpperCase()}</p>
+                        <h4 className="font-semibold">{challenge.name}</h4>
                       </div>
-                      <p className="text-xs text-gray-200 text-right max-w-xs truncate">{entry.value}</p>
+                      <button
+                        className="px-3 py-2 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold"
+                        onClick={() => {
+                          setSelectedPreset(challenge.id);
+                          startSimulation({ stepsPerSecond, simulationConfig: applyStrategy(challenge.config) });
+                          setShowTutorial(false);
+                          setRunState('playing');
+                        }}
+                      >
+                        Start challenge
+                      </button>
                     </div>
-                  ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Strategy Playbooks */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {strategies.map((strategy) => (
-            <button
-              key={strategy.id}
-              onClick={() => setSelectedStrategyId(strategy.id)}
-              className={`p-4 rounded-lg border transition-colors text-left ${
-                selectedStrategyId === strategy.id
-                  ? 'border-emerald-500 bg-emerald-500/10 text-white'
-                  : 'border-gray-700 bg-gray-800/50 text-gray-200 hover:border-emerald-400'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold">{strategy.name}</h4>
-                {selectedStrategyId === strategy.id && (
-                  <span className="text-xs text-emerald-300">Active</span>
-                )}
-              </div>
-              <p className="text-sm text-gray-400">{strategy.description}</p>
-            </button>
-          ))}
-        </section>
-
-        {/* Simulation Presets */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {presets.map((preset) => (
-            <button
-              key={preset.id}
-              onClick={() => setSelectedPreset(preset.id)}
-              className={`p-4 rounded-lg border transition-colors text-left ${
-                selectedPreset === preset.id
-                  ? 'border-blue-500 bg-blue-500/10 text-white'
-                  : 'border-gray-700 bg-gray-800/50 text-gray-200 hover:border-blue-400'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold">{preset.name}</h4>
-                {selectedPreset === preset.id && <span className="text-xs text-blue-300">Selected</span>}
-              </div>
-              <p className="text-sm text-gray-400">{preset.description}</p>
-            </button>
-          ))}
-        </section>
-
-        {/* Challenge Presets */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {challenges.map((challenge) => (
-            <div
-              key={challenge.id}
-              className="p-4 rounded-lg border border-purple-600/50 bg-purple-900/10 text-gray-100 flex flex-col gap-3"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-purple-300">{challenge.id.toUpperCase()}</p>
-                  <h4 className="font-semibold">{challenge.name}</h4>
-                </div>
-                <button
-                  className="px-3 py-2 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold"
-                  onClick={() => {
-                    setSelectedPreset(challenge.id);
-                    startSimulation({ stepsPerSecond, simulationConfig: applyStrategy(challenge.config) });
-                    setShowTutorial(false);
-                    setRunState('playing');
-                  }}
-                >
-                  Start challenge
-                </button>
-              </div>
-              <p className="text-sm text-gray-300">{challenge.description}</p>
-            </div>
-          ))}
-        </section>
-
-        {/* Map Overlay */}
-        <section className="w-full">
-          <h3 className="text-lg font-semibold text-white mb-2">DAO Map</h3>
-          <CozyMap
-            treasury={Math.round(latest?.treasury_balance ?? 0)}
-            proposals={(latest as any)?.proposals ?? latest?.active_proposals ?? 0}
-            members={members.length}
-            shocks={marketShocks.length}
-            status={running ? 'running' : 'paused'}
-          />
-        </section>
-
-        {/* Report Section */}
-        <section id="section-report" className="w-full scroll-mt-24">
-          <DAOReport
-            simulationData={simulationData}
-            tokenLeaderboard={tokenLeaderboard}
-            influenceLeaderboard={influenceLeaderboard}
-            marketShocks={marketShocks}
-            members={members}
-            proposals={proposals}
-          />
-        </section>
-
-        {/* Price Chart - Full Width */}
-        <section id="section-price" className={`w-full scroll-mt-24 transition-all ${recentShock ? 'border border-red-500/60 shadow-[0_0_30px_rgba(239,68,68,0.35)] rounded-xl p-1 relative overflow-hidden' : ''}`}>
-          {recentShock && (
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <div className="h-64 w-64 rounded-full bg-red-500/15 animate-ping" />
-            </div>
-          )}
-          <PriceLineChart
-            data={priceHistory}
-            title="DAO Token Price History"
-            interactive={true}
-          />
-        </section>
-
-        {/* Network Visualization - Full Width */}
-        {!visualsPaused && networkData && networkData.nodes.length > 0 && (
-          <section id="section-network" className="w-full scroll-mt-24 relative">
-            {recentShock && (
-              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <div className="h-64 w-64 rounded-full bg-red-500/10 animate-ping" />
-              </div>
-            )}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 relative overflow-hidden">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                  Network Graph - {networkData.nodes.length} nodes, {networkData.edges.length} edges
-                </h3>
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-                    <input
-                      type="checkbox"
-                      checked={showLabels}
-                      onChange={(e) => setShowLabels(e.target.checked)}
-                      className="rounded"
-                    />
-                    Show Labels
-                  </label>
-                  <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-                    <input
-                      type="checkbox"
-                      checked={interactiveNetwork}
-                      onChange={(e) => setInteractiveNetwork(e.target.checked)}
-                      className="rounded"
-                    />
-                    Interactive
-                  </label>
-                </div>
-              </div>
-              <NetworkGraph3DWrapper
-                data={networkData}
-                interactive={interactiveNetwork}
-                showLabels={showLabels}
-              />
-            </div>
-          </section>
-        )}
-
-        {visualsPaused && (
-          <section className="w-full">
-            <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-6 text-gray-300">
-              <h3 className="text-lg font-semibold text-white mb-2">Visuals paused</h3>
-              <p className="text-sm text-gray-400">Network, heatmaps, and maps are hidden to reduce load. Resume visuals to see them again.</p>
-            </div>
-          </section>
-        )}
-
-        {/* Two Column Layout - Heatmap and Choropleth */}
-        {!visualsPaused && members.length > 0 && (
-          <section id="section-heatmap" className="grid grid-cols-1 lg:grid-cols-2 gap-8 scroll-mt-24">
-            <div className={recentShock ? 'animate-pulse relative overflow-hidden' : ''}>
-              {recentShock && <div className="pointer-events-none absolute inset-0 bg-red-500/10 rounded-lg animate-ping" />}
-              <MemberHeatmap members={members} />
-            </div>
-            <div className={recentShock ? 'animate-pulse relative overflow-hidden' : ''}>
-              {recentShock && <div className="pointer-events-none absolute inset-0 bg-red-500/10 rounded-lg animate-ping" />}
-              <ChoroplethMap members={members} />
-            </div>
-          </section>
-        )}
-
-        {/* Org History & KPIs */}
-        {orgStats && (
-          <section id="section-history" className="w-full scroll-mt-24">
-            <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-4 mb-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-semibold text-white">Org History & KPIs</h3>
-                <span className="text-xs text-gray-400">
-                  Total runs: {orgStats.totalRuns}
-                </span>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-200 mb-3">
-                <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
-                  <p className="text-xs text-gray-400">Total steps simulated</p>
-                  <p className="text-lg font-semibold">
-                    {orgStats.totalSteps.toLocaleString('en-US')}
-                  </p>
-                </div>
-                <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
-                  <p className="text-xs text-gray-400">Peak treasury</p>
-                  <p className="text-lg font-semibold">
-                    {orgStats.peakTreasury.toLocaleString('en-US')}
-                  </p>
-                </div>
-                <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
-                  <p className="text-xs text-gray-400">Max shocks in a run</p>
-                  <p className="text-lg font-semibold">
-                    {orgStats.maxShocksInRun.toLocaleString('en-US')}
-                  </p>
-                </div>
-                <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
-                  <p className="text-xs text-gray-400">Win rate</p>
-                  <p className="text-lg font-semibold">
-                    {orgStats.totalRuns > 0
-                      ? `${Math.round((orgStats.wins / orgStats.totalRuns) * 100)}%`
-                      : 'N/A'}
-                  </p>
-                </div>
-              </div>
-              <div className="text-xs text-gray-300">
-                <p className="font-semibold mb-1">Milestones</p>
-                <ul className="space-y-1 list-disc list-inside">
-                  <li>
-                    {orgStats.totalRuns > 0
-                      ? 'First simulation completed.'
-                      : 'Run at least one simulation.'}
-                  </li>
-                  <li>
-                    {orgStats.totalSteps >= 500
-                      ? 'Sustained operator: 500+ total steps.'
-                      : 'Reach 500 total simulated steps.'}
-                  </li>
-                  <li>
-                    {orgStats.peakTreasury >= 10_000
-                      ? 'Capitalized: treasury peaked above 10,000.'
-                      : 'Grow peak treasury above 10,000.'}
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Run History */}
-        {runHistory.length > 0 && (
-          <section className="w-full">
-            <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-semibold text-white">Run History (session)</h3>
-                <span className="text-xs text-gray-400">Last {runHistory.length} runs</span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-gray-200">
-                {runHistory.map((run) => (
-                  <div key={run.id} className="p-3 rounded border border-gray-700 bg-gray-900/50">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-semibold">
-                        {run.preset}
-                        {run.strategy ? ` · ${run.strategy}` : ''}
-                      </span>
-                      <span className="text-xs text-gray-500">{run.when}</span>
-                    </div>
-                    <p className="text-gray-300">Steps: {run.steps}</p>
-                    <p className="text-gray-300">Treasury: {run.treasury}</p>
-                    <p className="text-gray-400 text-xs">Score: {run.score}</p>
-                    {run.outcome && (
-                      <p className="text-gray-400 text-xs">
-                        Outcome: {run.outcome === 'won' ? 'Objectives met' : 'Run ended'}
-                      </p>
-                    )}
+                    <p className="text-sm text-gray-300">{challenge.description}</p>
                   </div>
                 ))}
               </div>
+            </section>
+          </>
+        )}
 
-              <div className="mt-4">
-                <h4 className="text-sm font-semibold text-white mb-2">Leaderboard (session)</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-200">
-                  {runHistory
-                    .slice()
-                    .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
-                    .slice(0, 5)
-                    .map((run, idx) => (
-                      <div key={`${run.id}-lb`} className="p-3 rounded border border-gray-700 bg-gray-900/70 flex items-center justify-between">
-                        <div>
-                          <p className="text-xs text-gray-400">#{idx + 1} • {run.when}</p>
-                          <p className="font-semibold">{run.preset}</p>
+        {/* ==================== REPORTS TAB ==================== */}
+        {activeTab === 'reports' && (
+          <>
+            {/* DAO Report */}
+            <section id="section-report" className="w-full scroll-mt-24">
+              <DAOReport
+                simulationData={simulationData}
+                tokenLeaderboard={tokenLeaderboard}
+                influenceLeaderboard={influenceLeaderboard}
+                marketShocks={marketShocks}
+                members={members}
+                proposals={proposals}
+              />
+            </section>
+
+            {/* Org History & KPIs */}
+            {orgStats && (
+              <section id="section-history" className="w-full scroll-mt-24">
+                <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-4 mb-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-lg font-semibold text-white">Org History & KPIs</h3>
+                    <span className="text-xs text-gray-400">
+                      Total runs: {orgStats.totalRuns}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-200 mb-3">
+                    <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
+                      <p className="text-xs text-gray-400">Total steps simulated</p>
+                      <p className="text-lg font-semibold">
+                        {orgStats.totalSteps.toLocaleString('en-US')}
+                      </p>
+                    </div>
+                    <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
+                      <p className="text-xs text-gray-400">Peak treasury</p>
+                      <p className="text-lg font-semibold">
+                        {orgStats.peakTreasury.toLocaleString('en-US')}
+                      </p>
+                    </div>
+                    <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
+                      <p className="text-xs text-gray-400">Max shocks in a run</p>
+                      <p className="text-lg font-semibold">
+                        {orgStats.maxShocksInRun.toLocaleString('en-US')}
+                      </p>
+                    </div>
+                    <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
+                      <p className="text-xs text-gray-400">Win rate</p>
+                      <p className="text-lg font-semibold">
+                        {orgStats.totalRuns > 0
+                          ? `${Math.round((orgStats.wins / orgStats.totalRuns) * 100)}%`
+                          : 'N/A'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-300">
+                    <p className="font-semibold mb-1">Milestones</p>
+                    <ul className="space-y-1 list-disc list-inside">
+                      <li>
+                        {orgStats.totalRuns > 0
+                          ? 'First simulation completed.'
+                          : 'Run at least one simulation.'}
+                      </li>
+                      <li>
+                        {orgStats.totalSteps >= 500
+                          ? 'Sustained operator: 500+ total steps.'
+                          : 'Reach 500 total simulated steps.'}
+                      </li>
+                      <li>
+                        {orgStats.peakTreasury >= 10_000
+                          ? 'Capitalized: treasury peaked above 10,000.'
+                          : 'Grow peak treasury above 10,000.'}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* Run History */}
+            {runHistory.length > 0 && (
+              <section className="w-full">
+                <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-lg font-semibold text-white">Run History (session)</h3>
+                    <span className="text-xs text-gray-400">Last {runHistory.length} runs</span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-gray-200">
+                    {runHistory.map((run) => (
+                      <div key={run.id} className="p-3 rounded border border-gray-700 bg-gray-900/50">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-semibold">
+                            {run.preset}
+                            {run.strategy ? ` · ${run.strategy}` : ''}
+                          </span>
+                          <span className="text-xs text-gray-500">{run.when}</span>
                         </div>
-                        <div className="text-right">
-                          <p className="text-sm text-blue-300">Score {run.score}</p>
-                          <p className="text-xs text-gray-400">Steps {run.steps}</p>
-                        </div>
+                        <p className="text-gray-300">Steps: {run.steps}</p>
+                        <p className="text-gray-300">Treasury: {run.treasury}</p>
+                        <p className="text-gray-400 text-xs">Score: {run.score}</p>
+                        {run.outcome && (
+                          <p className="text-gray-400 text-xs">
+                            Outcome: {run.outcome === 'won' ? 'Objectives met' : 'Run ended'}
+                          </p>
+                        )}
                       </div>
                     ))}
+                  </div>
+
+                  <div className="mt-4">
+                    <h4 className="text-sm font-semibold text-white mb-2">Leaderboard (session)</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-200">
+                      {runHistory
+                        .slice()
+                        .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+                        .slice(0, 5)
+                        .map((run, idx) => (
+                          <div key={`${run.id}-lb`} className="p-3 rounded border border-gray-700 bg-gray-900/70 flex items-center justify-between">
+                            <div>
+                              <p className="text-xs text-gray-400">#{idx + 1} • {run.when}</p>
+                              <p className="font-semibold">{run.preset}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm text-blue-300">Score {run.score}</p>
+                              <p className="text-xs text-gray-400">Steps {run.steps}</p>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </section>
+              </section>
+            )}
+          </>
         )}
 
         {/* Empty State */}
