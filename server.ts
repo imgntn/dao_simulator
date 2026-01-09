@@ -12,7 +12,9 @@
 import { Server } from 'socket.io';
 import type { Socket } from 'socket.io';
 import { DAOSimulation } from './lib/engine/simulation';
+import { DAOCity } from './lib/engine/dao-city';
 import { createSimulationStore, InMemorySimulationStore, rehydrateSimulation } from './lib/utils/redis-store';
+import type { DAOCityConfig, DAOConfig } from './lib/types/dao-city';
 
 const args = process.argv.slice(2);
 const portIndex = args.indexOf('--port');
@@ -120,9 +122,12 @@ const io = new Server(PORT, {
 });
 
 let simulation: DAOSimulation | null = null;
+let daoCity: DAOCity | null = null;
+let simulationMode: 'single' | 'multi' = 'single';
 let running = false;
 let intervalId: NodeJS.Timeout | null = null;
 let eventBusUnsubscribe: (() => void) | null = null;
+let cityEventBusUnsubscribe: (() => void) | null = null;
 const simulationStore = createSimulationStore();
 const persistenceEnabled = !(simulationStore instanceof InMemorySimulationStore);
 
@@ -136,9 +141,15 @@ io.use((socket, next) => {
 });
 
 function emitSimulationStatus(): void {
+  const step = simulationMode === 'multi'
+    ? daoCity?.getCurrentStep() ?? 0
+    : simulation?.currentStep ?? 0;
+
   io.emit('simulation_status', {
     running,
-    step: simulation?.currentStep ?? 0,
+    step,
+    mode: simulationMode,
+    daoCount: simulationMode === 'multi' ? daoCity?.getAllDAOs().length ?? 0 : 1,
   });
 }
 
@@ -213,6 +224,141 @@ async function createSimulation(config: any = {}) {
 
   emitSimulationStatus();
   return simulation;
+}
+
+/**
+ * Create a new multi-DAO city simulation
+ */
+async function createDAOCity(config?: DAOCityConfig) {
+  console.log('Creating new DAO City simulation...');
+
+  daoCity = new DAOCity(config);
+  simulationMode = 'multi';
+
+  console.log(`DAO City created with ${daoCity.getAllDAOs().length} DAOs`);
+
+  // Clean up previous event listeners
+  if (cityEventBusUnsubscribe) {
+    cityEventBusUnsubscribe();
+  }
+
+  // Subscribe to city-wide events
+  const cityEventBus = daoCity.getEventBus();
+
+  const cityStepListener = (data: any) => {
+    io.emit('city_step', {
+      step: data.step,
+      state: data.state,
+      mode: 'multi',
+    });
+  };
+  cityEventBus.subscribe('city_step', cityStepListener);
+
+  const proposalCreatedListener = (data: any) => {
+    io.emit('inter_dao_proposal_created', data);
+  };
+  cityEventBus.subscribe('inter_dao_proposal_created', proposalCreatedListener);
+
+  const transferCompletedListener = (data: any) => {
+    io.emit('member_transfer_completed', data);
+  };
+  cityEventBus.subscribe('member_transfer_completed', transferCompletedListener);
+
+  cityEventBusUnsubscribe = () => {
+    cityEventBus.unsubscribe('city_step', cityStepListener);
+    cityEventBus.unsubscribe('inter_dao_proposal_created', proposalCreatedListener);
+    cityEventBus.unsubscribe('member_transfer_completed', transferCompletedListener);
+  };
+
+  emitSimulationStatus();
+  return daoCity;
+}
+
+/**
+ * Broadcast city-wide simulation step
+ */
+async function broadcastCityStep() {
+  if (!daoCity) return;
+
+  try {
+    await daoCity.step();
+
+    const state = daoCity.getState();
+    const rankings = daoCity.getTokenRankings();
+    const networkData = daoCity.getNetworkData();
+
+    // Broadcast city state
+    io.emit('city_step', {
+      step: state.currentStep,
+      daos: state.daos,
+      mode: 'multi',
+    });
+
+    // Broadcast token rankings
+    io.emit('token_rankings', {
+      rankings,
+      totalMarketCap: state.globalMarketplace.totalMarketCap,
+      totalVolume: state.globalMarketplace.totalVolume24h,
+    });
+
+    // Broadcast inter-DAO proposals
+    io.emit('inter_dao_proposals', {
+      proposals: state.interDaoProposals,
+      activeCount: state.interDaoProposals.filter(p => p.status === 'open').length,
+    });
+
+    // Broadcast network visualization data
+    io.emit('city_network_update', networkData);
+
+    // Broadcast per-DAO updates
+    for (const dao of daoCity.getAllDAOs()) {
+      const members = dao.members.map((m, idx) => {
+        const locations = ['North America', 'Europe', 'Asia', 'South America', 'Africa', 'Oceania'];
+        return {
+          id: m.uniqueId,
+          unique_id: m.uniqueId,
+          type: m.constructor.name,
+          tokens: m.tokens,
+          reputation: m.reputation,
+          location: locations[idx % locations.length],
+          daoId: m.daoId,
+          isTransferring: m.isTransferring,
+        };
+      });
+
+      const proposals = dao.proposals.map(p => ({
+        id: p.uniqueId,
+        title: (p as any).title || `Proposal ${p.uniqueId}`,
+        type: p.type,
+        status: p.status,
+        votes_for: p.votesFor || 0,
+        votes_against: p.votesAgainst || 0,
+        creator: p.creator || 'unknown',
+      }));
+
+      io.emit(`dao_${dao.daoId}_update`, {
+        daoId: dao.daoId,
+        state: state.daos.find(d => d.id === dao.daoId),
+        members,
+        proposals,
+        projects: dao.projects,
+        guilds: dao.guilds.map(g => ({
+          name: g.name,
+          members: g.members?.map((m: any) => m.uniqueId || m) || [],
+        })),
+      });
+    }
+
+    // Broadcast bridge activity
+    io.emit('bridge_activity', {
+      bridges: state.bridges,
+      recentTransfers: state.recentTransfers,
+    });
+
+  } catch (error: any) {
+    console.error('Error in city step:', error?.message ?? error);
+    stopSimulation();
+  }
 }
 
 async function broadcastSimulationStep() {
@@ -496,25 +642,35 @@ async function broadcastSimulationStep() {
   }
 }
 
-function startSimulation(stepsPerSecond: number = 1) {
+function startSimulation(stepsPerSecond: number = 1, mode: 'single' | 'multi' = 'single') {
   if (running) {
     console.log('Simulation already running');
     return;
   }
 
-  if (!simulation) {
-    createSimulation();
+  // Initialize appropriate simulation mode
+  if (mode === 'multi') {
+    if (!daoCity) {
+      createDAOCity();
+    }
+    simulationMode = 'multi';
+  } else {
+    if (!simulation) {
+      createSimulation();
+    }
+    simulationMode = 'single';
   }
 
   const safeStepsPerSecond = normalizeStepsPerSecond(stepsPerSecond);
   if (stepsPerSecond !== undefined && safeStepsPerSecond !== stepsPerSecond) {
     console.warn(`Invalid stepsPerSecond "${stepsPerSecond}". Using ${safeStepsPerSecond}.`);
   }
-  console.log(`Starting simulation at ${safeStepsPerSecond} steps/second`);
+  console.log(`Starting ${mode} simulation at ${safeStepsPerSecond} steps/second`);
   running = true;
 
   const interval = 1000 / safeStepsPerSecond;
-  intervalId = setInterval(broadcastSimulationStep, interval);
+  const stepFn = mode === 'multi' ? broadcastCityStep : broadcastSimulationStep;
+  intervalId = setInterval(stepFn, interval);
   emitSimulationStatus();
 }
 
@@ -537,10 +693,18 @@ function stopSimulation() {
 function resetSimulation() {
   stopSimulation();
   simulation = null;
+  daoCity = null;
+  simulationMode = 'single';
+
   if (eventBusUnsubscribe) {
     eventBusUnsubscribe();
     eventBusUnsubscribe = null;
   }
+  if (cityEventBusUnsubscribe) {
+    cityEventBusUnsubscribe();
+    cityEventBusUnsubscribe = null;
+  }
+
   console.log('Simulation reset');
   emitSimulationStatus();
   if (persistenceEnabled) {
@@ -577,11 +741,29 @@ io.on('connection', (socket) => {
 
   socket.on('start_simulation', async (config: any = {}) => {
     console.log('Received start_simulation command');
-    if (!simulation) {
-      await createSimulation(config.simulationConfig);
+    const mode = config.mode === 'multi' ? 'multi' : 'single';
+
+    if (mode === 'multi') {
+      if (!daoCity) {
+        await createDAOCity(config.cityConfig);
+      }
+    } else {
+      if (!simulation) {
+        await createSimulation(config.simulationConfig);
+      }
     }
-    startSimulation(config.stepsPerSecond);
-    io.emit('simulation_started', { success: true });
+
+    startSimulation(config.stepsPerSecond, mode);
+    io.emit('simulation_started', { success: true, mode });
+  });
+
+  socket.on('start_city_simulation', async (config: any = {}) => {
+    console.log('Received start_city_simulation command');
+    if (!daoCity) {
+      await createDAOCity(config.cityConfig);
+    }
+    startSimulation(config.stepsPerSecond || 2, 'multi');
+    io.emit('simulation_started', { success: true, mode: 'multi' });
   });
 
   socket.on('stop_simulation', () => {
@@ -596,11 +778,40 @@ io.on('connection', (socket) => {
     io.emit('simulation_reset', { success: true });
   });
 
-  socket.on('step_simulation', async () => {
-    if (!simulation) {
-      await createSimulation();
+  socket.on('step_simulation', async (config: any = {}) => {
+    const mode = config?.mode || simulationMode;
+
+    if (mode === 'multi') {
+      if (!daoCity) {
+        await createDAOCity();
+      }
+      simulationMode = 'multi';
+      broadcastCityStep();
+    } else {
+      if (!simulation) {
+        await createSimulation();
+      }
+      simulationMode = 'single';
+      broadcastSimulationStep();
     }
-    broadcastSimulationStep();
+  });
+
+  socket.on('get_token_rankings', () => {
+    if (daoCity) {
+      const rankings = daoCity.getTokenRankings();
+      const state = daoCity.getState();
+      socket.emit('token_rankings', {
+        rankings,
+        totalMarketCap: state.globalMarketplace.totalMarketCap,
+        totalVolume: state.globalMarketplace.totalVolume24h,
+      });
+    }
+  });
+
+  socket.on('get_city_state', () => {
+    if (daoCity) {
+      socket.emit('city_state', daoCity.getState());
+    }
   });
 
   socket.on('disconnect', () => {

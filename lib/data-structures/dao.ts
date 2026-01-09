@@ -13,6 +13,11 @@ import type { NFTMarketplace } from './nft';
 
 export class DAO {
   name: string;
+  // Multi-DAO support properties
+  daoId: string;
+  tokenSymbol: string;
+  color: string;
+
   proposals: Proposal[] = [];
   projects: Project[] = [];
   disputes: Dispute[] = [];
@@ -42,9 +47,20 @@ export class DAO {
     externalPartnerInteractProbability: number = 0,
     stakingInterestRate: number = 0,
     slashFraction: number = 0,
-    reputationDecayRate: number = 0
+    reputationDecayRate: number = 0,
+    // Multi-DAO support (optional for backward compatibility)
+    daoId?: string,
+    tokenSymbol?: string,
+    color?: string
   ) {
     this.name = name;
+    // Generate default daoId from name if not provided
+    this.daoId = daoId || `dao_${name.toLowerCase().replace(/\s+/g, '_')}`;
+    // Generate default token symbol from name if not provided
+    this.tokenSymbol = tokenSymbol || `${name.toUpperCase().replace(/\s+/g, '').slice(0, 4)}_TOKEN`;
+    // Default color
+    this.color = color || '#4ADE80';
+
     this.violationProbability = violationProbability;
     this.reputationPenalty = reputationPenalty;
     this.commentProbability = commentProbability;
@@ -56,6 +72,40 @@ export class DAO {
     this.eventBus = new EventBus(false);
     this.treasury = new Treasury(this.eventBus);
     this.predictionMarket = new PredictionMarket(this, this.treasury, this.eventBus);
+  }
+
+  /**
+   * Get the DAO's token symbol
+   */
+  getTokenSymbol(): string {
+    return this.tokenSymbol;
+  }
+
+  /**
+   * Get summary of DAO state for broadcasting
+   */
+  getState(): {
+    id: string;
+    name: string;
+    tokenSymbol: string;
+    color: string;
+    memberCount: number;
+    proposalCount: number;
+    projectCount: number;
+    guildCount: number;
+    treasuryBalance: number;
+  } {
+    return {
+      id: this.daoId,
+      name: this.name,
+      tokenSymbol: this.tokenSymbol,
+      color: this.color,
+      memberCount: this.members.length,
+      proposalCount: this.proposals.length,
+      projectCount: this.projects.length,
+      guildCount: this.guilds.length,
+      treasuryBalance: this.treasury.getTokenBalance(this.tokenSymbol),
+    };
   }
 
   addProposal(proposal: Proposal): void {

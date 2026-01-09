@@ -28,13 +28,21 @@ export class DAOMember implements Agent {
   pos: [number, number] | null = null; // For visualization
   optimism: number;
 
+  // Multi-DAO support properties
+  daoId: string;
+  transferCooldown: number = 0;
+  previousDaos: string[] = []; // Track DAO history for analytics
+  isTransferring: boolean = false;
+  transferTargetDaoId: string | null = null;
+
   constructor(
     uniqueId: string,
     model: DAOModel,
     tokens: number,
     reputation: number,
     location: string,
-    votingStrategy?: string | VotingStrategy
+    votingStrategy?: string | VotingStrategy,
+    daoId?: string // Optional for backward compatibility
   ) {
     this.uniqueId = uniqueId;
     this.model = model;
@@ -43,6 +51,8 @@ export class DAOMember implements Agent {
     this.location = location;
     this.stakingRate = model.dao?.stakingInterestRate || 0;
     this.optimism = random();
+    // Set daoId from parameter, model's DAO, or default
+    this.daoId = daoId || model.dao?.daoId || 'default';
 
     // Set voting strategy
     if (typeof votingStrategy === 'string') {
@@ -274,5 +284,148 @@ export class DAOMember implements Agent {
   step(): void {
     // Base implementation does nothing
     // Subclasses should override this
+
+    // Decrement transfer cooldown if active
+    if (this.transferCooldown > 0) {
+      this.transferCooldown--;
+    }
+  }
+
+  // ==========================================================================
+  // Multi-DAO Transfer Methods
+  // ==========================================================================
+
+  /**
+   * Check if this member can transfer to another DAO
+   */
+  canTransfer(): boolean {
+    return this.transferCooldown <= 0 && !this.isTransferring;
+  }
+
+  /**
+   * Request to transfer to another DAO
+   * Returns true if the request was initiated, false if blocked
+   */
+  requestTransfer(targetDaoId: string): boolean {
+    if (!this.canTransfer()) {
+      return false;
+    }
+
+    if (this.daoId === targetDaoId) {
+      return false; // Already in target DAO
+    }
+
+    this.isTransferring = true;
+    this.transferTargetDaoId = targetDaoId;
+
+    // Publish transfer request event
+    if (this.model.eventBus) {
+      this.model.eventBus.publish('member_transfer_requested', {
+        step: this.model.currentStep,
+        memberId: this.uniqueId,
+        fromDaoId: this.daoId,
+        toDaoId: targetDaoId,
+      });
+    }
+
+    return true;
+  }
+
+  /**
+   * Cancel a pending transfer request
+   */
+  cancelTransfer(): void {
+    this.isTransferring = false;
+    this.transferTargetDaoId = null;
+  }
+
+  /**
+   * Execute the transfer to a new DAO
+   * Called by DAOCity when transfer is approved and processed
+   */
+  executeTransfer(newDaoId: string, newModel?: DAOModel): void {
+    // Store previous DAO in history
+    this.previousDaos.push(this.daoId);
+
+    // Remove from current DAO
+    if (this.model.dao) {
+      this.model.dao.removeMember(this);
+    }
+
+    // Clear DAO-specific state
+    this.clearDaoSpecificState();
+
+    // Update to new DAO
+    const oldDaoId = this.daoId;
+    this.daoId = newDaoId;
+
+    if (newModel) {
+      this.model = newModel;
+      if (newModel.dao) {
+        newModel.dao.addMember(this);
+      }
+    }
+
+    // Set cooldown (50 steps before next transfer allowed)
+    this.transferCooldown = 50;
+    this.isTransferring = false;
+    this.transferTargetDaoId = null;
+
+    // Publish transfer completed event
+    if (this.model.eventBus) {
+      this.model.eventBus.publish('member_transfer_completed', {
+        step: this.model.currentStep,
+        memberId: this.uniqueId,
+        fromDaoId: oldDaoId,
+        toDaoId: newDaoId,
+      });
+    }
+  }
+
+  /**
+   * Clear state that's specific to the current DAO when transferring
+   */
+  private clearDaoSpecificState(): void {
+    // Leave current guild
+    if (this.guild) {
+      this.guild.removeMember(this);
+      this.guild = null;
+    }
+
+    // Clear votes on proposals (they're DAO-specific)
+    this.votes.clear();
+    this.comments.clear();
+
+    // Clear delegations (both given and received)
+    // Return delegated tokens
+    for (const [_delegateId, amount] of this.delegations) {
+      this.tokens += amount;
+    }
+    this.delegations.clear();
+
+    // Remove self from delegates' delegate lists
+    for (const delegator of this.delegates) {
+      delegator.delegations.delete(this.uniqueId);
+    }
+    this.delegates = [];
+  }
+
+  /**
+   * Get transfer state for visualization
+   */
+  getTransferState(): {
+    canTransfer: boolean;
+    isTransferring: boolean;
+    targetDaoId: string | null;
+    cooldown: number;
+    previousDaos: string[];
+  } {
+    return {
+      canTransfer: this.canTransfer(),
+      isTransferring: this.isTransferring,
+      targetDaoId: this.transferTargetDaoId,
+      cooldown: this.transferCooldown,
+      previousDaos: [...this.previousDaos],
+    };
   }
 }

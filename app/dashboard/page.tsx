@@ -72,6 +72,31 @@ const DAOTowerWrapper = dynamic(
   }
 );
 
+const DAOCity3D = dynamic(
+  () => import('@/components/visualizations/DAOCity3D'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[600px] bg-gray-800 rounded-lg flex items-center justify-center animate-pulse">
+        <div className="text-center">
+          <div className="w-12 h-12 mx-auto mb-3 rounded-full border-4 border-gray-700 border-t-green-500 animate-spin" />
+          <p className="text-gray-500 text-sm">Loading DAO City...</p>
+        </div>
+      </div>
+    ),
+  }
+);
+
+const TokenRankingBoard = dynamic(
+  () => import('@/components/visualizations/TokenRankingBoard'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[300px] bg-gray-800 rounded-lg animate-pulse" />
+    ),
+  }
+);
+
 type OutcomeCause =
   | 'missions_completed'
   | 'treasury_insolvency'
@@ -118,6 +143,7 @@ export default function DashboardPage() {
     connected,
     running,
     step,
+    mode,
     priceHistory,
     simulationData,
     networkData,
@@ -126,8 +152,10 @@ export default function DashboardPage() {
     tokenLeaderboard,
     influenceLeaderboard,
     marketShocks,
+    city,
     reset: resetSimulation,
     startSimulation,
+    startCitySimulation,
     stopSimulation,
     stepSimulation,
   } = useSimulationSocket();
@@ -138,6 +166,8 @@ export default function DashboardPage() {
   const [showLabels, setShowLabels] = useState(false);
   const [interactiveNetwork, setInteractiveNetwork] = useState(true);
   const [stepsPerSecond, setStepsPerSecond] = useState(2);
+  const [viewMode, setViewMode] = useState<'single' | 'city'>('single');
+  const [selectedDaoId, setSelectedDaoId] = useState<string | null>(null);
   const [baseline, setBaseline] = useState<null | { treasury: number; proposals: number; members: number }>(null);
   const [selectedPreset, setSelectedPreset] = useState('balanced');
   const [selectedStrategyId, setSelectedStrategyId] = useState('baseline');
@@ -788,7 +818,11 @@ export default function DashboardPage() {
         if (running) {
           stopSimulation();
         } else {
-          startSimulation({ stepsPerSecond, simulationConfig: applyStrategy(presetConfig) });
+          if (viewMode === 'city') {
+            startCitySimulation({ stepsPerSecond });
+          } else {
+            startSimulation({ stepsPerSecond, simulationConfig: applyStrategy(presetConfig) });
+          }
         }
       }
 
@@ -805,7 +839,7 @@ export default function DashboardPage() {
 
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [connected, running, stepsPerSecond, presetConfig, startSimulation, stopSimulation, stepSimulation, resetSimulation, applyStrategy]);
+  }, [connected, running, stepsPerSecond, presetConfig, startSimulation, startCitySimulation, stopSimulation, stepSimulation, resetSimulation, applyStrategy, viewMode]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
@@ -892,18 +926,48 @@ export default function DashboardPage() {
               >
                 API Docs
               </a>
+              {/* Mode Toggle */}
+              <div className="flex items-center gap-2 mr-4">
+                <button
+                  onClick={() => setViewMode('single')}
+                  className={`px-3 py-2 rounded-l-lg text-sm font-medium transition-colors ${
+                    viewMode === 'single'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  Single DAO
+                </button>
+                <button
+                  onClick={() => setViewMode('city')}
+                  className={`px-3 py-2 rounded-r-lg text-sm font-medium transition-colors ${
+                    viewMode === 'city'
+                      ? 'bg-green-600 text-white'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  DAO City
+                </button>
+              </div>
+
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => {
-                    startSimulation({ stepsPerSecond, simulationConfig: applyStrategy(presetConfig) });
+                    if (viewMode === 'city') {
+                      startCitySimulation({ stepsPerSecond });
+                    } else {
+                      startSimulation({ stepsPerSecond, simulationConfig: applyStrategy(presetConfig) });
+                    }
                     setShowTutorial(false);
                     setRunState('playing');
                   }}
-                  className="px-5 py-3 text-base font-semibold bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+                  className={`px-5 py-3 text-base font-semibold ${
+                    viewMode === 'city' ? 'bg-green-600 hover:bg-green-700' : 'bg-green-600 hover:bg-green-700'
+                  } text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2`}
                   disabled={!connected || running}
                 >
                   <span>▶️</span>
-                  <span>Start (Space)</span>
+                  <span>{viewMode === 'city' ? 'Start City' : 'Start'} (Space)</span>
                 </button>
                 <button
                   onClick={() => {
@@ -917,7 +981,7 @@ export default function DashboardPage() {
                   <span>Stop</span>
                 </button>
                 <button
-                  onClick={stepSimulation}
+                  onClick={() => stepSimulation(viewMode === 'city' ? 'multi' : 'single')}
                   className="px-5 py-3 text-base font-semibold bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
                   disabled={!connected}
                 >
@@ -1028,8 +1092,113 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* DAO Tower - Cozy 3D Visualization */}
-        {!visualsPaused && towerMembers.length > 0 && (
+        {/* DAO City View - Multi-DAO Visualization */}
+        {viewMode === 'city' && !visualsPaused && (
+          <section id="section-city" className="w-full scroll-mt-24">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* 3D City View */}
+              <div className="lg:col-span-2 bg-gray-800 rounded-lg shadow-lg overflow-hidden h-[600px]">
+                {city.cityNetworkData ? (
+                  <DAOCity3D
+                    data={city.cityNetworkData}
+                    onDaoSelect={setSelectedDaoId}
+                    selectedDaoId={selectedDaoId}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    <div className="text-center">
+                      <p className="text-lg mb-2">DAO City</p>
+                      <p className="text-sm">Start the city simulation to see the visualization</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Token Rankings */}
+              <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                <TokenRankingBoard
+                  rankings={city.tokenRankings}
+                  totalMarketCap={city.totalMarketCap}
+                  totalVolume={city.totalVolume}
+                  onTokenSelect={(symbol) => {
+                    const dao = city.daos.find(d => d.tokenSymbol === symbol);
+                    if (dao) setSelectedDaoId(dao.id);
+                  }}
+                  compact={false}
+                />
+              </div>
+            </div>
+
+            {/* City Stats Bar */}
+            {city.daos.length > 0 && (
+              <div className="mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {city.daos.map(dao => (
+                  <button
+                    key={dao.id}
+                    onClick={() => setSelectedDaoId(dao.id === selectedDaoId ? null : dao.id)}
+                    className={`p-3 rounded-lg border transition-colors ${
+                      selectedDaoId === dao.id
+                        ? 'border-white bg-gray-700'
+                        : 'border-gray-700 bg-gray-800 hover:border-gray-600'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: dao.color }}
+                      />
+                      <span className="font-medium text-white text-sm">{dao.name}</span>
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      <span className="font-mono">${dao.tokenSymbol}</span>
+                      <span className="mx-1">•</span>
+                      <span>{dao.memberCount} members</span>
+                    </div>
+                    <div className="text-xs text-green-400 font-mono mt-1">
+                      ${dao.tokenPrice.toFixed(4)}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Inter-DAO Proposals */}
+            {city.interDaoProposals.length > 0 && (
+              <div className="mt-4 bg-gray-800 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-white mb-3">Inter-DAO Proposals</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {city.interDaoProposals.slice(0, 6).map(proposal => (
+                    <div
+                      key={proposal.uniqueId}
+                      className="p-3 rounded border border-gray-700 bg-gray-900/50"
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs uppercase text-gray-500">
+                          {proposal.proposalType}
+                        </span>
+                        <span className={`text-xs px-2 py-0.5 rounded ${
+                          proposal.status === 'open' ? 'bg-blue-500/20 text-blue-400' :
+                          proposal.status === 'approved' ? 'bg-green-500/20 text-green-400' :
+                          proposal.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
+                          'bg-purple-500/20 text-purple-400'
+                        }`}>
+                          {proposal.status}
+                        </span>
+                      </div>
+                      <p className="text-sm font-medium text-white">{proposal.title}</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {proposal.participatingDaos.join(' + ')}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* DAO Tower - Cozy 3D Visualization (Single DAO mode) */}
+        {viewMode === 'single' && !visualsPaused && towerMembers.length > 0 && (
           <section id="section-tower" className="w-full scroll-mt-24">
             <div className="bg-gray-800 rounded-lg shadow-lg p-4">
               <DAOTowerWrapper

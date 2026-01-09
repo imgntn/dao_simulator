@@ -3,11 +3,26 @@
 import { useEffect, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import type { SimulationData, NetworkData, DAOMember, DAOProposal, LeaderboardEntry, MarketShock, DAOProject, DAOGuild, DAODispute, DAOViolation, SimulationMetrics } from '@/lib/types/visualization';
+import type { DAOState, TokenRanking, InterDAOProposalData, BridgeState, DAOCityNetworkData, MemberTransferRequest } from '@/lib/types/dao-city';
+
+// Multi-DAO city state
+interface CityState {
+  daos: DAOState[];
+  tokenRankings: TokenRanking[];
+  interDaoProposals: InterDAOProposalData[];
+  bridges: BridgeState[];
+  recentTransfers: MemberTransferRequest[];
+  cityNetworkData: DAOCityNetworkData | null;
+  totalMarketCap: number;
+  totalVolume: number;
+}
 
 interface SimulationState {
   connected: boolean;
   step: number;
   running: boolean;
+  mode: 'single' | 'multi';
+  daoCount: number;
   priceHistory: Array<{ step: number; price: number }>;
   simulationData: SimulationData[];
   networkData: NetworkData | null;
@@ -21,12 +36,27 @@ interface SimulationState {
   tokenLeaderboard: LeaderboardEntry[][];
   influenceLeaderboard: LeaderboardEntry[][];
   marketShocks: MarketShock[];
+  // Multi-DAO city state
+  city: CityState;
 }
+
+const buildInitialCityState = (): CityState => ({
+  daos: [],
+  tokenRankings: [],
+  interDaoProposals: [],
+  bridges: [],
+  recentTransfers: [],
+  cityNetworkData: null,
+  totalMarketCap: 0,
+  totalVolume: 0,
+});
 
 const buildInitialState = (connected: boolean): SimulationState => ({
   connected,
   running: false,
   step: 0,
+  mode: 'single',
+  daoCount: 1,
   priceHistory: [],
   simulationData: [],
   networkData: null,
@@ -40,6 +70,7 @@ const buildInitialState = (connected: boolean): SimulationState => ({
   tokenLeaderboard: [],
   influenceLeaderboard: [],
   marketShocks: [],
+  city: buildInitialCityState(),
 });
 
 const defaultSocketUrl =
@@ -169,12 +200,80 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
       setState(prev => ({ ...prev, running: false }));
     };
 
-    const handleSimulationStatus = (data: { running: boolean; step?: number }) => {
+    const handleSimulationStatus = (data: { running: boolean; step?: number; mode?: 'single' | 'multi'; daoCount?: number }) => {
       setState(prev => ({
         ...prev,
         running: data.running,
         step: typeof data.step === 'number' ? data.step : prev.step,
+        mode: data.mode || prev.mode,
+        daoCount: data.daoCount ?? prev.daoCount,
       }));
+    };
+
+    // Multi-DAO city event handlers
+    const handleCityStep = (data: { step: number; daos: DAOState[]; mode: 'multi' }) => {
+      setState(prev => ({
+        ...prev,
+        step: data.step,
+        mode: 'multi',
+        city: {
+          ...prev.city,
+          daos: data.daos,
+        },
+      }));
+    };
+
+    const handleTokenRankings = (data: { rankings: TokenRanking[]; totalMarketCap: number; totalVolume: number }) => {
+      setState(prev => ({
+        ...prev,
+        city: {
+          ...prev.city,
+          tokenRankings: data.rankings,
+          totalMarketCap: data.totalMarketCap,
+          totalVolume: data.totalVolume,
+        },
+      }));
+    };
+
+    const handleInterDaoProposals = (data: { proposals: InterDAOProposalData[] }) => {
+      setState(prev => ({
+        ...prev,
+        city: {
+          ...prev.city,
+          interDaoProposals: data.proposals,
+        },
+      }));
+    };
+
+    const handleCityNetworkUpdate = (data: DAOCityNetworkData) => {
+      setState(prev => ({
+        ...prev,
+        city: {
+          ...prev.city,
+          cityNetworkData: data,
+        },
+      }));
+    };
+
+    const handleBridgeActivity = (data: { bridges: BridgeState[]; recentTransfers: MemberTransferRequest[] }) => {
+      setState(prev => ({
+        ...prev,
+        city: {
+          ...prev.city,
+          bridges: data.bridges,
+          recentTransfers: data.recentTransfers,
+        },
+      }));
+    };
+
+    const handleMemberTransferCompleted = (data: any) => {
+      // Could update local state if needed
+      console.log('Member transfer completed:', data);
+    };
+
+    const handleInterDaoProposalCreated = (data: any) => {
+      // Could update local state if needed
+      console.log('Inter-DAO proposal created:', data);
     };
 
     const handleSimulationReset = () => {
@@ -199,6 +298,14 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
     socketInstance.on('simulation_stopped', handleSimulationStopped);
     socketInstance.on('simulation_status', handleSimulationStatus);
     socketInstance.on('simulation_reset', handleSimulationReset);
+    // Multi-DAO city event listeners
+    socketInstance.on('city_step', handleCityStep);
+    socketInstance.on('token_rankings', handleTokenRankings);
+    socketInstance.on('inter_dao_proposals', handleInterDaoProposals);
+    socketInstance.on('city_network_update', handleCityNetworkUpdate);
+    socketInstance.on('bridge_activity', handleBridgeActivity);
+    socketInstance.on('member_transfer_completed', handleMemberTransferCompleted);
+    socketInstance.on('inter_dao_proposal_created', handleInterDaoProposalCreated);
 
     setSocket(socketInstance);
 
@@ -221,6 +328,14 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
       socketInstance.off('simulation_stopped', handleSimulationStopped);
       socketInstance.off('simulation_status', handleSimulationStatus);
       socketInstance.off('simulation_reset', handleSimulationReset);
+      // Clean up multi-DAO city listeners
+      socketInstance.off('city_step', handleCityStep);
+      socketInstance.off('token_rankings', handleTokenRankings);
+      socketInstance.off('inter_dao_proposals', handleInterDaoProposals);
+      socketInstance.off('city_network_update', handleCityNetworkUpdate);
+      socketInstance.off('bridge_activity', handleBridgeActivity);
+      socketInstance.off('member_transfer_completed', handleMemberTransferCompleted);
+      socketInstance.off('inter_dao_proposal_created', handleInterDaoProposalCreated);
       socketInstance.disconnect();
     };
   }, [url]);
@@ -241,10 +356,21 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
   );
 
   const startSimulation = useCallback(
-    (options?: { stepsPerSecond?: number; simulationConfig?: Record<string, unknown> }) => {
+    (options?: { stepsPerSecond?: number; simulationConfig?: Record<string, unknown>; mode?: 'single' | 'multi' }) => {
       emit('start_simulation', {
         stepsPerSecond: options?.stepsPerSecond,
         simulationConfig: options?.simulationConfig,
+        mode: options?.mode || 'single',
+      });
+    },
+    [emit]
+  );
+
+  const startCitySimulation = useCallback(
+    (options?: { stepsPerSecond?: number; cityConfig?: Record<string, unknown> }) => {
+      emit('start_city_simulation', {
+        stepsPerSecond: options?.stepsPerSecond || 2,
+        cityConfig: options?.cityConfig,
       });
     },
     [emit]
@@ -254,8 +380,16 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
     emit('stop_simulation');
   }, [emit]);
 
-  const stepSimulation = useCallback(() => {
-    emit('step_simulation');
+  const stepSimulation = useCallback((mode?: 'single' | 'multi') => {
+    emit('step_simulation', { mode });
+  }, [emit]);
+
+  const getTokenRankings = useCallback(() => {
+    emit('get_token_rankings');
+  }, [emit]);
+
+  const getCityState = useCallback(() => {
+    emit('get_city_state');
   }, [emit]);
 
   const reset = useCallback(() => {
@@ -269,7 +403,10 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
     socket,
     reset,
     startSimulation,
+    startCitySimulation,
     stopSimulation,
     stepSimulation,
+    getTokenRankings,
+    getCityState,
   };
 }
