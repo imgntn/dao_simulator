@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
-import type { SimulationData, NetworkData, DAOMember, DAOProposal, LeaderboardEntry, MarketShock } from '@/lib/types/visualization';
+import type { SimulationData, NetworkData, DAOMember, DAOProposal, LeaderboardEntry, MarketShock, DAOProject, DAOGuild, DAODispute, DAOViolation, SimulationMetrics } from '@/lib/types/visualization';
 
 interface SimulationState {
   connected: boolean;
@@ -13,6 +13,11 @@ interface SimulationState {
   networkData: NetworkData | null;
   members: DAOMember[];
   proposals: DAOProposal[];
+  projects: DAOProject[];
+  guilds: DAOGuild[];
+  disputes: DAODispute[];
+  violations: DAOViolation[];
+  metrics: SimulationMetrics | null;
   tokenLeaderboard: LeaderboardEntry[][];
   influenceLeaderboard: LeaderboardEntry[][];
   marketShocks: MarketShock[];
@@ -27,6 +32,11 @@ const buildInitialState = (connected: boolean): SimulationState => ({
   networkData: null,
   members: [],
   proposals: [],
+  projects: [],
+  guilds: [],
+  disputes: [],
+  violations: [],
+  metrics: null,
   tokenLeaderboard: [],
   influenceLeaderboard: [],
   marketShocks: [],
@@ -112,6 +122,26 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
       setState(prev => ({ ...prev, proposals: data.proposals }));
     };
 
+    const handleProjectsUpdate = (data: { projects: DAOProject[] }) => {
+      setState(prev => ({ ...prev, projects: data.projects }));
+    };
+
+    const handleGuildsUpdate = (data: { guilds: DAOGuild[] }) => {
+      setState(prev => ({ ...prev, guilds: data.guilds }));
+    };
+
+    const handleDisputesUpdate = (data: { disputes: DAODispute[] }) => {
+      setState(prev => ({ ...prev, disputes: data.disputes }));
+    };
+
+    const handleViolationsUpdate = (data: { violations: DAOViolation[] }) => {
+      setState(prev => ({ ...prev, violations: data.violations }));
+    };
+
+    const handleMetricsUpdate = (data: SimulationMetrics) => {
+      setState(prev => ({ ...prev, metrics: data }));
+    };
+
     const handleLeaderboardUpdate = (data: { token?: LeaderboardEntry[]; influence?: LeaderboardEntry[] }) => {
       setState(prev => ({
         ...prev,
@@ -158,6 +188,11 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
     socketInstance.on('network_update', handleNetworkUpdate);
     socketInstance.on('members_update', handleMembersUpdate);
     socketInstance.on('proposals_update', handleProposalsUpdate);
+    socketInstance.on('projects_update', handleProjectsUpdate);
+    socketInstance.on('guilds_update', handleGuildsUpdate);
+    socketInstance.on('disputes_update', handleDisputesUpdate);
+    socketInstance.on('violations_update', handleViolationsUpdate);
+    socketInstance.on('metrics_update', handleMetricsUpdate);
     socketInstance.on('leaderboard_update', handleLeaderboardUpdate);
     socketInstance.on('market_shock', handleMarketShock);
     socketInstance.on('simulation_started', handleSimulationStarted);
@@ -175,6 +210,11 @@ export function useSimulationSocket(url: string = defaultSocketUrl) {
       socketInstance.off('network_update', handleNetworkUpdate);
       socketInstance.off('members_update', handleMembersUpdate);
       socketInstance.off('proposals_update', handleProposalsUpdate);
+      socketInstance.off('projects_update', handleProjectsUpdate);
+      socketInstance.off('guilds_update', handleGuildsUpdate);
+      socketInstance.off('disputes_update', handleDisputesUpdate);
+      socketInstance.off('violations_update', handleViolationsUpdate);
+      socketInstance.off('metrics_update', handleMetricsUpdate);
       socketInstance.off('leaderboard_update', handleLeaderboardUpdate);
       socketInstance.off('market_shock', handleMarketShock);
       socketInstance.off('simulation_started', handleSimulationStarted);

@@ -130,7 +130,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       id,
       step: data.step,
-      summary: data.daoState ?? data.simulation?.getSummary?.() ?? null,
+      summary: data.daoState ?? ((data.simulation as DAOSimulation | undefined)?.getSummary?.() ?? null),
     });
   }
 

@@ -174,7 +174,7 @@ function Floor({
   isHighlighted,
 }: {
   floorNumber: number;
-  config: typeof FLOOR_CONFIG[0];
+  config: (typeof FLOOR_CONFIG)[keyof typeof FLOOR_CONFIG];
   members: DAOMemberData[];
   onMemberClick: (member: DAOMemberData) => void;
   onFloorClick: () => void;

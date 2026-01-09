@@ -84,7 +84,7 @@ export class Speculator extends DAOMember {
     );
 
     if (placed) {
-      this.bets.set(prediction.uniqueId, { choice, amount });
+      this.bets.set(prediction.question, { choice, amount });
       this.markActive();
     }
   }

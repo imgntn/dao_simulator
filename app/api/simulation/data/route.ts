@@ -27,14 +27,16 @@ interface DataCollectorLike {
     numProposals?: number;
     numProjects?: number;
     price?: number;
+    [key: string]: unknown;
   }>;
-  getLatestStats?: () => Record<string, unknown>;
+  getLatestStats?: () => { [key: string]: unknown } | null;
 }
 
 interface SimulationLike {
   id?: string;
   currentStep?: number;
-  step?: number;
+  // Note: DAOSimulation has step() as a method, SimulationSnapshot has step as number
+  step?: number | ((...args: unknown[]) => unknown);
   dao?: {
     treasury?: {
       funds?: number;
@@ -101,7 +103,7 @@ export async function GET(request: NextRequest) {
 
   // Export based on format
   if (format === 'csv') {
-    const csv = generateCSV(simulationData, dataCollector);
+    const csv = generateCSV(simulationData as unknown as SimulationLike, dataCollector as unknown as DataCollectorLike | null);
     return new NextResponse(csv, {
       headers: {
         'Content-Type': 'text/csv',
@@ -111,7 +113,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Return JSON data
-  const jsonData = generateJSON(simulationData, dataCollector);
+  const jsonData = generateJSON(simulationData as unknown as SimulationLike, dataCollector as unknown as DataCollectorLike | null);
   return NextResponse.json(jsonData);
 }
 
@@ -150,8 +152,9 @@ function generateCSV(simulation: SimulationLike, dataCollector: DataCollectorLik
     }
   } else {
     // Fallback for stored data
+    const stepValue = typeof simulation.step === 'number' ? simulation.step : (simulation.currentStep || 0);
     const row = [
-      simulation.step || 0,
+      stepValue,
       simulation.daoState?.members?.length || 0,
       simulation.daoState?.proposals || 0,
       simulation.daoState?.projects || 0,
@@ -168,7 +171,7 @@ interface ExportData {
   id: string;
   currentStep: number;
   history: HistorySnapshot[];
-  summary?: Record<string, unknown>;
+  summary?: Record<string, unknown> | null;
   daoState?: SimulationLike['daoState'];
   config?: Record<string, unknown>;
 }
@@ -199,9 +202,10 @@ function generateJSON(simulation: SimulationLike, dataCollector: DataCollectorLi
       summary: dataCollector?.getLatestStats?.(),
     };
   } else {
+    const stepValue = typeof simulation.step === 'number' ? simulation.step : (simulation.currentStep || 0);
     return {
       id: simulation.id || 'unknown',
-      currentStep: simulation.step || 0,
+      currentStep: stepValue,
       daoState: simulation.daoState,
       config: simulation.config,
       history: [],

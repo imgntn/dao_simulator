@@ -200,7 +200,7 @@ export function PriceLineChart({
           <LineChart
             data={chartData}
             margin={{ top: 5, right: 30, left: 20, bottom: 25 }}
-            onClick={interactive ? handleClick : undefined}
+            onClick={interactive ? (handleClick as unknown as (data: unknown) => void) : undefined}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
             <XAxis

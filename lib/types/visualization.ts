@@ -66,3 +66,50 @@ export interface MarketShock {
   step: number;
   severity: number;
 }
+
+export interface DAOProject {
+  id: string;
+  title: string;
+  status: string;
+  progress: number;
+  fundingGoal: number;
+  currentFunding: number;
+  duration: number;
+  startTime: number;
+  members: string[];
+  skills: string[];
+}
+
+export interface DAOGuild {
+  name: string;
+  members: string[];
+  treasury: number;
+  reputation: number;
+  creator: string | null;
+}
+
+export interface DAODispute {
+  id: string;
+  parties: string[];
+  description: string;
+  importance: number;
+  resolved: boolean;
+  relatedProject: string | null;
+}
+
+export interface DAOViolation {
+  id: string;
+  violator: string;
+  description: string;
+  penalty: number;
+  detected: boolean;
+}
+
+export interface SimulationMetrics {
+  gini: number;
+  reputationGini: number;
+  avgTokens: number;
+  numProjects: number;
+  numMembers: number;
+  eventCounts: Record<string, number>;
+}

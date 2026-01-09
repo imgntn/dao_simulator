@@ -440,7 +440,7 @@ export function DAOReport({
       {/* Screen reader summary */}
       <div className="sr-only" role="status">
         DAO Report: {stats?.totalSteps} steps completed.
-        Current price: ${stats?.currentPrice.toFixed(2)}, {stats?.priceChange >= 0 ? 'up' : 'down'} {Math.abs(stats?.priceChange || 0).toFixed(2)}%.
+        Current price: ${stats?.currentPrice.toFixed(2)}, {(stats?.priceChange ?? 0) >= 0 ? 'up' : 'down'} {Math.abs(stats?.priceChange ?? 0).toFixed(2)}%.
         Treasury: ${stats?.treasuryBalance.toFixed(2)}.
         {members.length} members, {stats?.activeProposals} active proposals.
         {sortedShocks.length} market shocks recorded.

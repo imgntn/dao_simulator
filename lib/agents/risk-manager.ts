@@ -191,9 +191,9 @@ export class RiskManager extends DAOMember {
     // Emit alert event
     if (this.model.eventBus) {
       this.model.eventBus.publish('risk_alert', {
+        ...alert,
         step: this.model.currentStep,
         manager: this.uniqueId,
-        ...alert,
       });
     }
   }

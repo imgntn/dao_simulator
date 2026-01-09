@@ -71,7 +71,7 @@ export class Collector extends DAOMember {
     const bought = this.model.dao.marketplace.buyNFT(this, nft.id);
 
     if (bought) {
-      this.collection.add(nft.id);
+      this.collection.add(String(nft.id));
       this.totalSpent += nft.price;
 
       // Emit event

@@ -278,7 +278,7 @@ export function ChoroplethMap({
             <Bar
               dataKey="count"
               name="Members"
-              onClick={(data) => handleBarClick(data as LocationData)}
+              onClick={(data) => handleBarClick(data as unknown as LocationData)}
               style={{ cursor: 'pointer' }}
               radius={[0, 4, 4, 0]}
             >

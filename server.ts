@@ -426,6 +426,70 @@ async function broadcastSimulationStep() {
       influence: influenceLeaderboard
     });
 
+    // Broadcast projects data
+    const projects = simulation.dao.projects.map(p => ({
+      id: p.uniqueId,
+      title: (p as any).title || `Project ${p.uniqueId}`,
+      status: (p as any).status || 'active',
+      progress: (p as any).progress || 0,
+      fundingGoal: (p as any).fundingGoal || 0,
+      currentFunding: (p as any).currentFunding || 0,
+      duration: (p as any).duration || 0,
+      startTime: (p as any).startTime || 0,
+      members: (p as any).members || [],
+      skills: (p as any).skills || []
+    }));
+    io.emit('projects_update', { projects });
+
+    // Broadcast guilds data
+    const guilds = simulation.dao.guilds.map(g => ({
+      name: g.name,
+      members: g.members?.map((m: any) => m.uniqueId || m) || [],
+      treasury: (g as any).treasury || 0,
+      reputation: (g as any).reputation || 0,
+      creator: (g as any).creator?.uniqueId || null
+    }));
+    io.emit('guilds_update', { guilds });
+
+    // Broadcast disputes data
+    const disputesList = simulation.dao.disputes;
+    const disputes = disputesList.map((d, idx) => ({
+      id: (d as any).uniqueId || (d as any).id || `dispute_${idx}`,
+      parties: (d as any).parties || [],
+      description: (d as any).description || '',
+      importance: (d as any).importance || 0,
+      resolved: (d as any).resolved || false,
+      relatedProject: (d as any).relatedProject || null
+    }));
+    io.emit('disputes_update', { disputes });
+
+    // Broadcast violations data
+    const violationsList = simulation.dao.violations;
+    const violations = violationsList.map((v, idx) => ({
+      id: (v as any).uniqueId || (v as any).id || `violation_${idx}`,
+      violator: (v as any).violator?.uniqueId || (v as any).violator || '',
+      description: (v as any).description || '',
+      penalty: (v as any).penalty || 0,
+      detected: (v as any).detected || false
+    }));
+    io.emit('violations_update', { violations });
+
+    // Broadcast data collector stats (gini, metrics, event counts)
+    const latestStats = simulation.dataCollector.getLatestStats();
+    const eventCounts: Record<string, number> = {};
+    simulation.dataCollector.eventCounts.forEach((count, event) => {
+      eventCounts[event] = count;
+    });
+
+    io.emit('metrics_update', {
+      gini: latestStats?.gini || 0,
+      reputationGini: latestStats?.repGini || 0,
+      avgTokens: latestStats?.avgTokens || 0,
+      numProjects: latestStats?.numProjects || simulation.dao.projects.length,
+      numMembers: latestStats?.numMembers || simulation.dao.members.length,
+      eventCounts
+    });
+
   } catch (error: any) {
     console.error('Error in simulation step:', error?.message ?? error);
     stopSimulation();
