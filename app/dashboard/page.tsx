@@ -848,6 +848,8 @@ export default function DashboardPage() {
       <DashboardNav
         collapsed={navCollapsed}
         onToggleCollapse={() => setNavCollapsed(!navCollapsed)}
+        currentTab={activeTab}
+        onTabChange={setActiveTab}
       />
 
       {runSummary && (

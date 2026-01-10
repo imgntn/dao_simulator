@@ -2,23 +2,26 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
+type TabId = 'overview' | '3d' | 'charts' | 'strategy' | 'reports';
+
 interface NavSection {
   id: string;
   label: string;
   icon: string;
   shortcut?: string;
+  tab: TabId; // Which tab this section belongs to
 }
 
 const SECTIONS: NavSection[] = [
-  { id: 'controls', label: 'Controls', icon: '🎮', shortcut: 'C' },
-  { id: 'token', label: 'Token', icon: '💰', shortcut: 'T' },
-  { id: 'tower', label: 'Tower', icon: '🏢', shortcut: 'W' },
-  { id: 'missions', label: 'Missions', icon: '🎯', shortcut: 'M' },
-  { id: 'report', label: 'Report', icon: '📊', shortcut: 'R' },
-  { id: 'price', label: 'Price', icon: '📈', shortcut: 'P' },
-  { id: 'network', label: 'Network', icon: '🌐', shortcut: 'N' },
-  { id: 'heatmap', label: 'Heatmap', icon: '🗺️', shortcut: 'H' },
-  { id: 'history', label: 'History', icon: '📜', shortcut: 'Y' },
+  { id: 'controls', label: 'Controls', icon: '🎮', shortcut: 'C', tab: 'overview' },
+  { id: 'token', label: 'Token', icon: '💰', shortcut: 'T', tab: 'overview' },
+  { id: 'tower', label: 'Tower', icon: '🏢', shortcut: 'W', tab: '3d' },
+  { id: 'city', label: 'City', icon: '🏙️', shortcut: 'I', tab: '3d' },
+  { id: 'network', label: 'Network', icon: '🌐', shortcut: 'N', tab: '3d' },
+  { id: 'price', label: 'Price', icon: '📈', shortcut: 'P', tab: 'charts' },
+  { id: 'heatmap', label: 'Heatmap', icon: '🗺️', shortcut: 'H', tab: 'charts' },
+  { id: 'report', label: 'Report', icon: '📊', shortcut: 'R', tab: 'reports' },
+  { id: 'history', label: 'History', icon: '📜', shortcut: 'Y', tab: 'reports' },
 ];
 
 interface DashboardNavProps {
@@ -26,6 +29,8 @@ interface DashboardNavProps {
   onNavigate?: (sectionId: string) => void;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
+  currentTab?: TabId;
+  onTabChange?: (tab: TabId) => void;
 }
 
 export function DashboardNav({
@@ -33,6 +38,8 @@ export function DashboardNav({
   onNavigate,
   collapsed = false,
   onToggleCollapse,
+  currentTab,
+  onTabChange,
 }: DashboardNavProps) {
   const [currentSection, setCurrentSection] = useState(activeSection || 'controls');
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -87,13 +94,28 @@ export function DashboardNav({
   }, []);
 
   const scrollToSection = useCallback((sectionId: string) => {
-    const element = document.getElementById(`section-${sectionId}`);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setCurrentSection(sectionId);
-      onNavigate?.(sectionId);
+    const section = SECTIONS.find(s => s.id === sectionId);
+
+    // Switch to the correct tab first if needed
+    if (section && onTabChange && currentTab !== section.tab) {
+      onTabChange(section.tab);
+      // Wait for tab content to render before scrolling
+      setTimeout(() => {
+        const element = document.getElementById(`section-${sectionId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    } else {
+      const element = document.getElementById(`section-${sectionId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
-  }, [onNavigate]);
+
+    setCurrentSection(sectionId);
+    onNavigate?.(sectionId);
+  }, [onNavigate, onTabChange, currentTab]);
 
   return (
     <>
