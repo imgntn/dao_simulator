@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import type { DAOIdentity } from '@/lib/utils/name-generator';
+import { messages as m } from '@/lib/i18n';
 
 interface TokenTrackerProps {
   daoIdentity: DAOIdentity;
@@ -108,7 +109,7 @@ export function TokenTracker({
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               {daoIdentity.tokenSymbol}
               <span className="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded-full">
-                DAO Token
+                {m.tokenTracker.daoToken}
               </span>
             </h3>
             <p className="text-xs text-gray-400">{daoIdentity.tokenName}</p>
@@ -135,14 +136,14 @@ export function TokenTracker({
           </span>
         </div>
         <p className="text-xs text-gray-500 mt-1">
-          {stats.change24h >= 0 ? '+' : ''}{stats.change24h.toFixed(4)} from start
+          {stats.change24h >= 0 ? '+' : ''}{stats.change24h.toFixed(4)} {m.tokenTracker.fromStart}
         </p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div className="bg-gray-800/50 rounded-lg p-2">
-          <p className="text-xs text-gray-400">Market Cap</p>
+          <p className="text-xs text-gray-400">{m.tokenTracker.marketCap}</p>
           <p className="text-sm font-semibold text-white">
             ${calculatedMarketCap >= 1000000
               ? `${(calculatedMarketCap / 1000000).toFixed(2)}M`
@@ -152,17 +153,17 @@ export function TokenTracker({
           </p>
         </div>
         <div className="bg-gray-800/50 rounded-lg p-2">
-          <p className="text-xs text-gray-400">Treasury</p>
+          <p className="text-xs text-gray-400">{m.reports.treasury}</p>
           <p className="text-sm font-semibold text-white">
             ${treasury >= 1000 ? `${(treasury / 1000).toFixed(1)}K` : treasury.toFixed(0)}
           </p>
         </div>
         <div className="bg-gray-800/50 rounded-lg p-2">
-          <p className="text-xs text-gray-400">24h High</p>
+          <p className="text-xs text-gray-400">{m.tokenTracker.high24h}</p>
           <p className="text-sm font-semibold text-green-400">${stats.high.toFixed(4)}</p>
         </div>
         <div className="bg-gray-800/50 rounded-lg p-2">
-          <p className="text-xs text-gray-400">24h Low</p>
+          <p className="text-xs text-gray-400">{m.tokenTracker.low24h}</p>
           <p className="text-sm font-semibold text-red-400">${stats.low.toFixed(4)}</p>
         </div>
       </div>
@@ -171,10 +172,10 @@ export function TokenTracker({
       <div className="flex justify-between text-xs text-gray-400 pt-3 border-t border-gray-700">
         <div className="flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span>Live</span>
+          <span>{m.common.live}</span>
         </div>
-        <div>Holders: {calculatedHolders.toLocaleString()}</div>
-        <div>Supply: {(totalSupply / 1000).toFixed(0)}K</div>
+        <div>{m.tokenTracker.holders}: {calculatedHolders.toLocaleString()}</div>
+        <div>{m.tokenTracker.supply}: {(totalSupply / 1000).toFixed(0)}K</div>
       </div>
     </div>
   );

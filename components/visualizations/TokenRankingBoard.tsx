@@ -16,7 +16,7 @@ interface TokenRankingBoardProps {
 function PriceChange({ percent }: { percent: number }) {
   const isPositive = percent >= 0;
   const color = isPositive ? 'text-green-400' : 'text-red-400';
-  const icon = isPositive ? '▲' : '▼';
+  const icon = isPositive ? '^' : 'v';
 
   return (
     <span className={`${color} font-mono text-sm`}>

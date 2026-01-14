@@ -6,9 +6,9 @@ import { Canvas3DErrorBoundary } from '@/components/ErrorBoundary';
 import type { NetworkNode } from '@/lib/types/visualization';
 
 // Loading component for 3D network
-function NetworkLoadingSkeleton() {
+function NetworkLoadingSkeleton({ heightClassName }: { heightClassName: string }) {
   return (
-    <div className="w-full h-[600px] bg-gray-800 rounded-lg flex items-center justify-center">
+    <div className={`w-full ${heightClassName} bg-gray-800 rounded-lg flex items-center justify-center`}>
       <div className="text-center">
         <div className="w-16 h-16 mx-auto mb-4 rounded-full border-4 border-gray-700 border-t-blue-500 animate-spin" />
         <p className="text-gray-400 text-sm">Loading 3D network visualization...</p>
@@ -23,7 +23,7 @@ const NetworkGraph3D = dynamic(
   () => import('@/components/visualizations/NetworkGraph3D').then((mod) => mod.NetworkGraph3D),
   {
     ssr: false,
-    loading: () => <NetworkLoadingSkeleton />,
+    loading: () => <NetworkLoadingSkeleton heightClassName="h-[clamp(320px,60vh,560px)]" />,
   }
 );
 
@@ -49,6 +49,7 @@ interface NetworkGraph3DWrapperProps {
   showLabels?: boolean;
   title?: string;
   onNodeSelect?: (node: NetworkNode | null) => void;
+  heightClassName?: string;
 }
 
 // Controls help panel
@@ -101,9 +102,11 @@ export function NetworkGraph3DWrapper({
   showLabels = false,
   title,
   onNodeSelect,
+  heightClassName,
 }: NetworkGraph3DWrapperProps) {
   const [showHelp, setShowHelp] = useState(true);
   const [selectedNode, setSelectedNode] = useState<NetworkNode | null>(null);
+  const resolvedHeightClass = heightClassName ?? 'h-[clamp(320px,60vh,560px)]';
 
   const nodeCount = data.nodes.length;
   const edgeCount = data.edges.length;
@@ -142,6 +145,7 @@ export function NetworkGraph3DWrapper({
           showLabels={showLabels}
           title={title}
           onNodeSelect={handleNodeSelect}
+          heightClassName={resolvedHeightClass}
         />
 
         {/* Controls help panel (dismissible) */}

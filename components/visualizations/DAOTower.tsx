@@ -20,6 +20,7 @@ interface DAOTowerProps {
   totalFloors?: number;
   onMemberClick?: (member: DAOMemberData) => void;
   onFloorClick?: (floor: number) => void;
+  heightClassName?: string;
 }
 
 // Floor configuration
@@ -547,9 +548,10 @@ function FloorLegend({
 }
 
 // Loading skeleton
-export function TowerSkeleton() {
+export function TowerSkeleton({ heightClassName }: { heightClassName?: string }) {
+  const heightClass = heightClassName ?? 'h-[clamp(320px,60vh,560px)]';
   return (
-    <div className="w-full h-[600px] bg-gray-800 rounded-lg flex items-center justify-center">
+    <div className={`w-full ${heightClass} bg-gray-800 rounded-lg flex items-center justify-center`}>
       <div className="text-center">
         <div className="w-16 h-16 mx-auto mb-4 rounded-full border-4 border-gray-700 border-t-pink-500 animate-spin" />
         <p className="text-gray-400 text-sm">Building the DAO tower...</p>
@@ -560,9 +562,9 @@ export function TowerSkeleton() {
 }
 
 // Empty state
-function EmptyState() {
+function EmptyState({ heightClassName }: { heightClassName: string }) {
   return (
-    <div className="w-full h-[600px] bg-gray-800 rounded-lg flex items-center justify-center">
+    <div className={`w-full ${heightClassName} bg-gray-800 rounded-lg flex items-center justify-center`}>
       <div className="text-center px-4">
         <div className="text-6xl mb-4">🏢</div>
         <p className="text-gray-400 text-sm">No members in the tower yet</p>
@@ -578,9 +580,11 @@ export function DAOTower({
   totalFloors = 6,
   onMemberClick,
   onFloorClick,
+  heightClassName,
 }: DAOTowerProps) {
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
   const [highlightedFloor, setHighlightedFloor] = useState<number | null>(null);
+  const heightClass = heightClassName ?? 'h-[clamp(320px,60vh,560px)]';
 
   const selectedMember = useMemo(
     () => members.find(m => m.id === selectedMemberId) || null,
@@ -607,11 +611,11 @@ export function DAOTower({
   }, [onFloorClick]);
 
   if (members.length === 0) {
-    return <EmptyState />;
+    return <EmptyState heightClassName={heightClass} />;
   }
 
   return (
-    <div className="w-full h-[600px] bg-gray-900 rounded-lg relative overflow-hidden">
+    <div className={`w-full ${heightClass} bg-gray-900 rounded-lg relative overflow-hidden`}>
       <Canvas
         shadows
         camera={{ position: [6, 5, 6], fov: 50 }}

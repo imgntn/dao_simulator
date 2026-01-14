@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { messages as m, format } from '@/lib/i18n';
 
 type Mission = {
   id: string;
@@ -70,7 +71,7 @@ function MissionItem({
         <span className="text-gray-400 flex items-center gap-2">
           {completed && (
             <span className="px-2 py-0.5 rounded-full text-[10px] bg-green-500/20 text-green-300 uppercase font-medium">
-              Done
+              {m.common.done}
             </span>
           )}
           <span className="text-xs">
@@ -119,8 +120,8 @@ function EmptyState() {
               d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
             />
           </svg>
-          <p className="text-gray-400 text-sm">No missions defined</p>
-          <p className="text-gray-500 text-xs">Start a simulation with objectives</p>
+          <p className="text-gray-400 text-sm">{m.missions.noMissions}</p>
+          <p className="text-gray-500 text-xs">{m.missions.startWithObjectives}</p>
         </div>
       </div>
     </div>
@@ -158,17 +159,17 @@ export function ScenarioCard({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs uppercase tracking-wide text-gray-400">Scenario</p>
+          <p className="text-xs uppercase tracking-wide text-gray-400">{m.missions.scenario}</p>
           <h3 className="text-lg font-semibold text-white">{scenarioName}</h3>
         </div>
         <div className="text-right">
-          <p className="text-xs text-gray-400">Status</p>
+          <p className="text-xs text-gray-400">{m.missions.status}</p>
           <p className={`text-sm font-semibold flex items-center gap-1 justify-end ${status === 'running' ? 'text-green-400' : 'text-orange-300'}`}>
             <span
               className={`inline-block w-2 h-2 rounded-full ${status === 'running' ? 'bg-green-400 animate-pulse' : 'bg-orange-400'}`}
               aria-hidden="true"
             />
-            {status === 'running' ? 'Running' : 'Paused'}
+            {status === 'running' ? m.common.running : m.common.paused}
           </p>
           <p className="text-xs text-gray-500">
             Step {step}
@@ -180,8 +181,8 @@ export function ScenarioCard({
       {/* Overall progress bar */}
       <div className="space-y-1">
         <div className="flex justify-between text-xs text-gray-400">
-          <span>Overall Progress</span>
-          <span>{completedCount} of {missions.length} missions ({overallPercent}%)</span>
+          <span>{m.missions.overallProgress}</span>
+          <span>{format(m.missions.missionsProgress, { completed: completedCount, total: missions.length, percent: overallPercent })}</span>
         </div>
         <div
           className="w-full h-1.5 rounded-full bg-gray-700 overflow-hidden"

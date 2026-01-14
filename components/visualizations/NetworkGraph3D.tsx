@@ -12,6 +12,7 @@ interface NetworkGraph3DProps {
   showLabels?: boolean;
   title?: string;
   onNodeSelect?: (node: NetworkNode | null) => void;
+  heightClassName?: string;
 }
 
 interface NodeDetailPanelProps {
@@ -456,9 +457,10 @@ function NetworkScene({
 }
 
 // Loading skeleton - exported for use in wrapper
-export function NetworkLoadingSkeleton() {
+export function NetworkLoadingSkeleton({ heightClassName }: { heightClassName?: string }) {
+  const heightClass = heightClassName ?? 'h-[clamp(320px,60vh,560px)]';
   return (
-    <div className="w-full h-[600px] p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+    <div className={`w-full ${heightClass} p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg`}>
       <div className="flex justify-between items-center mb-4">
         <div className="h-7 w-48 bg-gray-700 rounded animate-pulse" />
         <div className="flex gap-4">
@@ -478,9 +480,9 @@ export function NetworkLoadingSkeleton() {
 }
 
 // Empty state
-function NetworkEmptyState({ title }: { title: string }) {
+function NetworkEmptyState({ title, heightClassName }: { title: string; heightClassName: string }) {
   return (
-    <div className="w-full h-[600px] p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+    <div className={`w-full ${heightClassName} p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg`}>
       <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{title}</h3>
       <div className="w-full h-[calc(100%-3rem)] bg-gray-900 rounded flex items-center justify-center">
         <div className="text-center px-4">
@@ -532,9 +534,11 @@ export function NetworkGraph3D({
   showLabels = false,
   title = 'DAO Network Graph',
   onNodeSelect,
+  heightClassName,
 }: NetworkGraph3DProps) {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [zoomCommand, setZoomCommand] = useState<'in' | 'out' | 'reset' | null>(null);
+  const heightClass = heightClassName ?? 'h-[clamp(320px,60vh,560px)]';
 
   const handleNodeSelect = useCallback((nodeId: string | null) => {
     setSelectedNodeId(nodeId);
@@ -557,7 +561,7 @@ export function NetworkGraph3D({
   }, []);
 
   if (!data || !data.nodes || data.nodes.length === 0) {
-    return <NetworkEmptyState title={title} />;
+    return <NetworkEmptyState title={title} heightClassName={heightClass} />;
   }
 
   const dpr = data.nodes.length > 400 ? 1 : 1.5;
@@ -567,7 +571,7 @@ export function NetworkGraph3D({
 
   return (
     <div
-      className="w-full h-[600px] p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg relative"
+      className={`w-full ${heightClass} p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg relative`}
       role="img"
       aria-label={`3D network graph showing ${displayNodes.length} nodes and ${displayEdges.length} connections`}
     >

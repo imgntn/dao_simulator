@@ -1,3 +1,5 @@
+import { messages as m } from '@/lib/i18n';
+
 export default function Loading() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
@@ -9,8 +11,8 @@ export default function Loading() {
         </div>
 
         {/* Loading Text */}
-        <h2 className="text-xl font-semibold text-white mb-2">Loading</h2>
-        <p className="text-gray-400 text-sm">Please wait...</p>
+        <h2 className="text-xl font-semibold text-white mb-2">{m.loadingStates.loading}</h2>
+        <p className="text-gray-400 text-sm">{m.loadingStates.pleaseWait}</p>
       </div>
     </div>
   );

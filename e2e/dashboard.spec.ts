@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { m, toRegex, buttons, tabs, status } from './utils/i18n-helpers';
 
 /**
  * Dashboard Tests - Comprehensive UI testing for the main dashboard
@@ -20,14 +21,15 @@ test.describe('Dashboard', () => {
     });
 
     test('displays connection status indicator', async ({ page }) => {
-      // Should show connection status
-      const connectionStatus = page.getByText(/Connected|Disconnected/i);
-      await expect(connectionStatus).toBeVisible({ timeout: 15000 });
+      // Should show connection status using i18n strings
+      const connectedOrDisconnected = new RegExp(`${m.common.connected}|${m.common.disconnected}`, 'i');
+      await expect(page.getByText(connectedOrDisconnected)).toBeVisible({ timeout: 15000 });
     });
 
     test('displays running/paused status', async ({ page }) => {
-      // Should show running status
-      await expect(page.getByText(/Running|Paused/i).first()).toBeVisible();
+      // Should show running status using i18n strings
+      const runningOrPaused = new RegExp(`${m.common.running}|${m.common.paused}`, 'i');
+      await expect(page.getByText(runningOrPaused).first()).toBeVisible();
     });
 
     test('displays step counter', async ({ page }) => {
@@ -36,7 +38,7 @@ test.describe('Dashboard', () => {
     });
 
     test('has API Docs link', async ({ page }) => {
-      const apiLink = page.getByRole('link', { name: /API Docs/i });
+      const apiLink = page.getByRole('link', { name: toRegex(m.header.apiDocs) });
       await expect(apiLink).toBeVisible();
       await expect(apiLink).toHaveAttribute('href', '/api/simulation');
     });
@@ -44,47 +46,47 @@ test.describe('Dashboard', () => {
 
   test.describe('Navigation Tabs', () => {
     test('Overview tab is active by default', async ({ page }) => {
-      const overviewTab = page.getByRole('button', { name: /Overview/i });
+      const overviewTab = page.getByRole('button', { name: toRegex(tabs.overview) });
       await expect(overviewTab).toHaveClass(/bg-blue-600/);
     });
 
     test('can switch to 3D View tab', async ({ page }) => {
-      const tab = page.getByRole('button', { name: /3D View/i });
+      const tab = page.getByRole('button', { name: toRegex(tabs.view3d) });
       await tab.click();
       await expect(tab).toHaveClass(/bg-blue-600/);
     });
 
     test('can switch to Charts tab', async ({ page }) => {
-      const tab = page.getByRole('button', { name: /Charts/i });
+      const tab = page.getByRole('button', { name: toRegex(tabs.charts) });
       await tab.click();
       await expect(tab).toHaveClass(/bg-blue-600/);
     });
 
     test('can switch to Strategy tab', async ({ page }) => {
-      const tab = page.getByRole('button', { name: /Strategy/i });
+      const tab = page.getByRole('button', { name: toRegex(tabs.strategy) });
       await tab.click();
       await expect(tab).toHaveClass(/bg-blue-600/);
     });
 
     test('can switch to Reports tab', async ({ page }) => {
-      const tab = page.getByRole('button', { name: /Reports/i });
+      const tab = page.getByRole('button', { name: toRegex(tabs.reports) });
       await tab.click();
       await expect(tab).toHaveClass(/bg-blue-600/);
     });
 
     test('tab content changes when switching', async ({ page }) => {
       // Go to Strategy tab
-      await page.getByRole('button', { name: /Strategy/i }).click();
+      await page.getByRole('button', { name: toRegex(tabs.strategy) }).click();
 
       // Should see Strategy Playbooks
-      await expect(page.getByText(/Strategy Playbooks/i)).toBeVisible();
-      await expect(page.getByText(/Simulation Presets/i)).toBeVisible();
+      await expect(page.getByText(toRegex(m.strategies.playbooks))).toBeVisible();
+      await expect(page.getByText(toRegex(m.presets.title))).toBeVisible();
 
       // Go to Reports tab
-      await page.getByRole('button', { name: /Reports/i }).click();
+      await page.getByRole('button', { name: toRegex(tabs.reports) }).click();
 
       // Strategy content should be hidden, Reports visible
-      await expect(page.getByText(/Strategy Playbooks/i)).not.toBeVisible();
+      await expect(page.getByText(toRegex(m.strategies.playbooks))).not.toBeVisible();
     });
   });
 
@@ -106,51 +108,51 @@ test.describe('Dashboard', () => {
 
   test.describe('Strategy Tab', () => {
     test.beforeEach(async ({ page }) => {
-      await page.getByRole('button', { name: /Strategy/i }).click();
+      await page.getByRole('button', { name: toRegex(tabs.strategy) }).click();
     });
 
     test('displays strategy playbooks', async ({ page }) => {
-      await expect(page.getByText(/Strategy Playbooks/i)).toBeVisible();
+      await expect(page.getByText(toRegex(m.strategies.playbooks))).toBeVisible();
 
       // Check for strategy options
-      await expect(page.getByRole('button', { name: /Baseline/i })).toBeVisible();
-      await expect(page.getByRole('button', { name: /Risk-Off Treasury/i })).toBeVisible();
-      await expect(page.getByRole('button', { name: /Growth Mode/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: toRegex(m.strategies.baseline) })).toBeVisible();
+      await expect(page.getByRole('button', { name: toRegex(m.strategies.riskOff) })).toBeVisible();
+      await expect(page.getByRole('button', { name: toRegex(m.strategies.growthMode) })).toBeVisible();
     });
 
     test('can select a strategy', async ({ page }) => {
-      const strategyButton = page.getByRole('button', { name: /Risk-Off Treasury/i });
+      const strategyButton = page.getByRole('button', { name: toRegex(m.strategies.riskOff) });
       await strategyButton.click();
 
       // Should show as active
-      await expect(strategyButton).toContainText(/Active/i);
+      await expect(strategyButton).toContainText(toRegex(m.common.active));
     });
 
     test('displays simulation presets', async ({ page }) => {
-      await expect(page.getByText(/Simulation Presets/i)).toBeVisible();
+      await expect(page.getByText(toRegex(m.presets.title))).toBeVisible();
 
       // Check for preset options
-      await expect(page.getByRole('button', { name: /Balanced/i })).toBeVisible();
-      await expect(page.getByRole('button', { name: /Validator-First/i })).toBeVisible();
-      await expect(page.getByRole('button', { name: /Growth Push/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: toRegex(m.presets.balanced) })).toBeVisible();
+      await expect(page.getByRole('button', { name: toRegex(m.presets.validatorFirst) })).toBeVisible();
+      await expect(page.getByRole('button', { name: toRegex(m.presets.growthPush) })).toBeVisible();
     });
 
     test('can select a preset', async ({ page }) => {
-      const presetButton = page.getByRole('button', { name: /Validator-First/i });
+      const presetButton = page.getByRole('button', { name: toRegex(m.presets.validatorFirst) });
       await presetButton.click();
 
       // Should show as selected
-      await expect(presetButton).toContainText(/Selected/i);
+      await expect(presetButton).toContainText(toRegex(m.common.selected));
     });
 
     test('displays challenges', async ({ page }) => {
-      await expect(page.getByText(/Challenges/i).first()).toBeVisible();
-      await expect(page.getByText(/Daily Challenge/i)).toBeVisible();
-      await expect(page.getByText(/Weekly Challenge/i)).toBeVisible();
+      await expect(page.getByText(toRegex(m.challenges.title)).first()).toBeVisible();
+      await expect(page.getByText(toRegex(m.challenges.daily))).toBeVisible();
+      await expect(page.getByText(toRegex(m.challenges.weekly))).toBeVisible();
     });
 
     test('challenges have start buttons', async ({ page }) => {
-      const startButtons = page.getByRole('button', { name: /Start challenge/i });
+      const startButtons = page.getByRole('button', { name: toRegex(m.challenges.startChallenge) });
       await expect(startButtons.first()).toBeVisible();
     });
   });
@@ -158,30 +160,30 @@ test.describe('Dashboard', () => {
   test.describe('Simulation Controls', () => {
     test('Start button is enabled when connected', async ({ page }) => {
       // Wait for connection
-      await expect(page.getByText('Connected')).toBeVisible({ timeout: 15000 });
+      await expect(page.getByText(m.common.connected)).toBeVisible({ timeout: 15000 });
 
-      const startButton = page.getByRole('button', { name: /Start.*Space/i });
+      const startButton = page.getByRole('button', { name: buttons.start });
       await expect(startButton).toBeEnabled();
     });
 
     test('Stop button is disabled when not running', async ({ page }) => {
-      await expect(page.getByText('Connected')).toBeVisible({ timeout: 15000 });
+      await expect(page.getByText(m.common.connected)).toBeVisible({ timeout: 15000 });
 
-      const stopButton = page.getByRole('button', { name: /Stop/i });
+      const stopButton = page.getByRole('button', { name: buttons.stop });
       await expect(stopButton).toBeDisabled();
     });
 
     test('Step button is enabled when connected', async ({ page }) => {
-      await expect(page.getByText('Connected')).toBeVisible({ timeout: 15000 });
+      await expect(page.getByText(m.common.connected)).toBeVisible({ timeout: 15000 });
 
-      const stepButton = page.getByRole('button', { name: /Step \(F\)/i });
+      const stepButton = page.getByRole('button', { name: buttons.step });
       await expect(stepButton).toBeEnabled();
     });
 
     test('Reset button is enabled when connected', async ({ page }) => {
-      await expect(page.getByText('Connected')).toBeVisible({ timeout: 15000 });
+      await expect(page.getByText(m.common.connected)).toBeVisible({ timeout: 15000 });
 
-      const resetButton = page.getByRole('button', { name: /Reset/i });
+      const resetButton = page.getByRole('button', { name: buttons.reset });
       await expect(resetButton).toBeEnabled();
     });
 
@@ -204,12 +206,12 @@ test.describe('Dashboard', () => {
 
   test.describe('View Mode Toggle', () => {
     test('Single DAO mode is active by default', async ({ page }) => {
-      const singleDaoButton = page.getByRole('button', { name: /Single DAO/i });
+      const singleDaoButton = page.getByRole('button', { name: toRegex(m.controls.singleDao) });
       await expect(singleDaoButton).toHaveClass(/bg-blue-600/);
     });
 
     test('can switch to DAO City mode', async ({ page }) => {
-      const daoCityButton = page.getByRole('button', { name: /DAO City/i });
+      const daoCityButton = page.getByRole('button', { name: toRegex(m.controls.daoCity) });
       await daoCityButton.click();
 
       await expect(daoCityButton).toHaveClass(/bg-green-600/);
@@ -217,11 +219,11 @@ test.describe('Dashboard', () => {
 
     test('Start button text changes with view mode', async ({ page }) => {
       // Default mode
-      await expect(page.getByRole('button', { name: /Start \(Space\)/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: buttons.start })).toBeVisible();
 
       // Switch to city mode
-      await page.getByRole('button', { name: /DAO City/i }).click();
-      await expect(page.getByRole('button', { name: /Start City \(Space\)/i })).toBeVisible();
+      await page.getByRole('button', { name: toRegex(m.controls.daoCity) }).click();
+      await expect(page.getByRole('button', { name: buttons.startCity })).toBeVisible();
     });
   });
 
@@ -232,7 +234,7 @@ test.describe('Dashboard', () => {
       await expect(tutorial.getByText(/Step 1 of 5/i)).toBeVisible();
 
       // Can advance through steps
-      const nextButton = tutorial.getByRole('button', { name: 'Next' });
+      const nextButton = tutorial.getByRole('button', { name: m.common.next });
       await nextButton.click();
       await expect(tutorial.getByText(/Step 2 of 5/i)).toBeVisible();
     });
@@ -240,59 +242,59 @@ test.describe('Dashboard', () => {
     test('Next button changes to Done on last step', async ({ page }) => {
       const tutorial = page.getByTestId('tutorial-banner');
       // Click through all steps
-      const nextButton = tutorial.getByRole('button', { name: 'Next' });
+      const nextButton = tutorial.getByRole('button', { name: m.common.next });
 
       for (let i = 0; i < 4; i++) {
         await nextButton.click();
       }
 
       // Last step should show Done
-      await expect(tutorial.getByRole('button', { name: 'Done' })).toBeVisible();
+      await expect(tutorial.getByRole('button', { name: m.common.done })).toBeVisible();
     });
 
     test('clicking Done hides tutorial', async ({ page }) => {
       const tutorial = page.getByTestId('tutorial-banner');
       // Skip to last step
-      const nextButton = tutorial.getByRole('button', { name: 'Next' });
+      const nextButton = tutorial.getByRole('button', { name: m.common.next });
       for (let i = 0; i < 4; i++) {
         await nextButton.click();
       }
 
       // Click Done
-      await tutorial.getByRole('button', { name: 'Done' }).click();
+      await tutorial.getByRole('button', { name: m.common.done }).click();
 
       // Tutorial should be hidden
-      await expect(page.getByText(/Quick start/i)).not.toBeVisible();
+      await expect(page.getByText(toRegex(m.tutorial.title))).not.toBeVisible();
     });
   });
 
   test.describe('Pause Visuals', () => {
     test('can toggle visual pause', async ({ page }) => {
-      const pauseButton = page.getByRole('button', { name: /Visuals: Live/i });
+      const pauseButton = page.getByRole('button', { name: toRegex(m.controls.visualsLive) });
       await pauseButton.click();
 
       // Text should change
-      await expect(page.getByRole('button', { name: /Visuals: Paused/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: toRegex(m.controls.visualsPaused) })).toBeVisible();
     });
   });
 
   test.describe('Layout Toggles', () => {
     test('quick jump bar can be toggled', async ({ page }) => {
-      const toggle = page.getByRole('button', { name: /Quick jump: Off/i });
+      const toggle = page.getByRole('button', { name: toRegex(m.controls.quickJumpOff) });
       await expect(toggle).toBeVisible();
 
       await toggle.click();
-      await expect(page.getByRole('button', { name: /Quick jump: On/i })).toBeVisible();
-      await expect(page.getByRole('button', { name: /Shortcuts/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: toRegex(m.controls.quickJumpOn) })).toBeVisible();
+      await expect(page.getByRole('button', { name: toRegex(m.shortcuts.buttonLabel) })).toBeVisible();
 
-      await page.getByRole('button', { name: /Quick jump: On/i }).click();
-      await expect(page.getByRole('button', { name: /Shortcuts/i })).toHaveCount(0);
+      await page.getByRole('button', { name: toRegex(m.controls.quickJumpOn) }).click();
+      await expect(page.getByRole('button', { name: toRegex(m.shortcuts.buttonLabel) })).toHaveCount(0);
     });
 
     test('sidebar can be toggled', async ({ page }) => {
       await expect(page.locator('nav')).toBeVisible();
 
-      await page.getByRole('button', { name: /Sidebar: On/i }).click();
+      await page.getByRole('button', { name: toRegex(m.controls.sidebarOn) }).click();
       await expect(page.locator('nav')).toHaveCount(0);
     });
   });
@@ -300,7 +302,7 @@ test.describe('Dashboard', () => {
   test.describe('Footer', () => {
     test('displays footer branding', async ({ page }) => {
       const footer = page.locator('footer');
-      await expect(footer.getByText(/DAO Simulator/i)).toBeVisible();
+      await expect(footer.getByText(toRegex(m.footer.brand))).toBeVisible();
     });
 
     test('displays stack line', async ({ page }) => {
@@ -313,7 +315,7 @@ test.describe('Dashboard', () => {
 
     test('displays footer tagline', async ({ page }) => {
       const footer = page.locator('footer');
-      await expect(footer.getByText(/Built with vision/i)).toBeVisible();
+      await expect(footer.getByText(toRegex(m.footer.tagline))).toBeVisible();
     });
   });
 

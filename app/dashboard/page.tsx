@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { PriceLineChart } from '@/components/visualizations/PriceLineChart';
 import { DAOReport } from '@/components/visualizations/DAOReport';
@@ -10,6 +10,7 @@ import { TokenTracker } from '@/components/visualizations/TokenTracker';
 import { DashboardNav } from '@/components/dashboard/DashboardNav';
 import { useSimulationSocket } from '@/lib/hooks/useSimulationSocket';
 import { generateDAOIdentity, generateMemberIdentity, type DAOIdentity } from '@/lib/utils/name-generator';
+import { messages as m, format } from '@/lib/i18n';
 
 // Dynamic imports for heavy visualization components (loaded only when needed)
 const NetworkGraph3DWrapper = dynamic(
@@ -17,10 +18,10 @@ const NetworkGraph3DWrapper = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[600px] bg-gray-800 rounded-lg flex items-center justify-center animate-pulse">
+      <div className="w-full h-[clamp(320px,60vh,560px)] bg-gray-800 rounded-lg flex items-center justify-center animate-pulse">
         <div className="text-center">
           <div className="w-12 h-12 mx-auto mb-3 rounded-full border-4 border-gray-700 border-t-blue-500 animate-spin" />
-          <p className="text-gray-500 text-sm">Loading 3D network...</p>
+          <p className="text-gray-500 text-sm">{m.networkGraph.loading}</p>
         </div>
       </div>
     ),
@@ -32,7 +33,7 @@ const MemberHeatmap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[400px] bg-gray-800 rounded-lg animate-pulse" />
+      <div className="w-full h-[clamp(240px,45vh,420px)] bg-gray-800 rounded-lg animate-pulse" />
     ),
   }
 );
@@ -42,7 +43,7 @@ const ChoroplethMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[400px] bg-gray-800 rounded-lg animate-pulse" />
+      <div className="w-full h-[clamp(240px,45vh,420px)] bg-gray-800 rounded-lg animate-pulse" />
     ),
   }
 );
@@ -52,7 +53,7 @@ const CozyMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[300px] bg-gray-800 rounded-lg animate-pulse" />
+      <div className="w-full h-[clamp(220px,40vh,360px)] bg-gray-800 rounded-lg animate-pulse" />
     ),
   }
 );
@@ -62,10 +63,10 @@ const DAOTowerWrapper = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[600px] bg-gray-800 rounded-lg flex items-center justify-center animate-pulse">
+      <div className="w-full h-[clamp(320px,60vh,560px)] bg-gray-800 rounded-lg flex items-center justify-center animate-pulse">
         <div className="text-center">
           <div className="w-12 h-12 mx-auto mb-3 rounded-full border-4 border-gray-700 border-t-pink-500 animate-spin" />
-          <p className="text-gray-500 text-sm">Building the DAO tower...</p>
+          <p className="text-gray-500 text-sm">{m.daoTower.loading}</p>
         </div>
       </div>
     ),
@@ -77,10 +78,10 @@ const DAOCity3D = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[600px] bg-gray-800 rounded-lg flex items-center justify-center animate-pulse">
+      <div className="w-full h-[clamp(320px,60vh,560px)] bg-gray-800 rounded-lg flex items-center justify-center animate-pulse">
         <div className="text-center">
           <div className="w-12 h-12 mx-auto mb-3 rounded-full border-4 border-gray-700 border-t-green-500 animate-spin" />
-          <p className="text-gray-500 text-sm">Loading DAO City...</p>
+          <p className="text-gray-500 text-sm">{m.daoCity.title}...</p>
         </div>
       </div>
     ),
@@ -92,7 +93,7 @@ const TokenRankingBoard = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[300px] bg-gray-800 rounded-lg animate-pulse" />
+      <div className="w-full h-[clamp(220px,40vh,360px)] bg-gray-800 rounded-lg animate-pulse" />
     ),
   }
 );
@@ -194,20 +195,37 @@ export default function DashboardPage() {
       }
     | null
   >(null);
+  const disableRunSummary =
+    typeof process !== 'undefined' && process.env.NEXT_PUBLIC_DISABLE_RUN_SUMMARY === 'true';
   const [runLog, setRunLog] = useState<OpsLogEntry[]>([]);
   const [daoIdentity] = useState<DAOIdentity>(() => generateDAOIdentity(42)); // Consistent seed
   const [navCollapsed, setNavCollapsed] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | '3d' | 'charts' | 'strategy' | 'reports'>('overview');
-  const tutorialSteps = [
-    'Pick a strategy preset or a daily/weekly challenge to begin.',
-    'Press Start (Space) to stream the sim; use Step (F) to advance manually.',
-    'Watch missions at the top; finish them to win the run.',
-    'Pause visuals if needed; DAO Map + Report show health at a glance.',
-    'Avoid failures: keep treasury and price healthy, clear proposal backlog.',
-  ];
+  const [showQuickJump, setShowQuickJump] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(true);
+  const [overviewPanel, setOverviewPanel] = useState<'map' | 'ops'>('map');
+  const [threeDPanel, setThreeDPanel] = useState<'tower' | 'city' | 'network'>('tower');
+  const [chartsPanel, setChartsPanel] = useState<'price' | 'heatmap' | 'geo'>('price');
+  const [reportPanel, setReportPanel] = useState<'report' | 'history' | 'runs'>('report');
+  const [show3DPanel, setShow3DPanel] = useState(true);
+  const tutorialSteps = m.tutorial.steps;
   const [tutorialStep, setTutorialStep] = useState(0);
+  const navSections = useMemo(
+    () => [
+      { id: 'overview', label: 'Overview', icon: 'OV', shortcut: 'O', tab: 'overview' as const },
+      { id: '3d', label: '3D', icon: '3D', shortcut: 'D', tab: '3d' as const },
+      { id: 'charts', label: 'Charts', icon: 'CH', shortcut: 'C', tab: 'charts' as const },
+      { id: 'strategy', label: 'Strategy', icon: 'ST', shortcut: 'S', tab: 'strategy' as const },
+      { id: 'reports', label: 'Reports', icon: 'RP', shortcut: 'R', tab: 'reports' as const },
+    ],
+    []
+  );
 
   const latest = simulationData.at(-1);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const panelClass = 'rounded-lg border border-gray-700 bg-gray-800/60 p-4 shadow-lg';
+  const chartHeightClass = 'h-[clamp(240px,45vh,420px)]';
+  const threeDHeightClass = 'h-[clamp(320px,60vh,560px)]';
 
   useEffect(() => {
     if (latest) {
@@ -296,6 +314,19 @@ export default function DashboardPage() {
     }
     return;
   }, [marketShocks]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.innerWidth < 768) {
+      setShow3DPanel(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (viewMode === 'city' && threeDPanel === 'tower') {
+      setThreeDPanel('city');
+    }
+  }, [viewMode, threeDPanel]);
 
   const presets = useMemo<
     Array<{
@@ -719,7 +750,7 @@ export default function DashboardPage() {
   }, [missions, completedMissions, step]);
 
   useEffect(() => {
-    if (!latest || runState === 'won' || runState === 'lost') return;
+    if (disableRunSummary || !latest || runState === 'won' || runState === 'lost') return;
 
     const concludeRun = (outcome: 'won' | 'lost', cause: OutcomeCause) => {
       const summary = {
@@ -790,6 +821,7 @@ export default function DashboardPage() {
       stopSimulation();
     }
   }, [
+    disableRunSummary,
     missions,
     latest,
     runState,
@@ -843,14 +875,7 @@ export default function DashboardPage() {
   }, [connected, running, stepsPerSecond, presetConfig, startSimulation, startCitySimulation, stopSimulation, stepSimulation, resetSimulation, applyStrategy, viewMode]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      {/* Navigation sidebar */}
-      <DashboardNav
-        collapsed={navCollapsed}
-        onToggleCollapse={() => setNavCollapsed(!navCollapsed)}
-        currentTab={activeTab}
-        onTabChange={setActiveTab}
-      />
+    <div className="min-h-screen min-h-[100svh] bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex flex-col overflow-hidden">
 
       {runSummary && (
         <RunSummaryModal
@@ -875,33 +900,32 @@ export default function DashboardPage() {
       )}
 
       {/* Header */}
-      <header className="bg-gray-800/50 backdrop-blur-lg border-b border-gray-700 sticky top-12 z-40">
-        <div className="max-w-[1920px] mx-auto px-6 py-4 pl-16">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
+      <header className="bg-gray-800/70 backdrop-blur border-b border-gray-700 shrink-0">
+        <div className="max-w-[1920px] mx-auto px-4 md:px-6 py-4 pl-4 md:pl-16">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="min-w-[220px]">
+              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
                 {daoIdentity.name}
               </h1>
-              <p className="text-gray-400 mt-1 flex items-center gap-2">
+              <p className="text-gray-400 mt-1 text-sm flex items-center gap-2">
                 <span>{daoIdentity.tokenSymbol}</span>
-                <span className="text-gray-600">•</span>
+                <span className="text-gray-600">|</span>
                 <span className="italic">&quot;{daoIdentity.motto}&quot;</span>
               </p>
             </div>
-            <div className="flex items-center gap-6">
+
+            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-300">
               <div className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-full ${connected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
-                <span className="text-sm text-gray-300">
-                  {connected ? 'Connected' : 'Disconnected'}
-                </span>
+                <div className={`w-2.5 h-2.5 rounded-full ${connected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+                <span>{connected ? m.common.connected : m.common.disconnected}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-300">
+              <div className="flex items-center gap-2">
                 <span className={`font-semibold ${running ? 'text-green-400' : 'text-orange-400'}`}>
-                  {running ? 'Running' : 'Paused'}
+                  {running ? m.common.running : m.common.paused}
                 </span>
                 <span className="text-gray-500">|</span>
                 <label className="flex items-center gap-1">
-                  <span id="speed-label">Speed:</span>
+                  <span id="speed-label">{m.header.speed}</span>
                   <select
                     aria-labelledby="speed-label"
                     aria-describedby="speed-description"
@@ -916,106 +940,166 @@ export default function DashboardPage() {
                     ))}
                   </select>
                   <span id="speed-description" className="sr-only">
-                    Simulation speed multiplier. Higher values run faster.
+                    {m.a11y.simulationSpeedMultiplier}
                   </span>
                 </label>
               </div>
-              <div className="text-sm text-gray-300">
-                Step: <span className="font-mono font-bold text-blue-400">{step}</span>
+              <div>
+                {format(m.header.step, { step })}
               </div>
               <a
                 href="/api/simulation"
-                className="px-4 py-2 border border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-white rounded-lg transition-colors text-sm"
+                className="px-3 py-2 border border-purple-500 text-purple-300 hover:bg-purple-500 hover:text-white rounded-lg transition-colors text-xs"
               >
-                API Docs
+                {m.header.apiDocs}
               </a>
-              {/* Mode Toggle */}
-              <div className="flex items-center gap-2 mr-4">
-                <button
-                  onClick={() => setViewMode('single')}
-                  className={`px-3 py-2 rounded-l-lg text-sm font-medium transition-colors ${
-                    viewMode === 'single'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                  }`}
-                >
-                  Single DAO
-                </button>
-                <button
-                  onClick={() => setViewMode('city')}
-                  className={`px-3 py-2 rounded-r-lg text-sm font-medium transition-colors ${
-                    viewMode === 'city'
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                  }`}
-                >
-                  DAO City
-                </button>
-              </div>
+            </div>
+          </div>
 
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => {
-                    if (viewMode === 'city') {
-                      startCitySimulation({ stepsPerSecond });
-                    } else {
-                      startSimulation({ stepsPerSecond, simulationConfig: applyStrategy(presetConfig) });
-                    }
-                    setShowTutorial(false);
-                    setRunState('playing');
-                  }}
-                  className={`px-5 py-3 text-base font-semibold ${
-                    viewMode === 'city' ? 'bg-green-600 hover:bg-green-700' : 'bg-green-600 hover:bg-green-700'
-                  } text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2`}
-                  disabled={!connected || running}
-                >
-                  <span>▶️</span>
-                  <span>{viewMode === 'city' ? 'Start City' : 'Start'} (Space)</span>
-                </button>
-                <button
-                  onClick={() => {
-                    recordRun(selectedPreset);
-                    stopSimulation();
-                  }}
-                  className="px-5 py-3 text-base font-semibold bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
-                  disabled={!connected || !running}
-                >
-                  <span>⏸️</span>
-                  <span>Stop</span>
-                </button>
-                <button
-                  onClick={() => stepSimulation(viewMode === 'city' ? 'multi' : 'single')}
-                  className="px-5 py-3 text-base font-semibold bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
-                  disabled={!connected}
-                >
-                  <span>⏩</span>
-                  <span>Step Once (F)</span>
-                </button>
-                <button
-                  onClick={resetSimulation}
-                  className="px-5 py-3 text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
-                  disabled={!connected}
-                >
-                  <span>🔄</span>
-                  <span>Reset (R)</span>
-                </button>
-              </div>
-            <div className="text-xs text-gray-400 flex flex-wrap gap-3 items-center">
-              <span>🎮 Hotkeys: Space start/stop, F step, R reset.</span>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <div className="flex items-center">
+              <button
+                onClick={() => setViewMode('single')}
+                className={`px-3 py-2 rounded-l-lg text-xs font-semibold transition-colors ${
+                  viewMode === 'single'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                {m.controls.singleDao}
+              </button>
+              <button
+                onClick={() => setViewMode('city')}
+                className={`px-3 py-2 rounded-r-lg text-xs font-semibold transition-colors ${
+                  viewMode === 'city'
+                    ? 'bg-green-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                {m.controls.daoCity}
+              </button>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => {
+                  if (viewMode === 'city') {
+                    startCitySimulation({ stepsPerSecond });
+                  } else {
+                    startSimulation({ stepsPerSecond, simulationConfig: applyStrategy(presetConfig) });
+                  }
+                  setShowTutorial(false);
+                  setRunState('playing');
+                }}
+                className="px-4 py-2 min-h-[40px] text-sm font-semibold bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                disabled={!connected || running}
+              >
+                {viewMode === 'city' ? m.controls.startCity : m.controls.start}
+              </button>
+              <button
+                onClick={() => {
+                  recordRun(selectedPreset);
+                  stopSimulation();
+                }}
+                className="px-4 py-2 min-h-[40px] text-sm font-semibold bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                disabled={!connected || !running}
+              >
+                {m.controls.stop}
+              </button>
+              <button
+                onClick={() => stepSimulation(viewMode === 'city' ? 'multi' : 'single')}
+                className="px-4 py-2 min-h-[40px] text-sm font-semibold bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                disabled={!connected}
+              >
+                {m.controls.stepButton}
+              </button>
+              <button
+                onClick={resetSimulation}
+                className="px-4 py-2 min-h-[40px] text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                disabled={!connected}
+              >
+                {m.controls.reset}
+              </button>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 text-xs text-gray-400">
+              <span>{m.header.hotkeys}</span>
               <button
                 onClick={() => setVisualsPaused(!visualsPaused)}
-                className="underline text-blue-300 hover:text-blue-200"
+                className={`px-2.5 py-1 rounded border ${
+                  visualsPaused
+                    ? 'border-amber-400/60 text-amber-300 bg-amber-500/10'
+                    : 'border-gray-700 text-gray-300 bg-gray-900/40'
+                }`}
               >
-                {visualsPaused ? 'Resume visuals' : 'Pause heavy visuals'}
-                </button>
-              </div>
+                {visualsPaused ? m.controls.visualsPaused : m.controls.visualsLive}
+              </button>
+              <button
+                onClick={() => setShowQuickJump((prev) => !prev)}
+                className={`px-2.5 py-1 rounded border ${
+                  showQuickJump
+                    ? 'border-blue-400/60 text-blue-300 bg-blue-500/10'
+                    : 'border-gray-700 text-gray-300 bg-gray-900/40'
+                }`}
+              >
+                {showQuickJump ? m.controls.quickJumpOn : m.controls.quickJumpOff}
+              </button>
+              <button
+                onClick={() => setShowSidebar((prev) => !prev)}
+                className={`px-2.5 py-1 rounded border ${
+                  showSidebar
+                    ? 'border-gray-500 text-gray-300 bg-gray-900/40'
+                    : 'border-gray-700 text-gray-500 bg-gray-900/20'
+                }`}
+              >
+                {showSidebar ? m.controls.sidebarOn : m.controls.sidebarOff}
+              </button>
             </div>
           </div>
         </div>
       </header>
+      {/* Navigation sidebar */}
+      <DashboardNav
+        sections={navSections}
+        collapsed={navCollapsed}
+        onToggleCollapse={() => setNavCollapsed(!navCollapsed)}
+        currentTab={activeTab}
+        onTabChange={setActiveTab}
+        showQuickJump={showQuickJump}
+        quickJumpMode="inline"
+        showSidebar={showSidebar}
+        scrollContainerRef={scrollContainerRef}
+      />
+
+      <div className="shrink-0 border-b border-gray-700 bg-gray-900/70">
+        <div className="max-w-[1920px] mx-auto px-4 md:px-6 py-2 pl-4 md:pl-16">
+          <div className="flex flex-wrap gap-2">
+            {[
+              { id: 'overview' as const, label: m.tabs.overview, icon: 'OV' },
+              { id: '3d' as const, label: m.tabs.view3d, icon: '3D' },
+              { id: 'charts' as const, label: m.tabs.charts, icon: 'CH' },
+              { id: 'strategy' as const, label: m.tabs.strategy, icon: 'ST' },
+              { id: 'reports' as const, label: m.tabs.reports, icon: 'RP' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 ${
+                  activeTab === tab.id
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
+                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white'
+                }`}
+              >
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Main Dashboard */}
-      <main className="max-w-[1920px] mx-auto px-6 pt-16 pb-8 pl-16 space-y-6">
+      <div ref={scrollContainerRef} className="flex-1 min-h-0 overflow-auto max-w-[1920px] mx-auto px-4 md:px-6 pb-6 pt-4 pl-4 md:pl-16 space-y-4">
         {/* Notifications */}
         {(lastCompleted || recentShock) && (
           <div className="relative">
@@ -1024,11 +1108,11 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2">
                 <div className="h-2 w-2 rounded-full bg-purple-400 animate-pulse" />
                 <p className="font-semibold">
-                  {lastCompleted ? `Mission completed: ${lastCompleted}` : recentShock ? `Market shock: severity ${recentShock.severity.toFixed(2)} (step ${recentShock.step})` : ''}
+                  {lastCompleted ? format(m.notifications.missionCompleted, { name: lastCompleted }) : recentShock ? format(m.notifications.marketShockAlert, { severity: recentShock.severity.toFixed(2), step: recentShock.step }) : ''}
                 </p>
               </div>
               <p className="text-xs text-gray-300">
-                Celebrate wins and prepare for shocks; adjust speed or strategy as needed.
+                {m.notifications.celebrateMessage}
               </p>
             </div>
           </div>
@@ -1036,18 +1120,21 @@ export default function DashboardPage() {
 
         {/* Tutorial - Only show on overview tab */}
         {showTutorial && activeTab === 'overview' && (
-          <div className="p-4 rounded-xl bg-blue-900/40 border border-blue-700 text-sm text-blue-100 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div
+            data-testid="tutorial-banner"
+            className="p-4 rounded-xl bg-blue-900/40 border border-blue-700 text-sm text-blue-100 flex flex-col md:flex-row md:items-center md:justify-between gap-3"
+          >
             <div className="space-y-1">
-              <p className="font-semibold text-blue-50">Quick start</p>
+              <p className="font-semibold text-blue-50">{m.tutorial.title}</p>
               <p>{tutorialSteps[tutorialStep]}</p>
-              <p className="text-xs text-blue-200">Step {tutorialStep + 1} of {tutorialSteps.length}</p>
+              <p className="text-xs text-blue-200">{format(m.tutorial.stepOf, { current: tutorialStep + 1, total: tutorialSteps.length })}</p>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowTutorial(false)}
                 className="self-start md:self-center px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded text-white text-xs uppercase tracking-wide"
               >
-                Skip
+                {m.common.skip}
               </button>
               <button
                 onClick={() => {
@@ -1059,53 +1146,106 @@ export default function DashboardPage() {
                 }}
                 className="self-start md:self-center px-3 py-2 bg-blue-700 hover:bg-blue-600 rounded text-white text-xs uppercase tracking-wide"
               >
-                {tutorialStep < tutorialSteps.length - 1 ? 'Next' : 'Done'}
+                {tutorialStep < tutorialSteps.length - 1 ? m.common.next : m.common.done}
               </button>
             </div>
           </div>
         )}
 
-        {/* Tab Navigation */}
-        <div className="flex flex-wrap gap-2 border-b border-gray-700 pb-4">
-          {[
-            { id: 'overview' as const, label: 'Overview', icon: '📊' },
-            { id: '3d' as const, label: '3D View', icon: '🏛️' },
-            { id: 'charts' as const, label: 'Charts', icon: '📈' },
-            { id: 'strategy' as const, label: 'Strategy', icon: '🎯' },
-            { id: 'reports' as const, label: 'Reports', icon: '📋' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
-                activeTab === tab.id
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white'
-              }`}
-            >
-              <span>{tab.icon}</span>
-              <span>{tab.label}</span>
-            </button>
-          ))}
-        </div>
-
         {/* ==================== OVERVIEW TAB ==================== */}
         {activeTab === 'overview' && (
-          <>
-            {/* Controls & Token Section */}
-            <section id="section-controls" className="scroll-mt-24">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Missions */}
-                <div id="section-missions" className="lg:col-span-2 scroll-mt-24">
+          <section id="section-overview" className="space-y-6">
+            <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_1fr] gap-6 min-h-0">
+              <div className="flex flex-col gap-4 min-h-0">
+                <section id="section-missions" className="scroll-mt-12">
                   <ScenarioCard
-                    scenarioName={selectedStrategy ? `${daoIdentity.name} – ${selectedStrategy.name}` : daoIdentity.name}
+                    scenarioName={selectedStrategy ? `${daoIdentity.name} - ${selectedStrategy.name}` : daoIdentity.name}
                     missions={missions}
                     step={step}
                     status={running ? 'running' : 'paused'}
                   />
+                </section>
+
+                <div className={`${panelClass} flex flex-col min-h-0`}>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-semibold text-gray-200">
+                      {overviewPanel === 'map' ? m.panels.daoMap : m.opsLog.title}
+                    </h3>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setOverviewPanel('map')}
+                        className={`px-2.5 py-1 rounded text-xs font-semibold border transition-colors ${
+                          overviewPanel === 'map'
+                            ? 'border-blue-500/60 text-blue-300 bg-blue-500/10'
+                            : 'border-gray-700 text-gray-400 bg-gray-900/40 hover:text-white'
+                        }`}
+                      >
+                        {m.panels.daoMap}
+                      </button>
+                      <button
+                        onClick={() => setOverviewPanel('ops')}
+                        className={`px-2.5 py-1 rounded text-xs font-semibold border transition-colors ${
+                          overviewPanel === 'ops'
+                            ? 'border-blue-500/60 text-blue-300 bg-blue-500/10'
+                            : 'border-gray-700 text-gray-400 bg-gray-900/40 hover:text-white'
+                        }`}
+                      >
+                        {m.panels.opsLog}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex-1 min-h-0 overflow-auto pr-1">
+                    {overviewPanel === 'map' ? (
+                      visualsPaused ? (
+                        <div className="h-full flex items-center justify-center text-sm text-gray-400">
+                          {m.states.mapPaused}
+                        </div>
+                      ) : (
+                        <CozyMap
+                          treasury={Math.round(latest?.treasury_balance ?? 0)}
+                          proposals={(latest as any)?.proposals ?? latest?.active_proposals ?? 0}
+                          members={members.length}
+                          shocks={marketShocks.length}
+                          status={running ? 'running' : 'paused'}
+                        />
+                      )
+                    ) : runLog.length > 0 ? (
+                      <div className="space-y-2 text-sm text-gray-200">
+                        {[...runLog]
+                          .slice(-12)
+                          .sort((a, b) => (a.step ?? 0) - (b.step ?? 0))
+                          .map((entry, idx) => (
+                            <div
+                              key={`${entry.label}-${idx}`}
+                              className={`flex items-center justify-between rounded border px-2 py-1 ${
+                                entry.severity === 'critical'
+                                  ? 'border-red-500 bg-red-900/40'
+                                  : entry.severity === 'incident'
+                                  ? 'border-amber-500 bg-amber-900/30'
+                                  : entry.severity === 'warning'
+                                  ? 'border-yellow-500 bg-yellow-900/30'
+                                  : 'border-gray-700 bg-gray-900/60'
+                              }`}
+                            >
+                              <div>
+                                <p className="text-[11px] text-gray-400">
+                                  {typeof entry.step === 'number' ? `Step ${entry.step}` : 'Event'}
+                                </p>
+                                <p className="font-semibold">{entry.label}</p>
+                              </div>
+                              <p className="text-xs text-gray-200 text-right max-w-xs truncate">{entry.value}</p>
+                            </div>
+                          ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500">{m.states.noOpsLogged}</p>
+                    )}
+                  </div>
                 </div>
-                {/* Token Tracker */}
-                <div id="section-token" className="scroll-mt-24">
+              </div>
+
+              <div className="flex flex-col gap-4 min-h-0">
+                <section id="section-token" className="scroll-mt-12">
                   <TokenTracker
                     daoIdentity={daoIdentity}
                     currentPrice={latest?.dao_token_price ?? 1}
@@ -1113,286 +1253,336 @@ export default function DashboardPage() {
                     treasury={latest?.treasury_balance ?? 0}
                     holders={members.length}
                   />
-                </div>
-              </div>
-            </section>
+                </section>
 
-            {/* DAO Map - Overview */}
-            <section className="w-full">
-              <h3 className="text-lg font-semibold text-white mb-2">DAO Map</h3>
-              <CozyMap
-                treasury={Math.round(latest?.treasury_balance ?? 0)}
-                proposals={(latest as any)?.proposals ?? latest?.active_proposals ?? 0}
-                members={members.length}
-                shocks={marketShocks.length}
-                status={running ? 'running' : 'paused'}
-              />
-            </section>
-
-            {/* Operations Log */}
-            {runLog.length > 0 && (
-              <section className="w-full">
-                <div className="p-4 rounded-xl bg-gray-800/60 border border-gray-700 shadow-lg">
+                <section id="section-tower" className={`${panelClass} flex flex-col min-h-0`}>
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-semibold text-white">Operations Log</h3>
-                    <span className="text-xs text-gray-400">Most recent {Math.min(runLog.length, 12)} events</span>
+                    <h3 className="text-sm font-semibold text-white">{m.daoTower.title}</h3>
+                    <button
+                      onClick={() => {
+                        setActiveTab('3d');
+                        setThreeDPanel('tower');
+                        setShow3DPanel(true);
+                      }}
+                      className="text-xs text-blue-300 hover:text-blue-200"
+                    >
+                      {m.daoTower.open3d}
+                    </button>
                   </div>
-                  <div className="space-y-2 text-sm text-gray-200 max-h-64 overflow-y-auto pr-1">
-                    {[...runLog]
-                      .slice(-12)
-                      .sort((a, b) => (a.step ?? 0) - (b.step ?? 0))
-                      .map((entry, idx) => (
-                        <div
-                          key={`${entry.label}-${idx}`}
-                          className={`flex items-center justify-between rounded border px-2 py-1 ${
-                            entry.severity === 'critical'
-                              ? 'border-red-500 bg-red-900/40'
-                              : entry.severity === 'incident'
-                              ? 'border-amber-500 bg-amber-900/30'
-                              : entry.severity === 'warning'
-                              ? 'border-yellow-500 bg-yellow-900/30'
-                              : 'border-gray-700 bg-gray-900/60'
-                          }`}
-                        >
-                          <div>
-                            <p className="text-[11px] text-gray-400">
-                              {typeof entry.step === 'number' ? `Step ${entry.step}` : 'Event'}
-                            </p>
-                            <p className="font-semibold">{entry.label}</p>
-                          </div>
-                          <p className="text-xs text-gray-200 text-right max-w-xs truncate">{entry.value}</p>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </section>
-            )}
-          </>
-        )}
-
-        {/* ==================== 3D VIEW TAB ==================== */}
-        {activeTab === '3d' && (
-          <>
-            {/* DAO City View - Multi-DAO Visualization */}
-            {viewMode === 'city' && !visualsPaused && (
-              <section id="section-city" className="w-full scroll-mt-24">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* 3D City View */}
-                  <div className="lg:col-span-2 bg-gray-800 rounded-lg shadow-lg overflow-hidden h-[600px]">
-                    {city.cityNetworkData ? (
-                      <DAOCity3D
-                        data={city.cityNetworkData}
-                        onDaoSelect={setSelectedDaoId}
-                        selectedDaoId={selectedDaoId}
+                  <div className="flex-1 min-h-0">
+                    {visualsPaused ? (
+                      <div className="h-full flex items-center justify-center text-sm text-gray-400">
+                        {format(m.states.visualsPaused, { feature: 'tower' })}
+                      </div>
+                    ) : towerMembers.length > 0 ? (
+                      <DAOTowerWrapper
+                        members={towerMembers}
+                        totalFloors={6}
+                        title={`${daoIdentity.name} HQ`}
+                        heightClassName={threeDHeightClass}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        <div className="text-center">
-                          <p className="text-lg mb-2">DAO City</p>
-                          <p className="text-sm">Start the city simulation to see the visualization</p>
-                        </div>
+                      <div className="h-full flex items-center justify-center text-sm text-gray-400">
+                        {m.view3d.startToPopulateTower}
                       </div>
                     )}
                   </div>
+                </section>
+              </div>
+            </div>
+          </section>
+        )}
+        {/* ==================== 3D VIEW TAB ==================== */}
+        {activeTab === '3d' && (
+          <section id="section-3d" className="space-y-4">
+            <div className="flex flex-wrap items-center gap-2">
+              {[
+                { id: 'tower' as const, label: m.panels.tower },
+                { id: 'city' as const, label: m.panels.city },
+                { id: 'network' as const, label: m.panels.network },
+              ].map((panel) => (
+                <button
+                  key={panel.id}
+                  onClick={() => setThreeDPanel(panel.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                    threeDPanel === panel.id
+                      ? 'border-blue-500/60 text-blue-300 bg-blue-500/10'
+                      : 'border-gray-700 text-gray-400 bg-gray-900/40 hover:text-white'
+                  }`}
+                >
+                  {panel.label}
+                </button>
+              ))}
+              <button
+                onClick={() => setShow3DPanel((prev) => !prev)}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                  show3DPanel
+                    ? 'border-emerald-500/60 text-emerald-300 bg-emerald-500/10'
+                    : 'border-gray-700 text-gray-400 bg-gray-900/40 hover:text-white'
+                }`}
+              >
+                {show3DPanel ? m.view3d.hide3d : m.view3d.show3d}
+              </button>
+            </div>
 
-                  {/* Token Rankings */}
-                  <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-                    <TokenRankingBoard
-                      rankings={city.tokenRankings}
-                      totalMarketCap={city.totalMarketCap}
-                      totalVolume={city.totalVolume}
-                      onTokenSelect={(symbol) => {
-                        const dao = city.daos.find(d => d.tokenSymbol === symbol);
-                        if (dao) setSelectedDaoId(dao.id);
-                      }}
-                      compact={false}
-                    />
-                  </div>
+            {!show3DPanel ? (
+              <div className={`${panelClass} text-center text-sm text-gray-300`}>
+                <p className="mb-2">{m.view3d.hidden3dMessage}</p>
+                <button
+                  onClick={() => setShow3DPanel(true)}
+                  className="px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded text-xs text-white"
+                >
+                  {m.view3d.show3dView}
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 min-h-0">
+                <div className={`${panelClass} overflow-hidden relative`}>
+                  {visualsPaused ? (
+                    <div className="h-full flex items-center justify-center text-sm text-gray-400">
+                      {m.view3d.visualsPausedMessage}
+                    </div>
+                  ) : threeDPanel === 'tower' ? (
+                    towerMembers.length > 0 ? (
+                      <DAOTowerWrapper
+                        members={towerMembers}
+                        totalFloors={6}
+                        title={`${daoIdentity.name} HQ`}
+                        heightClassName={threeDHeightClass}
+                      />
+                    ) : (
+                      <div className="h-full flex items-center justify-center text-sm text-gray-400">
+                        {m.view3d.startToPopulateTower}
+                      </div>
+                    )
+                  ) : threeDPanel === 'city' ? (
+                    <div className={`w-full ${threeDHeightClass} bg-gray-900 rounded-lg overflow-hidden`}>
+                      {city.cityNetworkData ? (
+                        <DAOCity3D
+                          data={city.cityNetworkData}
+                          onDaoSelect={setSelectedDaoId}
+                          selectedDaoId={selectedDaoId}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          <div className="text-center">
+                            <p className="text-lg mb-2">{m.daoCity.title}</p>
+                            <p className="text-sm">{m.view3d.startCitySimulation}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <>
+                      {recentShock && (
+                        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                          <div className="h-64 w-64 rounded-full bg-red-500/10 animate-ping" />
+                        </div>
+                      )}
+                      {networkData && networkData.nodes.length > 0 ? (
+                        <NetworkGraph3DWrapper
+                          data={networkData}
+                          interactive={interactiveNetwork}
+                          showLabels={showLabels}
+                          heightClassName={threeDHeightClass}
+                        />
+                      ) : (
+                        <div className="h-full flex items-center justify-center text-sm text-gray-400">
+                          {m.view3d.startToSeeNetwork}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
 
-                {/* City Stats Bar */}
-                {city.daos.length > 0 && (
-                  <div className="mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    {city.daos.map(dao => (
-                      <button
-                        key={dao.id}
-                        onClick={() => setSelectedDaoId(dao.id === selectedDaoId ? null : dao.id)}
-                        className={`p-3 rounded-lg border transition-colors ${
-                          selectedDaoId === dao.id
-                            ? 'border-white bg-gray-700'
-                            : 'border-gray-700 bg-gray-800 hover:border-gray-600'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 mb-1">
-                          <div
-                            className="w-3 h-3 rounded-full"
-                            style={{ backgroundColor: dao.color }}
+                <div className="flex flex-col gap-4 min-h-0">
+                  {threeDPanel === 'network' && (
+                    <div className={panelClass}>
+                      <h3 className="text-sm font-semibold text-white mb-3">{m.view3d.networkControls}</h3>
+                      <div className="space-y-2 text-sm text-gray-200">
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={showLabels}
+                            onChange={(e) => setShowLabels(e.target.checked)}
+                            className="rounded"
                           />
-                          <span className="font-medium text-white text-sm">{dao.name}</span>
+                          {m.view3d.showLabels}
+                        </label>
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={interactiveNetwork}
+                            onChange={(e) => setInteractiveNetwork(e.target.checked)}
+                            className="rounded"
+                          />
+                          {m.view3d.interactiveControls}
+                        </label>
+                        <div className="pt-2 text-xs text-gray-400">
+                          {format(m.view3d.nodes, { count: networkData?.nodes.length ?? 0 })} | {format(m.view3d.edges, { count: networkData?.edges.length ?? 0 })}
                         </div>
-                        <div className="text-xs text-gray-400">
-                          <span className="font-mono">${dao.tokenSymbol}</span>
-                          <span className="mx-1">•</span>
-                          <span>{dao.memberCount} members</span>
-                        </div>
-                        <div className="text-xs text-green-400 font-mono mt-1">
-                          ${dao.tokenPrice.toFixed(4)}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
+                      </div>
+                    </div>
+                  )}
 
-                {/* Inter-DAO Proposals */}
-                {city.interDaoProposals.length > 0 && (
-                  <div className="mt-4 bg-gray-800 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-white mb-3">Inter-DAO Proposals</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {city.interDaoProposals.slice(0, 6).map(proposal => (
-                        <div
-                          key={proposal.uniqueId}
-                          className="p-3 rounded border border-gray-700 bg-gray-900/50"
-                        >
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs uppercase text-gray-500">
-                              {proposal.proposalType}
-                            </span>
-                            <span className={`text-xs px-2 py-0.5 rounded ${
-                              proposal.status === 'open' ? 'bg-blue-500/20 text-blue-400' :
-                              proposal.status === 'approved' ? 'bg-green-500/20 text-green-400' :
-                              proposal.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
-                              'bg-purple-500/20 text-purple-400'
-                            }`}>
-                              {proposal.status}
-                            </span>
-                          </div>
-                          <p className="text-sm font-medium text-white">{proposal.title}</p>
-                          <p className="text-xs text-gray-400 mt-1">
-                            {proposal.participatingDaos.join(' + ')}
+                  {threeDPanel === 'tower' && (
+                    <div className={panelClass}>
+                      <h3 className="text-sm font-semibold text-white mb-3">{m.view3d.towerSnapshot}</h3>
+                      <div className="grid grid-cols-2 gap-2 text-sm text-gray-200">
+                        <div className="p-2 rounded border border-gray-700 bg-gray-900/50">
+                          <p className="text-xs text-gray-400">{m.reports.members}</p>
+                          <p className="text-lg font-semibold">{members.length}</p>
+                        </div>
+                        <div className="p-2 rounded border border-gray-700 bg-gray-900/50">
+                          <p className="text-xs text-gray-400">{m.view3d.proposals}</p>
+                          <p className="text-lg font-semibold">{proposals.length}</p>
+                        </div>
+                        <div className="p-2 rounded border border-gray-700 bg-gray-900/50">
+                          <p className="text-xs text-gray-400">{m.reports.treasury}</p>
+                          <p className="text-lg font-semibold">
+                            {Math.round(latest?.treasury_balance ?? 0).toLocaleString('en-US')}
                           </p>
                         </div>
-                      ))}
+                        <div className="p-2 rounded border border-gray-700 bg-gray-900/50">
+                          <p className="text-xs text-gray-400">{m.view3d.shocks}</p>
+                          <p className="text-lg font-semibold">{marketShocks.length}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </section>
-            )}
+                  )}
 
-            {/* DAO Tower - Cozy 3D Visualization (Single DAO mode) */}
-            {viewMode === 'single' && !visualsPaused && towerMembers.length > 0 && (
-              <section id="section-tower" className="w-full scroll-mt-24">
-                <div className="bg-gray-800 rounded-lg shadow-lg p-4">
-                  <DAOTowerWrapper
-                    members={towerMembers}
-                    totalFloors={6}
-                    title={`${daoIdentity.name} HQ`}
-                  />
-                </div>
-              </section>
-            )}
-
-            {/* Network Visualization */}
-            {!visualsPaused && networkData && networkData.nodes.length > 0 && (
-              <section id="section-network" className="w-full scroll-mt-24 relative">
-                {recentShock && (
-                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <div className="h-64 w-64 rounded-full bg-red-500/10 animate-ping" />
-                  </div>
-                )}
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 relative overflow-hidden">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                      Network Graph - {networkData.nodes.length} nodes, {networkData.edges.length} edges
-                    </h3>
-                    <div className="flex gap-4">
-                      <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-                        <input
-                          type="checkbox"
-                          checked={showLabels}
-                          onChange={(e) => setShowLabels(e.target.checked)}
-                          className="rounded"
+                  {threeDPanel === 'city' && (
+                    <>
+                      <div className={`${panelClass} flex-1 min-h-0 overflow-auto`}>
+                        <TokenRankingBoard
+                          rankings={city.tokenRankings}
+                          totalMarketCap={city.totalMarketCap}
+                          totalVolume={city.totalVolume}
+                          onTokenSelect={(symbol) => {
+                            const dao = city.daos.find(d => d.tokenSymbol === symbol);
+                            if (dao) setSelectedDaoId(dao.id);
+                          }}
+                          compact
                         />
-                        Show Labels
-                      </label>
-                      <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-                        <input
-                          type="checkbox"
-                          checked={interactiveNetwork}
-                          onChange={(e) => setInteractiveNetwork(e.target.checked)}
-                          className="rounded"
-                        />
-                        Interactive
-                      </label>
-                    </div>
-                  </div>
-                  <NetworkGraph3DWrapper
-                    data={networkData}
-                    interactive={interactiveNetwork}
-                    showLabels={showLabels}
-                  />
+                      </div>
+                      <div className={`${panelClass} max-h-[220px] overflow-auto`}>
+                        <h3 className="text-sm font-semibold text-white mb-2">{m.view3d.interDaoProposals}</h3>
+                        {city.interDaoProposals.length > 0 ? (
+                          <div className="space-y-2">
+                            {city.interDaoProposals.slice(0, 6).map((proposal) => (
+                              <div
+                                key={proposal.uniqueId}
+                                className="p-2 rounded border border-gray-700 bg-gray-900/60"
+                              >
+                                <div className="flex items-center justify-between mb-1">
+                                  <span className="text-[10px] uppercase text-gray-500">
+                                    {proposal.proposalType}
+                                  </span>
+                                  <span className={`text-[10px] px-2 py-0.5 rounded ${
+                                    proposal.status === 'open' ? 'bg-blue-500/20 text-blue-400' :
+                                    proposal.status === 'approved' ? 'bg-green-500/20 text-green-400' :
+                                    proposal.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
+                                    'bg-purple-500/20 text-purple-400'
+                                  }`}>
+                                    {proposal.status}
+                                  </span>
+                                </div>
+                                <p className="text-sm font-medium text-white">{proposal.title}</p>
+                                <p className="text-xs text-gray-400 mt-1">
+                                  {proposal.participatingDaos.join(' + ')}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm text-gray-500">{m.view3d.noInterDaoProposals}</p>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
-              </section>
+              </div>
             )}
-
-            {visualsPaused && (
-              <section className="w-full">
-                <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-6 text-gray-300">
-                  <h3 className="text-lg font-semibold text-white mb-2">Visuals paused</h3>
-                  <p className="text-sm text-gray-400">Network, heatmaps, and maps are hidden to reduce load. Resume visuals to see them again.</p>
-                </div>
-              </section>
-            )}
-          </>
+          </section>
         )}
-
         {/* ==================== CHARTS TAB ==================== */}
         {activeTab === 'charts' && (
-          <>
-            {/* Price Chart */}
-            <section id="section-price" className={`w-full scroll-mt-24 transition-all ${recentShock ? 'border border-red-500/60 shadow-[0_0_30px_rgba(239,68,68,0.35)] rounded-xl p-1 relative overflow-hidden' : ''}`}>
-              {recentShock && (
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                  <div className="h-64 w-64 rounded-full bg-red-500/15 animate-ping" />
-                </div>
-              )}
-              <PriceLineChart
-                data={priceHistory}
-                title="DAO Token Price History"
-                interactive={true}
-              />
-            </section>
+          <section id="section-charts" className="space-y-4">
+            <div className="flex flex-wrap items-center gap-2">
+              {[
+                { id: 'price' as const, label: m.panels.price },
+                { id: 'heatmap' as const, label: m.panels.heatmap },
+                { id: 'geo' as const, label: m.panels.geo },
+              ].map((panel) => (
+                <button
+                  key={panel.id}
+                  onClick={() => setChartsPanel(panel.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                    chartsPanel === panel.id
+                      ? 'border-blue-500/60 text-blue-300 bg-blue-500/10'
+                      : 'border-gray-700 text-gray-400 bg-gray-900/40 hover:text-white'
+                  }`}
+                >
+                  {panel.label}
+                </button>
+              ))}
+            </div>
 
-            {/* Heatmap and Choropleth */}
-            {!visualsPaused && members.length > 0 && (
-              <section id="section-heatmap" className="grid grid-cols-1 lg:grid-cols-2 gap-8 scroll-mt-24">
-                <div className={recentShock ? 'animate-pulse relative overflow-hidden' : ''}>
-                  {recentShock && <div className="pointer-events-none absolute inset-0 bg-red-500/10 rounded-lg animate-ping" />}
-                  <MemberHeatmap members={members} />
-                </div>
-                <div className={recentShock ? 'animate-pulse relative overflow-hidden' : ''}>
-                  {recentShock && <div className="pointer-events-none absolute inset-0 bg-red-500/10 rounded-lg animate-ping" />}
-                  <ChoroplethMap members={members} />
-                </div>
+            {chartsPanel === 'price' && (
+              <section id="section-price" className={`w-full transition-all ${recentShock ? 'border border-red-500/60 shadow-[0_0_30px_rgba(239,68,68,0.35)] rounded-xl p-1 relative overflow-hidden' : ''}`}>
+                {recentShock && (
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                    <div className="h-64 w-64 rounded-full bg-red-500/15 animate-ping" />
+                  </div>
+                )}
+                <PriceLineChart
+                  data={priceHistory}
+                  title={m.charts.priceHistory}
+                  interactive
+                  heightClassName={chartHeightClass}
+                />
               </section>
             )}
 
-            {visualsPaused && (
+            {chartsPanel === 'heatmap' && (
+              <section id="section-heatmap" className="w-full">
+                {visualsPaused ? (
+                  <div className={`${panelClass} text-sm text-gray-400`}>
+                    {m.charts.heatmapPaused}
+                  </div>
+                ) : members.length > 0 ? (
+                  <MemberHeatmap members={members} heightClassName={chartHeightClass} />
+                ) : (
+                  <div className={`${panelClass} text-sm text-gray-500`}>
+                    {format(m.charts.startToSee, { feature: 'member data' })}
+                  </div>
+                )}
+              </section>
+            )}
+
+            {chartsPanel === 'geo' && (
               <section className="w-full">
-                <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-6 text-gray-300">
-                  <h3 className="text-lg font-semibold text-white mb-2">Visuals paused</h3>
-                  <p className="text-sm text-gray-400">Heatmaps and geographic charts are hidden to reduce load. Resume visuals to see them again.</p>
-                </div>
+                {visualsPaused ? (
+                  <div className={`${panelClass} text-sm text-gray-400`}>
+                    {m.charts.geoPaused}
+                  </div>
+                ) : members.length > 0 ? (
+                  <ChoroplethMap members={members} heightClassName={chartHeightClass} />
+                ) : (
+                  <div className={`${panelClass} text-sm text-gray-500`}>
+                    {format(m.charts.startToSee, { feature: 'geographic distribution' })}
+                  </div>
+                )}
               </section>
             )}
-          </>
+          </section>
         )}
-
         {/* ==================== STRATEGY TAB ==================== */}
         {activeTab === 'strategy' && (
-          <>
+          <section id="section-strategy" className="space-y-6">
             {/* Strategy Playbooks */}
             <section className="space-y-4">
-              <h3 className="text-lg font-semibold text-white">Strategy Playbooks</h3>
+              <h3 className="text-lg font-semibold text-white">{m.strategies.playbooks}</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {strategies.map((strategy) => (
                   <button
@@ -1407,7 +1597,7 @@ export default function DashboardPage() {
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-semibold">{strategy.name}</h4>
                       {selectedStrategyId === strategy.id && (
-                        <span className="text-xs text-emerald-300">Active</span>
+                        <span className="text-xs text-emerald-300">{m.common.active}</span>
                       )}
                     </div>
                     <p className="text-sm text-gray-400">{strategy.description}</p>
@@ -1418,7 +1608,7 @@ export default function DashboardPage() {
 
             {/* Simulation Presets */}
             <section className="space-y-4">
-              <h3 className="text-lg font-semibold text-white">Simulation Presets</h3>
+              <h3 className="text-lg font-semibold text-white">{m.presets.title}</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {presets.map((preset) => (
                   <button
@@ -1432,7 +1622,7 @@ export default function DashboardPage() {
                   >
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-semibold">{preset.name}</h4>
-                      {selectedPreset === preset.id && <span className="text-xs text-blue-300">Selected</span>}
+                      {selectedPreset === preset.id && <span className="text-xs text-blue-300">{m.common.selected}</span>}
                     </div>
                     <p className="text-sm text-gray-400">{preset.description}</p>
                   </button>
@@ -1442,7 +1632,7 @@ export default function DashboardPage() {
 
             {/* Challenge Presets */}
             <section className="space-y-4">
-              <h3 className="text-lg font-semibold text-white">Challenges</h3>
+              <h3 className="text-lg font-semibold text-white">{m.challenges.title}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {challenges.map((challenge) => (
                   <div
@@ -1463,7 +1653,7 @@ export default function DashboardPage() {
                           setRunState('playing');
                         }}
                       >
-                        Start challenge
+                        {m.challenges.startChallenge}
                       </button>
                     </div>
                     <p className="text-sm text-gray-300">{challenge.description}</p>
@@ -1471,195 +1661,189 @@ export default function DashboardPage() {
                 ))}
               </div>
             </section>
-          </>
+          </section>
         )}
-
         {/* ==================== REPORTS TAB ==================== */}
         {activeTab === 'reports' && (
-          <>
-            {/* DAO Report */}
-            <section id="section-report" className="w-full scroll-mt-24">
-              <DAOReport
-                simulationData={simulationData}
-                tokenLeaderboard={tokenLeaderboard}
-                influenceLeaderboard={influenceLeaderboard}
-                marketShocks={marketShocks}
-                members={members}
-                proposals={proposals}
-              />
-            </section>
+          <section id="section-reports" className="space-y-4">
+            <div className="flex flex-wrap items-center gap-2">
+              {[
+                { id: 'report' as const, label: m.panels.daoReport },
+                { id: 'history' as const, label: m.panels.orgHistory },
+                { id: 'runs' as const, label: m.panels.runHistory },
+              ].map((panel) => (
+                <button
+                  key={panel.id}
+                  onClick={() => setReportPanel(panel.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                    reportPanel === panel.id
+                      ? 'border-blue-500/60 text-blue-300 bg-blue-500/10'
+                      : 'border-gray-700 text-gray-400 bg-gray-900/40 hover:text-white'
+                  }`}
+                >
+                  {panel.label}
+                </button>
+              ))}
+            </div>
 
-            {/* Org History & KPIs */}
-            {orgStats && (
-              <section id="section-history" className="w-full scroll-mt-24">
-                <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-4 mb-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-semibold text-white">Org History & KPIs</h3>
-                    <span className="text-xs text-gray-400">
-                      Total runs: {orgStats.totalRuns}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-200 mb-3">
-                    <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
-                      <p className="text-xs text-gray-400">Total steps simulated</p>
-                      <p className="text-lg font-semibold">
-                        {orgStats.totalSteps.toLocaleString('en-US')}
-                      </p>
-                    </div>
-                    <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
-                      <p className="text-xs text-gray-400">Peak treasury</p>
-                      <p className="text-lg font-semibold">
-                        {orgStats.peakTreasury.toLocaleString('en-US')}
-                      </p>
-                    </div>
-                    <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
-                      <p className="text-xs text-gray-400">Max shocks in a run</p>
-                      <p className="text-lg font-semibold">
-                        {orgStats.maxShocksInRun.toLocaleString('en-US')}
-                      </p>
-                    </div>
-                    <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
-                      <p className="text-xs text-gray-400">Win rate</p>
-                      <p className="text-lg font-semibold">
-                        {orgStats.totalRuns > 0
-                          ? `${Math.round((orgStats.wins / orgStats.totalRuns) * 100)}%`
-                          : 'N/A'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-xs text-gray-300">
-                    <p className="font-semibold mb-1">Milestones</p>
-                    <ul className="space-y-1 list-disc list-inside">
-                      <li>
-                        {orgStats.totalRuns > 0
-                          ? 'First simulation completed.'
-                          : 'Run at least one simulation.'}
-                      </li>
-                      <li>
-                        {orgStats.totalSteps >= 500
-                          ? 'Sustained operator: 500+ total steps.'
-                          : 'Reach 500 total simulated steps.'}
-                      </li>
-                      <li>
-                        {orgStats.peakTreasury >= 10_000
-                          ? 'Capitalized: treasury peaked above 10,000.'
-                          : 'Grow peak treasury above 10,000.'}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
+            {reportPanel === 'report' && (
+              <div className={`${panelClass} max-h-[calc(100vh-320px)] overflow-auto`}>
+                <DAOReport
+                  simulationData={simulationData}
+                  tokenLeaderboard={tokenLeaderboard}
+                  influenceLeaderboard={influenceLeaderboard}
+                  marketShocks={marketShocks}
+                  members={members}
+                  proposals={proposals}
+                />
+              </div>
             )}
 
-            {/* Run History */}
-            {runHistory.length > 0 && (
-              <section className="w-full">
-                <div className="rounded-lg border border-gray-700 bg-gray-800/60 p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-semibold text-white">Run History (session)</h3>
-                    <span className="text-xs text-gray-400">Last {runHistory.length} runs</span>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-gray-200">
-                    {runHistory.map((run) => (
-                      <div key={run.id} className="p-3 rounded border border-gray-700 bg-gray-900/50">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-semibold">
-                            {run.preset}
-                            {run.strategy ? ` · ${run.strategy}` : ''}
-                          </span>
-                          <span className="text-xs text-gray-500">{run.when}</span>
-                        </div>
-                        <p className="text-gray-300">Steps: {run.steps}</p>
-                        <p className="text-gray-300">Treasury: {run.treasury}</p>
-                        <p className="text-gray-400 text-xs">Score: {run.score}</p>
-                        {run.outcome && (
-                          <p className="text-gray-400 text-xs">
-                            Outcome: {run.outcome === 'won' ? 'Objectives met' : 'Run ended'}
-                          </p>
-                        )}
+            {reportPanel === 'history' && (
+              <div className={`${panelClass} max-h-[calc(100vh-320px)] overflow-auto`}>
+                {orgStats ? (
+                  <>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-lg font-semibold text-white">{m.orgHistory.title}</h3>
+                      <span className="text-xs text-gray-400">{format(m.orgHistory.totalRuns, { count: orgStats.totalRuns })}</span>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-200 mb-3">
+                      <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
+                        <p className="text-xs text-gray-400">{m.orgHistory.totalStepsSimulated}</p>
+                        <p className="text-lg font-semibold">
+                          {orgStats.totalSteps.toLocaleString('en-US')}
+                        </p>
                       </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-4">
-                    <h4 className="text-sm font-semibold text-white mb-2">Leaderboard (session)</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-200">
-                      {runHistory
-                        .slice()
-                        .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
-                        .slice(0, 5)
-                        .map((run, idx) => (
-                          <div key={`${run.id}-lb`} className="p-3 rounded border border-gray-700 bg-gray-900/70 flex items-center justify-between">
-                            <div>
-                              <p className="text-xs text-gray-400">#{idx + 1} • {run.when}</p>
-                              <p className="font-semibold">{run.preset}</p>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-sm text-blue-300">Score {run.score}</p>
-                              <p className="text-xs text-gray-400">Steps {run.steps}</p>
-                            </div>
-                          </div>
-                        ))}
+                      <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
+                        <p className="text-xs text-gray-400">{m.orgHistory.peakTreasury}</p>
+                        <p className="text-lg font-semibold">
+                          {orgStats.peakTreasury.toLocaleString('en-US')}
+                        </p>
+                      </div>
+                      <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
+                        <p className="text-xs text-gray-400">{m.orgHistory.maxShocksInRun}</p>
+                        <p className="text-lg font-semibold">
+                          {orgStats.maxShocksInRun.toLocaleString('en-US')}
+                        </p>
+                      </div>
+                      <div className="p-3 rounded border border-gray-700 bg-gray-900/60">
+                        <p className="text-xs text-gray-400">{m.orgHistory.winRate}</p>
+                        <p className="text-lg font-semibold">
+                          {orgStats.totalRuns > 0
+                            ? `${Math.round((orgStats.wins / orgStats.totalRuns) * 100)}%`
+                            : 'N/A'}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </section>
+                    <div className="text-xs text-gray-300">
+                      <p className="font-semibold mb-1">{m.orgHistory.milestones}</p>
+                      <ul className="space-y-1 list-disc list-inside">
+                        <li>
+                          {orgStats.totalRuns > 0
+                            ? m.orgHistory.firstSimCompleted
+                            : m.orgHistory.runAtLeastOne}
+                        </li>
+                        <li>
+                          {orgStats.totalSteps >= 500
+                            ? m.orgHistory.sustainedOperator
+                            : m.orgHistory.reach500Steps}
+                        </li>
+                        <li>
+                          {orgStats.peakTreasury >= 10_000
+                            ? m.orgHistory.capitalized
+                            : m.orgHistory.growPeakTreasury}
+                        </li>
+                      </ul>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-sm text-gray-500">{m.orgHistory.noHistory}</p>
+                )}
+              </div>
             )}
-          </>
-        )}
 
+            {reportPanel === 'runs' && (
+              <div className={`${panelClass} max-h-[calc(100vh-320px)] overflow-auto`}>
+                {runHistory.length > 0 ? (
+                  <>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-lg font-semibold text-white">{m.runHistorySection.title}</h3>
+                      <span className="text-xs text-gray-400">{format(m.runHistorySection.lastRuns, { count: runHistory.length })}</span>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-gray-200">
+                      {runHistory.map((run) => (
+                        <div key={run.id} className="p-3 rounded border border-gray-700 bg-gray-900/50">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-semibold">
+                              {run.preset}
+                              {run.strategy ? ` - ${run.strategy}` : ''}
+                            </span>
+                            <span className="text-xs text-gray-500">{run.when}</span>
+                          </div>
+                          <p className="text-gray-300">Steps: {run.steps}</p>
+                          <p className="text-gray-300">Treasury: {run.treasury}</p>
+                          <p className="text-gray-400 text-xs">Score: {run.score}</p>
+                          {run.outcome && (
+                            <p className="text-gray-400 text-xs">
+                              {m.runSummary.outcome}: {run.outcome === 'won' ? m.runHistorySection.outcomeWon : m.runHistorySection.outcomeLost}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-4">
+                      <h4 className="text-sm font-semibold text-white mb-2">{m.runHistorySection.leaderboard}</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-200">
+                        {runHistory
+                          .slice()
+                          .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+                          .slice(0, 5)
+                          .map((run, idx) => (
+                            <div key={`${run.id}-lb`} className="p-3 rounded border border-gray-700 bg-gray-900/70 flex items-center justify-between">
+                              <div>
+                                <p className="text-xs text-gray-400">#{idx + 1} - {run.when}</p>
+                                <p className="font-semibold">{run.preset}</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-sm text-blue-300">{m.runHistorySection.score} {run.score}</p>
+                                <p className="text-xs text-gray-400">{m.runHistorySection.steps} {run.steps}</p>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-sm text-gray-500">{m.runHistorySection.noRunsRecorded}</p>
+                )}
+              </div>
+            )}
+          </section>
+        )}
         {/* Empty State */}
         {!connected && simulationData.length === 0 && (
-          <section className="w-full h-[400px] flex items-center justify-center">
+          <section className="w-full h-[clamp(280px,50vh,420px)] flex items-center justify-center">
             <div className="text-center space-y-4">
-              <div className="text-6xl">📊</div>
-              <h2 className="text-2xl font-bold text-gray-300">Waiting for Simulation Data</h2>
+              <div className="text-4xl text-gray-400">DAO</div>
+              <h2 className="text-2xl font-bold text-gray-300">{m.states.waitingForData}</h2>
               <p className="text-gray-400">
-                Start a simulation to see real-time visualizations
+                {m.states.startSimulation}
               </p>
               <p className="text-sm text-gray-500">
-                Connect to WebSocket at <code className="bg-gray-800 px-2 py-1 rounded">{socketUrl}</code>
+                {format(m.states.connectToWebSocket, { url: '' })} <code className="bg-gray-800 px-2 py-1 rounded">{socketUrl}</code>
               </p>
             </div>
           </section>
         )}
-      </main>
+      </div>
 
       {/* Footer */}
-      <footer className="bg-gray-800/50 backdrop-blur-lg border-t border-gray-700 mt-16">
-        <div className="max-w-[1920px] mx-auto px-6 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm text-gray-400">
-            <div>
-              <h4 className="font-semibold text-white mb-2">Visualization Types</h4>
-              <ul className="space-y-1">
-                <li>• Real-time Price Charts</li>
-                <li>• 3D Network Graphs</li>
-                <li>• Member Heatmaps</li>
-                <li>• Geographic Distribution</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-2">Features</h4>
-              <ul className="space-y-1">
-                <li>• Live WebSocket Updates</li>
-                <li>• Interactive 3D Visualizations</li>
-                <li>• Comprehensive Reports</li>
-                <li>• Leaderboard Tracking</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-2">Technologies</h4>
-              <ul className="space-y-1">
-                <li>• Next.js 15 + React 19</li>
-                <li>• Three.js + React Three Fiber</li>
-                <li>• Recharts</li>
-                <li>• Socket.IO</li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-gray-700 text-center text-gray-500">
-            <p>Built with vision by incredible technologists and artists</p>
-          </div>
+      <footer className="bg-gray-900/70 border-t border-gray-800 shrink-0">
+        <div className="max-w-[1920px] mx-auto px-4 md:px-6 py-3 text-xs text-gray-500 flex flex-wrap items-center justify-between gap-2">
+          <span>{m.footer.brand}</span>
+          <span>{m.footer.stack}</span>
+          <span>{m.footer.tagline}</span>
         </div>
       </footer>
     </div>

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import { messages as m } from '@/lib/i18n';
 
 interface ErrorPageProps {
   error: Error & { digest?: string };
@@ -30,9 +31,9 @@ export default function Error({ error, reset }: ErrorPageProps) {
         </div>
 
         {/* Error Message */}
-        <h1 className="text-3xl font-bold text-white mb-3">Something went wrong</h1>
+        <h1 className="text-3xl font-bold text-white mb-3">{m.errors.somethingWentWrong}</h1>
         <p className="text-gray-400 mb-2">
-          An unexpected error occurred. We apologize for the inconvenience.
+          {m.errors.unexpectedError}
         </p>
 
         {/* Error Details (development only) */}
@@ -43,7 +44,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
             </p>
             {error.digest && (
               <p className="text-xs text-gray-500 mt-2">
-                Error ID: {error.digest}
+                {m.errors.errorId} {error.digest}
               </p>
             )}
           </div>
@@ -55,26 +56,26 @@ export default function Error({ error, reset }: ErrorPageProps) {
             onClick={reset}
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
           >
-            Try again
+            {m.errors.tryAgain}
           </button>
           <Link
             href="/"
             className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
           >
-            Go home
+            {m.errors.goHome}
           </Link>
         </div>
 
         {/* Help Text */}
         <p className="mt-8 text-sm text-gray-500">
-          If this problem persists, please{' '}
+          {m.errors.persistsReport}{' '}
           <a
             href="https://github.com/imgntn/dao_simulator_private/issues"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-400 hover:text-blue-300 underline"
           >
-            report an issue
+            {m.errors.reportIssue}
           </a>
         </p>
       </div>

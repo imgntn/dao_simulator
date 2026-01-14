@@ -5,9 +5,9 @@ import { useState, useCallback } from 'react';
 import { Canvas3DErrorBoundary } from '@/components/ErrorBoundary';
 
 // Loading component for 3D tower
-function TowerLoadingSkeleton() {
+function TowerLoadingSkeleton({ heightClassName }: { heightClassName: string }) {
   return (
-    <div className="w-full h-[600px] bg-gray-800 rounded-lg flex items-center justify-center">
+    <div className={`w-full ${heightClassName} bg-gray-800 rounded-lg flex items-center justify-center`}>
       <div className="text-center">
         <div className="w-16 h-16 mx-auto mb-4 rounded-full border-4 border-gray-700 border-t-pink-500 animate-spin" />
         <p className="text-gray-400 text-sm">Building the DAO tower...</p>
@@ -22,7 +22,7 @@ const DAOTower = dynamic(
   () => import('@/components/visualizations/DAOTower').then((mod) => mod.DAOTower),
   {
     ssr: false,
-    loading: () => <TowerLoadingSkeleton />,
+    loading: () => <TowerLoadingSkeleton heightClassName="h-[clamp(320px,60vh,560px)]" />,
   }
 );
 
@@ -42,6 +42,7 @@ interface DAOTowerWrapperProps {
   onMemberClick?: (member: DAOMemberData) => void;
   onFloorClick?: (floor: number) => void;
   title?: string;
+  heightClassName?: string;
 }
 
 // Controls help panel
@@ -97,9 +98,11 @@ export function DAOTowerWrapper({
   onMemberClick,
   onFloorClick,
   title = 'DAO Tower',
+  heightClassName,
 }: DAOTowerWrapperProps) {
   const [showHelp, setShowHelp] = useState(true);
   const [selectedMember, setSelectedMember] = useState<DAOMemberData | null>(null);
+  const resolvedHeightClass = heightClassName ?? 'h-[clamp(320px,60vh,560px)]';
 
   const handleMemberClick = useCallback((member: DAOMemberData) => {
     setSelectedMember(member);
@@ -131,6 +134,7 @@ export function DAOTowerWrapper({
           totalFloors={totalFloors}
           onMemberClick={handleMemberClick}
           onFloorClick={handleFloorClick}
+          heightClassName={resolvedHeightClass}
         />
 
         {/* Controls help panel (dismissible) */}

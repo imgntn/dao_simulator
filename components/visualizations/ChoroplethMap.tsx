@@ -3,6 +3,7 @@
 import { useMemo, useState, useCallback } from 'react';
 import { ComposedChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import type { DAOMember } from '@/lib/types/visualization';
+import { messages as m, format } from '@/lib/i18n';
 
 interface ChoroplethMapProps {
   members: DAOMember[];
@@ -10,6 +11,7 @@ interface ChoroplethMapProps {
   onLocationSelect?: (location: string | null, members: DAOMember[]) => void;
   isLoading?: boolean;
   maxLocations?: number;
+  heightClassName?: string;
 }
 
 interface LocationData {
@@ -28,14 +30,14 @@ const getLocationColor = (index: number, total: number, isSelected: boolean): st
 };
 
 // Loading skeleton
-function ChartSkeleton() {
+function ChartSkeleton({ heightClassName }: { heightClassName: string }) {
   return (
-    <div className="w-full h-[400px] p-4 bg-gray-800 rounded-lg shadow-lg animate-pulse">
+    <div className={`w-full ${heightClassName} p-4 bg-gray-800 rounded-lg shadow-lg animate-pulse`}>
       <div className="h-7 w-56 bg-gray-700 rounded mb-4" />
       <div className="h-[calc(100%-2.5rem)] flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 mx-auto mb-3 rounded-full border-4 border-gray-700 border-t-blue-500 animate-spin" />
-          <p className="text-gray-500 text-sm">Loading location data...</p>
+          <p className="text-gray-500 text-sm">{m.choropleth.loading}</p>
         </div>
       </div>
     </div>
@@ -43,9 +45,9 @@ function ChartSkeleton() {
 }
 
 // Empty state
-function EmptyState({ title }: { title: string }) {
+function EmptyState({ title, heightClassName }: { title: string; heightClassName: string }) {
   return (
-    <div className="w-full h-[400px] p-4 bg-gray-800 rounded-lg shadow-lg">
+    <div className={`w-full ${heightClassName} p-4 bg-gray-800 rounded-lg shadow-lg`}>
       <h3 className="text-xl font-bold mb-4 text-white">{title}</h3>
       <div className="h-[calc(100%-2.5rem)] flex items-center justify-center border-2 border-dashed border-gray-700 rounded-lg">
         <div className="text-center px-4">
@@ -69,8 +71,8 @@ function EmptyState({ title }: { title: string }) {
               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          <p className="text-gray-400 text-sm">No location data to display</p>
-          <p className="text-gray-500 text-xs mt-1">Start a simulation to see member distribution</p>
+          <p className="text-gray-400 text-sm">{m.choropleth.emptyMessage}</p>
+          <p className="text-gray-500 text-xs mt-1">{m.choropleth.emptyHelp}</p>
         </div>
       </div>
     </div>
@@ -110,7 +112,7 @@ function LocationDetailPanel({
         </div>
         {data.members.length > 0 && (
           <div className="pt-2 border-t border-gray-700">
-            <p className="text-gray-400 text-xs mb-1">Sample members:</p>
+            <p className="text-gray-400 text-xs mb-1">{m.choropleth.sampleMembers}:</p>
             <div className="flex flex-wrap gap-1">
               {data.members.slice(0, 5).map((id, i) => (
                 <span key={i} className="px-1.5 py-0.5 bg-gray-800 rounded text-xs text-gray-300 truncate max-w-[80px]">
@@ -119,7 +121,7 @@ function LocationDetailPanel({
               ))}
               {data.members.length > 5 && (
                 <span className="px-1.5 py-0.5 text-xs text-gray-500">
-                  +{data.members.length - 5} more
+                  {format(m.choropleth.moreMembers, { count: data.members.length - 5 })}
                 </span>
               )}
             </div>
@@ -136,8 +138,10 @@ export function ChoroplethMap({
   onLocationSelect,
   isLoading = false,
   maxLocations = 15,
+  heightClassName,
 }: ChoroplethMapProps) {
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const heightClass = heightClassName ?? 'h-[clamp(240px,45vh,420px)]';
 
   const locationData = useMemo<LocationData[]>(() => {
     if (!members || members.length === 0) return [];
@@ -203,11 +207,11 @@ export function ChoroplethMap({
   }, [selectedLocation, members, onLocationSelect]);
 
   if (isLoading) {
-    return <ChartSkeleton />;
+    return <ChartSkeleton heightClassName={heightClass} />;
   }
 
   if (!members || members.length === 0) {
-    return <EmptyState title={title} />;
+    return <EmptyState title={title} heightClassName={heightClass} />;
   }
 
   // Calculate dynamic left margin based on longest location name
@@ -216,7 +220,7 @@ export function ChoroplethMap({
 
   return (
     <div
-      className="w-full h-[400px] p-4 bg-gray-800 rounded-lg shadow-lg relative"
+      className={`w-full ${heightClass} p-4 bg-gray-800 rounded-lg shadow-lg relative`}
       role="img"
       aria-label={`Bar chart showing member distribution across ${locationData.length} locations`}
     >
@@ -228,7 +232,7 @@ export function ChoroplethMap({
           </p>
         </div>
         <div className="text-xs text-gray-400">
-          Click bars to see details
+          {m.choropleth.clickForDetails}
         </div>
       </div>
 
@@ -305,9 +309,9 @@ export function ChoroplethMap({
 
       {/* Stats footer */}
       <div className="absolute bottom-1 left-4 right-4 flex justify-between text-xs text-gray-500">
-        <span>Top location: {locationData[0]?.location} ({locationData[0]?.percentage.toFixed(1)}%)</span>
+        <span>{m.choropleth.topLocation}: {locationData[0]?.location} ({locationData[0]?.percentage.toFixed(1)}%)</span>
         <span>
-          {locationData.length === 1 ? '1 location' : `${locationData.length} locations shown`}
+          {format(m.choropleth.locationsShown, { count: locationData.length })}
         </span>
       </div>
 

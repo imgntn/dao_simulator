@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
+import { messages as m } from '@/lib/i18n';
 
 type MissionSummary = { id: string; title: string; achieved: boolean; currentLabel: string; targetLabel: string };
 type LogEntry = {
@@ -108,15 +109,15 @@ export function RunSummaryModal({
   const title =
     outcome === 'won'
       ? outcomeCause === 'missions_completed'
-        ? 'Objectives achieved'
-        : 'Run complete'
+        ? m.runSummary.objectivesAchieved
+        : m.runSummary.runComplete
       : outcomeCause === 'treasury_insolvency'
-      ? 'Run ended – treasury insolvent'
+      ? m.runSummary.treasuryInsolvency
       : outcomeCause === 'price_collapse'
-      ? 'Run ended – token price collapse'
+      ? m.runSummary.priceCollapse
       : outcomeCause === 'governance_backlog'
-      ? 'Run ended – governance backlog'
-      : 'Run ended';
+      ? m.runSummary.governanceBacklog
+      : m.runSummary.runEnded;
 
   const subtitle =
     outcome === 'won'
@@ -172,28 +173,28 @@ export function RunSummaryModal({
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3 text-sm text-gray-200" role="group" aria-label="Run statistics">
           <div className="rounded-lg border border-gray-700 bg-gray-800/70 p-3">
-            <p className="text-xs text-gray-400">Steps</p>
+            <p className="text-xs text-gray-400">{m.runSummary.steps}</p>
             <p className="text-lg font-semibold">{steps}</p>
           </div>
           <div className="rounded-lg border border-gray-700 bg-gray-800/70 p-3">
-            <p className="text-xs text-gray-400">Treasury</p>
+            <p className="text-xs text-gray-400">{m.reports.treasury}</p>
             <p className="text-lg font-semibold">{treasury.toLocaleString('en-US')}</p>
           </div>
           <div className="rounded-lg border border-gray-700 bg-gray-800/70 p-3">
-            <p className="text-xs text-gray-400">Preset</p>
+            <p className="text-xs text-gray-400">{m.runSummary.preset}</p>
             <p className="text-lg font-semibold">{preset ?? 'N/A'}</p>
           </div>
           <div className="rounded-lg border border-gray-700 bg-gray-800/70 p-3">
-            <p className="text-xs text-gray-400">Seed</p>
+            <p className="text-xs text-gray-400">{m.runSummary.seed}</p>
             <p className="text-lg font-semibold">{seed ?? 'N/A'}</p>
           </div>
           <div className="rounded-lg border border-gray-700 bg-gray-800/70 p-3">
-            <p className="text-xs text-gray-400">Strategy</p>
-            <p className="text-lg font-semibold">{strategyName ?? 'Baseline'}</p>
+            <p className="text-xs text-gray-400">{m.runSummary.strategy}</p>
+            <p className="text-lg font-semibold">{strategyName ?? m.runSummary.defaultStrategy}</p>
           </div>
           {outcomeCause && (
             <div className="rounded-lg border border-gray-700 bg-gray-800/70 p-3">
-              <p className="text-xs text-gray-400">Outcome</p>
+              <p className="text-xs text-gray-400">{m.runSummary.outcome}</p>
               <p className="text-sm font-semibold capitalize">
                 {outcomeCause.replace(/_/g, ' ')}
               </p>
@@ -224,9 +225,9 @@ export function RunSummaryModal({
                         ? 'bg-green-500/20 text-green-300'
                         : 'bg-gray-700 text-gray-300'
                     }`}
-                    aria-label={mission.achieved ? 'Completed' : 'Not completed'}
+                    aria-label={mission.achieved ? m.common.completed : m.common.pending}
                   >
-                    {mission.achieved ? 'Done' : 'Pending'}
+                    {mission.achieved ? m.common.done : m.common.pending}
                   </span>
                 </div>
               ))}
@@ -237,7 +238,7 @@ export function RunSummaryModal({
         {/* Timeline Section */}
         {log.length > 0 && (
           <div className="space-y-2">
-            <h3 className="text-sm font-semibold text-white">Timeline</h3>
+            <h3 className="text-sm font-semibold text-white">{m.runSummary.timeline}</h3>
             <div
               className="space-y-2 text-sm text-gray-200 max-h-64 overflow-y-auto pr-1"
               role="list"
@@ -279,13 +280,13 @@ export function RunSummaryModal({
             onClick={onClose}
             className="px-4 py-2 rounded-lg border border-gray-700 text-gray-200 hover:border-gray-500 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
           >
-            Close
+            {m.common.close}
           </button>
           <button
             onClick={onRetry}
             className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
           >
-            Retry with same preset
+            {m.runSummary.retryPreset}
           </button>
         </div>
       </div>

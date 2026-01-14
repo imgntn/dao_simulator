@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { messages as m } from '@/lib/i18n';
 
 export default function NotFound() {
   return (
@@ -20,9 +21,9 @@ export default function NotFound() {
         <h1 className="text-8xl font-bold text-gray-700 mb-4">404</h1>
 
         {/* Message */}
-        <h2 className="text-2xl font-semibold text-white mb-3">Page Not Found</h2>
+        <h2 className="text-2xl font-semibold text-white mb-3">{m.errors.pageNotFound}</h2>
         <p className="text-gray-400 mb-8">
-          The page you&apos;re looking for doesn&apos;t exist or has been moved.
+          {m.errors.pageNotFoundDesc}
         </p>
 
         {/* Navigation Options */}
@@ -31,13 +32,13 @@ export default function NotFound() {
             href="/"
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
           >
-            Go Home
+            {m.errors.goHome}
           </Link>
           <Link
             href="/dashboard"
             className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
           >
-            Open Dashboard
+            {m.errors.openDashboard}
           </Link>
         </div>
 

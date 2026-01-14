@@ -13,6 +13,7 @@ import {
   ReferenceLine,
   Brush,
 } from 'recharts';
+import { messages as m } from '@/lib/i18n';
 
 interface PriceLineChartProps {
   data: Array<{ step: number; price: number }>;
@@ -21,12 +22,13 @@ interface PriceLineChartProps {
   isLoading?: boolean;
   thresholds?: { warning?: number; critical?: number };
   onDataPointClick?: (step: number, price: number) => void;
+  heightClassName?: string;
 }
 
 // Loading skeleton component
-function ChartSkeleton({ title }: { title: string }) {
+function ChartSkeleton({ title, heightClassName }: { title: string; heightClassName: string }) {
   return (
-    <div className="w-full h-[400px] p-4 bg-gray-800 rounded-lg shadow-lg animate-pulse">
+    <div className={`w-full ${heightClassName} p-4 bg-gray-800 rounded-lg shadow-lg animate-pulse`}>
       <div className="h-6 w-48 bg-gray-700 rounded mb-4" />
       <div className="h-[calc(100%-2.5rem)] flex items-center justify-center">
         <div className="text-center">
@@ -39,9 +41,9 @@ function ChartSkeleton({ title }: { title: string }) {
 }
 
 // Empty state component
-function EmptyState({ title }: { title: string }) {
+function EmptyState({ title, heightClassName }: { title: string; heightClassName: string }) {
   return (
-    <div className="w-full h-[400px] p-4 bg-gray-800 rounded-lg shadow-lg">
+    <div className={`w-full ${heightClassName} p-4 bg-gray-800 rounded-lg shadow-lg`}>
       <h3 className="text-xl font-bold mb-4 text-white">{title}</h3>
       <div className="h-[calc(100%-2.5rem)] flex items-center justify-center border-2 border-dashed border-gray-700 rounded-lg">
         <div className="text-center px-4">
@@ -59,8 +61,8 @@ function EmptyState({ title }: { title: string }) {
               d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
             />
           </svg>
-          <p className="text-gray-400 text-sm">No price data available yet</p>
-          <p className="text-gray-500 text-xs mt-1">Start a simulation to see price history</p>
+          <p className="text-gray-400 text-sm">{m.charts.noDataYet}</p>
+          <p className="text-gray-500 text-xs mt-1">{m.charts.startToSee}</p>
         </div>
       </div>
     </div>
@@ -86,7 +88,7 @@ function PriceStats({
   return (
     <div className="flex items-center gap-4 text-xs">
       <div className="flex items-center gap-1">
-        <span className="text-gray-400">Current:</span>
+        <span className="text-gray-400">{m.charts.currentLabel}:</span>
         <span className="text-white font-semibold">${current.toFixed(4)}</span>
       </div>
       <div className={`flex items-center gap-1 ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
@@ -101,7 +103,7 @@ function PriceStats({
         <span>{isPositive ? '+' : ''}{changePercent.toFixed(2)}%</span>
       </div>
       <div className="flex items-center gap-1 text-gray-400">
-        <span>Range:</span>
+        <span>{m.charts.rangeLabel}:</span>
         <span className="text-gray-300">${min.toFixed(4)} - ${max.toFixed(4)}</span>
       </div>
     </div>
@@ -115,9 +117,11 @@ export function PriceLineChart({
   isLoading = false,
   thresholds,
   onDataPointClick,
+  heightClassName,
 }: PriceLineChartProps) {
   // Track brush range for potential future use (zoom state)
   const [, setBrushRange] = useState<{ startIndex?: number; endIndex?: number }>({});
+  const heightClass = heightClassName ?? 'h-[clamp(240px,45vh,420px)]';
 
   // Memoize chart data transformation
   const chartData = useMemo(() => {
@@ -161,12 +165,12 @@ export function PriceLineChart({
 
   // Show loading state
   if (isLoading) {
-    return <ChartSkeleton title={title} />;
+    return <ChartSkeleton title={title} heightClassName={heightClass} />;
   }
 
   // Show empty state
   if (!data || data.length === 0) {
-    return <EmptyState title={title} />;
+    return <EmptyState title={title} heightClassName={heightClass} />;
   }
 
   // Calculate Y-axis domain with padding
@@ -175,14 +179,14 @@ export function PriceLineChart({
 
   return (
     <div
-      className="w-full h-[400px] p-4 bg-gray-800 rounded-lg shadow-lg"
+      className={`w-full ${heightClass} p-4 bg-gray-800 rounded-lg shadow-lg`}
       role="img"
       aria-label={`${title} chart showing ${data.length} data points`}
     >
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="text-xl font-bold text-white">{title}</h3>
-          <p className="text-xs text-gray-500">{data.length} data points</p>
+          <p className="text-xs text-gray-500">{data.length} {m.charts.dataPoints}</p>
         </div>
         {stats && (
           <PriceStats

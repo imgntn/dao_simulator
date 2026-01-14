@@ -3,12 +3,14 @@
 import { useMemo, useState, useCallback } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, Cell, ResponsiveContainer, CartesianGrid, ReferenceLine } from 'recharts';
 import type { DAOMember } from '@/lib/types/visualization';
+import { messages as m, format } from '@/lib/i18n';
 
 interface MemberHeatmapProps {
   members: DAOMember[];
   title?: string;
   onMemberSelect?: (member: DAOMember | null) => void;
   isLoading?: boolean;
+  heightClassName?: string;
 }
 
 interface HeatmapDataPoint {
@@ -42,21 +44,21 @@ const getScoreColor = (score: number): string => {
 
 // Get quadrant label
 const getQuadrant = (rep: number, tokens: number): string => {
-  if (rep >= 50 && tokens >= 50) return 'High Influence';
-  if (rep >= 50 && tokens < 50) return 'High Rep / Low Tokens';
-  if (rep < 50 && tokens >= 50) return 'Low Rep / High Tokens';
-  return 'Low Influence';
+  if (rep >= 50 && tokens >= 50) return m.heatmap.quadrantHighInfluence;
+  if (rep >= 50 && tokens < 50) return m.heatmap.quadrantHighRepLowTokens;
+  if (rep < 50 && tokens >= 50) return m.heatmap.quadrantLowRepHighTokens;
+  return m.heatmap.quadrantLowInfluence;
 };
 
 // Loading skeleton
-function HeatmapSkeleton() {
+function HeatmapSkeleton({ heightClassName }: { heightClassName: string }) {
   return (
-    <div className="w-full h-[400px] p-4 bg-gray-800 rounded-lg shadow-lg animate-pulse">
+    <div className={`w-full ${heightClassName} p-4 bg-gray-800 rounded-lg shadow-lg animate-pulse`}>
       <div className="h-7 w-64 bg-gray-700 rounded mb-4" />
       <div className="h-[calc(100%-2.5rem)] flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 mx-auto mb-3 rounded-full border-4 border-gray-700 border-t-blue-500 animate-spin" />
-          <p className="text-gray-500 text-sm">Loading member data...</p>
+          <p className="text-gray-500 text-sm">{m.heatmap.loading}</p>
         </div>
       </div>
     </div>
@@ -64,9 +66,9 @@ function HeatmapSkeleton() {
 }
 
 // Empty state
-function EmptyState({ title }: { title: string }) {
+function EmptyState({ title, heightClassName }: { title: string; heightClassName: string }) {
   return (
-    <div className="w-full h-[400px] p-4 bg-gray-800 rounded-lg shadow-lg">
+    <div className={`w-full ${heightClassName} p-4 bg-gray-800 rounded-lg shadow-lg`}>
       <h3 className="text-xl font-bold mb-4 text-white">{title}</h3>
       <div className="h-[calc(100%-2.5rem)] flex items-center justify-center border-2 border-dashed border-gray-700 rounded-lg">
         <div className="text-center px-4">
@@ -84,8 +86,8 @@ function EmptyState({ title }: { title: string }) {
               d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
-          <p className="text-gray-400 text-sm">No members to display</p>
-          <p className="text-gray-500 text-xs mt-1">Start a simulation to see member data</p>
+          <p className="text-gray-400 text-sm">{m.heatmap.emptyMessage}</p>
+          <p className="text-gray-500 text-xs mt-1">{m.heatmap.emptyHelp}</p>
         </div>
       </div>
     </div>
@@ -104,7 +106,7 @@ function ColorLegend() {
 
   return (
     <div className="flex items-center gap-2 text-xs text-gray-400">
-      <span>Low</span>
+      <span>{m.heatmap.colorLow}</span>
       <div className="w-24 h-3 rounded-sm overflow-hidden flex">
         {gradientStops.map((stop, i) => (
           <div
@@ -114,7 +116,7 @@ function ColorLegend() {
           />
         ))}
       </div>
-      <span>High</span>
+      <span>{m.heatmap.colorHigh}</span>
     </div>
   );
 }
@@ -172,8 +174,10 @@ export function MemberHeatmap({
   title = 'Member Score: Reputation vs Token Balance',
   onMemberSelect,
   isLoading = false,
+  heightClassName,
 }: MemberHeatmapProps) {
   const [selectedMember, setSelectedMember] = useState<HeatmapDataPoint | null>(null);
+  const heightClass = heightClassName ?? 'h-[clamp(240px,45vh,420px)]';
 
   const heatmapData = useMemo<HeatmapDataPoint[]>(() => {
     if (!members || members.length === 0) return [];
@@ -228,16 +232,16 @@ export function MemberHeatmap({
   }, [members, onMemberSelect]);
 
   if (isLoading) {
-    return <HeatmapSkeleton />;
+    return <HeatmapSkeleton heightClassName={heightClass} />;
   }
 
   if (!members || members.length === 0) {
-    return <EmptyState title={title} />;
+    return <EmptyState title={title} heightClassName={heightClass} />;
   }
 
   return (
     <div
-      className="w-full h-[400px] p-4 bg-gray-800 rounded-lg shadow-lg relative"
+      className={`w-full ${heightClass} p-4 bg-gray-800 rounded-lg shadow-lg relative`}
       role="img"
       aria-label={`Scatter plot showing ${members.length} members by reputation and token balance`}
     >
@@ -362,9 +366,9 @@ export function MemberHeatmap({
       {/* Statistics bar */}
       {stats && (
         <div className="absolute bottom-1 left-4 right-4 flex justify-between text-xs text-gray-500">
-          <span>{stats.total} members</span>
-          <span>Avg score: {stats.avgScore.toFixed(1)}</span>
-          <span>{stats.highInfluence} high-influence</span>
+          <span>{format(m.heatmap.membersCount, { count: stats.total })}</span>
+          <span>{format(m.heatmap.avgScore, { score: stats.avgScore.toFixed(1) })}</span>
+          <span>{format(m.heatmap.highInfluenceCount, { count: stats.highInfluence })}</span>
         </div>
       )}
 

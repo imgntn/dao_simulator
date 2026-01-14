@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { m, toRegex, buttons, tabs } from './utils/i18n-helpers';
 
 /**
  * Simulation Tests - Tests for running simulations
@@ -7,7 +8,7 @@ import { test, expect, Page } from '@playwright/test';
 
 // Helper to wait for WebSocket connection
 async function waitForConnection(page: Page, timeout = 15000) {
-  await expect(page.getByText('Connected')).toBeVisible({ timeout });
+  await expect(page.getByText(m.common.connected)).toBeVisible({ timeout });
 }
 
 // Helper to wait for simulation to reach a certain step
@@ -21,7 +22,7 @@ async function waitForStep(page: Page, minStep: number, timeout = 60000) {
 }
 
 async function resetSimulation(page: Page) {
-  const resetButton = page.getByRole('button', { name: /Reset/i });
+  const resetButton = page.getByRole('button', { name: buttons.reset });
   await resetButton.click();
   await expect(page.locator('text=/Step:\\s*0/')).toBeVisible();
 }
@@ -31,7 +32,7 @@ async function closeRunSummaryIfOpen(page: Page) {
   if (await modal.count() === 0) return;
   if (!(await modal.first().isVisible())) return;
 
-  const closeButton = modal.getByRole('button', { name: /Close/i });
+  const closeButton = modal.getByRole('button', { name: buttons.close });
   if (await closeButton.isVisible()) {
     await closeButton.click();
     await expect(modal).toHaveCount(0);
@@ -54,9 +55,9 @@ async function waitForStepWithRecovery(page: Page, minStep: number, timeout = 60
 
     await closeRunSummaryIfOpen(page);
 
-    const isRunning = await page.getByText('Running').first().isVisible();
+    const isRunning = await page.getByText(m.common.running).first().isVisible();
     if (!isRunning) {
-      const startButton = page.getByRole('button', { name: /Start.*Space/i });
+      const startButton = page.getByRole('button', { name: buttons.start });
       if (await startButton.isEnabled()) {
         await startButton.click();
       }
@@ -78,22 +79,22 @@ test.describe('Simulation Controls', () => {
 
   test('can start and stop simulation', async ({ page }) => {
     // Start simulation
-    const startButton = page.getByRole('button', { name: /Start.*Space/i });
+    const startButton = page.getByRole('button', { name: buttons.start });
     await startButton.click();
 
     // Should show as running
-    await expect(page.getByText('Running').first()).toBeVisible();
+    await expect(page.getByText(m.common.running).first()).toBeVisible();
 
     // Wait for at least 1 step
     await waitForStep(page, 1);
 
     // Stop simulation
-    const stopButton = page.getByRole('button', { name: /Stop/i });
+    const stopButton = page.getByRole('button', { name: buttons.stop });
     await expect(stopButton).toBeEnabled();
     await stopButton.click();
 
     // Should show as paused
-    await expect(page.getByText('Paused').first()).toBeVisible();
+    await expect(page.getByText(m.common.paused).first()).toBeVisible();
   });
 
   test('can step simulation manually', async ({ page }) => {
@@ -101,7 +102,7 @@ test.describe('Simulation Controls', () => {
     const initialStep = await getCurrentStep(page);
 
     // Click step button
-    const stepButton = page.getByRole('button', { name: /Step \(F\)/i });
+    const stepButton = page.getByRole('button', { name: buttons.step });
     await stepButton.click();
 
     // Wait for step to increment
@@ -114,7 +115,7 @@ test.describe('Simulation Controls', () => {
 
   test('can reset simulation', async ({ page }) => {
     // Start simulation
-    await page.getByRole('button', { name: /Start.*Space/i }).click();
+    await page.getByRole('button', { name: buttons.start }).click();
 
     // Wait for some steps
     await waitForStep(page, 5);
@@ -122,13 +123,13 @@ test.describe('Simulation Controls', () => {
     await closeRunSummaryIfOpen(page);
 
     // Stop simulation (if still running)
-    const stopButton = page.getByRole('button', { name: /Stop/i });
+    const stopButton = page.getByRole('button', { name: buttons.stop });
     if (await stopButton.isEnabled()) {
       await stopButton.click();
     }
 
     // Reset simulation
-    await page.getByRole('button', { name: /Reset/i }).click();
+    await page.getByRole('button', { name: buttons.reset }).click();
 
     // Step should reset to 0
     await expect(page.locator('text=/Step:\\s*0/')).toBeVisible();
@@ -140,7 +141,7 @@ test.describe('Simulation Controls', () => {
     await speedSelect.selectOption('8');
 
     // Start simulation
-    await page.getByRole('button', { name: /Start.*Space/i }).click();
+    await page.getByRole('button', { name: buttons.start }).click();
 
     // Should reach step 10 faster at 8x speed
     const startTime = Date.now();
@@ -154,7 +155,7 @@ test.describe('Simulation Controls', () => {
     await closeRunSummaryIfOpen(page);
 
     // Stop simulation (if still running)
-    const stopButton = page.getByRole('button', { name: /Stop/i });
+    const stopButton = page.getByRole('button', { name: buttons.stop });
     if (await stopButton.isEnabled()) {
       await stopButton.click();
     }
@@ -171,42 +172,42 @@ test.describe('Single DAO Simulation', () => {
 
   test('simulation updates UI elements', async ({ page }) => {
     // Start simulation
-    await page.getByRole('button', { name: /Start.*Space/i }).click();
+    await page.getByRole('button', { name: buttons.start }).click();
 
     // Wait for data to arrive
     await waitForStep(page, 3);
 
     // Stop to check UI state
-    await page.getByRole('button', { name: /Stop/i }).click();
+    await page.getByRole('button', { name: buttons.stop }).click();
 
     // Go to Charts tab to see price chart
-    await page.getByRole('button', { name: /Charts/i }).click();
+    await page.getByRole('button', { name: toRegex(tabs.charts) }).click();
 
     // Price chart should be visible and have data
-    await expect(page.getByText(/DAO Token Price History/i)).toBeVisible();
+    await expect(page.getByText(toRegex(m.charts.priceHistory))).toBeVisible();
   });
 
   test('simulation shows operations log entries', async ({ page }) => {
     // Start simulation
-    await page.getByRole('button', { name: /Start.*Space/i }).click();
+    await page.getByRole('button', { name: buttons.start }).click();
 
     // Wait for at least 15 steps to get log entries (logged every 10 steps)
     await waitForStep(page, 15);
 
     // Stop simulation
-    await page.getByRole('button', { name: /Stop/i }).click();
+    await page.getByRole('button', { name: buttons.stop }).click();
 
     // Check for operations log on Overview tab
-    await page.getByRole('button', { name: /Overview/i }).click();
-    await page.getByRole('button', { name: /Ops Log/i }).click();
+    await page.getByRole('button', { name: toRegex(tabs.overview) }).click();
+    await page.getByRole('button', { name: toRegex(m.panels.opsLog) }).click();
 
     // Operations log should be visible
-    await expect(page.getByText(/Operations Log/i)).toBeVisible();
+    await expect(page.getByText(toRegex(m.opsLog.title))).toBeVisible();
   });
 
   test('simulation tracks mission progress', async ({ page }) => {
     // Start simulation
-    await page.getByRole('button', { name: /Start.*Space/i }).click();
+    await page.getByRole('button', { name: buttons.start }).click();
 
     // Wait for some steps
     await waitForStep(page, 5);
@@ -229,36 +230,36 @@ test.describe('DAO City Simulation', () => {
     await resetSimulation(page);
 
     // Switch to DAO City mode
-    await page.getByRole('button', { name: /DAO City/i }).click();
+    await page.getByRole('button', { name: toRegex(m.controls.daoCity) }).click();
   });
 
   test('can start DAO City simulation', async ({ page }) => {
     // Start city simulation
-    await page.getByRole('button', { name: /Start City.*Space/i }).click();
+    await page.getByRole('button', { name: buttons.startCity }).click();
 
     // Should show as running (allow extra time for city init)
-    await expect(page.getByText('Running').first()).toBeVisible({ timeout: 30000 });
+    await expect(page.getByText(m.common.running).first()).toBeVisible({ timeout: 30000 });
 
     // Wait for steps (city simulation is slower)
     await waitForStep(page, 2, 30000);
 
     // Stop
-    await page.getByRole('button', { name: /Stop/i }).click();
+    await page.getByRole('button', { name: buttons.stop }).click();
   });
 
   test('DAO City shows multiple DAOs', async ({ page }) => {
     // Start city simulation
-    await page.getByRole('button', { name: /Start City.*Space/i }).click();
+    await page.getByRole('button', { name: buttons.startCity }).click();
 
     // Wait for data (reduced steps, increased timeout)
     await waitForStep(page, 2, 30000);
 
     // Go to 3D View tab
-    await page.getByRole('button', { name: /3D View/i }).click();
+    await page.getByRole('button', { name: toRegex(tabs.view3d) }).click();
 
     // Should see city visualization or loading state
     const cityPanel = page.locator('#section-3d');
-    await expect(cityPanel.getByText(/DAO City|Loading DAO City/i)).toBeVisible();
+    await expect(cityPanel.getByText(new RegExp(`${m.daoCity.title}|Loading`, 'i'))).toBeVisible();
   });
 });
 
@@ -376,7 +377,7 @@ test.describe('Keyboard Shortcuts', () => {
     await page.keyboard.press('Space');
 
     // Should be running
-    await expect(page.getByText('Running').first()).toBeVisible();
+    await expect(page.getByText(m.common.running).first()).toBeVisible();
 
     // Wait for a step
     await waitForStep(page, 1);
@@ -385,7 +386,7 @@ test.describe('Keyboard Shortcuts', () => {
     await page.keyboard.press('Space');
 
     // Should be paused
-    await expect(page.getByText('Paused').first()).toBeVisible();
+    await expect(page.getByText(m.common.paused).first()).toBeVisible();
   });
 
   test('F key steps simulation', async ({ page }) => {
@@ -440,22 +441,22 @@ test.describe('Preset and Strategy Simulation', () => {
 
   test('simulation runs with Validator-First preset', async ({ page }) => {
     // Go to Strategy tab
-    await page.getByRole('button', { name: /Strategy/i }).click();
+    await page.getByRole('button', { name: toRegex(tabs.strategy) }).click();
 
     // Select Validator-First preset
-    await page.getByRole('button', { name: /Validator-First/i }).click();
+    await page.getByRole('button', { name: toRegex(m.presets.validatorFirst) }).click();
 
     // Go back to Overview
-    await page.getByRole('button', { name: /Overview/i }).click();
+    await page.getByRole('button', { name: toRegex(tabs.overview) }).click();
 
     // Start simulation
-    await page.getByRole('button', { name: /Start.*Space/i }).click();
+    await page.getByRole('button', { name: buttons.start }).click();
 
     // Wait for steps
     await waitForStep(page, 5);
 
     // Stop
-    await page.getByRole('button', { name: /Stop/i }).click();
+    await page.getByRole('button', { name: buttons.stop }).click();
 
     // Verify it ran
     expect(await getCurrentStep(page)).toBeGreaterThanOrEqual(5);
@@ -463,43 +464,43 @@ test.describe('Preset and Strategy Simulation', () => {
 
   test('simulation runs with Growth Mode strategy', async ({ page }) => {
     // Go to Strategy tab
-    await page.getByRole('button', { name: /Strategy/i }).click();
+    await page.getByRole('button', { name: toRegex(tabs.strategy) }).click();
 
     // Select Growth Mode strategy
-    await page.getByRole('button', { name: /Growth Mode/i }).click();
+    await page.getByRole('button', { name: toRegex(m.strategies.growthMode) }).click();
 
     // Go back to Overview
-    await page.getByRole('button', { name: /Overview/i }).click();
+    await page.getByRole('button', { name: toRegex(tabs.overview) }).click();
 
     // Start simulation
-    await page.getByRole('button', { name: /Start.*Space/i }).click();
+    await page.getByRole('button', { name: buttons.start }).click();
 
     // Wait for steps
     await waitForStep(page, 5);
 
     // Stop
-    await page.getByRole('button', { name: /Stop/i }).click();
+    await page.getByRole('button', { name: buttons.stop }).click();
   });
 
   test('Daily Challenge can be started', async ({ page }) => {
     // Go to Strategy tab
-    await page.getByRole('button', { name: /Strategy/i }).click();
+    await page.getByRole('button', { name: toRegex(tabs.strategy) }).click();
 
     // Find and click Daily Challenge start button
     const dailyChallengeSection = page
-      .getByRole('heading', { name: /Daily Challenge/i })
+      .getByRole('heading', { name: toRegex(m.challenges.daily) })
       .locator('..')
       .locator('..');
-    await dailyChallengeSection.getByRole('button', { name: /Start challenge/i }).click();
+    await dailyChallengeSection.getByRole('button', { name: toRegex(m.challenges.startChallenge) }).click();
 
     // Should start running
-    await expect(page.getByText('Running').first()).toBeVisible();
+    await expect(page.getByText(m.common.running).first()).toBeVisible();
 
     // Wait for steps
     await waitForStep(page, 3);
 
     // Stop
-    await page.getByRole('button', { name: /Stop/i }).click();
+    await page.getByRole('button', { name: buttons.stop }).click();
   });
 });
 
@@ -530,20 +531,20 @@ test.describe('Market Shocks', () => {
     await speedSelect.selectOption('8');
 
     // Start simulation with a preset that has market shocks
-    await page.getByRole('button', { name: /Start.*Space/i }).click();
+    await page.getByRole('button', { name: buttons.start }).click();
 
     // Run for 20 steps to check ops log (reduced from 50)
     await waitForStep(page, 20, 30000);
 
     // Stop simulation
-    await page.getByRole('button', { name: /Stop/i }).click();
+    await page.getByRole('button', { name: buttons.stop }).click();
 
     // Check operations log exists (may or may not have shocks depending on RNG)
-    await page.getByRole('button', { name: /Overview/i }).click();
-    await page.getByRole('button', { name: /Ops Log/i }).click();
+    await page.getByRole('button', { name: toRegex(tabs.overview) }).click();
+    await page.getByRole('button', { name: toRegex(m.panels.opsLog) }).click();
 
     // Operations log should be visible if we have entries
-    await expect(page.getByText(/Operations Log/i)).toBeVisible();
+    await expect(page.getByText(toRegex(m.opsLog.title))).toBeVisible();
     // Just verify the page is stable after running
     await expect(page.locator('main')).toBeVisible();
   });
