@@ -4,6 +4,7 @@
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
 import type { Project } from '../data-structures/project';
+import type { VotingStrategy } from '../utils/voting-strategies';
 import { random, randomChoice } from '../utils/random';
 
 export class ExternalPartner extends DAOMember {
@@ -15,9 +16,9 @@ export class ExternalPartner extends DAOMember {
     tokens: number = 100,
     reputation: number = 50,
     location: string = 'node_0',
-    votingStrategy: any = null
+    votingStrategy?: string | VotingStrategy | null
   ) {
-    super(uniqueId, model, tokens, reputation, location, votingStrategy);
+    super(uniqueId, model, tokens, reputation, location, votingStrategy ?? undefined);
   }
 
   /**
@@ -89,7 +90,7 @@ export class ExternalPartner extends DAOMember {
    * Collaborate on a random project
    */
   collaborateOnRandomProject(): void {
-    if (this.model.dao.projects.length === 0) {
+    if (!this.model.dao || this.model.dao.projects.length === 0) {
       return;
     }
 
@@ -119,14 +120,22 @@ export class ExternalPartner extends DAOMember {
   }
 
   step(): void {
-    const probability = (this.model.dao as any).externalPartnerInteractProbability || 0.0;
+    if (!this.model.dao) return;
+
+    const probability = this.model.dao.externalPartnerInteractProbability || 0.0;
 
     if (random() < probability) {
       this.interactWithDao();
     }
   }
 
-  toDict(): any {
+  toDict(): {
+    uniqueId: string;
+    tokens: number;
+    reputation: number;
+    location: string;
+    collaboratedProjects: string[];
+  } {
     return {
       uniqueId: this.uniqueId,
       tokens: this.tokens,

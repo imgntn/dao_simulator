@@ -40,8 +40,11 @@ export class AdaptiveInvestor extends Investor {
       votingStrategy,
       investmentBudget
     );
-    this.learningRate = Math.max(0, Math.min(1, learningRate)); // Clamp to [0,1]
-    this.epsilon = Math.max(0, Math.min(1, epsilon)); // Clamp to [0,1]
+    // Validate and clamp learning parameters to [0,1]
+    const sanitizedLearningRate = Number.isFinite(learningRate) ? learningRate : DEFAULT_LEARNING_RATE;
+    const sanitizedEpsilon = Number.isFinite(epsilon) ? epsilon : DEFAULT_EPSILON;
+    this.learningRate = Math.max(0, Math.min(1, sanitizedLearningRate));
+    this.epsilon = Math.max(0, Math.min(1, sanitizedEpsilon));
   }
 
   /**
@@ -136,8 +139,11 @@ export class AdaptiveInvestor extends Investor {
     const delta = price - this.lastPrice;
     this.lastPrice = price;
 
+    // Create a copy of entries to iterate safely while deleting
+    const investmentEntries = Array.from(this.investments.entries());
+
     // Update Q-values for each investment
-    for (const [proposalId, amount] of this.investments.entries()) {
+    for (const [proposalId, amount] of investmentEntries) {
       const proposalType = this.investmentTypes.get(proposalId) || 'default';
 
       // Scale reward by investment size but cap it
@@ -159,15 +165,69 @@ export class AdaptiveInvestor extends Investor {
       const proposal = this.model.dao.proposals.find(
         (p: Proposal) => p.uniqueId === proposalId
       );
-      if (proposal && proposal.status !== 'open') {
+      if (!proposal || proposal.status !== 'open') {
         this.investments.delete(proposalId);
         this.investmentTypes.delete(proposalId);
       }
     }
   }
 
+  /**
+   * Clean up stale Q-values for proposal types with no recent activity
+   * Should be called periodically (e.g., every 100 steps)
+   */
+  cleanupQTable(): void {
+    // Get all active proposal types
+    const activeTypes = new Set<string>();
+    for (const proposalType of this.investmentTypes.values()) {
+      activeTypes.add(proposalType);
+    }
+
+    // Also keep types from currently open proposals
+    if (this.model.dao) {
+      for (const proposal of this.model.dao.proposals) {
+        if (proposal.status === 'open') {
+          activeTypes.add(this.getProposalType(proposal));
+        }
+      }
+    }
+
+    // Remove Q-values for types with no activity, unless Q-table is small
+    // Keep at least some entries for learning diversity
+    const MAX_STALE_ENTRIES = 10;
+    const staleEntries: string[] = [];
+
+    for (const proposalType of this.qTable.keys()) {
+      if (!activeTypes.has(proposalType)) {
+        staleEntries.push(proposalType);
+      }
+    }
+
+    // Only clean up if we have too many stale entries
+    if (staleEntries.length > MAX_STALE_ENTRIES) {
+      // Keep the entries with highest absolute Q-values (most learned)
+      staleEntries.sort((a, b) => {
+        const qA = Math.abs(this.qTable.get(a) || 0);
+        const qB = Math.abs(this.qTable.get(b) || 0);
+        return qA - qB; // Ascending - remove lowest first
+      });
+
+      // Remove excess stale entries
+      const toRemove = staleEntries.slice(0, staleEntries.length - MAX_STALE_ENTRIES);
+      for (const proposalType of toRemove) {
+        this.qTable.delete(proposalType);
+      }
+    }
+  }
+
   step(): void {
     this.updateQValues();
+
+    // Periodic Q-table cleanup (every 100 steps)
+    if (this.model.currentStep > 0 && this.model.currentStep % 100 === 0) {
+      this.cleanupQTable();
+    }
+
     super.step();
   }
 }

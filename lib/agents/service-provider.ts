@@ -40,8 +40,12 @@ export class ServiceProvider extends DAOMember {
     serviceBudget: number = 100
   ) {
     super(uniqueId, model, tokens, reputation, location, votingStrategy);
-    this.serviceBudget = serviceBudget;
-    this.maxServiceBudget = serviceBudget;
+    // Validate and sanitize service budget
+    const sanitizedBudget = Number.isFinite(serviceBudget) && serviceBudget >= 0
+      ? serviceBudget
+      : 100;
+    this.serviceBudget = sanitizedBudget;
+    this.maxServiceBudget = sanitizedBudget;
     // Assign random specialization and quality
     this.specialization = randomChoice([...SERVICES]);
     this.qualityRating = 0.5 + random();

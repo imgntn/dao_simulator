@@ -10,6 +10,7 @@ import type { Violation } from './violation';
 import type { Guild } from './guild';
 import type { DAOMember } from '../agents/base';
 import type { NFTMarketplace } from './nft';
+import type { MarketShock } from './market-shock';
 
 export class DAO {
   name: string;
@@ -36,8 +37,16 @@ export class DAO {
   slashFraction: number;
   reputationDecayRate: number;
   currentStep: number = 0;
-  marketShocks: any[] = [];
+  marketShocks: MarketShock[] = [];
   currentShock: number = 0;
+
+  // Pending removal queues for safe iteration
+  private pendingProposalRemovals: Set<Proposal> = new Set();
+  private pendingProjectRemovals: Set<Project> = new Set();
+  private pendingMemberRemovals: Set<DAOMember> = new Set();
+  private pendingDisputeRemovals: Set<Dispute> = new Set();
+  private pendingViolationRemovals: Set<Violation> = new Set();
+  private pendingGuildRemovals: Set<Guild> = new Set();
 
   constructor(
     name: string,
@@ -142,6 +151,146 @@ export class DAO {
     this.members.push(member);
   }
 
+  // ==========================================================================
+  // Safe Iteration Methods - return copies to prevent modification during iteration
+  // ==========================================================================
+
+  /**
+   * Get a safe copy of proposals for iteration
+   */
+  getProposalsSnapshot(): Proposal[] {
+    return [...this.proposals];
+  }
+
+  /**
+   * Get a safe copy of projects for iteration
+   */
+  getProjectsSnapshot(): Project[] {
+    return [...this.projects];
+  }
+
+  /**
+   * Get a safe copy of members for iteration
+   */
+  getMembersSnapshot(): DAOMember[] {
+    return [...this.members];
+  }
+
+  // ==========================================================================
+  // Mark for Removal Methods - safe for use during iteration
+  // ==========================================================================
+
+  /**
+   * Mark a proposal for removal (processed at end of step)
+   */
+  markProposalForRemoval(proposal: Proposal): void {
+    this.pendingProposalRemovals.add(proposal);
+  }
+
+  /**
+   * Mark a project for removal (processed at end of step)
+   */
+  markProjectForRemoval(project: Project): void {
+    this.pendingProjectRemovals.add(project);
+  }
+
+  /**
+   * Mark a member for removal (processed at end of step)
+   */
+  markMemberForRemoval(member: DAOMember): void {
+    this.pendingMemberRemovals.add(member);
+  }
+
+  /**
+   * Mark a dispute for removal (processed at end of step)
+   */
+  markDisputeForRemoval(dispute: Dispute): void {
+    this.pendingDisputeRemovals.add(dispute);
+  }
+
+  /**
+   * Mark a violation for removal (processed at end of step)
+   */
+  markViolationForRemoval(violation: Violation): void {
+    this.pendingViolationRemovals.add(violation);
+  }
+
+  /**
+   * Mark a guild for removal (processed at end of step)
+   */
+  markGuildForRemoval(guild: Guild): void {
+    this.pendingGuildRemovals.add(guild);
+  }
+
+  /**
+   * Process all pending removals - call at end of simulation step
+   */
+  processPendingRemovals(): void {
+    // Process proposal removals
+    for (const proposal of this.pendingProposalRemovals) {
+      const index = this.proposals.indexOf(proposal);
+      if (index > -1) {
+        this.proposals.splice(index, 1);
+      }
+    }
+    this.pendingProposalRemovals.clear();
+
+    // Process project removals
+    for (const project of this.pendingProjectRemovals) {
+      const index = this.projects.indexOf(project);
+      if (index > -1) {
+        this.projects.splice(index, 1);
+      }
+    }
+    this.pendingProjectRemovals.clear();
+
+    // Process member removals
+    for (const member of this.pendingMemberRemovals) {
+      const index = this.members.indexOf(member);
+      if (index > -1) {
+        this.members.splice(index, 1);
+      }
+    }
+    this.pendingMemberRemovals.clear();
+
+    // Process dispute removals
+    for (const dispute of this.pendingDisputeRemovals) {
+      const index = this.disputes.indexOf(dispute);
+      if (index > -1) {
+        this.disputes.splice(index, 1);
+      }
+    }
+    this.pendingDisputeRemovals.clear();
+
+    // Process violation removals
+    for (const violation of this.pendingViolationRemovals) {
+      const index = this.violations.indexOf(violation);
+      if (index > -1) {
+        this.violations.splice(index, 1);
+      }
+    }
+    this.pendingViolationRemovals.clear();
+
+    // Process guild removals
+    for (const guild of this.pendingGuildRemovals) {
+      const index = this.guilds.indexOf(guild);
+      if (index > -1) {
+        this.guilds.splice(index, 1);
+        if (this.eventBus) {
+          this.eventBus.publish('guild_removed', {
+            step: this.currentStep,
+            guild: guild.name,
+          });
+        }
+      }
+    }
+    this.pendingGuildRemovals.clear();
+  }
+
+  // ==========================================================================
+  // Immediate Removal Methods - use only when not iterating
+  // ==========================================================================
+
   removeProposal(proposal: Proposal): void {
     const index = this.proposals.indexOf(proposal);
     if (index > -1) {
@@ -177,9 +326,13 @@ export class DAO {
     }
   }
 
-  createGuild(name: string, creator?: DAOMember): Guild {
-    // Import here to avoid circular dependency
-    const { Guild } = require('./guild');
+  /**
+   * Create a new guild - async to support dynamic import
+   * Use createGuildSync if you're sure the Guild class is already loaded
+   */
+  async createGuild(name: string, creator?: DAOMember): Promise<Guild> {
+    // Dynamic import to avoid circular dependency at module load time
+    const { Guild } = await import('./guild');
     const guild = new Guild(name, this, creator);
     this.guilds.push(guild);
 
@@ -194,12 +347,54 @@ export class DAO {
     return guild;
   }
 
-  removeGuild(guild: Guild): void {
+  // Cache for the Guild class once loaded
+  private static GuildClass: typeof import('./guild').Guild | null = null;
+
+  /**
+   * Synchronous guild creation - requires Guild class to be preloaded
+   * Call DAO.preloadGuildClass() at startup if using this method
+   */
+  createGuildSync(name: string, creator?: DAOMember): Guild {
+    if (!DAO.GuildClass) {
+      // Fallback to require if class not preloaded
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { Guild } = require('./guild');
+      DAO.GuildClass = Guild;
+    }
+
+    // GuildClass is guaranteed to be non-null after the above check
+    const GuildConstructor = DAO.GuildClass!;
+    const guild = new GuildConstructor(name, this, creator);
+    this.guilds.push(guild);
+
+    if (this.eventBus) {
+      this.eventBus.publish('guild_created', {
+        step: this.currentStep,
+        guild: name,
+        creator: creator?.uniqueId || null,
+      });
+    }
+
+    return guild;
+  }
+
+  /**
+   * Preload the Guild class for synchronous creation
+   * Call this at application startup
+   */
+  static async preloadGuildClass(): Promise<void> {
+    if (!DAO.GuildClass) {
+      const { Guild } = await import('./guild');
+      DAO.GuildClass = Guild;
+    }
+  }
+
+  removeGuild(guild: Guild, emitEvent: boolean = true): void {
     const index = this.guilds.indexOf(guild);
     if (index > -1) {
       this.guilds.splice(index, 1);
 
-      if (this.eventBus) {
+      if (emitEvent && this.eventBus) {
         this.eventBus.publish('guild_removed', {
           step: this.currentStep,
           guild: guild.name,

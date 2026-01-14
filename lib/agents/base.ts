@@ -44,11 +44,23 @@ export class DAOMember implements Agent {
     votingStrategy?: string | VotingStrategy,
     daoId?: string // Optional for backward compatibility
   ) {
+    // Validate required parameters
+    if (!uniqueId || typeof uniqueId !== 'string') {
+      throw new Error('Agent uniqueId must be a non-empty string');
+    }
+    if (!model) {
+      throw new Error('Agent model is required');
+    }
+
+    // Validate and sanitize numeric parameters
+    const sanitizedTokens = Number.isFinite(tokens) && tokens >= 0 ? tokens : 0;
+    const sanitizedReputation = Number.isFinite(reputation) && reputation >= 0 ? reputation : 0;
+
     this.uniqueId = uniqueId;
     this.model = model;
-    this.tokens = tokens;
-    this.reputation = reputation;
-    this.location = location;
+    this.tokens = sanitizedTokens;
+    this.reputation = sanitizedReputation;
+    this.location = location || 'node_0';
     this.stakingRate = model.dao?.stakingInterestRate || 0;
     this.optimism = random();
     // Set daoId from parameter, model's DAO, or default
@@ -152,7 +164,7 @@ export class DAOMember implements Agent {
   createGuild(name: string): Guild | null {
     if (!this.model.dao) return null;
 
-    const guild = this.model.dao.createGuild(name, this);
+    const guild = this.model.dao.createGuildSync(name, this);
     this.joinGuild(guild);
     return guild;
   }
@@ -220,8 +232,41 @@ export class DAOMember implements Agent {
     return random() < 0.5 ? 'yes' : 'no';
   }
 
+  // Cache for member lookup to avoid O(n) searches
+  private static memberLookupCache: Map<string, DAOMember> | null = null;
+  private static memberLookupCacheStep: number = -1;
+
+  /**
+   * Get or build member lookup cache
+   * Cache is invalidated each step to handle member changes
+   */
+  private getMemberLookup(): Map<string, DAOMember> {
+    const currentStep = this.model.currentStep;
+
+    // Rebuild cache if step changed or cache is null
+    if (DAOMember.memberLookupCache === null || DAOMember.memberLookupCacheStep !== currentStep) {
+      DAOMember.memberLookupCache = new Map();
+      if (this.model.dao) {
+        for (const member of this.model.dao.members) {
+          DAOMember.memberLookupCache.set(member.uniqueId, member);
+        }
+      }
+      DAOMember.memberLookupCacheStep = currentStep;
+    }
+
+    return DAOMember.memberLookupCache;
+  }
+
+  /**
+   * Find a member by ID using cached lookup (O(1) instead of O(n))
+   */
+  protected findMemberById(memberId: string): DAOMember | undefined {
+    return this.getMemberLookup().get(memberId);
+  }
+
   /**
    * Check if delegating to target would create a circular delegation
+   * Optimized with O(1) member lookup via cache
    */
   private wouldCreateCircularDelegation(target: DAOMember, visited: Set<string> = new Set()): boolean {
     // If we've seen this member before, we found a cycle
@@ -234,10 +279,10 @@ export class DAOMember implements Agent {
       return true;
     }
 
-    // Check transitively
+    // Check transitively with O(1) lookup
     visited.add(target.uniqueId);
     for (const delegateId of target.delegations.keys()) {
-      const delegateMember = this.model.dao?.members.find(m => m.uniqueId === delegateId);
+      const delegateMember = this.findMemberById(delegateId);
       if (delegateMember && this.wouldCreateCircularDelegation(delegateMember, visited)) {
         return true;
       }
@@ -250,15 +295,15 @@ export class DAOMember implements Agent {
    * Delegate tokens to another member
    * Prevents circular delegations where A -> B -> A would create infinite loops
    */
-  delegate(amount: number, delegate: DAOMember): void {
-    if (amount <= 0 || amount > this.tokens) return;
+  delegate(amount: number, delegate: DAOMember): boolean {
+    if (amount <= 0 || amount > this.tokens) return false;
 
     // Prevent self-delegation
-    if (delegate.uniqueId === this.uniqueId) return;
+    if (delegate.uniqueId === this.uniqueId) return false;
 
     // Prevent circular delegation
     if (this.wouldCreateCircularDelegation(delegate)) {
-      return;
+      return false;
     }
 
     this.tokens -= amount;
@@ -268,6 +313,92 @@ export class DAOMember implements Agent {
     if (!delegate.delegates.includes(this)) {
       delegate.delegates.push(this);
     }
+
+    return true;
+  }
+
+  /**
+   * Undelegate tokens from another member
+   * Returns the amount actually undelegated (may be less if not enough delegated)
+   */
+  undelegate(amount: number, delegate: DAOMember): number {
+    const currentDelegation = this.delegations.get(delegate.uniqueId) || 0;
+
+    if (currentDelegation <= 0) {
+      return 0;
+    }
+
+    // Can only undelegate up to what was delegated
+    const actualAmount = Math.min(amount, currentDelegation);
+
+    if (actualAmount <= 0) {
+      return 0;
+    }
+
+    // Return tokens to delegator
+    this.tokens += actualAmount;
+
+    // Update delegation amount
+    const newDelegation = currentDelegation - actualAmount;
+    if (newDelegation <= 0) {
+      this.delegations.delete(delegate.uniqueId);
+      // Remove from delegate's delegates list
+      const idx = delegate.delegates.indexOf(this);
+      if (idx > -1) {
+        delegate.delegates.splice(idx, 1);
+      }
+    } else {
+      this.delegations.set(delegate.uniqueId, newDelegation);
+    }
+
+    return actualAmount;
+  }
+
+  /**
+   * Undelegate all tokens from a specific delegate
+   */
+  undelegateAll(delegate: DAOMember): number {
+    const currentDelegation = this.delegations.get(delegate.uniqueId) || 0;
+    if (currentDelegation <= 0) {
+      return 0;
+    }
+    return this.undelegate(currentDelegation, delegate);
+  }
+
+  /**
+   * Revoke all delegations (emergency method)
+   * Returns total amount undelegated
+   */
+  revokeAllDelegations(): number {
+    let totalUndelegated = 0;
+
+    // Create a copy of delegation entries to iterate safely
+    const delegationEntries = Array.from(this.delegations.entries());
+
+    for (const [delegateId, amount] of delegationEntries) {
+      const delegateMember = this.findMemberById(delegateId);
+      if (delegateMember) {
+        totalUndelegated += this.undelegate(amount, delegateMember);
+      } else {
+        // Delegate no longer exists - recover tokens directly
+        this.tokens += amount;
+        this.delegations.delete(delegateId);
+        totalUndelegated += amount;
+      }
+    }
+
+    return totalUndelegated;
+  }
+
+  /**
+   * Get total amount delegated to others
+   */
+  getTotalDelegated(): number {
+    let total = 0;
+    for (const amount of this.delegations.values()) {
+      total += amount;
+    }
+    return total;
   }
 
   /**

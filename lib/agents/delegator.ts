@@ -24,8 +24,12 @@ export class Delegator extends DAOMember {
     delegationBudget: number = 100
   ) {
     super(uniqueId, model, tokens, reputation, location, votingStrategy);
-    this.delegationBudget = delegationBudget;
-    this.maxDelegationBudget = delegationBudget;
+    // Validate and sanitize delegation budget
+    const sanitizedBudget = Number.isFinite(delegationBudget) && delegationBudget >= 0
+      ? delegationBudget
+      : 100;
+    this.delegationBudget = sanitizedBudget;
+    this.maxDelegationBudget = sanitizedBudget;
   }
 
   step(): void {

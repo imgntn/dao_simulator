@@ -22,6 +22,11 @@ export class LiquidityPool {
   }
 
   addLiquidity(amountA: number, amountB: number, step: number = 0): void {
+    // Validate amounts - must be positive and finite
+    if (amountA <= 0 || amountB <= 0 || !Number.isFinite(amountA) || !Number.isFinite(amountB)) {
+      return;
+    }
+
     this.reserveA += amountA;
     this.reserveB += amountB;
 
@@ -58,6 +63,11 @@ export class LiquidityPool {
   }
 
   swap(tokenIn: string, amountIn: number, step: number = 0): number {
+    // Validate input amount
+    if (amountIn <= 0 || !Number.isFinite(amountIn)) {
+      return 0;
+    }
+
     let inReserve: number, outReserve: number, tokenOut: string;
 
     if (tokenIn === this.tokenA) {
@@ -70,19 +80,41 @@ export class LiquidityPool {
       tokenOut = this.tokenA;
     }
 
+    // Validate reserves - can't swap with empty pool
+    if (inReserve <= 0 || outReserve <= 0) {
+      return 0;
+    }
+
     // Constant product formula: x * y = k
     const k = inReserve * outReserve;
     const newIn = inReserve + amountIn;
+
+    // Safety check to prevent division issues
+    if (newIn <= 0) {
+      return 0;
+    }
+
     const newOut = k / newIn;
-    const amountOut = outReserve - newOut;
+    let amountOut = outReserve - newOut;
+
+    // Ensure amountOut is valid and positive
+    if (!Number.isFinite(amountOut) || amountOut < 0) {
+      return 0;
+    }
+
+    // Prevent draining the pool completely (leave at least 0.01% reserve)
+    const minReserve = outReserve * 0.0001;
+    if (newOut < minReserve) {
+      amountOut = outReserve - minReserve;
+    }
 
     // Update reserves
     if (tokenIn === this.tokenA) {
       this.reserveA = newIn;
-      this.reserveB = newOut;
+      this.reserveB = Math.max(0, outReserve - amountOut);
     } else {
       this.reserveB = newIn;
-      this.reserveA = newOut;
+      this.reserveA = Math.max(0, outReserve - amountOut);
     }
 
     if (this.eventBus) {

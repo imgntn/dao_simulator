@@ -5,6 +5,7 @@ import type { EventBus as IEventBus, EventCallback, EventData } from '@/types/si
 export class EventBus implements IEventBus {
   private subscribers: Map<string, Set<EventCallback>> = new Map();
   private asyncMode: boolean;
+  private pendingAsyncCallbacks: Promise<void>[] = [];
 
   constructor(asyncMode: boolean = false) {
     this.asyncMode = asyncMode;
@@ -35,7 +36,7 @@ export class EventBus implements IEventBus {
   }
 
   /**
-   * Publish an event to all subscribers
+   * Publish an event to all subscribers (sync version)
    */
   publish(event: string, data: Omit<EventData, 'event'>): void {
     const eventData = { event, ...data } as EventData;
@@ -54,13 +55,56 @@ export class EventBus implements IEventBus {
   }
 
   /**
-   * Notify all callbacks with the event data
+   * Publish an event and wait for all async callbacks to complete
+   */
+  async publishAsync(event: string, data: Omit<EventData, 'event'>): Promise<void> {
+    const eventData = { event, ...data } as EventData;
+
+    const promises: Promise<void>[] = [];
+
+    // Notify specific event subscribers
+    const eventCallbacks = this.subscribers.get(event);
+    if (eventCallbacks) {
+      promises.push(...this.notifyCallbacksAsync(eventCallbacks, eventData));
+    }
+
+    // Notify wildcard subscribers
+    const wildcardCallbacks = this.subscribers.get('*');
+    if (wildcardCallbacks) {
+      promises.push(...this.notifyCallbacksAsync(wildcardCallbacks, eventData));
+    }
+
+    // Wait for all callbacks to complete
+    await Promise.all(promises);
+  }
+
+  /**
+   * Wait for all pending async callbacks to complete
+   */
+  async flush(): Promise<void> {
+    const pending = [...this.pendingAsyncCallbacks];
+    this.pendingAsyncCallbacks = [];
+    await Promise.all(pending);
+  }
+
+  /**
+   * Notify all callbacks with the event data (internal sync method)
    */
   private notifyCallbacks(callbacks: Set<EventCallback>, eventData: EventData): void {
     if (this.asyncMode) {
-      // Async mode - callbacks executed asynchronously
+      // Async mode - callbacks executed asynchronously with error handling
       callbacks.forEach(callback => {
-        setTimeout(() => callback(eventData), 0);
+        const promise = new Promise<void>((resolve) => {
+          setTimeout(async () => {
+            try {
+              await Promise.resolve(callback(eventData));
+            } catch (error) {
+              console.error('Error in async event callback:', error);
+            }
+            resolve();
+          }, 0);
+        });
+        this.pendingAsyncCallbacks.push(promise);
       });
     } else {
       // Sync mode - callbacks executed immediately
@@ -75,10 +119,31 @@ export class EventBus implements IEventBus {
   }
 
   /**
+   * Notify callbacks and return promises for async waiting
+   */
+  private notifyCallbacksAsync(callbacks: Set<EventCallback>, eventData: EventData): Promise<void>[] {
+    const promises: Promise<void>[] = [];
+
+    callbacks.forEach(callback => {
+      const promise = (async () => {
+        try {
+          await Promise.resolve(callback(eventData));
+        } catch (error) {
+          console.error('Error in async event callback:', error);
+        }
+      })();
+      promises.push(promise);
+    });
+
+    return promises;
+  }
+
+  /**
    * Clear all subscribers
    */
   clear(): void {
     this.subscribers.clear();
+    this.pendingAsyncCallbacks = [];
   }
 
   /**

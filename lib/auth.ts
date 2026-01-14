@@ -5,7 +5,10 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { timingSafeEqual } from 'crypto';
 
 const isProduction = process.env.NODE_ENV === 'production';
-if (isProduction) {
+// Skip checks during Next.js build phase (NEXT_PHASE is set during build)
+const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+
+if (isProduction && !isBuildPhase) {
   if (!process.env.NEXTAUTH_SECRET) {
     throw new Error('NEXTAUTH_SECRET is required in production.');
   }
@@ -110,10 +113,17 @@ export const authConfig: NextAuthConfig = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        // In production, validate against a database
-        // For now, use environment variables
-        const validUsername = process.env.ADMIN_USERNAME || 'admin';
-        const validPassword = process.env.ADMIN_PASSWORD || 'admin123';
+        // Use environment variables for credentials
+        // In production, these are required (checked at module load)
+        // In development, fall back to defaults for convenience
+        const validUsername = process.env.ADMIN_USERNAME || (isProduction ? '' : 'admin');
+        const validPassword = process.env.ADMIN_PASSWORD || (isProduction ? '' : 'admin123');
+
+        // Reject if credentials not configured (should not happen in production due to startup check)
+        if (!validUsername || !validPassword) {
+          console.error('Auth credentials not configured');
+          return null;
+        }
 
         const username = typeof credentials?.username === 'string' ? credentials.username : '';
         const password = typeof credentials?.password === 'string' ? credentials.password : '';
@@ -154,7 +164,9 @@ export const authConfig: NextAuthConfig = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET || 'dev-secret-change-in-production',
+  // In production, NEXTAUTH_SECRET is required (checked at module load)
+  // In development, use a consistent dev secret for convenience
+  secret: process.env.NEXTAUTH_SECRET || (isProduction ? undefined : 'dev-secret-do-not-use-in-production'),
 };
 
 /**

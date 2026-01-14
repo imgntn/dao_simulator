@@ -41,6 +41,21 @@ import {
   MarketMaker,
   Whistleblower,
 } from '../agents';
+import type { DAOMember } from '../agents/base';
+import type { DAOModel } from './model';
+
+// Type for agent constructor classes - uses DAOModel since that's what agents accept
+type AgentClass = new (
+  uniqueId: string,
+  model: DAOModel,
+  ...args: unknown[]
+) => DAOMember;
+
+interface AgentConfigEntry {
+  class: AgentClass;
+  count: number;
+  params: Record<string, unknown>;
+}
 
 export interface DAOSimulationConfig extends Partial<SimulationSettings> {
   exportCsv?: boolean;
@@ -254,8 +269,7 @@ export class DAOSimulation extends Model {
       for (const [stepStr, severity] of Object.entries(this.marketShockSchedule)) {
         const step = parseInt(stepStr);
         const shock = new MarketShock(step, severity);
-        (this.dao as any).marketShocks = (this.dao as any).marketShocks || [];
-        (this.dao as any).marketShocks.push(shock);
+        this.dao.marketShocks.push(shock);
       }
     }
 
@@ -296,36 +310,36 @@ export class DAOSimulation extends Model {
    * Initialize all agents based on configuration
    */
   private initializeAgents(): void {
-    const agentConfigs = [
-      { class: Developer, count: this.numDevelopers, params: {} },
-      { class: Investor, count: this.numInvestors, params: { investmentBudget: constants.INVESTOR_BUDGET } },
-      { class: Trader, count: this.numTraders, params: {} },
-      { class: AdaptiveInvestor, count: this.numAdaptiveInvestors, params: { investmentBudget: constants.ADAPTIVE_INVESTOR_BUDGET, learningRate: this.adaptiveLearningRate, epsilon: this.adaptiveEpsilon } },
-      { class: Delegator, count: this.numDelegators, params: { delegationBudget: constants.DELEGATOR_BUDGET } },
-      { class: LiquidDelegator, count: this.numLiquidDelegators, params: { delegationBudget: constants.LIQUID_DELEGATOR_BUDGET } },
-      { class: ProposalCreator, count: this.numProposalCreators, params: {} },
-      { class: Validator, count: this.numValidators, params: {} },
-      { class: ServiceProvider, count: this.numServiceProviders, params: { serviceBudget: constants.SERVICE_PROVIDER_BUDGET } },
-      { class: Arbitrator, count: this.numArbitrators, params: { arbitrationCapacity: constants.ARBITRATOR_CAPACITY } },
-      { class: Regulator, count: this.numRegulators, params: {} },
-      { class: Auditor, count: this.numAuditors, params: {} },
-      { class: BountyHunter, count: this.numBountyHunters, params: {} },
-      { class: ExternalPartner, count: this.numExternalPartners, params: {} },
-      { class: PassiveMember, count: this.numPassiveMembers, params: {} },
-      { class: Artist, count: this.numArtists, params: {} },
-      { class: Collector, count: this.numCollectors, params: {} },
-      { class: Speculator, count: this.numSpeculators, params: {} },
-      { class: RLTrader, count: this.numRLTraders, params: { learningRate: this.adaptiveLearningRate, epsilon: this.adaptiveEpsilon } },
-      { class: GovernanceExpert, count: this.numGovernanceExperts, params: {} },
-      { class: RiskManager, count: this.numRiskManagers, params: {} },
-      { class: MarketMaker, count: this.numMarketMakers, params: {} },
-      { class: Whistleblower, count: this.numWhistleblowers, params: {} },
+    const agentConfigs: AgentConfigEntry[] = [
+      { class: Developer as AgentClass, count: this.numDevelopers, params: {} },
+      { class: Investor as AgentClass, count: this.numInvestors, params: { investmentBudget: constants.INVESTOR_BUDGET } },
+      { class: Trader as AgentClass, count: this.numTraders, params: {} },
+      { class: AdaptiveInvestor as AgentClass, count: this.numAdaptiveInvestors, params: { investmentBudget: constants.ADAPTIVE_INVESTOR_BUDGET, learningRate: this.adaptiveLearningRate, epsilon: this.adaptiveEpsilon } },
+      { class: Delegator as AgentClass, count: this.numDelegators, params: { delegationBudget: constants.DELEGATOR_BUDGET } },
+      { class: LiquidDelegator as AgentClass, count: this.numLiquidDelegators, params: { delegationBudget: constants.LIQUID_DELEGATOR_BUDGET } },
+      { class: ProposalCreator as AgentClass, count: this.numProposalCreators, params: {} },
+      { class: Validator as AgentClass, count: this.numValidators, params: {} },
+      { class: ServiceProvider as AgentClass, count: this.numServiceProviders, params: { serviceBudget: constants.SERVICE_PROVIDER_BUDGET } },
+      { class: Arbitrator as AgentClass, count: this.numArbitrators, params: { arbitrationCapacity: constants.ARBITRATOR_CAPACITY } },
+      { class: Regulator as AgentClass, count: this.numRegulators, params: {} },
+      { class: Auditor as AgentClass, count: this.numAuditors, params: {} },
+      { class: BountyHunter as AgentClass, count: this.numBountyHunters, params: {} },
+      { class: ExternalPartner as AgentClass, count: this.numExternalPartners, params: {} },
+      { class: PassiveMember as AgentClass, count: this.numPassiveMembers, params: {} },
+      { class: Artist as AgentClass, count: this.numArtists, params: {} },
+      { class: Collector as AgentClass, count: this.numCollectors, params: {} },
+      { class: Speculator as AgentClass, count: this.numSpeculators, params: {} },
+      { class: RLTrader as AgentClass, count: this.numRLTraders, params: { learningRate: this.adaptiveLearningRate, epsilon: this.adaptiveEpsilon } },
+      { class: GovernanceExpert as AgentClass, count: this.numGovernanceExperts, params: {} },
+      { class: RiskManager as AgentClass, count: this.numRiskManagers, params: {} },
+      { class: MarketMaker as AgentClass, count: this.numMarketMakers, params: {} },
+      { class: Whistleblower as AgentClass, count: this.numWhistleblowers, params: {} },
     ];
 
     for (const config of agentConfigs) {
       for (let i = 0; i < config.count; i++) {
         const agent = this.agentManager.createAgent(
-          config.class as any,
+          config.class,
           `${config.class.name}_${i}`,
           config.params
         );

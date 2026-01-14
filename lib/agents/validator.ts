@@ -20,7 +20,10 @@ export class Validator extends DAOMember {
     monitoringBudget: number = 100
   ) {
     super(uniqueId, model, tokens, reputation, location, votingStrategy);
-    this.monitoringBudget = monitoringBudget;
+    // Validate and sanitize monitoring budget
+    this.monitoringBudget = Number.isFinite(monitoringBudget) && monitoringBudget >= 0
+      ? monitoringBudget
+      : 100;
   }
 
   step(): void {

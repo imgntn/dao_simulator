@@ -3,6 +3,7 @@
 
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
+import type { VotingStrategy } from '../utils/voting-strategies';
 import { Dispute } from '../data-structures/dispute';
 import { random } from '../utils/random';
 
@@ -13,16 +14,20 @@ export class Auditor extends DAOMember {
     tokens: number = 100,
     reputation: number = 50,
     location: string = 'node_0',
-    votingStrategy: any = null
+    votingStrategy?: string | VotingStrategy | null
   ) {
-    super(uniqueId, model, tokens, reputation, location, votingStrategy);
+    super(uniqueId, model, tokens, reputation, location, votingStrategy ?? undefined);
   }
 
   /**
    * Review proposals for suspicious activity
    */
   reviewProposals(): void {
-    for (const proposal of this.model.dao.proposals) {
+    if (!this.model.dao) return;
+
+    // Create a copy to iterate safely
+    const proposals = [...this.model.dao.proposals];
+    for (const proposal of proposals) {
       if (proposal.status !== 'open') {
         continue;
       }
@@ -59,6 +64,8 @@ export class Auditor extends DAOMember {
   }
 
   step(): void {
+    if (!this.model.dao) return;
+
     this.reviewProposals();
     this.voteOnRandomProposal();
 

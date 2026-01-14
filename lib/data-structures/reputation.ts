@@ -31,15 +31,17 @@ export class ReputationTracker {
   /**
    * Handle reputation-affecting events
    */
-  private handleEvent(data: Record<string, any>): void {
-    const currentStep = (this.dao as any).currentStep || 0;
-    const event = data.event;
+  private handleEvent(data: Record<string, unknown>): void {
+    const currentStep = this.dao.currentStep || 0;
+    const event = data.event as string | undefined;
 
     switch (event) {
       case 'project_worked': {
-        const member = this.getMember(data.member);
+        const memberId = data.member as string | undefined;
+        if (!memberId) break;
+        const member = this.getMember(memberId);
         if (member) {
-          const work = data.work || 0;
+          const work = (data.work as number) || 0;
           member.reputation += work / 10;
           this.lastActivity.set(member.uniqueId, currentStep);
         }
@@ -47,7 +49,9 @@ export class ReputationTracker {
       }
 
       case 'service_offered': {
-        const member = this.getMember(data.provider);
+        const providerId = data.provider as string | undefined;
+        if (!providerId) break;
+        const member = this.getMember(providerId);
         if (member) {
           member.reputation += 1;
           this.lastActivity.set(member.uniqueId, currentStep);
@@ -56,9 +60,11 @@ export class ReputationTracker {
       }
 
       case 'proposal_invested': {
-        const member = this.getMember(data.investor);
+        const investorId = data.investor as string | undefined;
+        if (!investorId) break;
+        const member = this.getMember(investorId);
         if (member) {
-          const amount = data.amount || 0;
+          const amount = (data.amount as number) || 0;
           member.reputation += amount / 100;
           this.lastActivity.set(member.uniqueId, currentStep);
         }
@@ -71,7 +77,7 @@ export class ReputationTracker {
    * Apply inactivity decay to all members
    */
   decayReputation(): void {
-    const currentStep = (this.dao as any).currentStep || 0;
+    const currentStep = this.dao.currentStep || 0;
 
     for (const member of this.dao.members) {
       const lastActive = this.lastActivity.get(member.uniqueId) || 0;

@@ -23,9 +23,16 @@ export class Arbitrator extends DAOMember {
     capacityRegenRate: number = 0.1 // 10% of max capacity regenerates per step
   ) {
     super(uniqueId, model, tokens, reputation, location, votingStrategy);
-    this.arbitrationCapacity = arbitrationCapacity;
-    this.maxArbitrationCapacity = arbitrationCapacity;
-    this.capacityRegenRate = capacityRegenRate;
+    // Validate and sanitize capacity parameters
+    const sanitizedCapacity = Number.isFinite(arbitrationCapacity) && arbitrationCapacity > 0
+      ? arbitrationCapacity
+      : 10;
+    const sanitizedRegenRate = Number.isFinite(capacityRegenRate) && capacityRegenRate >= 0
+      ? Math.min(1, capacityRegenRate)  // Cap at 100% regen per step
+      : 0.1;
+    this.arbitrationCapacity = sanitizedCapacity;
+    this.maxArbitrationCapacity = sanitizedCapacity;
+    this.capacityRegenRate = sanitizedRegenRate;
   }
 
   step(): void {

@@ -161,7 +161,9 @@ export class StagedActivation extends BaseScheduler {
     for (const stage of this.stageOrder) {
       const stageAgents = this.stages.get(stage);
       if (stageAgents) {
-        for (const agent of stageAgents) {
+        // Create a copy to avoid issues if agents are added/removed during iteration
+        const agentsCopy = Array.from(stageAgents);
+        for (const agent of agentsCopy) {
           if (agent && typeof agent.step === 'function') {
             agent.step();
           }

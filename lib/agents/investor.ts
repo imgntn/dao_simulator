@@ -18,7 +18,10 @@ export class Investor extends DAOMember {
     investmentBudget: number = 100
   ) {
     super(uniqueId, model, tokens, reputation, location, votingStrategy);
-    this.investmentBudget = investmentBudget;
+    // Validate and sanitize investment budget
+    this.investmentBudget = Number.isFinite(investmentBudget) && investmentBudget >= 0
+      ? investmentBudget
+      : 100;
   }
 
   step(): void {
@@ -63,13 +66,19 @@ export class Investor extends DAOMember {
     const shock = this.model.dao.currentShock;
 
     if (shock !== 0) {
-      this.investmentBudget *= 1 + shock;
+      // Clamp shock to prevent budget going to zero or negative
+      // Max 50% decrease, 100% increase per step
+      const clampedShock = Math.max(-0.5, Math.min(1.0, shock));
+      this.investmentBudget *= 1 + clampedShock;
     } else if (price < 1) {
       this.investmentBudget *= 1.1;
     } else {
       this.investmentBudget *= 0.9;
     }
 
-    this.investmentBudget = Math.max(0, this.investmentBudget);
+    // Ensure budget is always valid and non-negative
+    if (!Number.isFinite(this.investmentBudget) || this.investmentBudget < 0) {
+      this.investmentBudget = 0;
+    }
   }
 }
