@@ -12,6 +12,89 @@ import {
   validateId,
 } from '@/lib/validation/schemas';
 
+// ============================================================================
+// Rate Limiting for Simulation Creation
+// ============================================================================
+
+interface SimulationRateLimitEntry {
+  count: number;
+  resetAt: number;
+}
+
+/**
+ * Rate limiter specifically for simulation creation to prevent DOS attacks
+ */
+class SimulationRateLimiter {
+  private attempts = new Map<string, SimulationRateLimitEntry>();
+  // Allow 10 simulations per client per hour in production, more in dev
+  private readonly maxAttempts = process.env.NODE_ENV === 'production' ? 10 : 100;
+  private readonly windowMs = 60 * 60 * 1000; // 1 hour
+
+  constructor() {
+    // Cleanup expired entries every 10 minutes
+    if (typeof setInterval !== 'undefined') {
+      setInterval(() => this.cleanup(), 10 * 60 * 1000);
+    }
+  }
+
+  private getClientId(request: NextRequest): string {
+    const trustProxy = process.env.TRUST_PROXY === 'true';
+    if (trustProxy) {
+      const forwarded = request.headers.get('x-forwarded-for');
+      if (forwarded) {
+        return `sim_${forwarded.split(',')[0].trim()}`;
+      }
+      const realIp = request.headers.get('x-real-ip');
+      if (realIp) {
+        return `sim_${realIp}`;
+      }
+    }
+    // In development or when not behind a proxy, use a generic key
+    return 'sim_default_client';
+  }
+
+  isRateLimited(request: NextRequest): { limited: boolean; retryAfter?: number } {
+    const clientId = this.getClientId(request);
+    const now = Date.now();
+    const entry = this.attempts.get(clientId);
+
+    if (!entry || now > entry.resetAt) {
+      return { limited: false };
+    }
+
+    if (entry.count >= this.maxAttempts) {
+      const retryAfter = Math.ceil((entry.resetAt - now) / 1000);
+      return { limited: true, retryAfter };
+    }
+
+    return { limited: false };
+  }
+
+  recordAttempt(request: NextRequest): void {
+    const clientId = this.getClientId(request);
+    const now = Date.now();
+    const entry = this.attempts.get(clientId);
+
+    if (!entry || now > entry.resetAt) {
+      this.attempts.set(clientId, { count: 1, resetAt: now + this.windowMs });
+    } else {
+      entry.count++;
+    }
+  }
+
+  private cleanup(): void {
+    const now = Date.now();
+    for (const [key, entry] of this.attempts.entries()) {
+      if (now > entry.resetAt) {
+        this.attempts.delete(key);
+      }
+    }
+  }
+}
+
+// Global rate limiter instance for simulation creation
+const simulationRateLimiter = new SimulationRateLimiter();
+
 // Create simulation store (Redis in production, in-memory for dev)
 const simulationStore = createSimulationStore();
 const isInMemoryStore = simulationStore instanceof InMemorySimulationStore;
@@ -150,11 +233,31 @@ export async function POST(request: NextRequest) {
   const authError = await requireAuth(request);
   if (authError) return authError;
 
+  // Check rate limiting for simulation creation
+  const rateLimitResult = simulationRateLimiter.isRateLimited(request);
+  if (rateLimitResult.limited) {
+    return NextResponse.json(
+      {
+        error: 'Too many simulation creation requests. Please try again later.',
+        retryAfter: rateLimitResult.retryAfter,
+      },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': String(rateLimitResult.retryAfter || 3600),
+        },
+      }
+    );
+  }
+
   // Validate request body
   const validation = await validateRequest(request, CreateSimulationRequestSchema);
   if (!validation.success) {
     return validation.response;
   }
+
+  // Record this creation attempt for rate limiting
+  simulationRateLimiter.recordAttempt(request);
 
   try {
     const config = validation.data;

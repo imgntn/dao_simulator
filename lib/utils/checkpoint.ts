@@ -1,24 +1,82 @@
 // Checkpoint management for simulation state persistence
 
 import type { DAOSimulation } from '../engine/simulation';
+import type { Dispute } from '../data-structures/dispute';
+import type { Violation } from '../data-structures/violation';
+
+// Serialized member state for checkpoints
+export interface CheckpointMemberState {
+  uniqueId: string;
+  tokens: number;
+  reputation: number;
+  stakedTokens: number;
+  location: string;
+}
+
+// Serialized proposal state for checkpoints
+export interface CheckpointProposalState {
+  uniqueId: string;
+  title: string;
+  status: string;
+  votesFor: number;
+  votesAgainst: number;
+}
+
+// Serialized project state for checkpoints
+export interface CheckpointProjectState {
+  uniqueId: string;
+  title: string;
+  status: string;
+}
+
+// Serialized guild state for checkpoints
+export interface CheckpointGuildState {
+  name: string;
+  members: number;
+}
+
+// Serialized agent state for checkpoints
+export interface CheckpointAgentState {
+  uniqueId: string;
+  type: string;
+  tokens: number;
+  reputation: number;
+  stakedTokens: number;
+  location: string;
+  optimism: number;
+}
+
+// Simulation config for checkpoints
+export interface CheckpointConfig {
+  numDevelopers: number;
+  numInvestors: number;
+  numTraders: number;
+  governanceRule: string;
+  enableMarketing: boolean;
+  tokenEmissionRate: number;
+  tokenBurnRate: number;
+  stakingInterestRate: number;
+  marketShockFrequency: number;
+  seed: number | null | undefined;
+}
 
 export interface SimulationCheckpoint {
   id: string;
   timestamp: number;
   step: number;
-  config: any;
+  config: CheckpointConfig;
   daoState: {
     name: string;
-    members: any[];
-    proposals: any[];
-    projects: any[];
-    disputes: any[];
-    violations: any[];
-    guilds: any[];
+    members: CheckpointMemberState[];
+    proposals: CheckpointProposalState[];
+    projects: CheckpointProjectState[];
+    disputes: Dispute[];
+    violations: Violation[];
+    guilds: CheckpointGuildState[];
     treasuryFunds: number;
     tokenPrices: Record<string, number>;
   };
-  agentStates: any[];
+  agentStates: CheckpointAgentState[];
   metadata: {
     version: string;
     checkpointInterval: number;
@@ -102,7 +160,7 @@ export class CheckpointManager {
 
   // ==================== Serialization ====================
 
-  private serializeConfig(simulation: DAOSimulation): any {
+  private serializeConfig(simulation: DAOSimulation): CheckpointConfig {
     return {
       numDevelopers: simulation.numDevelopers,
       numInvestors: simulation.numInvestors,
@@ -117,7 +175,7 @@ export class CheckpointManager {
     };
   }
 
-  private serializeDAOState(simulation: DAOSimulation): any {
+  private serializeDAOState(simulation: DAOSimulation): SimulationCheckpoint['daoState'] {
     const dao = simulation.dao;
     return {
       name: dao.name,
@@ -147,11 +205,11 @@ export class CheckpointManager {
         members: g.members.length,
       })),
       treasuryFunds: dao.treasury.funds,
-      tokenPrices: dao.treasury.tokenPrices,
+      tokenPrices: Object.fromEntries(dao.treasury.tokenPrices),
     };
   }
 
-  private serializeAgents(simulation: DAOSimulation): any[] {
+  private serializeAgents(simulation: DAOSimulation): CheckpointAgentState[] {
     return simulation.dao.members.map(agent => ({
       uniqueId: agent.uniqueId,
       type: agent.constructor.name,
@@ -171,15 +229,15 @@ export class CheckpointManager {
 
       request.onerror = () => reject(request.error);
 
-      request.onupgradeneeded = (event: any) => {
-        const db = event.target.result;
+      request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
+        const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains('checkpoints')) {
           db.createObjectStore('checkpoints', { keyPath: 'id' });
         }
       };
 
-      request.onsuccess = async (event: any) => {
-        const db = event.target.result;
+      request.onsuccess = () => {
+        const db = request.result;
         const transaction = db.transaction(['checkpoints'], 'readwrite');
         const store = transaction.objectStore('checkpoints');
 
@@ -210,8 +268,8 @@ export class CheckpointManager {
       const request = indexedDB.open('dao-simulator-checkpoints', 1);
 
       request.onerror = () => reject(request.error);
-      request.onsuccess = (event: any) => {
-        const db = event.target.result;
+      request.onsuccess = () => {
+        const db = request.result;
         const transaction = db.transaction(['checkpoints'], 'readonly');
         const store = transaction.objectStore('checkpoints');
         const getRequest = store.get(checkpointId);
@@ -230,8 +288,8 @@ export class CheckpointManager {
       const request = indexedDB.open('dao-simulator-checkpoints', 1);
 
       request.onerror = () => reject(request.error);
-      request.onsuccess = (event: any) => {
-        const db = event.target.result;
+      request.onsuccess = () => {
+        const db = request.result;
         const transaction = db.transaction(['checkpoints'], 'readonly');
         const store = transaction.objectStore('checkpoints');
         const getAllRequest = store.getAll();
@@ -250,8 +308,8 @@ export class CheckpointManager {
       const request = indexedDB.open('dao-simulator-checkpoints', 1);
 
       request.onerror = () => reject(request.error);
-      request.onsuccess = (event: any) => {
-        const db = event.target.result;
+      request.onsuccess = () => {
+        const db = request.result;
         const transaction = db.transaction(['checkpoints'], 'readwrite');
         const store = transaction.objectStore('checkpoints');
         const deleteRequest = store.delete(checkpointId);
@@ -270,13 +328,26 @@ export class CheckpointManager {
 
   // ==================== LocalStorage ====================
 
+  /**
+   * Safely parse JSON with error handling for corrupted localStorage data
+   */
+  private safeJsonParse<T>(data: string | null, fallback: T): T {
+    if (!data) return fallback;
+    try {
+      return JSON.parse(data) as T;
+    } catch (error) {
+      console.warn('Failed to parse localStorage data, using fallback:', error);
+      return fallback;
+    }
+  }
+
   private saveToLocalStorage(checkpoint: SimulationCheckpoint): void {
     const key = `${this.storageKey}_${checkpoint.id}`;
     localStorage.setItem(key, JSON.stringify(checkpoint));
 
     // Update index
     const indexKey = `${this.storageKey}_index`;
-    const index = JSON.parse(localStorage.getItem(indexKey) || '[]');
+    const index = this.safeJsonParse<string[]>(localStorage.getItem(indexKey), []);
     if (!index.includes(checkpoint.id)) {
       index.push(checkpoint.id);
       // Keep only latest N checkpoints
@@ -291,12 +362,20 @@ export class CheckpointManager {
   private loadFromLocalStorage(checkpointId: string): SimulationCheckpoint | null {
     const key = `${this.storageKey}_${checkpointId}`;
     const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : null;
+    if (!data) return null;
+    try {
+      return JSON.parse(data) as SimulationCheckpoint;
+    } catch (error) {
+      console.warn(`Failed to parse checkpoint ${checkpointId}:`, error);
+      // Remove corrupted entry from storage
+      localStorage.removeItem(key);
+      return null;
+    }
   }
 
   private listFromLocalStorage(): SimulationCheckpoint[] {
     const indexKey = `${this.storageKey}_index`;
-    const index = JSON.parse(localStorage.getItem(indexKey) || '[]');
+    const index = this.safeJsonParse<string[]>(localStorage.getItem(indexKey), []);
     return index
       .map((id: string) => this.loadFromLocalStorage(id))
       .filter((cp: SimulationCheckpoint | null) => cp !== null);
@@ -308,7 +387,7 @@ export class CheckpointManager {
 
     // Update index
     const indexKey = `${this.storageKey}_index`;
-    const index = JSON.parse(localStorage.getItem(indexKey) || '[]');
+    const index = this.safeJsonParse<string[]>(localStorage.getItem(indexKey), []);
     const newIndex = index.filter((id: string) => id !== checkpointId);
     localStorage.setItem(indexKey, JSON.stringify(newIndex));
 

@@ -1,13 +1,27 @@
 // DAOCity - Multi-DAO Orchestrator
 // Manages multiple DAOs, global marketplace, inter-DAO proposals, and member transfers
+// Extended with digital twin support for real-world DAO configurations
 
 import { DAOSimulation, DAOSimulationConfig } from './simulation';
 import { DAO } from '../data-structures/dao';
 import { GlobalMarketplace } from '../data-structures/global-marketplace';
 import { InterDAOProposal } from '../data-structures/inter-dao-proposal';
+import { TimelockController, createTimelockController } from '../data-structures/timelock';
+import { BicameralGovernance, createOptimismBicameral, createArbitrumGovernance } from '../data-structures/governance-house';
+import { GovernanceProcessor, createGovernanceProcessor } from '../governance';
 import { EventBus } from '../utils/event-bus';
 import { random, randomChoice } from '../utils/random';
 import type { DAOMember } from '../agents/base';
+import { TwinAgentFactory, createAgentsFromTwin } from '../agents/twin-agent-factory';
+import {
+  DigitalTwinLoader,
+  loadTwin,
+  loadAllTwins,
+  getAvailableTwins,
+  transformToDAOConfig,
+  type TwinDAOConfig,
+  type DigitalTwinConfig,
+} from '../digital-twins';
 import type {
   DAOConfig,
   DAOCityConfig,
@@ -73,6 +87,14 @@ export class DAOCity {
   // Layout for visualization
   private towerPositions: Map<string, [number, number, number]> = new Map();
 
+  // Digital twin support
+  private digitalTwins: Map<string, TwinDAOConfig> = new Map();
+  private timelockControllers: Map<string, TimelockController> = new Map();
+  private bicameralSystems: Map<string, BicameralGovernance> = new Map();
+  private governanceProcessors: Map<string, GovernanceProcessor> = new Map();
+  private playerControlledDaoId: string | null = null;
+  private twinLoader: DigitalTwinLoader;
+
   constructor(config?: DAOCityConfig) {
     // Use default config if not provided
     this.config = config || {
@@ -122,6 +144,9 @@ export class DAOCity {
 
     // Create city-wide event bus
     this.eventBus = new EventBus(false);
+
+    // Initialize digital twin loader
+    this.twinLoader = new DigitalTwinLoader();
 
     // Initialize global marketplace
     this.globalMarketplace = new GlobalMarketplace(
@@ -218,8 +243,32 @@ export class DAOCity {
       // Subscribe to DAO events
       this.subscribeToDAOEvents(simulation);
 
+      // Initialize governance processor for this DAO
+      const governanceType = this.mapGovernanceRuleToType(daoConfig.governanceRule);
+      const governanceProcessor = createGovernanceProcessor(
+        simulation.dao,
+        simulation.eventBus,
+        governanceType
+      );
+      this.governanceProcessors.set(daoConfig.id, governanceProcessor);
+
       this.simulations.set(daoConfig.id, simulation);
     }
+  }
+
+  /**
+   * Map governance rule string to governance processor type
+   */
+  private mapGovernanceRuleToType(governanceRule: string): string {
+    const ruleToTypeMap: Record<string, string> = {
+      'majority': 'default',
+      'supermajority': 'compound',
+      'quorum': 'uniswap',
+      'tokenquorum': 'aave',
+      'bicameral': 'optimism',
+      'dualgovernance': 'lido',
+    };
+    return ruleToTypeMap[governanceRule] || 'default';
   }
 
   /**
@@ -381,9 +430,24 @@ export class DAOCity {
    */
   async step(): Promise<void> {
     // Step each DAO simulation
-    for (const simulation of this.simulations.values()) {
+    for (const [daoId, simulation] of this.simulations) {
       await simulation.step();
       simulation.dao.currentStep = this.currentStep;
+
+      // Process governance systems for this DAO
+      const governanceProcessor = this.governanceProcessors.get(daoId);
+      if (governanceProcessor) {
+        governanceProcessor.processStep(this.currentStep);
+      }
+
+      // Process timelocks for this DAO
+      const timelockController = this.timelockControllers.get(daoId);
+      if (timelockController) {
+        timelockController.process();
+      }
+
+      // Bicameral governance votes are checked during proposal state transitions
+      // handled by the GovernanceProcessor - no per-step processing needed
     }
 
     // Update global marketplace prices
@@ -835,5 +899,363 @@ export class DAOCity {
    */
   getGlobalMarketplace(): GlobalMarketplace {
     return this.globalMarketplace;
+  }
+
+  // ===========================================================================
+  // DIGITAL TWIN SUPPORT
+  // ===========================================================================
+
+  /**
+   * Load digital twins into the city
+   * @param twinIds - Array of twin IDs to load (e.g., ['uniswap', 'compound'])
+   */
+  async loadDigitalTwins(twinIds: string[]): Promise<{
+    loaded: string[];
+    failed: string[];
+    errors: Record<string, string>;
+  }> {
+    const loaded: string[] = [];
+    const failed: string[] = [];
+    const errors: Record<string, string> = {};
+
+    for (const twinId of twinIds) {
+      try {
+        const result = await loadTwin(twinId);
+
+        if (result.success === true) {
+          const twinConfig = transformToDAOConfig(result.data);
+          await this.initializeDigitalTwin(twinConfig);
+          this.digitalTwins.set(twinId, twinConfig);
+          loaded.push(twinId);
+
+          this.eventBus.publish('digital_twin_loaded', {
+            step: this.currentStep,
+            twinId,
+            name: twinConfig.name,
+            tokenSymbol: twinConfig.tokenSymbol,
+          });
+        } else {
+          failed.push(twinId);
+          errors[twinId] = result.error;
+        }
+      } catch (error) {
+        failed.push(twinId);
+        errors[twinId] = error instanceof Error ? error.message : 'Unknown error';
+      }
+    }
+
+    // Recalculate tower positions with new DAOs
+    this.calculateTowerPositions();
+
+    // Initialize bridges for new DAOs
+    this.initializeBridges();
+
+    return { loaded, failed, errors };
+  }
+
+  /**
+   * Initialize a digital twin as a simulation
+   */
+  private async initializeDigitalTwin(twinConfig: TwinDAOConfig): Promise<void> {
+    // Build simulation config from twin
+    const simConfig: DAOSimulationConfig = {
+      governance_rule: this.getGovernanceRuleForTwin(twinConfig),
+      staking_interest_rate: 0.05,  // Default
+      // Let twin agent factory handle member creation
+      num_passive_members: 0,
+      num_developers: 0,
+      num_investors: 0,
+      num_traders: 0,
+    };
+
+    const simulation = new DAOSimulation(simConfig);
+
+    // Update DAO properties from twin
+    simulation.dao.daoId = twinConfig.id;
+    simulation.dao.name = twinConfig.name;
+    simulation.dao.tokenSymbol = twinConfig.tokenSymbol;
+    simulation.dao.color = this.getTwinColor(twinConfig.id);
+
+    // Create agents from twin configuration
+    const factory = new TwinAgentFactory(simulation, twinConfig.id);
+    const factoryResult = factory.createAgentsForTwin(twinConfig);
+
+    // Add agents to DAO
+    for (const agent of factoryResult.agents) {
+      simulation.dao.addMember(agent);
+    }
+
+    // Initialize twin-specific governance systems
+    if (twinConfig.isBicameral) {
+      const bicameral = this.createBicameralForTwin(twinConfig, simulation.dao);
+      this.bicameralSystems.set(twinConfig.id, bicameral);
+    }
+
+    // Initialize timelock controller
+    const timelockPreset = twinConfig.hasDualGovernance ? 'dual_governance' : 'standard';
+    const timelockController = createTimelockController(simulation.dao, timelockPreset);
+    this.timelockControllers.set(twinConfig.id, timelockController);
+
+    // Initialize governance processor with twin-specific type
+    const governanceType = this.getTwinGovernanceType(twinConfig);
+    const governanceProcessor = createGovernanceProcessor(
+      simulation.dao,
+      simulation.eventBus,
+      governanceType
+    );
+    this.governanceProcessors.set(twinConfig.id, governanceProcessor);
+
+    // Register token in marketplace
+    const initialPrice = this.getInitialTokenPrice(twinConfig);
+    const totalSupply = factoryResult.summary.totalTokensDistributed + twinConfig.initialTreasury;
+
+    this.globalMarketplace.registerToken(
+      twinConfig.tokenSymbol,
+      twinConfig.id,
+      totalSupply,
+      initialPrice
+    );
+
+    // Subscribe to events
+    this.subscribeToDAOEvents(simulation);
+
+    // Add to simulations
+    this.simulations.set(twinConfig.id, simulation);
+
+    // Update config.daos array with twin
+    this.config.daos.push({
+      id: twinConfig.id,
+      name: twinConfig.name,
+      tokenSymbol: twinConfig.tokenSymbol,
+      initialTreasuryFunding: twinConfig.initialTreasury,
+      governanceRule: this.getGovernanceRuleForTwin(twinConfig),
+      agentCounts: {},
+      color: this.getTwinColor(twinConfig.id),
+    });
+  }
+
+  /**
+   * Get governance rule for a twin
+   */
+  private getGovernanceRuleForTwin(twinConfig: TwinDAOConfig): string {
+    if (twinConfig.isBicameral) return 'bicameral';
+    if (twinConfig.hasDualGovernance) return 'dualgovernance';
+    return 'tokenquorum';
+  }
+
+  /**
+   * Create bicameral system for a twin
+   */
+  private createBicameralForTwin(twinConfig: TwinDAOConfig, dao: DAO): BicameralGovernance {
+    // Use preset based on twin characteristics
+    if (twinConfig.name.toLowerCase().includes('optimism')) {
+      return createOptimismBicameral(dao);
+    }
+    if (twinConfig.name.toLowerCase().includes('arbitrum')) {
+      return createArbitrumGovernance(dao);
+    }
+
+    // Generic bicameral
+    const bicameral = new BicameralGovernance(dao);
+    bicameral.addHouse({
+      houseType: 'token_house',
+      name: 'Token House',
+      description: 'Token holder governance',
+      quorumPercent: twinConfig.tokenHouse?.quorumPercent || 30,
+      approvalThresholdPercent: twinConfig.tokenHouse?.approvalThresholdPercent || 51,
+      vetoCapable: false,
+      vetoPeriodSteps: 0,
+      voteWeightModel: 'token',
+      primaryDecisions: ['general'],
+    });
+
+    if (twinConfig.citizensHouse?.vetoEnabled) {
+      bicameral.addHouse({
+        houseType: 'citizens_house',
+        name: 'Citizens House',
+        description: 'Citizens with veto power',
+        quorumPercent: 20,
+        approvalThresholdPercent: 51,
+        vetoCapable: true,
+        vetoPeriodSteps: twinConfig.citizensHouse?.vetoPeriodSteps || 168,
+        voteWeightModel: 'one_person_one_vote',
+        primaryDecisions: ['vetoes'],
+      });
+    }
+
+    return bicameral;
+  }
+
+  /**
+   * Get governance processor type for a digital twin
+   */
+  private getTwinGovernanceType(twinConfig: TwinDAOConfig): string {
+    // Map twin ID/name to governance processor type
+    const id = twinConfig.id.toLowerCase();
+    const name = twinConfig.name.toLowerCase();
+
+    if (id.includes('uniswap') || name.includes('uniswap')) return 'uniswap';
+    if (id.includes('compound') || name.includes('compound')) return 'compound';
+    if (id.includes('aave') || name.includes('aave')) return 'aave';
+    if (id.includes('arbitrum') || name.includes('arbitrum')) return 'arbitrum';
+    if (id.includes('optimism') || name.includes('optimism')) return 'optimism';
+    if (id.includes('ens') || name.includes('ens')) return 'ens';
+    if (id.includes('lido') || name.includes('lido')) return 'lido';
+    if (id.includes('gitcoin') || name.includes('gitcoin')) return 'gitcoin';
+    if (id.includes('maker') || name.includes('maker') || name.includes('sky')) return 'maker';
+
+    return 'default';
+  }
+
+  /**
+   * Get color for a digital twin
+   */
+  private getTwinColor(twinId: string): string {
+    const twinColors: Record<string, string> = {
+      uniswap: '#FF007A',
+      compound: '#00D395',
+      aave: '#B6509E',
+      arbitrum: '#12AAFF',
+      optimism: '#FF0420',
+      ens: '#5298FF',
+      lido: '#00A3FF',
+      gitcoin: '#0FCE7C',
+      maker: '#1AAB9B',
+    };
+    return twinColors[twinId] || `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+  }
+
+  /**
+   * Get initial token price for a twin
+   */
+  private getInitialTokenPrice(twinConfig: TwinDAOConfig): number {
+    // Could be enhanced to use real market data
+    const basePrices: Record<string, number> = {
+      UNI: 8.0,
+      COMP: 50.0,
+      AAVE: 100.0,
+      ARB: 1.2,
+      OP: 2.0,
+      ENS: 15.0,
+      LDO: 2.5,
+      GTC: 1.5,
+      MKR: 1500.0,
+    };
+    return basePrices[twinConfig.tokenSymbol] || 1.0 + random() * 9.0;
+  }
+
+  /**
+   * Get available digital twins
+   */
+  async getAvailableDigitalTwins(): Promise<Array<{ id: string; name: string; category: string[] }>> {
+    const twins = await getAvailableTwins();
+    return twins.map(t => ({
+      id: t.id,
+      name: t.name,
+      category: t.category,
+    }));
+  }
+
+  /**
+   * Get loaded digital twins
+   */
+  getLoadedDigitalTwins(): Map<string, TwinDAOConfig> {
+    return this.digitalTwins;
+  }
+
+  /**
+   * Check if a DAO is a digital twin
+   */
+  isDigitalTwin(daoId: string): boolean {
+    return this.digitalTwins.has(daoId);
+  }
+
+  /**
+   * Get digital twin config for a DAO
+   */
+  getDigitalTwinConfig(daoId: string): TwinDAOConfig | undefined {
+    return this.digitalTwins.get(daoId);
+  }
+
+  /**
+   * Get timelock controller for a DAO
+   */
+  getTimelockController(daoId: string): TimelockController | undefined {
+    return this.timelockControllers.get(daoId);
+  }
+
+  /**
+   * Get bicameral system for a DAO
+   */
+  getBicameralSystem(daoId: string): BicameralGovernance | undefined {
+    return this.bicameralSystems.get(daoId);
+  }
+
+  /**
+   * Get governance processor for a DAO
+   */
+  getGovernanceProcessor(daoId: string): GovernanceProcessor | undefined {
+    return this.governanceProcessors.get(daoId);
+  }
+
+  // ===========================================================================
+  // PLAYER CONTROL
+  // ===========================================================================
+
+  /**
+   * Take control of a specific DAO
+   */
+  takeControl(daoId: string): boolean {
+    if (!this.simulations.has(daoId)) {
+      return false;
+    }
+
+    this.playerControlledDaoId = daoId;
+
+    this.eventBus.publish('player_control_changed', {
+      step: this.currentStep,
+      daoId,
+      active: true,
+    });
+
+    return true;
+  }
+
+  /**
+   * Release control of the current DAO
+   */
+  releaseControl(): void {
+    const daoId = this.playerControlledDaoId;
+    this.playerControlledDaoId = null;
+
+    if (daoId) {
+      this.eventBus.publish('player_control_changed', {
+        step: this.currentStep,
+        daoId,
+        active: false,
+      });
+    }
+  }
+
+  /**
+   * Get the currently controlled DAO ID
+   */
+  getPlayerControlledDaoId(): string | null {
+    return this.playerControlledDaoId;
+  }
+
+  /**
+   * Check if player is controlling a DAO
+   */
+  isPlayerControlling(daoId: string): boolean {
+    return this.playerControlledDaoId === daoId;
+  }
+
+  /**
+   * Get the player-controlled DAO
+   */
+  getPlayerControlledDAO(): DAO | undefined {
+    if (!this.playerControlledDaoId) return undefined;
+    return this.getDAO(this.playerControlledDaoId);
   }
 }

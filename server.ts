@@ -17,6 +17,136 @@ import { DAOCity } from './lib/engine/dao-city';
 import { createSimulationStore, InMemorySimulationStore, rehydrateSimulation } from './lib/utils/redis-store';
 import type { DAOCityConfig, DAOConfig } from './lib/types/dao-city';
 
+// Socket event configuration interfaces
+interface SimulationConfig {
+  num_developers?: number;
+  num_investors?: number;
+  num_proposal_creators?: number;
+  num_validators?: number;
+  num_passive_members?: number;
+  num_delegators?: number;
+  num_liquid_delegators?: number;
+  num_service_providers?: number;
+  num_arbitrators?: number;
+  num_regulators?: number;
+  num_auditors?: number;
+  num_external_partners?: number;
+  num_traders?: number;
+  num_adaptive_investors?: number;
+  num_speculators?: number;
+  num_rl_traders?: number;
+  num_market_makers?: number;
+  num_risk_managers?: number;
+  num_artists?: number;
+  num_collectors?: number;
+  num_bounty_hunters?: number;
+  num_governance_experts?: number;
+  num_whistleblowers?: number;
+  comment_probability?: number;
+  governance_rule?: 'majority' | 'supermajority' | 'quadratic' | 'conviction';
+  eventLogging?: boolean;
+}
+
+interface StepConfig {
+  steps?: number;
+  stepsPerSecond?: number;
+  mode?: 'single' | 'multi';
+}
+
+interface StartSimulationConfig {
+  mode?: 'single' | 'multi';
+  stepsPerSecond?: number;
+  simulationConfig?: SimulationConfig;
+  cityConfig?: DAOCityConfig;
+}
+
+interface StartCitySimulationConfig {
+  cityConfig?: DAOCityConfig;
+  stepsPerSecond?: number;
+}
+
+// Event data interfaces for type-safe event handling
+// These extend the base event shape while adding specific fields
+interface MarketShockEventData {
+  event: string;
+  step: number;
+  severity?: number;
+  oldPrice?: number;
+  newPrice?: number;
+  [key: string]: unknown;
+}
+
+interface CityStepEventData {
+  event: string;
+  step: number;
+  daos?: Array<{
+    name: string;
+    token: string;
+    memberCount: number;
+    treasuryFunds: number;
+    projectCount: number;
+    tokenPrice: number;
+    marketCap: number;
+  }>;
+  [key: string]: unknown;
+}
+
+interface ProposalCreatedEventData {
+  event: string;
+  step: number;
+  proposal?: {
+    uniqueId?: string;
+    id?: string;
+    title?: string;
+  };
+  [key: string]: unknown;
+}
+
+interface TransferCompletedEventData {
+  event: string;
+  step: number;
+  from?: string;
+  to?: string;
+  amount?: number;
+  [key: string]: unknown;
+}
+
+// Normalize function input types
+interface MemberLike {
+  uniqueId?: string;
+  id?: string;
+}
+
+interface ProjectLike {
+  uniqueId?: string;
+  id?: string;
+  title?: string;
+  status?: string;
+  progress?: number;
+  fundingGoal?: number;
+  currentFunding?: number;
+  skills?: string[];
+  requiredSkills?: string[];
+  duration?: number;
+  startTime?: number;
+  members?: Array<string | MemberLike>;
+}
+
+// Network visualization data structures
+interface ClusterNode {
+  id: string;
+  type: 'cluster';
+  position: [number, number, number];
+  size: number;
+}
+
+interface NetworkEdge {
+  source: string;
+  target: string;
+  type: 'representative' | 'delegation' | 'guild' | 'project' | 'vote' | 'created' | 'aggregated';
+  weight: number;
+}
+
 const args = process.argv.slice(2);
 const portIndex = args.indexOf('--port');
 const portValue = portIndex !== -1 ? args[portIndex + 1] : undefined;
@@ -50,7 +180,7 @@ function normalizeStepsPerSecond(value: number | undefined): number {
   return Math.min(parsed, MAX_STEPS_PER_SECOND);
 }
 
-function normalizeMemberId(value: any): string {
+function normalizeMemberId(value: string | MemberLike | null | undefined): string {
   if (!value) return '';
   if (typeof value === 'string') return value;
   if (typeof value.uniqueId === 'string') return value.uniqueId;
@@ -58,7 +188,7 @@ function normalizeMemberId(value: any): string {
   return String(value);
 }
 
-function normalizeProjectId(value: any): string | null {
+function normalizeProjectId(value: string | MemberLike | null | undefined): string | null {
   if (!value) return null;
   if (typeof value === 'string') return value;
   if (typeof value.uniqueId === 'string') return value.uniqueId;
@@ -66,7 +196,7 @@ function normalizeProjectId(value: any): string | null {
   return null;
 }
 
-function normalizeMemberIds(values: any[] | undefined): string[] {
+function normalizeMemberIds(values: Array<string | MemberLike> | undefined): string[] {
   if (!Array.isArray(values)) return [];
   return values
     .map(normalizeMemberId)
@@ -84,7 +214,7 @@ function summarizePayload(payload: unknown): string {
   return typeof payload;
 }
 
-function serializeProject(project: any) {
+function serializeProject(project: ProjectLike | null | undefined) {
   const skills = Array.isArray(project?.skills)
     ? project.skills
     : Array.isArray(project?.requiredSkills)
@@ -157,6 +287,11 @@ console.log('Starting DAO Simulation WebSocket Server...');
 
 const allowedOrigins = resolveAllowedOrigins();
 if (Array.isArray(allowedOrigins) && allowedOrigins.length === 0) {
+  if (!isDev) {
+    console.error('FATAL: No allowed origins configured in production.');
+    console.error('Set SOCKET_ALLOWED_ORIGINS or NEXTAUTH_URL environment variable.');
+    process.exit(1);
+  }
   console.warn('No allowed origins configured. Set SOCKET_ALLOWED_ORIGINS or NEXTAUTH_URL to enable browser access.');
 }
 
@@ -240,20 +375,36 @@ function emitSimulationStatus(): void {
   });
 }
 
-async function persistSimulation(id: string, instance: DAOSimulation) {
-  if (!simulationStore || !instance) return;
+interface PersistenceResult {
+  success: boolean;
+  error?: string;
+}
+
+async function persistSimulation(id: string, instance: DAOSimulation): Promise<PersistenceResult> {
+  if (!simulationStore || !instance) {
+    return { success: false, error: 'No store or instance provided' };
+  }
   try {
     await simulationStore.save(id, instance);
+    return { success: true };
   } catch (error: any) {
-    console.error('Failed to persist simulation:', error?.message ?? error);
+    const errorMessage = error?.message ?? String(error);
+    console.error('Failed to persist simulation:', errorMessage);
+    // Emit persistence error to connected clients for visibility
+    emitSafe('persistence_error', {
+      simulationId: id,
+      error: errorMessage,
+      timestamp: Date.now()
+    });
+    return { success: false, error: errorMessage };
   }
 }
 
-async function createSimulation(config: any = {}) {
+async function createSimulation(config: SimulationConfig = {}) {
   console.log('Creating new simulation...');
 
   // Create a diverse simulation with all agent types represented
-  const defaultConfig = {
+  const defaultConfig: SimulationConfig = {
     // Core governance agents
     num_developers: 10,
     num_investors: 5,
@@ -296,7 +447,7 @@ async function createSimulation(config: any = {}) {
     eventBusUnsubscribe();
   }
 
-  const shockListener = (data: any) => {
+  const shockListener = (data: MarketShockEventData) => {
     io.emit('market_shock', {
       step: data.step ?? simulation?.currentStep ?? 0,
       severity: data.severity ?? 0,
@@ -332,21 +483,21 @@ async function createDAOCity(config?: DAOCityConfig) {
   // Subscribe to city-wide events
   const cityEventBus = daoCity.getEventBus();
 
-  const cityStepListener = (data: any) => {
+  const cityStepListener = (data: CityStepEventData) => {
     io.emit('city_step', {
       step: data.step,
-      state: data.state,
+      daos: data.daos,
       mode: 'multi',
     });
   };
   cityEventBus.subscribe('city_step', cityStepListener);
 
-  const proposalCreatedListener = (data: any) => {
+  const proposalCreatedListener = (data: ProposalCreatedEventData) => {
     io.emit('inter_dao_proposal_created', data);
   };
   cityEventBus.subscribe('inter_dao_proposal_created', proposalCreatedListener);
 
-  const transferCompletedListener = (data: any) => {
+  const transferCompletedListener = (data: TransferCompletedEventData) => {
     io.emit('member_transfer_completed', data);
   };
   cityEventBus.subscribe('member_transfer_completed', transferCompletedListener);
@@ -550,7 +701,7 @@ async function broadcastSimulationStep() {
       membersByType.get(type)!.push(m.uniqueId);
     });
 
-    const clusterNodes: any[] = [];
+    const clusterNodes: ClusterNode[] = [];
     let clusterIdx = 0;
     membersByType.forEach((memberIds, type) => {
       if (memberIds.length >= 2) {
@@ -573,7 +724,7 @@ async function broadcastSimulationStep() {
     const networkNodes = [...memberNodes, ...proposalNodes, ...clusterNodes];
 
     // Create edges
-    const networkEdges: any[] = [];
+    const networkEdges: NetworkEdge[] = [];
 
     // Representative edges (member -> representative)
     sim.dao.members.forEach(m => {
@@ -835,6 +986,33 @@ async function rehydrateSimulationFromStore(): Promise<boolean> {
   }
 }
 
+/**
+ * Safe handler wrapper that catches errors and emits them to the client
+ */
+function safeHandler<T extends (...args: any[]) => any>(
+  socket: Socket,
+  eventName: string,
+  handler: T
+): (...args: Parameters<T>) => void {
+  return async (...args: Parameters<T>) => {
+    try {
+      await handler(...args);
+    } catch (error: any) {
+      const errorMessage = error?.message ?? String(error);
+      console.error(`Error in ${eventName} handler:`, errorMessage);
+      if (error?.stack) {
+        console.error(error.stack);
+      }
+      // Emit error to the specific client
+      socket.emit('error', {
+        event: eventName,
+        error: errorMessage,
+        timestamp: Date.now()
+      });
+    }
+  };
+}
+
 // Socket.IO event handlers
 io.on('connection', (socket) => {
   console.log(`Client connected: ${socket.id}`);
@@ -843,7 +1021,7 @@ io.on('connection', (socket) => {
     step: simulation?.currentStep ?? 0,
   });
 
-  socket.on('start_simulation', async (config: any = {}) => {
+  socket.on('start_simulation', safeHandler(socket, 'start_simulation', async (config: StartSimulationConfig = {}) => {
     console.log('Received start_simulation command');
     const mode = config.mode === 'multi' ? 'multi' : 'single';
 
@@ -859,36 +1037,36 @@ io.on('connection', (socket) => {
 
     startSimulation(config.stepsPerSecond, mode);
     io.emit('simulation_started', { success: true, mode });
-  });
+  }));
 
-  socket.on('start_city_simulation', async (config: any = {}) => {
+  socket.on('start_city_simulation', safeHandler(socket, 'start_city_simulation', async (config: StartCitySimulationConfig = {}) => {
     console.log('Received start_city_simulation command');
     if (!daoCity) {
       await createDAOCity(config.cityConfig);
     }
     startSimulation(config.stepsPerSecond || 2, 'multi');
     io.emit('simulation_started', { success: true, mode: 'multi' });
-  });
+  }));
 
-  socket.on('stop_simulation', () => {
+  socket.on('stop_simulation', safeHandler(socket, 'stop_simulation', () => {
     console.log('Received stop_simulation command');
     stopSimulation();
     io.emit('simulation_stopped', { success: true });
-  });
+  }));
 
-  socket.on('reset_simulation', () => {
+  socket.on('reset_simulation', safeHandler(socket, 'reset_simulation', () => {
     console.log('Received reset_simulation command');
     resetSimulation();
     io.emit('simulation_reset', { success: true });
-  });
+  }));
 
-  socket.on('step_simulation', async (config: any = {}) => {
+  socket.on('step_simulation', safeHandler(socket, 'step_simulation', async (config: StepConfig = {}) => {
     if (stepInProgress) {
       console.warn('Step request ignored: step already in progress.');
       return;
     }
     stepInProgress = true;
-    const mode = config?.mode || simulationMode;
+    const mode = config.mode || simulationMode;
 
     try {
       if (mode === 'multi') {
@@ -907,9 +1085,9 @@ io.on('connection', (socket) => {
     } finally {
       stepInProgress = false;
     }
-  });
+  }));
 
-  socket.on('get_token_rankings', () => {
+  socket.on('get_token_rankings', safeHandler(socket, 'get_token_rankings', () => {
     if (daoCity) {
       const rankings = daoCity.getTokenRankings();
       const state = daoCity.getState();
@@ -919,13 +1097,144 @@ io.on('connection', (socket) => {
         totalVolume: state.globalMarketplace.totalVolume24h,
       });
     }
-  });
+  }));
 
-  socket.on('get_city_state', () => {
+  socket.on('get_city_state', safeHandler(socket, 'get_city_state', () => {
     if (daoCity) {
       socket.emit('city_state', daoCity.getState());
     }
-  });
+  }));
+
+  // ===========================================================================
+  // DIGITAL TWIN EVENTS
+  // ===========================================================================
+
+  socket.on('get_available_twins', safeHandler(socket, 'get_available_twins', async () => {
+    if (daoCity) {
+      const twins = await daoCity.getAvailableDigitalTwins();
+      socket.emit('available_twins', { twins });
+    } else {
+      socket.emit('available_twins', { twins: [] });
+    }
+  }));
+
+  socket.on('load_digital_twins', safeHandler(socket, 'load_digital_twins', async (twinIds: string[]) => {
+    if (!daoCity) {
+      socket.emit('twins_load_result', {
+        success: false,
+        error: 'No city simulation running',
+        loaded: [],
+        failed: twinIds,
+      });
+      return;
+    }
+
+    const result = await daoCity.loadDigitalTwins(twinIds);
+    socket.emit('twins_load_result', {
+      success: result.failed.length === 0,
+      loaded: result.loaded,
+      failed: result.failed,
+      errors: result.errors,
+    });
+
+    // Broadcast updated city state to all clients
+    io.emit('city_state', daoCity.getState());
+  }));
+
+  socket.on('get_loaded_twins', safeHandler(socket, 'get_loaded_twins', () => {
+    if (daoCity) {
+      const twins = daoCity.getLoadedDigitalTwins();
+      const twinList = Array.from(twins.values()).map(t => ({
+        id: t.id,
+        name: t.name,
+        tokenSymbol: t.tokenSymbol,
+        isBicameral: t.isBicameral,
+        hasDualGovernance: t.hasDualGovernance,
+      }));
+      socket.emit('loaded_twins', { twins: twinList });
+    } else {
+      socket.emit('loaded_twins', { twins: [] });
+    }
+  }));
+
+  // ===========================================================================
+  // PLAYER CONTROL EVENTS
+  // ===========================================================================
+
+  socket.on('take_control', safeHandler(socket, 'take_control', (daoId: string) => {
+    if (!daoCity) {
+      socket.emit('control_result', { success: false, error: 'No city simulation running' });
+      return;
+    }
+
+    const success = daoCity.takeControl(daoId);
+    socket.emit('control_result', {
+      success,
+      daoId: success ? daoId : null,
+      error: success ? null : 'Failed to take control of DAO',
+    });
+
+    if (success) {
+      io.emit('player_control_changed', { daoId, active: true });
+    }
+  }));
+
+  socket.on('release_control', safeHandler(socket, 'release_control', () => {
+    if (!daoCity) {
+      socket.emit('control_result', { success: false, error: 'No city simulation running' });
+      return;
+    }
+
+    const previousDaoId = daoCity.getPlayerControlledDaoId();
+    daoCity.releaseControl();
+    socket.emit('control_result', { success: true, daoId: null });
+
+    if (previousDaoId) {
+      io.emit('player_control_changed', { daoId: previousDaoId, active: false });
+    }
+  }));
+
+  socket.on('get_control_state', safeHandler(socket, 'get_control_state', () => {
+    if (daoCity) {
+      socket.emit('control_state', {
+        controlledDaoId: daoCity.getPlayerControlledDaoId(),
+        isControlling: daoCity.getPlayerControlledDaoId() !== null,
+      });
+    } else {
+      socket.emit('control_state', { controlledDaoId: null, isControlling: false });
+    }
+  }));
+
+  socket.on('player_action', safeHandler(socket, 'player_action', (action: {
+    type: string;
+    params: Record<string, unknown>;
+  }) => {
+    if (!daoCity) {
+      socket.emit('action_result', { success: false, error: 'No city simulation running' });
+      return;
+    }
+
+    const controlledDaoId = daoCity.getPlayerControlledDaoId();
+    if (!controlledDaoId) {
+      socket.emit('action_result', { success: false, error: 'Not controlling any DAO' });
+      return;
+    }
+
+    // For now, emit a simple acknowledgment
+    // Full player controller integration can be added later
+    socket.emit('action_result', {
+      success: true,
+      action: action.type,
+      daoId: controlledDaoId,
+      message: `Action ${action.type} queued`,
+    });
+
+    io.emit('player_action_executed', {
+      daoId: controlledDaoId,
+      action: action.type,
+      params: action.params,
+    });
+  }));
 
   socket.on('disconnect', () => {
     console.log(`Client disconnected: ${socket.id}`);

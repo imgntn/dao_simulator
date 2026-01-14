@@ -1,8 +1,11 @@
 // Governance plugins - extensible governance rules
 // Port from utils/governance_plugins.py
+// Extended with digital twin governance patterns
 
 import type { Proposal } from '../data-structures/proposal';
 import type { DAO } from '../data-structures/dao';
+import type { MultiStageProposal, HouseType } from '../data-structures/multi-stage-proposal';
+import type { GovernanceHouse, BicameralGovernance } from '../data-structures/governance-house';
 
 /**
  * Base class for governance approval rules
@@ -221,6 +224,363 @@ export class ConvictionVotingRule extends GovernanceRule {
   }
 }
 
+// =============================================================================
+// DIGITAL TWIN GOVERNANCE RULES
+// =============================================================================
+
+/**
+ * Category-based quorum rule (Arbitrum-style)
+ * Different quorum thresholds for constitutional vs non-constitutional proposals
+ */
+export class CategoryQuorumRule extends GovernanceRule {
+  private constitutionalQuorum: number;
+  private nonConstitutionalQuorum: number;
+  private approvalThreshold: number;
+
+  constructor(
+    constitutionalQuorum: number = 0.05,  // 5%
+    nonConstitutionalQuorum: number = 0.03,  // 3%
+    approvalThreshold: number = 0.51  // 51%
+  ) {
+    super();
+    this.constitutionalQuorum = constitutionalQuorum;
+    this.nonConstitutionalQuorum = nonConstitutionalQuorum;
+    this.approvalThreshold = approvalThreshold;
+  }
+
+  approve(proposal: Proposal, dao: DAO): boolean {
+    const multiStage = proposal as unknown as MultiStageProposal;
+    const category = multiStage.proposalCategory || 'standard';
+
+    // Calculate total voting power
+    const totalTokens = dao.members.reduce(
+      (sum, member) => sum + member.tokens + member.stakedTokens,
+      0
+    );
+
+    // Select quorum based on category
+    let requiredQuorum: number;
+    if (category === 'constitutional') {
+      requiredQuorum = this.constitutionalQuorum;
+    } else if (category === 'non_constitutional') {
+      requiredQuorum = this.nonConstitutionalQuorum;
+    } else {
+      requiredQuorum = this.nonConstitutionalQuorum;  // Default to lower
+    }
+
+    const quorumVotes = totalTokens * requiredQuorum;
+    const quorumMet = proposal.votesFor >= quorumVotes;
+
+    // Check approval threshold
+    const totalVotes = proposal.votesFor + proposal.votesAgainst;
+    const approvalRate = totalVotes > 0 ? proposal.votesFor / totalVotes : 0;
+
+    return quorumMet && approvalRate >= this.approvalThreshold;
+  }
+}
+
+/**
+ * Bicameral voting rule (Optimism-style)
+ * Requires approval from Token House; Citizens House has veto power
+ */
+export class BicameralRule extends GovernanceRule {
+  private bicameralSystem: BicameralGovernance | null;
+  private tokenHouseQuorum: number;
+  private tokenHouseApproval: number;
+  private citizensHouseVetoEnabled: boolean;
+
+  constructor(
+    bicameralSystem: BicameralGovernance | null = null,
+    tokenHouseQuorum: number = 0.30,  // 30%
+    tokenHouseApproval: number = 0.51,  // 51%
+    citizensHouseVetoEnabled: boolean = true
+  ) {
+    super();
+    this.bicameralSystem = bicameralSystem;
+    this.tokenHouseQuorum = tokenHouseQuorum;
+    this.tokenHouseApproval = tokenHouseApproval;
+    this.citizensHouseVetoEnabled = citizensHouseVetoEnabled;
+  }
+
+  setBicameralSystem(system: BicameralGovernance): void {
+    this.bicameralSystem = system;
+  }
+
+  approve(proposal: Proposal, dao: DAO): boolean {
+    const multiStage = proposal as unknown as MultiStageProposal;
+
+    // If no bicameral system, fall back to standard voting
+    if (!this.bicameralSystem) {
+      const totalVotes = proposal.votesFor + proposal.votesAgainst;
+      return totalVotes > 0 && proposal.votesFor > proposal.votesAgainst;
+    }
+
+    // Check Token House approval
+    const tokenHouse = this.bicameralSystem.getHouse('token_house');
+    if (tokenHouse) {
+      const tokenResult = tokenHouse.getVoteResult(proposal.uniqueId);
+      if (!tokenResult.approved) {
+        return false;
+      }
+    }
+
+    // Check for Citizens House veto (if enabled)
+    if (this.citizensHouseVetoEnabled) {
+      const citizensHouse = this.bicameralSystem.getHouse('citizens_house');
+      if (citizensHouse && citizensHouse.canVeto) {
+        if (citizensHouse.checkVetoCondition(proposal.uniqueId)) {
+          return false;  // Vetoed
+        }
+      }
+    }
+
+    return true;
+  }
+}
+
+/**
+ * Dual governance rule (Lido-style)
+ * Allows stakers to veto proposals with dynamic timelock extension
+ */
+export class DualGovernanceRule extends GovernanceRule {
+  private vetoThresholdPercent: number;
+  private rageQuitThresholdPercent: number;
+  private minTimelockSteps: number;
+  private maxTimelockSteps: number;
+
+  constructor(
+    vetoThresholdPercent: number = 1,  // 1% stETH supply
+    rageQuitThresholdPercent: number = 10,  // 10% triggers rage quit
+    minTimelockSteps: number = 120,  // 5 days
+    maxTimelockSteps: number = 1080  // 45 days
+  ) {
+    super();
+    this.vetoThresholdPercent = vetoThresholdPercent;
+    this.rageQuitThresholdPercent = rageQuitThresholdPercent;
+    this.minTimelockSteps = minTimelockSteps;
+    this.maxTimelockSteps = maxTimelockSteps;
+  }
+
+  approve(proposal: Proposal, dao: DAO): boolean {
+    const multiStage = proposal as unknown as MultiStageProposal;
+
+    // Basic voting must pass first
+    const totalVotes = proposal.votesFor + proposal.votesAgainst;
+    if (totalVotes === 0 || proposal.votesFor <= proposal.votesAgainst) {
+      return false;
+    }
+
+    // Calculate total staked supply
+    const totalStakedSupply = dao.members.reduce(
+      (sum, member) => sum + member.stakedTokens,
+      0
+    );
+
+    if (totalStakedSupply <= 0) {
+      return true;  // No stakers to veto
+    }
+
+    // Check veto signal percentage
+    const vetoSignal = multiStage.totalVetoSignal || 0;
+    const vetoSignalPercent = (vetoSignal / totalStakedSupply) * 100;
+
+    // Rage quit threshold reached = proposal fails
+    if (vetoSignalPercent >= this.rageQuitThresholdPercent) {
+      return false;
+    }
+
+    // If veto threshold reached, proposal still passes but with extended timelock
+    // (timelock extension is handled by the state machine, not here)
+    return true;
+  }
+
+  /**
+   * Calculate dynamic timelock based on veto signal
+   */
+  calculateDynamicTimelock(vetoSignalPercent: number): number {
+    if (vetoSignalPercent <= 0) {
+      return this.minTimelockSteps;
+    }
+
+    const range = this.maxTimelockSteps - this.minTimelockSteps;
+    const factor = Math.min(vetoSignalPercent / this.vetoThresholdPercent, 1);
+
+    return Math.round(this.minTimelockSteps + range * factor);
+  }
+}
+
+/**
+ * Approval voting rule (MakerDAO-style)
+ * Continuous approval voting for executive proposals
+ * Proposal passes when it has most approval among competing proposals
+ */
+export class ApprovalVotingRule extends GovernanceRule {
+  private competingProposals: Map<string, number> = new Map();
+
+  constructor() {
+    super();
+  }
+
+  /**
+   * Register a competing proposal
+   */
+  registerCompetingProposal(proposalId: string, approvalVotes: number): void {
+    this.competingProposals.set(proposalId, approvalVotes);
+  }
+
+  /**
+   * Clear competing proposals (new voting round)
+   */
+  clearCompetingProposals(): void {
+    this.competingProposals.clear();
+  }
+
+  approve(proposal: Proposal, dao: DAO): boolean {
+    // Register this proposal's votes
+    this.competingProposals.set(proposal.uniqueId, proposal.votesFor);
+
+    // Find the proposal with highest approval
+    let maxVotes = 0;
+    let leadingProposalId = '';
+
+    for (const [id, votes] of this.competingProposals.entries()) {
+      if (votes > maxVotes) {
+        maxVotes = votes;
+        leadingProposalId = id;
+      }
+    }
+
+    // This proposal is approved if it's leading
+    return proposal.uniqueId === leadingProposalId && maxVotes > 0;
+  }
+}
+
+/**
+ * Security council rule (Arbitrum/Optimism-style)
+ * Allows fast-track execution for security emergencies
+ */
+export class SecurityCouncilRule extends GovernanceRule {
+  private councilMembers: Set<string>;
+  private approvalThreshold: number;  // e.g., 9 of 12
+
+  constructor(
+    councilMembers: string[] = [],
+    approvalThreshold: number = 0.75  // 75% = 9 of 12
+  ) {
+    super();
+    this.councilMembers = new Set(councilMembers);
+    this.approvalThreshold = approvalThreshold;
+  }
+
+  addCouncilMember(memberId: string): void {
+    this.councilMembers.add(memberId);
+  }
+
+  removeCouncilMember(memberId: string): void {
+    this.councilMembers.delete(memberId);
+  }
+
+  isCouncilMember(memberId: string): boolean {
+    return this.councilMembers.has(memberId);
+  }
+
+  approve(proposal: Proposal, dao: DAO): boolean {
+    // For security council decisions, we count individual member votes
+    // Each council member gets 1 vote regardless of token holdings
+
+    // In a full implementation, we'd track which council members voted
+    // For now, use the votes as proxy (assume 1 vote = 1 council member)
+    const councilSize = this.councilMembers.size;
+    if (councilSize === 0) {
+      return false;
+    }
+
+    const requiredVotes = Math.ceil(councilSize * this.approvalThreshold);
+
+    // votes_for represents council members voting in favor
+    return proposal.votesFor >= requiredVotes;
+  }
+}
+
+/**
+ * Optimistic approval rule
+ * Proposal auto-passes unless vetoed within window
+ */
+export class OptimisticApprovalRule extends GovernanceRule {
+  private vetoThreshold: number;  // Number of veto votes to block
+  private vetoPeriodSteps: number;
+
+  constructor(
+    vetoThreshold: number = 100,
+    vetoPeriodSteps: number = 168  // 7 days
+  ) {
+    super();
+    this.vetoThreshold = vetoThreshold;
+    this.vetoPeriodSteps = vetoPeriodSteps;
+  }
+
+  approve(proposal: Proposal, dao: DAO): boolean {
+    // Check if veto period has passed
+    const age = dao.currentStep - proposal.creationTime;
+
+    if (age < this.vetoPeriodSteps) {
+      // Still in veto period - check for vetoes
+      return proposal.votesAgainst < this.vetoThreshold;
+    }
+
+    // Veto period passed - auto-approve if not vetoed
+    return proposal.votesAgainst < this.vetoThreshold;
+  }
+}
+
+/**
+ * Holographic consensus rule (DAOstack-style)
+ * Uses prediction markets to filter proposals
+ */
+export class HolographicConsensusRule extends GovernanceRule {
+  private stakingThreshold: number;  // GEN tokens to boost
+  private boostedQuorum: number;  // Lower quorum when boosted
+  private normalQuorum: number;  // Higher quorum when not boosted
+
+  constructor(
+    stakingThreshold: number = 100,
+    boostedQuorum: number = 0.01,  // 1% when boosted
+    normalQuorum: number = 0.50  // 50% when not boosted
+  ) {
+    super();
+    this.stakingThreshold = stakingThreshold;
+    this.boostedQuorum = boostedQuorum;
+    this.normalQuorum = normalQuorum;
+  }
+
+  approve(proposal: Proposal, dao: DAO): boolean {
+    // Check if proposal is "boosted" (simplified - would need staking tracking)
+    const isBoosted = proposal.currentFunding >= this.stakingThreshold;
+
+    const totalTokens = dao.members.reduce(
+      (sum, member) => sum + member.tokens,
+      0
+    );
+
+    const requiredQuorum = isBoosted ? this.boostedQuorum : this.normalQuorum;
+    const quorumVotes = totalTokens * requiredQuorum;
+
+    const totalVotes = proposal.votesFor + proposal.votesAgainst;
+    const quorumMet = totalVotes >= quorumVotes;
+
+    // Relative majority for boosted, absolute majority for non-boosted
+    if (isBoosted) {
+      return quorumMet && proposal.votesFor > proposal.votesAgainst;
+    } else {
+      return quorumMet && proposal.votesFor > totalVotes / 2;
+    }
+  }
+}
+
+// =============================================================================
+// RULE REGISTRATION
+// =============================================================================
+
 // Register default rules
 registerRule('majority', MajorityRule);
 registerRule('quorum', QuorumRule);
@@ -229,3 +589,12 @@ registerRule('tokenquorum', TokenQuorumRule);
 registerRule('timedecay', TimeDecayRule);
 registerRule('reputationquorum', ReputationQuorumRule);
 registerRule('conviction', ConvictionVotingRule);
+
+// Register digital twin rules
+registerRule('categoryquorum', CategoryQuorumRule);
+registerRule('bicameral', BicameralRule);
+registerRule('dualgovernance', DualGovernanceRule);
+registerRule('approvalvoting', ApprovalVotingRule);
+registerRule('securitycouncil', SecurityCouncilRule);
+registerRule('optimistic', OptimisticApprovalRule);
+registerRule('holographic', HolographicConsensusRule);

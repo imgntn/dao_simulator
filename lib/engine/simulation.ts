@@ -16,6 +16,7 @@ import { settings, SimulationSettings } from '../config/settings';
 import * as constants from '../config/constants';
 import { getRule } from '../utils/governance-plugins';
 import { setSeed, random } from '../utils/random';
+import { GovernanceProcessor, createGovernanceProcessor } from '../governance';
 import {
   Developer,
   Investor,
@@ -144,6 +145,7 @@ export class DAOSimulation extends Model {
   agentManager: AgentManager;
   eventEngine?: EventEngine;
   currentShock: number = 0;
+  governanceProcessor: GovernanceProcessor | null = null;
 
   constructor(config: DAOSimulationConfig = {}) {
     super();
@@ -304,6 +306,24 @@ export class DAOSimulation extends Model {
 
     // Create agents
     this.initializeAgents();
+
+    // Initialize governance processor for multi-stage proposals, timelocks, etc.
+    this.governanceProcessor = createGovernanceProcessor(
+      this.dao,
+      this.eventBus,
+      'default'  // Can be overridden via setGovernanceType
+    );
+  }
+
+  /**
+   * Set the governance type for the processor
+   */
+  setGovernanceType(daoType: string): void {
+    this.governanceProcessor = createGovernanceProcessor(
+      this.dao,
+      this.eventBus,
+      daoType
+    );
   }
 
   /**
@@ -438,6 +458,11 @@ export class DAOSimulation extends Model {
 
     // Reputation decay
     this.reputationTracker.decayReputation();
+
+    // Process governance systems (timelocks, multi-stage proposals, etc.)
+    if (this.governanceProcessor) {
+      this.governanceProcessor.processStep(this.currentStep);
+    }
 
     // Update token prices with market dynamics
     this.dao.treasury.updatePrices(0.02); // 2% volatility per step

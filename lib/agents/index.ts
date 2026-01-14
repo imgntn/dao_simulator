@@ -29,3 +29,33 @@ export { GovernanceExpert } from './governance-expert';
 export { RiskManager } from './risk-manager';
 export { MarketMaker } from './market-maker';
 export { Whistleblower } from './whistleblower';
+
+// Digital twin specific agents
+export { SecurityCouncilMember } from './security-council-member';
+export { CitizenAgent, type RetroPGFAllocation } from './citizen-agent';
+export { StewardAgent, type WorkstreamType, type GrantReview } from './steward-agent';
+export { StakerAgent, type VetoSignal } from './staker-agent';
+
+// Twin agent factory
+export {
+  TwinAgentFactory,
+  createTwinAgentFactory,
+  createAgentsFromTwin,
+  getSupportedArchetypes,
+  type AgentCreationConfig,
+  type FactoryResult,
+} from './twin-agent-factory';
+
+// Player controller
+export {
+  PlayerController,
+  createPlayerController,
+  type PlayerActionType,
+  type PlayerAction,
+  type VoteAction,
+  type ProposalCreationParams,
+  type DelegationParams,
+  type VetoSignalParams,
+  type SwapParams,
+  type ControllerState,
+} from './player-controller';
