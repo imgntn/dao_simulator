@@ -161,15 +161,18 @@ export const authConfig: NextAuthConfig = {
  * Get client identifier for rate limiting
  */
 function getClientId(request: Request): string {
-  // Try to get real IP from various headers (for proxied requests)
-  const forwarded = request.headers.get('x-forwarded-for');
-  if (forwarded) {
-    return forwarded.split(',')[0].trim();
-  }
+  const trustProxy = process.env.TRUST_PROXY === 'true';
+  if (trustProxy) {
+    // Try to get real IP from various headers (for proxied requests)
+    const forwarded = request.headers.get('x-forwarded-for');
+    if (forwarded) {
+      return forwarded.split(',')[0].trim();
+    }
 
-  const realIp = request.headers.get('x-real-ip');
-  if (realIp) {
-    return realIp;
+    const realIp = request.headers.get('x-real-ip');
+    if (realIp) {
+      return realIp;
+    }
   }
 
   // Fall back to a hash of the request URL origin

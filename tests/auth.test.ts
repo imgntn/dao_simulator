@@ -172,6 +172,7 @@ describe('requireAuth', () => {
   it('should reject rate-limited clients', async () => {
     process.env.NODE_ENV = 'production';
     process.env.API_KEY = 'valid-api-key';
+    process.env.TRUST_PROXY = 'true';
 
     const clientIp = '192.168.1.100';
 

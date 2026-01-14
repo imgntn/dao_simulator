@@ -1,0 +1,126 @@
+{
+  "schema_version": "dao_digital_twin_v0.2",
+  "last_verified_utc": "2026-01-12",
+  "dao": {
+    "id": "maker_sky",
+    "name": "MakerDAO / Sky Ecosystem Governance",
+    "category": [
+      "Stablecoin",
+      "DeFi",
+      "Protocol governance"
+    ],
+    "primary_chain": "Ethereum",
+    "governance_token": {
+      "symbol": "MKR (historically); Sky ecosystem materials may reference updated governance token naming",
+      "type": "ERC-20",
+      "voting_power_model": "token-weighted with locked voting (MKR locked into voting contracts)"
+    },
+    "governance_stack": {
+      "governance_portal": "vote.makerdao.com / vote.sky.money (portal evolution)",
+      "voting_types": {
+        "governance_polls": {
+          "vote_style": "basic poll voting (e.g., Yes/No)",
+          "purpose": "signal / resolution on a matter before enactment"
+        },
+        "executive_votes": {
+          "vote_style": "approval voting (continuous support for competing executive 'spells')",
+          "purpose": "enact changes to the system state"
+        }
+      },
+      "token_locking": {
+        "required": true,
+        "mechanism": "MKR is locked into the voting system to participate",
+        "cold_wallet_support": "voting proxy contracts can allow separation of cold wallet custody from hot wallet voting"
+      }
+    },
+    "treasury": {
+      "treasury_controller": "Maker Protocol system (surplus buffer / protocol-controlled value) governed via executive votes",
+      "spending_mechanism": [
+        "protocol parameter changes and collateral onboarding via executive spells",
+        "budget allocations to teams/contributors (varies by governance era)"
+      ],
+      "notes": [
+        "Maker-style governance often combines non-binding polls with binding executive votes that change protocol parameters."
+      ]
+    },
+    "membership": {
+      "member_types": [
+        {
+          "type": "governance_token_holder",
+          "who": "MKR holders",
+          "rights": [
+            "lock tokens to vote",
+            "participate in polls and executive votes"
+          ]
+        },
+        {
+          "type": "delegate / voter",
+          "who": "voters using hot wallets / proxies",
+          "rights": [
+            "cast votes on behalf of locked MKR"
+          ]
+        },
+        {
+          "type": "contributor",
+          "who": "risk, governance, and protocol teams funded by governance",
+          "rights": [
+            "execute DAO-funded mandates"
+          ]
+        }
+      ]
+    },
+    "proposal_process": {
+      "stages": [
+        {
+          "stage": "Governance Poll",
+          "platform": "governance portal",
+          "purpose": "establish resolution / rough consensus"
+        },
+        {
+          "stage": "Executive Vote",
+          "platform": "governance portal",
+          "purpose": "enact changes; approval voting selects the active executive spell"
+        }
+      ],
+      "proposal_types": [
+        "risk parameter changes",
+        "collateral onboarding",
+        "governance process changes",
+        "budgeting and operational decisions"
+      ]
+    },
+    "proposal_activity": {
+      "activity_level": "high",
+      "cadence_pattern": "ongoing polls and executive votes; executive votes can change over time as support shifts"
+    },
+    "security_controls": {
+      "lock_to_vote": true,
+      "approval_voting_for_execution": true,
+      "notes": [
+        "separation of signaling (polls) and execution (executive votes) is a core safety/process feature"
+      ]
+    },
+    "simulation_parameters": {
+      "governance": {
+        "vote_weight": "locked_token_weight",
+        "poll_vote_style": "binary_or_ranked_poll",
+        "executive_vote_style": "continuous_approval",
+        "pass_rule_executive": "executive spell with highest ongoing approval becomes active (subject to system rules)"
+      }
+    },
+    "sources": [
+      {
+        "title": "MakerDAO Voting Proxy Contract (poll vs executive; approval voting; locking; hot/cold wallet separation)",
+        "url": "https://medium.com/@MakerDAO/the-makerdao-voting-proxy-contract-5765dd5946b4"
+      },
+      {
+        "title": "Sky ecosystem / Maker community: How voting works (governance polls and executive votes)",
+        "url": "https://github.com/sky-ecosystem/community/blob/master/content/en/learn/governance/how-voting-works.mdx"
+      },
+      {
+        "title": "Maker Protocol Technical Docs: Chief (approval voting mechanics)",
+        "url": "https://docs.makerdao.com/smart-contract-modules/governance-module/chief-detailed-documentation"
+      }
+    ]
+  }
+}

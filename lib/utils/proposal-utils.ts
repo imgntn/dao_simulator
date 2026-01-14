@@ -4,6 +4,7 @@
 import { Proposal } from '../data-structures/proposal';
 import type { DAO } from '../data-structures/dao';
 import type { DAOMember } from '../agents/base';
+import { randomFloat, randomInt } from './random';
 
 /**
  * Create a random proposal for testing/simulation purposes
@@ -18,8 +19,8 @@ export function createRandomProposal(
   const proposalId = dao.proposals.length;
   const title = `${titlePrefix} ${proposalId}`;
   const description = `This is the description for ${title}.`;
-  const fundingRequired = Math.round((Math.random() * 100 + 1) * 100) / 100;
-  const duration = Math.floor(Math.random() * 12) + 1;
+  const fundingRequired = Math.round(randomFloat(1, 101) * 100) / 100;
+  const duration = randomInt(1, 13);
 
   return new Proposal(
     dao,

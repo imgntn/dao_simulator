@@ -1,0 +1,148 @@
+{
+  "schema_version": "dao_digital_twin_v0.2",
+  "last_verified_utc": "2026-01-12",
+  "dao": {
+    "id": "ens",
+    "name": "ENS DAO",
+    "category": [
+      "Identity",
+      "Naming",
+      "Public goods"
+    ],
+    "primary_chain": "Ethereum",
+    "governance_token": {
+      "symbol": "ENS",
+      "type": "ERC-20",
+      "voting_power_model": "token-weighted with delegation"
+    },
+    "governance_stack": {
+      "discussion_forum": "discuss.ens.domains (forum)",
+      "onchain_voting": {
+        "framework": "Governor + timelock on Ethereum",
+        "proposal_types": {
+          "social_proposals": {
+            "notes": "non-executable signaling proposals (parameters differ)"
+          },
+          "executable_proposals": {
+            "proposal_threshold_ens": 100000,
+            "quorum_ens": 1000000,
+            "voting_period_days": 7,
+            "timelock_days": 2
+          }
+        },
+        "pass_rule": "simple majority + quorum for executable proposals"
+      },
+      "security_council": {
+        "exists": true,
+        "notes": [
+          "ENS has a Security Council/guardian role for upgrade safety (multisig / emergency processes)."
+        ]
+      }
+    },
+    "treasury": {
+      "treasury_controller": "ENS DAO timelock / governance execution",
+      "spending_mechanism": "executable proposals; working groups budget allocations",
+      "notes": [
+        "ENS DAO commonly uses working groups (e.g., public goods, ecosystem) with budgets approved by governance."
+      ]
+    },
+    "membership": {
+      "member_types": [
+        {
+          "type": "token_holder",
+          "who": "ENS token holders",
+          "rights": [
+            "delegate",
+            "vote"
+          ]
+        },
+        {
+          "type": "delegate",
+          "who": "delegated voters",
+          "rights": [
+            "vote",
+            "propose if threshold met"
+          ]
+        },
+        {
+          "type": "working_group_member",
+          "who": "contributors in working groups",
+          "rights": [
+            "carry out DAO-funded mandates"
+          ]
+        },
+        {
+          "type": "security_council_member",
+          "who": "security council members",
+          "rights": [
+            "security/upgrade-related process powers"
+          ]
+        }
+      ]
+    },
+    "proposal_process": {
+      "stages": [
+        {
+          "stage": "Forum discussion",
+          "platform": "forum",
+          "typical_duration_days": null
+        },
+        {
+          "stage": "On-chain proposal",
+          "platform": "on-chain",
+          "voting_period_days": 7
+        },
+        {
+          "stage": "Timelock",
+          "platform": "on-chain",
+          "duration_days": 2
+        },
+        {
+          "stage": "Execution",
+          "platform": "on-chain"
+        }
+      ],
+      "proposal_types": [
+        "working group budgets and grants",
+        "protocol/controller upgrades",
+        "treasury management decisions"
+      ]
+    },
+    "proposal_activity": {
+      "activity_level": "medium_to_high",
+      "cadence_pattern": "recurring working group budgets plus ad hoc protocol/treasury proposals"
+    },
+    "security_controls": {
+      "timelock": true,
+      "timelock_delay_days": 2,
+      "notes": [
+        "security council provides additional protection for sensitive actions"
+      ]
+    },
+    "simulation_parameters": {
+      "governance": {
+        "vote_weight": "delegated_token_weight",
+        "proposal_threshold": {
+          "unit": "ENS",
+          "value": 100000
+        },
+        "quorum": {
+          "unit": "ENS",
+          "value": 1000000
+        },
+        "voting_period_days": 7,
+        "timelock_delay_days": 2
+      }
+    },
+    "sources": [
+      {
+        "title": "ENS governance docs (parameters + security council)",
+        "url": "https://docs.ens.domains/dao/governance"
+      },
+      {
+        "title": "ENS DAO basics: Governance proposal thresholds (table of thresholds/quorum/timelock)",
+        "url": "https://basics.ensdao.org/"
+      }
+    ]
+  }
+}

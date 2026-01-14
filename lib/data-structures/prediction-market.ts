@@ -5,6 +5,7 @@ import type { DAO } from './dao';
 import type { Treasury } from './treasury';
 import type { EventBus } from '../utils/event-bus';
 import type { DAOMember } from '../agents/base';
+import { randomBool } from '../utils/random';
 
 export interface Prediction {
   question: string;
@@ -102,7 +103,7 @@ export class PredictionMarket {
     }
 
     // Otherwise random
-    return Math.random() < 0.5 ? 'pass' : 'fail';
+    return randomBool() ? 'pass' : 'fail';
   }
 
   /**

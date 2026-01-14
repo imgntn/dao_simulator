@@ -1,0 +1,184 @@
+{
+  "schema_version": "dao_digital_twin_v0.2",
+  "last_verified_utc": "2026-01-12",
+  "dao": {
+    "id": "uniswap",
+    "name": "Uniswap DAO",
+    "category": [
+      "DeFi",
+      "DEX"
+    ],
+    "primary_chain": "Ethereum",
+    "governance_token": {
+      "symbol": "UNI",
+      "type": "ERC-20",
+      "contract_address": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+      "voting_power_model": "token-weighted with delegation; voting power snapshot at vote start (Governor Bravo-style)"
+    },
+    "governance_stack": {
+      "discussion_forum": "Uniswap Governance Forum (Discourse)",
+      "offchain_voting": {
+        "platform": "Snapshot",
+        "used_for": [
+          "temperature checks",
+          "process changes",
+          "signaling prior to onchain votes"
+        ],
+        "typical_poll_duration_days": 5,
+        "typical_pass_rule": "simple majority + 10M UNI 'Yes' threshold (temperature check)"
+      },
+      "onchain_voting": {
+        "framework": "Governor Bravo-style contracts on Ethereum",
+        "voting_delay_days": 2,
+        "voting_period_days": 7,
+        "pass_rule": "simple majority AND quorum of 40M UNI votes in favor",
+        "proposal_threshold_uni": 1000000
+      },
+      "execution": {
+        "timelock": {
+          "min_delay_days": 2,
+          "notes": "timelock delay can be configured higher for major upgrades; minimum is 2 days"
+        }
+      }
+    },
+    "treasury": {
+      "treasury_controller": "DAO Timelock (on-chain)",
+      "primary_treasury_address": "0x1a9C8182C09F50C8318d769245beA52c32BE35BC",
+      "spending_mechanism": "on-chain governance proposal executed via timelock",
+      "budgeting_patterns": [
+        "one-off treasury transfers approved via governance",
+        "programmatic funding via vesting/streaming contracts (varies by proposal)"
+      ],
+      "revenue_streams": [
+        "protocol fees configurable by governance (fee switch / fee parameters depending on protocol version)",
+        "treasury token holdings"
+      ]
+    },
+    "membership": {
+      "member_types": [
+        {
+          "type": "token_holder",
+          "who": "UNI holders",
+          "rights": [
+            "delegate votes",
+            "vote on proposals"
+          ]
+        },
+        {
+          "type": "delegate",
+          "who": "addresses delegated UNI voting power",
+          "rights": [
+            "vote",
+            "submit proposals if threshold met"
+          ]
+        },
+        {
+          "type": "service_provider",
+          "who": "grants, analytics, governance ops teams",
+          "rights": [
+            "execute funded work via DAO-approved agreements"
+          ]
+        }
+      ],
+      "notable_institutions": [
+        "Uniswap Foundation (ecosystem support / grants; interacts with DAO governance but is not the DAO itself)"
+      ]
+    },
+    "proposal_process": {
+      "stages": [
+        {
+          "stage": "RFC",
+          "platform": "forum",
+          "min_duration_days": 7,
+          "purpose": "community discussion and iteration"
+        },
+        {
+          "stage": "Temperature Check",
+          "platform": "Snapshot",
+          "duration_days": 5,
+          "pass_condition": "majority + 10M UNI 'Yes' threshold"
+        },
+        {
+          "stage": "On-chain Governance Proposal",
+          "platform": "on-chain (Governor)",
+          "voting_delay_days": 2,
+          "voting_period_days": 7,
+          "timelock_days": 2,
+          "entry_requirement": "≥1,000,000 UNI delegated to proposer",
+          "pass_condition": "For > Against AND For votes ≥ 40,000,000 UNI"
+        }
+      ],
+      "proposal_types": [
+        "protocol upgrades / parameter changes",
+        "treasury spending / grants / incentive programs",
+        "cross-chain deployments and related ops",
+        "governance process changes (often via Snapshot)"
+      ]
+    },
+    "proposal_activity": {
+      "activity_level": "high",
+      "cadence_pattern": "episodic bursts around major protocol / treasury initiatives; ongoing forum discussion",
+      "primary_artifacts": [
+        "forum threads",
+        "Snapshot polls",
+        "on-chain votes (Tally/Agora dashboards)"
+      ]
+    },
+    "security_controls": {
+      "timelock": true,
+      "timelock_delay_days": 2,
+      "voting_delay_days": 2,
+      "notes": [
+        "timelock provides an opt-out window before execution",
+        "proposal can be canceled if proposer drops below threshold (Governor Bravo-style pattern)"
+      ]
+    },
+    "simulation_parameters": {
+      "governance": {
+        "vote_weight": "delegated_token_weight",
+        "proposal_threshold": {
+          "unit": "UNI",
+          "value": 1000000
+        },
+        "quorum": {
+          "unit": "UNI_for_votes",
+          "value": 40000000
+        },
+        "voting_delay_days": 2,
+        "voting_period_days": 7,
+        "timelock_delay_days": 2,
+        "pass_rule": "for_votes > against_votes AND for_votes >= quorum"
+      },
+      "process": {
+        "temperature_check_days": 5,
+        "rfc_min_days": 7
+      }
+    },
+    "sources": [
+      {
+        "title": "Uniswap governance process (Temperature Check + Governance Proposal parameters)",
+        "url": "https://docs.uniswap.org/concepts/governance/process"
+      },
+      {
+        "title": "Uniswap Beginners' Guide to Voting (proposal threshold and quorum)",
+        "url": "https://docs.uniswap.org/concepts/governance/guide-to-voting"
+      },
+      {
+        "title": "Uniswap governance forum: Lower onchain proposal threshold to 1M UNI",
+        "url": "https://gov.uniswap.org/t/rfc-lower-onchain-proposal-threshold/22429"
+      },
+      {
+        "title": "Uniswap docs governance overview (timelock minimum delay concept)",
+        "url": "https://docs.uniswap.org/contracts/v3/reference/governance/overview"
+      },
+      {
+        "title": "Uniswap: Introducing UNI (token contract address)",
+        "url": "https://blog.uniswap.org/uni"
+      },
+      {
+        "title": "Uniswap governance concept overview (timelock address)",
+        "url": "https://docs.uniswap.org/concepts/governance/overview"
+      }
+    ]
+  }
+}

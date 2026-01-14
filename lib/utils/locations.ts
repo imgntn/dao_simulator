@@ -1,6 +1,8 @@
 // Location utilities - random location generation
 // Port from utils/locations.py
 
+import { randomChoice } from './random';
+
 // List of countries (simplified - in production, use a proper library or API)
 const COUNTRIES = [
   'United States',
@@ -29,7 +31,7 @@ const COUNTRIES = [
  * Generate a random location from the list of countries
  */
 export function generateRandomLocation(): string {
-  return COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)];
+  return randomChoice(COUNTRIES);
 }
 
 /**

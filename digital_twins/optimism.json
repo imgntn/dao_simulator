@@ -1,0 +1,177 @@
+{
+  "schema_version": "dao_digital_twin_v0.2",
+  "last_verified_utc": "2026-01-12",
+  "dao": {
+    "id": "optimism",
+    "name": "Optimism Collective",
+    "category": [
+      "Layer 2",
+      "Bicameral governance",
+      "Public goods"
+    ],
+    "primary_chain": "Optimism (L2) + Ethereum (L1) for upgrade verification windows",
+    "governance_token": {
+      "symbol": "OP",
+      "type": "ERC-20",
+      "voting_power_model": "Token House: delegated token-weighted voting; Citizens' House: badge-based one-person-one-vote (non-transferable citizenship)"
+    },
+    "governance_stack": {
+      "houses": {
+        "token_house": {
+          "who": "OP token holders and delegates",
+          "primary_decisions": [
+            "governance fund allocations",
+            "protocol governance decisions"
+          ],
+          "quorum": {
+            "type": "percent_of_votable_supply",
+            "value_pct": 30.0
+          },
+          "approval_threshold": {
+            "type": "majority",
+            "value_pct": 51.0
+          },
+          "cadence": "structured governance cycles (multiple-week cycles; voting windows embedded within cycles)"
+        },
+        "citizens_house": {
+          "who": "Citizens (badge holders)",
+          "primary_decisions": [
+            "Retroactive Public Goods Funding (RetroPGF)",
+            "upgrade veto in some processes"
+          ],
+          "veto_window_days": 7
+        }
+      },
+      "upgrade_safety": {
+        "developer_advisory_board_review": true,
+        "veto_period_days": 7,
+        "notes": [
+          "upgrades can enter a veto period after approval, allowing governance to halt changes"
+        ]
+      }
+    },
+    "treasury": {
+      "treasury_controller": "Token House governance + Optimism Foundation operational structures (seasonal grants)",
+      "spending_mechanism": [
+        "Governance Fund allocations via Token House votes",
+        "RetroPGF allocations via Citizens' House processes"
+      ],
+      "notes": [
+        "Optimism separates forward-looking grants (Token House) and retroactive public goods funding (Citizens' House)."
+      ]
+    },
+    "membership": {
+      "member_types": [
+        {
+          "type": "op_holder",
+          "who": "OP token holders",
+          "rights": [
+            "delegate votes",
+            "vote in Token House"
+          ]
+        },
+        {
+          "type": "delegate",
+          "who": "delegates receiving OP delegation",
+          "rights": [
+            "vote",
+            "submit/shape proposals via governance processes"
+          ]
+        },
+        {
+          "type": "citizen",
+          "who": "Citizens' House badge holders",
+          "rights": [
+            "participate in RetroPGF and certain veto processes"
+          ]
+        },
+        {
+          "type": "dAB",
+          "who": "Developer Advisory Board",
+          "rights": [
+            "review certain protocol upgrades (process role)"
+          ]
+        },
+        {
+          "type": "foundation",
+          "who": "Optimism Foundation",
+          "rights": [
+            "admin / operational roles defined by governance docs"
+          ]
+        }
+      ]
+    },
+    "proposal_process": {
+      "stages": [
+        {
+          "stage": "Cycle planning / discussion",
+          "platform": "governance forum + docs",
+          "typical_duration_days": null
+        },
+        {
+          "stage": "Token House voting",
+          "platform": "Optimism governance portal (Agora/Snapshot depending on proposal)",
+          "typical_voting_window_days": 7
+        },
+        {
+          "stage": "Citizens' House veto",
+          "platform": "Citizens' House process",
+          "duration_days": 7,
+          "purpose": "upgrade veto window (where applicable)"
+        },
+        {
+          "stage": "Execution / enactment",
+          "platform": "protocol upgrade process or funding distribution mechanisms"
+        }
+      ],
+      "proposal_types": [
+        "governance fund grants",
+        "protocol parameter and upgrade decisions",
+        "retroactive public goods funding rounds"
+      ]
+    },
+    "proposal_activity": {
+      "activity_level": "high",
+      "cadence_pattern": "seasonal and cycle-based; repeated governance cycles with grants and votes"
+    },
+    "security_controls": {
+      "veto_mechanism": true,
+      "veto_period_days": 7,
+      "notes": [
+        "formalized upgrade review and veto windows complement token voting"
+      ]
+    },
+    "simulation_parameters": {
+      "governance": {
+        "token_house": {
+          "vote_weight": "delegated_token_weight",
+          "quorum_pct_votable_supply": 30.0,
+          "approval_threshold_pct": 51.0,
+          "typical_voting_window_days": 7
+        },
+        "citizens_house": {
+          "vote_weight": "one_person_one_vote",
+          "upgrade_veto_window_days": 7
+        }
+      }
+    },
+    "sources": [
+      {
+        "title": "Optimism governance docs (Token House / Citizens' House and structures)",
+        "url": "https://docs.optimism.io/governance"
+      },
+      {
+        "title": "Optimism governance forum: Season 2 voting, quorum set to 30% of votable supply",
+        "url": "https://gov.optimism.io/t/season-2-token-house-voting-approach/2395"
+      },
+      {
+        "title": "Optimism governance forum: Voting Cycle Roundup #29 (cycle dates and Citizens' House veto week)",
+        "url": "https://gov.optimism.io/t/voting-cycle-roundup-29/9164"
+      },
+      {
+        "title": "Optimism docs: Protocol upgrades and 7 day veto period (process safety)",
+        "url": "https://docs.optimism.io/governance/protocol-upgrades"
+      }
+    ]
+  }
+}

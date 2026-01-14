@@ -1,0 +1,195 @@
+{
+  "schema_version": "dao_digital_twin_v0.2",
+  "last_verified_utc": "2026-01-12",
+  "dao": {
+    "id": "aave",
+    "name": "Aave DAO",
+    "category": [
+      "DeFi",
+      "Lending"
+    ],
+    "primary_chain": "Ethereum (with cross-chain governance components)",
+    "governance_token": {
+      "symbol": "AAVE",
+      "type": "ERC-20",
+      "voting_power_model": "token-weighted; proposition power and voting power are delegated"
+    },
+    "governance_stack": {
+      "discussion_forum": "governance.aave.com (Discourse)",
+      "onchain_voting": {
+        "framework": "Aave Governance (V2/V3-era modules; executors control thresholds)",
+        "proposal_lifecycle": [
+          "draft (ARFC)",
+          "snapshot signaling (sometimes)",
+          "AIP on-chain proposal",
+          "executor timelock",
+          "execution"
+        ],
+        "vote_delay_days": 1,
+        "executors": {
+          "short_executor": {
+            "typical_use": "most proposals",
+            "voting_period_days": 3,
+            "timelock_days": 1,
+            "proposition_power_threshold_aave": 80000,
+            "quorum_yes_aave": 320000,
+            "vote_differential_aave": 80000
+          },
+          "long_executor": {
+            "typical_use": "governance / high-impact configuration changes",
+            "voting_period_days": 10,
+            "timelock_days": 7,
+            "parameters_note": "thresholds expressed as % of supply; updated by governance over time",
+            "proposition_power_pct_of_supply": 1.25,
+            "quorum_yes_pct_of_supply": 6.5,
+            "vote_differential_pct_of_supply": 6.5
+          }
+        },
+        "pass_rule": "meets quorum AND vote differential requirements (varies by executor)"
+      }
+    },
+    "treasury": {
+      "treasury_controller": "Aave Governance executors + ecosystem reserve mechanisms",
+      "spending_mechanism": "on-chain AIPs (Aave Improvement Proposals) executed via executor timelocks",
+      "notes": [
+        "governance decisions can route funds from the DAO treasury / reserves depending on proposal type"
+      ]
+    },
+    "membership": {
+      "member_types": [
+        {
+          "type": "token_holder",
+          "who": "AAVE holders and delegated voters",
+          "rights": [
+            "delegate proposition power",
+            "delegate voting power",
+            "vote"
+          ]
+        },
+        {
+          "type": "delegate",
+          "who": "addresses delegated voting power",
+          "rights": [
+            "vote",
+            "sponsor/submit proposals if proposition threshold met"
+          ]
+        },
+        {
+          "type": "safety_module_staker",
+          "who": "stkAAVE participants",
+          "rights": [
+            "often included in voting power strategy (implementation-dependent)"
+          ]
+        },
+        {
+          "type": "service_provider",
+          "who": "risk managers / developers / auditors funded by DAO",
+          "rights": [
+            "execute DAO-funded mandates"
+          ]
+        }
+      ]
+    },
+    "proposal_process": {
+      "stages": [
+        {
+          "stage": "ARFC (forum)",
+          "platform": "governance forum",
+          "typical_duration_days": null
+        },
+        {
+          "stage": "AIP submission",
+          "platform": "on-chain",
+          "vote_delay_days": 1
+        },
+        {
+          "stage": "Voting",
+          "platform": "on-chain",
+          "duration_days": {
+            "short_executor": 3,
+            "long_executor": 10
+          }
+        },
+        {
+          "stage": "Timelock",
+          "platform": "on-chain",
+          "duration_days": {
+            "short_executor": 1,
+            "long_executor": 7
+          }
+        },
+        {
+          "stage": "Execution",
+          "platform": "on-chain",
+          "who_can_execute": "anyone after timelock"
+        }
+      ],
+      "proposal_types": [
+        "asset listings and risk parameter changes",
+        "treasury actions",
+        "governance system upgrades"
+      ]
+    },
+    "proposal_activity": {
+      "activity_level": "high",
+      "cadence_pattern": "continuous; many proposals across asset listings, risk updates, and maintenance"
+    },
+    "security_controls": {
+      "timelock": true,
+      "executor_variants": true,
+      "vote_delay_days": 1,
+      "notes": [
+        "different executors provide different security / liveness tradeoffs (short vs long)"
+      ]
+    },
+    "simulation_parameters": {
+      "governance": {
+        "vote_weight": "delegated_token_weight",
+        "vote_delay_days": 1,
+        "executors": {
+          "short_executor": {
+            "proposal_threshold": {
+              "unit": "AAVE",
+              "value": 80000
+            },
+            "quorum_yes": {
+              "unit": "AAVE",
+              "value": 320000
+            },
+            "vote_differential": {
+              "unit": "AAVE",
+              "value": 80000
+            },
+            "voting_period_days": 3,
+            "timelock_days": 1
+          },
+          "long_executor": {
+            "proposal_threshold_pct_supply": 1.25,
+            "quorum_yes_pct_supply": 6.5,
+            "vote_differential_pct_supply": 6.5,
+            "voting_period_days": 10,
+            "timelock_days": 7
+          }
+        }
+      }
+    },
+    "sources": [
+      {
+        "title": "Aave help: Voting in Aave Governance (vote delay and short/long executor timelines)",
+        "url": "https://aave.com/help/governance/voting"
+      },
+      {
+        "title": "Aave Governance Process Document v1 (quorum concept and 320k AAVE example)",
+        "url": "https://aave.com/docs/ecosystem/governance/governance-process"
+      },
+      {
+        "title": "Aave governance-v2 proposal 106 (updates to Level 2/long executor requirements)",
+        "url": "https://governance-v2.aave.com/governance/proposal/106/"
+      },
+      {
+        "title": "Aave governance forum: Adjust long-executor requirements (historic baseline thresholds and periods)",
+        "url": "https://governance.aave.com/t/rfc-aave-governance-adjust-level-2-requirements-long-executor/8693"
+      }
+    ]
+  }
+}

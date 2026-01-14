@@ -9,6 +9,7 @@
  *   npx tsx server.ts [--port 8003]
  */
 
+import { createServer } from 'http';
 import { Server } from 'socket.io';
 import type { Socket } from 'socket.io';
 import { DAOSimulation } from './lib/engine/simulation';
@@ -30,6 +31,8 @@ const AUTO_START = process.env.AUTO_START_SIMULATION === 'true' || args.includes
 const REHYDRATE_ON_START = process.env.REHYDRATE_ON_START !== 'false';
 const SOCKET_SIM_ID = process.env.SOCKET_SIM_ID || 'socket_sim';
 const MAX_STEPS_PER_SECOND = 60;
+const nodeEnv = process.env.NODE_ENV ?? 'development';
+const isDev = nodeEnv !== 'production';
 
 function hashToUnit(input: string): number {
   let hash = 0;
@@ -45,6 +48,61 @@ function normalizeStepsPerSecond(value: number | undefined): number {
     return 1;
   }
   return Math.min(parsed, MAX_STEPS_PER_SECOND);
+}
+
+function normalizeMemberId(value: any): string {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value.uniqueId === 'string') return value.uniqueId;
+  if (typeof value.id === 'string') return value.id;
+  return String(value);
+}
+
+function normalizeProjectId(value: any): string | null {
+  if (!value) return null;
+  if (typeof value === 'string') return value;
+  if (typeof value.uniqueId === 'string') return value.uniqueId;
+  if (typeof value.id === 'string') return value.id;
+  return null;
+}
+
+function normalizeMemberIds(values: any[] | undefined): string[] {
+  if (!Array.isArray(values)) return [];
+  return values
+    .map(normalizeMemberId)
+    .filter((value) => value.length > 0);
+}
+
+function summarizePayload(payload: unknown): string {
+  if (payload === null) return 'null';
+  if (Array.isArray(payload)) return `array(${payload.length})`;
+  if (typeof payload === 'object') {
+    const keys = Object.keys(payload as Record<string, unknown>);
+    const preview = keys.slice(0, 5).join(', ');
+    return `object(${keys.length}${preview ? ` keys: ${preview}` : ''})`;
+  }
+  return typeof payload;
+}
+
+function serializeProject(project: any) {
+  const skills = Array.isArray(project?.skills)
+    ? project.skills
+    : Array.isArray(project?.requiredSkills)
+      ? project.requiredSkills
+      : [];
+
+  return {
+    id: project?.uniqueId || project?.id || '',
+    title: project?.title || `Project ${project?.uniqueId || project?.id || ''}`,
+    status: project?.status || 'active',
+    progress: typeof project?.progress === 'number' ? project.progress : 0,
+    fundingGoal: project?.fundingGoal || 0,
+    currentFunding: project?.currentFunding || 0,
+    duration: project?.duration || 0,
+    startTime: project?.startTime || 0,
+    members: normalizeMemberIds(project?.members),
+    skills,
+  };
 }
 
 function parseAllowedOrigins(value?: string): string[] {
@@ -70,7 +128,7 @@ function resolveAllowedOrigins(): string[] | '*' {
     }
   }
 
-  return process.env.NODE_ENV === 'development' ? '*' : [];
+  return isDev ? '*' : [];
 }
 
 function getSocketApiKey(socket: Socket): string | undefined {
@@ -86,7 +144,7 @@ function getSocketApiKey(socket: Socket): string | undefined {
 
 function isSocketAuthorized(socket: Socket): boolean {
   const requiredApiKey = process.env.API_KEY;
-  if (!requiredApiKey && process.env.NODE_ENV === 'development') {
+  if (!requiredApiKey && isDev) {
     return true;
   }
   if (!requiredApiKey) {
@@ -102,7 +160,18 @@ if (Array.isArray(allowedOrigins) && allowedOrigins.length === 0) {
   console.warn('No allowed origins configured. Set SOCKET_ALLOWED_ORIGINS or NEXTAUTH_URL to enable browser access.');
 }
 
-const io = new Server(PORT, {
+const httpServer = createServer((req, res) => {
+  if (req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('ok');
+    return;
+  }
+
+  res.statusCode = 404;
+  res.end();
+});
+
+const io = new Server(httpServer, {
   cors: {
     origin: (origin, callback) => {
       if (!origin || allowedOrigins === '*') {
@@ -125,6 +194,7 @@ let simulation: DAOSimulation | null = null;
 let daoCity: DAOCity | null = null;
 let simulationMode: 'single' | 'multi' = 'single';
 let running = false;
+let stepInProgress = false;
 let intervalId: NodeJS.Timeout | null = null;
 let eventBusUnsubscribe: (() => void) | null = null;
 let cityEventBusUnsubscribe: (() => void) | null = null;
@@ -140,12 +210,29 @@ io.use((socket, next) => {
   next(new Error('Unauthorized'));
 });
 
+httpServer.listen(PORT);
+
+function emitSafe(event: string, payload: unknown): void {
+  try {
+    io.emit(event, payload);
+  } catch (error) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error(`Failed to emit "${event}" (${summarizePayload(payload)})`);
+    if (err.stack) {
+      console.error(err.stack);
+    } else {
+      console.error(err);
+    }
+    throw error;
+  }
+}
+
 function emitSimulationStatus(): void {
   const step = simulationMode === 'multi'
     ? daoCity?.getCurrentStep() ?? 0
     : simulation?.currentStep ?? 0;
 
-  io.emit('simulation_status', {
+  emitSafe('simulation_status', {
     running,
     step,
     mode: simulationMode,
@@ -278,40 +365,41 @@ async function createDAOCity(config?: DAOCityConfig) {
  * Broadcast city-wide simulation step
  */
 async function broadcastCityStep() {
-  if (!daoCity) return;
+  const city = daoCity;
+  if (!city) return;
 
   try {
-    await daoCity.step();
+    await city.step();
 
-    const state = daoCity.getState();
-    const rankings = daoCity.getTokenRankings();
-    const networkData = daoCity.getNetworkData();
+    const state = city.getState();
+    const rankings = city.getTokenRankings();
+    const networkData = city.getNetworkData();
 
     // Broadcast city state
-    io.emit('city_step', {
+    emitSafe('city_step', {
       step: state.currentStep,
       daos: state.daos,
       mode: 'multi',
     });
 
     // Broadcast token rankings
-    io.emit('token_rankings', {
+    emitSafe('token_rankings', {
       rankings,
       totalMarketCap: state.globalMarketplace.totalMarketCap,
       totalVolume: state.globalMarketplace.totalVolume24h,
     });
 
     // Broadcast inter-DAO proposals
-    io.emit('inter_dao_proposals', {
+    emitSafe('inter_dao_proposals', {
       proposals: state.interDaoProposals,
       activeCount: state.interDaoProposals.filter(p => p.status === 'open').length,
     });
 
     // Broadcast network visualization data
-    io.emit('city_network_update', networkData);
+    emitSafe('city_network_update', networkData);
 
     // Broadcast per-DAO updates
-    for (const dao of daoCity.getAllDAOs()) {
+    for (const dao of city.getAllDAOs()) {
       const members = dao.members.map((m, idx) => {
         const locations = ['North America', 'Europe', 'Asia', 'South America', 'Africa', 'Oceania'];
         return {
@@ -336,53 +424,57 @@ async function broadcastCityStep() {
         creator: p.creator || 'unknown',
       }));
 
-      io.emit(`dao_${dao.daoId}_update`, {
+      emitSafe(`dao_${dao.daoId}_update`, {
         daoId: dao.daoId,
         state: state.daos.find(d => d.id === dao.daoId),
         members,
         proposals,
-        projects: dao.projects,
+        projects: dao.projects.map(serializeProject),
         guilds: dao.guilds.map(g => ({
           name: g.name,
-          members: g.members?.map((m: any) => m.uniqueId || m) || [],
+          members: normalizeMemberIds(g.members),
         })),
       });
     }
 
     // Broadcast bridge activity
-    io.emit('bridge_activity', {
+    emitSafe('bridge_activity', {
       bridges: state.bridges,
       recentTransfers: state.recentTransfers,
     });
 
   } catch (error: any) {
-    console.error('Error in city step:', error?.message ?? error);
+    console.error('Error in city step:', error);
+    if (error?.stack) {
+      console.error(error.stack);
+    }
     stopSimulation();
   }
 }
 
 async function broadcastSimulationStep() {
-  if (!simulation) return;
+  const sim = simulation;
+  if (!sim) return;
 
   try {
-    await simulation.step();
-    void persistSimulation(SOCKET_SIM_ID, simulation);
+    await sim.step();
+    void persistSimulation(SOCKET_SIM_ID, sim);
 
-    const summary = simulation.getSummary();
-    const tokenPrice = simulation.dao.treasury.getTokenPrice('DAO_TOKEN');
+    const summary = sim.getSummary();
+    const tokenPrice = sim.dao.treasury.getTokenPrice('DAO_TOKEN');
 
     // Broadcast simulation step data
-    io.emit('simulation_step', {
-      step: simulation.currentStep,
+    emitSafe('simulation_step', {
+      step: sim.currentStep,
       dao_token_price: tokenPrice,
-      treasury_balance: simulation.dao.treasury.funds,
-      total_members: simulation.dao.members.length,
-      active_proposals: simulation.dao.proposals.filter(p => p.status === 'open').length,
+      treasury_balance: sim.dao.treasury.funds,
+      total_members: sim.dao.members.length,
+      active_proposals: sim.dao.proposals.filter(p => p.status === 'open').length,
       ...summary
     });
 
     // Broadcast members data
-    const members = simulation.dao.members.map((m, idx) => {
+    const members = sim.dao.members.map((m, idx) => {
       // Generate random locations for visualization
       const locations = ['North America', 'Europe', 'Asia', 'South America', 'Africa', 'Oceania'];
       const location = locations[idx % locations.length];
@@ -397,10 +489,10 @@ async function broadcastSimulationStep() {
         location
       };
     });
-    io.emit('members_update', { members });
+    emitSafe('members_update', { members });
 
     // Broadcast proposals data
-    const proposals = simulation.dao.proposals.map((p, idx) => ({
+    const proposals = sim.dao.proposals.map((p, idx) => ({
       id: p.uniqueId,
       title: (p as any).title || `Proposal ${p.uniqueId}`,
       type: p.type,
@@ -409,7 +501,7 @@ async function broadcastSimulationStep() {
       votes_against: p.votesAgainst || 0,
       creator: p.creator || `member_${idx}`
     }));
-    io.emit('proposals_update', { proposals });
+    emitSafe('proposals_update', { proposals });
 
     // Broadcast network data with proper 3D positions
     // Member nodes - arranged in a ring
@@ -450,7 +542,7 @@ async function broadcastSimulationStep() {
 
     // Create cluster nodes based on member types
     const membersByType = new Map<string, string[]>();
-    simulation.dao.members.forEach(m => {
+    sim.dao.members.forEach(m => {
       const type = m.constructor.name;
       if (!membersByType.has(type)) {
         membersByType.set(type, []);
@@ -484,11 +576,11 @@ async function broadcastSimulationStep() {
     const networkEdges: any[] = [];
 
     // Representative edges (member -> representative)
-    simulation.dao.members.forEach(m => {
+    sim.dao.members.forEach(m => {
       if ((m as any).representative) {
         networkEdges.push({
           source: m.uniqueId,
-          target: (m as any).representative,
+          target: normalizeMemberId((m as any).representative),
           type: 'representative',
           weight: 1
         });
@@ -496,7 +588,7 @@ async function broadcastSimulationStep() {
     });
 
     // Delegation edges (member -> delegatee)
-    simulation.dao.members.forEach(m => {
+    sim.dao.members.forEach(m => {
       const delegations = (m as any).delegations;
       if (delegations && typeof delegations === 'object') {
         Object.entries(delegations).forEach(([targetId, weight]) => {
@@ -548,10 +640,10 @@ async function broadcastSimulationStep() {
         position: [0, 0, 0] as [number, number, number]
       }))
     };
-    io.emit('network_update', networkData);
+    emitSafe('network_update', networkData);
 
     // Broadcast leaderboards
-    const tokenLeaderboard = [...simulation.dao.members]
+    const tokenLeaderboard = [...sim.dao.members]
       .sort((a, b) => b.tokens - a.tokens)
       .slice(0, 10)
       .map(m => ({
@@ -559,7 +651,7 @@ async function broadcastSimulationStep() {
         value: m.tokens
       }));
 
-    const influenceLeaderboard = [...simulation.dao.members]
+    const influenceLeaderboard = [...sim.dao.members]
       .sort((a, b) => ((b as any).reputation || 0) - ((a as any).reputation || 0))
       .slice(0, 10)
       .map(m => ({
@@ -567,77 +659,77 @@ async function broadcastSimulationStep() {
         value: (m as any).reputation || 0
       }));
 
-    io.emit('leaderboard_update', {
+    emitSafe('leaderboard_update', {
       token: tokenLeaderboard,
       influence: influenceLeaderboard
     });
 
     // Broadcast projects data
-    const projects = simulation.dao.projects.map(p => ({
-      id: p.uniqueId,
-      title: (p as any).title || `Project ${p.uniqueId}`,
-      status: (p as any).status || 'active',
-      progress: (p as any).progress || 0,
-      fundingGoal: (p as any).fundingGoal || 0,
-      currentFunding: (p as any).currentFunding || 0,
-      duration: (p as any).duration || 0,
-      startTime: (p as any).startTime || 0,
-      members: (p as any).members || [],
-      skills: (p as any).skills || []
-    }));
-    io.emit('projects_update', { projects });
+    const projects = sim.dao.projects.map(serializeProject);
+    emitSafe('projects_update', { projects });
 
     // Broadcast guilds data
-    const guilds = simulation.dao.guilds.map(g => ({
-      name: g.name,
-      members: g.members?.map((m: any) => m.uniqueId || m) || [],
-      treasury: (g as any).treasury || 0,
-      reputation: (g as any).reputation || 0,
-      creator: (g as any).creator?.uniqueId || null
-    }));
-    io.emit('guilds_update', { guilds });
+    const guilds = sim.dao.guilds.map(g => {
+      const reputationMap = (g as any).reputation;
+      const reputationTotal = reputationMap instanceof Map
+        ? Array.from(reputationMap.values()).reduce((sum, value) => sum + (Number(value) || 0), 0)
+        : (typeof reputationMap === 'number' ? reputationMap : 0);
+      const treasuryBalance = (g as any).treasury?.funds ?? 0;
+
+      return {
+        name: g.name,
+        members: normalizeMemberIds(g.members),
+        treasury: treasuryBalance,
+        reputation: reputationTotal,
+        creator: normalizeMemberId((g as any).creator) || null
+      };
+    });
+    emitSafe('guilds_update', { guilds });
 
     // Broadcast disputes data
-    const disputesList = simulation.dao.disputes;
+    const disputesList = sim.dao.disputes;
     const disputes = disputesList.map((d, idx) => ({
       id: (d as any).uniqueId || (d as any).id || `dispute_${idx}`,
-      parties: (d as any).parties || [],
+      parties: normalizeMemberIds((d as any).parties),
       description: (d as any).description || '',
       importance: (d as any).importance || 0,
       resolved: (d as any).resolved || false,
-      relatedProject: (d as any).relatedProject || null
+      relatedProject: normalizeProjectId((d as any).relatedProject)
     }));
-    io.emit('disputes_update', { disputes });
+    emitSafe('disputes_update', { disputes });
 
     // Broadcast violations data
-    const violationsList = simulation.dao.violations;
+    const violationsList = sim.dao.violations;
     const violations = violationsList.map((v, idx) => ({
       id: (v as any).uniqueId || (v as any).id || `violation_${idx}`,
-      violator: (v as any).violator?.uniqueId || (v as any).violator || '',
+      violator: normalizeMemberId((v as any).violator),
       description: (v as any).description || '',
       penalty: (v as any).penalty || 0,
       detected: (v as any).detected || false
     }));
-    io.emit('violations_update', { violations });
+    emitSafe('violations_update', { violations });
 
     // Broadcast data collector stats (gini, metrics, event counts)
-    const latestStats = simulation.dataCollector.getLatestStats();
+    const latestStats = sim.dataCollector.getLatestStats();
     const eventCounts: Record<string, number> = {};
-    simulation.dataCollector.eventCounts.forEach((count, event) => {
+    sim.dataCollector.eventCounts.forEach((count, event) => {
       eventCounts[event] = count;
     });
 
-    io.emit('metrics_update', {
+    emitSafe('metrics_update', {
       gini: latestStats?.gini || 0,
       reputationGini: latestStats?.repGini || 0,
       avgTokens: latestStats?.avgTokens || 0,
-      numProjects: latestStats?.numProjects || simulation.dao.projects.length,
-      numMembers: latestStats?.numMembers || simulation.dao.members.length,
+      numProjects: latestStats?.numProjects || sim.dao.projects.length,
+      numMembers: latestStats?.numMembers || sim.dao.members.length,
       eventCounts
     });
 
   } catch (error: any) {
-    console.error('Error in simulation step:', error?.message ?? error);
+    console.error('Error in simulation step:', error);
+    if (error?.stack) {
+      console.error(error.stack);
+    }
     stopSimulation();
   }
 }
@@ -670,7 +762,18 @@ function startSimulation(stepsPerSecond: number = 1, mode: 'single' | 'multi' = 
 
   const interval = 1000 / safeStepsPerSecond;
   const stepFn = mode === 'multi' ? broadcastCityStep : broadcastSimulationStep;
-  intervalId = setInterval(stepFn, interval);
+  intervalId = setInterval(() => {
+    if (!running || stepInProgress) return;
+    stepInProgress = true;
+    Promise.resolve(stepFn())
+      .catch((error) => {
+        console.error('Simulation step failed:', error);
+        stopSimulation();
+      })
+      .finally(() => {
+        stepInProgress = false;
+      });
+  }, interval);
   emitSimulationStatus();
 }
 
@@ -687,6 +790,7 @@ function stopSimulation() {
     clearInterval(intervalId);
     intervalId = null;
   }
+  stepInProgress = false;
   emitSimulationStatus();
 }
 
@@ -779,20 +883,29 @@ io.on('connection', (socket) => {
   });
 
   socket.on('step_simulation', async (config: any = {}) => {
+    if (stepInProgress) {
+      console.warn('Step request ignored: step already in progress.');
+      return;
+    }
+    stepInProgress = true;
     const mode = config?.mode || simulationMode;
 
-    if (mode === 'multi') {
-      if (!daoCity) {
-        await createDAOCity();
+    try {
+      if (mode === 'multi') {
+        if (!daoCity) {
+          await createDAOCity();
+        }
+        simulationMode = 'multi';
+        await broadcastCityStep();
+      } else {
+        if (!simulation) {
+          await createSimulation();
+        }
+        simulationMode = 'single';
+        await broadcastSimulationStep();
       }
-      simulationMode = 'multi';
-      broadcastCityStep();
-    } else {
-      if (!simulation) {
-        await createSimulation();
-      }
-      simulationMode = 'single';
-      broadcastSimulationStep();
+    } finally {
+      stepInProgress = false;
     }
   });
 

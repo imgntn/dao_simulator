@@ -25,7 +25,27 @@
       "Bash(git commit:*)",
       "Bash(npm run dev:*)",
       "Bash(lsof:*)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(dir:*)",
+      "Bash(wc:*)",
+      "Bash(SOCKET_ALLOWED_ORIGINS=\"http://localhost:7884\" npm run server:*)",
+      "Bash(xargs kill:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill //F //PID 72484)",
+      "Bash(export NODE_ENV=development)",
+      "Bash(export SOCKET_ALLOWED_ORIGINS=\"http://localhost:7884\")",
+      "Bash(taskkill //F //PID 63400)",
+      "Bash(NODE_ENV=development SOCKET_ALLOWED_ORIGINS=\"http://localhost:7884\" npx tsx:*)",
+      "Bash(taskkill //F //PID 30872)",
+      "Bash(findstr:*)",
+      "Bash(taskkill //F //PID 6984)",
+      "Bash(npx tsc:*)",
+      "Bash(taskkill //F //PID 79324)",
+      "Bash(taskkill:*)",
+      "Bash(PLAYWRIGHT_SKIP_WEBSERVER=1 npx playwright test:*)",
+      "Bash(tasklist:*)",
+      "Bash(powershell -Command \"Stop-Process -Id 73708 -Force\")",
+      "Bash(powershell -Command \"Stop-Process -Id 66556 -Force\")"
     ],
     "deny": []
   }

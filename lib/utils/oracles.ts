@@ -1,6 +1,7 @@
 // Price Oracle implementations for token pricing
 
 import type { PriceOracle } from '@/types/simulation';
+import { random } from './random';
 
 /**
  * Base Price Oracle interface
@@ -35,7 +36,7 @@ export class RandomWalkOracle extends BasePriceOracle {
     // _step parameter reserved for future time-based price modeling
     const currentPrice = this.getPrice(token);
     // Random walk: price can go up or down by volatility percentage
-    const change = (Math.random() - 0.5) * 2 * this.volatility;
+    const change = (random() - 0.5) * 2 * this.volatility;
     const newPrice = Math.max(1, currentPrice * (1 + change));
     this.setPrice(token, newPrice);
   }
@@ -61,8 +62,8 @@ export class GeometricBrownianOracle extends BasePriceOracle {
     const dt = 1; // time step
 
     // Box-Muller transform for normal distribution
-    const u1 = Math.random();
-    const u2 = Math.random();
+    const u1 = random();
+    const u2 = random();
     const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
 
     // Geometric Brownian Motion formula

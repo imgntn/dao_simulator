@@ -1,0 +1,130 @@
+{
+  "schema_version": "dao_digital_twin_v0.2",
+  "last_verified_utc": "2026-01-12",
+  "dao": {
+    "id": "gitcoin",
+    "name": "Gitcoin DAO",
+    "category": [
+      "Public goods",
+      "Grants"
+    ],
+    "primary_chain": "Ethereum (governance execution); off-chain signaling on Snapshot",
+    "governance_token": {
+      "symbol": "GTC",
+      "type": "ERC-20",
+      "voting_power_model": "token-weighted with delegation"
+    },
+    "governance_stack": {
+      "discussion_forum": "gov.gitcoin.co (Governance Forum)",
+      "steward_council": {
+        "exists": true,
+        "term_length_months": 6,
+        "role": "review and discuss changes, upgrades, and initiatives"
+      },
+      "offchain_voting": {
+        "platform": "Snapshot",
+        "purpose": "determine whether the community wants to proceed with a proposal",
+        "proposal_gate": {
+          "forum_post_min_days": 5,
+          "steward_comments_required": 5
+        }
+      },
+      "onchain_voting": {
+        "platform": "Tally",
+        "purpose": "ratify Snapshot vote on-chain"
+      }
+    },
+    "treasury": {
+      "treasury_controller": "Gitcoin DAO on-chain governance execution (Tally)",
+      "spending_mechanism": [
+        "community-approved funding allocation",
+        "grants and ecosystem initiatives"
+      ]
+    },
+    "membership": {
+      "member_types": [
+        {
+          "type": "token_holder",
+          "who": "GTC holders",
+          "rights": [
+            "delegate",
+            "vote"
+          ]
+        },
+        {
+          "type": "delegate",
+          "who": "delegated voters",
+          "rights": [
+            "vote",
+            "help shepherd proposals"
+          ]
+        },
+        {
+          "type": "steward",
+          "who": "Steward Council members",
+          "rights": [
+            "proposal review; required comments to advance proposals"
+          ]
+        },
+        {
+          "type": "grants_participant",
+          "who": "builders and grants operators",
+          "rights": [
+            "receive funding via DAO processes"
+          ]
+        }
+      ]
+    },
+    "proposal_process": {
+      "stages": [
+        {
+          "stage": "Forum post",
+          "platform": "governance forum",
+          "min_duration_days": 5,
+          "gate": "≥5 steward comments"
+        },
+        {
+          "stage": "Off-chain vote",
+          "platform": "Snapshot",
+          "purpose": "signal community decision"
+        },
+        {
+          "stage": "On-chain ratification",
+          "platform": "Tally",
+          "purpose": "ratify Snapshot result on-chain"
+        }
+      ]
+    },
+    "proposal_activity": {
+      "activity_level": "high",
+      "cadence_pattern": "regular grants and governance motions; steward-gated pipeline to Snapshot then Tally"
+    },
+    "security_controls": {
+      "two_step_voting": true,
+      "notes": [
+        "off-chain vote reduces gas burden; on-chain ratification provides enforceability"
+      ]
+    },
+    "simulation_parameters": {
+      "governance": {
+        "vote_weight": "delegated_token_weight",
+        "forum_min_days": 5,
+        "steward_comments_required": 5,
+        "voting_stack": [
+          "Snapshot (signal)",
+          "Tally (ratify)"
+        ]
+      }
+    },
+    "sources": [
+      {
+        "title": "Gitcoin Governance Manual: Voting (proposal gating + offchain then onchain)",
+        "url": "https://manual.gitcoin.co/governance-processes/voting"
+      },
+      {
+        "title": "Gitcoin: GTC token governance overview (Snapshot + Tally; Steward Council terms)",
+        "url": "https://www.gitcoin.co/gtc/empowering-governance"
+      }
+    ]
+  }
+}

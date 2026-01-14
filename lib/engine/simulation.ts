@@ -61,7 +61,6 @@ export interface DAOSimulationConfig extends Partial<SimulationSettings> {
 
 export class DAOSimulation extends Model {
   dao: DAO;
-  scheduler: any;
   eventBus: EventBus;
   exportCsv: boolean;
   csvFilename: string;
@@ -271,11 +270,11 @@ export class DAOSimulation extends Model {
 
     // Initialize scheduler
     if (this.useAsync) {
-      this.scheduler = new AsyncActivation();
+      this.schedule = new AsyncActivation();
     } else if (this.useParallel) {
-      this.scheduler = new ParallelActivation(this.maxWorkers);
+      this.schedule = new ParallelActivation(this.maxWorkers);
     } else {
-      this.scheduler = new RandomActivation();
+      this.schedule = new RandomActivation();
     }
 
     // Initialize event engine
@@ -331,7 +330,7 @@ export class DAOSimulation extends Model {
           config.params
         );
         this.dao.addMember(agent);
-        this.scheduler.add(agent);
+        this.schedule.add(agent);
       }
     }
   }
@@ -414,7 +413,7 @@ export class DAOSimulation extends Model {
     }
 
     // Step agents - await to handle async schedulers
-    const result = this.scheduler.step();
+    const result = this.schedule.step();
     if (result instanceof Promise) {
       await result;
     }

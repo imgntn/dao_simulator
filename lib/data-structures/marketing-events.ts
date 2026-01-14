@@ -4,6 +4,7 @@
 import type { DAO } from './dao';
 import type { DAOModel } from '../engine/model';
 import { PassiveMember } from '../agents/passive-member';
+import { randomChoice } from '../utils/random';
 
 /**
  * Base class for marketing campaigns
@@ -168,7 +169,7 @@ export class ReferralBonusCampaign extends MarketingCampaign {
     // Choose a random referrer
     const referrer =
       this.dao.members.length > 0
-        ? this.dao.members[Math.floor(Math.random() * this.dao.members.length)]
+        ? randomChoice(this.dao.members)
         : null;
 
     if (referrer) {

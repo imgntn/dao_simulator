@@ -1,0 +1,158 @@
+{
+  "schema_version": "dao_digital_twin_v0.2",
+  "last_verified_utc": "2026-01-12",
+  "dao": {
+    "id": "lido",
+    "name": "Lido DAO",
+    "category": [
+      "Staking",
+      "DeFi infrastructure"
+    ],
+    "primary_chain": "Ethereum",
+    "governance_token": {
+      "symbol": "LDO",
+      "type": "ERC-20",
+      "voting_power_model": "token-weighted (LDO holders); off-chain Snapshot + on-chain voting",
+      "notes": "Dual Governance adds an additional safeguard layer for stETH/wstETH holders."
+    },
+    "governance_stack": {
+      "discussion_forum": "research.lido.fi (Research Forum)",
+      "offchain_voting": {
+        "platform": "Snapshot",
+        "typical_duration_days": 7
+      },
+      "onchain_voting": {
+        "platform": "vote.lido.fi",
+        "typical_duration_days": 5
+      },
+      "fast_track": {
+        "name": "Easy Track",
+        "platform": "easytrack.lido.fi",
+        "purpose": "execute certain recurring/limited-scope actions with streamlined governance rails"
+      },
+      "safeguard_layer": {
+        "name": "Dual Governance",
+        "who": "stETH/wstETH holders (and unstETH withdrawal NFTs)",
+        "normal_review_window": {
+          "pending_days": 3,
+          "buffer_days": 1
+        },
+        "veto_signalling_threshold_pct_steth_supply": 1.0,
+        "rage_quit_threshold_pct_steth_supply": 10.0,
+        "dynamic_timelock_days_range": [
+          5,
+          45
+        ],
+        "effects": {
+          "veto_signalling": "delays governance proposal execution via dynamic timelock",
+          "rage_quit": "blocks all governance motions until escrowed assets withdrawn"
+        }
+      }
+    },
+    "treasury": {
+      "treasury_controller": "Lido DAO on-chain execution mechanisms (and Easy Track for predefined actions)",
+      "spending_mechanism": [
+        "DAO-approved grants and contributor payments",
+        "maintenance and protocol parameter updates",
+        "recurring payments via Easy Track patterns (limited-scope)"
+      ]
+    },
+    "membership": {
+      "member_types": [
+        {
+          "type": "governance_token_holder",
+          "who": "LDO holders",
+          "rights": [
+            "vote (off-chain and on-chain where applicable)"
+          ]
+        },
+        {
+          "type": "staker",
+          "who": "stETH/wstETH holders",
+          "rights": [
+            "Dual Governance veto signaling / rage quit triggers"
+          ]
+        },
+        {
+          "type": "node_operator",
+          "who": "validator operators in Lido set",
+          "rights": [
+            "operate validators; subject to DAO oversight"
+          ]
+        },
+        {
+          "type": "contributor",
+          "who": "contributors funded via DAO",
+          "rights": [
+            "execute DAO-funded mandates"
+          ]
+        }
+      ]
+    },
+    "proposal_process": {
+      "stages": [
+        {
+          "stage": "Research forum discussion",
+          "min_duration_days": 7
+        },
+        {
+          "stage": "Off-chain vote",
+          "platform": "Snapshot",
+          "duration_days": 7
+        },
+        {
+          "stage": "On-chain vote",
+          "platform": "vote.lido.fi",
+          "duration_days": 5
+        },
+        {
+          "stage": "Dual Governance review",
+          "platform": "dg.lido.fi",
+          "duration": "3 days + 1 day buffer; can extend to 5–45 days if veto signalling threshold reached"
+        },
+        {
+          "stage": "Execution",
+          "platform": "on-chain"
+        }
+      ]
+    },
+    "proposal_activity": {
+      "activity_level": "high",
+      "cadence_pattern": "continuous governance with recurring operations and protocol evolution; includes safety-driven veto layer events (rare)"
+    },
+    "security_controls": {
+      "timelock": true,
+      "dual_governance": true,
+      "notes": [
+        "Dual Governance provides staker protection by delaying/blocking changes and allowing exit before enactment."
+      ]
+    },
+    "simulation_parameters": {
+      "governance": {
+        "vote_weight": "token_weight + delegation (LDO)",
+        "offchain_vote_days": 7,
+        "onchain_vote_days": 5
+      },
+      "dual_governance": {
+        "review_pending_days": 3,
+        "buffer_days": 1,
+        "veto_threshold_pct": 1.0,
+        "rage_quit_threshold_pct": 10.0,
+        "dynamic_timelock_days_range": [
+          5,
+          45
+        ]
+      }
+    },
+    "sources": [
+      {
+        "title": "Lido DAO governance overview (regular process durations and platforms)",
+        "url": "https://lido.fi/governance"
+      },
+      {
+        "title": "Lido blog: Participating in Dual Governance (thresholds and dynamic timelock behavior)",
+        "url": "https://blog.lido.fi/participating-in-dual-governance-a-guide-for-steth-holders/"
+      }
+    ]
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "schema_version": "dao_digital_twin_v0.2",
+  "last_verified_utc": "2026-01-12",
+  "dao": {
+    "id": "compound",
+    "name": "Compound DAO",
+    "category": [
+      "DeFi",
+      "Lending"
+    ],
+    "primary_chain": "Ethereum",
+    "governance_token": {
+      "symbol": "COMP",
+      "type": "ERC-20",
+      "voting_power_model": "token-weighted with delegation (Governor Bravo)"
+    },
+    "governance_stack": {
+      "discussion_forum": "Compound governance forum (community)",
+      "onchain_voting": {
+        "framework": "Governor Bravo",
+        "proposal_threshold_comp": 25000,
+        "review_period_days": 2,
+        "voting_period_days": 3,
+        "quorum_comp_for": 400000,
+        "timelock_delay_days": 2,
+        "pass_rule": "simple majority + FOR votes >= 400,000 COMP"
+      },
+      "execution": {
+        "timelock": {
+          "min_delay_days": 2
+        }
+      }
+    },
+    "treasury": {
+      "treasury_controller": "Compound Timelock (on-chain)",
+      "spending_mechanism": "on-chain governance proposal executed via timelock",
+      "notes": [
+        "Compound documentation describes protocol changes taking at least ~1 week (review + vote + timelock)."
+      ]
+    },
+    "membership": {
+      "member_types": [
+        {
+          "type": "token_holder",
+          "who": "COMP holders",
+          "rights": [
+            "delegate",
+            "vote"
+          ]
+        },
+        {
+          "type": "delegate",
+          "who": "addresses delegated COMP",
+          "rights": [
+            "vote",
+            "propose if threshold met"
+          ]
+        },
+        {
+          "type": "autonomous_proposer",
+          "who": "any address locking 100 COMP to create an Autonomous Proposal",
+          "rights": [
+            "seed proposal that upgrades into governance proposal once delegated threshold is met"
+          ]
+        }
+      ]
+    },
+    "proposal_process": {
+      "stages": [
+        {
+          "stage": "Draft / Forum discussion",
+          "platform": "forum",
+          "typical_duration_days": null
+        },
+        {
+          "stage": "Review period",
+          "platform": "on-chain",
+          "duration_days": 2
+        },
+        {
+          "stage": "On-chain voting",
+          "platform": "on-chain",
+          "duration_days": 3,
+          "quorum_for_votes_comp": 400000
+        },
+        {
+          "stage": "Timelock",
+          "platform": "on-chain",
+          "duration_days": 2
+        }
+      ],
+      "proposal_types": [
+        "support new markets",
+        "change risk parameters / interest models",
+        "protocol upgrades"
+      ]
+    },
+    "proposal_activity": {
+      "activity_level": "medium",
+      "cadence_pattern": "proposal-driven; depends on protocol upgrades and risk/market changes"
+    },
+    "security_controls": {
+      "timelock": true,
+      "timelock_delay_days": 2,
+      "review_period_days": 2
+    },
+    "simulation_parameters": {
+      "governance": {
+        "vote_weight": "delegated_token_weight",
+        "proposal_threshold": {
+          "unit": "COMP",
+          "value": 25000
+        },
+        "quorum": {
+          "unit": "COMP_for_votes",
+          "value": 400000
+        },
+        "review_period_days": 2,
+        "voting_period_days": 3,
+        "timelock_delay_days": 2,
+        "pass_rule": "for_votes > against_votes AND for_votes >= quorum"
+      }
+    },
+    "sources": [
+      {
+        "title": "Compound v2 Governance documentation (thresholds, periods, quorum, timelock)",
+        "url": "https://docs.compound.finance/v2/governance/"
+      }
+    ]
+  }
+}

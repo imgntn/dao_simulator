@@ -319,22 +319,114 @@ export class CheckpointManager {
 
   private async saveToFileSystem(checkpoint: SimulationCheckpoint): Promise<void> {
     // Server-side implementation using fs
-    console.log('Checkpoint save (file system):', checkpoint.id);
-    // TODO: Implement when running in Node.js environment
+    const { fs, path } = await this.getFsModules();
+    const dir = await this.ensureCheckpointDir(fs, path);
+    const filePath = path.join(dir, `${checkpoint.id}.json`);
+    await fs.writeFile(filePath, JSON.stringify(checkpoint, null, 2), 'utf8');
+    await this.trimFileSystemCheckpoints(fs, path, dir);
   }
 
   private async loadFromFileSystem(checkpointId: string): Promise<SimulationCheckpoint | null> {
-    console.log('Checkpoint load (file system):', checkpointId);
-    return null;
+    const { fs, path } = await this.getFsModules();
+    const dir = await this.ensureCheckpointDir(fs, path);
+    const filePath = path.join(dir, `${checkpointId}.json`);
+    try {
+      const data = await fs.readFile(filePath, 'utf8');
+      return JSON.parse(data) as SimulationCheckpoint;
+    } catch (error: any) {
+      if (error?.code === 'ENOENT') {
+        return null;
+      }
+      throw error;
+    }
   }
 
   private async listFromFileSystem(): Promise<SimulationCheckpoint[]> {
-    return [];
+    const { fs, path } = await this.getFsModules();
+    const dir = await this.ensureCheckpointDir(fs, path);
+    const entries = await fs.readdir(dir);
+    const checkpoints: SimulationCheckpoint[] = [];
+
+    for (const entry of entries) {
+      if (!entry.endsWith('.json')) continue;
+      const filePath = path.join(dir, entry);
+      try {
+        const data = await fs.readFile(filePath, 'utf8');
+        checkpoints.push(JSON.parse(data) as SimulationCheckpoint);
+      } catch {
+        // Skip unreadable or malformed checkpoint files
+      }
+    }
+
+    return checkpoints;
   }
 
   private async deleteFromFileSystem(checkpointId: string): Promise<boolean> {
-    console.log('Checkpoint delete (file system):', checkpointId);
-    return false;
+    const { fs, path } = await this.getFsModules();
+    const dir = await this.ensureCheckpointDir(fs, path);
+    const filePath = path.join(dir, `${checkpointId}.json`);
+    try {
+      await fs.unlink(filePath);
+      return true;
+    } catch (error: any) {
+      if (error?.code === 'ENOENT') {
+        return false;
+      }
+      throw error;
+    }
+  }
+
+  private async ensureCheckpointDir(
+    fs: typeof import('fs/promises'),
+    path: typeof import('path')
+  ): Promise<string> {
+    const dir = path.join(process.cwd(), 'checkpoints');
+    await fs.mkdir(dir, { recursive: true });
+    return dir;
+  }
+
+  private async trimFileSystemCheckpoints(
+    fs: typeof import('fs/promises'),
+    path: typeof import('path'),
+    dir: string
+  ): Promise<void> {
+    const entries = await fs.readdir(dir);
+    const checkpoints: Array<{ file: string; timestamp: number }> = [];
+
+    for (const entry of entries) {
+      if (!entry.endsWith('.json')) continue;
+      const filePath = path.join(dir, entry);
+      try {
+        const data = await fs.readFile(filePath, 'utf8');
+        const parsed = JSON.parse(data) as SimulationCheckpoint;
+        checkpoints.push({
+          file: entry,
+          timestamp: typeof parsed.timestamp === 'number' ? parsed.timestamp : 0,
+        });
+      } catch {
+        // Ignore unreadable checkpoints during cleanup
+      }
+    }
+
+    if (checkpoints.length <= this.maxCheckpoints) return;
+
+    checkpoints.sort((a, b) => a.timestamp - b.timestamp);
+    const toDelete = checkpoints.slice(0, checkpoints.length - this.maxCheckpoints);
+    await Promise.all(
+      toDelete.map(cp => fs.unlink(path.join(dir, cp.file)).catch(() => undefined))
+    );
+  }
+
+  private async getFsModules(): Promise<{
+    fs: typeof import('fs/promises');
+    path: typeof import('path');
+  }> {
+    const [fsModule, pathModule] = await Promise.all([
+      import('fs/promises'),
+      import('path'),
+    ]);
+    const path = (pathModule as { default?: typeof import('path') }).default ?? pathModule;
+    return { fs: fsModule, path };
   }
 }
 

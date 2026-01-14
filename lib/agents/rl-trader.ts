@@ -28,6 +28,7 @@ export class RLTrader extends DAOMember {
   qTable: Map<string, number> = new Map(); // key: "state,action"
   prevState: State | null = null;
   prevAction: Action | null = null;
+  prevPrice: number | null = null;
   prevTokens: number;
   totalReward: number = 0;
   tradeCount: number = 0;
@@ -53,10 +54,8 @@ export class RLTrader extends DAOMember {
   /**
    * Get current state representation with bucketed values
    */
-  private getState(): State {
+  private getState(price: number): State {
     if (!this.model.dao) return '0,0,neutral';
-
-    const price = this.model.dao.treasury.getTokenPrice('DAO_TOKEN');
 
     // Bucket price into categories
     const priceBucket = price < 0.5 ? 'low' : price < 1.5 ? 'mid' : 'high';
@@ -72,9 +71,9 @@ export class RLTrader extends DAOMember {
     const depthBucket = depth < 100 ? 'shallow' : depth < 500 ? 'medium' : 'deep';
 
     // Determine trend based on previous state
-    const trend = this.prevState
-      ? price > parseFloat(this.prevState.split(',')[0]) ? 'up'
-        : price < parseFloat(this.prevState.split(',')[0]) ? 'down' : 'flat'
+    const trend = this.prevPrice !== null
+      ? price > this.prevPrice ? 'up'
+        : price < this.prevPrice ? 'down' : 'flat'
       : 'neutral';
 
     return `${priceBucket},${depthBucket},${trend}`;
@@ -137,7 +136,8 @@ export class RLTrader extends DAOMember {
   step(): void {
     if (!this.model.dao) return;
 
-    const state = this.getState();
+    const price = this.model.dao.treasury.getTokenPrice('DAO_TOKEN');
+    const state = this.getState(price);
     const action = this.chooseAction(state);
     let reward = 0;
 
@@ -214,6 +214,7 @@ export class RLTrader extends DAOMember {
     this.updateQ(reward, state);
     this.prevState = state;
     this.prevAction = action;
+    this.prevPrice = price;
     this.prevTokens = this.tokens;
     this.markActive();
   }

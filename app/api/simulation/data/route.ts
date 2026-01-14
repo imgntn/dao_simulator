@@ -7,7 +7,11 @@ import { requireAuth } from '@/lib/auth';
 import { validateId, FormatSchema } from '@/lib/validation/schemas';
 
 const simulationStore = createSimulationStore();
-const isInMemory = simulationStore instanceof InMemorySimulationStore;
+const inMemoryStore = simulationStore instanceof InMemorySimulationStore
+  ? simulationStore
+  : (typeof (simulationStore as InMemorySimulationStore).getSimulation === 'function'
+    ? (simulationStore as InMemorySimulationStore)
+    : null);
 
 // Type definitions for export data
 interface HistorySnapshot {
@@ -81,8 +85,8 @@ export async function GET(request: NextRequest) {
   let simulationData = null;
   let dataCollector = null;
 
-  if (isInMemory) {
-    const sim = (simulationStore as InMemorySimulationStore).getSimulation(id);
+  if (inMemoryStore) {
+    const sim = inMemoryStore.getSimulation(id);
     if (sim) {
       simulationData = sim;
       dataCollector = sim.dataCollector;

@@ -206,6 +206,69 @@ export class InMemorySimulationStore implements SimulationStore {
   }
 }
 
+class ResilientSimulationStore implements SimulationStore {
+  private mode: 'pending' | 'redis' | 'memory' = 'pending';
+  private initPromise: Promise<void> | null = null;
+
+  constructor(
+    private primary: RedisSimulationStore,
+    private fallback: InMemorySimulationStore
+  ) {}
+
+  private async init(): Promise<void> {
+    if (!this.initPromise) {
+      this.initPromise = this.primary.connect()
+        .then(() => {
+          this.mode = 'redis';
+        })
+        .catch((err) => {
+          console.error('Failed to connect to Redis, falling back to in-memory store:', err);
+          this.mode = 'memory';
+        });
+    }
+    await this.initPromise;
+  }
+
+  private async withStore<T>(fn: (store: SimulationStore) => Promise<T>): Promise<T> {
+    await this.init();
+    const store = this.mode === 'redis' ? this.primary : this.fallback;
+
+    try {
+      return await fn(store);
+    } catch (error) {
+      if (store === this.primary) {
+        console.error('Redis store error, falling back to in-memory store:', error);
+        this.mode = 'memory';
+        return await fn(this.fallback);
+      }
+      throw error;
+    }
+  }
+
+  async save(id: string, simulation: DAOSimulation): Promise<void> {
+    await this.withStore(store => store.save(id, simulation));
+  }
+
+  async load(id: string): Promise<SimulationSnapshot | null> {
+    return await this.withStore(store => store.load(id));
+  }
+
+  async delete(id: string): Promise<boolean> {
+    return await this.withStore(store => store.delete(id));
+  }
+
+  async list(): Promise<SimulationListItem[]> {
+    return await this.withStore(store => store.list());
+  }
+
+  getSimulation(id: string): DAOSimulation | null {
+    if (this.mode === 'memory') {
+      return this.fallback.getSimulation(id);
+    }
+    return null;
+  }
+}
+
 /**
  * Factory function to create the appropriate store based on environment
  */
@@ -213,11 +276,9 @@ export function createSimulationStore(): SimulationStore {
   const useRedis = process.env.REDIS_URL || process.env.USE_REDIS === 'true';
 
   if (useRedis && typeof window === 'undefined') {
-    const store = new RedisSimulationStore();
-    store.connect().catch(err => {
-      console.error('Failed to connect to Redis, falling back to in-memory store:', err);
-    });
-    return store;
+    const primary = new RedisSimulationStore();
+    const fallback = new InMemorySimulationStore();
+    return new ResilientSimulationStore(primary, fallback);
   }
 
   return new InMemorySimulationStore();

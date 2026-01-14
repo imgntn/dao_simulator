@@ -121,7 +121,21 @@ export class Treasury {
     this.oracle.setPrice('DAO_TOKEN', 1.0);
   }
 
+  private ensureTokenPrice(token: string): number {
+    const existingPrice = this.tokenPrices.get(token);
+    if (existingPrice && existingPrice > 0) {
+      return existingPrice;
+    }
+
+    const oraclePrice = this.oracle.getPrice(token);
+    const safePrice = Number.isFinite(oraclePrice) && oraclePrice > 0 ? oraclePrice : 1;
+    this.tokenPrices.set(token, safePrice);
+    this.oracle.setPrice(token, safePrice);
+    return safePrice;
+  }
+
   deposit(token: string, amount: number, step: number = 0): void {
+    this.ensureTokenPrice(token);
     const current = this.tokens.get(token) || 0;
     this.tokens.set(token, current + amount);
 
@@ -192,6 +206,7 @@ export class Treasury {
   mintTokens(token: string, amount: number, step: number = 0): void {
     if (amount <= 0) return;
 
+    this.ensureTokenPrice(token);
     const current = this.tokens.get(token) || 0;
     this.tokens.set(token, current + amount);
 
@@ -238,7 +253,7 @@ export class Treasury {
     for (const token of this.tokens.keys()) {
       // Get accumulated price pressure (positive = selling pressure, negative = buying pressure)
       const pressure = this.pricePressure.get(token) || 0;
-      const currentPrice = this.getTokenPrice(token);
+      const currentPrice = this.ensureTokenPrice(token);
       const supply = this.tokens.get(token) || 1;
 
       // Calculate market-driven price adjustment based on pressure relative to supply

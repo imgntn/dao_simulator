@@ -1,0 +1,91 @@
+{
+  "schema_version": "dao_digital_twin_v0.2",
+  "generated_utc": "2026-01-12",
+  "count": 9,
+  "daos": [
+    {
+      "id": "uniswap",
+      "name": "Uniswap DAO",
+      "category": [
+        "DeFi",
+        "DEX"
+      ],
+      "file": "uniswap.json"
+    },
+    {
+      "id": "compound",
+      "name": "Compound DAO",
+      "category": [
+        "DeFi",
+        "Lending"
+      ],
+      "file": "compound.json"
+    },
+    {
+      "id": "aave",
+      "name": "Aave DAO",
+      "category": [
+        "DeFi",
+        "Lending"
+      ],
+      "file": "aave.json"
+    },
+    {
+      "id": "arbitrum",
+      "name": "Arbitrum DAO",
+      "category": [
+        "Layer 2",
+        "Ecosystem governance"
+      ],
+      "file": "arbitrum.json"
+    },
+    {
+      "id": "optimism",
+      "name": "Optimism Collective",
+      "category": [
+        "Layer 2",
+        "Bicameral governance",
+        "Public goods"
+      ],
+      "file": "optimism.json"
+    },
+    {
+      "id": "ens",
+      "name": "ENS DAO",
+      "category": [
+        "Identity",
+        "Naming",
+        "Public goods"
+      ],
+      "file": "ens.json"
+    },
+    {
+      "id": "lido",
+      "name": "Lido DAO",
+      "category": [
+        "Staking",
+        "DeFi infrastructure"
+      ],
+      "file": "lido.json"
+    },
+    {
+      "id": "gitcoin",
+      "name": "Gitcoin DAO",
+      "category": [
+        "Public goods",
+        "Grants"
+      ],
+      "file": "gitcoin.json"
+    },
+    {
+      "id": "maker_sky",
+      "name": "MakerDAO / Sky Ecosystem Governance",
+      "category": [
+        "Stablecoin",
+        "DeFi",
+        "Protocol governance"
+      ],
+      "file": "maker_sky.json"
+    }
+  ]
+}

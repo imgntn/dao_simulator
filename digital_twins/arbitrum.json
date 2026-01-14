@@ -1,0 +1,190 @@
+{
+  "schema_version": "dao_digital_twin_v0.2",
+  "last_verified_utc": "2026-01-12",
+  "dao": {
+    "id": "arbitrum",
+    "name": "Arbitrum DAO",
+    "category": [
+      "Layer 2",
+      "Ecosystem governance"
+    ],
+    "primary_chain": "Arbitrum One (L2) with Ethereum L1 execution components",
+    "governance_token": {
+      "symbol": "ARB",
+      "type": "ERC-20",
+      "voting_power_model": "token-weighted with delegation"
+    },
+    "governance_stack": {
+      "discussion_forum": "forum.arbitrum.foundation (Discourse)",
+      "offchain_voting": {
+        "platform": "Snapshot",
+        "used_for": [
+          "Temperature Check (signaling)"
+        ],
+        "proposal_gate": {
+          "min_delegated_pct_votable": 0.01
+        }
+      },
+      "onchain_voting": {
+        "platform": "Tally (Arbitrum DAO)",
+        "proposal_threshold_arb": 1000000,
+        "voting_period_days": {
+          "min": 14,
+          "max": 16
+        },
+        "proposal_categories": {
+          "constitutional": {
+            "quorum_pct_votable": 4.5
+          },
+          "non_constitutional": {
+            "quorum_pct_votable": 3.0
+          }
+        },
+        "pass_rule": "majority support + quorum by proposal category"
+      },
+      "execution": {
+        "timelock_and_bridging": {
+          "notes": [
+            "Arbitrum governance execution involves timelocks and L2→L1 message delays (depending on proposal type/execution path)."
+          ],
+          "typical_components": [
+            {
+              "component": "L2 timelock",
+              "typical_delay_days": 3
+            },
+            {
+              "component": "L2→L1 message delay",
+              "typical_delay_days": 7
+            },
+            {
+              "component": "L1 timelock",
+              "typical_delay_days": 3
+            }
+          ]
+        }
+      }
+    },
+    "treasury": {
+      "treasury_controller": "Arbitrum DAO governors (core/treasury) + timelock controllers",
+      "spending_mechanism": "on-chain AIPs executed after timelock(s)",
+      "notes": [
+        "Arbitrum separates constitutional vs non-constitutional proposal rules; treasury-related proposals may be under a different governor/quorum configuration."
+      ]
+    },
+    "membership": {
+      "member_types": [
+        {
+          "type": "token_holder",
+          "who": "ARB holders",
+          "rights": [
+            "delegate",
+            "vote"
+          ]
+        },
+        {
+          "type": "delegate",
+          "who": "addresses delegated ARB voting power",
+          "rights": [
+            "vote",
+            "propose if threshold met"
+          ]
+        },
+        {
+          "type": "security_council",
+          "who": "Security Council members (multisig role)",
+          "rights": [
+            "security/upgrade related responsibilities (per DAO constitution)"
+          ]
+        },
+        {
+          "type": "foundation",
+          "who": "Arbitrum Foundation",
+          "rights": [
+            "operational roles defined by DAO docs/constitution"
+          ]
+        }
+      ]
+    },
+    "proposal_process": {
+      "stages": [
+        {
+          "stage": "Temperature Check",
+          "platform": "Snapshot",
+          "entry_requirement": "≥0.01% of votable tokens delegated"
+        },
+        {
+          "stage": "On-chain proposal",
+          "platform": "Tally/on-chain",
+          "entry_requirement": "≥1,000,000 ARB delegated"
+        },
+        {
+          "stage": "Voting",
+          "platform": "on-chain",
+          "duration_days_range": [
+            14,
+            16
+          ]
+        },
+        {
+          "stage": "Execution",
+          "platform": "timelock(s) + bridging",
+          "notes": "multi-step execution path can include L2 timelock and L1 timelock"
+        }
+      ],
+      "proposal_types": [
+        "ecosystem funding and grants",
+        "protocol upgrades and constitutional changes",
+        "treasury allocations"
+      ]
+    },
+    "proposal_activity": {
+      "activity_level": "high",
+      "cadence_pattern": "frequent AIPs with structured temperature checks and on-chain votes"
+    },
+    "security_controls": {
+      "timelock": true,
+      "multi_stage_execution": true,
+      "notes": [
+        "long voting window (≈2 weeks) plus timelocks provide review time",
+        "execution can be delayed by cross-chain messaging windows"
+      ]
+    },
+    "simulation_parameters": {
+      "governance": {
+        "vote_weight": "delegated_token_weight",
+        "proposal_threshold": {
+          "unit": "ARB",
+          "value": 1000000
+        },
+        "voting_period_days_range": [
+          14,
+          16
+        ],
+        "quorum_pct_votable": {
+          "constitutional": 4.5,
+          "non_constitutional": 3.0
+        },
+        "temperature_check_gate_pct": 0.01
+      },
+      "execution": {
+        "l2_timelock_days": 3,
+        "l2_to_l1_delay_days": 7,
+        "l1_timelock_days": 3
+      }
+    },
+    "sources": [
+      {
+        "title": "Arbitrum DAO voting guide (temperature check + on-chain thresholds, voting period, quorums)",
+        "url": "https://docs.arbitrum.foundation/dao-governance/dao-vote"
+      },
+      {
+        "title": "Arbitrum DAO FAQs (Snapshot + Tally usage; 1M ARB threshold)",
+        "url": "https://docs.arbitrum.foundation/dao-governance/dao-faqs"
+      },
+      {
+        "title": "Arbitrum forum: execution path discussion (timelock + L2→L1 delay components)",
+        "url": "https://forum.arbitrum.foundation/t/arbitrumdao-should-reduce-the-l2-timelock/21374"
+      }
+    ]
+  }
+}

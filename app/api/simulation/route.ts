@@ -3,7 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { DAOSimulation } from '@/lib/engine/simulation';
-import { createSimulationStore, InMemorySimulationStore } from '@/lib/utils/redis-store';
+import { createSimulationStore, InMemorySimulationStore, rehydrateSimulation } from '@/lib/utils/redis-store';
 import { requireAuth } from '@/lib/auth';
 import {
   CreateSimulationRequestSchema,
@@ -14,10 +14,12 @@ import {
 
 // Create simulation store (Redis in production, in-memory for dev)
 const simulationStore = createSimulationStore();
-
-// Legacy in-memory fallback
-const isInMemory = simulationStore instanceof InMemorySimulationStore;
-const simulations = isInMemory ? (simulationStore as InMemorySimulationStore) : null;
+const isInMemoryStore = simulationStore instanceof InMemorySimulationStore;
+const simulations = isInMemoryStore
+  ? simulationStore
+  : (typeof (simulationStore as InMemorySimulationStore).getSimulation === 'function'
+    ? (simulationStore as InMemorySimulationStore)
+    : null);
 
 // Keep live simulation instances in-process so stepping works even when Redis is enabled
 // Each entry has a lastAccessed timestamp for TTL-based cleanup
@@ -76,7 +78,7 @@ const getLiveSimulation = (id: string): DAOSimulation | null => {
     entry.lastAccessed = Date.now();
     return entry.simulation;
   }
-  return isInMemory && simulations ? simulations.getSimulation(id) : null;
+  return simulations ? simulations.getSimulation(id) : null;
 };
 
 const trackSimulation = (id: string, simulation: DAOSimulation) => {
@@ -198,7 +200,15 @@ export async function PUT(request: NextRequest) {
   try {
     // Use lock to prevent race conditions with concurrent requests
     return await withSimulationLock(id, async () => {
-      const simulation = getLiveSimulation(id);
+      let simulation = getLiveSimulation(id);
+      if (!simulation && !isInMemoryStore) {
+        const snapshot = await simulationStore.load(id);
+        if (snapshot) {
+          simulation = rehydrateSimulation(snapshot);
+          trackSimulation(id, simulation);
+        }
+      }
+
       if (!simulation) {
         return NextResponse.json(
           { error: 'Simulation not found or not active in this process' },
