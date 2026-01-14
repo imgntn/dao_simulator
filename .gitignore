@@ -42,3 +42,16 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# logs
+*.log
+*.err
+dev.log
+dev.err
+server.log
+server.err
+playwright-*.log
+playwright-*.err
+
+# temp files
+tmpclaude-*
