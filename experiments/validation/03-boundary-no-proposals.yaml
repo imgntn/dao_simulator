@@ -1,0 +1,43 @@
+name: "Boundary: No Active Voters"
+description: |
+  Test system behavior when there are no active voters (who create proposals).
+  Expected: Fewer proposals created, simulation runs without errors.
+
+baseConfig:
+  template: "compound"
+  overrides:
+    memberDistribution:
+      totalMembers: 80
+      distribution:
+        - archetype: passive_holder
+          percentage: 80
+        - archetype: delegate
+          percentage: 20
+    simulationParams:
+      votingActivity: 0.3
+      proposalFrequency: 0.0
+
+sweep:
+  parameter: "seed"
+  values: [42]
+
+execution:
+  runsPerConfig: 5
+  stepsPerRun: 100
+  seedStrategy: sequential
+  baseSeed: 42
+
+metrics:
+  - name: "Proposal Pass Rate"
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: "Total Proposals"
+    type: builtin
+    builtin: total_proposals
+  - name: "Final Treasury"
+    type: builtin
+    builtin: final_treasury
+
+output:
+  directory: "results/validation/boundary-no-proposals"
+  formats: [json, csv]

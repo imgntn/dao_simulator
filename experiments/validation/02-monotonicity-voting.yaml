@@ -1,0 +1,44 @@
+name: "Voting Activity Monotonicity"
+description: |
+  Verify that voting_activity parameter behaves as expected:
+  - voting_activity=0 should result in ~0 turnout
+  - voting_activity=1 should result in highest turnout
+  - Turnout should increase monotonically with voting_activity
+
+baseConfig:
+  template: "compound"
+  overrides:
+    memberDistribution:
+      totalMembers: 80
+      distribution:
+        - archetype: passive_holder
+          percentage: 40
+        - archetype: active_voter
+          percentage: 40
+        - archetype: delegate
+          percentage: 20
+
+sweep:
+  parameter: "simulationParams.votingActivity"
+  values: [0.0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0]
+
+execution:
+  runsPerConfig: 5
+  stepsPerRun: 150
+  seedStrategy: sequential
+  baseSeed: 42
+
+metrics:
+  - name: "Proposal Pass Rate"
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: "Average Turnout"
+    type: builtin
+    builtin: average_turnout
+  - name: "Total Proposals"
+    type: builtin
+    builtin: total_proposals
+
+output:
+  directory: "results/validation/monotonicity-voting"
+  formats: [json, csv]

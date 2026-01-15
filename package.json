@@ -32,6 +32,7 @@
     "test:all": "npm run test:unit && npm run test:e2e",
     "examples": "tsx examples/run-scenarios.ts",
     "experiment": "tsx scripts/run-experiment.ts",
+    "validate": "tsx scripts/run-validation.ts",
     "paper:update": "tsx scripts/paper-update.ts",
     "paper:charts": "tsx scripts/paper-update.ts --charts-only",
     "paper:archive": "tsx scripts/paper-archive.ts",

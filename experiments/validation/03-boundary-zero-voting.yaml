@@ -1,0 +1,44 @@
+name: "Boundary: Zero Voting Activity"
+description: |
+  Test system behavior when voting_activity is 0.
+  Expected: Very low turnout, proposals may fail due to no votes.
+
+baseConfig:
+  template: "compound"
+  overrides:
+    memberDistribution:
+      totalMembers: 60
+      distribution:
+        - archetype: passive_holder
+          percentage: 40
+        - archetype: active_voter
+          percentage: 40
+        - archetype: delegate
+          percentage: 20
+    simulationParams:
+      votingActivity: 0.0
+
+sweep:
+  parameter: "seed"
+  values: [42]
+
+execution:
+  runsPerConfig: 5
+  stepsPerRun: 100
+  seedStrategy: sequential
+  baseSeed: 42
+
+metrics:
+  - name: "Proposal Pass Rate"
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: "Average Turnout"
+    type: builtin
+    builtin: average_turnout
+  - name: "Total Proposals"
+    type: builtin
+    builtin: total_proposals
+
+output:
+  directory: "results/validation/boundary-zero-voting"
+  formats: [json, csv]
