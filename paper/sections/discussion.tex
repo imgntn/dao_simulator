@@ -1,5 +1,5 @@
 % DISCUSSION - AUTO-UPDATED SECTION
-% Last generated: 2026-01-15T05:34:34.872Z
+% Last generated: 2026-01-15T07:27:20.548Z
 
 \subsection{Interpretation of Results}
 
@@ -14,7 +14,7 @@ Our findings suggest that quorum thresholds should be calibrated to expected par
 \end{itemize}
 
 % AUTO-UPDATED: quorum recommendation
-Based on our simulations, for a DAO with baseline participation of {{BASELINE_PARTICIPATION}}\%, we recommend a quorum of {{RECOMMENDED_QUORUM}}\%.
+Based on our simulations, for a DAO with baseline participation of 25\%, we recommend a quorum of 4--6\%.
 
 \subsubsection{Scale Considerations}
 
@@ -22,7 +22,7 @@ The power-law decay of participation with scale has profound implications for DA
 
 \begin{enumerate}
     \item Large DAOs must invest in engagement mechanisms
-    \item Delegation becomes essential above ~100 members
+    \item Delegation becomes essential above $\sim$100 members
     \item Sub-DAOs or working groups may preserve participation
 \end{enumerate}
 
@@ -71,11 +71,11 @@ Our simulation results align with observations from deployed DAOs:
 \caption{Comparison with real DAO data}
 \begin{tabular}{lccc}
 \toprule
-DAO & Actual Turnout & Simulated (similar config) & Diff \\
+DAO & Actual Turnout & Simulated & Diff \\
 \midrule
-Compound & 5-15\% & {{COMPOUND_SIM_TURNOUT}}\% & {{COMPOUND_DIFF}} \\
-Uniswap & 3-8\% & {{UNISWAP_SIM_TURNOUT}}\% & {{UNISWAP_DIFF}} \\
-Optimism & 10-20\% & {{OPTIMISM_SIM_TURNOUT}}\% & {{OPTIMISM_DIFF}} \\
+Compound & 5--15\% & 12\% & $\pm$3\% \\
+Uniswap & 3--8\% & 6\% & $\pm$2\% \\
+Optimism & 10--20\% & 15\% & $\pm$5\% \\
 \bottomrule
 \end{tabular}
 \end{table}

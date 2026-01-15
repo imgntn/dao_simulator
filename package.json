@@ -34,7 +34,8 @@
     "experiment": "tsx scripts/run-experiment.ts",
     "paper:update": "tsx scripts/paper-update.ts",
     "paper:charts": "tsx scripts/paper-update.ts --charts-only",
-    "paper:compile": "tsx scripts/paper-update.ts --compile"
+    "paper:compile": "cd paper && ../tools/tectonic.exe -X compile main.tex",
+    "paper:full": "npm run paper:update && npm run paper:compile"
   },
   "dependencies": {
     "@auth/core": "^0.41.1",

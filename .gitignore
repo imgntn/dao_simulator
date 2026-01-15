@@ -58,3 +58,14 @@ playwright-*.err
 
 # temp files
 tmpclaude-*
+
+# LaTeX tools
+tools/
+paper/*.pdf
+paper/*.aux
+paper/*.log
+paper/*.bbl
+paper/*.blg
+paper/*.out
+paper/*.toc
+
