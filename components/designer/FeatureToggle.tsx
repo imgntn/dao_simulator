@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { InfoTooltip } from './Tooltip';
 
 interface FeatureToggleProps {
   label: string;
@@ -8,6 +9,10 @@ interface FeatureToggleProps {
   enabled: boolean;
   onToggle: (enabled: boolean) => void;
   children?: React.ReactNode; // Config panel when enabled
+  /** Optional detailed tooltip explanation */
+  tooltip?: string;
+  /** Optional real-world example */
+  example?: string;
 }
 
 export function FeatureToggle({
@@ -16,6 +21,8 @@ export function FeatureToggle({
   enabled,
   onToggle,
   children,
+  tooltip,
+  example,
 }: FeatureToggleProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -34,6 +41,7 @@ export function FeatureToggle({
               <h4 className="font-medium text-gray-900 dark:text-white">
                 {label}
               </h4>
+              {tooltip && <InfoTooltip content={tooltip} position="right" />}
               {enabled && children && (
                 <button
                   onClick={() => setExpanded(!expanded)}
@@ -46,6 +54,11 @@ export function FeatureToggle({
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               {description}
             </p>
+            {example && (
+              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                {example}
+              </p>
+            )}
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input

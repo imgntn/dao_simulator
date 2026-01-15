@@ -1,10 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { useDAODesigner } from '@/lib/hooks/useDAODesigner';
 import { useSimulationSocket } from '@/lib/hooks/useSimulationSocket';
 import { TEMPLATE_METADATA } from '@/lib/dao-designer/templates';
+import { GOVERNANCE_FEATURE_TOOLTIPS } from '@/lib/dao-designer/glossary';
 import { TemplateCard } from '@/components/designer/TemplateCard';
 import { ModeToggle } from '@/components/designer/ModeToggle';
 import { FeatureToggle } from '@/components/designer/FeatureToggle';
@@ -12,6 +13,10 @@ import { SectionAccordion } from '@/components/designer/SectionAccordion';
 import { ConfigPreview } from '@/components/designer/ConfigPreview';
 import { VotingSystemSelector } from '@/components/designer/VotingSystemSelector';
 import { MemberDistribution } from '@/components/designer/MemberDistribution';
+import { GlossaryModal } from '@/components/designer/GlossaryModal';
+import { LabelWithTooltip, InfoTooltip } from '@/components/designer/Tooltip';
+import { AppHeader } from '@/components/layout/AppHeader';
+import { SettingsModal } from '@/components/settings/SettingsModal';
 import type { GovernanceFeatures, QuorumType, ProposalStageType } from '@/lib/dao-designer/types';
 
 const FEATURE_INFO: Record<keyof GovernanceFeatures, { label: string; description: string }> = {
@@ -70,6 +75,8 @@ const STAGE_TYPES: { value: ProposalStageType; label: string }[] = [
 
 export default function DesignerPage() {
   const router = useRouter();
+  const [glossaryOpen, setGlossaryOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const {
     config,
     mode,
@@ -121,51 +128,43 @@ export default function DesignerPage() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/dashboard"
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              >
-                ← Back
-              </Link>
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                Design Your DAO
-              </h1>
-            </div>
-            <div className="flex items-center gap-3">
-              <ModeToggle mode={mode} onModeChange={setMode} />
-              <button
-                onClick={reset}
-                className="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-              >
-                Reset
-              </button>
-              <button
-                onClick={handleExport}
-                className="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
-              >
-                Export
-              </button>
-              <button
-                onClick={handleStartSimulation}
-                disabled={!isValid || !connected}
-                className={`
-                  px-4 py-2 rounded-lg text-white font-medium
-                  ${isValid && connected
-                    ? 'bg-blue-600 hover:bg-blue-700'
-                    : 'bg-gray-400 cursor-not-allowed'
-                  }
-                `}
-              >
-                Start Simulation
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <AppHeader
+        title="Design Your DAO"
+        showBackButton
+        backHref="/dashboard"
+        onOpenSettings={() => setSettingsOpen(true)}
+        onOpenGlossary={() => setGlossaryOpen(true)}
+        actions={
+          <>
+            <ModeToggle mode={mode} onModeChange={setMode} />
+            <button
+              onClick={reset}
+              className="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            >
+              Reset
+            </button>
+            <button
+              onClick={handleExport}
+              className="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              Export
+            </button>
+            <button
+              onClick={handleStartSimulation}
+              disabled={!isValid || !connected}
+              className={`
+                px-4 py-2 rounded-lg text-white font-medium
+                ${isValid && connected
+                  ? 'bg-blue-600 hover:bg-blue-700'
+                  : 'bg-gray-400 cursor-not-allowed'
+                }
+              `}
+            >
+              Start Simulation
+            </button>
+          </>
+        }
+      />
 
       <main className="max-w-7xl mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -192,12 +191,20 @@ export default function DesignerPage() {
 
                 {/* Quick Customization */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 space-y-4">
-                  <h3 className="font-medium text-gray-900 dark:text-white">Quick Customization</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-medium text-gray-900 dark:text-white">Quick Customization</h3>
+                    <InfoTooltip
+                      content="Adjust basic settings without entering advanced mode. For full control, switch to Advanced mode above."
+                      position="right"
+                    />
+                  </div>
 
                   <div>
-                    <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">
-                      DAO Name
-                    </label>
+                    <LabelWithTooltip
+                      label="DAO Name"
+                      tooltip="A memorable name for your DAO. This will be displayed throughout the simulation."
+                      className="mb-2"
+                    />
                     <input
                       type="text"
                       value={config.name}
@@ -208,9 +215,11 @@ export default function DesignerPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">
-                      Members: {config.memberDistribution.totalMembers}
-                    </label>
+                    <LabelWithTooltip
+                      label={`Members: ${config.memberDistribution.totalMembers}`}
+                      tooltip="The total number of participants in your DAO. Larger DAOs face different challenges like lower participation rates and coordination difficulties."
+                      className="mb-2"
+                    />
                     <input
                       type="range"
                       min="10"
@@ -223,14 +232,20 @@ export default function DesignerPage() {
                           totalMembers: parseInt(e.target.value),
                         })
                       }
-                      className="w-full"
+                      className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
                     />
+                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <span>10 (Intimate)</span>
+                      <span>500 (Large)</span>
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">
-                      Quorum: {config.quorumConfig.baseQuorumPercent}%
-                    </label>
+                    <LabelWithTooltip
+                      label={`Quorum: ${config.quorumConfig.baseQuorumPercent}%`}
+                      tooltip="The minimum percentage of voting power required to make a decision valid. Higher quorums need more participation but harder to reach."
+                      className="mb-2"
+                    />
                     <input
                       type="range"
                       min="1"
@@ -243,8 +258,12 @@ export default function DesignerPage() {
                           baseQuorumPercent: parseInt(e.target.value),
                         })
                       }
-                      className="w-full"
+                      className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
                     />
+                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <span>1% (Easy)</span>
+                      <span>50% (Strict)</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -319,9 +338,11 @@ export default function DesignerPage() {
                 <SectionAccordion title="Quorum Requirements" description="Minimum participation for valid votes">
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Quorum Type
-                      </label>
+                      <LabelWithTooltip
+                        label="Quorum Type"
+                        tooltip="How the minimum participation requirement is calculated. Fixed uses a constant percentage, Dynamic adjusts based on recent participation, and Per Category sets different thresholds for different proposal types."
+                        className="mb-2"
+                      />
                       <select
                         value={config.quorumConfig.type}
                         onChange={(e) =>
@@ -338,9 +359,11 @@ export default function DesignerPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Base Quorum: {config.quorumConfig.baseQuorumPercent}%
-                      </label>
+                      <LabelWithTooltip
+                        label={`Base Quorum: ${config.quorumConfig.baseQuorumPercent}%`}
+                        tooltip="The minimum percentage of voting power that must participate for a vote to be valid. Higher quorums ensure broader participation but can make it harder to pass proposals. Most DAOs use 4-10%."
+                        className="mb-2"
+                      />
                       <input
                         type="range"
                         min="1"
@@ -353,14 +376,20 @@ export default function DesignerPage() {
                             baseQuorumPercent: parseInt(e.target.value),
                           })
                         }
-                        className="w-full"
+                        className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
                       />
+                      <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        <span>1% (Easy to reach)</span>
+                        <span>50% (Very high)</span>
+                      </div>
                     </div>
                     {config.quorumConfig.type === 'per_category' && (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Constitutional Quorum: {config.quorumConfig.constitutionalQuorumPercent || 5}%
-                        </label>
+                        <LabelWithTooltip
+                          label={`Constitutional Quorum: ${config.quorumConfig.constitutionalQuorumPercent || 5}%`}
+                          tooltip="Higher quorum requirement for constitutional or high-impact proposals. Ensures broader consensus for fundamental changes to the DAO."
+                          className="mb-2"
+                        />
                         <input
                           type="range"
                           min="1"
@@ -373,7 +402,7 @@ export default function DesignerPage() {
                               constitutionalQuorumPercent: parseInt(e.target.value),
                             })
                           }
-                          className="w-full"
+                          className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
                         />
                       </div>
                     )}
@@ -458,6 +487,7 @@ export default function DesignerPage() {
                     {BOOLEAN_FEATURES.map((feature) => {
                       const info = FEATURE_INFO[feature];
                       if (!info.label) return null;
+                      const tooltipData = GOVERNANCE_FEATURE_TOOLTIPS[feature];
                       return (
                         <FeatureToggle
                           key={feature}
@@ -465,6 +495,8 @@ export default function DesignerPage() {
                           description={info.description}
                           enabled={config.features[feature] as boolean}
                           onToggle={(enabled) => toggleFeature(feature, enabled)}
+                          tooltip={tooltipData?.longDescription}
+                          example={tooltipData?.realWorldExample}
                         />
                       );
                     })}
@@ -483,9 +515,11 @@ export default function DesignerPage() {
                 <SectionAccordion title="Treasury" description="Initial funds and assets">
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Initial Balance
-                      </label>
+                      <LabelWithTooltip
+                        label="Initial Balance"
+                        tooltip="The starting amount in the DAO treasury. This represents the funds available for grants, operations, and proposals. Larger treasuries enable bigger initiatives but may attract more controversy."
+                        className="mb-2"
+                      />
                       <select
                         value={config.treasury.initialBalance}
                         onChange={(e) =>
@@ -520,6 +554,10 @@ export default function DesignerPage() {
                         <span className="text-sm text-gray-700 dark:text-gray-300">
                           Diversified Treasury
                         </span>
+                        <InfoTooltip
+                          content="Hold multiple assets instead of just the native token. Diversified treasuries are more resilient to price volatility but require more complex management."
+                          position="right"
+                        />
                       </label>
                     </div>
                   </div>
@@ -529,9 +567,11 @@ export default function DesignerPage() {
                 <SectionAccordion title="Simulation Settings" description="Control simulation behavior">
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Proposal Frequency: {config.simulationParams.proposalFrequency.toFixed(1)} per day
-                      </label>
+                      <LabelWithTooltip
+                        label={`Proposal Frequency: ${config.simulationParams.proposalFrequency.toFixed(1)} per day`}
+                        tooltip="How often new proposals are submitted in the simulation. Higher frequencies create a busier governance environment with potential for voter fatigue. Lower frequencies may feel slow but allow more deliberation."
+                        className="mb-2"
+                      />
                       <input
                         type="range"
                         min="0.1"
@@ -544,13 +584,19 @@ export default function DesignerPage() {
                             proposalFrequency: parseFloat(e.target.value),
                           })
                         }
-                        className="w-full"
+                        className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
                       />
+                      <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        <span>0.1/day (Quiet)</span>
+                        <span>2/day (Very Active)</span>
+                      </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Voting Activity: {(config.simulationParams.votingActivity * 100).toFixed(0)}%
-                      </label>
+                      <LabelWithTooltip
+                        label={`Voting Activity: ${(config.simulationParams.votingActivity * 100).toFixed(0)}%`}
+                        tooltip="The percentage of members who actively participate in governance. Real DAOs typically see 10-30% active participation. Higher activity means more engaged governance but also more computation."
+                        className="mb-2"
+                      />
                       <input
                         type="range"
                         min="0.1"
@@ -563,13 +609,19 @@ export default function DesignerPage() {
                             votingActivity: parseFloat(e.target.value),
                           })
                         }
-                        className="w-full"
+                        className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
                       />
+                      <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        <span>10% (Apathetic)</span>
+                        <span>90% (Highly Engaged)</span>
+                      </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Market Shock Probability: {(config.simulationParams.externalShockProbability * 100).toFixed(0)}%
-                      </label>
+                      <LabelWithTooltip
+                        label={`Market Shock Probability: ${(config.simulationParams.externalShockProbability * 100).toFixed(0)}%`}
+                        tooltip="The chance of external events affecting governance. Shocks can include market crashes, security incidents, or regulatory changes. Tests how well your governance handles crises."
+                        className="mb-2"
+                      />
                       <input
                         type="range"
                         min="0"
@@ -582,8 +634,12 @@ export default function DesignerPage() {
                             externalShockProbability: parseFloat(e.target.value),
                           })
                         }
-                        className="w-full"
+                        className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
                       />
+                      <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        <span>0% (Stable)</span>
+                        <span>20% (Chaotic)</span>
+                      </div>
                     </div>
                   </div>
                 </SectionAccordion>
@@ -615,6 +671,12 @@ export default function DesignerPage() {
           </div>
         </div>
       </main>
+
+      {/* Glossary Modal */}
+      <GlossaryModal isOpen={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
+
+      {/* Settings Modal */}
+      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </div>
   );
 }

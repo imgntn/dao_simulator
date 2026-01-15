@@ -1,6 +1,8 @@
 'use client';
 
 import type { MemberDistributionConfig, MemberArchetype, ArchetypeDistribution } from '@/lib/dao-designer/types';
+import { MEMBER_ARCHETYPE_TOOLTIPS } from '@/lib/dao-designer/glossary';
+import { InfoTooltip, LabelWithTooltip } from './Tooltip';
 
 interface MemberDistributionProps {
   value: MemberDistributionConfig;
@@ -57,9 +59,11 @@ export function MemberDistribution({ value, onChange }: MemberDistributionProps)
     <div className="space-y-4">
       {/* Total Members */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Total Members: {value.totalMembers}
-        </label>
+        <LabelWithTooltip
+          label={`Total Members: ${value.totalMembers}`}
+          tooltip="The total number of governance participants in the simulation. Larger DAOs have different dynamics than smaller ones - participation rates often decrease as size increases."
+          className="mb-2"
+        />
         <input
           type="range"
           min="10"
@@ -70,34 +74,42 @@ export function MemberDistribution({ value, onChange }: MemberDistributionProps)
           className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
         />
         <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-          <span>10</span>
-          <span>1000</span>
+          <span>10 (Small DAO)</span>
+          <span>1000 (Large DAO)</span>
         </div>
       </div>
 
       {/* Distribution Status */}
       <div className={`
-        px-3 py-2 rounded-lg text-sm
+        px-3 py-2 rounded-lg text-sm flex items-center gap-2
         ${isValid
           ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-400'
           : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-400'
         }
       `}>
-        Total: {totalPercentage.toFixed(1)}%
-        {!isValid && ' (must equal 100%)'}
+        <span>Total: {totalPercentage.toFixed(1)}%</span>
+        {!isValid && <span>(must equal 100%)</span>}
+        <InfoTooltip
+          content="The percentages must add up to exactly 100%. Adjust the sliders to balance your member distribution."
+          position="right"
+        />
       </div>
 
       {/* Archetype Sliders */}
       <div className="space-y-3">
         {value.distribution.map((entry) => {
           const archetypeInfo = ARCHETYPES.find((a) => a.value === entry.archetype);
+          const tooltipData = MEMBER_ARCHETYPE_TOOLTIPS[entry.archetype];
           return (
             <div key={entry.archetype} className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-3">
               <div className="flex items-center justify-between mb-2">
-                <div>
+                <div className="flex items-center gap-1">
                   <span className="font-medium text-gray-900 dark:text-white text-sm">
                     {archetypeInfo?.label || entry.archetype}
                   </span>
+                  {tooltipData && (
+                    <InfoTooltip content={tooltipData.longDescription} position="right" />
+                  )}
                   <span className="ml-2 text-gray-600 dark:text-gray-400 text-sm">
                     {entry.percentage}%
                   </span>
@@ -121,6 +133,11 @@ export function MemberDistribution({ value, onChange }: MemberDistributionProps)
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 {archetypeInfo?.description}
               </p>
+              {tooltipData?.realWorldExample && (
+                <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                  {tooltipData.realWorldExample}
+                </p>
+              )}
             </div>
           );
         })}
@@ -129,9 +146,11 @@ export function MemberDistribution({ value, onChange }: MemberDistributionProps)
       {/* Add Archetype */}
       {availableArchetypes.length > 0 && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Add Archetype
-          </label>
+          <LabelWithTooltip
+            label="Add Archetype"
+            tooltip="Add more member types to your simulation. Each archetype has different voting behavior, participation rates, and governance priorities."
+            className="mb-2"
+          />
           <select
             onChange={(e) => {
               if (e.target.value) {
@@ -142,28 +161,39 @@ export function MemberDistribution({ value, onChange }: MemberDistributionProps)
             className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white"
           >
             <option value="">Select an archetype to add...</option>
-            {availableArchetypes.map((a) => (
-              <option key={a.value} value={a.value}>
-                {a.label}
-              </option>
-            ))}
+            {availableArchetypes.map((a) => {
+              const tooltipData = MEMBER_ARCHETYPE_TOOLTIPS[a.value];
+              return (
+                <option key={a.value} value={a.value} title={tooltipData?.shortDescription}>
+                  {a.label} - {a.description}
+                </option>
+              );
+            })}
           </select>
         </div>
       )}
 
       {/* Preview */}
       <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
-        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Member Preview</p>
+        <div className="flex items-center gap-1 mb-2">
+          <p className="text-xs text-gray-500 dark:text-gray-400">Member Preview</p>
+          <InfoTooltip
+            content="This shows how many of each member type will be created based on your distribution settings."
+            position="right"
+          />
+        </div>
         <div className="flex gap-2 flex-wrap">
           {value.distribution.map((entry) => {
             const count = Math.round(value.totalMembers * (entry.percentage / 100));
             if (count === 0) return null;
+            const archetypeInfo = ARCHETYPES.find((a) => a.value === entry.archetype);
             return (
               <span
                 key={entry.archetype}
                 className="text-xs px-2 py-1 bg-white dark:bg-gray-700 rounded text-gray-700 dark:text-gray-300"
+                title={MEMBER_ARCHETYPE_TOOLTIPS[entry.archetype]?.shortDescription}
               >
-                {count} {entry.archetype.replace('_', ' ')}
+                {count} {archetypeInfo?.label || entry.archetype.replace('_', ' ')}
               </span>
             );
           })}

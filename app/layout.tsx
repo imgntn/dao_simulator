@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AppProviders } from "@/components/providers/AppProviders";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -58,36 +59,38 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-900 text-gray-100`}
       >
-        {/* Skip to main content link for keyboard users */}
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900"
-        >
-          Skip to main content
-        </a>
+        <AppProviders>
+          {/* Skip to main content link for keyboard users */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900"
+          >
+            Skip to main content
+          </a>
 
-        {/* Main content wrapper */}
-        <main id="main-content" tabIndex={-1} className="outline-none">
-          {children}
-        </main>
+          {/* Main content wrapper */}
+          <main id="main-content" tabIndex={-1} className="outline-none">
+            {children}
+          </main>
 
-        {/* ARIA live region for dynamic announcements */}
-        <div
-          id="aria-live-region"
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-          className="sr-only"
-        />
+          {/* ARIA live region for dynamic announcements */}
+          <div
+            id="aria-live-region"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            className="sr-only"
+          />
 
-        {/* Assertive announcements for critical alerts */}
-        <div
-          id="aria-alert-region"
-          role="alert"
-          aria-live="assertive"
-          aria-atomic="true"
-          className="sr-only"
-        />
+          {/* Assertive announcements for critical alerts */}
+          <div
+            id="aria-alert-region"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            className="sr-only"
+          />
+        </AppProviders>
       </body>
     </html>
   );

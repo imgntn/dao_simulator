@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { PriceLineChart } from '@/components/visualizations/PriceLineChart';
 import { DAOReport } from '@/components/visualizations/DAOReport';
 import { ScenarioCard } from '@/components/visualizations/ScenarioCard';
@@ -11,6 +12,11 @@ import { DashboardNav } from '@/components/dashboard/DashboardNav';
 import { useSimulationSocket } from '@/lib/hooks/useSimulationSocket';
 import { generateDAOIdentity, generateMemberIdentity, type DAOIdentity } from '@/lib/utils/name-generator';
 import { messages as m, format } from '@/lib/i18n';
+import { GlossaryModal } from '@/components/designer/GlossaryModal';
+import { SettingsModal } from '@/components/settings/SettingsModal';
+import { InfoTooltip } from '@/components/designer/Tooltip';
+import { useTooltipSettings } from '@/lib/contexts/TooltipSettingsContext';
+import { useAppSettings } from '@/lib/contexts/AppSettingsContext';
 
 // Dynamic imports for heavy visualization components (loaded only when needed)
 const NetworkGraph3DWrapper = dynamic(
@@ -208,6 +214,10 @@ export default function DashboardPage() {
   const [chartsPanel, setChartsPanel] = useState<'price' | 'heatmap' | 'geo'>('price');
   const [reportPanel, setReportPanel] = useState<'report' | 'history' | 'runs'>('report');
   const [show3DPanel, setShow3DPanel] = useState(true);
+  const [glossaryOpen, setGlossaryOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const { settings: tooltipSettings, toggleTooltips } = useTooltipSettings();
+  const { settings: appSettings, updateSettings: updateAppSettings } = useAppSettings();
   const tutorialSteps = m.tutorial.steps;
   const [tutorialStep, setTutorialStep] = useState(0);
   const navSections = useMemo(
@@ -953,6 +963,38 @@ export default function DashboardPage() {
               >
                 {m.header.apiDocs}
               </a>
+              <Link
+                href="/designer"
+                className="px-3 py-2 border border-blue-500 text-blue-300 hover:bg-blue-500 hover:text-white rounded-lg transition-colors text-xs"
+              >
+                DAO Designer
+              </Link>
+              <button
+                onClick={() => setGlossaryOpen(true)}
+                className="px-3 py-2 border border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white rounded-lg transition-colors text-xs flex items-center gap-1"
+              >
+                <span>📚</span>
+                <span className="hidden sm:inline">Glossary</span>
+              </button>
+              <button
+                onClick={toggleTooltips}
+                className={`px-3 py-2 rounded-lg transition-colors text-xs flex items-center gap-1 ${
+                  tooltipSettings.enabled
+                    ? 'bg-blue-600/20 border border-blue-500 text-blue-300'
+                    : 'border border-gray-600 text-gray-400'
+                }`}
+                title={`Tooltips ${tooltipSettings.enabled ? 'On' : 'Off'} (Ctrl+Shift+T)`}
+              >
+                <span>💬</span>
+                <span className="hidden sm:inline">{tooltipSettings.enabled ? 'Tips On' : 'Tips Off'}</span>
+              </button>
+              <button
+                onClick={() => setSettingsOpen(true)}
+                className="px-3 py-2 border border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white rounded-lg transition-colors text-xs"
+                title="Settings (Ctrl+,)"
+              >
+                ⚙️
+              </button>
             </div>
           </div>
 
@@ -1846,6 +1888,12 @@ export default function DashboardPage() {
           <span>{m.footer.tagline}</span>
         </div>
       </footer>
+
+      {/* Glossary Modal */}
+      <GlossaryModal isOpen={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
+
+      {/* Settings Modal */}
+      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </div>
   );
 }
