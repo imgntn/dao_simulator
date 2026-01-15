@@ -390,6 +390,44 @@ export class DAOSimulation extends Model {
   }
 
   /**
+   * Resolve basic proposals whose voting period has ended
+   * Applies governance rules to determine pass/fail
+   */
+  resolveBasicProposals(): void {
+    const openProposals = this.dao.proposals.filter(p => p.status === 'open');
+
+    for (const proposal of openProposals) {
+      // Check if voting period has ended
+      const votingEnded = this.currentStep > proposal.creationTime + proposal.votingPeriod;
+
+      if (!votingEnded) continue;
+
+      // Apply governance rule to determine outcome
+      const approved = this.governanceRule.approve(proposal, this.dao);
+
+      if (approved) {
+        proposal.status = 'approved';
+        this.eventBus.publish('proposal_approved', {
+          step: this.currentStep,
+          proposalId: proposal.uniqueId,
+          title: proposal.title,
+          votesFor: proposal.votesFor,
+          votesAgainst: proposal.votesAgainst,
+        });
+      } else {
+        proposal.status = 'rejected';
+        this.eventBus.publish('proposal_rejected', {
+          step: this.currentStep,
+          proposalId: proposal.uniqueId,
+          title: proposal.title,
+          votesFor: proposal.votesFor,
+          votesAgainst: proposal.votesAgainst,
+        });
+      }
+    }
+  }
+
+  /**
    * Perform treasury buybacks if conditions are met
    */
   performBuybacks(): void {
@@ -459,6 +497,9 @@ export class DAOSimulation extends Model {
 
     // Reputation decay
     this.reputationTracker.decayReputation();
+
+    // Resolve basic proposals whose voting period has ended
+    this.resolveBasicProposals();
 
     // Process governance systems (timelocks, multi-stage proposals, etc.)
     if (this.governanceProcessor) {

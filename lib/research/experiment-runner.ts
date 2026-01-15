@@ -358,7 +358,11 @@ export class ExperimentRunner {
       case 'proposal_pass_rate': {
         const proposals = dao.proposals;
         if (proposals.length === 0) return 0;
-        const passed = proposals.filter((p: any) => p.status === 'passed' || p.status === 'executed').length;
+        // 'approved' is what basic proposals get when they pass
+        // 'passed' and 'executed' are from multi-stage proposals
+        const passed = proposals.filter((p: any) =>
+          p.status === 'approved' || p.status === 'passed' || p.status === 'executed'
+        ).length;
         return passed / proposals.length;
       }
 
