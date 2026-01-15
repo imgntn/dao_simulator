@@ -36,6 +36,7 @@ export interface SimulationSettings {
   violation_probability: number;
   reputation_penalty: number;
   comment_probability: number;
+  voting_activity: number;  // 0-1 probability that an agent votes when given the chance
   external_partner_interact_probability: number;
 
   // Economic parameters
@@ -89,6 +90,7 @@ export const defaultSettings: SimulationSettings = {
   violation_probability: 0.1,
   reputation_penalty: 5,
   comment_probability: 0.5,
+  voting_activity: 0.3,  // Default 30% voting participation
   external_partner_interact_probability: 0.0,
   staking_interest_rate: 0.0,
   slash_fraction: 0.0,

@@ -142,10 +142,11 @@ export class DAOConfigBuilder {
       adaptive_learning_rate: 0.1,
       adaptive_epsilon: 0.1,
 
-      // Behavior probabilities based on voting activity
+      // Behavior probabilities
       violation_probability: 0.05,
       reputation_penalty: 5,
-      comment_probability: designer.simulationParams.votingActivity,
+      comment_probability: 0.3,  // Fixed comment probability
+      voting_activity: designer.simulationParams.votingActivity,  // Voting participation rate
       external_partner_interact_probability: 0.1,
 
       // Event logging

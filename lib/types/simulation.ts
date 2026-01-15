@@ -42,6 +42,7 @@ export interface SimulationConfig {
 
   // Probabilities
   comment_probability?: number;
+  voting_activity?: number;  // 0-1 probability that agents vote when given the chance
   external_partner_interact_probability?: number;
   violation_probability?: number;
   reputation_penalty?: number;

@@ -156,6 +156,7 @@ export class DAOSimulation extends Model {
       config.violation_probability ?? settings.violation_probability,
       config.reputation_penalty ?? settings.reputation_penalty,
       config.comment_probability ?? settings.comment_probability,
+      config.voting_activity ?? settings.voting_activity,
       config.external_partner_interact_probability ?? settings.external_partner_interact_probability,
       config.staking_interest_rate ?? settings.staking_interest_rate,
       config.slash_fraction ?? settings.slash_fraction,

@@ -46,6 +46,7 @@ export const SimulationConfigSchema = z.object({
 
   // Probabilities
   comment_probability: z.number().min(0).max(1).optional(),
+  voting_activity: z.number().min(0).max(1).optional(),
   external_partner_interact_probability: z.number().min(0).max(1).optional(),
   violation_probability: z.number().min(0).max(1).optional(),
   reputation_penalty: z.number().min(0).max(1000).optional(),

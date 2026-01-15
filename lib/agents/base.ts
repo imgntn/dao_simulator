@@ -116,6 +116,12 @@ export class DAOMember implements Agent {
   voteOnRandomProposal(): void {
     if (!this.model.dao) return;
 
+    // Check voting activity probability - agents only vote with this probability
+    const votingActivity = this.model.dao.votingActivity ?? 0.3;
+    if (random() >= votingActivity) {
+      return;  // Agent decides not to participate this step
+    }
+
     const openProps = this.model.dao.proposals.filter(p => {
       const isOpen = p.status === 'open';
       const inVotingPeriod =

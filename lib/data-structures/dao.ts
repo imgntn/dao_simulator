@@ -30,6 +30,7 @@ export class DAO {
   predictionMarket: PredictionMarket;
   marketplace: NFTMarketplace | null = null;
   commentProbability: number;
+  votingActivity: number;  // 0-1 probability that agents vote when given the chance
   externalPartnerInteractProbability: number;
   violationProbability: number;
   reputationPenalty: number;
@@ -53,6 +54,7 @@ export class DAO {
     violationProbability: number = 0.1,
     reputationPenalty: number = 5,
     commentProbability: number = 0.5,
+    votingActivity: number = 0.3,
     externalPartnerInteractProbability: number = 0,
     stakingInterestRate: number = 0,
     slashFraction: number = 0,
@@ -73,6 +75,7 @@ export class DAO {
     this.violationProbability = violationProbability;
     this.reputationPenalty = reputationPenalty;
     this.commentProbability = commentProbability;
+    this.votingActivity = votingActivity;
     this.externalPartnerInteractProbability = externalPartnerInteractProbability;
     this.stakingInterestRate = stakingInterestRate;
     this.slashFraction = slashFraction;
