@@ -1,0 +1,98 @@
+# Quorum Sensitivity Analysis
+# Tests how quorum threshold affects proposal outcomes
+
+name: "Quorum Sensitivity Analysis"
+description: >
+  Study how varying the quorum threshold affects proposal pass rate,
+  voter participation, and governance effectiveness. This experiment
+  sweeps the base quorum percent from 1% to 20%.
+version: "1.0.0"
+author: "DAO Simulator Research"
+tags:
+  - quorum
+  - sensitivity-analysis
+  - governance-design
+
+# Base DAO configuration
+baseConfig:
+  template: "compound"
+  overrides:
+    memberDistribution:
+      totalMembers: 100
+      distribution:
+        - archetype: passive_holder
+          percentage: 50
+        - archetype: active_voter
+          percentage: 25
+        - archetype: delegate
+          percentage: 15
+        - archetype: whale
+          percentage: 5
+        - archetype: governance_expert
+          percentage: 5
+    simulationParams:
+      stepsPerDay: 24
+      proposalFrequency: 0.5
+      votingActivity: 0.3
+      externalShockProbability: 0.05
+
+# Parameter sweep configuration
+sweep:
+  parameter: "quorumConfig.baseQuorumPercent"
+  # Sweep from 1% to 20% quorum in 1% increments
+  values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20]
+  # Alternative: use range
+  # range:
+  #   min: 1
+  #   max: 20
+  #   step: 1
+
+# Execution settings
+execution:
+  runsPerConfig: 30        # 30 runs per quorum value for statistical significance
+  stepsPerRun: 500         # ~20 simulated days
+  seedStrategy: sequential
+  baseSeed: 12345
+
+# Metrics to capture
+metrics:
+  - name: "Proposal Pass Rate"
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "Fraction of proposals that passed"
+
+  - name: "Average Turnout"
+    type: builtin
+    builtin: average_turnout
+    description: "Average voter turnout across all proposals"
+
+  - name: "Total Proposals"
+    type: builtin
+    builtin: total_proposals
+    description: "Total number of proposals created"
+
+  - name: "Final Treasury"
+    type: builtin
+    builtin: final_treasury
+    description: "Treasury balance at end of simulation"
+
+  - name: "Final Gini"
+    type: builtin
+    builtin: final_gini
+    description: "Token distribution Gini coefficient"
+
+  # Custom metric example - counts quorum failures
+  # - name: "Quorum Failures"
+  #   type: custom
+  #   expression: "proposals.filter(p => p.status === 'failed' && p.failureReason === 'quorum').length"
+  #   description: "Number of proposals that failed due to quorum"
+
+# Output settings
+output:
+  directory: "results/quorum-sensitivity"
+  formats:
+    - json
+    - csv
+  includeRawRuns: true    # Keep individual run data
+  includeTimeline: false  # Skip step-by-step data (saves space)
+  includeManifest: true   # Include reproducibility manifest

@@ -30,7 +30,8 @@
     "test:e2e:mobile": "node scripts/test-e2e.js --project=mobile",
     "test:e2e:raw": "playwright test",
     "test:all": "npm run test:unit && npm run test:e2e",
-    "examples": "tsx examples/run-scenarios.ts"
+    "examples": "tsx examples/run-scenarios.ts",
+    "experiment": "tsx scripts/run-experiment.ts"
   },
   "dependencies": {
     "@auth/core": "^0.41.1",
@@ -47,6 +48,7 @@
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
     "three": "^0.180.0",
+    "yaml": "^2.8.2",
     "zod": "^3.24.0",
     "zustand": "^5.0.8"
   },
