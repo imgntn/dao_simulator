@@ -1,0 +1,36 @@
+# Simple Parameter Sweep Test
+name: "Simple Sweep Test"
+description: "Test parameter sweep with fewer values"
+
+baseConfig:
+  template: "compound"
+  overrides:
+    memberDistribution:
+      totalMembers: 30
+
+sweep:
+  parameter: "quorumConfig.baseQuorumPercent"
+  values: [2, 5, 10]
+
+execution:
+  runsPerConfig: 2
+  stepsPerRun: 100
+  seedStrategy: sequential
+  baseSeed: 42
+
+metrics:
+  - name: "Final Treasury"
+    type: builtin
+    builtin: final_treasury
+  - name: "Final Gini"
+    type: builtin
+    builtin: final_gini
+  - name: "Total Proposals"
+    type: builtin
+    builtin: total_proposals
+
+output:
+  directory: "results/simple-sweep"
+  formats: ["json", "csv"]
+  includeRawRuns: true
+  includeManifest: true

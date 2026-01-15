@@ -48,3 +48,15 @@ export {
   summaryToJson,
   type ExportResult,
 } from './results-exporter';
+
+// Batch Runner
+export {
+  BatchRunner,
+  runBatch,
+  DEFAULT_BATCH_CONFIG,
+  type BatchConfig,
+  type BatchProgress,
+  type BatchProgressCallback,
+  type BatchCheckpoint,
+  type BatchResult,
+} from './batch-runner';

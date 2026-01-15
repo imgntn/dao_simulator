@@ -190,8 +190,9 @@ export class ExperimentRunner {
 
   /**
    * Generate all DAO configurations to run (handling sweeps)
+   * Public for use by BatchRunner
    */
-  private generateConfigs(): Array<{
+  generateConfigs(): Array<{
     daoConfig: DAODesignerConfig;
     sweepValue?: number | string | boolean;
   }> {
@@ -366,8 +367,16 @@ export class ExperimentRunner {
         if (proposals.length === 0) return 0;
         let totalTurnout = 0;
         for (const proposal of proposals) {
-          const votes = (proposal as any).votes || [];
-          const totalVotes = votes.reduce((sum: number, v: any) => sum + (v.weight || 1), 0);
+          // votes is a Map<string, {vote: boolean, weight: number}>
+          const votesMap = (proposal as any).votes;
+          let totalVotes = 0;
+          if (votesMap instanceof Map) {
+            for (const [, voteData] of votesMap) {
+              totalVotes += voteData.weight || 1;
+            }
+          } else if (Array.isArray(votesMap)) {
+            totalVotes = votesMap.reduce((sum: number, v: any) => sum + (v.weight || 1), 0);
+          }
           const totalSupply = dao.members.reduce((sum: number, m: any) => sum + (m.tokens || 0), 0);
           if (totalSupply > 0) {
             totalTurnout += totalVotes / totalSupply;
@@ -449,8 +458,9 @@ export class ExperimentRunner {
 
   /**
    * Generate experiment summary
+   * Public for use by BatchRunner
    */
-  private generateSummary(results: RunResult[], startTime: number): ExperimentSummary {
+  generateSummary(results: RunResult[], startTime: number): ExperimentSummary {
     const endTime = Date.now();
 
     // Group results by sweep value

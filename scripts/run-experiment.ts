@@ -7,22 +7,24 @@
  *   npm run experiment -- <config-file>
  *
  * Options:
- *   --output, -o <dir>    Override output directory
- *   --runs, -r <number>   Override runs per config
- *   --steps, -s <number>  Override steps per run
- *   --seed <number>       Override base seed
- *   --quiet, -q           Suppress progress output
- *   --help, -h            Show help
+ *   --output, -o <dir>     Override output directory
+ *   --runs, -r <number>    Override runs per config
+ *   --steps, -s <number>   Override steps per run
+ *   --seed <number>        Override base seed
+ *   --concurrency, -c <n>  Run N simulations concurrently (default: 1)
+ *   --resume               Resume from checkpoint if available
+ *   --quiet, -q            Suppress progress output
+ *   --help, -h             Show help
  */
 
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'yaml';
 import {
-  ExperimentRunner,
+  BatchRunner,
   ResultsExporter,
   type ExperimentConfig,
-  type RunProgress,
+  type BatchProgress,
   DEFAULT_EXECUTION_CONFIG,
   DEFAULT_OUTPUT_CONFIG,
   DEFAULT_METRICS,
@@ -38,12 +40,16 @@ interface CliArgs {
   runsPerConfig?: number;
   stepsPerRun?: number;
   baseSeed?: number;
+  concurrency: number;
+  resume: boolean;
   quiet: boolean;
   help: boolean;
 }
 
 function parseArgs(args: string[]): CliArgs {
   const result: CliArgs = {
+    concurrency: 1,
+    resume: false,
     quiet: false,
     help: false,
   };
@@ -63,6 +69,10 @@ function parseArgs(args: string[]): CliArgs {
         result.quiet = true;
         break;
 
+      case '--resume':
+        result.resume = true;
+        break;
+
       case '--output':
       case '-o':
         result.outputDir = args[++i];
@@ -80,6 +90,11 @@ function parseArgs(args: string[]): CliArgs {
 
       case '--seed':
         result.baseSeed = parseInt(args[++i], 10);
+        break;
+
+      case '--concurrency':
+      case '-c':
+        result.concurrency = parseInt(args[++i], 10);
         break;
 
       default:
@@ -104,19 +119,30 @@ Usage:
   npm run experiment -- <config-file> [options]
 
 Arguments:
-  config-file         Path to YAML or JSON experiment configuration
+  config-file           Path to YAML or JSON experiment configuration
 
 Options:
   --output, -o <dir>    Override output directory
   --runs, -r <number>   Override runs per configuration
   --steps, -s <number>  Override steps per simulation run
   --seed <number>       Override base random seed
+  --concurrency, -c <n> Run N simulations concurrently (default: 1)
+  --resume              Resume from checkpoint if available
   --quiet, -q           Suppress progress output
   --help, -h            Show this help message
 
-Example:
-  npm run experiment -- experiments/quorum-sweep.yaml -o results/my-study
-  npm run experiment -- experiments/example.yaml --runs 50 --steps 1000
+Examples:
+  # Basic run
+  npm run experiment -- experiments/example.yaml
+
+  # Parameter sweep with more runs
+  npm run experiment -- experiments/quorum-sweep.yaml --runs 50
+
+  # Concurrent execution (faster)
+  npm run experiment -- experiments/quorum-sweep.yaml -c 4
+
+  # Custom output directory
+  npm run experiment -- experiments/example.yaml -o results/my-study
 
 Config File Format (YAML):
   name: "My Experiment"
@@ -143,9 +169,6 @@ Config File Format (YAML):
     - name: "Proposal Pass Rate"
       type: "builtin"
       builtin: "proposal_pass_rate"
-    - name: "Final Treasury"
-      type: "builtin"
-      builtin: "final_treasury"
 
   output:
     directory: "results/my-experiment"
@@ -204,12 +227,12 @@ function loadConfig(filePath: string): ExperimentConfig {
 // PROGRESS DISPLAY
 // =============================================================================
 
-function createProgressCallback(quiet: boolean): ((progress: RunProgress) => void) | undefined {
+function createBatchProgressCallback(quiet: boolean): ((progress: BatchProgress) => void) | undefined {
   if (quiet) return undefined;
 
   let lastPercent = -1;
 
-  return (progress: RunProgress) => {
+  return (progress: BatchProgress) => {
     const percent = Math.floor(progress.percentComplete);
 
     // Only update on percentage change
@@ -217,11 +240,16 @@ function createProgressCallback(quiet: boolean): ((progress: RunProgress) => voi
       lastPercent = percent;
 
       const bar = createProgressBar(percent);
-      const sweepInfo = progress.currentSweepValue !== undefined
-        ? ` [sweep=${progress.currentSweepValue}]`
+      const rateInfo = progress.runsPerSecond > 0
+        ? ` (${progress.runsPerSecond.toFixed(1)} runs/s)`
+        : '';
+      const etaInfo = progress.estimatedRemainingMs && progress.estimatedRemainingMs > 0
+        ? ` ETA: ${formatDuration(progress.estimatedRemainingMs)}`
         : '';
 
-      process.stdout.write(`\r${bar} ${percent}% (${progress.currentRun}/${progress.totalRuns})${sweepInfo}   `);
+      process.stdout.write(
+        `\r${bar} ${percent}% (${progress.completedRuns}/${progress.totalRuns})${rateInfo}${etaInfo}   `
+      );
     }
   };
 }
@@ -231,6 +259,14 @@ function createProgressBar(percent: number): string {
   const filled = Math.round((percent / 100) * width);
   const empty = width - filled;
   return `[${'='.repeat(filled)}${' '.repeat(empty)}]`;
+}
+
+function formatDuration(ms: number): string {
+  if (ms < 1000) return `${ms}ms`;
+  if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
+  const mins = Math.floor(ms / 60000);
+  const secs = Math.round((ms % 60000) / 1000);
+  return `${mins}m ${secs}s`;
 }
 
 // =============================================================================
@@ -294,41 +330,50 @@ async function main(): Promise<void> {
       : 1);
 
   console.log(`Runs: ${totalRuns} (${config.execution.runsPerConfig} per config, ${config.execution.stepsPerRun} steps each)`);
+  console.log(`Concurrency: ${args.concurrency}`);
   console.log(`Output: ${config.output.directory}`);
   console.log('');
 
-  // Run experiment
+  // Run experiment using BatchRunner
   const startTime = Date.now();
-  const progressCallback = createProgressCallback(args.quiet);
+  const progressCallback = createBatchProgressCallback(args.quiet);
 
   try {
-    const runner = new ExperimentRunner(config, progressCallback);
-    const summary = await runner.run();
+    const runner = new BatchRunner(
+      config,
+      {
+        concurrency: args.concurrency,
+        checkpointInterval: 10,
+      },
+      progressCallback
+    );
+
+    const batchResult = await runner.run();
 
     // Clear progress line
     if (!args.quiet) {
-      process.stdout.write('\r' + ' '.repeat(80) + '\r');
+      process.stdout.write('\r' + ' '.repeat(100) + '\r');
     }
-
-    // Get all results by re-running (this is a limitation of current API)
-    // In practice, the runner should store results - this is a TODO
-    const results: any[] = []; // We'd need to modify runner to return results
 
     // Export results
     const exporter = new ResultsExporter(config.output.directory, config.output);
-    const exportResult = await exporter.exportAll(results, summary);
+    const exportResult = await exporter.exportAll(batchResult.results, batchResult.summary);
 
     // Display summary
     const duration = (Date.now() - startTime) / 1000;
     console.log('\n=== Experiment Complete ===');
-    console.log(`Duration: ${duration.toFixed(1)}s`);
-    console.log(`Total runs: ${summary.totalRuns}`);
+    console.log(`Duration: ${formatDuration(duration * 1000)}`);
+    console.log(`Total runs: ${batchResult.summary.totalRuns}`);
+    console.log(`Successful: ${batchResult.summary.successfulRuns}`);
+    if (batchResult.failedRunIds.length > 0) {
+      console.log(`Failed: ${batchResult.failedRunIds.length}`);
+    }
     console.log(`Output directory: ${exportResult.directory}`);
     console.log(`Files created: ${exportResult.files.length}`);
 
     // Display metric summaries
     console.log('\n=== Results Summary ===');
-    for (const sweepSummary of summary.metricsSummary) {
+    for (const sweepSummary of batchResult.summary.metricsSummary) {
       if (sweepSummary.sweepValue !== undefined) {
         console.log(`\nSweep value: ${sweepSummary.sweepValue}`);
       }
@@ -338,6 +383,11 @@ async function main(): Promise<void> {
     }
 
     console.log('\nDone!');
+
+    // Exit with error code if there were failures
+    if (batchResult.failedRunIds.length > 0) {
+      process.exit(1);
+    }
 
   } catch (error) {
     console.error(`\nError running experiment: ${(error as Error).message}`);
