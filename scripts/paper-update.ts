@@ -29,7 +29,34 @@ const CONFIG = {
   ollama: {
     baseUrl: 'http://localhost:11434',
     model: 'deepseek-r1:32b', // ultrathink
-    fallbackModel: 'deepseek-r1:latest',
+    fallbackModel: 'deepseek-r1:8b',
+    // Optimized parameters from ultrathink analysis
+    parameters: {
+      default: {
+        temperature: 0.4,
+        top_p: 0.9,
+        top_k: 50,
+        repeat_penalty: 1.1,
+      },
+      findings: {
+        temperature: 0.3,  // Lower for precise statistical claims
+        top_p: 0.85,
+        top_k: 40,
+        repeat_penalty: 1.15, // Higher to avoid repetitive phrasing
+      },
+      discussion: {
+        temperature: 0.5,  // Higher for interpretation
+        top_p: 0.92,
+        top_k: 60,
+        repeat_penalty: 1.05, // Lower to allow some repetition for emphasis
+      },
+      methodology: {
+        temperature: 0.25, // Very precise technical language
+        top_p: 0.8,
+        top_k: 30,
+        repeat_penalty: 1.2, // Highest - methodology should not repeat
+      },
+    },
   },
 
   comfyui: {
@@ -119,12 +146,21 @@ function parseCSV(content: string): any[] {
 // OLLAMA INTEGRATION
 // =============================================================================
 
-async function queryOllama(prompt: string, systemPrompt?: string): Promise<string> {
+type TaskType = 'default' | 'findings' | 'discussion' | 'methodology';
+
+async function queryOllama(
+  prompt: string,
+  systemPrompt?: string,
+  taskType: TaskType = 'default'
+): Promise<string> {
   const messages = [];
   if (systemPrompt) {
     messages.push({ role: 'system', content: systemPrompt });
   }
   messages.push({ role: 'user', content: prompt });
+
+  // Get task-specific parameters
+  const params = CONFIG.ollama.parameters[taskType] || CONFIG.ollama.parameters.default;
 
   try {
     const response = await fetch(`${CONFIG.ollama.baseUrl}/api/chat`, {
@@ -134,6 +170,12 @@ async function queryOllama(prompt: string, systemPrompt?: string): Promise<strin
         model: CONFIG.ollama.model,
         messages,
         stream: false,
+        options: {
+          temperature: params.temperature,
+          top_p: params.top_p,
+          top_k: params.top_k,
+          repeat_penalty: params.repeat_penalty || 1.1,
+        },
       }),
     });
 
@@ -165,20 +207,25 @@ async function queryOllama(prompt: string, systemPrompt?: string): Promise<strin
 }
 
 async function generateFinding(data: any, context: string): Promise<string> {
-  const systemPrompt = `You are a scientific writer helping update an academic paper about DAO governance simulation.
-Write concise, precise findings based on the data provided.
-Use academic language appropriate for a computer science / economics journal.
-Be specific with numbers and statistical measures.
-Output only the finding text, no preamble.`;
+  // Optimized system prompt from ultrathink analysis
+  const systemPrompt = `You are a quantitative research analyst for an academic paper on DAO governance simulation.
+Generate statistically-grounded findings. Each finding must:
+1. Cite specific numbers with appropriate precision (mean ± SD)
+2. Note statistical significance or uncertainty where applicable
+3. Be exactly one sentence of 20-35 words
+4. Use academic passive voice
+Output ONLY the finding sentence, no preamble or explanation.`;
 
-  const prompt = `Based on this experimental data:
+  const prompt = `Experimental data:
+\`\`\`json
 ${JSON.stringify(data, null, 2)}
+\`\`\`
 
-Context: ${context}
+Study context: ${context}
 
-Write a single sentence finding (max 30 words) that captures the key insight.`;
+Write ONE finding sentence (20-35 words) that states the key relationship and includes the primary statistic.`;
 
-  return queryOllama(prompt, systemPrompt);
+  return queryOllama(prompt, systemPrompt, 'findings');
 }
 
 async function generateSectionText(
@@ -186,22 +233,34 @@ async function generateSectionText(
   data: any,
   existingText: string
 ): Promise<string> {
+  // Determine task type based on section name
+  let taskType: TaskType = 'default';
+  if (sectionName.includes('result')) taskType = 'findings';
+  else if (sectionName.includes('discussion')) taskType = 'discussion';
+  else if (sectionName.includes('method')) taskType = 'methodology';
+
   const systemPrompt = `You are updating an academic paper section with new experimental results.
-Maintain the existing structure and style but update numbers and findings.
-Use LaTeX formatting. Be precise with statistics.
-Output only the updated section content.`;
+Instructions:
+1. Preserve the existing structure and style
+2. Update ALL numerical values to match new data
+3. Revise findings sentences to reflect new patterns
+4. Keep LaTeX formatting intact (commands, environments, labels)
+5. Do not add new subsections or major structural changes
+Output ONLY the updated LaTeX content.`;
 
-  const prompt = `Update this paper section "${sectionName}" with new data:
+  const prompt = `Section: ${sectionName}
 
-Current text:
+Current LaTeX content:
+\`\`\`latex
 ${existingText}
+\`\`\`
 
 New experimental data:
 ${JSON.stringify(data, null, 2)}
 
-Return the updated LaTeX section text.`;
+Return the updated LaTeX section text with all numbers updated.`;
 
-  return queryOllama(prompt, systemPrompt);
+  return queryOllama(prompt, systemPrompt, taskType);
 }
 
 // =============================================================================
