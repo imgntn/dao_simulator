@@ -1,0 +1,45 @@
+# Participation Rate Impact Study
+# Research question: What is the relationship between engagement and governance?
+name: "Participation Rate Impact"
+description: "Study how voter engagement affects governance quality"
+
+baseConfig:
+  template: "compound"
+  overrides:
+    memberDistribution:
+      totalMembers: 100
+    quorumConfig:
+      baseQuorumPercent: 5
+
+sweep:
+  parameter: "simulationParams.votingActivity"
+  values: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+
+execution:
+  runsPerConfig: 30
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+
+metrics:
+  - name: "Proposal Pass Rate"
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: "Average Turnout"
+    type: builtin
+    builtin: average_turnout
+  - name: "Final Treasury"
+    type: builtin
+    builtin: final_treasury
+  - name: "Final Gini"
+    type: builtin
+    builtin: final_gini
+  - name: "Total Proposals"
+    type: builtin
+    builtin: total_proposals
+
+output:
+  directory: "results/participation-study"
+  formats: ["json", "csv"]
+  includeRawRuns: true
+  includeManifest: true

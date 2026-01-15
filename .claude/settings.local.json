@@ -45,7 +45,13 @@
       "Bash(PLAYWRIGHT_SKIP_WEBSERVER=1 npx playwright test:*)",
       "Bash(tasklist:*)",
       "Bash(powershell -Command \"Stop-Process -Id 73708 -Force\")",
-      "Bash(powershell -Command \"Stop-Process -Id 66556 -Force\")"
+      "Bash(powershell -Command \"Stop-Process -Id 66556 -Force\")",
+      "Bash(NEXTAUTH_SECRET=build-test-secret-only ADMIN_USERNAME=admin ADMIN_PASSWORD=admin123 npm run build)",
+      "Bash(set NEXTAUTH_SECRET=build-test-secret-only)",
+      "Bash(set ADMIN_USERNAME=admin)",
+      "Bash(set ADMIN_PASSWORD=admin123)",
+      "Bash(npx next build)",
+      "Bash(xxd:*)"
     ],
     "deny": []
   }

@@ -31,7 +31,10 @@
     "test:e2e:raw": "playwright test",
     "test:all": "npm run test:unit && npm run test:e2e",
     "examples": "tsx examples/run-scenarios.ts",
-    "experiment": "tsx scripts/run-experiment.ts"
+    "experiment": "tsx scripts/run-experiment.ts",
+    "paper:update": "tsx scripts/paper-update.ts",
+    "paper:charts": "tsx scripts/paper-update.ts --charts-only",
+    "paper:compile": "tsx scripts/paper-update.ts --compile"
   },
   "dependencies": {
     "@auth/core": "^0.41.1",

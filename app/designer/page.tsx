@@ -14,6 +14,7 @@ import { ConfigPreview } from '@/components/designer/ConfigPreview';
 import { VotingSystemSelector } from '@/components/designer/VotingSystemSelector';
 import { MemberDistribution } from '@/components/designer/MemberDistribution';
 import { GlossaryModal } from '@/components/designer/GlossaryModal';
+import { ResearchExportModal } from '@/components/designer/ResearchExportModal';
 import { LabelWithTooltip, InfoTooltip } from '@/components/designer/Tooltip';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { SettingsModal } from '@/components/settings/SettingsModal';
@@ -77,6 +78,7 @@ export default function DesignerPage() {
   const router = useRouter();
   const [glossaryOpen, setGlossaryOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [researchExportOpen, setResearchExportOpen] = useState(false);
   const {
     config,
     mode,
@@ -148,6 +150,12 @@ export default function DesignerPage() {
               className="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
             >
               Export
+            </button>
+            <button
+              onClick={() => setResearchExportOpen(true)}
+              className="px-3 py-2 text-sm border border-blue-500 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20"
+            >
+              Research CLI
             </button>
             <button
               onClick={handleStartSimulation}
@@ -677,6 +685,13 @@ export default function DesignerPage() {
 
       {/* Settings Modal */}
       <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+
+      {/* Research Export Modal */}
+      <ResearchExportModal
+        isOpen={researchExportOpen}
+        onClose={() => setResearchExportOpen(false)}
+        config={config}
+      />
     </div>
   );
 }
