@@ -505,8 +505,8 @@ async function generateAllCharts(results: ExperimentResults[]): Promise<void> {
       'bar_comparison',
       votingResults.stats.map(s => ({
         category: s.sweep_value,
-        value: s['Proposal Pass Rate_mean'] || s['proposal_pass_rate_mean'],
-        std: s['Proposal Pass Rate_std'] || s['proposal_pass_rate_std'] || 0,
+        value: s['Proposal Pass Rate_mean'] ?? s['proposal_pass_rate_mean'] ?? 0,
+        std: s['Proposal Pass Rate_std'] ?? s['proposal_pass_rate_std'] ?? 0,
       })),
       path.join(CONFIG.figuresDir, 'voting_comparison.png'),
       {
