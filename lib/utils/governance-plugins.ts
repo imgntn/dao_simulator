@@ -224,6 +224,60 @@ export class ConvictionVotingRule extends GovernanceRule {
   }
 }
 
+/**
+ * Quadratic voting rule - voting power is sqrt(tokens)
+ * This reduces the influence of large token holders and gives
+ * smaller holders more relative voice in governance decisions.
+ */
+export class QuadraticVotingRule extends GovernanceRule {
+  private quorumPercentage: number;
+
+  constructor(quorumPercentage: number = 0.1) {
+    super();
+    this.quorumPercentage = quorumPercentage;
+  }
+
+  approve(proposal: Proposal, dao: DAO): boolean {
+    // Access the votes map to calculate quadratic voting power
+    const votesMap = (proposal as any).votes as Map<string, { vote: boolean; weight: number }>;
+
+    if (!votesMap || votesMap.size === 0) {
+      return false;
+    }
+
+    // Calculate quadratic votes (sqrt of each voter's weight)
+    let quadraticVotesFor = 0;
+    let quadraticVotesAgainst = 0;
+
+    for (const [, voteData] of votesMap) {
+      const quadraticWeight = Math.sqrt(voteData.weight);
+      if (voteData.vote) {
+        quadraticVotesFor += quadraticWeight;
+      } else {
+        quadraticVotesAgainst += quadraticWeight;
+      }
+    }
+
+    // Calculate total quadratic voting power in the DAO
+    const totalQuadraticPower = dao.members.reduce(
+      (sum, member) => sum + Math.sqrt(member.tokens),
+      0
+    );
+
+    // Check quorum (based on quadratic participation)
+    const totalQuadraticVotes = quadraticVotesFor + quadraticVotesAgainst;
+    const participationRate = totalQuadraticPower > 0
+      ? totalQuadraticVotes / totalQuadraticPower
+      : 0;
+
+    // Must meet quorum AND have majority support (in quadratic terms)
+    return (
+      participationRate >= this.quorumPercentage &&
+      quadraticVotesFor > quadraticVotesAgainst
+    );
+  }
+}
+
 // =============================================================================
 // DIGITAL TWIN GOVERNANCE RULES
 // =============================================================================
@@ -589,6 +643,7 @@ registerRule('tokenquorum', TokenQuorumRule);
 registerRule('timedecay', TimeDecayRule);
 registerRule('reputationquorum', ReputationQuorumRule);
 registerRule('conviction', ConvictionVotingRule);
+registerRule('quadratic', QuadraticVotingRule);
 
 // Register digital twin rules
 registerRule('categoryquorum', CategoryQuorumRule);

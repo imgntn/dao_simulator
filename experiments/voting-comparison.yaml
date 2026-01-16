@@ -1,7 +1,7 @@
 # Voting System Comparison Study
 # Research question: How do different voting mechanisms affect outcomes?
 name: "Voting System Comparison"
-description: "Compare token, quadratic, and conviction voting mechanisms"
+description: "Compare simple majority, quadratic, and conviction voting mechanisms"
 
 baseConfig:
   template: "compound"
@@ -14,7 +14,7 @@ baseConfig:
 
 sweep:
   parameter: "votingSystem.type"
-  values: ["token", "quadratic", "conviction"]
+  values: ["simple_majority", "quadratic", "conviction"]
 
 execution:
   runsPerConfig: 50
