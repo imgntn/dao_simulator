@@ -24,6 +24,7 @@
 \usepackage{tikz}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
+\usepackage{microtype}  % Improves text justification and reduces overfull/underfull boxes
 
 \geometry{margin=1in}
 
@@ -74,6 +75,7 @@
 % DOCUMENT
 % ============================================================================
 \begin{document}
+\sloppy  % Relax line breaking to avoid overfull/underfull hbox warnings
 
 \maketitle
 
@@ -130,7 +132,9 @@
 % REFERENCES
 % ============================================================================
 \bibliographystyle{plainnat}
+\begin{raggedright}
 \bibliography{references}
+\end{raggedright}
 
 % ============================================================================
 % APPENDICES

@@ -13,15 +13,16 @@ For each research question, we vary a single parameter while holding others cons
 \centering
 \caption{Experimental parameter configurations}
 \label{tab:experiments}
-\begin{tabular}{llll}
+\small
+\begin{tabular}{@{}llll@{}}
 \toprule
-Experiment & Parameter & Values & Runs/Config \\
+Experiment & Parameter & Values & Runs \\
 \midrule
 % AUTO-UPDATED: experiment list
-Quorum Sensitivity & \texttt{quorumConfig.baseQuorumPercent} & 1-20 & 50 \\
-DAO Scale & \texttt{memberDistribution.totalMembers} & 25-500 & 50 \\
-Voting Systems & \texttt{votingSystem.type} & token, quad, conviction & 100 \\
-Participation & \texttt{simulationParams.votingActivity} & 0.1-0.8 & 50 \\
+Quorum Sensitivity & \texttt{quorumPercent} & 1--20 & 50 \\
+DAO Scale & \texttt{totalMembers} & 25--500 & 50 \\
+Voting Systems & \texttt{votingSystem.type} & majority, quad, conviction & 50 \\
+Participation & \texttt{votingActivity} & 0.1--0.8 & 50 \\
 \bottomrule
 \end{tabular}
 \end{table}
