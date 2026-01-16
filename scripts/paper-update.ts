@@ -319,7 +319,7 @@ ${getChartCode(chartType, options)}
 plt.tight_layout()
 plt.savefig('${outputPath.replace(/\\/g, '/')}', dpi=300, bbox_inches='tight')
 plt.close()
-print(f'Chart saved to ${outputPath}')
+print(f'Chart saved to ${outputPath.replace(/\\/g, '/')}')
 `;
 }
 
