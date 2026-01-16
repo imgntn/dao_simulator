@@ -60,3 +60,25 @@ export {
   type BatchCheckpoint,
   type BatchResult,
 } from './batch-runner';
+
+// Invariant Checker
+export {
+  checkInvariants,
+  calculateInitialTokenSupply,
+  InvariantTracker,
+  type InvariantViolation,
+  type InvariantCheckResult,
+  type InvariantConfig,
+} from './invariant-checker';
+
+// Regression Tester
+export {
+  compareToBaseline,
+  generateBaseline,
+  saveBaseline,
+  loadBaseline,
+  formatRegressionReport,
+  type BaselineMetrics,
+  type RegressionResult,
+  type RegressionReport,
+} from './regression-tester';

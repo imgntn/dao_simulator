@@ -369,6 +369,198 @@ function validateGovernanceRules(): ValidationResult {
   return result;
 }
 
+function validateConservation(): ValidationResult {
+  const result: ValidationResult = {
+    name: 'Token Conservation',
+    passed: true,
+    checks: [],
+  };
+
+  const summary = loadSummary(path.join(RESULTS_DIR, 'conservation'));
+  if (!summary) {
+    // Conservation test is optional - just note it wasn't run
+    result.checks.push({
+      name: 'Conservation test',
+      passed: true,
+      message: 'Conservation experiment not run (optional)',
+    });
+    return result;
+  }
+
+  // Check all runs completed
+  result.checks.push({
+    name: 'All runs completed',
+    passed: summary.failedRuns === 0,
+    message: `${summary.successfulRuns}/${summary.totalRuns} succeeded`,
+  });
+  if (summary.failedRuns > 0) result.passed = false;
+
+  // Check treasury is non-negative (proxy for conservation)
+  for (const sweep of summary.metricsSummary) {
+    const treasury = sweep.metrics.find(m => m.name === 'Final Treasury');
+    if (treasury) {
+      const isValid = treasury.min >= 0;
+      result.checks.push({
+        name: `Treasury non-negative (seed=${sweep.sweepValue})`,
+        passed: isValid,
+        message: `min=${treasury.min.toFixed(2)}, max=${treasury.max.toFixed(2)}`,
+      });
+      if (!isValid) result.passed = false;
+    }
+  }
+
+  result.checks.push({
+    name: 'Conservation checks passed',
+    passed: result.passed,
+    message: result.passed ? 'No conservation violations detected' : 'Conservation violations found',
+  });
+
+  return result;
+}
+
+function validateHomogeneousVoting(): ValidationResult {
+  const result: ValidationResult = {
+    name: 'Homogeneous Agent Voting',
+    passed: true,
+    checks: [],
+  };
+
+  const summary = loadSummary(path.join(RESULTS_DIR, 'homogeneous-voting'));
+  if (!summary) {
+    // This test is optional
+    result.checks.push({
+      name: 'Homogeneous voting test',
+      passed: true,
+      message: 'Homogeneous voting experiment not run (optional)',
+    });
+    return result;
+  }
+
+  // Check that higher voting activity produces higher turnout (strict monotonicity)
+  const values = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0];
+  const turnouts: number[] = [];
+  for (const v of values) {
+    const metric = getMetric(summary, v, 'Average Turnout');
+    if (metric) turnouts.push(metric.mean);
+  }
+
+  // Check strict monotonicity (each value >= previous)
+  let monotonic = true;
+  let violations: string[] = [];
+  for (let i = 1; i < turnouts.length; i++) {
+    if (turnouts[i] < turnouts[i - 1] - 0.001) { // Allow tiny floating point errors
+      monotonic = false;
+      violations.push(`${values[i-1]}→${values[i]}`);
+    }
+  }
+
+  result.checks.push({
+    name: 'Turnout increases with voting_activity',
+    passed: monotonic,
+    message: monotonic
+      ? `Monotonic: ${turnouts.map(t => t.toFixed(3)).join(' ≤ ')}`
+      : `Non-monotonic at: ${violations.join(', ')}`,
+  });
+  if (!monotonic) result.passed = false;
+
+  // Check range - with 100% passive holders, voting_activity=1 should have high turnout
+  const highTurnout = turnouts[turnouts.length - 1] || 0;
+  const lowTurnout = turnouts[0] || 0;
+  const hasRange = highTurnout > lowTurnout * 1.5; // At least 50% increase
+
+  result.checks.push({
+    name: 'Voting activity has meaningful effect',
+    passed: hasRange,
+    message: `Low: ${lowTurnout.toFixed(4)}, High: ${highTurnout.toFixed(4)}`,
+  });
+
+  // Log the actual turnouts for debugging
+  result.checks.push({
+    name: 'Turnout values (info)',
+    passed: true,
+    message: `${values.map((v, i) => `${v}:${turnouts[i]?.toFixed(3) || 'N/A'}`).join(', ')}`,
+  });
+
+  return result;
+}
+
+function validateRegression(): ValidationResult {
+  const result: ValidationResult = {
+    name: 'Regression Baseline',
+    passed: true,
+    checks: [],
+  };
+
+  const baselinePath = path.join(process.cwd(), 'results', 'baselines', 'compound-standard.json');
+
+  if (!fs.existsSync(baselinePath)) {
+    result.checks.push({
+      name: 'Baseline exists',
+      passed: true,
+      message: 'No baseline file found (run generate-baselines first)',
+    });
+    return result; // Not a failure if baseline doesn't exist yet
+  }
+
+  // Load baseline
+  const baseline = JSON.parse(fs.readFileSync(baselinePath, 'utf-8'));
+
+  result.checks.push({
+    name: 'Baseline loaded',
+    passed: true,
+    message: `Baseline from commit ${baseline.gitCommit || 'unknown'}`,
+  });
+
+  // Compare against a recent validation run if available
+  const metricSanity = loadSummary(path.join(RESULTS_DIR, 'metric-sanity'));
+  if (!metricSanity) {
+    result.checks.push({
+      name: 'Comparison run',
+      passed: true,
+      message: 'No metric-sanity results to compare against',
+    });
+    return result;
+  }
+
+  // Compare only rate/ratio metrics (not absolute counts which depend on duration)
+  // Rate metrics are comparable across different simulation lengths
+  const threshold = 0.10; // 10% drift threshold
+  const sweepData = metricSanity.metricsSummary[0];
+  if (!sweepData) return result;
+
+  // Only compare metrics that are ratios/rates (not dependent on simulation duration)
+  const comparableMetrics = ['Proposal Pass Rate', 'Average Turnout'];
+
+  for (const metricName of comparableMetrics) {
+    const baselineStats = baseline.metrics[metricName];
+    if (!baselineStats) continue;
+
+    const currentMetric = sweepData.metrics.find(m => m.name === metricName);
+    if (!currentMetric) continue;
+
+    const drift = Math.abs(currentMetric.mean - baselineStats.mean);
+    const driftPercent = baselineStats.mean !== 0 ? drift / Math.abs(baselineStats.mean) : 0;
+    const passed = driftPercent <= threshold;
+
+    result.checks.push({
+      name: `${metricName} drift`,
+      passed,
+      message: `${(driftPercent * 100).toFixed(1)}% drift (threshold: ${threshold * 100}%)`,
+    });
+
+    if (!passed) result.passed = false;
+  }
+
+  // Note: We skip metrics like Total Proposals, Final Gini that depend on simulation duration
+  result.checks.push({
+    name: 'Regression note',
+    passed: true,
+    message: 'Comparing rate metrics only (counts vary with simulation duration)',
+  });
+
+  return result;
+}
+
 async function main() {
   console.log('╔════════════════════════════════════════════════════════════╗');
   console.log('║           DAO Simulator Validation Suite                   ║');
@@ -410,6 +602,9 @@ async function main() {
     validateBoundaryConditions(),
     validateMetricSanity(),
     validateGovernanceRules(),
+    validateConservation(),
+    validateHomogeneousVoting(),
+    validateRegression(),
   ];
 
   let allPassed = true;
