@@ -119,3 +119,13 @@ export {
   type GovernanceSystemsConfig,
   type GovernanceSystems,
 } from './governance-processor';
+
+// Vote Escrow (Curve/Balancer-style veTokens)
+export {
+  VoteEscrowController,
+  createCurveVoteEscrow,
+  createBalancerVoteEscrow,
+  type VeTokenPosition,
+  type VoteEscrowConfig,
+  type VeTokenStats,
+} from './vote-escrow';

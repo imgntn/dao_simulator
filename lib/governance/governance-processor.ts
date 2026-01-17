@@ -22,6 +22,12 @@ import { GovernanceCycleController } from './governance-cycle';
 import { ProposalGatesController } from './proposal-gates';
 import { CitizenshipController } from './citizenship';
 import { StETHSupplyTracker } from './steth-supply';
+import { VoteEscrowController } from './vote-escrow';
+import { SoulboundTokenRegistry } from '../data-structures/soulbound-token';
+import { PaymentStreamController } from '../data-structures/payment-stream';
+import { VestingController } from '../data-structures/vesting-schedule';
+import { SubDAOController } from '../data-structures/sub-dao';
+import { AttackDetector } from '../utils/attack-detector';
 
 // =============================================================================
 // TYPES
@@ -48,6 +54,14 @@ export interface GovernanceSystemsConfig {
   proposalGatesEnabled?: boolean;  // All
   citizenshipEnabled?: boolean;    // Optimism
   stethTrackingEnabled?: boolean;  // Lido
+
+  // New high-priority features
+  veTokenEnabled?: boolean;        // Curve/Balancer-style vote escrow
+  sbtEnabled?: boolean;            // Soulbound tokens
+  paymentStreamsEnabled?: boolean; // Sablier/Superfluid-style streams
+  vestingEnabled?: boolean;        // Token vesting
+  subDaoEnabled?: boolean;         // Sub-DAO/Nested DAO support
+  attackDetectionEnabled?: boolean; // Governance attack detection
 }
 
 export interface GovernanceSystems {
@@ -66,6 +80,14 @@ export interface GovernanceSystems {
   proposalGates?: ProposalGatesController;
   citizenship?: CitizenshipController;
   stethTracker?: StETHSupplyTracker;
+
+  // New high-priority features
+  veToken?: VoteEscrowController;
+  sbtRegistry?: SoulboundTokenRegistry;
+  streamController?: PaymentStreamController;
+  vestingController?: VestingController;
+  subDaoController?: SubDAOController;
+  attackDetector?: AttackDetector;
 }
 
 // =============================================================================
@@ -156,6 +178,37 @@ export class GovernanceProcessor {
       this.systems.stethTracker = new StETHSupplyTracker();
       this.systems.stethTracker.setEventBus(this.eventBus);
     }
+
+    // New high-priority features
+    if (this.config.veTokenEnabled) {
+      this.systems.veToken = new VoteEscrowController();
+      this.systems.veToken.setEventBus(this.eventBus);
+    }
+
+    if (this.config.sbtEnabled) {
+      this.systems.sbtRegistry = new SoulboundTokenRegistry();
+      this.systems.sbtRegistry.setEventBus(this.eventBus);
+    }
+
+    if (this.config.paymentStreamsEnabled) {
+      this.systems.streamController = new PaymentStreamController();
+      this.systems.streamController.setEventBus(this.eventBus);
+    }
+
+    if (this.config.vestingEnabled) {
+      this.systems.vestingController = new VestingController();
+      this.systems.vestingController.setEventBus(this.eventBus);
+    }
+
+    if (this.config.subDaoEnabled) {
+      this.systems.subDaoController = new SubDAOController();
+      this.systems.subDaoController.setEventBus(this.eventBus);
+    }
+
+    if (this.config.attackDetectionEnabled) {
+      this.systems.attackDetector = new AttackDetector();
+      this.systems.attackDetector.setEventBus(this.eventBus);
+    }
   }
 
   /**
@@ -205,6 +258,45 @@ export class GovernanceProcessor {
     // Process rage quit state
     if (this.systems.rageQuit) {
       this.systems.rageQuit.checkStateTransitions(currentStep);
+    }
+
+    // Process new high-priority features
+    this.processNewSystems(currentStep);
+  }
+
+  /**
+   * Process new high-priority governance systems
+   */
+  private processNewSystems(currentStep: number): void {
+    // Update veToken decay
+    if (this.systems.veToken) {
+      this.systems.veToken.processStep(currentStep);
+    }
+
+    // Process SBT expirations
+    if (this.systems.sbtRegistry) {
+      this.systems.sbtRegistry.processExpirations(currentStep);
+    }
+
+    // Process payment streams
+    if (this.systems.streamController) {
+      this.systems.streamController.processStreams(currentStep);
+    }
+
+    // Process vesting schedules
+    if (this.systems.vestingController) {
+      this.systems.vestingController.processSchedules(currentStep);
+    }
+
+    // Process sub-DAOs
+    if (this.systems.subDaoController) {
+      this.systems.subDaoController.processSubDAOs(currentStep);
+    }
+
+    // Process attack detection
+    if (this.systems.attackDetector) {
+      const votingPowers = this.dao.members.map(m => m.tokens + m.stakedTokens);
+      this.systems.attackDetector.process(currentStep, votingPowers);
     }
   }
 
@@ -544,6 +636,31 @@ export class GovernanceProcessor {
       stats.stethTracker = this.systems.stethTracker.getStats();
     }
 
+    // New high-priority features
+    if (this.systems.veToken) {
+      stats.veToken = this.systems.veToken.getStats();
+    }
+
+    if (this.systems.sbtRegistry) {
+      stats.sbtRegistry = this.systems.sbtRegistry.getStats();
+    }
+
+    if (this.systems.streamController) {
+      stats.streamController = this.systems.streamController.getStats();
+    }
+
+    if (this.systems.vestingController) {
+      stats.vestingController = this.systems.vestingController.getStats();
+    }
+
+    if (this.systems.subDaoController) {
+      stats.subDaoController = this.systems.subDaoController.getStats();
+    }
+
+    if (this.systems.attackDetector) {
+      stats.attackDetector = this.systems.attackDetector.getStats();
+    }
+
     stats.stateMachines = this.systems.stateMachines.size;
 
     return stats;
@@ -567,6 +684,12 @@ export class GovernanceProcessor {
       proposalGates: boolean;
       citizenship: boolean;
       stethTracker: boolean;
+      veToken: boolean;
+      sbtRegistry: boolean;
+      streamController: boolean;
+      vestingController: boolean;
+      subDaoController: boolean;
+      attackDetector: boolean;
     };
     governanceBlocked: boolean;
     rageQuitState?: string;
@@ -590,6 +713,12 @@ export class GovernanceProcessor {
         proposalGates: this.systems.proposalGates !== undefined,
         citizenship: this.systems.citizenship !== undefined,
         stethTracker: this.systems.stethTracker !== undefined,
+        veToken: this.systems.veToken !== undefined,
+        sbtRegistry: this.systems.sbtRegistry !== undefined,
+        streamController: this.systems.streamController !== undefined,
+        vestingController: this.systems.vestingController !== undefined,
+        subDaoController: this.systems.subDaoController !== undefined,
+        attackDetector: this.systems.attackDetector !== undefined,
       },
       governanceBlocked,
       rageQuitState,
@@ -614,6 +743,12 @@ export class GovernanceProcessor {
         governanceCycles: this.systems.governanceCycles?.toDict(),
         citizenship: this.systems.citizenship?.toDict(),
         stethTracker: this.systems.stethTracker?.toDict(),
+        veToken: this.systems.veToken?.toDict(),
+        sbtRegistry: this.systems.sbtRegistry?.toDict(),
+        streamController: this.systems.streamController?.toDict(),
+        vestingController: this.systems.vestingController?.toDict(),
+        subDaoController: this.systems.subDaoController?.toDict(),
+        attackDetector: this.systems.attackDetector?.toDict(),
       },
     };
   }

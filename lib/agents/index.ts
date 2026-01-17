@@ -36,6 +36,18 @@ export { CitizenAgent, type RetroPGFAllocation } from './citizen-agent';
 export { StewardAgent, type WorkstreamType, type GrantReview } from './steward-agent';
 export { StakerAgent, type VetoSignal } from './staker-agent';
 
+// Attack simulation agents
+export { SybilAttacker, type PuppetAccount, type SybilAttackConfig, type SybilAttackStats } from './sybil-attacker';
+export {
+  FlashLoanAttacker,
+  createAggressiveFlashLoanAttacker,
+  createConservativeFlashLoanAttacker,
+  type FlashLoan,
+  type FlashLoanConfig,
+  type FlashLoanStats,
+  type FlashLoanStrategy,
+} from './flashloan-attacker';
+
 // Twin agent factory
 export {
   TwinAgentFactory,

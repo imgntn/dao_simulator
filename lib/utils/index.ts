@@ -41,3 +41,17 @@ export {
 } from './stats';
 export * from './path-utils';
 export * from './oracles';
+
+// Attack Detection
+export {
+  AttackDetector,
+  createStandardAttackDetector,
+  type AttackType,
+  type SeverityLevel,
+  type VotingRecord,
+  type TokenTransfer,
+  type AttackAlert,
+  type ClusterAnalysis,
+  type AttackDetectorConfig,
+  type AttackDetectorStats,
+} from './attack-detector';
