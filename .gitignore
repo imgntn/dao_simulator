@@ -69,9 +69,11 @@ paper/*.blg
 paper/*.out
 paper/*.toc
 
-# Paper archives and generated files
-paper/archive/
+# Paper generated files (temp)
 paper/generated/
+
+# Track archived paper versions as zips
+!paper/archive/*.zip
 
 # Simulation checkpoints
 .checkpoints/
