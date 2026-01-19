@@ -135,8 +135,10 @@ export interface ExecutionConfig {
 
 /**
  * Types of built-in metrics
+ * Organized by category for academic research validity
  */
 export type BuiltinMetricType =
+  // === Basic Outcome Metrics ===
   | 'proposal_pass_rate'
   | 'average_turnout'
   | 'final_treasury'
@@ -146,7 +148,47 @@ export type BuiltinMetricType =
   | 'final_reputation_gini'
   | 'total_proposals'
   | 'total_projects'
-  | 'average_token_balance';
+  | 'average_token_balance'
+
+  // === Governance Efficiency Metrics ===
+  | 'quorum_reach_rate'           // % of proposals that met quorum threshold
+  | 'avg_margin_of_victory'       // Average (votesFor - votesAgainst) / totalVotes
+  | 'avg_time_to_decision'        // Average steps from creation to resolution
+  | 'proposal_abandonment_rate'   // % of proposals that expired without resolution
+  | 'proposal_rejection_rate'     // % of resolved proposals that were rejected
+  | 'governance_overhead'         // Total votes cast / proposals resolved (effort per decision)
+
+  // === Participation Quality Metrics ===
+  | 'unique_voter_count'          // Number of distinct members who voted at least once
+  | 'voter_participation_rate'    // unique_voters / total_members
+  | 'voter_concentration_gini'    // Gini coefficient of voting activity distribution
+  | 'delegate_concentration'      // % of total votes controlled by top 10% of voters
+  | 'avg_votes_per_proposal'      // Average number of unique voters per proposal
+  | 'voter_retention_rate'        // % of voters who voted in both first and last half
+  | 'voting_power_utilization'    // % of total voting power actually used
+
+  // === Economic Health Metrics ===
+  | 'treasury_volatility'         // Coefficient of variation of treasury over time
+  | 'treasury_growth_rate'        // (final - initial) / initial treasury
+  | 'staking_participation'       // stakedTokens / totalTokens
+  | 'token_concentration_gini'    // Gini of token holdings (same as final_gini but explicit)
+  | 'avg_member_wealth'           // Average tokens per member
+  | 'wealth_mobility'             // How much token rankings changed over simulation
+
+  // === Attack Resistance Metrics ===
+  | 'whale_influence'             // % of total votes from top 10% token holders
+  | 'whale_proposal_rate'         // % of proposals created by top 10% holders
+  | 'governance_capture_risk'     // Concentration of proposal creation (Gini)
+  | 'vote_buying_vulnerability'   // Avg tokens needed to flip a close vote
+  | 'single_entity_control'       // Max % of votes any single member could cast
+  | 'collusion_threshold'         // Min % of members needed to control majority
+
+  // === Temporal Dynamics Metrics ===
+  | 'participation_trend'         // Slope of participation over time (+ = increasing)
+  | 'treasury_trend'              // Slope of treasury over time
+  | 'member_growth_rate'          // (final - initial) / initial members
+  | 'proposal_rate'               // Proposals per 100 steps
+  | 'governance_activity_index';  // Composite: proposals * participation * resolution
 
 /**
  * Configuration for a single metric to capture
