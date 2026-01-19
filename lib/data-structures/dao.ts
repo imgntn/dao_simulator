@@ -125,12 +125,19 @@ export class DAO {
     if (!proposal.uniqueId) {
       proposal.uniqueId = `proposal_${this.proposals.length}`;
     }
+
+    // Take voting power snapshot at proposal creation
+    // This is critical for preventing flash loan attacks
+    // All real DAOs (Compound, Aave, Uniswap) use block-height snapshots
+    proposal.takeVotingPowerSnapshot();
+
     this.proposals.push(proposal);
 
     if (this.eventBus) {
       this.eventBus.publish('proposal_created', {
         step: this.currentStep,
         title: proposal.title,
+        snapshotSize: proposal.votingPowerSnapshot.size,
       });
     }
   }
@@ -516,12 +523,35 @@ export class DAO {
     return toUnstake;
   }
 
+  /**
+   * Apply staking interest to all members.
+   *
+   * CRITICAL FIX: The stakingInterestRate is an ANNUAL rate (APY).
+   * We convert it to a per-step rate to prevent exponential growth.
+   *
+   * Formula: perStepRate = (1 + APY)^(1/stepsPerYear) - 1
+   *
+   * With STEP_DURATION_HOURS = 1:
+   *   stepsPerYear = 24 * 365 = 8760
+   *   For APY of 5%: perStepRate = (1.05)^(1/8760) - 1 ≈ 0.0000056
+   *
+   * This ensures 5% APY compounds correctly over a year, not per step.
+   */
   applyStakingInterest(): void {
     if (this.stakingInterestRate <= 0) return;
 
+    // Import time constants (using inline calculation to avoid circular imports)
+    const STEP_DURATION_HOURS = 1;
+    const STEPS_PER_YEAR = (24 / STEP_DURATION_HOURS) * 365;
+
+    // Convert annual rate to per-step rate
+    // APY compounds: (1 + APY) = (1 + perStepRate)^stepsPerYear
+    // Therefore: perStepRate = (1 + APY)^(1/stepsPerYear) - 1
+    const perStepRate = Math.pow(1 + this.stakingInterestRate, 1 / STEPS_PER_YEAR) - 1;
+
     for (const member of this.members) {
       if (member.stakedTokens > 0) {
-        const interest = member.stakedTokens * this.stakingInterestRate;
+        const interest = member.stakedTokens * perStepRate;
         member.stakedTokens += interest;
 
         if (this.eventBus) {
@@ -529,6 +559,8 @@ export class DAO {
             step: this.currentStep,
             member: member.uniqueId,
             amount: interest,
+            perStepRate,
+            annualRate: this.stakingInterestRate,
           });
         }
       }

@@ -35,6 +35,16 @@ export class DAOMember implements Agent {
   isTransferring: boolean = false;
   transferTargetDaoId: string | null = null;
 
+  // Voter fatigue modeling
+  // In real DAOs like Optimism, participation drops ~40% over time
+  // Fatigue increases with each vote cast and decays slowly over time
+  voterFatigue: number = 0;        // Current fatigue level (0-1)
+  lastVoteStep: number = 0;        // Step when last vote was cast
+  totalVotesCast: number = 0;      // Lifetime vote count
+  static readonly FATIGUE_PER_VOTE = 0.05;    // Fatigue increase per vote
+  static readonly FATIGUE_DECAY_RATE = 0.002; // Fatigue decay per step
+  static readonly MAX_FATIGUE = 0.6;          // Maximum fatigue level (60% reduction)
+
   constructor(
     uniqueId: string,
     model: DAOModel,
@@ -113,25 +123,67 @@ export class DAOMember implements Agent {
     return 0;
   }
 
+  /**
+   * Update voter fatigue - decay over time
+   * Should be called each step
+   */
+  updateVoterFatigue(): void {
+    // Decay fatigue over time
+    if (this.voterFatigue > 0) {
+      const stepsSinceLastVote = this.model.currentStep - this.lastVoteStep;
+      const decay = stepsSinceLastVote * DAOMember.FATIGUE_DECAY_RATE;
+      this.voterFatigue = Math.max(0, this.voterFatigue - decay);
+    }
+  }
+
+  /**
+   * Apply fatigue after voting
+   */
+  private applyVoteFatigue(): void {
+    this.voterFatigue = Math.min(
+      DAOMember.MAX_FATIGUE,
+      this.voterFatigue + DAOMember.FATIGUE_PER_VOTE
+    );
+    this.lastVoteStep = this.model.currentStep;
+    this.totalVotesCast++;
+  }
+
+  /**
+   * Get the effective voting probability considering fatigue
+   */
+  getEffectiveVotingProbability(): number {
+    const baseActivity = this.model.dao?.votingActivity ?? 0.3;
+    // Fatigue reduces participation probability
+    // At max fatigue (0.6), participation drops by 60%
+    return baseActivity * (1 - this.voterFatigue);
+  }
+
   voteOnRandomProposal(): void {
     if (!this.model.dao) return;
 
-    // Check voting activity probability - agents only vote with this probability
-    const votingActivity = this.model.dao.votingActivity ?? 0.3;
-    if (random() >= votingActivity) {
-      return;  // Agent decides not to participate this step
+    // Update fatigue (decay over time)
+    this.updateVoterFatigue();
+
+    // Check voting activity probability WITH fatigue modifier
+    // This models voter fatigue: frequent voters become less likely to vote
+    const effectiveActivity = this.getEffectiveVotingProbability();
+    if (random() >= effectiveActivity) {
+      return;  // Agent decides not to participate this step (possibly due to fatigue)
     }
 
     const openProps = this.model.dao.proposals.filter(p => {
       const isOpen = p.status === 'open';
       const inVotingPeriod =
         this.model.currentStep <= p.creationTime + p.votingPeriod;
-      return isOpen && inVotingPeriod;
+      // Also check that we haven't already voted
+      return isOpen && inVotingPeriod && !this.votes.has(p.uniqueId);
     });
 
     if (openProps.length > 0) {
       const proposal = randomChoice(openProps);
       this.voteOnProposal(proposal);
+      // Apply fatigue after voting
+      this.applyVoteFatigue();
     }
   }
 

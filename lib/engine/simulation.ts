@@ -15,7 +15,7 @@ import { AgentManager } from '../utils/agent-manager';
 import { settings, SimulationSettings } from '../config/settings';
 import * as constants from '../config/constants';
 import { getRule, GovernanceRuleConfig } from '../utils/governance-plugins';
-import { setSeed, random } from '../utils/random';
+import { setSeed, resetGlobalRandom, getRandomState, setRandomState, random } from '../utils/random';
 import { GovernanceProcessor, createGovernanceProcessor } from '../governance';
 import {
   Developer,
@@ -168,11 +168,17 @@ export class DAOSimulation extends Model {
     // Use the DAO's event bus
     this.eventBus = this.dao.eventBus;
 
-    // Set seed if provided
+    // CRITICAL: Reset global random state before setting seed
+    // This ensures each simulation starts fresh and is reproducible
+    // Without this, state from previous simulations persists
     if (config.seed !== undefined) {
       this.seed = config.seed;
-      // Use improved seeded random generator
-      setSeed(config.seed);
+      // Reset and set seed for deterministic runs
+      resetGlobalRandom(config.seed);
+    } else {
+      // No seed provided - use timestamp but still reset to clear old state
+      resetGlobalRandom();
+      this.seed = undefined;
     }
 
     // Configuration
@@ -396,6 +402,42 @@ export class DAOSimulation extends Model {
    * Resolve basic proposals whose voting period has ended
    * Applies governance rules to determine pass/fail
    */
+  /**
+   * Update member reputation based on voting outcomes
+   * Members who vote with the winning side gain reputation
+   * Members who vote against lose a smaller amount
+   * This models the real-world effect of building credibility through
+   * consistent, community-aligned voting behavior
+   */
+  private updateReputationFromVoting(proposal: Proposal, approved: boolean): void {
+    const REPUTATION_GAIN = 1;   // Gain for voting with majority
+    const REPUTATION_LOSS = 0.5; // Loss for voting against (smaller to encourage participation)
+
+    const memberMap = new Map(this.dao.members.map(m => [m.uniqueId, m]));
+
+    for (const [memberId, voteData] of proposal.votes.entries()) {
+      const member = memberMap.get(memberId);
+      if (!member) continue;
+
+      const votedYes = voteData.vote;
+      const votedWithWinner = (votedYes && approved) || (!votedYes && !approved);
+
+      if (votedWithWinner) {
+        member.reputation += REPUTATION_GAIN;
+      } else {
+        // Smaller penalty to encourage participation
+        member.reputation = Math.max(0, member.reputation - REPUTATION_LOSS);
+      }
+    }
+
+    this.eventBus.publish('reputation_updated_from_voting', {
+      step: this.currentStep,
+      proposalId: proposal.uniqueId,
+      outcome: approved ? 'approved' : 'rejected',
+      votersUpdated: proposal.votes.size,
+    });
+  }
+
   resolveBasicProposals(): void {
     const openProposals = this.dao.proposals.filter(p => p.status === 'open');
 
@@ -427,6 +469,9 @@ export class DAOSimulation extends Model {
           votesAgainst: proposal.votesAgainst,
         });
       }
+
+      // Update reputation based on voting outcomes
+      this.updateReputationFromVoting(proposal, approved);
     }
   }
 
@@ -556,6 +601,7 @@ export class DAOSimulation extends Model {
 
   /**
    * Load checkpoint and restore state
+   * IMPORTANT: This restores full simulation state including RNG for deterministic replay
    */
   async loadCheckpoint(checkpointId: string): Promise<boolean> {
     const { checkpointManager } = await import('../utils/checkpoint');
@@ -565,12 +611,56 @@ export class DAOSimulation extends Model {
       return false;
     }
 
-    // Restore state (simplified - could be more comprehensive)
+    // Restore simulation step
     this.currentStep = checkpoint.step;
+
+    // Restore DAO step
+    this.dao.currentStep = checkpoint.daoState.currentStep;
+
+    // Restore treasury state
+    if (checkpoint.daoState.tokenBalances) {
+      this.dao.treasury.tokenBalances = new Map(
+        Object.entries(checkpoint.daoState.tokenBalances)
+      );
+    }
+    if (checkpoint.daoState.tokenPrices) {
+      this.dao.treasury.tokenPrices = new Map(
+        Object.entries(checkpoint.daoState.tokenPrices)
+      );
+    }
+
+    // Restore agent states
+    const agentMap = new Map(this.dao.members.map(a => [a.uniqueId, a]));
+    for (const agentState of checkpoint.agentStates) {
+      const agent = agentMap.get(agentState.uniqueId);
+      if (agent) {
+        agent.tokens = agentState.tokens;
+        agent.reputation = agentState.reputation;
+        agent.stakedTokens = agentState.stakedTokens;
+        agent.optimism = agentState.optimism;
+        agent.stakeLocks = agentState.stakeLocks || [];
+        agent.transferCooldown = agentState.transferCooldown || 0;
+        if (agentState.delegations) {
+          agent.delegations = new Map(Object.entries(agentState.delegations));
+        }
+        if (agentState.votes) {
+          agent.votes = new Map(
+            Object.entries(agentState.votes) as [string, { vote: boolean; weight: number }][]
+          );
+        }
+      }
+    }
+
+    // CRITICAL: Restore RNG state for deterministic replay
+    if (checkpoint.rngState) {
+      setRandomState(checkpoint.rngState);
+    }
 
     this.eventBus.publish('checkpoint_loaded', {
       step: this.currentStep,
       checkpointId,
+      restoredAgents: checkpoint.agentStates.length,
+      rngRestored: !!checkpoint.rngState,
     });
 
     return true;

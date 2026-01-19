@@ -1,11 +1,46 @@
 // Improved seeded random number generator
 // Using Mulberry32 algorithm for better distribution and performance
+//
+// IMPORTANT FOR REPRODUCIBILITY:
+// - Always call resetGlobalRandom() before starting a new simulation
+// - Use setSeed() with a known seed for deterministic runs
+// - Checkpoint/restore the random state for mid-simulation saves
 
 export class SeededRandom {
   private state: number;
+  private initialSeed: number;
 
   constructor(seed: number) {
     this.state = seed;
+    this.initialSeed = seed;
+  }
+
+  /**
+   * Reset to initial seed state for reproducibility
+   */
+  reset(): void {
+    this.state = this.initialSeed;
+  }
+
+  /**
+   * Get current internal state for serialization
+   */
+  getState(): number {
+    return this.state;
+  }
+
+  /**
+   * Restore internal state from serialized value
+   */
+  setState(state: number): void {
+    this.state = state;
+  }
+
+  /**
+   * Get the initial seed used to create this generator
+   */
+  getSeed(): number {
+    return this.initialSeed;
   }
 
   /**
@@ -77,10 +112,74 @@ export class SeededRandom {
 let globalRandom: SeededRandom | null = null;
 
 /**
+ * Track the current seed for checkpoint serialization
+ */
+let currentSeed: number | null = null;
+
+/**
  * Set global random seed
  */
 export function setSeed(seed: number): void {
   globalRandom = new SeededRandom(seed);
+  currentSeed = seed;
+}
+
+/**
+ * Reset global random state to a fresh instance with a new seed.
+ * CRITICAL: Call this before starting a new simulation to ensure determinism.
+ * Without this, state from previous simulations can affect new runs.
+ */
+export function resetGlobalRandom(seed?: number): void {
+  const newSeed = seed ?? Date.now();
+  globalRandom = new SeededRandom(newSeed);
+  currentSeed = newSeed;
+}
+
+/**
+ * Clear the global random instance entirely.
+ * After calling this, random() will fall back to Math.random().
+ */
+export function clearGlobalRandom(): void {
+  globalRandom = null;
+  currentSeed = null;
+}
+
+/**
+ * Check if a seeded random generator is active
+ */
+export function isSeeded(): boolean {
+  return globalRandom !== null;
+}
+
+/**
+ * Get the current seed (for checkpoint serialization)
+ */
+export function getCurrentSeed(): number | null {
+  return currentSeed;
+}
+
+/**
+ * Get the current RNG state (for checkpoint serialization)
+ * Returns null if no seeded random is active
+ */
+export function getRandomState(): { seed: number; state: number } | null {
+  if (!globalRandom || currentSeed === null) {
+    return null;
+  }
+  return {
+    seed: currentSeed,
+    state: globalRandom.getState(),
+  };
+}
+
+/**
+ * Restore RNG state from a checkpoint
+ * This ensures simulation continues from exact same random state
+ */
+export function setRandomState(state: { seed: number; state: number }): void {
+  globalRandom = new SeededRandom(state.seed);
+  globalRandom.setState(state.state);
+  currentSeed = state.seed;
 }
 
 /**

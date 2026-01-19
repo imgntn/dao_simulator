@@ -139,6 +139,11 @@ export class CitizenAgent extends DAOMember {
 
   /**
    * Evaluate a proposal from a citizen's perspective
+   *
+   * CRITICAL FIX: Use probabilistic voting threshold instead of deterministic.
+   * Instead of `supportScore > 0.5`, we use `random() < supportScore`.
+   * This better models real-world voting where even highly-favored proposals
+   * might occasionally get a "no" vote, and vice versa.
    */
   private evaluateProposalAsCitizen(proposal: Proposal): boolean {
     let supportScore = 0.5;
@@ -166,10 +171,13 @@ export class CitizenAgent extends DAOMember {
       supportScore += (communitySupport - 0.5) * this.communityAlignment * 0.3;
     }
 
-    // Add personal randomness
-    supportScore += (random() - 0.5) * 0.2;
+    // Clamp support score to valid probability range
+    supportScore = Math.max(0.05, Math.min(0.95, supportScore));
 
-    return supportScore > 0.5;
+    // CRITICAL FIX: Use probabilistic threshold instead of deterministic
+    // This means a support score of 0.7 results in ~70% yes votes
+    // Rather than always yes when score > 0.5
+    return random() < supportScore;
   }
 
   /**

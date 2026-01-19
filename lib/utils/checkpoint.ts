@@ -1,8 +1,15 @@
 // Checkpoint management for simulation state persistence
+// IMPORTANT: Checkpoints must capture ALL state needed to reproduce a simulation
+// from the checkpoint point forward. This includes:
+// - Simulation step counter
+// - DAO state (members, proposals, projects, treasury)
+// - Agent states (tokens, reputation, delegations, votes)
+// - Random number generator state (for deterministic replay)
 
 import type { DAOSimulation } from '../engine/simulation';
 import type { Dispute } from '../data-structures/dispute';
 import type { Violation } from '../data-structures/violation';
+import { getRandomState, setRandomState } from './random';
 
 // Serialized member state for checkpoints
 export interface CheckpointMemberState {
@@ -44,6 +51,18 @@ export interface CheckpointAgentState {
   stakedTokens: number;
   location: string;
   optimism: number;
+  // Extended state for complete restore
+  stakeLocks: Array<{ amount: number; unlockStep: number }>;
+  delegations: Record<string, number>;  // memberId -> amount
+  votes: Record<string, { vote: boolean; weight: number }>;  // proposalId -> vote data
+  daoId: string;
+  transferCooldown: number;
+}
+
+// Random number generator state for deterministic replay
+export interface CheckpointRNGState {
+  seed: number;
+  state: number;
 }
 
 // Simulation config for checkpoints
@@ -67,6 +86,8 @@ export interface SimulationCheckpoint {
   config: CheckpointConfig;
   daoState: {
     name: string;
+    daoId: string;
+    currentStep: number;
     members: CheckpointMemberState[];
     proposals: CheckpointProposalState[];
     projects: CheckpointProjectState[];
@@ -75,8 +96,11 @@ export interface SimulationCheckpoint {
     guilds: CheckpointGuildState[];
     treasuryFunds: number;
     tokenPrices: Record<string, number>;
+    tokenBalances: Record<string, number>;
   };
   agentStates: CheckpointAgentState[];
+  // CRITICAL: RNG state for deterministic replay
+  rngState: CheckpointRNGState | null;
   metadata: {
     version: string;
     checkpointInterval: number;
@@ -100,8 +124,10 @@ export class CheckpointManager {
       config: this.serializeConfig(simulation),
       daoState: this.serializeDAOState(simulation),
       agentStates: this.serializeAgents(simulation),
+      // CRITICAL: Capture RNG state for deterministic replay
+      rngState: getRandomState(),
       metadata: {
-        version: '1.0.0',
+        version: '2.0.0',  // Version bump for enhanced checkpoint format
         checkpointInterval: simulation.checkpointInterval,
       },
     };
@@ -179,6 +205,8 @@ export class CheckpointManager {
     const dao = simulation.dao;
     return {
       name: dao.name,
+      daoId: dao.daoId,
+      currentStep: dao.currentStep,
       members: dao.members.map(m => ({
         uniqueId: m.uniqueId,
         tokens: m.tokens,
@@ -186,12 +214,15 @@ export class CheckpointManager {
         stakedTokens: m.stakedTokens,
         location: m.location,
       })),
+      // Serialize full proposal state using toDict for complete data
       proposals: dao.proposals.map(p => ({
         uniqueId: p.uniqueId,
         title: p.title,
         status: p.status,
         votesFor: p.votesFor,
         votesAgainst: p.votesAgainst,
+        // Include voting power snapshot
+        ...p.toDict(),
       })),
       projects: dao.projects.map(p => ({
         uniqueId: p.uniqueId,
@@ -206,6 +237,7 @@ export class CheckpointManager {
       })),
       treasuryFunds: dao.treasury.funds,
       tokenPrices: Object.fromEntries(dao.treasury.tokenPrices),
+      tokenBalances: Object.fromEntries(dao.treasury.tokenBalances),
     };
   }
 
@@ -218,6 +250,12 @@ export class CheckpointManager {
       stakedTokens: agent.stakedTokens,
       location: agent.location,
       optimism: agent.optimism,
+      // Extended state for complete restore
+      stakeLocks: [...agent.stakeLocks],
+      delegations: Object.fromEntries(agent.delegations),
+      votes: Object.fromEntries(agent.votes),
+      daoId: agent.daoId,
+      transferCooldown: agent.transferCooldown,
     }));
   }
 

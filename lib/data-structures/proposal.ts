@@ -24,6 +24,16 @@ export class Proposal {
   uniqueId: string;
   type: string = 'default';
 
+  // Voting power snapshot - captures member balances at proposal creation
+  // This prevents flash loan attacks and ensures votes are counted against
+  // the balance at proposal creation, not current balance
+  votingPowerSnapshot: Map<string, number> = new Map();
+  snapshotTaken: boolean = false;
+
+  // Track members who have had their delegation revoked for this proposal
+  // When someone votes directly, their delegated power should not count twice
+  private delegationRevokedFor: Set<string> = new Set();
+
   constructor(
     dao: DAO,
     creator: string,
@@ -46,6 +56,64 @@ export class Proposal {
     this.uniqueId = '';  // Will be set by DAO when added
   }
 
+  /**
+   * Take a snapshot of voting power for all DAO members
+   * This should be called when the proposal is created to lock in voting power
+   * and prevent flash loan attacks
+   */
+  takeVotingPowerSnapshot(): void {
+    if (this.snapshotTaken) {
+      return; // Snapshot already taken
+    }
+
+    for (const member of this.dao.members) {
+      // Voting power = tokens + staked tokens (locked stakes count too)
+      const votingPower = member.tokens + member.stakedTokens;
+      this.votingPowerSnapshot.set(member.uniqueId, votingPower);
+    }
+    this.snapshotTaken = true;
+  }
+
+  /**
+   * Get the snapshotted voting power for a member
+   * Returns 0 if member wasn't in the DAO at snapshot time
+   */
+  getSnapshotVotingPower(memberId: string): number {
+    return this.votingPowerSnapshot.get(memberId) || 0;
+  }
+
+  /**
+   * Revoke delegation for a specific member on this proposal
+   * Called when someone votes directly - their delegated power should not count twice
+   * This prevents double-voting through delegation
+   */
+  revokeDelegationFor(delegatorId: string, delegateId: string, amount: number): void {
+    // Remove delegated support if it was already counted via delegate
+    const existingSupport = this.delegatedSupport.get(delegatorId);
+    if (existingSupport !== undefined && existingSupport >= amount) {
+      this.delegatedSupport.set(delegatorId, existingSupport - amount);
+    }
+
+    this.delegationRevokedFor.add(delegatorId);
+
+    if (this.dao.eventBus) {
+      this.dao.eventBus.publish('delegation_revoked_on_vote', {
+        step: this.dao.currentStep,
+        proposal: this.title,
+        delegator: delegatorId,
+        delegate: delegateId,
+        amount,
+      });
+    }
+  }
+
+  /**
+   * Check if a member's delegation has been revoked for this proposal
+   */
+  isDelegationRevokedFor(memberId: string): boolean {
+    return this.delegationRevokedFor.has(memberId);
+  }
+
   addVote(memberId: string, vote: boolean, weight: number = 1): boolean {
     // Reject votes on closed proposals
     if (this.status !== 'open') {
@@ -53,12 +121,47 @@ export class Proposal {
     }
 
     if (!this.votes.has(memberId)) {
-      this.votes.set(memberId, { vote, weight });
+      // Use snapshot voting power if available (prevents flash loan attacks)
+      // If no snapshot, fall back to provided weight for backwards compatibility
+      let effectiveWeight = weight;
+      if (this.snapshotTaken) {
+        const snapshotPower = this.votingPowerSnapshot.get(memberId);
+        if (snapshotPower !== undefined) {
+          // Use the MINIMUM of snapshot power and provided weight
+          // This ensures votes can't exceed what member had at proposal creation
+          effectiveWeight = Math.min(snapshotPower, weight);
+        } else {
+          // Member wasn't in DAO at snapshot time - no voting rights
+          if (this.dao.eventBus) {
+            this.dao.eventBus.publish('vote_rejected_no_snapshot', {
+              step: this.dao.currentStep,
+              proposal: this.title,
+              member: memberId,
+              reason: 'Member joined after proposal creation snapshot',
+            });
+          }
+          return false;
+        }
+      }
+
+      this.votes.set(memberId, { vote, weight: effectiveWeight });
 
       if (vote) {
-        this.votesFor += weight;
+        this.votesFor += effectiveWeight;
       } else {
-        this.votesAgainst += weight;
+        this.votesAgainst += effectiveWeight;
+      }
+
+      // CRITICAL FIX: Auto-revoke any delegations this member made
+      // When voting directly, delegated power should not also count via delegate
+      // This prevents double-voting through delegation
+      const member = this.dao.members.find(m => m.uniqueId === memberId);
+      if (member && !this.isDelegationRevokedFor(memberId)) {
+        for (const [delegateId, amount] of member.delegations.entries()) {
+          if (amount > 0) {
+            this.revokeDelegationFor(memberId, delegateId, amount);
+          }
+        }
       }
 
       if (this.dao.eventBus) {
@@ -67,7 +170,7 @@ export class Proposal {
           proposal: this.title,
           member: memberId,
           vote,
-          weight,
+          weight: effectiveWeight,
         });
       }
       return true;
@@ -117,6 +220,9 @@ export class Proposal {
       creationTime: this.creationTime,
       votingPeriod: this.votingPeriod,
       type: this.type,
+      // Serialize voting power snapshot for checkpoint restore
+      votingPowerSnapshot: Object.fromEntries(this.votingPowerSnapshot),
+      snapshotTaken: this.snapshotTaken,
     };
   }
 
@@ -140,6 +246,12 @@ export class Proposal {
     proposal.votingPeriod = data.votingPeriod || proposal.duration;
     proposal.uniqueId = data.uniqueId || '';
     proposal.type = data.type || 'default';
+
+    // Restore voting power snapshot
+    if (data.votingPowerSnapshot) {
+      proposal.votingPowerSnapshot = new Map(Object.entries(data.votingPowerSnapshot));
+    }
+    proposal.snapshotTaken = data.snapshotTaken || false;
 
     return proposal;
   }

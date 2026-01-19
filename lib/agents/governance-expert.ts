@@ -95,6 +95,9 @@ export class GovernanceExpert extends DAOMember {
 
   /**
    * Perform detailed analysis of a proposal
+   *
+   * CRITICAL FIX: Use specialization in analysis to boost/penalize
+   * proposals that match the expert's areas of expertise.
    */
   private analyzeProposal(proposal: Proposal): ProposalAnalysis {
     // Calculate risk score based on funding goal and duration
@@ -114,10 +117,29 @@ export class GovernanceExpert extends DAOMember {
       ? proposal.votesFor / totalVotes
       : 0.5;
 
-    // Determine recommendation
-    let recommendation: ProposalAnalysis['recommendation'];
-    const score = (1 - riskScore) * 0.3 + fundingViability * 0.3 + supportMomentum * 0.4;
+    // CRITICAL FIX: Apply specialization bonus
+    // Experts are more favorable to proposals in their area of expertise
+    let specializationBonus = 0;
+    const titleLower = proposal.title.toLowerCase();
+    const topicLower = proposal.topic.toLowerCase();
 
+    for (const specialty of this.specialization) {
+      const specLower = specialty.toLowerCase();
+      if (titleLower.includes(specLower) || topicLower.includes(specLower)) {
+        // Expert has deep knowledge in this area - higher confidence in judgment
+        specializationBonus += 0.15;
+        // Also reduces perceived risk for areas of expertise
+        break;
+      }
+    }
+
+    // Determine recommendation
+    let score = (1 - riskScore) * 0.3 + fundingViability * 0.3 + supportMomentum * 0.4;
+
+    // Apply specialization bonus (capped)
+    score = Math.min(1, score + specializationBonus);
+
+    let recommendation: ProposalAnalysis['recommendation'];
     if (score >= 0.8) recommendation = 'strong_yes';
     else if (score >= 0.6) recommendation = 'yes';
     else if (score >= 0.4) recommendation = 'neutral';

@@ -185,15 +185,18 @@ export class ProposalStateMachine {
     // Calculate total voting power in DAO
     const totalVotingPower = this.calculateTotalVotingPower();
 
-    // Check quorum
+    // Check quorum - CRITICAL FIX: quorum must be based on TOTAL participation
+    // not just votes for. Real DAOs require minimum participation regardless
+    // of vote split. This prevents proposals passing with 1% participation.
     const quorumVotes = (totalVotingPower * quorumPercent) / 100;
-    const quorumMet = votesFor >= quorumVotes;
+    const totalParticipation = votesFor + votesAgainst;
+    const quorumMet = totalParticipation >= quorumVotes;
 
     if (!quorumMet) {
       return {
         passed: false,
-        reason: `Quorum not met: ${votesFor.toFixed(0)} votes for, needed ${quorumVotes.toFixed(0)} (${quorumPercent}%)`,
-        details: { votesFor, votesAgainst, quorumVotes, quorumPercent, quorumMet },
+        reason: `Quorum not met: ${totalParticipation.toFixed(0)} total votes (${votesFor.toFixed(0)} for, ${votesAgainst.toFixed(0)} against), needed ${quorumVotes.toFixed(0)} (${quorumPercent}%)`,
+        details: { votesFor, votesAgainst, totalParticipation, quorumVotes, quorumPercent, quorumMet },
       };
     }
 
@@ -248,6 +251,7 @@ export class ProposalStateMachine {
         votesAgainst: 0,
         quorumMet: false,
         approved: false,
+        vetoTriggered: false,
       };
     }
 
@@ -263,8 +267,25 @@ export class ProposalStateMachine {
       approvalThreshold = this.config.tokenHouseApprovalPercent || 51;
     }
 
-    const quorumMet = total >= quorumPercent; // Simplified quorum check
+    // FIX: Calculate quorum threshold in absolute terms, not percentage
+    // quorumPercent is a percentage (e.g., 30 = 30%), so we need to calculate
+    // the actual vote threshold based on total voting power
+    const totalHouseVotingPower = this.calculateTotalVotingPower();
+    const quorumThreshold = (totalHouseVotingPower * quorumPercent) / 100;
+    const quorumMet = total >= quorumThreshold;
     const approved = quorumMet && approvalPercent >= approvalThreshold;
+
+    // FIX: Calculate veto trigger for Citizens House
+    // In Optimism-style bicameral governance, Citizens House can veto
+    // if majority of participating citizens vote against (reject = veto)
+    let vetoTriggered = false;
+    if (house === 'citizens_house' && this.config.citizensHouseVetoEnabled) {
+      // Veto triggers if more votes against than for AND minimum participation
+      const vetoParticipationThreshold = 5; // Minimum votes needed to veto
+      const hasEnoughParticipation = total >= vetoParticipationThreshold;
+      const majorityAgainst = houseVote.votesAgainst > houseVote.votesFor;
+      vetoTriggered = hasEnoughParticipation && majorityAgainst;
+    }
 
     return {
       house,
@@ -272,6 +293,7 @@ export class ProposalStateMachine {
       votesAgainst: houseVote.votesAgainst,
       quorumMet,
       approved,
+      vetoTriggered,
     };
   }
 

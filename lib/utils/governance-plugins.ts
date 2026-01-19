@@ -371,10 +371,11 @@ export class CategoryQuorumRule extends GovernanceRule {
     }
 
     const quorumVotes = totalTokens * requiredQuorum;
-    const quorumMet = proposal.votesFor >= quorumVotes;
+    // CRITICAL FIX: quorum must check total participation, not just votes for
+    const totalVotes = proposal.votesFor + proposal.votesAgainst;
+    const quorumMet = totalVotes >= quorumVotes;
 
     // Check approval threshold
-    const totalVotes = proposal.votesFor + proposal.votesAgainst;
     const approvalRate = totalVotes > 0 ? proposal.votesFor / totalVotes : 0;
 
     return quorumMet && approvalRate >= this.approvalThreshold;

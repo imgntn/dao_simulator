@@ -63,8 +63,8 @@ export class FlashLoanAttacker extends DAOMember {
   lastAttackStep: number | null = null;
   private loanCounter: number = 0;
 
-  // Available liquidity pool (simulated)
-  private availableLiquidity: number = 1000000;
+  // Track borrowed tokens for proper accounting
+  private borrowedFromTreasury: number = 0;
 
   constructor(
     uniqueId: string,
@@ -134,7 +134,19 @@ export class FlashLoanAttacker extends DAOMember {
   }
 
   /**
+   * Get actual available liquidity from the DAO treasury
+   * CRITICAL FIX: Flash loans must be backed by actual liquidity, not hardcoded values
+   */
+  private getAvailableLiquidity(): number {
+    if (!this.model.dao) return 0;
+    const token = this.model.dao.tokenSymbol;
+    return this.model.dao.treasury.getTokenBalance(token);
+  }
+
+  /**
    * Evaluate if a proposal presents a profitable attack opportunity
+   * NOTE: With voting power snapshots, flash loan attacks should now fail
+   * because votes are counted against snapshot balances, not current balances
    */
   private evaluateOpportunity(proposal: Proposal): {
     isProfitable: boolean;
@@ -146,12 +158,15 @@ export class FlashLoanAttacker extends DAOMember {
     const currentAgainst = proposal.votesAgainst;
     const margin = Math.abs(currentFor - currentAgainst);
 
+    // CRITICAL FIX: Use actual treasury liquidity, not hardcoded value
+    const availableLiquidity = this.getAvailableLiquidity();
+
     // Calculate how much we'd need to borrow to flip the vote
     const borrowNeeded = margin * 1.5;
     const borrowAmount = Math.min(
       borrowNeeded,
       this.attackConfig.maxBorrowAmount,
-      this.availableLiquidity
+      availableLiquidity
     );
 
     const fee = borrowAmount * this.attackConfig.loanFeePercent;
@@ -174,6 +189,7 @@ export class FlashLoanAttacker extends DAOMember {
 
   /**
    * Initiate a flash loan attack
+   * CRITICAL FIX: Properly borrow from treasury instead of creating tokens from nothing
    */
   private initiateFlashLoan(
     proposal: Proposal,
@@ -181,6 +197,7 @@ export class FlashLoanAttacker extends DAOMember {
     targetVote: boolean
   ): void {
     if (this.activeLoan) return;  // Already have active loan
+    if (!this.model.dao) return;
 
     this.loanCounter++;
     const loanId = `flashloan_${this.uniqueId}_${this.loanCounter}`;
@@ -191,11 +208,28 @@ export class FlashLoanAttacker extends DAOMember {
       return;  // Can't afford the fee
     }
 
-    // "Borrow" the tokens
+    // CRITICAL FIX: Actually withdraw from treasury
+    const token = this.model.dao.tokenSymbol;
+    const availableLiquidity = this.model.dao.treasury.getTokenBalance(token);
+
+    if (borrowAmount > availableLiquidity) {
+      // Not enough liquidity in treasury
+      if (this.model.eventBus) {
+        this.model.eventBus.publish('flashloan_insufficient_liquidity', {
+          step: this.model.currentStep,
+          borrower: this.uniqueId,
+          requested: borrowAmount,
+          available: availableLiquidity,
+        });
+      }
+      return;
+    }
+
+    // "Borrow" the tokens from treasury
     this.activeLoan = {
       loanId,
       borrower: this.uniqueId,
-      lender: 'liquidity_pool',
+      lender: 'treasury',
       amount: borrowAmount,
       fee,
       borrowedStep: this.model.currentStep,
@@ -204,7 +238,11 @@ export class FlashLoanAttacker extends DAOMember {
       successful: false,
     };
 
-    // Temporarily add borrowed tokens
+    // CRITICAL FIX: Withdraw from treasury and track properly
+    this.model.dao.treasury.withdraw(token, borrowAmount, this.model.currentStep);
+    this.borrowedFromTreasury = borrowAmount;
+
+    // Temporarily add borrowed tokens to attacker's balance
     const originalTokens = this.tokens;
     this.tokens += borrowAmount;
 
@@ -341,18 +379,29 @@ export class FlashLoanAttacker extends DAOMember {
 
   /**
    * Repay the flash loan
+   * CRITICAL FIX: Return borrowed tokens to treasury
    */
   private repayLoan(originalTokens: number): void {
     if (!this.activeLoan) return;
+    if (!this.model.dao) return;
 
-    // Return borrowed tokens (they were never really ours)
+    // CRITICAL FIX: Return borrowed tokens to treasury
+    const token = this.model.dao.tokenSymbol;
+    if (this.borrowedFromTreasury > 0) {
+      this.model.dao.treasury.deposit(token, this.borrowedFromTreasury, this.model.currentStep);
+    }
+
+    // Restore original tokens (remove borrowed amount)
     this.tokens = originalTokens;
+    this.borrowedFromTreasury = 0;
 
-    // Pay the fee
+    // Pay the fee from our own tokens
     this.tokens -= this.activeLoan.fee;
     this.activeLoan.repaidStep = this.model.currentStep;
 
     // Track success
+    // NOTE: With voting power snapshots, flash loan attacks will now mostly fail
+    // because votes are counted against snapshot balances
     if (this.activeLoan.successful) {
       // Assume some profit from successful manipulation
       const profit = this.activeLoan.amount * 0.01 - this.activeLoan.fee;
@@ -366,6 +415,16 @@ export class FlashLoanAttacker extends DAOMember {
           borrower: this.uniqueId,
           strategy: this.activeLoan.purpose,
           profit,
+        });
+      }
+    } else {
+      if (this.model.eventBus) {
+        this.model.eventBus.publish('flashloan_attack_failed', {
+          step: this.model.currentStep,
+          loanId: this.activeLoan.loanId,
+          borrower: this.uniqueId,
+          strategy: this.activeLoan.purpose,
+          reason: 'Voting power snapshot prevented manipulation',
         });
       }
     }
@@ -385,13 +444,6 @@ export class FlashLoanAttacker extends DAOMember {
     if (this.activeLoan && !this.activeLoan.repaidStep) {
       this.repayLoan(this.tokens - this.activeLoan.amount);
     }
-  }
-
-  /**
-   * Set available liquidity pool
-   */
-  setAvailableLiquidity(amount: number): void {
-    this.availableLiquidity = amount;
   }
 
   /**
@@ -434,7 +486,7 @@ export class FlashLoanAttacker extends DAOMember {
       loanCounter: this.loanCounter,
       totalProfit: this.totalProfit,
       lastAttackStep: this.lastAttackStep,
-      availableLiquidity: this.availableLiquidity,
+      borrowedFromTreasury: this.borrowedFromTreasury,
     };
   }
 }

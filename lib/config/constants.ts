@@ -1,6 +1,73 @@
 // Configuration constants for the DAO simulation
 // Port from constants.py
 
+// =============================================================================
+// TIME SCALE CONFIGURATION
+// =============================================================================
+// CRITICAL: These constants define the mapping between simulation steps and real time.
+// All time-based parameters should be derived from these values for consistency.
+//
+// Default: 1 step = 1 hour
+// This means:
+//   - 24 steps = 1 day
+//   - 168 steps = 1 week
+//   - 720 steps = 1 month (30 days)
+//   - 8760 steps = 1 year (365 days)
+
+/**
+ * Duration of a single simulation step in hours.
+ * All time-dependent calculations should use this value.
+ */
+export const STEP_DURATION_HOURS = 1;
+
+/**
+ * Number of simulation steps per day
+ */
+export const STEPS_PER_DAY = 24 / STEP_DURATION_HOURS;
+
+/**
+ * Number of simulation steps per week
+ */
+export const STEPS_PER_WEEK = STEPS_PER_DAY * 7;
+
+/**
+ * Number of simulation steps per month (30 days)
+ */
+export const STEPS_PER_MONTH = STEPS_PER_DAY * 30;
+
+/**
+ * Number of simulation steps per year (365 days)
+ */
+export const STEPS_PER_YEAR = STEPS_PER_DAY * 365;
+
+/**
+ * Convert hours to steps
+ */
+export function hoursToSteps(hours: number): number {
+  return Math.round(hours / STEP_DURATION_HOURS);
+}
+
+/**
+ * Convert days to steps
+ */
+export function daysToSteps(days: number): number {
+  return Math.round(days * STEPS_PER_DAY);
+}
+
+/**
+ * Convert steps to hours
+ */
+export function stepsToHours(steps: number): number {
+  return steps * STEP_DURATION_HOURS;
+}
+
+/**
+ * Convert steps to days
+ */
+export function stepsToDays(steps: number): number {
+  return steps / STEPS_PER_DAY;
+}
+
 // Treasury Configuration
 export const MIN_TREASURY_RESERVE = 10000; // Minimum treasury balance to maintain
 export const INITIAL_TREASURY_FUNDING = 50000; // Base treasury funding
