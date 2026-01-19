@@ -311,6 +311,11 @@ async function main(): Promise<void> {
     config.execution.baseSeed = args.baseSeed;
     config.execution.seedStrategy = 'sequential';
   }
+  // CLI concurrency takes precedence over config workers
+  // If CLI specifies -c N, use N. Otherwise use config workers (default 1).
+  const cliSpecifiedConcurrency = process.argv.some(arg => arg === '-c' || arg === '--concurrency');
+  const concurrency = cliSpecifiedConcurrency ? args.concurrency : (config.execution.workers ?? 1);
+  config.execution.workers = concurrency;
 
   // Display experiment info
   console.log(`\nExperiment: ${config.name}`);
@@ -330,7 +335,7 @@ async function main(): Promise<void> {
       : 1);
 
   console.log(`Runs: ${totalRuns} (${config.execution.runsPerConfig} per config, ${config.execution.stepsPerRun} steps each)`);
-  console.log(`Concurrency: ${args.concurrency}`);
+  console.log(`Workers: ${concurrency}${concurrency > 1 ? ' (parallel)' : ' (sequential)'}`);
   console.log(`Output: ${config.output.directory}`);
   console.log('');
 
@@ -342,7 +347,7 @@ async function main(): Promise<void> {
     const runner = new BatchRunner(
       config,
       {
-        concurrency: args.concurrency,
+        concurrency,
         checkpointInterval: 10,
       },
       progressCallback

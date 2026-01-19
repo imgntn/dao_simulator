@@ -17,6 +17,8 @@ import type {
   ExperimentSummary,
 } from './experiment-config';
 import { ExperimentRunner, type ProgressCallback } from './experiment-runner';
+import { WorkerPool } from './worker-pool';
+import type { WorkerTask } from './simulation-worker';
 
 // =============================================================================
 // TYPES
@@ -207,36 +209,96 @@ export class BatchRunner {
 
   /**
    * Run tasks with concurrency control
+   * Uses Worker Threads for true CPU parallelism when concurrency > 1
    */
   private async runTasksWithConcurrency(tasks: RunTask[], totalRuns: number): Promise<void> {
     const { concurrency, checkpointInterval } = this.batchConfig;
 
-    // Process in batches for concurrency control
-    for (let i = 0; i < tasks.length; i += concurrency) {
-      const batch = tasks.slice(i, i + concurrency);
+    // Use Worker Threads for parallelism when concurrency > 1
+    if (concurrency > 1) {
+      await this.runTasksWithWorkerPool(tasks, totalRuns, concurrency);
+      return;
+    }
 
-      // Run batch concurrently
-      const results = await Promise.all(
-        batch.map((task) => this.runSingleTask(task))
-      );
+    // Sequential execution (concurrency = 1)
+    for (let i = 0; i < tasks.length; i++) {
+      const task = tasks[i];
+      const result = await this.runSingleTask(task);
 
-      // Process results
-      for (const result of results) {
-        if (result.success && result.result) {
-          this.completedResults.push(result.result);
-          this.completedCount++;
-        } else {
-          this.failedRunIds.add(result.taskId);
-        }
-
-        // Report progress
-        this.reportProgress(totalRuns);
+      if (result.success && result.result) {
+        this.completedResults.push(result.result);
+        this.completedCount++;
+      } else {
+        this.failedRunIds.add(result.taskId);
       }
+
+      // Report progress
+      this.reportProgress(totalRuns);
 
       // Save checkpoint periodically
-      if (checkpointInterval && (i + batch.length) % checkpointInterval === 0) {
+      if (checkpointInterval && (i + 1) % checkpointInterval === 0) {
         await this.saveCheckpoint(tasks.map((t) => t.id), totalRuns);
       }
+    }
+  }
+
+  /**
+   * Run tasks using Worker Thread pool for true CPU parallelism
+   */
+  private async runTasksWithWorkerPool(tasks: RunTask[], totalRuns: number, workerCount: number): Promise<void> {
+    const { checkpointInterval } = this.batchConfig;
+
+    // Create worker pool
+    const pool = new WorkerPool({ workerCount });
+
+    try {
+      // Convert tasks to worker tasks
+      const workerTasks: Omit<WorkerTask, 'taskId'>[] = tasks.map((task) => ({
+        daoConfig: task.daoConfig,
+        simConfig: {
+          checkpointInterval: this.experimentConfig.baseConfig.simulationOverrides?.checkpointInterval,
+          eventLogging: this.experimentConfig.baseConfig.simulationOverrides?.eventLogging,
+        },
+        seed: task.seed,
+        stepsPerRun: this.experimentConfig.execution.stepsPerRun,
+        metrics: this.experimentConfig.metrics,
+        includeTimeline: this.experimentConfig.output.includeTimeline ?? false,
+        sweepValue: task.sweepValue,
+        runIndex: task.runIndex,
+        experimentName: this.experimentConfig.name,
+      }));
+
+      // Submit all tasks and track progress
+      let checkpointCounter = 0;
+      const taskPromises = workerTasks.map(async (workerTask, index) => {
+        try {
+          const result = await pool.submit(workerTask);
+          this.completedResults.push(result);
+          this.completedCount++;
+
+          // Report progress
+          this.reportProgress(totalRuns);
+
+          // Checkpoint periodically
+          checkpointCounter++;
+          if (checkpointInterval && checkpointCounter % checkpointInterval === 0) {
+            await this.saveCheckpoint(tasks.map((t) => t.id), totalRuns);
+          }
+
+          return { success: true, taskId: tasks[index].id, result };
+        } catch (error) {
+          this.failedRunIds.add(tasks[index].id);
+          this.reportProgress(totalRuns);
+          return { success: false, taskId: tasks[index].id };
+        }
+      });
+
+      // Wait for all tasks
+      await Promise.all(taskPromises);
+
+    } finally {
+      // Always shutdown the pool
+      await pool.shutdown();
     }
   }
 

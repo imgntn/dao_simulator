@@ -256,8 +256,73 @@ export interface ExperimentSummary {
   // Aggregated metrics (per sweep value if sweep was used)
   metricsSummary: MetricsSummary[];
 
+  // Statistical significance analysis (across sweep values)
+  statisticalSignificance?: StatisticalSignificance;
+
   // Reproducibility manifest
   manifest: ReproducibilityManifest;
+}
+
+/**
+ * Confidence interval for a metric
+ */
+export interface ConfidenceIntervalResult {
+  lower: number;
+  upper: number;
+  level: number;
+}
+
+/**
+ * Full statistical analysis for a single metric
+ */
+export interface MetricStatistics {
+  name: string;
+  mean: number;
+  median: number;
+  std: number;
+  min: number;
+  max: number;
+  values: number[];
+
+  // Extended statistics for academic rigor
+  standardError: number;
+  ci95: ConfidenceIntervalResult;
+  ci99: ConfidenceIntervalResult;
+  coefficientOfVariation: number;  // std/mean - measure of consistency
+  skewness: number;  // distribution symmetry
+}
+
+/**
+ * Effect size comparison between sweep values
+ */
+export interface EffectSizeResult {
+  cohensD: number;
+  interpretation: 'negligible' | 'small' | 'medium' | 'large' | 'very_large';
+}
+
+/**
+ * Statistical comparison between two groups (sweep values)
+ */
+export interface SweepComparison {
+  sweepValue1: number | string | boolean;
+  sweepValue2: number | string | boolean;
+  metricName: string;
+  tStatistic: number;
+  degreesOfFreedom: number;
+  pValue: number;
+  significant: boolean;
+  effectSize: EffectSizeResult;
+}
+
+/**
+ * Power analysis for the experiment
+ */
+export interface PowerAnalysisResult {
+  currentRunsPerConfig: number;
+  recommendedRuns: number;
+  currentPower: number;
+  minimumEffectDetectable: number;
+  explanation: string;
 }
 
 /**
@@ -266,15 +331,34 @@ export interface ExperimentSummary {
 export interface MetricsSummary {
   sweepValue?: number | string | boolean;
   runCount: number;
-  metrics: {
-    name: string;
-    mean: number;
-    median: number;
-    std: number;
-    min: number;
-    max: number;
-    values: number[];
+  metrics: MetricStatistics[];
+
+  // Power analysis for this configuration
+  powerAnalysis?: PowerAnalysisResult;
+}
+
+/**
+ * Complete statistical analysis across all sweep values
+ */
+export interface StatisticalSignificance {
+  // Pairwise comparisons between sweep values
+  pairwiseComparisons: SweepComparison[];
+
+  // ANOVA results (if 3+ sweep values)
+  anova?: {
+    metricName: string;
+    fStatistic: number;
+    dfBetween: number;
+    dfWithin: number;
+    pValue: number;
+    significant: boolean;
   }[];
+
+  // Overall power analysis
+  overallPowerAnalysis: PowerAnalysisResult;
+
+  // Recommendations
+  recommendations: string[];
 }
 
 /**

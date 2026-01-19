@@ -13,10 +13,11 @@ sweep:
   values: [2, 5, 10]
 
 execution:
-  runsPerConfig: 2
+  runsPerConfig: 10  # Minimum 10 for basic statistical significance
   stepsPerRun: 100
   seedStrategy: sequential
   baseSeed: 42
+  workers: 8  # Parallel execution using 8 worker threads
 
 metrics:
   - name: "Final Treasury"

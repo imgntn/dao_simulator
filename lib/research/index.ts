@@ -21,6 +21,12 @@ export type {
   TimelineEntry,
   ExperimentSummary,
   MetricsSummary,
+  MetricStatistics,
+  ConfidenceIntervalResult,
+  EffectSizeResult,
+  SweepComparison,
+  PowerAnalysisResult,
+  StatisticalSignificance,
   ReproducibilityManifest,
 } from './experiment-config';
 
@@ -82,3 +88,36 @@ export {
   type RegressionResult,
   type RegressionReport,
 } from './regression-tester';
+
+// Statistics Module
+export {
+  mean,
+  median,
+  variance,
+  standardDeviation,
+  standardError,
+  percentile,
+  confidenceInterval,
+  bootstrapConfidenceInterval,
+  cohensD,
+  independentTTest,
+  oneWayAnova,
+  powerAnalysis,
+  analyzeDistribution,
+  compareGroups,
+  type ConfidenceInterval,
+  type EffectSize,
+  type TTestResult,
+  type AnovaResult,
+  type PowerAnalysis,
+  type StatisticalAnalysis,
+  type GroupComparison,
+} from './statistics';
+
+// Worker Pool (Parallel Execution)
+export {
+  WorkerPool,
+  createWorkerPool,
+  getRecommendedWorkerCount,
+  type WorkerPoolConfig,
+} from './worker-pool';

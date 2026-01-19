@@ -18,8 +18,15 @@ import type {
   BuiltinMetricType,
   ExperimentSummary,
   MetricsSummary,
+  MetricStatistics,
   ReproducibilityManifest,
+  StatisticalSignificance,
+  SweepComparison,
+  PowerAnalysisResult,
 } from './experiment-config';
+import * as stats from './statistics';
+import { WorkerPool, getRecommendedWorkerCount } from './worker-pool';
+import type { WorkerTask } from './simulation-worker';
 
 // =============================================================================
 // DEEP MERGE UTILITY
@@ -95,8 +102,22 @@ export class ExperimentRunner {
 
   /**
    * Run the complete experiment
+   * Uses parallel execution if workers > 1
    */
   async run(): Promise<ExperimentSummary> {
+    const workerCount = this.config.execution.workers ?? 1;
+
+    if (workerCount > 1) {
+      return this.runParallel(workerCount);
+    }
+
+    return this.runSequential();
+  }
+
+  /**
+   * Run the experiment sequentially (single-threaded)
+   */
+  private async runSequential(): Promise<ExperimentSummary> {
     const startTime = Date.now();
     const results: RunResult[] = [];
 
@@ -127,6 +148,81 @@ export class ExperimentRunner {
         runIndex++;
       }
     }
+
+    // Generate summary
+    const summary = this.generateSummary(results, startTime);
+
+    return summary;
+  }
+
+  /**
+   * Run the experiment in parallel using Worker Threads
+   */
+  private async runParallel(workerCount: number): Promise<ExperimentSummary> {
+    const startTime = Date.now();
+
+    // Generate all configurations to run
+    const configs = this.generateConfigs();
+    const totalRuns = configs.length * this.config.execution.runsPerConfig;
+
+    // Create worker pool
+    const pool = new WorkerPool({ workerCount });
+
+    // Build all tasks
+    const tasks: Omit<WorkerTask, 'taskId'>[] = [];
+    let runIndex = 0;
+
+    for (const { daoConfig, sweepValue } of configs) {
+      for (let i = 0; i < this.config.execution.runsPerConfig; i++) {
+        const seed = this.getSeed(runIndex);
+
+        tasks.push({
+          daoConfig,
+          simConfig: {
+            checkpointInterval: this.config.baseConfig.simulationOverrides?.checkpointInterval,
+            eventLogging: this.config.baseConfig.simulationOverrides?.eventLogging,
+          },
+          seed,
+          stepsPerRun: this.config.execution.stepsPerRun,
+          metrics: this.config.metrics,
+          includeTimeline: this.config.output.includeTimeline ?? false,
+          sweepValue,
+          runIndex: i,
+          experimentName: this.config.name,
+        });
+
+        runIndex++;
+      }
+    }
+
+    // Submit all tasks and track progress
+    let completedRuns = 0;
+    const results: RunResult[] = [];
+
+    // Submit tasks in batches to allow progress tracking
+    const taskPromises = tasks.map(async (task, index) => {
+      const result = await pool.submit(task);
+      completedRuns++;
+
+      // Report progress
+      if (this.progressCallback) {
+        this.progressCallback({
+          currentRun: completedRuns,
+          totalRuns,
+          currentSweepValue: task.sweepValue,
+          percentComplete: (completedRuns / totalRuns) * 100,
+        });
+      }
+
+      return result;
+    });
+
+    // Wait for all tasks to complete
+    const allResults = await Promise.all(taskPromises);
+    results.push(...allResults);
+
+    // Shutdown the pool
+    await pool.shutdown();
 
     // Generate summary
     const summary = this.generateSummary(results, startTime);
@@ -478,6 +574,12 @@ export class ExperimentRunner {
       metricsSummary.push(summary);
     }
 
+    // Calculate statistical significance across sweep values
+    const statisticalSignificance = this.calculateStatisticalSignificance(
+      groupedResults,
+      metricsSummary
+    );
+
     // Generate reproducibility manifest
     const manifest = this.generateManifest(results, startTime, endTime);
 
@@ -489,8 +591,181 @@ export class ExperimentRunner {
       failedRuns: 0,
       totalDurationMs: endTime - startTime,
       metricsSummary,
+      statisticalSignificance,
       manifest,
     };
+  }
+
+  /**
+   * Calculate statistical significance across sweep values
+   */
+  private calculateStatisticalSignificance(
+    groupedResults: Map<string, RunResult[]>,
+    metricsSummary: MetricsSummary[]
+  ): StatisticalSignificance | undefined {
+    const sweepValues = Array.from(groupedResults.keys()).filter(k => k !== '_no_sweep_');
+
+    // If no sweep or only one value, limited statistical analysis
+    if (sweepValues.length < 2) {
+      const primaryMetric = metricsSummary[0]?.metrics[0];
+      const runsPerConfig = metricsSummary[0]?.runCount || 0;
+
+      return {
+        pairwiseComparisons: [],
+        overallPowerAnalysis: {
+          currentRunsPerConfig: runsPerConfig,
+          recommendedRuns: 30,
+          currentPower: runsPerConfig >= 30 ? 0.8 : runsPerConfig / 30 * 0.8,
+          minimumEffectDetectable: primaryMetric ? (1.96 + 0.84) / Math.sqrt(runsPerConfig / 2) : 1,
+          explanation: sweepValues.length < 2
+            ? 'No parameter sweep to compare. Consider adding sweep values for comparative analysis.'
+            : `Single configuration with ${runsPerConfig} runs.`,
+        },
+        recommendations: this.generateRecommendations(metricsSummary, sweepValues.length),
+      };
+    }
+
+    const metricNames = metricsSummary[0]?.metrics.map(m => m.name) || [];
+    const pairwiseComparisons: SweepComparison[] = [];
+    const anovaResults: StatisticalSignificance['anova'] = [];
+
+    // Pairwise t-tests between consecutive sweep values
+    for (let i = 0; i < sweepValues.length - 1; i++) {
+      const sv1 = sweepValues[i];
+      const sv2 = sweepValues[i + 1];
+      const group1 = groupedResults.get(sv1) || [];
+      const group2 = groupedResults.get(sv2) || [];
+
+      for (const metricName of metricNames) {
+        const values1 = group1.map(r => r.metrics[metricName]).filter(v => typeof v === 'number');
+        const values2 = group2.map(r => r.metrics[metricName]).filter(v => typeof v === 'number');
+
+        if (values1.length >= 2 && values2.length >= 2) {
+          const tTest = stats.independentTTest(values1, values2);
+          const effectSize = stats.cohensD(values1, values2);
+
+          pairwiseComparisons.push({
+            sweepValue1: this.parseSweepValue(sv1),
+            sweepValue2: this.parseSweepValue(sv2),
+            metricName,
+            tStatistic: tTest.tStatistic,
+            degreesOfFreedom: tTest.degreesOfFreedom,
+            pValue: tTest.pValue,
+            significant: tTest.significant,
+            effectSize: {
+              cohensD: effectSize.cohensD,
+              interpretation: effectSize.interpretation,
+            },
+          });
+        }
+      }
+    }
+
+    // ANOVA for 3+ sweep values
+    if (sweepValues.length >= 3) {
+      for (const metricName of metricNames) {
+        const groups: number[][] = sweepValues.map(sv => {
+          const results = groupedResults.get(sv) || [];
+          return results.map(r => r.metrics[metricName]).filter(v => typeof v === 'number');
+        });
+
+        if (groups.every(g => g.length >= 2)) {
+          const anova = stats.oneWayAnova(groups);
+          anovaResults.push({
+            metricName,
+            fStatistic: anova.fStatistic,
+            dfBetween: anova.dfBetween,
+            dfWithin: anova.dfWithin,
+            pValue: anova.pValue,
+            significant: anova.significant,
+          });
+        }
+      }
+    }
+
+    // Overall power analysis
+    const avgRunsPerConfig = metricsSummary.reduce((sum, s) => sum + s.runCount, 0) / metricsSummary.length;
+    const primaryMetric = metricsSummary[0]?.metrics[0];
+    const avgStd = metricsSummary.reduce((sum, s) => sum + (s.metrics[0]?.std || 0), 0) / metricsSummary.length;
+    const power = stats.powerAnalysis(Math.round(avgRunsPerConfig), avgStd);
+
+    return {
+      pairwiseComparisons,
+      anova: anovaResults.length > 0 ? anovaResults : undefined,
+      overallPowerAnalysis: {
+        currentRunsPerConfig: Math.round(avgRunsPerConfig),
+        ...power,
+      },
+      recommendations: this.generateRecommendations(metricsSummary, sweepValues.length),
+    };
+  }
+
+  /**
+   * Generate recommendations based on statistical analysis
+   */
+  private generateRecommendations(
+    metricsSummary: MetricsSummary[],
+    numSweepValues: number
+  ): string[] {
+    const recommendations: string[] = [];
+    const avgRuns = metricsSummary.reduce((sum, s) => sum + s.runCount, 0) / metricsSummary.length;
+
+    // Sample size recommendations
+    if (avgRuns < 10) {
+      recommendations.push(
+        `⚠️ Low sample size (${Math.round(avgRuns)} runs per config). ` +
+        `Recommend at least 10 runs, ideally 30+ for robust statistical power.`
+      );
+    } else if (avgRuns < 30) {
+      recommendations.push(
+        `Sample size of ${Math.round(avgRuns)} runs is acceptable. ` +
+        `For detecting small effect sizes, consider 30+ runs per configuration.`
+      );
+    } else {
+      recommendations.push(
+        `✓ Good sample size (${Math.round(avgRuns)} runs per config) for statistical analysis.`
+      );
+    }
+
+    // Variability recommendations
+    for (const summary of metricsSummary) {
+      for (const metric of summary.metrics) {
+        if (metric.coefficientOfVariation > 0.5) {
+          recommendations.push(
+            `High variability in "${metric.name}" (CV=${(metric.coefficientOfVariation * 100).toFixed(1)}%). ` +
+            `Consider longer simulation runs or more controlled initial conditions.`
+          );
+          break;  // Only report once per metric
+        }
+      }
+    }
+
+    // Skewness recommendations
+    for (const summary of metricsSummary) {
+      for (const metric of summary.metrics) {
+        if (Math.abs(metric.skewness) > 1) {
+          recommendations.push(
+            `Non-normal distribution detected for "${metric.name}" (skewness=${metric.skewness.toFixed(2)}). ` +
+            `Consider using bootstrap confidence intervals or non-parametric tests.`
+          );
+          break;
+        }
+      }
+    }
+
+    // Sweep recommendations
+    if (numSweepValues < 2) {
+      recommendations.push(
+        `No parameter sweep configured. Add sweep values to compare configurations.`
+      );
+    } else if (numSweepValues === 2) {
+      recommendations.push(
+        `Two configurations being compared. Consider adding more sweep values ` +
+        `to understand the parameter's effect across a broader range.`
+      );
+    }
+
+    return recommendations;
   }
 
   /**
@@ -511,44 +786,72 @@ export class ExperimentRunner {
   }
 
   /**
-   * Calculate metrics summary for a group of results
+   * Calculate metrics summary for a group of results with full statistical analysis
    */
   private calculateMetricsSummary(results: RunResult[], sweepValue: string): MetricsSummary {
     const metricNames = Object.keys(results[0]?.metrics || {});
-    const metrics: MetricsSummary['metrics'] = [];
+    const metrics: MetricStatistics[] = [];
 
     for (const name of metricNames) {
       const values = results.map((r) => r.metrics[name]).filter((v) => typeof v === 'number');
 
       if (values.length === 0) {
-        metrics.push({ name, mean: 0, median: 0, std: 0, min: 0, max: 0, values: [] });
+        metrics.push({
+          name,
+          mean: 0,
+          median: 0,
+          std: 0,
+          min: 0,
+          max: 0,
+          values: [],
+          standardError: 0,
+          ci95: { lower: 0, upper: 0, level: 0.95 },
+          ci99: { lower: 0, upper: 0, level: 0.99 },
+          coefficientOfVariation: 0,
+          skewness: 0,
+        });
         continue;
       }
 
-      const sorted = [...values].sort((a, b) => a - b);
-      const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
-      const median =
-        values.length % 2 === 0
-          ? (sorted[values.length / 2 - 1] + sorted[values.length / 2]) / 2
-          : sorted[Math.floor(values.length / 2)];
-      const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / values.length;
-      const std = Math.sqrt(variance);
+      // Use statistics module for comprehensive analysis
+      const analysis = stats.analyzeDistribution(values);
 
       metrics.push({
         name,
-        mean,
-        median,
-        std,
-        min: sorted[0],
-        max: sorted[sorted.length - 1],
+        mean: analysis.mean,
+        median: analysis.median,
+        std: analysis.std,
+        min: analysis.min,
+        max: analysis.max,
         values,
+        standardError: analysis.standardError,
+        ci95: analysis.ci95,
+        ci99: analysis.ci99,
+        coefficientOfVariation: analysis.coefficientOfVariation,
+        skewness: analysis.skewness,
       });
     }
+
+    // Calculate power analysis for this configuration
+    const primaryMetric = metrics[0];
+    const powerAnalysis: PowerAnalysisResult = primaryMetric
+      ? {
+          currentRunsPerConfig: results.length,
+          ...stats.powerAnalysis(results.length, primaryMetric.std),
+        }
+      : {
+          currentRunsPerConfig: results.length,
+          recommendedRuns: 30,
+          currentPower: 0,
+          minimumEffectDetectable: 1,
+          explanation: 'No metrics available for power analysis',
+        };
 
     return {
       sweepValue: sweepValue === '_no_sweep_' ? undefined : this.parseSweepValue(sweepValue),
       runCount: results.length,
       metrics,
+      powerAnalysis,
     };
   }
 

@@ -125,7 +125,79 @@ export class ResultsExporter {
       files.push(timelineCsvPath);
     }
 
+    // Export statistical significance analysis if available
+    if (summary.statisticalSignificance) {
+      const sigCsvPath = path.join(this.outputDir, 'significance.csv');
+      const sigCsv = this.generateSignificanceCsv(summary);
+      await this.writeFile(sigCsvPath, sigCsv);
+      files.push(sigCsvPath);
+
+      // Export recommendations as text
+      const recsPath = path.join(this.outputDir, 'recommendations.txt');
+      const recs = summary.statisticalSignificance.recommendations.join('\n\n');
+      await this.writeFile(recsPath, recs);
+      files.push(recsPath);
+    }
+
     return files;
+  }
+
+  /**
+   * Generate CSV of statistical significance (pairwise comparisons)
+   */
+  private generateSignificanceCsv(summary: ExperimentSummary): string {
+    const rows: string[] = [];
+
+    // Pairwise comparisons header
+    if (summary.statisticalSignificance?.pairwiseComparisons.length) {
+      rows.push('# Pairwise T-Test Comparisons');
+      rows.push('sweep_value_1,sweep_value_2,metric,t_statistic,df,p_value,significant,cohens_d,effect_interpretation');
+
+      for (const comp of summary.statisticalSignificance.pairwiseComparisons) {
+        rows.push([
+          String(comp.sweepValue1),
+          String(comp.sweepValue2),
+          this.escapeCsv(comp.metricName),
+          this.formatNumber(comp.tStatistic),
+          this.formatNumber(comp.degreesOfFreedom),
+          this.formatNumber(comp.pValue),
+          comp.significant ? 'true' : 'false',
+          this.formatNumber(comp.effectSize.cohensD),
+          comp.effectSize.interpretation,
+        ].join(','));
+      }
+    }
+
+    // ANOVA results
+    if (summary.statisticalSignificance?.anova?.length) {
+      rows.push('');
+      rows.push('# One-Way ANOVA Results');
+      rows.push('metric,f_statistic,df_between,df_within,p_value,significant');
+
+      for (const anova of summary.statisticalSignificance.anova) {
+        rows.push([
+          this.escapeCsv(anova.metricName),
+          this.formatNumber(anova.fStatistic),
+          String(anova.dfBetween),
+          String(anova.dfWithin),
+          this.formatNumber(anova.pValue),
+          anova.significant ? 'true' : 'false',
+        ].join(','));
+      }
+    }
+
+    // Power analysis summary
+    if (summary.statisticalSignificance?.overallPowerAnalysis) {
+      const power = summary.statisticalSignificance.overallPowerAnalysis;
+      rows.push('');
+      rows.push('# Power Analysis');
+      rows.push(`current_runs_per_config,${power.currentRunsPerConfig}`);
+      rows.push(`recommended_runs,${power.recommendedRuns}`);
+      rows.push(`current_power,${this.formatNumber(power.currentPower)}`);
+      rows.push(`minimum_effect_detectable,${this.formatNumber(power.minimumEffectDetectable)}`);
+    }
+
+    return rows.join('\n');
   }
 
   /**
@@ -157,7 +229,7 @@ export class ResultsExporter {
   }
 
   /**
-   * Generate CSV of aggregated statistics
+   * Generate CSV of aggregated statistics with confidence intervals
    */
   private generateStatsCsv(summary: ExperimentSummary): string {
     if (summary.metricsSummary.length === 0) return '';
@@ -165,10 +237,20 @@ export class ResultsExporter {
     // Get all metric names from first summary
     const metricNames = summary.metricsSummary[0].metrics.map((m) => m.name);
 
-    // Build header with stats columns for each metric
+    // Build header with extended stats columns for each metric
     const headers = ['sweep_value', 'run_count'];
     for (const name of metricNames) {
-      headers.push(`${name}_mean`, `${name}_median`, `${name}_std`, `${name}_min`, `${name}_max`);
+      headers.push(
+        `${name}_mean`,
+        `${name}_median`,
+        `${name}_std`,
+        `${name}_se`,           // Standard error
+        `${name}_ci95_lower`,   // 95% CI lower
+        `${name}_ci95_upper`,   // 95% CI upper
+        `${name}_min`,
+        `${name}_max`,
+        `${name}_cv`            // Coefficient of variation
+      );
     }
     const rows: string[] = [headers.join(',')];
 
@@ -184,8 +266,12 @@ export class ResultsExporter {
           this.formatNumber(metric.mean),
           this.formatNumber(metric.median),
           this.formatNumber(metric.std),
+          this.formatNumber(metric.standardError || 0),
+          this.formatNumber(metric.ci95?.lower || 0),
+          this.formatNumber(metric.ci95?.upper || 0),
           this.formatNumber(metric.min),
-          this.formatNumber(metric.max)
+          this.formatNumber(metric.max),
+          this.formatNumber(metric.coefficientOfVariation || 0)
         );
       }
 

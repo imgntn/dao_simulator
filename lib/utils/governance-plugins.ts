@@ -62,13 +62,38 @@ export function listRules(): string[] {
 
 /**
  * Simple majority rule - approve if votes_for > votes_against
+ * Now also checks quorum if configured (fixes bug where quorum was ignored)
+ * Uses token-weighted participation for quorum calculation (like real DAOs)
  */
 export class MajorityRule extends GovernanceRule {
-  constructor(_config?: GovernanceRuleConfig) {
+  private quorumPercentage: number | undefined;
+
+  constructor(config?: GovernanceRuleConfig) {
     super();
+    // Use configured quorum if provided (as fraction 0-1)
+    this.quorumPercentage = config?.quorumPercentage;
   }
 
-  approve(proposal: Proposal): boolean {
+  approve(proposal: Proposal, dao: DAO): boolean {
+    // If quorum is configured, check it first
+    if (this.quorumPercentage !== undefined && this.quorumPercentage > 0) {
+      // Calculate total voting power (tokens) in the DAO
+      // This matches how real DAOs like Compound calculate quorum
+      const totalTokens = dao.members.reduce(
+        (sum, member) => sum + member.tokens + member.stakedTokens,
+        0
+      );
+
+      // Calculate tokens that participated in voting
+      const votingTokens = proposal.votesFor + proposal.votesAgainst;
+      const participationRate = votingTokens / Math.max(totalTokens, 1);
+
+      if (participationRate < this.quorumPercentage) {
+        return false; // Quorum not met
+      }
+    }
+
+    // Simple majority: more votes for than against
     return proposal.votesFor > proposal.votesAgainst;
   }
 }

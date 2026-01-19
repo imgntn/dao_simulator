@@ -31,7 +31,7 @@ baseConfig:
 
 # Execution settings
 execution:
-  runsPerConfig: 5       # Number of simulation runs
+  runsPerConfig: 10      # Minimum 10 for statistical significance
   stepsPerRun: 200       # Simulation steps per run
   seedStrategy: sequential
   baseSeed: 42
