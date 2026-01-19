@@ -140,6 +140,12 @@ export class GovernanceExpert extends DAOMember {
   private voteWithExpertise(): void {
     if (!this.model.dao) return;
 
+    // Respect votingActivity parameter - experts still need to decide to participate
+    const votingActivity = this.model.dao.votingActivity ?? 0.3;
+    if (random() >= votingActivity) {
+      return;  // Expert decides not to vote this step
+    }
+
     const openProposals = this.model.dao.proposals.filter(p =>
       p.status === 'open' &&
       !this.votes.has(p.uniqueId)

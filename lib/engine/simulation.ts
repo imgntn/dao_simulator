@@ -14,7 +14,7 @@ import { EventLogger, IndexedDBEventLogger } from '../utils/event-logger';
 import { AgentManager } from '../utils/agent-manager';
 import { settings, SimulationSettings } from '../config/settings';
 import * as constants from '../config/constants';
-import { getRule } from '../utils/governance-plugins';
+import { getRule, GovernanceRuleConfig } from '../utils/governance-plugins';
 import { setSeed, random } from '../utils/random';
 import { GovernanceProcessor, createGovernanceProcessor } from '../governance';
 import {
@@ -73,6 +73,8 @@ export interface DAOSimulationConfig extends Partial<SimulationSettings> {
   reportFile?: string;
   seed?: number;
   centralityInterval?: number;
+  // Governance rule configuration (quorum percentage, thresholds, etc.)
+  governance_config?: GovernanceRuleConfig;
 }
 
 export class DAOSimulation extends Model {
@@ -201,7 +203,8 @@ export class DAOSimulation extends Model {
 
     // Governance
     this.governanceRuleName = config.governance_rule ?? settings.governance_rule;
-    const rule = getRule(this.governanceRuleName);
+    // Pass governance config to rule (quorum percentage, thresholds, etc.)
+    const rule = getRule(this.governanceRuleName, config.governance_config);
     if (!rule) {
       throw new Error(`Unknown governance rule: ${this.governanceRuleName}`);
     }

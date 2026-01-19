@@ -240,6 +240,12 @@ export class RiskManager extends DAOMember {
   private voteConservatively(): void {
     if (!this.model.dao) return;
 
+    // Respect votingActivity parameter
+    const votingActivity = this.model.dao.votingActivity ?? 0.3;
+    if (random() >= votingActivity) {
+      return;  // Risk manager decides not to vote this step
+    }
+
     const openProposals = this.model.dao.proposals.filter(p =>
       p.status === 'open' && !this.votes.has(p.uniqueId)
     );

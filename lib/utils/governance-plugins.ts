@@ -18,27 +18,37 @@ export abstract class GovernanceRule {
 }
 
 /**
+ * Configuration for governance rules
+ */
+export interface GovernanceRuleConfig {
+  quorumPercentage?: number;      // For quorum-based rules (0-1)
+  threshold?: number;             // For supermajority (0-1)
+  convictionThreshold?: number;   // For conviction voting
+  convictionHalfLife?: number;    // For conviction voting decay
+}
+
+/**
  * Registry for governance rules
  */
-const ruleRegistry = new Map<string, new () => GovernanceRule>();
+const ruleRegistry = new Map<string, new (config?: GovernanceRuleConfig) => GovernanceRule>();
 
 /**
  * Register a governance rule class under a given name
  */
 export function registerRule(
   name: string,
-  ruleClass: new () => GovernanceRule
+  ruleClass: new (config?: GovernanceRuleConfig) => GovernanceRule
 ): void {
   ruleRegistry.set(name.toLowerCase(), ruleClass);
 }
 
 /**
- * Get a governance rule by name
+ * Get a governance rule by name with optional configuration
  */
-export function getRule(name: string): GovernanceRule | null {
+export function getRule(name: string, config?: GovernanceRuleConfig): GovernanceRule | null {
   const RuleClass = ruleRegistry.get(name.toLowerCase());
   if (RuleClass) {
-    return new RuleClass();
+    return new RuleClass(config);
   }
   return null;
 }
@@ -54,6 +64,10 @@ export function listRules(): string[] {
  * Simple majority rule - approve if votes_for > votes_against
  */
 export class MajorityRule extends GovernanceRule {
+  constructor(_config?: GovernanceRuleConfig) {
+    super();
+  }
+
   approve(proposal: Proposal): boolean {
     return proposal.votesFor > proposal.votesAgainst;
   }
@@ -61,13 +75,15 @@ export class MajorityRule extends GovernanceRule {
 
 /**
  * Quorum rule - require minimum participation percentage
+ * Now properly accepts quorum percentage from configuration
  */
 export class QuorumRule extends GovernanceRule {
   private quorumPercentage: number;
 
-  constructor(quorumPercentage: number = 0.5) {
+  constructor(config?: GovernanceRuleConfig) {
     super();
-    this.quorumPercentage = quorumPercentage;
+    // Use configured quorum or default to 4% (realistic for DAOs)
+    this.quorumPercentage = config?.quorumPercentage ?? 0.04;
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
@@ -89,9 +105,9 @@ export class QuorumRule extends GovernanceRule {
 export class SupermajorityRule extends GovernanceRule {
   private threshold: number;
 
-  constructor(threshold: number = 0.66) {
+  constructor(config?: GovernanceRuleConfig) {
     super();
-    this.threshold = threshold;
+    this.threshold = config?.threshold ?? 0.66;
   }
 
   approve(proposal: Proposal): boolean {
@@ -111,9 +127,10 @@ export class SupermajorityRule extends GovernanceRule {
 export class TokenQuorumRule extends GovernanceRule {
   private quorumPercentage: number;
 
-  constructor(quorumPercentage: number = 0.5) {
+  constructor(config?: GovernanceRuleConfig) {
     super();
-    this.quorumPercentage = quorumPercentage;
+    // Use configured quorum or default to 4%
+    this.quorumPercentage = config?.quorumPercentage ?? 0.04;
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
@@ -143,15 +160,12 @@ export class TimeDecayRule extends GovernanceRule {
   private finalThreshold: number;
   private decaySteps: number;
 
-  constructor(
-    initialThreshold: number = 0.66,
-    finalThreshold: number = 0.5,
-    decaySteps: number = 100
-  ) {
+  constructor(config?: GovernanceRuleConfig) {
     super();
-    this.initialThreshold = initialThreshold;
-    this.finalThreshold = finalThreshold;
-    this.decaySteps = decaySteps;
+    // Default: starts at 66% threshold, decays to 50% over 100 steps
+    this.initialThreshold = config?.threshold ?? 0.66;
+    this.finalThreshold = 0.5;
+    this.decaySteps = 100;
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
@@ -178,9 +192,10 @@ export class TimeDecayRule extends GovernanceRule {
 export class ReputationQuorumRule extends GovernanceRule {
   private quorumPercentage: number;
 
-  constructor(quorumPercentage: number = 0.5) {
+  constructor(config?: GovernanceRuleConfig) {
     super();
-    this.quorumPercentage = quorumPercentage;
+    // Default: 50% reputation participation required
+    this.quorumPercentage = config?.quorumPercentage ?? 0.5;
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
@@ -204,23 +219,55 @@ export class ReputationQuorumRule extends GovernanceRule {
 
 /**
  * Conviction voting rule - votes accumulate strength over time
+ *
+ * Conviction grows exponentially toward a maximum based on support:
+ *   c(t) = support * (1 - decay^t) / (1 - decay)
+ *
+ * Where decay = 0.5^(1/halfLife), so conviction reaches 50% of max after halfLife steps.
+ *
+ * The threshold is calculated as a percentage of total voting power to make it
+ * scale-independent and actually achievable.
  */
 export class ConvictionVotingRule extends GovernanceRule {
-  private convictionThreshold: number;
-  private halfLife: number;
+  private thresholdPercent: number;  // Percent of total tokens needed as conviction
+  private halfLife: number;  // Steps for conviction to reach 50% of max
 
-  constructor(convictionThreshold: number = 1000, halfLife: number = 10) {
+  constructor(config?: GovernanceRuleConfig) {
     super();
-    this.convictionThreshold = convictionThreshold;
-    this.halfLife = halfLife;
+    // Default: need conviction equivalent to 10% of total tokens
+    this.thresholdPercent = config?.convictionThreshold ?? 0.10;
+    // Default: conviction reaches 50% of max after 30 steps
+    this.halfLife = config?.convictionHalfLife ?? 30;
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
-    // Calculate conviction (simplified - would need to track individual vote times)
     const age = dao.currentStep - proposal.creationTime;
-    const conviction = proposal.votesFor * Math.log(age + 1) * this.halfLife;
 
-    return conviction >= this.convictionThreshold;
+    // No conviction if just created
+    if (age <= 0) {
+      return false;
+    }
+
+    // Calculate decay rate per step (approaches 0.5 after halfLife steps)
+    const decayRate = Math.pow(0.5, 1 / this.halfLife);
+
+    // Current support (votes for the proposal)
+    const support = proposal.votesFor;
+
+    // Calculate conviction using exponential accumulation formula
+    // c(t) = support * (1 - decay^t) / (1 - decay)
+    // This converges to support/(1-decay) as t → ∞
+    const maxConviction = support / (1 - decayRate);
+    const currentConviction = maxConviction * (1 - Math.pow(decayRate, age));
+
+    // Calculate threshold based on total voting power
+    const totalTokens = dao.members.reduce(
+      (sum, member) => sum + member.tokens,
+      0
+    );
+    const threshold = totalTokens * this.thresholdPercent;
+
+    return currentConviction >= threshold;
   }
 }
 
@@ -232,9 +279,10 @@ export class ConvictionVotingRule extends GovernanceRule {
 export class QuadraticVotingRule extends GovernanceRule {
   private quorumPercentage: number;
 
-  constructor(quorumPercentage: number = 0.1) {
+  constructor(config?: GovernanceRuleConfig) {
     super();
-    this.quorumPercentage = quorumPercentage;
+    // Use 4% quorum to match other governance systems (was 10%, too high)
+    this.quorumPercentage = config?.quorumPercentage ?? 0.04;
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {

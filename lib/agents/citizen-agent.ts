@@ -102,6 +102,12 @@ export class CitizenAgent extends DAOMember {
   private participateInGovernance(): void {
     if (!this.model.dao) return;
 
+    // Respect votingActivity parameter
+    const votingActivity = this.model.dao.votingActivity ?? 0.3;
+    if (random() >= votingActivity) {
+      return;  // Citizen decides not to participate this step
+    }
+
     const openProposals = this.model.dao.proposals.filter(
       p => p.status === 'open' && !this.votes.has(p.uniqueId)
     );

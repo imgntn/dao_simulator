@@ -317,6 +317,12 @@ export class StewardAgent extends DAOMember {
   private voteOnRelevantProposals(): void {
     if (!this.model.dao) return;
 
+    // Respect votingActivity parameter
+    const votingActivity = this.model.dao.votingActivity ?? 0.3;
+    if (random() >= votingActivity) {
+      return;  // Steward decides not to vote this step
+    }
+
     const proposals = this.model.dao.proposals.filter(
       p => p.status === 'open' && !this.votes.has(p.uniqueId)
     );

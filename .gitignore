@@ -69,3 +69,13 @@ paper/*.blg
 paper/*.out
 paper/*.toc
 
+# Paper archives and generated files
+paper/archive/
+paper/generated/
+
+# Simulation checkpoints
+.checkpoints/
+
+# Claude local settings
+.claude/settings.local.json
+

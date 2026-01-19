@@ -16,6 +16,7 @@ import type {
 
 import type { DAOSimulationConfig } from '../engine/simulation';
 import type { SimulationSettings } from '../config/settings';
+import type { GovernanceRuleConfig } from '../utils/governance-plugins';
 
 // =============================================================================
 // ARCHETYPE TO AGENT MAPPING
@@ -122,6 +123,13 @@ export class DAOConfigBuilder {
     const config: DAOSimulationConfig = {
       // Governance rule based on voting system
       governance_rule: this.mapVotingSystemToRule(designer.votingSystem.type),
+
+      // Governance rule configuration (quorum, thresholds, etc.)
+      // Convert quorum from percentage (0-100) to fraction (0-1)
+      governance_config: {
+        quorumPercentage: designer.quorumConfig.baseQuorumPercent / 100,
+        threshold: designer.votingSystem.passingThreshold,
+      },
 
       // Basic simulation parameters
       enable_marketing: false,

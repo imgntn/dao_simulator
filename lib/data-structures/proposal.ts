@@ -46,7 +46,12 @@ export class Proposal {
     this.uniqueId = '';  // Will be set by DAO when added
   }
 
-  addVote(memberId: string, vote: boolean, weight: number = 1): void {
+  addVote(memberId: string, vote: boolean, weight: number = 1): boolean {
+    // Reject votes on closed proposals
+    if (this.status !== 'open') {
+      return false;
+    }
+
     if (!this.votes.has(memberId)) {
       this.votes.set(memberId, { vote, weight });
 
@@ -65,7 +70,9 @@ export class Proposal {
           weight,
         });
       }
+      return true;
     }
+    return false;  // Already voted
   }
 
   addComment(memberId: string, sentiment: string): void {
