@@ -2,6 +2,7 @@
 
 import type { DAO } from './dao';
 import type { Project } from './project';
+import { DelegationResolver } from '../delegation/delegation-resolver';
 
 export class Proposal {
   dao: DAO;
@@ -59,7 +60,12 @@ export class Proposal {
   /**
    * Take a snapshot of voting power for all DAO members
    * This should be called when the proposal is created to lock in voting power
-   * and prevent flash loan attacks
+   * and prevent flash loan attacks.
+   *
+   * Voting power includes:
+   * - Member's own tokens
+   * - Member's staked tokens
+   * - Transitive delegated power from all delegators
    */
   takeVotingPowerSnapshot(): void {
     if (this.snapshotTaken) {
@@ -67,8 +73,8 @@ export class Proposal {
     }
 
     for (const member of this.dao.members) {
-      // Voting power = tokens + staked tokens (locked stakes count too)
-      const votingPower = member.tokens + member.stakedTokens;
+      // Voting power = own tokens + staked + all delegated power (transitive)
+      const votingPower = DelegationResolver.resolveVotingPower(member);
       this.votingPowerSnapshot.set(member.uniqueId, votingPower);
     }
     this.snapshotTaken = true;
@@ -155,7 +161,7 @@ export class Proposal {
       // CRITICAL FIX: Auto-revoke any delegations this member made
       // When voting directly, delegated power should not also count via delegate
       // This prevents double-voting through delegation
-      const member = this.dao.members.find(m => m.uniqueId === memberId);
+      const member = this.dao?.members?.find(m => m.uniqueId === memberId);
       if (member && !this.isDelegationRevokedFor(memberId)) {
         for (const [delegateId, amount] of member.delegations.entries()) {
           if (amount > 0) {

@@ -7,6 +7,7 @@ import type { VotingStrategy } from '../utils/voting-strategies';
 import { getStrategy, DefaultVotingStrategy } from '../utils/voting-strategies';
 import type { DAOModel } from '../engine/model';
 import { random, randomChoice } from '../utils/random';
+import { DelegationResolver } from '../delegation/delegation-resolver';
 
 export class DAOMember implements Agent {
   uniqueId: string;
@@ -90,16 +91,38 @@ export class DAOMember implements Agent {
   }
 
   voteOnProposal(proposal: Proposal): void {
-    this.votingStrategy.vote(this, proposal);
+    // Calculate effective voting power including all delegations
+    const effectiveWeight = DelegationResolver.resolveVotingPower(this);
+
+    // Vote with effective weight
+    this.votingStrategy.voteWithWeight(this, proposal, effectiveWeight);
     this.markActive();
 
-    // Notify delegates
+    // Revoke delegation power from all delegators for this proposal
+    // This prevents double-voting when a delegator later votes directly
+    this.revokeDelegatorPowerOnVote(proposal);
+
+    // Notify delegates (for backward compatibility)
     for (const delegate of this.delegates) {
       if (delegate.receiveRepresentativeVote) {
         const voteData = this.votes.get(proposal.uniqueId);
         if (voteData) {
           delegate.receiveRepresentativeVote(proposal, voteData.vote, voteData.weight);
         }
+      }
+    }
+  }
+
+  /**
+   * Revoke delegated power for all delegators when this member votes.
+   * This ensures delegators can still vote directly without double-counting.
+   */
+  private revokeDelegatorPowerOnVote(proposal: Proposal): void {
+    const allDelegators = DelegationResolver.getAllDelegators(this);
+    for (const delegator of allDelegators) {
+      const delegatedAmount = delegator.delegations.get(this.uniqueId) || 0;
+      if (delegatedAmount > 0) {
+        proposal.revokeDelegationFor(delegator.uniqueId, this.uniqueId, delegatedAmount);
       }
     }
   }
@@ -324,29 +347,10 @@ export class DAOMember implements Agent {
 
   /**
    * Check if delegating to target would create a circular delegation
-   * Optimized with O(1) member lookup via cache
+   * Uses DelegationResolver for multi-level cycle detection
    */
-  private wouldCreateCircularDelegation(target: DAOMember, visited: Set<string> = new Set()): boolean {
-    // If we've seen this member before, we found a cycle
-    if (visited.has(target.uniqueId)) {
-      return true;
-    }
-
-    // If target is delegating back to us (directly or indirectly), it's circular
-    if (target.delegations.has(this.uniqueId)) {
-      return true;
-    }
-
-    // Check transitively with O(1) lookup
-    visited.add(target.uniqueId);
-    for (const delegateId of target.delegations.keys()) {
-      const delegateMember = this.findMemberById(delegateId);
-      if (delegateMember && this.wouldCreateCircularDelegation(delegateMember, visited)) {
-        return true;
-      }
-    }
-
-    return false;
+  private wouldCreateCircularDelegation(target: DAOMember): boolean {
+    return DelegationResolver.wouldCreateCycle(this, target);
   }
 
   /**
