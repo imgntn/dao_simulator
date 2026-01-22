@@ -354,8 +354,10 @@ describe('Agent interactions', () => {
   });
 
   it('should handle proposals being created and voted on', async () => {
-    // Run enough steps for proposals to be created
-    await simulation.run(20);
+    // ProposalCreators have 0.5% chance to create per step
+    // With 2 creators and 200 steps: expected = 2 × 200 × 0.005 = 2 proposals
+    // Using 200 steps to ensure reliable proposal creation
+    await simulation.run(200);
 
     // Should have some proposals
     expect(simulation.dao.proposals.length).toBeGreaterThan(0);
@@ -378,16 +380,15 @@ describe('Voting behavior', () => {
     member = new DAOMember('voter', simulation, 100, 10, 'North America');
     simulation.dao.addMember(member);
 
-    // Create a test proposal
+    // Create a test proposal with correct constructor signature
     proposal = new Proposal(
-      'test_proposal',
-      'funding',
-      simulation.dao.members[0],
+      simulation.dao,
+      simulation.dao.members[0].uniqueId,
       'Test Proposal',
       'A test proposal',
       1000,
-      simulation.currentStep,
-      100
+      100,
+      'funding'
     );
     simulation.dao.proposals.push(proposal);
   });

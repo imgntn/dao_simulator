@@ -12,7 +12,7 @@ export class Proposal {
   fundingGoal: number;
   duration: number;
   project: Project | null;
-  status: 'open' | 'approved' | 'rejected' | 'completed' = 'open';
+  status: 'open' | 'approved' | 'rejected' | 'completed' | 'expired' = 'open';
   votes: Map<string, { vote: boolean; weight: number }> = new Map();
   votesFor: number = 0;
   votesAgainst: number = 0;
@@ -20,6 +20,7 @@ export class Proposal {
   delegatedSupport: Map<string, number> = new Map();
   topic: string;
   creationTime: number = 0;
+  resolvedTime?: number;  // Timestamp when proposal was resolved (approved/rejected/expired)
   votingPeriod: number;
   currentFunding: number = 0;
   uniqueId: string;
@@ -224,6 +225,7 @@ export class Proposal {
       currentFunding: this.currentFunding,
       creator: this.creator,
       creationTime: this.creationTime,
+      resolvedTime: this.resolvedTime,
       votingPeriod: this.votingPeriod,
       type: this.type,
       // Serialize voting power snapshot for checkpoint restore
@@ -249,6 +251,7 @@ export class Proposal {
     proposal.votesAgainst = data.votesAgainst || 0;
     proposal.currentFunding = data.currentFunding || 0;
     proposal.creationTime = data.creationTime || 0;
+    proposal.resolvedTime = data.resolvedTime;
     proposal.votingPeriod = data.votingPeriod || proposal.duration;
     proposal.uniqueId = data.uniqueId || '';
     proposal.type = data.type || 'default';

@@ -429,7 +429,10 @@ describe('Agent interactions', () => {
   });
 
   it('should handle voting on proposals', async () => {
-    await simulation.run(10);
+    // ProposalCreators have 0.5% chance to create per step
+    // With 2 creators and 200 steps: expected = 2 × 200 × 0.005 = 2 proposals
+    // Using 200 steps to ensure reliable proposal creation
+    await simulation.run(200);
 
     // Should have proposals created
     expect(simulation.dao.proposals.length).toBeGreaterThan(0);

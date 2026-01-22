@@ -447,7 +447,38 @@ export class DAOSimulation extends Model {
 
       if (!votingEnded) continue;
 
-      // Apply governance rule to determine outcome
+      // Record the resolution time
+      proposal.resolvedTime = this.currentStep;
+
+      // Check quorum FIRST before applying governance rule
+      // This ensures proposals that fail quorum are marked as 'expired', not 'rejected'
+      const quorumConfig = (this.governanceRule as any).quorumPercentage;
+      if (quorumConfig !== undefined && quorumConfig > 0) {
+        const totalTokens = this.dao.members.reduce(
+          (sum, member) => sum + member.tokens + member.stakedTokens,
+          0
+        );
+        const votingTokens = proposal.votesFor + proposal.votesAgainst;
+        const participationRate = votingTokens / Math.max(totalTokens, 1);
+
+        if (participationRate < quorumConfig) {
+          // Quorum not met - mark as expired (abandoned)
+          proposal.status = 'expired';
+          this.eventBus.publish('proposal_expired', {
+            step: this.currentStep,
+            proposalId: proposal.uniqueId,
+            title: proposal.title,
+            votesFor: proposal.votesFor,
+            votesAgainst: proposal.votesAgainst,
+            participationRate,
+            requiredQuorum: quorumConfig,
+            reason: 'quorum_not_met',
+          });
+          continue; // Skip to next proposal
+        }
+      }
+
+      // Apply governance rule to determine outcome (quorum already met if we get here)
       const approved = this.governanceRule.approve(proposal, this.dao);
 
       if (approved) {
@@ -531,6 +562,32 @@ export class DAOSimulation extends Model {
     // Token burning
     if (this.tokenBurnRate > 0) {
       this.dao.treasury.withdraw('DAO_TOKEN', this.tokenBurnRate, this.currentStep);
+    }
+
+    // Treasury revenue mechanisms (fixes treasury decline issue)
+    // 1. Proposal activity fees: Small fee per active proposal per step
+    const activeProposals = this.dao.proposals.filter(p => p.status === 'open').length;
+    const proposalFees = activeProposals * 0.1; // 0.1 tokens per active proposal per step
+
+    // 2. Staking yield to treasury: Portion of staking rewards goes to treasury
+    const totalStaked = this.dao.members.reduce((sum, m) => sum + m.stakedTokens, 0);
+    const treasuryStakingYield = totalStaked * 0.0005; // 0.05% per step to treasury
+
+    // 3. Member activity fees: Nominal fee from active member participation
+    const memberActivityFee = this.dao.members.length * 0.01; // 0.01 tokens per member per step
+
+    const totalRevenue = proposalFees + treasuryStakingYield + memberActivityFee;
+    if (totalRevenue > 0) {
+      this.dao.treasury.deposit('DAO_TOKEN', totalRevenue, this.currentStep);
+
+      // Emit revenue event for tracking
+      this.eventBus.publish('treasury_revenue', {
+        step: this.currentStep,
+        proposalFees,
+        stakingYield: treasuryStakingYield,
+        memberFees: memberActivityFee,
+        total: totalRevenue,
+      });
     }
 
     // Step agents - await to handle async schedulers

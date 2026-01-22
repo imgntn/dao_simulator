@@ -385,15 +385,18 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
 
     case 'avg_time_to_decision': {
       // Average steps from creation to resolution
+      // Include 'expired' proposals since they are also resolved (quorum not met)
       const resolvedProposals = proposals.filter(p =>
         p.status === 'approved' || p.status === 'passed' ||
-        p.status === 'executed' || p.status === 'rejected'
+        p.status === 'executed' || p.status === 'rejected' ||
+        p.status === 'expired'
       );
       if (resolvedProposals.length === 0) return 0;
 
       let totalTime = 0;
       for (const p of resolvedProposals) {
         const creationTime = p.creationTime || 0;
+        // Use resolvedTime if available (now properly set in simulation.ts)
         const resolvedTime = p.resolvedTime || p.executedTime || simulation.currentStep;
         totalTime += resolvedTime - creationTime;
       }
@@ -651,18 +654,41 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
     }
 
     case 'governance_capture_risk': {
-      // Concentration of proposal creation (Gini of proposals per member)
-      const proposerCounts = new Map<string, number>();
+      // Measure voting power concentration affecting outcomes
+      // Calculate what % of winning vote weight came from top 10% of voters
+      const memberInfluence = new Map<string, number>();
+      let totalInfluence = 0;
+
       for (const p of proposals) {
-        const proposer = p.proposer || p.createdBy || 'unknown';
-        proposerCounts.set(proposer, (proposerCounts.get(proposer) || 0) + 1);
+        // Only count resolved proposals
+        if (p.status !== 'approved' && p.status !== 'rejected' &&
+            p.status !== 'passed' && p.status !== 'executed') {
+          continue;
+        }
+
+        const votes = getProposalVotes(p);
+        const isApproved = p.status === 'approved' || p.status === 'passed' || p.status === 'executed';
+
+        for (const v of votes) {
+          // Did this voter vote with the winning side?
+          const votedWithWinner = (v.vote && isApproved) || (!v.vote && !isApproved);
+
+          if (votedWithWinner) {
+            memberInfluence.set(v.voterId, (memberInfluence.get(v.voterId) || 0) + v.weight);
+            totalInfluence += v.weight;
+          }
+        }
       }
 
-      // Include non-proposers as 0
-      const allMemberProposals = members.map(m =>
-        proposerCounts.get(m.uniqueId || m.id) || 0
-      );
-      return calculateGini(allMemberProposals);
+      if (totalInfluence === 0) return 0;
+
+      // Sort influences descending and calculate top 10% concentration
+      const influences = Array.from(memberInfluence.values()).sort((a, b) => b - a);
+      const top10Count = Math.max(1, Math.ceil(influences.length * 0.1));
+      const top10Influence = influences.slice(0, top10Count).reduce((a, b) => a + b, 0);
+
+      // Return as 0-1 scale: what fraction of "winning influence" came from top 10%
+      return top10Influence / totalInfluence;
     }
 
     case 'vote_buying_vulnerability': {

@@ -126,19 +126,35 @@ export class QuorumRule extends GovernanceRule {
 
 /**
  * Supermajority rule - require higher threshold than simple majority
+ * Now also checks quorum if configured (fixes bug where quorum was ignored)
  */
 export class SupermajorityRule extends GovernanceRule {
   private threshold: number;
+  private quorumPercentage: number | undefined;
 
   constructor(config?: GovernanceRuleConfig) {
     super();
     this.threshold = config?.threshold ?? 0.66;
+    this.quorumPercentage = config?.quorumPercentage;
   }
 
-  approve(proposal: Proposal): boolean {
+  approve(proposal: Proposal, dao: DAO): boolean {
     const totalVotes = proposal.votesFor + proposal.votesAgainst;
     if (totalVotes === 0) {
       return false;
+    }
+
+    // Check quorum first if configured
+    if (this.quorumPercentage !== undefined && this.quorumPercentage > 0) {
+      const totalTokens = dao.members.reduce(
+        (sum, member) => sum + member.tokens + member.stakedTokens,
+        0
+      );
+      const participationRate = totalVotes / Math.max(totalTokens, 1);
+
+      if (participationRate < this.quorumPercentage) {
+        return false; // Quorum not met
+      }
     }
 
     const approvalRate = proposal.votesFor / totalVotes;
@@ -179,11 +195,13 @@ export class TokenQuorumRule extends GovernanceRule {
 
 /**
  * Time-decay rule - proposals get easier to pass over time
+ * Now also checks quorum if configured (fixes bug where quorum was ignored)
  */
 export class TimeDecayRule extends GovernanceRule {
   private initialThreshold: number;
   private finalThreshold: number;
   private decaySteps: number;
+  private quorumPercentage: number | undefined;
 
   constructor(config?: GovernanceRuleConfig) {
     super();
@@ -191,12 +209,26 @@ export class TimeDecayRule extends GovernanceRule {
     this.initialThreshold = config?.threshold ?? 0.66;
     this.finalThreshold = 0.5;
     this.decaySteps = 100;
+    this.quorumPercentage = config?.quorumPercentage;
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
     const totalVotes = proposal.votesFor + proposal.votesAgainst;
     if (totalVotes === 0) {
       return false;
+    }
+
+    // Check quorum first if configured
+    if (this.quorumPercentage !== undefined && this.quorumPercentage > 0) {
+      const totalTokens = dao.members.reduce(
+        (sum, member) => sum + member.tokens + member.stakedTokens,
+        0
+      );
+      const participationRate = totalVotes / Math.max(totalTokens, 1);
+
+      if (participationRate < this.quorumPercentage) {
+        return false; // Quorum not met
+      }
     }
 
     // Calculate current threshold based on proposal age

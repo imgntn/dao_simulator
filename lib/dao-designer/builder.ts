@@ -129,6 +129,9 @@ export class DAOConfigBuilder {
       governance_config: {
         quorumPercentage: designer.quorumConfig.baseQuorumPercent / 100,
         threshold: designer.votingSystem.passingThreshold,
+        // Conviction voting parameters (extract from features config)
+        convictionThreshold: designer.features?.convictionVotingConfig?.minConvictionToPass ?? 0.10,
+        convictionHalfLife: designer.features?.convictionVotingConfig?.halfLifeDays ?? 30,
       },
 
       // Basic simulation parameters

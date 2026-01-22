@@ -1,4 +1,48 @@
 // Base DAOMember agent class
+//
+// ============================================================================
+// DELEGATION SYSTEM DOCUMENTATION
+// ============================================================================
+//
+// This codebase has THREE distinct delegation mechanisms. Understanding when
+// to use each is critical for correct governance modeling:
+//
+// 1. TOKEN DELEGATION (delegations Map + delegates Array)
+//    ---------------------------------------------------------
+//    Used for: Transferring voting power via token locking
+//    How it works:
+//      - delegations: Map<memberId, amount> - tokens I delegated OUT to others
+//      - delegates: DAOMember[] - members who delegated tokens TO me
+//    When someone calls delegate(amount, target):
+//      - Tokens are TRANSFERRED from delegator to delegations map
+//      - Delegator's token count DECREASES
+//      - Target's voting power increases via DelegationResolver
+//    Use case: Token-weighted voting where you want to pool voting power
+//
+// 2. REPRESENTATIVE DELEGATION (representative field) - Liquid Democracy
+//    ---------------------------------------------------------
+//    Used for: Vote proxy without token transfer (LiquidDelegator pattern)
+//    How it works:
+//      - representative: DAOMember | null - who casts votes on my behalf
+//      - When representative votes, their vote counts for all their delegators
+//    Key difference: No tokens move! Just vote authority is transferred
+//    Use case: "I trust Alice to vote for me" without giving away tokens
+//
+// 3. PROPOSAL SUPPORT DELEGATION (Delegator class)
+//    ---------------------------------------------------------
+//    Used for: Funding proposals, not voting on them
+//    How it works:
+//      - delegationBudget: tokens reserved for funding proposals
+//      - supportProposal() allocates from this budget
+//    Key difference: This is about MONEY, not votes
+//    Use case: Venture-style funding where delegates pool capital
+//
+// The DelegationResolver class handles transitive delegation resolution:
+// - Walks the delegation chains to calculate effective voting power
+// - Detects cycles to prevent infinite loops
+// - Supports both token delegation and representative delegation patterns
+//
+// ============================================================================
 
 import type { Agent } from '@/types/simulation';
 import type { Proposal } from '../data-structures/proposal';
@@ -25,6 +69,7 @@ export class DAOMember implements Agent {
   votes: Map<string, { vote: boolean; weight: number }> = new Map(); // proposalId -> vote data
   delegations: Map<string, number> = new Map(); // memberId -> amount
   delegates: DAOMember[] = [];
+  representative: DAOMember | null = null; // For liquid delegation - who votes on my behalf
   private _active: boolean = false;
   pos: [number, number] | null = null; // For visualization
   optimism: number;
@@ -38,13 +83,14 @@ export class DAOMember implements Agent {
 
   // Voter fatigue modeling
   // In real DAOs like Optimism, participation drops ~40% over time
-  // Fatigue increases with each vote cast and decays slowly over time
+  // Fatigue increases with each vote cast and decays over time
+  // Tuned to achieve realistic quorum reach rates (20-40%)
   voterFatigue: number = 0;        // Current fatigue level (0-1)
   lastVoteStep: number = 0;        // Step when last vote was cast
   totalVotesCast: number = 0;      // Lifetime vote count
-  static readonly FATIGUE_PER_VOTE = 0.05;    // Fatigue increase per vote
-  static readonly FATIGUE_DECAY_RATE = 0.002; // Fatigue decay per step
-  static readonly MAX_FATIGUE = 0.6;          // Maximum fatigue level (60% reduction)
+  static readonly FATIGUE_PER_VOTE = 0.02;    // Can vote 20x before max fatigue (was 0.05)
+  static readonly FATIGUE_DECAY_RATE = 0.01;  // 5x faster recovery (was 0.002)
+  static readonly MAX_FATIGUE = 0.4;          // Max 40% reduction (was 60%)
 
   constructor(
     uniqueId: string,
@@ -187,26 +233,34 @@ export class DAOMember implements Agent {
     // Update fatigue (decay over time)
     this.updateVoterFatigue();
 
-    // Check voting activity probability WITH fatigue modifier
-    // This models voter fatigue: frequent voters become less likely to vote
-    const effectiveActivity = this.getEffectiveVotingProbability();
-    if (random() >= effectiveActivity) {
-      return;  // Agent decides not to participate this step (possibly due to fatigue)
-    }
-
+    // Get all open proposals we haven't voted on yet
     const openProps = this.model.dao.proposals.filter(p => {
       const isOpen = p.status === 'open';
       const inVotingPeriod =
         this.model.currentStep <= p.creationTime + p.votingPeriod;
-      // Also check that we haven't already voted
       return isOpen && inVotingPeriod && !this.votes.has(p.uniqueId);
     });
 
-    if (openProps.length > 0) {
-      const proposal = randomChoice(openProps);
-      this.voteOnProposal(proposal);
-      // Apply fatigue after voting
-      this.applyVoteFatigue();
+    if (openProps.length === 0) return;
+
+    // Vote on ALL open proposals with per-proposal probability
+    // This models real DAO behavior where active members vote on multiple proposals
+    const effectiveActivity = this.getEffectiveVotingProbability();
+    let votedCount = 0;
+
+    for (const proposal of openProps) {
+      // Each proposal gets an independent chance of being voted on
+      if (random() < effectiveActivity) {
+        this.voteOnProposal(proposal);
+        votedCount++;
+      }
+    }
+
+    // Apply fatigue proportional to votes cast
+    if (votedCount > 0) {
+      for (let i = 0; i < votedCount; i++) {
+        this.applyVoteFatigue();
+      }
     }
   }
 
@@ -314,28 +368,41 @@ export class DAOMember implements Agent {
   }
 
   // Cache for member lookup to avoid O(n) searches
-  private static memberLookupCache: Map<string, DAOMember> | null = null;
-  private static memberLookupCacheStep: number = -1;
+  // Keyed by daoId to support multi-DAO scenarios (DAOCity)
+  private static memberLookupCache: Map<string, Map<string, DAOMember>> = new Map();
+  private static memberLookupCacheKeys: Map<string, number> = new Map(); // daoId -> step
 
   /**
    * Get or build member lookup cache
    * Cache is invalidated each step to handle member changes
+   * Cache is keyed by daoId to prevent cross-DAO member confusion in multi-DAO scenarios
    */
   private getMemberLookup(): Map<string, DAOMember> {
     const currentStep = this.model.currentStep;
+    const cacheKey = this.daoId;
+    const cachedStep = DAOMember.memberLookupCacheKeys.get(cacheKey);
 
-    // Rebuild cache if step changed or cache is null
-    if (DAOMember.memberLookupCache === null || DAOMember.memberLookupCacheStep !== currentStep) {
-      DAOMember.memberLookupCache = new Map();
+    // Rebuild cache if step changed or cache doesn't exist for this DAO
+    if (cachedStep !== currentStep || !DAOMember.memberLookupCache.has(cacheKey)) {
+      const cache = new Map<string, DAOMember>();
       if (this.model.dao) {
         for (const member of this.model.dao.members) {
-          DAOMember.memberLookupCache.set(member.uniqueId, member);
+          cache.set(member.uniqueId, member);
         }
       }
-      DAOMember.memberLookupCacheStep = currentStep;
+      DAOMember.memberLookupCache.set(cacheKey, cache);
+      DAOMember.memberLookupCacheKeys.set(cacheKey, currentStep);
     }
 
-    return DAOMember.memberLookupCache;
+    return DAOMember.memberLookupCache.get(cacheKey)!;
+  }
+
+  /**
+   * Clear all cached member lookups (useful for testing)
+   */
+  static clearMemberLookupCache(): void {
+    DAOMember.memberLookupCache.clear();
+    DAOMember.memberLookupCacheKeys.clear();
   }
 
   /**
@@ -351,6 +418,27 @@ export class DAOMember implements Agent {
    */
   private wouldCreateCircularDelegation(target: DAOMember): boolean {
     return DelegationResolver.wouldCreateCycle(this, target);
+  }
+
+  /**
+   * Set or clear the representative for liquid delegation
+   * Handles bidirectional relationship with delegates array
+   */
+  setRepresentative(rep: DAOMember | null): void {
+    // Remove from previous representative's delegates list
+    if (this.representative) {
+      const idx = this.representative.delegates.indexOf(this);
+      if (idx > -1) {
+        this.representative.delegates.splice(idx, 1);
+      }
+    }
+
+    this.representative = rep;
+
+    // Add to new representative's delegates list
+    if (rep && !rep.delegates.includes(this)) {
+      rep.delegates.push(this);
+    }
   }
 
   /**
