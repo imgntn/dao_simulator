@@ -76,6 +76,10 @@ legacy-python/      Archived Python implementation for reference
 - Set `SOCKET_ALLOWED_ORIGINS` (comma-separated) or `NEXTAUTH_URL` so the Socket.IO server only accepts browser connections from trusted origins.
 - See `DEPLOYMENT.md` for Railway/Vercel/docker instructions plus the security checklist.
 
+## Development
+
+This project is actively developed in collaboration with **Claude** (Anthropic) as the primary AI coding assistant. Claude Code is used for architecture decisions, implementation, debugging, and running research experiments.
+
 ## Release Notes
 
 See [`RELEASE_NOTES.md`](./RELEASE_NOTES.md) for the latest feature, testing, and documentation changes.
