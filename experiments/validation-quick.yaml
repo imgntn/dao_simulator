@@ -1,0 +1,61 @@
+# Quick validation of simulation fixes
+name: "Quick Validation"
+description: "Verify simulation metrics are working after fixes"
+version: "1.0.0"
+
+baseConfig:
+  template: "compound"
+  overrides:
+    memberDistribution:
+      totalMembers: 100
+      distribution:
+        - archetype: "active_voter"
+          percentage: 50
+        - archetype: "governance_expert"
+          percentage: 20
+        - archetype: "delegate"
+          percentage: 20
+        - archetype: "whale"
+          percentage: 10
+    proposalProcess:
+      stages:
+        - name: "Voting"
+          type: "voting"
+          durationDays: 3
+          quorumPercent: 10
+          passThreshold: 0.5
+      proposalThreshold: 100
+      proposalThresholdType: "absolute"
+    quorumConfig:
+      type: "fixed_percent"
+      baseQuorumPercent: 10
+      minParticipation: 1000
+    simulationParams:
+      proposalFrequency: 0.8
+      votingActivity: 0.7
+
+sweep:
+  parameter: "votingSystem.type"
+  values:
+    - "simple_majority"
+    - "conviction"
+    - "supermajority"
+
+execution:
+  runsPerConfig: 30
+  stepsPerRun: 500
+  baseSeed: 42
+  concurrency: 4
+
+output:
+  directory: "results/quick-validation"
+  formats:
+    - json
+    - csv
+
+metrics:
+  - name: "proposal_pass_rate"
+  - name: "quorum_reach_rate"
+  - name: "avg_time_to_decision"
+  - name: "voter_participation_rate"
+  - name: "total_proposals"
