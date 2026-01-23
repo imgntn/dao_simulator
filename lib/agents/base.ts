@@ -431,6 +431,8 @@ export class DAOMember implements Agent {
       if (idx > -1) {
         this.representative.delegates.splice(idx, 1);
       }
+      // Invalidate cache for previous representative
+      DelegationResolver.invalidateMember(this.representative.uniqueId);
     }
 
     this.representative = rep;
@@ -438,7 +440,12 @@ export class DAOMember implements Agent {
     // Add to new representative's delegates list
     if (rep && !rep.delegates.includes(this)) {
       rep.delegates.push(this);
+      // Invalidate cache for new representative
+      DelegationResolver.invalidateMember(rep.uniqueId);
     }
+
+    // Invalidate cache for self
+    DelegationResolver.invalidateMember(this.uniqueId);
   }
 
   /**
@@ -463,6 +470,10 @@ export class DAOMember implements Agent {
     if (!delegate.delegates.includes(this)) {
       delegate.delegates.push(this);
     }
+
+    // Invalidate voting power cache for both parties
+    DelegationResolver.invalidateMember(this.uniqueId);
+    DelegationResolver.invalidateMember(delegate.uniqueId);
 
     return true;
   }
@@ -500,6 +511,10 @@ export class DAOMember implements Agent {
     } else {
       this.delegations.set(delegate.uniqueId, newDelegation);
     }
+
+    // Invalidate voting power cache for both parties
+    DelegationResolver.invalidateMember(this.uniqueId);
+    DelegationResolver.invalidateMember(delegate.uniqueId);
 
     return actualAmount;
   }

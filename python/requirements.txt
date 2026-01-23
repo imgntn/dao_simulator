@@ -1,0 +1,11 @@
+# GPU-accelerated statistics for DAO Simulator
+# Install with: pip install -r requirements.txt
+
+numpy>=1.24.0
+scipy>=1.10.0
+
+# GPU acceleration (optional - falls back to NumPy if not available)
+# For CUDA 11.x:
+# cupy-cuda11x>=12.0.0
+# For CUDA 12.x:
+# cupy-cuda12x>=12.0.0

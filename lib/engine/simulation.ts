@@ -17,6 +17,7 @@ import * as constants from '../config/constants';
 import { getRule, GovernanceRuleConfig } from '../utils/governance-plugins';
 import { setSeed, resetGlobalRandom, getRandomState, setRandomState, random } from '../utils/random';
 import { GovernanceProcessor, createGovernanceProcessor } from '../governance';
+import { DelegationResolver } from '../delegation/delegation-resolver';
 import {
   Developer,
   Investor,
@@ -538,6 +539,10 @@ export class DAOSimulation extends Model {
    * this method MUST be awaited to ensure agents complete their steps.
    */
   async step(): Promise<void> {
+    // Clear per-step caches at step boundaries for consistent calculations
+    // DelegationResolver memoizes voting power calculations within a step
+    DelegationResolver.setCurrentStep(this.currentStep, this.dao.daoId);
+
     // Process scheduled events
     if (this.eventEngine) {
       this.eventEngine.triggerEvents(this.currentStep, this);
