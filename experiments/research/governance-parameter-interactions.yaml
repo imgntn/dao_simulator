@@ -1,0 +1,186 @@
+# Governance Parameter Interactions Study
+#
+# Multi-parameter grid search to understand how quorum, voting period,
+# and passing threshold interact to affect governance outcomes.
+#
+# This addresses the limitation of single-parameter sweeps that miss
+# interaction effects between governance parameters.
+#
+# Grid: 6 quorum x 4 period x 4 threshold = 96 configurations
+# Runs: 100 per config = 9,600 total simulations
+
+name: "Governance Parameter Interactions"
+description: |
+  Comprehensive multi-parameter study examining how governance parameters
+  interact. Real DAOs must tune multiple parameters simultaneously, and
+  the optimal settings for one parameter depend on others. This experiment
+  maps the full parameter space to identify:
+  - Optimal parameter combinations for different DAO goals
+  - Dangerous parameter combinations that enable attacks
+  - Trade-offs between security, efficiency, and inclusivity
+
+version: "1.0.0"
+author: "DAO Simulator Research"
+tags:
+  - "multi-parameter"
+  - "grid-search"
+  - "governance"
+  - "parameter-interactions"
+  - "comprehensive"
+
+# Base configuration - standard DAO setup
+baseConfig:
+  template: "compound"
+  overrides:
+    # Moderate token concentration for testing whale effects
+    tokenDistribution:
+      type: "pareto"
+      paretoAlpha: 1.5
+      totalSupply: 1000000
+
+    # Standard agent mix
+    memberConfig:
+      totalMembers: 105
+      distribution:
+        developers: 15
+        investors: 20
+        traders: 10
+        delegators: 15
+        proposalCreators: 5
+        validators: 10
+        passiveMembers: 30
+
+# Multi-parameter grid search
+sweep:
+  grid:
+    # Quorum percentage: How much participation is required?
+    - parameter: "quorumConfig.baseQuorumPercent"
+      label: "quorum"
+      values:
+        - 5       # Very low - easy to pass, risk of minority capture
+        - 10      # Low - standard for many DAOs (Compound, Uniswap)
+        - 15      # Moderate-low
+        - 20      # Moderate - balanced
+        - 25      # Moderate-high
+        - 30      # High - strong legitimacy, risk of gridlock
+
+    # Voting period in days: How long do members have to vote?
+    - parameter: "votingSystem.votingPeriodDays"
+      label: "votingPeriod"
+      values:
+        - 3       # Short - fast decisions, less deliberation
+        - 7       # Standard - typical DAO period
+        - 14      # Long - more deliberation time
+        - 21      # Very long - maximum deliberation
+
+    # Passing threshold: What majority is needed?
+    - parameter: "votingSystem.passingThreshold"
+      label: "threshold"
+      values:
+        - 0.5     # Simple majority (50%)
+        - 0.6     # Moderate supermajority (60%)
+        - 0.67    # Standard supermajority (2/3)
+        - 0.75    # High supermajority (3/4)
+
+# Execution settings - statistically robust
+execution:
+  runsPerConfig: 100      # 96 configs x 100 = 9,600 total runs
+  stepsPerRun: 500        # Standard simulation length
+  seedStrategy: "sequential"
+  baseSeed: 42
+  workers: 10             # Parallel execution for speed
+
+# Comprehensive metrics for multi-dimensional analysis
+metrics:
+  # === Efficiency Metrics ===
+  - name: "Proposal Pass Rate"
+    type: "builtin"
+    builtin: "proposal_pass_rate"
+
+  - name: "Quorum Reach Rate"
+    type: "builtin"
+    builtin: "quorum_reach_rate"
+
+  - name: "Avg Time to Decision"
+    type: "builtin"
+    builtin: "avg_time_to_decision"
+
+  - name: "Proposal Abandonment Rate"
+    type: "builtin"
+    builtin: "proposal_abandonment_rate"
+
+  - name: "Total Proposals"
+    type: "builtin"
+    builtin: "total_proposals"
+
+  # === Participation Metrics ===
+  - name: "Voter Participation Rate"
+    type: "builtin"
+    builtin: "voter_participation_rate"
+
+  - name: "Average Turnout"
+    type: "builtin"
+    builtin: "avg_votes_per_proposal"
+
+  - name: "Voter Concentration Gini"
+    type: "builtin"
+    builtin: "voter_concentration_gini"
+
+  - name: "Delegate Concentration"
+    type: "builtin"
+    builtin: "delegate_concentration"
+
+  # === Security Metrics ===
+  - name: "Governance Capture Risk"
+    type: "builtin"
+    builtin: "governance_capture_risk"
+
+  - name: "Whale Influence"
+    type: "builtin"
+    builtin: "whale_influence"
+
+  - name: "Single Entity Control"
+    type: "builtin"
+    builtin: "single_entity_control"
+
+  - name: "Collusion Threshold"
+    type: "builtin"
+    builtin: "collusion_threshold"
+
+  # === Economic Metrics ===
+  - name: "Final Treasury"
+    type: "builtin"
+    builtin: "final_treasury"
+
+  - name: "Treasury Growth Rate"
+    type: "builtin"
+    builtin: "treasury_growth_rate"
+
+  - name: "Token Concentration Gini"
+    type: "builtin"
+    builtin: "token_concentration_gini"
+
+  # === Quality Metrics ===
+  - name: "Avg Margin of Victory"
+    type: "builtin"
+    builtin: "avg_margin_of_victory"
+
+  - name: "Voter Retention Rate"
+    type: "builtin"
+    builtin: "voter_retention_rate"
+
+  - name: "Voting Power Utilization"
+    type: "builtin"
+    builtin: "voting_power_utilization"
+
+# Output settings
+output:
+  directory: "results/research/governance-parameter-interactions"
+  formats:
+    - "json"
+    - "csv"
+  includeRawRuns: false         # Too much data at 9,600 runs
+  includeTimeline: false
+  includeManifest: true
+  includeStatistics: true
+  includeRecommendations: true

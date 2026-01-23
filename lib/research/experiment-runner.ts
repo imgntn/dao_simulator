@@ -441,19 +441,48 @@ export class ExperimentRunner {
   /**
    * Generate all DAO configurations to run (handling sweeps)
    * Public for use by BatchRunner
+   * Supports single-parameter sweeps and multi-parameter grid searches
    */
   generateConfigs(): Array<{
     daoConfig: DAODesignerConfig;
     sweepValue?: number | string | boolean;
+    gridValues?: Record<string, number | string | boolean>;
   }> {
     const baseConfig = this.loadBaseConfig();
-    const configs: Array<{ daoConfig: DAODesignerConfig; sweepValue?: number | string | boolean }> = [];
+    const configs: Array<{
+      daoConfig: DAODesignerConfig;
+      sweepValue?: number | string | boolean;
+      gridValues?: Record<string, number | string | boolean>;
+    }> = [];
 
     if (!this.config.sweep) {
       // No sweep - just run the base config
       configs.push({ daoConfig: baseConfig });
-    } else {
-      // Generate sweep values
+    } else if (this.config.sweep.grid) {
+      // Multi-parameter grid search
+      const gridCombinations = this.generateGridCombinations();
+
+      for (const combination of gridCombinations) {
+        // Clone base config and apply all grid parameters
+        const sweptConfig = JSON.parse(JSON.stringify(baseConfig)) as DAODesignerConfig;
+
+        for (const [param, value] of Object.entries(combination)) {
+          setNestedProperty(sweptConfig, param, value);
+        }
+
+        // Create a composite sweep value string for identification
+        const sweepLabel = Object.entries(combination)
+          .map(([k, v]) => `${k.split('.').pop()}=${v}`)
+          .join('_');
+
+        configs.push({
+          daoConfig: sweptConfig,
+          sweepValue: sweepLabel,
+          gridValues: combination,
+        });
+      }
+    } else if (this.config.sweep.parameter) {
+      // Single parameter sweep (original behavior)
       const sweepValues = this.getSweepValues();
 
       for (const value of sweepValues) {
@@ -465,6 +494,59 @@ export class ExperimentRunner {
     }
 
     return configs;
+  }
+
+  /**
+   * Generate all combinations for a multi-parameter grid search (Cartesian product)
+   */
+  private generateGridCombinations(): Array<Record<string, number | string | boolean>> {
+    if (!this.config.sweep?.grid) return [];
+
+    // Get values for each parameter
+    const parameterValues: Array<{
+      parameter: string;
+      values: (number | string | boolean)[];
+    }> = [];
+
+    for (const gridParam of this.config.sweep.grid) {
+      let values: (number | string | boolean)[];
+
+      if (gridParam.values) {
+        values = gridParam.values;
+      } else if (gridParam.range) {
+        const { min, max, step } = gridParam.range;
+        values = [];
+        for (let v = min; v <= max; v += step) {
+          values.push(Math.round(v * 1000) / 1000);
+        }
+      } else {
+        continue; // Skip if no values specified
+      }
+
+      parameterValues.push({ parameter: gridParam.parameter, values });
+    }
+
+    // Generate Cartesian product
+    const combinations: Array<Record<string, number | string | boolean>> = [];
+
+    function generateCombinations(
+      index: number,
+      current: Record<string, number | string | boolean>
+    ) {
+      if (index === parameterValues.length) {
+        combinations.push({ ...current });
+        return;
+      }
+
+      const { parameter, values } = parameterValues[index];
+      for (const value of values) {
+        current[parameter] = value;
+        generateCombinations(index + 1, current);
+      }
+    }
+
+    generateCombinations(0, {});
+    return combinations;
   }
 
   /**

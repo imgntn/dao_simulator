@@ -73,11 +73,34 @@ export interface SimulationOverrides {
 // =============================================================================
 
 /**
- * Configuration for sweeping a parameter across values
+ * Configuration for sweeping parameter(s) across values
+ * Supports single-parameter sweeps or multi-parameter grid searches
  */
 export interface SweepConfig {
+  // === Single Parameter Sweep (original) ===
   // Path to the parameter (dot notation, e.g., "quorumConfig.baseQuorumPercent")
+  parameter?: string;
+
+  // Option 1: Explicit values
+  values?: (number | string | boolean)[];
+
+  // Option 2: Range (for numeric parameters)
+  range?: RangeSpec;
+
+  // === Multi-Parameter Grid Search (new) ===
+  // Array of parameters to sweep together (creates Cartesian product)
+  grid?: GridParameter[];
+}
+
+/**
+ * A single parameter in a multi-parameter grid search
+ */
+export interface GridParameter {
+  // Path to the parameter (dot notation)
   parameter: string;
+
+  // Label for this parameter in results (optional, defaults to parameter path)
+  label?: string;
 
   // Option 1: Explicit values
   values?: (number | string | boolean)[];

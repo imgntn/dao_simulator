@@ -323,16 +323,36 @@ async function main(): Promise<void> {
     console.log(`Description: ${config.description}`);
   }
 
-  const sweepInfo = config.sweep
-    ? `Sweep: ${config.sweep.parameter} (${config.sweep.values?.length || 'range'} values)`
-    : 'No parameter sweep';
+  // Calculate sweep info and total configurations
+  let sweepInfo: string;
+  let totalConfigs: number;
+
+  if (!config.sweep) {
+    sweepInfo = 'No parameter sweep';
+    totalConfigs = 1;
+  } else if (config.sweep.grid) {
+    // Multi-parameter grid search
+    const gridInfo = config.sweep.grid.map(g => {
+      const numValues = g.values?.length ||
+        (g.range ? Math.ceil((g.range.max - g.range.min) / g.range.step) + 1 : 0);
+      const label = g.label || g.parameter.split('.').pop();
+      return `${label}(${numValues})`;
+    });
+    sweepInfo = `Grid Search: ${gridInfo.join(' x ')}`;
+    totalConfigs = config.sweep.grid.reduce((acc, g) => {
+      const numValues = g.values?.length ||
+        (g.range ? Math.ceil((g.range.max - g.range.min) / g.range.step) + 1 : 0);
+      return acc * numValues;
+    }, 1);
+  } else {
+    // Single parameter sweep
+    sweepInfo = `Sweep: ${config.sweep.parameter} (${config.sweep.values?.length || 'range'} values)`;
+    totalConfigs = config.sweep.values?.length ||
+      Math.ceil((config.sweep.range!.max - config.sweep.range!.min) / config.sweep.range!.step) + 1;
+  }
   console.log(sweepInfo);
 
-  const totalRuns = config.execution.runsPerConfig *
-    (config.sweep
-      ? (config.sweep.values?.length ||
-          Math.ceil((config.sweep.range!.max - config.sweep.range!.min) / config.sweep.range!.step) + 1)
-      : 1);
+  const totalRuns = config.execution.runsPerConfig * totalConfigs;
 
   console.log(`Runs: ${totalRuns} (${config.execution.runsPerConfig} per config, ${config.execution.stepsPerRun} steps each)`);
   console.log(`Workers: ${concurrency}${concurrency > 1 ? ' (parallel)' : ' (sequential)'}`);

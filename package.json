@@ -32,6 +32,7 @@
     "test:all": "npm run test:unit && npm run test:e2e",
     "examples": "tsx examples/run-scenarios.ts",
     "experiment": "tsx scripts/run-experiment.ts",
+    "exp": "tsx scripts/experiment-manager.ts",
     "validate": "tsx scripts/run-validation.ts",
     "generate-baselines": "tsx scripts/generate-baselines.ts",
     "paper:update": "tsx scripts/paper-update.ts",
