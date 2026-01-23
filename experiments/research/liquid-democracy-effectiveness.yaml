@@ -1,0 +1,135 @@
+# RQ1: Does Liquid Democracy Reduce Voter Apathy While Maintaining Decision Quality?
+#
+# Background: Voter apathy is critical in DAOs (often <10% participation).
+# Different voting systems may affect participation and power concentration differently.
+#
+# Hypothesis: More sophisticated voting mechanisms (quadratic, conviction) increase
+# participation while reducing power concentration compared to simple token voting.
+#
+# This experiment sweeps across voting system types to compare their effects.
+#
+# Citation: Use this configuration for reproducible research results.
+
+name: "Liquid Democracy Effectiveness"
+description: "Compare voting system types on participation and power concentration"
+version: "1.0.0"
+author: "DAO Simulator Research Framework"
+tags:
+  - research
+  - liquid-democracy
+  - voting-systems
+  - participation
+  - power-concentration
+
+# Base DAO configuration
+baseConfig:
+  template: "compound"
+  overrides:
+    memberDistribution:
+      totalMembers: 200
+      distribution:
+        - archetype: "passive_holder"
+          percentage: 60
+        - archetype: "delegate"
+          percentage: 20
+        - archetype: "governance_expert"
+          percentage: 15
+        - archetype: "whale"
+          percentage: 5
+    simulationParams:
+      votingActivity: 0.3
+      proposalFrequency: 0.4
+
+# Sweep across voting system types
+sweep:
+  parameter: "votingSystem.type"
+  values:
+    - "simple_majority"   # Baseline: standard token-weighted
+    - "quadratic"         # Quadratic: reduces whale dominance
+    - "conviction"        # Conviction: time-weighted, favors committed
+    - "supermajority"     # Supermajority: higher threshold for consensus
+
+# Execution settings - statistically significant
+execution:
+  runsPerConfig: 2500    # 2500 x 4 scenarios = 10,000 total runs
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 10
+
+# Key metrics for RQ1
+metrics:
+  # Primary metrics
+  - name: "Voter Participation Rate"
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who voted at least once"
+
+  - name: "Voter Concentration Gini"
+    type: builtin
+    builtin: voter_concentration_gini
+    description: "Inequality of effective voting power (0=equal, 1=concentrated)"
+
+  - name: "Proposal Pass Rate"
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "Fraction of proposals that passed"
+
+  - name: "Average Turnout"
+    type: builtin
+    builtin: average_turnout
+    description: "Average token-weighted voter participation per proposal"
+
+  # Delegation-specific metrics
+  - name: "Delegate Concentration"
+    type: builtin
+    builtin: delegate_concentration
+    description: "% of votes from top 10% of voters"
+
+  - name: "Voting Power Utilization"
+    type: builtin
+    builtin: voting_power_utilization
+    description: "% of available voting power actually used"
+
+  # Quality metrics
+  - name: "Avg Margin of Victory"
+    type: builtin
+    builtin: avg_margin_of_victory
+    description: "How decisive votes are (0=tied, 1=unanimous)"
+
+  - name: "Quorum Reach Rate"
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% of proposals meeting participation threshold"
+
+  # Economic health
+  - name: "Final Treasury"
+    type: builtin
+    builtin: final_treasury
+    description: "Treasury balance at end of simulation"
+
+  - name: "Token Concentration Gini"
+    type: builtin
+    builtin: token_concentration_gini
+    description: "Inequality of token holdings"
+
+  # Whale influence
+  - name: "Whale Influence"
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% token holders"
+
+  - name: "Governance Capture Risk"
+    type: builtin
+    builtin: governance_capture_risk
+    description: "Concentration of proposal creation"
+
+# Output settings
+output:
+  directory: "results/research/liquid-democracy-effectiveness"
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: false
+  includeManifest: true

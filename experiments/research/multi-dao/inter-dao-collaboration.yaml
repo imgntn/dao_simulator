@@ -1,0 +1,415 @@
+# Multi-DAO RQ2: What Makes Inter-DAO Collaboration Succeed?
+#
+# Background: DAOs can propose collaborations, treaties, resource sharing,
+# and joint ventures with other DAOs. What factors predict success?
+#
+# Hypothesis: Inter-DAO proposals succeed when participating DAOs have:
+# (1) similar governance mechanisms, (2) aligned member incentives,
+# (3) balanced contribution ratios, and (4) clear mutual benefits.
+#
+# Citation: Use this configuration for reproducible research results.
+
+name: "Inter-DAO Collaboration Dynamics"
+description: "Study factors that influence inter-DAO proposal success rates"
+version: "1.0.0"
+author: "DAO Simulator Research Framework"
+tags:
+  - research
+  - multi-dao
+  - collaboration
+  - treaties
+  - inter-dao-proposals
+  - joint-ventures
+
+# Multi-DAO mode
+mode: "city"
+
+# Base city configuration
+baseCityConfig:
+  globalMarketplaceConfig:
+    initialLiquidity: 100000
+    volatility: 0.02
+    priceUpdateFrequency: 1
+    baseTokenSymbol: "STABLE"
+  bridgeFeeRate: 0.01
+  bridgeDelay: 5
+  enableInterDAOProposals: true
+  interDAOProposalConfig:
+    votingPeriod: 50
+    requiredApprovalRatio: 1.0  # All participating DAOs must approve
+    proposalTypes:
+      - collaboration
+      - treaty
+      - resource_sharing
+      - joint_venture
+
+# Scenarios testing collaboration factors
+scenarios:
+  # Scenario 1: Homogeneous DAOs (similar governance)
+  - name: "homogeneous-governance"
+    description: "Three DAOs with identical governance mechanisms"
+    interDAOProposalRate: 0.1
+    daos:
+      - id: "dao-1"
+        name: "DAO One"
+        tokenSymbol: "ONE"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#4ADE80"
+        quorumPercent: 10
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 15
+          num_governance_experts: 3
+
+      - id: "dao-2"
+        name: "DAO Two"
+        tokenSymbol: "TWO"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#60A5FA"
+        quorumPercent: 10
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 15
+          num_governance_experts: 3
+
+      - id: "dao-3"
+        name: "DAO Three"
+        tokenSymbol: "THREE"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F472B6"
+        quorumPercent: 10
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 15
+          num_governance_experts: 3
+
+  # Scenario 2: Heterogeneous governance mechanisms
+  - name: "heterogeneous-governance"
+    description: "Three DAOs with different governance mechanisms"
+    interDAOProposalRate: 0.1
+    daos:
+      - id: "dao-majority"
+        name: "Majority DAO"
+        tokenSymbol: "MAJ"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#4ADE80"
+        quorumPercent: 10
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 5
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 2
+
+      - id: "dao-supermajority"
+        name: "Supermajority DAO"
+        tokenSymbol: "SUP"
+        initialTreasuryFunding: 100000
+        governanceRule: "supermajority"
+        color: "#60A5FA"
+        quorumPercent: 15
+        passingThreshold: 0.67
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 5
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 2
+
+      - id: "dao-quadratic"
+        name: "Quadratic DAO"
+        tokenSymbol: "QUAD"
+        initialTreasuryFunding: 100000
+        governanceRule: "quadratic"
+        color: "#F472B6"
+        quorumPercent: 20
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 5
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 2
+
+  # Scenario 3: Asymmetric treasury sizes
+  - name: "asymmetric-treasury"
+    description: "DAOs with very different treasury sizes"
+    interDAOProposalRate: 0.1
+    daos:
+      - id: "dao-wealthy"
+        name: "Wealthy DAO"
+        tokenSymbol: "RICH"
+        initialTreasuryFunding: 500000
+        governanceRule: "majority"
+        color: "#F59E0B"
+        agentCounts:
+          num_developers: 15
+          num_investors: 10
+          num_delegators: 8
+          num_proposal_creators: 6
+          num_passive_members: 10
+          num_governance_experts: 4
+
+      - id: "dao-medium"
+        name: "Medium DAO"
+        tokenSymbol: "MED"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#60A5FA"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 5
+          num_proposal_creators: 5
+          num_passive_members: 15
+          num_governance_experts: 2
+
+      - id: "dao-small"
+        name: "Small DAO"
+        tokenSymbol: "SMOL"
+        initialTreasuryFunding: 20000
+        governanceRule: "majority"
+        color: "#EF4444"
+        agentCounts:
+          num_developers: 5
+          num_investors: 2
+          num_delegators: 3
+          num_proposal_creators: 3
+          num_passive_members: 20
+          num_governance_experts: 1
+
+  # Scenario 4: Different member compositions
+  - name: "specialized-daos"
+    description: "DAOs with different agent specializations"
+    interDAOProposalRate: 0.15
+    daos:
+      - id: "dao-dev"
+        name: "Developer DAO"
+        tokenSymbol: "DEV"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#10B981"
+        agentCounts:
+          num_developers: 25
+          num_investors: 3
+          num_delegators: 5
+          num_proposal_creators: 8
+          num_passive_members: 5
+          num_governance_experts: 4
+
+      - id: "dao-invest"
+        name: "Investment DAO"
+        tokenSymbol: "INV"
+        initialTreasuryFunding: 200000
+        governanceRule: "majority"
+        color: "#8B5CF6"
+        agentCounts:
+          num_developers: 3
+          num_investors: 20
+          num_traders: 10
+          num_delegators: 5
+          num_proposal_creators: 3
+          num_passive_members: 5
+          num_governance_experts: 2
+
+      - id: "dao-community"
+        name: "Community DAO"
+        tokenSymbol: "COMM"
+        initialTreasuryFunding: 80000
+        governanceRule: "majority"
+        color: "#EC4899"
+        agentCounts:
+          num_developers: 5
+          num_investors: 3
+          num_delegators: 15
+          num_liquid_delegators: 10
+          num_proposal_creators: 5
+          num_passive_members: 10
+          num_governance_experts: 5
+
+  # Scenario 5: No inter-DAO proposals (control)
+  - name: "isolated-daos"
+    description: "Same as homogeneous but inter-DAO proposals disabled"
+    interDAOProposalRate: 0
+    overrides:
+      enableInterDAOProposals: false
+    daos:
+      - id: "iso-1"
+        name: "Isolated One"
+        tokenSymbol: "ISO1"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#6B7280"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 15
+          num_governance_experts: 3
+
+      - id: "iso-2"
+        name: "Isolated Two"
+        tokenSymbol: "ISO2"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#9CA3AF"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 15
+          num_governance_experts: 3
+
+      - id: "iso-3"
+        name: "Isolated Three"
+        tokenSymbol: "ISO3"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#D1D5DB"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 15
+          num_governance_experts: 3
+
+# Execution settings
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 8
+
+# Statistical configuration
+statistical:
+  confidenceLevel: 0.95
+  bootstrapSamples: 1000
+  powerAnalysis: true
+  effectSizeThreshold: 0.3
+
+# Metrics
+metrics:
+  # Inter-DAO proposal metrics
+  - name: "Inter-DAO Proposal Count"
+    type: builtin
+    builtin: inter_dao_proposal_count
+    description: "Total inter-DAO proposals created"
+    scope: ecosystem
+
+  - name: "Inter-DAO Proposal Success Rate"
+    type: builtin
+    builtin: inter_dao_proposal_success_rate
+    description: "% of inter-DAO proposals approved by all parties"
+    scope: ecosystem
+
+  - name: "Collaboration Proposal Rate"
+    type: builtin
+    builtin: collaboration_proposal_rate
+    description: "% of proposals that are collaborations"
+    scope: ecosystem
+
+  - name: "Treaty Proposal Rate"
+    type: builtin
+    builtin: treaty_proposal_rate
+    description: "% of proposals that are treaties"
+    scope: ecosystem
+
+  - name: "Resource Sharing Rate"
+    type: builtin
+    builtin: resource_sharing_rate
+    description: "% of proposals for resource sharing"
+    scope: ecosystem
+
+  - name: "Joint Venture Rate"
+    type: builtin
+    builtin: joint_venture_rate
+    description: "% of proposals for joint ventures"
+    scope: ecosystem
+
+  # Cross-DAO participation
+  - name: "Inter-DAO Voting Participation"
+    type: builtin
+    builtin: inter_dao_voting_participation
+    description: "Average participation in inter-DAO votes"
+    scope: ecosystem
+
+  - name: "Cross-DAO Approval Alignment"
+    type: builtin
+    builtin: cross_dao_approval_alignment
+    description: "How often DAOs agree on inter-DAO proposals"
+    scope: ecosystem
+
+  # Per-DAO metrics
+  - name: "Proposal Pass Rate"
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "Internal proposal pass rate"
+    scope: per_dao
+
+  - name: "Voter Participation Rate"
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who voted"
+    scope: per_dao
+
+  - name: "Final Treasury"
+    type: builtin
+    builtin: final_treasury
+    description: "Treasury at end"
+    scope: per_dao
+
+  - name: "Treasury Growth Rate"
+    type: builtin
+    builtin: treasury_growth_rate
+    description: "(final - initial) / initial"
+    scope: per_dao
+
+  # Economic ecosystem metrics
+  - name: "Total Shared Budget"
+    type: builtin
+    builtin: total_shared_budget
+    description: "Sum of all approved inter-DAO budgets"
+    scope: ecosystem
+
+  - name: "Resource Flow Volume"
+    type: builtin
+    builtin: resource_flow_volume
+    description: "Total resources transferred between DAOs"
+    scope: ecosystem
+
+  - name: "Ecosystem Treasury Total"
+    type: builtin
+    builtin: ecosystem_treasury_total
+    description: "Sum of all DAO treasuries"
+    scope: ecosystem
+
+# Output settings
+output:
+  directory: "results/research/multi-dao/inter-dao-collaboration"
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: false
+  includeManifest: true
+  includePerDaoMetrics: true
+  includeInterDAOProposalLog: true

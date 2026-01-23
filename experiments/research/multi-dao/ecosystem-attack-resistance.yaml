@@ -1,0 +1,544 @@
+# Multi-DAO RQ5: Are Multi-DAO Ecosystems More Resilient to Attacks?
+#
+# Background: Single DAOs may be vulnerable to governance attacks
+# (flash loans, vote buying, whale capture). In a multi-DAO ecosystem,
+# attackers must capture multiple governance systems simultaneously.
+#
+# Hypothesis: Multi-DAO ecosystems with inter-DAO checks (treaties,
+# veto powers, resource sharing) are more resistant to attacks than
+# isolated DAOs because attacks on one DAO can be detected and
+# countered by allied DAOs.
+#
+# Citation: Use this configuration for reproducible research results.
+
+name: "Ecosystem Attack Resistance"
+description: "Compare attack resilience of isolated DAOs vs interconnected ecosystems"
+version: "1.0.0"
+author: "DAO Simulator Research Framework"
+tags:
+  - research
+  - multi-dao
+  - attack-resistance
+  - security
+  - ecosystem-resilience
+  - governance-attacks
+
+# Multi-DAO mode
+mode: "city"
+
+# Base city configuration
+baseCityConfig:
+  globalMarketplaceConfig:
+    initialLiquidity: 150000
+    volatility: 0.03
+    priceUpdateFrequency: 1
+    baseTokenSymbol: "STABLE"
+  bridgeFeeRate: 0.01
+  bridgeDelay: 5
+  enableInterDAOProposals: true
+  baseSettings:
+    memberTransferEnabled: true
+    attackSimulation: true
+    attackProbability: 0.1
+
+# Scenarios testing attack resistance
+scenarios:
+  # Scenario 1: Isolated DAOs (no inter-DAO connections)
+  - name: "isolated-daos"
+    description: "Three independent DAOs with no connections"
+    overrides:
+      enableInterDAOProposals: false
+      memberTransferEnabled: false
+      bridgesEnabled: false
+    attackConfig:
+      attackerBudget: 50000
+      attackTypes:
+        - governance_capture
+        - whale_manipulation
+        - proposal_spam
+      targetSelection: "random"
+    daos:
+      - id: "iso-alpha"
+        name: "Isolated Alpha"
+        tokenSymbol: "ISOA"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#4ADE80"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          # Attack agents
+          num_traders: 5
+
+      - id: "iso-beta"
+        name: "Isolated Beta"
+        tokenSymbol: "ISOB"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#60A5FA"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+      - id: "iso-gamma"
+        name: "Isolated Gamma"
+        tokenSymbol: "ISOG"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F472B6"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+  # Scenario 2: Connected ecosystem (full inter-DAO features)
+  - name: "connected-ecosystem"
+    description: "Three DAOs with full inter-DAO connections"
+    overrides:
+      enableInterDAOProposals: true
+      memberTransferEnabled: true
+      bridgesEnabled: true
+    attackConfig:
+      attackerBudget: 50000
+      attackTypes:
+        - governance_capture
+        - whale_manipulation
+        - proposal_spam
+      targetSelection: "random"
+    interDAODefense:
+      mutualMonitoring: true
+      crossDAOAlerts: true
+      coordinatedResponse: true
+    daos:
+      - id: "con-alpha"
+        name: "Connected Alpha"
+        tokenSymbol: "CONA"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#4ADE80"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+      - id: "con-beta"
+        name: "Connected Beta"
+        tokenSymbol: "CONB"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#60A5FA"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+      - id: "con-gamma"
+        name: "Connected Gamma"
+        tokenSymbol: "CONG"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F472B6"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+  # Scenario 3: Ecosystem with mutual veto (strongest defense)
+  - name: "mutual-veto-ecosystem"
+    description: "DAOs can veto suspicious proposals in allied DAOs"
+    overrides:
+      enableInterDAOProposals: true
+      memberTransferEnabled: true
+      bridgesEnabled: true
+    attackConfig:
+      attackerBudget: 50000
+      attackTypes:
+        - governance_capture
+        - whale_manipulation
+        - proposal_spam
+      targetSelection: "random"
+    interDAODefense:
+      mutualMonitoring: true
+      crossDAOAlerts: true
+      coordinatedResponse: true
+      mutualVeto: true
+      vetoThreshold: 0.33  # 33% of allied DAO can trigger review
+    daos:
+      - id: "veto-alpha"
+        name: "Veto Alliance Alpha"
+        tokenSymbol: "VETA"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#10B981"
+        features:
+          allianceVeto: true
+          vetoAllies: ["veto-beta", "veto-gamma"]
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+      - id: "veto-beta"
+        name: "Veto Alliance Beta"
+        tokenSymbol: "VETB"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#3B82F6"
+        features:
+          allianceVeto: true
+          vetoAllies: ["veto-alpha", "veto-gamma"]
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+      - id: "veto-gamma"
+        name: "Veto Alliance Gamma"
+        tokenSymbol: "VETG"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#8B5CF6"
+        features:
+          allianceVeto: true
+          vetoAllies: ["veto-alpha", "veto-beta"]
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+  # Scenario 4: Single large DAO vs three smaller DAOs
+  - name: "centralized-vs-distributed"
+    description: "One large DAO vs three smaller connected DAOs"
+    attackConfig:
+      attackerBudget: 50000
+      attackTypes:
+        - governance_capture
+        - whale_manipulation
+      targetSelection: "random"
+    daos:
+      # Large centralized DAO
+      - id: "mega-dao"
+        name: "Mega DAO"
+        tokenSymbol: "MEGA"
+        initialTreasuryFunding: 300000
+        governanceRule: "majority"
+        color: "#EF4444"
+        agentCounts:
+          num_developers: 30
+          num_investors: 15
+          num_delegators: 24
+          num_proposal_creators: 15
+          num_passive_members: 60
+          num_governance_experts: 9
+          num_traders: 15
+
+      # Three smaller connected DAOs (same total resources)
+      - id: "mini-alpha"
+        name: "Mini Alpha"
+        tokenSymbol: "MINA"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#10B981"
+        features:
+          allianceVeto: true
+          vetoAllies: ["mini-beta", "mini-gamma"]
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+      - id: "mini-beta"
+        name: "Mini Beta"
+        tokenSymbol: "MINB"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#3B82F6"
+        features:
+          allianceVeto: true
+          vetoAllies: ["mini-alpha", "mini-gamma"]
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+      - id: "mini-gamma"
+        name: "Mini Gamma"
+        tokenSymbol: "MING"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#8B5CF6"
+        features:
+          allianceVeto: true
+          vetoAllies: ["mini-alpha", "mini-beta"]
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+  # Scenario 5: Coordinated multi-DAO attack
+  - name: "coordinated-attack"
+    description: "Attacker targets multiple DAOs simultaneously"
+    overrides:
+      enableInterDAOProposals: true
+      memberTransferEnabled: true
+    attackConfig:
+      attackerBudget: 150000  # 3x budget for coordinated attack
+      attackTypes:
+        - governance_capture
+        - whale_manipulation
+        - proposal_spam
+      targetSelection: "all"  # Attack all DAOs at once
+      coordinatedAttack: true
+    interDAODefense:
+      mutualMonitoring: true
+      crossDAOAlerts: true
+      coordinatedResponse: true
+    daos:
+      - id: "target-alpha"
+        name: "Target Alpha"
+        tokenSymbol: "TRGA"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#4ADE80"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+      - id: "target-beta"
+        name: "Target Beta"
+        tokenSymbol: "TRGB"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#60A5FA"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+      - id: "target-gamma"
+        name: "Target Gamma"
+        tokenSymbol: "TRGG"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F472B6"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+          num_traders: 5
+
+# Execution settings
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 8
+
+# Statistical configuration
+statistical:
+  confidenceLevel: 0.95
+  bootstrapSamples: 1000
+  powerAnalysis: true
+  effectSizeThreshold: 0.3
+
+# Metrics
+metrics:
+  # Attack metrics
+  - name: "Attack Attempts"
+    type: builtin
+    builtin: attack_attempts
+    description: "Number of attack attempts"
+    scope: per_dao
+
+  - name: "Successful Attacks"
+    type: builtin
+    builtin: successful_attacks
+    description: "Number of successful attacks"
+    scope: per_dao
+
+  - name: "Attack Success Rate"
+    type: builtin
+    builtin: attack_success_rate
+    description: "% of attacks that succeeded"
+    scope: per_dao
+
+  - name: "Attack Detection Rate"
+    type: builtin
+    builtin: attack_detection_rate
+    description: "% of attacks that were detected"
+    scope: per_dao
+
+  - name: "Attack Mitigation Rate"
+    type: builtin
+    builtin: attack_mitigation_rate
+    description: "% of detected attacks that were mitigated"
+    scope: per_dao
+
+  # Damage metrics
+  - name: "Treasury Loss"
+    type: builtin
+    builtin: treasury_loss
+    description: "Treasury lost to attacks"
+    scope: per_dao
+
+  - name: "Malicious Proposal Pass Rate"
+    type: builtin
+    builtin: malicious_proposal_pass_rate
+    description: "% of malicious proposals that passed"
+    scope: per_dao
+
+  # Defense metrics
+  - name: "Veto Actions"
+    type: builtin
+    builtin: veto_actions
+    description: "Number of veto actions taken"
+    scope: per_dao
+
+  - name: "Cross-DAO Alerts"
+    type: builtin
+    builtin: cross_dao_alerts
+    description: "Alerts sent to allied DAOs"
+    scope: ecosystem
+
+  - name: "Coordinated Defense Actions"
+    type: builtin
+    builtin: coordinated_defense_actions
+    description: "Defense actions coordinated across DAOs"
+    scope: ecosystem
+
+  # Governance health (post-attack)
+  - name: "Final Treasury"
+    type: builtin
+    builtin: final_treasury
+    description: "Treasury at end"
+    scope: per_dao
+
+  - name: "Treasury Growth Rate"
+    type: builtin
+    builtin: treasury_growth_rate
+    description: "(final - initial) / initial"
+    scope: per_dao
+
+  - name: "Whale Influence"
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% holders"
+    scope: per_dao
+
+  - name: "Governance Capture Risk"
+    type: builtin
+    builtin: governance_capture_risk
+    description: "Proposal creation concentration"
+    scope: per_dao
+
+  - name: "Single Entity Control"
+    type: builtin
+    builtin: single_entity_control
+    description: "Max % any one member could control"
+    scope: per_dao
+
+  # Participation metrics
+  - name: "Voter Participation Rate"
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who voted"
+    scope: per_dao
+
+  - name: "Final Member Count"
+    type: builtin
+    builtin: final_member_count
+    description: "Members at end"
+    scope: per_dao
+
+  # Ecosystem resilience
+  - name: "Ecosystem Survival Rate"
+    type: builtin
+    builtin: ecosystem_survival_rate
+    description: "% of DAOs that survived attacks"
+    scope: ecosystem
+
+  - name: "Total Ecosystem Treasury"
+    type: builtin
+    builtin: ecosystem_treasury_total
+    description: "Sum of all DAO treasuries"
+    scope: ecosystem
+
+  - name: "Ecosystem Recovery Time"
+    type: builtin
+    builtin: ecosystem_recovery_time
+    description: "Steps to recover from attacks"
+    scope: ecosystem
+
+# Output settings
+output:
+  directory: "results/research/multi-dao/ecosystem-attack-resistance"
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: true
+  includeManifest: true
+  includePerDaoMetrics: true
+  includeAttackLog: true

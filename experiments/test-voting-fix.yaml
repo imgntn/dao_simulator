@@ -1,0 +1,53 @@
+name: Quick Voting Fix Test
+description: Test to verify quorum reach improvement
+version: 1.0.0
+baseConfig:
+  template: compound
+  overrides:
+    memberDistribution:
+      totalMembers: 150
+      distribution:
+        - archetype: active_voter
+          percentage: 70
+        - archetype: delegate
+          percentage: 15
+        - archetype: whale
+          percentage: 10
+        - archetype: governance_expert
+          percentage: 5
+    simulationParams:
+      votingActivity: 0.4
+      proposalFrequency: 0.4
+sweep:
+  parameter: quorumConfig.baseQuorumPercent
+  values:
+    - 5
+    - 10
+    - 20
+execution:
+  runsPerConfig: 50
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 10
+metrics:
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Total Proposals
+    type: builtin
+    builtin: total_proposals
+output:
+  directory: results/test/voting-fix-test
+  formats:
+    - json
+  includeRawRuns: false

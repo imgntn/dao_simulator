@@ -1,0 +1,185 @@
+# RQ7: Does Governance Delay Protect Minorities?
+#
+# Background: Rage quit allows dissenting minorities to exit with
+# proportional treasury. Delayed governance (longer voting periods)
+# provides similar protection by giving time to react to proposals.
+#
+# NOTE: Current simulator doesn't have full rage quit feature implementation.
+# This experiment uses voting period length as proxy - longer periods give
+# minorities more time to mobilize opposition or prepare exits.
+#
+# Hypothesis: Longer voting periods improve minority protection metrics
+# while potentially reducing governance efficiency.
+#
+# Citation: Use this configuration for reproducible research results.
+
+name: "Rage Quit Dynamics"
+description: "Evaluate how governance timing affects minority protection vs efficiency"
+version: "1.0.0"
+author: "DAO Simulator Research Framework"
+tags:
+  - research
+  - minority-protection
+  - voting-period
+  - deliberation
+  - exit-rights
+
+# Base DAO configuration
+baseConfig:
+  template: "lido"
+  overrides:
+    memberDistribution:
+      totalMembers: 150
+      distribution:
+        - archetype: "active_voter"
+          percentage: 50
+        - archetype: "delegate"
+          percentage: 20
+        - archetype: "whale"
+          percentage: 15
+        - archetype: "passive_holder"
+          percentage: 10
+        - archetype: "governance_expert"
+          percentage: 5
+    treasury:
+      initialBalance: 10000000
+    simulationParams:
+      votingActivity: 0.4
+      proposalFrequency: 0.35
+
+# Sweep across voting period length (proxy for exit/reaction time)
+sweep:
+  parameter: "votingSystem.votingPeriodDays"
+  values:
+    - 1       # Very short - no time to react (like instant ragequit)
+    - 3       # Short - minimal reaction time
+    - 7       # Standard - typical DAO voting period
+    - 14      # Long - time for minority mobilization
+    - 30      # Very long - full deliberation (like delayed ragequit)
+
+# Execution settings
+execution:
+  runsPerConfig: 2000    # 2000 x 5 = 10,000 total runs
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 10
+
+# Key metrics for RQ7
+metrics:
+  # Primary treasury stability metrics
+  - name: "Final Treasury"
+    type: builtin
+    builtin: final_treasury
+    description: "Treasury balance at end of simulation"
+
+  - name: "Treasury Volatility"
+    type: builtin
+    builtin: treasury_volatility
+    description: "Coefficient of variation of treasury over time"
+
+  - name: "Treasury Growth Rate"
+    type: builtin
+    builtin: treasury_growth_rate
+    description: "(final - initial) / initial treasury"
+
+  # Member retention metrics
+  - name: "Final Member Count"
+    type: builtin
+    builtin: final_member_count
+    description: "Number of DAO members at end"
+
+  - name: "Member Growth Rate"
+    type: builtin
+    builtin: member_growth_rate
+    description: "(final - initial) / initial members"
+
+  - name: "Voter Retention Rate"
+    type: builtin
+    builtin: voter_retention_rate
+    description: "% of early voters still voting late"
+
+  # Minority protection metrics
+  - name: "Avg Margin of Victory"
+    type: builtin
+    builtin: avg_margin_of_victory
+    description: "How decisive votes are (low = contentious)"
+
+  - name: "Proposal Rejection Rate"
+    type: builtin
+    builtin: proposal_rejection_rate
+    description: "% of resolved proposals that were rejected"
+
+  - name: "Vote Buying Vulnerability"
+    type: builtin
+    builtin: vote_buying_vulnerability
+    description: "Avg tokens needed to flip close votes"
+
+  # Participation metrics
+  - name: "Voter Participation Rate"
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who ever voted"
+
+  - name: "Average Turnout"
+    type: builtin
+    builtin: average_turnout
+    description: "Average token-weighted voter participation"
+
+  - name: "Participation Trend"
+    type: builtin
+    builtin: participation_trend
+    description: "Slope of participation (+ = increasing)"
+
+  # Power concentration metrics
+  - name: "Token Concentration Gini"
+    type: builtin
+    builtin: token_concentration_gini
+    description: "Inequality of token holdings"
+
+  - name: "Whale Influence"
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% token holders"
+
+  - name: "Single Entity Control"
+    type: builtin
+    builtin: single_entity_control
+    description: "Max % any one member could control"
+
+  # Governance outcomes
+  - name: "Proposal Pass Rate"
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "Fraction of proposals that passed"
+
+  - name: "Quorum Reach Rate"
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% of proposals meeting participation threshold"
+
+  - name: "Governance Capture Risk"
+    type: builtin
+    builtin: governance_capture_risk
+    description: "Concentration of proposal creation"
+
+  # Efficiency metrics
+  - name: "Avg Time to Decision"
+    type: builtin
+    builtin: avg_time_to_decision
+    description: "Average steps from proposal to resolution"
+
+  - name: "Proposal Abandonment Rate"
+    type: builtin
+    builtin: proposal_abandonment_rate
+    description: "% of proposals that expired unresolved"
+
+# Output settings
+output:
+  directory: "results/research/rage-quit-dynamics"
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: false
+  includeManifest: true

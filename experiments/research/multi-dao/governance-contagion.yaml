@@ -1,0 +1,419 @@
+# Multi-DAO RQ3: Does Governance Quality Spread Between DAOs?
+#
+# Background: Members who transfer between DAOs carry governance norms
+# and expectations. Can good governance practices "spread" through
+# an ecosystem via member mobility?
+#
+# Hypothesis: DAOs with mobile members converge toward similar governance
+# outcomes over time. Well-governed DAOs can "export" good practices
+# through departing members who expect similar standards elsewhere.
+#
+# Citation: Use this configuration for reproducible research results.
+
+name: "Governance Contagion Effects"
+description: "Study whether governance quality spreads between DAOs through member transfers"
+version: "1.0.0"
+author: "DAO Simulator Research Framework"
+tags:
+  - research
+  - multi-dao
+  - contagion
+  - governance-diffusion
+  - social-learning
+  - norm-transfer
+
+# Multi-DAO mode
+mode: "city"
+
+# Base city configuration
+baseCityConfig:
+  globalMarketplaceConfig:
+    initialLiquidity: 100000
+    volatility: 0.02
+    priceUpdateFrequency: 1
+    baseTokenSymbol: "STABLE"
+  bridgeFeeRate: 0.005  # Low bridge fees to encourage mobility
+  bridgeDelay: 3
+  enableInterDAOProposals: true
+  baseSettings:
+    memberTransferEnabled: true
+    transferCooldown: 20  # Lower cooldown for more transfer activity
+    transferFee: 0.01
+    governanceAdaptation: true  # Members adapt to new DAO norms
+
+# Scenarios testing contagion dynamics
+scenarios:
+  # Scenario 1: High mobility ecosystem
+  - name: "high-mobility"
+    description: "Low barriers to transfer between DAOs"
+    transferSettings:
+      cooldown: 15
+      fee: 0.005
+      probabilityPerStep: 0.02
+    daos:
+      - id: "dao-source"
+        name: "Source DAO"
+        tokenSymbol: "SRC"
+        initialTreasuryFunding: 100000
+        governanceRule: "liquid_democracy"
+        color: "#10B981"
+        features:
+          liquidDemocracy: true
+          liquidDemocracyConfig:
+            maxDelegationDepth: 5
+        # High participation culture
+        simulationParams:
+          votingActivity: 0.6
+        agentCounts:
+          num_developers: 12
+          num_investors: 5
+          num_delegators: 10
+          num_liquid_delegators: 8
+          num_proposal_creators: 6
+          num_passive_members: 5
+          num_governance_experts: 6
+
+      - id: "dao-receiver-1"
+        name: "Receiver DAO 1"
+        tokenSymbol: "RCV1"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#60A5FA"
+        # Lower participation culture
+        simulationParams:
+          votingActivity: 0.2
+        agentCounts:
+          num_developers: 8
+          num_investors: 5
+          num_delegators: 3
+          num_proposal_creators: 4
+          num_passive_members: 25
+          num_governance_experts: 2
+
+      - id: "dao-receiver-2"
+        name: "Receiver DAO 2"
+        tokenSymbol: "RCV2"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F472B6"
+        simulationParams:
+          votingActivity: 0.2
+        agentCounts:
+          num_developers: 8
+          num_investors: 5
+          num_delegators: 3
+          num_proposal_creators: 4
+          num_passive_members: 25
+          num_governance_experts: 2
+
+  # Scenario 2: Low mobility ecosystem (control)
+  - name: "low-mobility"
+    description: "High barriers to transfer between DAOs"
+    transferSettings:
+      cooldown: 100
+      fee: 0.1
+      probabilityPerStep: 0.002
+    daos:
+      - id: "dao-source-low"
+        name: "Source DAO (Low Mobility)"
+        tokenSymbol: "SRCL"
+        initialTreasuryFunding: 100000
+        governanceRule: "liquid_democracy"
+        color: "#10B981"
+        features:
+          liquidDemocracy: true
+        simulationParams:
+          votingActivity: 0.6
+        agentCounts:
+          num_developers: 12
+          num_investors: 5
+          num_delegators: 10
+          num_liquid_delegators: 8
+          num_proposal_creators: 6
+          num_passive_members: 5
+          num_governance_experts: 6
+
+      - id: "dao-receiver-1-low"
+        name: "Receiver DAO 1 (Low Mobility)"
+        tokenSymbol: "RV1L"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#60A5FA"
+        simulationParams:
+          votingActivity: 0.2
+        agentCounts:
+          num_developers: 8
+          num_investors: 5
+          num_delegators: 3
+          num_proposal_creators: 4
+          num_passive_members: 25
+          num_governance_experts: 2
+
+      - id: "dao-receiver-2-low"
+        name: "Receiver DAO 2 (Low Mobility)"
+        tokenSymbol: "RV2L"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F472B6"
+        simulationParams:
+          votingActivity: 0.2
+        agentCounts:
+          num_developers: 8
+          num_investors: 5
+          num_delegators: 3
+          num_proposal_creators: 4
+          num_passive_members: 25
+          num_governance_experts: 2
+
+  # Scenario 3: Bidirectional flow (multiple high-quality sources)
+  - name: "bidirectional-flow"
+    description: "Multiple well-governed DAOs exchanging members"
+    transferSettings:
+      cooldown: 20
+      fee: 0.01
+      probabilityPerStep: 0.015
+    daos:
+      - id: "dao-liquid"
+        name: "Liquid Democracy DAO"
+        tokenSymbol: "LIQD"
+        initialTreasuryFunding: 100000
+        governanceRule: "liquid_democracy"
+        color: "#10B981"
+        features:
+          liquidDemocracy: true
+        simulationParams:
+          votingActivity: 0.5
+        agentCounts:
+          num_developers: 10
+          num_investors: 4
+          num_delegators: 8
+          num_liquid_delegators: 10
+          num_proposal_creators: 5
+          num_passive_members: 8
+          num_governance_experts: 5
+
+      - id: "dao-quadratic"
+        name: "Quadratic DAO"
+        tokenSymbol: "QUAD"
+        initialTreasuryFunding: 100000
+        governanceRule: "quadratic"
+        color: "#8B5CF6"
+        simulationParams:
+          votingActivity: 0.5
+        agentCounts:
+          num_developers: 10
+          num_investors: 4
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 8
+          num_governance_experts: 5
+
+      - id: "dao-standard"
+        name: "Standard DAO"
+        tokenSymbol: "STD"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F59E0B"
+        simulationParams:
+          votingActivity: 0.25
+        agentCounts:
+          num_developers: 8
+          num_investors: 5
+          num_delegators: 4
+          num_proposal_creators: 4
+          num_passive_members: 20
+          num_governance_experts: 2
+
+  # Scenario 4: Poor governance contagion (negative spread)
+  - name: "negative-contagion"
+    description: "Test if poor governance can also spread"
+    transferSettings:
+      cooldown: 20
+      fee: 0.01
+      probabilityPerStep: 0.02
+    daos:
+      - id: "dao-whale-dom"
+        name: "Whale Dominated DAO"
+        tokenSymbol: "WHAL"
+        initialTreasuryFunding: 150000
+        governanceRule: "majority"
+        color: "#EF4444"
+        tokenDistribution:
+          type: "pareto"
+          targetGini: 0.85
+        simulationParams:
+          votingActivity: 0.15
+        agentCounts:
+          num_developers: 5
+          num_investors: 3
+          num_traders: 15
+          num_delegators: 2
+          num_proposal_creators: 2
+          num_passive_members: 30
+          num_governance_experts: 1
+
+      - id: "dao-healthy-1"
+        name: "Healthy DAO 1"
+        tokenSymbol: "HLT1"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#10B981"
+        tokenDistribution:
+          type: "pareto"
+          targetGini: 0.4
+        simulationParams:
+          votingActivity: 0.4
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 12
+          num_governance_experts: 4
+
+      - id: "dao-healthy-2"
+        name: "Healthy DAO 2"
+        tokenSymbol: "HLT2"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#60A5FA"
+        tokenDistribution:
+          type: "pareto"
+          targetGini: 0.4
+        simulationParams:
+          votingActivity: 0.4
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_proposal_creators: 5
+          num_passive_members: 12
+          num_governance_experts: 4
+
+# Execution settings
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 8
+
+# Statistical configuration
+statistical:
+  confidenceLevel: 0.95
+  bootstrapSamples: 1000
+  powerAnalysis: true
+  effectSizeThreshold: 0.3
+
+# Metrics
+metrics:
+  # Contagion/convergence metrics
+  - name: "Participation Convergence"
+    type: builtin
+    builtin: participation_convergence
+    description: "Standard deviation of participation rates across DAOs over time"
+    scope: ecosystem
+
+  - name: "Governance Quality Variance"
+    type: builtin
+    builtin: governance_quality_variance
+    description: "Variance in governance quality scores across DAOs"
+    scope: ecosystem
+
+  - name: "Transferred Member Impact"
+    type: builtin
+    builtin: transferred_member_impact
+    description: "Participation change in destination DAO after transfers"
+    scope: ecosystem
+
+  # Transfer metrics
+  - name: "Net Member Flow"
+    type: builtin
+    builtin: net_member_flow
+    description: "Net members gained/lost"
+    scope: per_dao
+
+  - name: "Transfer Count"
+    type: builtin
+    builtin: transfer_count
+    description: "Total completed transfers"
+    scope: ecosystem
+
+  - name: "Transfer Origin Distribution"
+    type: builtin
+    builtin: transfer_origin_distribution
+    description: "Where transferred members came from"
+    scope: per_dao
+
+  # Per-DAO governance metrics (tracked over time)
+  - name: "Voter Participation Rate"
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who voted"
+    scope: per_dao
+    trackOverTime: true
+
+  - name: "Participation Trend"
+    type: builtin
+    builtin: participation_trend
+    description: "Slope of participation over time"
+    scope: per_dao
+
+  - name: "Average Turnout"
+    type: builtin
+    builtin: average_turnout
+    description: "Average voter participation per proposal"
+    scope: per_dao
+    trackOverTime: true
+
+  - name: "Whale Influence"
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% holders"
+    scope: per_dao
+    trackOverTime: true
+
+  - name: "Token Concentration Gini"
+    type: builtin
+    builtin: token_concentration_gini
+    description: "Inequality of token holdings"
+    scope: per_dao
+    trackOverTime: true
+
+  # Governance outcomes
+  - name: "Proposal Pass Rate"
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "Fraction of proposals passed"
+    scope: per_dao
+
+  - name: "Quorum Reach Rate"
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% of proposals reaching quorum"
+    scope: per_dao
+
+  # Economic health
+  - name: "Final Treasury"
+    type: builtin
+    builtin: final_treasury
+    description: "Treasury at end"
+    scope: per_dao
+
+  - name: "Final Member Count"
+    type: builtin
+    builtin: final_member_count
+    description: "Members at end"
+    scope: per_dao
+
+# Output settings
+output:
+  directory: "results/research/multi-dao/governance-contagion"
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: true  # Important for tracking convergence over time
+  includeManifest: true
+  includePerDaoMetrics: true
+  includeTransferLog: true

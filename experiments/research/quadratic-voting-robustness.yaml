@@ -1,0 +1,162 @@
+# RQ5: Does Quadratic Voting Reduce Power Concentration Without Sybil Attacks?
+#
+# Background: Quadratic voting (cost = votes^2) theoretically balances
+# intensity with equality. But how does it compare to other voting models?
+#
+# Hypothesis: Quadratic voting achieves lower power concentration than
+# token-weighted voting while maintaining similar participation rates.
+#
+# This experiment compares voting power models.
+#
+# Citation: Use this configuration for reproducible research results.
+
+name: "Quadratic Voting Robustness"
+description: "Compare voting power models for concentration and participation"
+version: "1.0.0"
+author: "DAO Simulator Research Framework"
+tags:
+  - research
+  - quadratic-voting
+  - voting-power
+  - power-concentration
+  - fairness
+
+# Base DAO configuration
+baseConfig:
+  template: "compound"
+  overrides:
+    memberDistribution:
+      totalMembers: 150
+      distribution:
+        - archetype: "active_voter"
+          percentage: 50
+        - archetype: "whale"
+          percentage: 20
+        - archetype: "delegate"
+          percentage: 15
+        - archetype: "governance_expert"
+          percentage: 10
+        - archetype: "passive_holder"
+          percentage: 5
+    simulationParams:
+      votingActivity: 0.45
+      proposalFrequency: 0.4
+
+# Sweep across voting system types
+sweep:
+  parameter: "votingSystem.type"
+  values:
+    - "simple_majority"   # Token-weighted baseline
+    - "quadratic"         # Quadratic (sqrt of tokens)
+    - "supermajority"     # Higher threshold variant
+
+# Execution settings
+execution:
+  runsPerConfig: 3334    # 3334 x 3 ≈ 10,000 total runs
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 10
+
+# Key metrics for RQ5
+metrics:
+  # Primary power concentration metrics
+  - name: "Voter Concentration Gini"
+    type: builtin
+    builtin: voter_concentration_gini
+    description: "Inequality of voting activity"
+
+  - name: "Token Concentration Gini"
+    type: builtin
+    builtin: token_concentration_gini
+    description: "Inequality of token holdings"
+
+  - name: "Single Entity Control"
+    type: builtin
+    builtin: single_entity_control
+    description: "Max % any one member could control"
+
+  # Whale and small holder metrics
+  - name: "Whale Influence"
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% holders"
+
+  - name: "Delegate Concentration"
+    type: builtin
+    builtin: delegate_concentration
+    description: "% of votes from top 10% voters"
+
+  - name: "Avg Member Wealth"
+    type: builtin
+    builtin: avg_member_wealth
+    description: "Average tokens per member"
+
+  # Preference intensity capture
+  - name: "Avg Margin of Victory"
+    type: builtin
+    builtin: avg_margin_of_victory
+    description: "How decisive votes are"
+
+  - name: "Voting Power Utilization"
+    type: builtin
+    builtin: voting_power_utilization
+    description: "% of voting power used"
+
+  # Participation metrics
+  - name: "Voter Participation Rate"
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who voted"
+
+  - name: "Average Turnout"
+    type: builtin
+    builtin: average_turnout
+    description: "Average participation per proposal"
+
+  - name: "Unique Voter Count"
+    type: builtin
+    builtin: unique_voter_count
+    description: "Members who voted at least once"
+
+  # Governance outcomes
+  - name: "Proposal Pass Rate"
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "Fraction that passed"
+
+  - name: "Quorum Reach Rate"
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% meeting quorum"
+
+  - name: "Governance Capture Risk"
+    type: builtin
+    builtin: governance_capture_risk
+    description: "Proposal creation concentration"
+
+  - name: "Collusion Threshold"
+    type: builtin
+    builtin: collusion_threshold
+    description: "Min % for majority control"
+
+  # Economic health
+  - name: "Final Treasury"
+    type: builtin
+    builtin: final_treasury
+    description: "Treasury at end"
+
+  - name: "Wealth Mobility"
+    type: builtin
+    builtin: wealth_mobility
+    description: "Inverse of wealth concentration"
+
+# Output settings
+output:
+  directory: "results/research/quadratic-voting-robustness"
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: false
+  includeManifest: true
