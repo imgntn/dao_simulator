@@ -660,7 +660,8 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
 
       let whaleProposals = 0;
       for (const p of proposals) {
-        if (whaleIds.has(p.proposer || p.createdBy)) {
+        // Fix: Proposal class uses 'creator' field, not 'proposer' or 'createdBy'
+        if (whaleIds.has(p.creator)) {
           whaleProposals++;
         }
       }

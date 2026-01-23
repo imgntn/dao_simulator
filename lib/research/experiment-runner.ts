@@ -943,7 +943,8 @@ export class ExperimentRunner {
 
         let whaleProposals = 0;
         for (const p of proposals) {
-          if (whaleIds.has(p.proposer || p.createdBy)) {
+          // Fix: Proposal class uses 'creator' field
+          if (whaleIds.has(p.creator)) {
             whaleProposals++;
           }
         }
@@ -954,7 +955,8 @@ export class ExperimentRunner {
       case 'governance_capture_risk': {
         const proposerCounts = new Map<string, number>();
         for (const p of proposals) {
-          const proposer = p.proposer || p.createdBy || 'unknown';
+          // Fix: Proposal class uses 'creator' field
+          const proposer = p.creator || 'unknown';
           proposerCounts.set(proposer, (proposerCounts.get(proposer) || 0) + 1);
         }
 
