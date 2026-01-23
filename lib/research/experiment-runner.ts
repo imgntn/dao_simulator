@@ -585,12 +585,27 @@ export class ExperimentRunner {
    * Extract a single metric from the simulation
    */
   private extractMetric(simulation: DAOSimulation, metricConfig: MetricConfig): number {
+    // Explicit builtin metric
     if (metricConfig.type === 'builtin' && metricConfig.builtin) {
       return this.extractBuiltinMetric(simulation, metricConfig.builtin);
     }
 
+    // Custom expression metric
     if (metricConfig.type === 'custom' && metricConfig.expression) {
       return this.extractCustomMetric(simulation, metricConfig.expression);
+    }
+
+    // If no type specified, try to infer from name
+    // This allows YAML configs to just specify { name: "proposal_pass_rate" }
+    // without requiring explicit type: builtin and builtin: proposal_pass_rate
+    if (!metricConfig.type && metricConfig.name) {
+      // Try the metric name as a builtin metric (handles both snake_case and PascalCase)
+      const builtinName = metricConfig.name.toLowerCase().replace(/\s+/g, '_') as BuiltinMetricType;
+      try {
+        return this.extractBuiltinMetric(simulation, builtinName);
+      } catch {
+        // Not a valid builtin metric, fall through to return 0
+      }
     }
 
     return 0;
