@@ -82,15 +82,16 @@ export class DAOMember implements Agent {
   transferTargetDaoId: string | null = null;
 
   // Voter fatigue modeling
-  // In real DAOs like Optimism, participation drops ~40% over time
-  // Fatigue increases with each vote cast and decays over time
-  // Tuned to achieve realistic quorum reach rates (20-40%)
+  // Real DAO participation rates: Compound ~5-15%, Uniswap ~5-10%, MakerDAO ~10-20%
+  // Optimism ~10%, Arbitrum ~5-15%. Target: 20-40% for engaged simulations.
+  // Fatigue increases significantly per vote and decays slowly over time.
   voterFatigue: number = 0;        // Current fatigue level (0-1)
   lastVoteStep: number = 0;        // Step when last vote was cast
   totalVotesCast: number = 0;      // Lifetime vote count
-  static readonly FATIGUE_PER_VOTE = 0.02;    // Can vote 20x before max fatigue (was 0.05)
-  static readonly FATIGUE_DECAY_RATE = 0.01;  // 5x faster recovery (was 0.002)
-  static readonly MAX_FATIGUE = 0.4;          // Max 40% reduction (was 60%)
+  static readonly FATIGUE_PER_VOTE = 0.08;    // Significant fatigue per vote
+  static readonly FATIGUE_DECAY_RATE = 0.003; // Slow recovery between votes
+  static readonly MAX_FATIGUE = 0.7;          // Can reduce participation by up to 70%
+  static readonly BASE_APATHY = 0.35;         // 35% base chance to skip voting (voter apathy)
 
   constructor(
     uniqueId: string,
@@ -218,13 +219,15 @@ export class DAOMember implements Agent {
   }
 
   /**
-   * Get the effective voting probability considering fatigue
+   * Get the effective voting probability considering fatigue and apathy
+   * Models realistic DAO participation where many members don't vote
    */
   getEffectiveVotingProbability(): number {
     const baseActivity = this.model.dao?.votingActivity ?? 0.3;
-    // Fatigue reduces participation probability
-    // At max fatigue (0.6), participation drops by 60%
-    return baseActivity * (1 - this.voterFatigue);
+    // First apply base apathy (many members simply don't engage)
+    const afterApathy = baseActivity * (1 - DAOMember.BASE_APATHY);
+    // Then apply fatigue reduction
+    return afterApathy * (1 - this.voterFatigue);
   }
 
   voteOnRandomProposal(): void {

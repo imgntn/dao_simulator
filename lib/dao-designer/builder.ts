@@ -139,8 +139,10 @@ export class DAOConfigBuilder {
       marketing_level: 'low',
       enable_player: false,
 
-      // Convert steps per day to various rates
-      token_emission_rate: designer.simulationParams.stepsPerDay > 0 ? 0.01 : 0,
+      // Token economics - emission balances proposal funding and operating costs
+      // Target: sustainable treasury with slight growth over time
+      // 10 tokens/step provides ~5000 tokens per 500-step simulation
+      token_emission_rate: 10,
       token_burn_rate: 0,
 
       // Economic parameters

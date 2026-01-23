@@ -569,19 +569,25 @@ export class DAOSimulation extends Model {
       this.dao.treasury.withdraw('DAO_TOKEN', this.tokenBurnRate, this.currentStep);
     }
 
-    // Treasury revenue mechanisms (fixes treasury decline issue)
-    // 1. Proposal activity fees: Small fee per active proposal per step
+    // Treasury revenue mechanisms - sustainable DAO economics
+    // Real DAOs generate revenue from: protocol fees, staking, grants, services
+    // Target: treasury should be stable or slightly growing over time
+
+    // 1. Protocol activity fees: Fee per active proposal (governance participation cost)
     const activeProposals = this.dao.proposals.filter(p => p.status === 'open').length;
-    const proposalFees = activeProposals * 0.1; // 0.1 tokens per active proposal per step
+    const proposalFees = activeProposals * 0.5; // 0.5 tokens per active proposal per step
 
-    // 2. Staking yield to treasury: Portion of staking rewards goes to treasury
+    // 2. Staking protocol yield: Treasury earns portion of staking rewards
     const totalStaked = this.dao.members.reduce((sum, m) => sum + m.stakedTokens, 0);
-    const treasuryStakingYield = totalStaked * 0.0005; // 0.05% per step to treasury
+    const treasuryStakingYield = totalStaked * 0.001; // 0.1% per step to treasury
 
-    // 3. Member activity fees: Nominal fee from active member participation
-    const memberActivityFee = this.dao.members.length * 0.01; // 0.01 tokens per member per step
+    // 3. Membership/protocol fees: Base revenue from DAO operations
+    const memberActivityFee = this.dao.members.length * 0.05; // 0.05 tokens per member per step
 
-    const totalRevenue = proposalFees + treasuryStakingYield + memberActivityFee;
+    // 4. Transaction fees: Revenue from token transfers and trades
+    const transactionFees = this.dao.members.length * 0.02; // Simulated transaction activity
+
+    const totalRevenue = proposalFees + treasuryStakingYield + memberActivityFee + transactionFees;
     if (totalRevenue > 0) {
       this.dao.treasury.deposit('DAO_TOKEN', totalRevenue, this.currentStep);
 
@@ -591,6 +597,7 @@ export class DAOSimulation extends Model {
         proposalFees,
         stakingYield: treasuryStakingYield,
         memberFees: memberActivityFee,
+        transactionFees,
         total: totalRevenue,
       });
     }
