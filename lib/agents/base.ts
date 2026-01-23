@@ -88,6 +88,7 @@ export class DAOMember implements Agent {
   voterFatigue: number = 0;        // Current fatigue level (0-1)
   lastVoteStep: number = 0;        // Step when last vote was cast
   totalVotesCast: number = 0;      // Lifetime vote count
+  proposalsConsidered: Set<string> = new Set(); // Track proposals we've already decided on (vote or skip)
   static readonly FATIGUE_PER_VOTE = 0.08;    // Significant fatigue per vote
   static readonly FATIGUE_DECAY_RATE = 0.003; // Slow recovery between votes
   static readonly MAX_FATIGUE = 0.7;          // Can reduce participation by up to 70%
@@ -236,23 +237,29 @@ export class DAOMember implements Agent {
     // Update fatigue (decay over time)
     this.updateVoterFatigue();
 
-    // Get all open proposals we haven't voted on yet
+    // Get all open proposals we haven't considered yet
+    // KEY: Only consider each proposal ONCE (prevents cumulative probability inflation)
+    // Without this, 45% chance per step over 5 steps = 95% eventual participation
     const openProps = this.model.dao.proposals.filter(p => {
       const isOpen = p.status === 'open';
       const inVotingPeriod =
         this.model.currentStep <= p.creationTime + p.votingPeriod;
-      return isOpen && inVotingPeriod && !this.votes.has(p.uniqueId);
+      const notYetConsidered = !this.proposalsConsidered.has(p.uniqueId);
+      return isOpen && inVotingPeriod && notYetConsidered;
     });
 
     if (openProps.length === 0) return;
 
-    // Vote on ALL open proposals with per-proposal probability
-    // This models real DAO behavior where active members vote on multiple proposals
+    // Vote on proposals with per-proposal probability (one chance per proposal)
+    // This models real DAO behavior: members see a proposal and decide once
     const effectiveActivity = this.getEffectiveVotingProbability();
     let votedCount = 0;
 
     for (const proposal of openProps) {
-      // Each proposal gets an independent chance of being voted on
+      // Mark as considered regardless of vote decision (prevents re-rolling)
+      this.proposalsConsidered.add(proposal.uniqueId);
+
+      // Each proposal gets ONE independent chance of being voted on
       if (random() < effectiveActivity) {
         this.voteOnProposal(proposal);
         votedCount++;
