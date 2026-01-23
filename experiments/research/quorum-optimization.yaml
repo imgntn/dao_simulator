@@ -1,0 +1,115 @@
+# Quorum Optimization Study
+#
+# Research Question: What quorum level balances legitimacy with efficiency?
+#
+# Too low quorum risks minority capture; too high causes gridlock.
+# This experiment maps the trade-off space across voting periods.
+#
+# Grid: 8 quorum levels × 4 voting periods = 32 configs × 150 runs = 4,800 runs
+
+name: "Quorum Optimization"
+description: |
+  Fine-grained analysis of quorum thresholds from 2% to 40%. Maps the trade-off
+  between governance legitimacy (higher quorum) and efficiency (faster decisions).
+  Considers interaction with voting period length.
+
+version: "2.0.0"
+author: "DAO Simulator Research"
+tags:
+  - quorum
+  - optimization
+  - legitimacy
+  - efficiency
+  - grid-search
+
+baseConfig:
+  template: "compound"
+  overrides:
+    tokenSupply: 1000000
+    memberDistribution:
+      totalMembers: 100
+      distribution:
+        - archetype: "passive_holder"
+          percentage: 55
+        - archetype: "delegate"
+          percentage: 20
+        - archetype: "governance_expert"
+          percentage: 12
+        - archetype: "whale"
+          percentage: 8
+        - archetype: "developer"
+          percentage: 5
+    votingSystem:
+      type: "simple_majority"
+      passingThreshold: 0.5
+    simulationParams:
+      votingActivity: 0.35
+      proposalFrequency: 0.3
+
+sweep:
+  grid:
+    # Fine-grained quorum sweep
+    - parameter: "quorumConfig.baseQuorumPercent"
+      label: "quorum"
+      values:
+        - 2       # Very permissive
+        - 5       # Low (Uniswap-style)
+        - 8       # Low-moderate
+        - 10      # Moderate (Compound-style)
+        - 15      # Moderate-high
+        - 20      # High
+        - 30      # Very high
+        - 40      # Extreme
+
+    # Voting period affects ability to reach quorum
+    - parameter: "votingSystem.votingPeriodDays"
+      label: "votingPeriod"
+      values:
+        - 3       # Short
+        - 7       # Standard
+        - 14      # Long
+        - 21      # Very long
+
+execution:
+  runsPerConfig: 150
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 98765
+  workers: 10
+
+metrics:
+  # Primary quorum metrics
+  - { name: "Quorum Reach Rate", type: builtin, builtin: quorum_reach_rate }
+  - { name: "Proposal Abandonment Rate", type: builtin, builtin: proposal_abandonment_rate }
+  - { name: "Avg Time to Decision", type: builtin, builtin: avg_time_to_decision }
+
+  # Efficiency
+  - { name: "Proposal Pass Rate", type: builtin, builtin: proposal_pass_rate }
+  - { name: "Total Proposals", type: builtin, builtin: total_proposals }
+  - { name: "Governance Overhead", type: builtin, builtin: governance_overhead }
+
+  # Legitimacy indicators
+  - { name: "Average Turnout", type: builtin, builtin: avg_votes_per_proposal }
+  - { name: "Voter Participation Rate", type: builtin, builtin: voter_participation_rate }
+  - { name: "Voting Power Utilization", type: builtin, builtin: voting_power_utilization }
+
+  # Security
+  - { name: "Governance Capture Risk", type: builtin, builtin: governance_capture_risk }
+  - { name: "Whale Influence", type: builtin, builtin: whale_influence }
+  - { name: "Single Entity Control", type: builtin, builtin: single_entity_control }
+
+  # Quality
+  - { name: "Avg Margin of Victory", type: builtin, builtin: avg_margin_of_victory }
+  - { name: "Voter Retention Rate", type: builtin, builtin: voter_retention_rate }
+
+  # Economics
+  - { name: "Final Treasury", type: builtin, builtin: final_treasury }
+  - { name: "Treasury Growth Rate", type: builtin, builtin: treasury_growth_rate }
+
+output:
+  directory: "results/research/quorum-optimization"
+  formats: [json, csv]
+  includeRawRuns: false
+  includeManifest: true
+  includeStatistics: true
+  includeRecommendations: true

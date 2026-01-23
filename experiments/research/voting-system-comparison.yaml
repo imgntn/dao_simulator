@@ -1,0 +1,100 @@
+# Voting System Comparison Study
+#
+# Research Question: How do different voting mechanisms affect governance outcomes?
+#
+# This experiment compares voting systems across multiple quorum levels to understand
+# the interaction between voting rules and participation requirements.
+#
+# Grid: 5 voting systems × 4 quorum levels = 20 configurations × 200 runs = 4,000 runs
+
+name: "Voting System Comparison"
+description: |
+  Comprehensive comparison of voting mechanisms (simple majority, supermajority,
+  quadratic, conviction, approval) across different quorum thresholds. Measures
+  efficiency, participation quality, and attack resistance.
+
+version: "2.0.0"
+author: "DAO Simulator Research"
+tags:
+  - voting-systems
+  - grid-search
+  - governance-efficiency
+  - participation
+
+baseConfig:
+  template: "compound"
+  overrides:
+    tokenSupply: 1000000
+    memberDistribution:
+      totalMembers: 100
+      distribution:
+        - archetype: "passive_holder"
+          percentage: 50
+        - archetype: "delegate"
+          percentage: 20
+        - archetype: "governance_expert"
+          percentage: 15
+        - archetype: "whale"
+          percentage: 10
+        - archetype: "developer"
+          percentage: 5
+    simulationParams:
+      votingActivity: 0.4
+      proposalFrequency: 0.3
+
+sweep:
+  grid:
+    - parameter: "votingSystem.type"
+      label: "votingType"
+      values:
+        - "simple_majority"
+        - "supermajority"
+        - "quadratic"
+        - "conviction"
+        - "approval"
+
+    - parameter: "quorumConfig.baseQuorumPercent"
+      label: "quorum"
+      values:
+        - 5
+        - 10
+        - 20
+        - 30
+
+execution:
+  runsPerConfig: 200
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 12345
+  workers: 10
+
+metrics:
+  # Efficiency
+  - { name: "Proposal Pass Rate", type: builtin, builtin: proposal_pass_rate }
+  - { name: "Quorum Reach Rate", type: builtin, builtin: quorum_reach_rate }
+  - { name: "Avg Time to Decision", type: builtin, builtin: avg_time_to_decision }
+  - { name: "Proposal Abandonment Rate", type: builtin, builtin: proposal_abandonment_rate }
+
+  # Participation
+  - { name: "Voter Participation Rate", type: builtin, builtin: voter_participation_rate }
+  - { name: "Average Turnout", type: builtin, builtin: avg_votes_per_proposal }
+  - { name: "Voter Concentration Gini", type: builtin, builtin: voter_concentration_gini }
+  - { name: "Delegate Concentration", type: builtin, builtin: delegate_concentration }
+
+  # Security
+  - { name: "Whale Influence", type: builtin, builtin: whale_influence }
+  - { name: "Governance Capture Risk", type: builtin, builtin: governance_capture_risk }
+  - { name: "Single Entity Control", type: builtin, builtin: single_entity_control }
+
+  # Economics
+  - { name: "Final Treasury", type: builtin, builtin: final_treasury }
+  - { name: "Treasury Growth Rate", type: builtin, builtin: treasury_growth_rate }
+  - { name: "Token Concentration Gini", type: builtin, builtin: token_concentration_gini }
+
+output:
+  directory: "results/research/voting-system-comparison"
+  formats: [json, csv]
+  includeRawRuns: false
+  includeManifest: true
+  includeStatistics: true
+  includeRecommendations: true

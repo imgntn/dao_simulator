@@ -1,0 +1,99 @@
+# DAO Scale Effects Study
+#
+# Research Question: How does DAO size affect governance dynamics?
+#
+# Larger DAOs may face coordination challenges and increased whale influence.
+# This experiment tests scale effects across governance configurations.
+#
+# Grid: 5 sizes × 4 configurations = 20 configs × 200 runs = 4,000 runs
+
+name: "DAO Scale Effects"
+description: |
+  Analysis of how DAO membership size affects governance outcomes. Tests whether
+  mechanisms that work for small DAOs scale to larger organizations. Examines
+  coordination costs, participation rates, and power concentration at scale.
+
+version: "2.0.0"
+author: "DAO Simulator Research"
+tags:
+  - scale
+  - membership-size
+  - coordination
+  - scalability
+  - grid-search
+
+baseConfig:
+  template: "compound"
+  overrides:
+    tokenSupply: 1000000
+    quorumConfig:
+      baseQuorumPercent: 10
+    votingSystem:
+      votingPeriodDays: 7
+    simulationParams:
+      votingActivity: 0.35
+      proposalFrequency: 0.2
+
+sweep:
+  grid:
+    # DAO size sweep
+    - parameter: "memberDistribution.totalMembers"
+      label: "daoSize"
+      values:
+        - 25      # Small DAO
+        - 50      # Medium-small
+        - 100     # Medium
+        - 200     # Large
+        - 500     # Very large
+
+    # Governance configuration
+    - parameter: "votingSystem.type"
+      label: "votingType"
+      values:
+        - "simple_majority"
+        - "quadratic"
+        - "conviction"
+        - "supermajority"
+
+execution:
+  runsPerConfig: 200
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 33333
+  workers: 10
+
+metrics:
+  # Scale-sensitive metrics
+  - { name: "Voter Participation Rate", type: builtin, builtin: voter_participation_rate }
+  - { name: "Average Turnout", type: builtin, builtin: avg_votes_per_proposal }
+  - { name: "Unique Voter Count", type: builtin, builtin: unique_voter_count }
+  - { name: "Governance Activity Index", type: builtin, builtin: governance_activity_index }
+
+  # Coordination indicators
+  - { name: "Quorum Reach Rate", type: builtin, builtin: quorum_reach_rate }
+  - { name: "Avg Time to Decision", type: builtin, builtin: avg_time_to_decision }
+  - { name: "Governance Overhead", type: builtin, builtin: governance_overhead }
+
+  # Power concentration at scale
+  - { name: "Whale Influence", type: builtin, builtin: whale_influence }
+  - { name: "Delegate Concentration", type: builtin, builtin: delegate_concentration }
+  - { name: "Voter Concentration Gini", type: builtin, builtin: voter_concentration_gini }
+  - { name: "Single Entity Control", type: builtin, builtin: single_entity_control }
+
+  # Outcomes
+  - { name: "Proposal Pass Rate", type: builtin, builtin: proposal_pass_rate }
+  - { name: "Total Proposals", type: builtin, builtin: total_proposals }
+  - { name: "Proposal Abandonment Rate", type: builtin, builtin: proposal_abandonment_rate }
+
+  # Economics per member
+  - { name: "Final Treasury", type: builtin, builtin: final_treasury }
+  - { name: "Avg Member Wealth", type: builtin, builtin: avg_member_wealth }
+  - { name: "Token Concentration Gini", type: builtin, builtin: token_concentration_gini }
+
+output:
+  directory: "results/research/dao-scale-effects"
+  formats: [json, csv]
+  includeRawRuns: false
+  includeManifest: true
+  includeStatistics: true
+  includeRecommendations: true

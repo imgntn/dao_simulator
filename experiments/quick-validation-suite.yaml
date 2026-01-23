@@ -1,0 +1,82 @@
+# Quick Validation Suite
+#
+# Fast sanity check to verify simulation is producing reasonable results.
+# Run this before longer experiments to catch configuration issues.
+#
+# Total: 12 configs × 30 runs = 360 runs (~1-2 minutes)
+
+name: "Quick Validation Suite"
+description: |
+  Rapid validation experiment to verify core simulation mechanics are working
+  correctly. Tests multiple voting systems, quorum levels, and checks for
+  reasonable metric ranges.
+
+version: "2.0.0"
+author: "DAO Simulator Research"
+tags:
+  - validation
+  - quick-test
+  - sanity-check
+
+baseConfig:
+  template: "compound"
+  overrides:
+    tokenSupply: 100000
+    memberDistribution:
+      totalMembers: 50
+      distribution:
+        - archetype: "passive_holder"
+          percentage: 50
+        - archetype: "delegate"
+          percentage: 20
+        - archetype: "governance_expert"
+          percentage: 15
+        - archetype: "whale"
+          percentage: 10
+        - archetype: "developer"
+          percentage: 5
+    simulationParams:
+      votingActivity: 0.35
+      proposalFrequency: 0.3
+
+sweep:
+  grid:
+    - parameter: "votingSystem.type"
+      label: "votingType"
+      values:
+        - "simple_majority"
+        - "quadratic"
+        - "conviction"
+
+    - parameter: "quorumConfig.baseQuorumPercent"
+      label: "quorum"
+      values:
+        - 5
+        - 15
+        - 30
+        - 50
+
+execution:
+  runsPerConfig: 30
+  stepsPerRun: 200
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 8
+
+metrics:
+  # Core metrics to validate
+  - { name: "Proposal Pass Rate", type: builtin, builtin: proposal_pass_rate }
+  - { name: "Quorum Reach Rate", type: builtin, builtin: quorum_reach_rate }
+  - { name: "Voter Participation Rate", type: builtin, builtin: voter_participation_rate }
+  - { name: "Average Turnout", type: builtin, builtin: avg_votes_per_proposal }
+  - { name: "Whale Influence", type: builtin, builtin: whale_influence }
+  - { name: "Final Treasury", type: builtin, builtin: final_treasury }
+  - { name: "Total Proposals", type: builtin, builtin: total_proposals }
+
+output:
+  directory: "results/quick-validation-suite"
+  formats: [json, csv]
+  includeRawRuns: false
+  includeManifest: true
+  includeStatistics: true
+  includeRecommendations: true

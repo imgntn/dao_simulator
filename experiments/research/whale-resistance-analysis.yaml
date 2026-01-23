@@ -1,0 +1,108 @@
+# Whale Resistance Analysis
+#
+# Research Question: How do governance mechanisms resist plutocratic capture?
+#
+# This experiment varies token concentration (whale power) across voting systems
+# to identify which mechanisms best protect against wealthy minority control.
+#
+# Grid: 5 concentration levels × 4 voting systems = 20 configs × 250 runs = 5,000 runs
+
+name: "Whale Resistance Analysis"
+description: |
+  Systematic analysis of how different voting mechanisms resist governance capture
+  by wealthy minorities. Tests quadratic voting's theoretical advantage in reducing
+  whale influence compared to token-weighted alternatives.
+
+version: "2.0.0"
+author: "DAO Simulator Research"
+tags:
+  - whale-resistance
+  - plutocracy
+  - quadratic-voting
+  - attack-resistance
+  - grid-search
+
+baseConfig:
+  template: "compound"
+  overrides:
+    tokenSupply: 1000000
+    memberDistribution:
+      totalMembers: 100
+      distribution:
+        - archetype: "passive_holder"
+          percentage: 60
+        - archetype: "delegate"
+          percentage: 15
+        - archetype: "governance_expert"
+          percentage: 10
+        - archetype: "developer"
+          percentage: 10
+        - archetype: "whale"
+          percentage: 5    # Will be overridden by sweep
+    quorumConfig:
+      baseQuorumPercent: 10
+    simulationParams:
+      votingActivity: 0.35
+      proposalFrequency: 0.25
+
+sweep:
+  grid:
+    # Token concentration - whale percentage of total supply
+    - parameter: "treasury.whaleConcentration"
+      label: "whaleConcentration"
+      values:
+        - 0.1     # 10% - low concentration
+        - 0.2     # 20% - moderate
+        - 0.33    # 33% - high (blocking minority)
+        - 0.5     # 50% - majority control
+        - 0.67    # 67% - supermajority control
+
+    # Voting system type
+    - parameter: "votingSystem.type"
+      label: "votingType"
+      values:
+        - "simple_majority"
+        - "supermajority"
+        - "quadratic"
+        - "conviction"
+
+execution:
+  runsPerConfig: 250
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 54321
+  workers: 10
+
+metrics:
+  # Primary whale metrics
+  - { name: "Whale Influence", type: builtin, builtin: whale_influence }
+  - { name: "Whale Proposal Rate", type: builtin, builtin: whale_proposal_rate }
+  - { name: "Single Entity Control", type: builtin, builtin: single_entity_control }
+  - { name: "Collusion Threshold", type: builtin, builtin: collusion_threshold }
+
+  # Capture risk
+  - { name: "Governance Capture Risk", type: builtin, builtin: governance_capture_risk }
+  - { name: "Delegate Concentration", type: builtin, builtin: delegate_concentration }
+  - { name: "Voter Concentration Gini", type: builtin, builtin: voter_concentration_gini }
+
+  # Outcome quality
+  - { name: "Proposal Pass Rate", type: builtin, builtin: proposal_pass_rate }
+  - { name: "Avg Margin of Victory", type: builtin, builtin: avg_margin_of_victory }
+  - { name: "Quorum Reach Rate", type: builtin, builtin: quorum_reach_rate }
+
+  # Participation effects
+  - { name: "Voter Participation Rate", type: builtin, builtin: voter_participation_rate }
+  - { name: "Average Turnout", type: builtin, builtin: avg_votes_per_proposal }
+  - { name: "Voting Power Utilization", type: builtin, builtin: voting_power_utilization }
+
+  # Economics
+  - { name: "Final Treasury", type: builtin, builtin: final_treasury }
+  - { name: "Token Concentration Gini", type: builtin, builtin: token_concentration_gini }
+
+output:
+  directory: "results/research/whale-resistance-analysis"
+  formats: [json, csv]
+  includeRawRuns: false
+  includeManifest: true
+  includeStatistics: true
+  includeRecommendations: true
