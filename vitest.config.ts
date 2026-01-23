@@ -10,6 +10,10 @@ export default defineConfig({
       reporter: ['text', 'lcov'],
     },
     setupFiles: [],
+    typecheck: {
+      enabled: true,
+      checker: 'tsc',
+    },
   },
   resolve: {
     alias: {

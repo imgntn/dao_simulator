@@ -104,10 +104,8 @@ export class DelegationResolver {
       visited.add(current.uniqueId);
       chain.push(current);
 
-      // Check if this member has a representative (LiquidDelegator pattern)
-      // Use duck typing to check for representative field
-      const asLiquidDelegator = current as DAOMember & { representative?: DAOMember | null };
-      current = asLiquidDelegator.representative || null;
+      // Follow the representative chain (field is now in base DAOMember class)
+      current = current.representative;
     }
 
     return chain;
@@ -154,9 +152,8 @@ export class DelegationResolver {
 
       visited.add(current.uniqueId);
 
-      // Follow the representative chain
-      const asLiquidDelegator = current as DAOMember & { representative?: DAOMember | null };
-      current = asLiquidDelegator.representative || null;
+      // Follow the representative chain (field is now in base DAOMember class)
+      current = current.representative;
     }
 
     // Also check if 'to' has delegated to 'from' (direct circular delegation)

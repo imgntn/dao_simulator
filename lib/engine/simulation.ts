@@ -622,6 +622,9 @@ export class DAOSimulation extends Model {
 
     // Update step counter
     this.currentStep++;
+    // CRITICAL: Sync DAO's currentStep with simulation's currentStep
+    // This is needed for governance rules that use dao.currentStep (e.g., ConvictionVotingRule)
+    this.dao.currentStep = this.currentStep;
 
     // Emit step_end event
     this.eventBus.publish('step_end', { step: this.currentStep });

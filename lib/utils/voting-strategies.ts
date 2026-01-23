@@ -1,4 +1,4 @@
-// Voting Strategy implementations
+// Voting Strategy implementations using Template Method pattern
 
 import type { DAOMember } from '../agents/base';
 import type { Proposal } from '../data-structures/proposal';
@@ -13,34 +13,73 @@ export interface VotingStrategy {
 }
 
 /**
- * Default Voting Strategy - simple one-person-one-vote
+ * Base Voting Strategy - provides template method for common vote recording logic
+ *
+ * Subclasses only need to implement:
+ * - calculateWeight(member, proposal): number - returns vote weight (0 means don't vote)
+ * - calculateWeightWithDelegation(member, proposal, effectiveWeight): number - optional override
+ * - preVote(member, proposal, weight): boolean - optional hook for token deduction, etc.
  */
-export class DefaultVotingStrategy implements VotingStrategy {
-  vote(member: DAOMember, proposal: Proposal): void {
-    const voteDecision = member.decideVote(proposal);
-    const voteBool = voteDecision === 'yes';
+export abstract class BaseVotingStrategy implements VotingStrategy {
+  /**
+   * Calculate the vote weight for a member on a proposal.
+   * Return 0 or less to skip voting.
+   */
+  protected abstract calculateWeight(member: DAOMember, proposal: Proposal): number;
 
-    member.votes.set(proposal.uniqueId, { vote: voteBool, weight: 1 });
-    proposal.addVote(member.uniqueId, voteBool, 1);
-
-    // Emit event for visualization
-    if (member.model?.eventBus) {
-      member.model.eventBus.publish('proposal_voted', {
-        step: member.model.currentStep,
-        agentId: member.uniqueId,
-        proposalId: proposal.uniqueId,
-        vote: voteDecision,
-        weight: 1,
-      });
-    }
+  /**
+   * Calculate weight when voting with delegation-provided effective weight.
+   * Override if delegation weight should be handled differently.
+   */
+  protected calculateWeightWithDelegation(
+    member: DAOMember,
+    proposal: Proposal,
+    effectiveWeight: number
+  ): number {
+    // Default: use effective weight directly with minimum of 1
+    return Math.max(1, effectiveWeight);
   }
 
+  /**
+   * Pre-vote hook. Override to add custom logic before vote is recorded.
+   * Return false to cancel the vote.
+   * @example Token deduction, eligibility checks, etc.
+   */
+  protected preVote(member: DAOMember, proposal: Proposal, weight: number): boolean {
+    return true;
+  }
+
+  /**
+   * Template method: Vote on a proposal using calculated weight
+   */
+  vote(member: DAOMember, proposal: Proposal): void {
+    const weight = this.calculateWeight(member, proposal);
+    if (weight <= 0) return;
+
+    if (!this.preVote(member, proposal, weight)) return;
+
+    this.recordVote(member, proposal, weight);
+  }
+
+  /**
+   * Template method: Vote with delegation-provided effective weight
+   */
   voteWithWeight(member: DAOMember, proposal: Proposal, effectiveWeight: number): void {
+    const weight = this.calculateWeightWithDelegation(member, proposal, effectiveWeight);
+    if (weight <= 0) return;
+
+    if (!this.preVote(member, proposal, weight)) return;
+
+    this.recordVote(member, proposal, weight);
+  }
+
+  /**
+   * Common vote recording logic - records vote and publishes event
+   */
+  protected recordVote(member: DAOMember, proposal: Proposal, weight: number): void {
     const voteDecision = member.decideVote(proposal);
     const voteBool = voteDecision === 'yes';
 
-    // Use effective weight (includes delegated power)
-    const weight = Math.max(1, effectiveWeight);
     member.votes.set(proposal.uniqueId, { vote: voteBool, weight });
     proposal.addVote(member.uniqueId, voteBool, weight);
 
@@ -54,229 +93,134 @@ export class DefaultVotingStrategy implements VotingStrategy {
         weight,
       });
     }
+  }
+}
+
+/**
+ * Default Voting Strategy - simple one-person-one-vote
+ */
+export class DefaultVotingStrategy extends BaseVotingStrategy {
+  protected calculateWeight(_member: DAOMember, _proposal: Proposal): number {
+    return 1;
   }
 }
 
 /**
  * Quadratic Voting Strategy - cost increases quadratically
  */
-export class QuadraticVotingStrategy implements VotingStrategy {
+export class QuadraticVotingStrategy extends BaseVotingStrategy {
   private maxCost: number;
+  private pendingCost: number = 0;
 
   constructor(maxCost: number = 4) {
+    super();
     this.maxCost = maxCost;
   }
 
-  vote(member: DAOMember, proposal: Proposal): void {
+  protected calculateWeight(member: DAOMember, _proposal: Proposal): number {
     const available = Math.min(member.tokens, this.maxCost);
-    const weight = this.quadraticVote(proposal, available);
-
-    if (weight <= 0) {
-      return;
-    }
-
-    const cost = weight ** 2;
-    member.tokens -= cost;
-
-    const voteDecision = member.decideVote(proposal);
-    const voteBool = voteDecision === 'yes';
-
-    member.votes.set(proposal.uniqueId, { vote: voteBool, weight });
-    proposal.addVote(member.uniqueId, voteBool, weight);
-
-    // Emit event for visualization
-    if (member.model?.eventBus) {
-      member.model.eventBus.publish('proposal_voted', {
-        step: member.model.currentStep,
-        agentId: member.uniqueId,
-        proposalId: proposal.uniqueId,
-        vote: voteDecision,
-        weight,
-      });
-    }
-  }
-
-  private quadraticVote(proposal: Proposal, available: number): number {
-    // Determine how many votes to cast based on available tokens
-    // Cost = weight^2, so weight = sqrt(cost)
     const maxWeight = Math.floor(Math.sqrt(available));
-    return Math.max(0, Math.min(maxWeight, 10)); // Cap at 10 votes
+    const weight = Math.max(0, Math.min(maxWeight, 10)); // Cap at 10 votes
+    this.pendingCost = weight ** 2;
+    return weight;
   }
 
-  voteWithWeight(member: DAOMember, proposal: Proposal, effectiveWeight: number): void {
+  protected calculateWeightWithDelegation(
+    member: DAOMember,
+    _proposal: Proposal,
+    effectiveWeight: number
+  ): number {
     // For quadratic voting with delegation, use sqrt of effective weight
     const available = Math.min(effectiveWeight, this.maxCost);
-    const weight = this.quadraticVote(proposal, available);
-
-    if (weight <= 0) {
-      return;
-    }
-
-    const cost = weight ** 2;
+    const maxWeight = Math.floor(Math.sqrt(available));
+    const weight = Math.max(0, Math.min(maxWeight, 10));
     // Only deduct from member's own tokens (not delegated)
-    if (member.tokens >= cost) {
-      member.tokens -= cost;
+    this.pendingCost = member.tokens >= weight ** 2 ? weight ** 2 : 0;
+    return weight;
+  }
+
+  protected preVote(member: DAOMember, _proposal: Proposal, weight: number): boolean {
+    if (weight <= 0) return false;
+    // Deduct the cost
+    if (this.pendingCost > 0) {
+      member.tokens -= this.pendingCost;
+      this.pendingCost = 0;
     }
-
-    const voteDecision = member.decideVote(proposal);
-    const voteBool = voteDecision === 'yes';
-
-    member.votes.set(proposal.uniqueId, { vote: voteBool, weight });
-    proposal.addVote(member.uniqueId, voteBool, weight);
-
-    // Emit event for visualization
-    if (member.model?.eventBus) {
-      member.model.eventBus.publish('proposal_voted', {
-        step: member.model.currentStep,
-        agentId: member.uniqueId,
-        proposalId: proposal.uniqueId,
-        vote: voteDecision,
-        weight,
-      });
-    }
+    return true;
   }
 }
 
 /**
  * Reputation Weighted Voting Strategy - vote weight based on reputation
  */
-export class ReputationWeightedStrategy implements VotingStrategy {
+export class ReputationWeightedStrategy extends BaseVotingStrategy {
   private minReputation: number;
   private maxWeight: number;
 
   constructor(minReputation: number = 10, maxWeight: number = 10) {
+    super();
     this.minReputation = minReputation;
     this.maxWeight = maxWeight;
   }
 
-  vote(member: DAOMember, proposal: Proposal): void {
+  protected calculateWeight(member: DAOMember, _proposal: Proposal): number {
     if (member.reputation < this.minReputation) {
-      return; // Not enough reputation to vote
+      return 0; // Not enough reputation to vote
     }
-
-    // Weight scales with reputation
-    const weight = Math.min(
+    return Math.min(
       this.maxWeight,
       Math.floor(member.reputation / this.minReputation)
     );
-
-    const voteDecision = member.decideVote(proposal);
-    const voteBool = voteDecision === 'yes';
-
-    member.votes.set(proposal.uniqueId, { vote: voteBool, weight });
-    proposal.addVote(member.uniqueId, voteBool, weight);
-
-    // Emit event for visualization
-    if (member.model?.eventBus) {
-      member.model.eventBus.publish('proposal_voted', {
-        step: member.model.currentStep,
-        agentId: member.uniqueId,
-        proposalId: proposal.uniqueId,
-        vote: voteDecision,
-        weight,
-      });
-    }
   }
 
-  voteWithWeight(member: DAOMember, proposal: Proposal, effectiveWeight: number): void {
+  protected calculateWeightWithDelegation(
+    member: DAOMember,
+    _proposal: Proposal,
+    effectiveWeight: number
+  ): number {
     if (member.reputation < this.minReputation) {
-      return; // Not enough reputation to vote
+      return 0; // Not enough reputation to vote
     }
-
     // Combine reputation weight with delegated power
     const reputationWeight = Math.min(
       this.maxWeight,
       Math.floor(member.reputation / this.minReputation)
     );
     // Use the higher of reputation-based or delegation-based weight
-    const weight = Math.max(reputationWeight, effectiveWeight);
-
-    const voteDecision = member.decideVote(proposal);
-    const voteBool = voteDecision === 'yes';
-
-    member.votes.set(proposal.uniqueId, { vote: voteBool, weight });
-    proposal.addVote(member.uniqueId, voteBool, weight);
-
-    // Emit event for visualization
-    if (member.model?.eventBus) {
-      member.model.eventBus.publish('proposal_voted', {
-        step: member.model.currentStep,
-        agentId: member.uniqueId,
-        proposalId: proposal.uniqueId,
-        vote: voteDecision,
-        weight,
-      });
-    }
+    return Math.max(reputationWeight, effectiveWeight);
   }
 }
 
 /**
  * Token Weighted Voting Strategy - vote weight based on token holdings
  */
-export class TokenWeightedStrategy implements VotingStrategy {
+export class TokenWeightedStrategy extends BaseVotingStrategy {
   private tokensPerVote: number;
   private maxWeight: number;
 
   constructor(tokensPerVote: number = 100, maxWeight: number = 100) {
+    super();
     this.tokensPerVote = tokensPerVote;
     this.maxWeight = maxWeight;
   }
 
-  vote(member: DAOMember, proposal: Proposal): void {
-    const weight = Math.min(
+  protected calculateWeight(member: DAOMember, _proposal: Proposal): number {
+    return Math.min(
       this.maxWeight,
       Math.floor(member.tokens / this.tokensPerVote)
     );
-
-    if (weight <= 0) {
-      return;
-    }
-
-    const voteDecision = member.decideVote(proposal);
-    const voteBool = voteDecision === 'yes';
-
-    member.votes.set(proposal.uniqueId, { vote: voteBool, weight });
-    proposal.addVote(member.uniqueId, voteBool, weight);
-
-    // Emit event for visualization
-    if (member.model?.eventBus) {
-      member.model.eventBus.publish('proposal_voted', {
-        step: member.model.currentStep,
-        agentId: member.uniqueId,
-        proposalId: proposal.uniqueId,
-        vote: voteDecision,
-        weight,
-      });
-    }
   }
 
-  voteWithWeight(member: DAOMember, proposal: Proposal, effectiveWeight: number): void {
+  protected calculateWeightWithDelegation(
+    _member: DAOMember,
+    _proposal: Proposal,
+    effectiveWeight: number
+  ): number {
     // Use effective weight directly (includes delegated tokens)
-    const weight = Math.min(
+    return Math.min(
       this.maxWeight,
       Math.floor(effectiveWeight / this.tokensPerVote)
     );
-
-    if (weight <= 0) {
-      return;
-    }
-
-    const voteDecision = member.decideVote(proposal);
-    const voteBool = voteDecision === 'yes';
-
-    member.votes.set(proposal.uniqueId, { vote: voteBool, weight });
-    proposal.addVote(member.uniqueId, voteBool, weight);
-
-    // Emit event for visualization
-    if (member.model?.eventBus) {
-      member.model.eventBus.publish('proposal_voted', {
-        step: member.model.currentStep,
-        agentId: member.uniqueId,
-        proposalId: proposal.uniqueId,
-        vote: voteDecision,
-        weight,
-      });
-    }
   }
 }
 

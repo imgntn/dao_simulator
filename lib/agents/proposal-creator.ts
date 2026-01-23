@@ -6,7 +6,11 @@ import { random, randomChoice, randomInt } from '../utils/random';
 
 export class ProposalCreator extends DAOMember {
   step(): void {
-    if (random() < 0.3) {
+    // Reduced from 30% to 0.5% to prevent proposal flood
+    // With many ProposalCreators, high rates created thousands of proposals
+    // causing vote dilution and near-zero quorum reach rates
+    // Target: ~100-150 proposals per 500-step run with ~40 creators
+    if (random() < 0.005) {
       this.createRandomProposal();
     }
 

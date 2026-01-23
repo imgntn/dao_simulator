@@ -153,3 +153,47 @@ export class EventBus implements IEventBus {
     return this.subscribers.get(event)?.size || 0;
   }
 }
+
+/**
+ * Null Object pattern for EventBus
+ *
+ * Use this when you need an EventBus instance but don't want to handle
+ * null checks everywhere. All methods are no-ops.
+ *
+ * @example
+ * // Instead of: if (model.eventBus) { model.eventBus.publish(...) }
+ * // Use: model.getEventBus().publish(...)
+ * // where getEventBus() returns NULL_EVENT_BUS when no bus is configured
+ */
+export class NullEventBus implements IEventBus {
+  subscribe(_event: string, _callback: EventCallback): void {
+    // No-op
+  }
+
+  unsubscribe(_event: string, _callback: EventCallback): void {
+    // No-op
+  }
+
+  publish(_event: string, _data: Omit<EventData, 'event'>): void {
+    // No-op
+  }
+
+  async publishAsync(_event: string, _data: Omit<EventData, 'event'>): Promise<void> {
+    // No-op
+  }
+
+  async flush(): Promise<void> {
+    // No-op
+  }
+
+  clear(): void {
+    // No-op
+  }
+
+  getSubscriberCount(_event: string): number {
+    return 0;
+  }
+}
+
+/** Singleton null event bus instance */
+export const NULL_EVENT_BUS = new NullEventBus();

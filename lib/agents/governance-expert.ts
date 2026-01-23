@@ -157,16 +157,10 @@ export class GovernanceExpert extends DAOMember {
   }
 
   /**
-   * Vote based on expert analysis
+   * Vote based on expert analysis - votes on ALL open proposals
    */
   private voteWithExpertise(): void {
     if (!this.model.dao) return;
-
-    // Respect votingActivity parameter - experts still need to decide to participate
-    const votingActivity = this.model.dao.votingActivity ?? 0.3;
-    if (random() >= votingActivity) {
-      return;  // Expert decides not to vote this step
-    }
 
     const openProposals = this.model.dao.proposals.filter(p =>
       p.status === 'open' &&
@@ -175,38 +169,42 @@ export class GovernanceExpert extends DAOMember {
 
     if (openProposals.length === 0) return;
 
-    // Prioritize proposals we've analyzed
-    const analyzedProposals = openProposals.filter(p => this.analyses.has(p.uniqueId));
-    const toVote = analyzedProposals.length > 0
-      ? randomChoice(analyzedProposals)
-      : randomChoice(openProposals);
+    // Vote on ALL open proposals with per-proposal probability
+    const votingActivity = this.model.dao.votingActivity ?? 0.3;
 
-    const analysis = this.analyses.get(toVote.uniqueId);
-    let vote: boolean;
-
-    if (analysis) {
-      // Vote based on analysis
-      switch (analysis.recommendation) {
-        case 'strong_yes':
-        case 'yes':
-          vote = true;
-          break;
-        case 'strong_no':
-        case 'no':
-          vote = false;
-          break;
-        default:
-          vote = randomBool(0.5);
+    for (const proposal of openProposals) {
+      // Each proposal gets an independent chance of being voted on
+      if (random() >= votingActivity) {
+        continue;  // Skip this proposal
       }
-    } else {
-      vote = randomBool(0.5);
-    }
 
-    // Apply vote with expertise weight
-    const weight = this.tokens * INFLUENCE_FACTOR * (this.accuracyRating);
-    toVote.addVote(this.uniqueId, vote, weight);
-    this.votes.set(toVote.uniqueId, { vote, weight });
-    this.markActive();
+      const analysis = this.analyses.get(proposal.uniqueId);
+      let vote: boolean;
+
+      if (analysis) {
+        // Vote based on analysis
+        switch (analysis.recommendation) {
+          case 'strong_yes':
+          case 'yes':
+            vote = true;
+            break;
+          case 'strong_no':
+          case 'no':
+            vote = false;
+            break;
+          default:
+            vote = randomBool(0.5);
+        }
+      } else {
+        vote = randomBool(0.5);
+      }
+
+      // Apply vote with expertise weight
+      const weight = this.tokens * INFLUENCE_FACTOR * (this.accuracyRating);
+      proposal.addVote(this.uniqueId, vote, weight);
+      this.votes.set(proposal.uniqueId, { vote, weight });
+      this.markActive();
+    }
   }
 
   /**

@@ -331,6 +331,7 @@ describe('Agent interactions', () => {
       num_validators: 2,
       num_proposal_creators: 2,
       num_passive_members: 3,
+      seed: 12345,  // Use fixed seed for deterministic tests
     });
   });
 
@@ -355,9 +356,9 @@ describe('Agent interactions', () => {
 
   it('should handle proposals being created and voted on', async () => {
     // ProposalCreators have 0.5% chance to create per step
-    // With 2 creators and 200 steps: expected = 2 × 200 × 0.005 = 2 proposals
-    // Using 200 steps to ensure reliable proposal creation
-    await simulation.run(200);
+    // With 2 creators and 500 steps: expected = 2 × 500 × 0.005 = 5 proposals
+    // Using 500 steps to ensure reliable proposal creation even with unlucky RNG
+    await simulation.run(500);
 
     // Should have some proposals
     expect(simulation.dao.proposals.length).toBeGreaterThan(0);

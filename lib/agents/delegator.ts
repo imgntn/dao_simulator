@@ -1,4 +1,19 @@
 // Delegator Agent - delegates support to proposals
+//
+// This implements PROPOSAL FUNDING DELEGATION: members can allocate part of
+// their budget to fund proposals they support. This is DIFFERENT from voting:
+//
+// - Proposal Support (this class): "I fund this proposal" (delegationBudget)
+//   * Tokens go toward proposal funding
+//   * proposalDelegations tracks how much went to each proposal
+//   * This is about CAPITAL, not voting power
+//
+// - Token Delegation (base class): "Alice controls my voting power"
+//   * Tokens affect vote weight
+//   * This is about GOVERNANCE, not funding
+//
+// Use Delegator when modeling venture-style DAOs where members pool capital
+// to fund approved proposals (e.g., grants DAOs, investment DAOs).
 
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';

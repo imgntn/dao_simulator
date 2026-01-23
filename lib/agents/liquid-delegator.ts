@@ -1,5 +1,22 @@
 // Liquid Delegator Agent - delegates voting power to a representative
 // Port from agents/liquid_delegator.py
+//
+// This implements LIQUID DEMOCRACY: members can delegate their vote to a
+// representative who votes on their behalf. This is different from TOKEN
+// DELEGATION in the base class:
+//
+// - LiquidDelegator: "Alice votes for me" (representative field)
+//   * No tokens move
+//   * Vote authority transfers
+//   * Can be changed at any time (liquid)
+//
+// - Token Delegation: "Alice controls my tokens" (delegations Map)
+//   * Tokens are locked/transferred
+//   * Voting power increases for delegate
+//   * Requires explicit undelegation to recover
+//
+// Both can be used together. Use LiquidDelegator when you want vote proxying
+// without token transfer (e.g., "I trust this expert to vote on DeFi proposals").
 
 import { Delegator } from './delegator';
 import type { DAOModel } from '../engine/model';
@@ -8,7 +25,7 @@ import { DAOMember } from './base';
 import { random, randomChoice } from '../utils/random';
 
 export class LiquidDelegator extends Delegator {
-  representative: DAOMember | null = null;
+  // representative field is inherited from DAOMember base class
   delegationHistory: Array<{ step: number; representative: string }> = [];
 
   constructor(
@@ -64,21 +81,8 @@ export class LiquidDelegator extends Delegator {
    * Delegate voting power to a specific member
    */
   delegateToMember(member: DAOMember): void {
-    // Remove from previous representative's delegates list
-    if (this.representative) {
-      const prevIndex = this.representative.delegates.indexOf(this);
-      if (prevIndex > -1) {
-        this.representative.delegates.splice(prevIndex, 1);
-      }
-    }
-
-    // Set new representative
-    this.representative = member;
-
-    // Add to new representative's delegates list
-    if (!member.delegates.includes(this)) {
-      member.delegates.push(this);
-    }
+    // Use inherited setRepresentative method which handles bidirectional relationship
+    this.setRepresentative(member);
 
     // Track delegation history
     this.delegationHistory.push({
