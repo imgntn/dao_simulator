@@ -44,6 +44,7 @@
     "paper:compile": "tsx scripts/paper-compile.ts --archive",
     "paper:compile:quick": "tsx scripts/paper-compile.ts",
     "paper:full": "npm run paper:update && npm run paper:compile",
+    "paper:summary": "tsx scripts/generate-executive-summary.ts",
     "paper:suite": "tsx scripts/run-paper-suite.ts all",
     "paper:suite:p1": "tsx scripts/run-paper-suite.ts all --profile p1",
     "paper:suite:p2": "tsx scripts/run-paper-suite.ts all --profile p2",

@@ -6,6 +6,7 @@
  *   npx tsx scripts/run-paper-suite.ts run [--include-validation] [--profile p1|p2|full]
  *   npx tsx scripts/run-paper-suite.ts report [--include-validation] [--profile p1|p2|full]
  *   npx tsx scripts/run-paper-suite.ts pack [--include-validation] [--output <dir>] [--profile p1|p2|full]
+ *   npx tsx scripts/run-paper-suite.ts summary [--include-validation] [--profile p1|p2|full]
  *   npx tsx scripts/run-paper-suite.ts all [--include-validation] [--output <dir>] [--profile p1|p2|full]
  */
 
@@ -133,6 +134,23 @@ function buildPack(configs: string[], outputDir: string): void {
   runCommand('npx', args);
 }
 
+function generateSummary(configs: string[]): void {
+  const dirs = configs
+    .map((c) => resolveOutputDir(c))
+    .filter((d) => fs.existsSync(path.join(d, 'summary.json')));
+
+  if (dirs.length === 0) {
+    console.warn('[paper-suite] No summary.json files found; skipping executive summary');
+    return;
+  }
+
+  runCommand('npx', [
+    'tsx',
+    'scripts/generate-executive-summary.ts',
+    ...dirs,
+  ]);
+}
+
 function main(): void {
   const args = parseArgs(process.argv.slice(2));
 
@@ -152,12 +170,17 @@ function main(): void {
     case 'pack':
       runReports(configs);
       buildPack(configs, args.outputDir);
+      generateSummary(configs);
+      break;
+    case 'summary':
+      generateSummary(configs);
       break;
     case 'all':
     default:
       runSuite(configs);
       runReports(configs);
       buildPack(configs, args.outputDir);
+      generateSummary(configs);
       break;
   }
 }
