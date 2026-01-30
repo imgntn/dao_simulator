@@ -1,14 +1,14 @@
 {
-  "experimentId": "Inter-DAO Cooperation-1769767346262",
-  "configHash": "hash:2aa63d91",
+  "experimentId": "Inter-DAO Cooperation-1769776212485",
+  "configHash": "hash:152cdfaf",
   "software": {
     "simulatorVersion": "0.2.0",
     "nodeVersion": "v22.19.0",
     "platform": "win32"
   },
   "execution": {
-    "startedAt": "2026-01-30T10:02:26.262Z",
-    "completedAt": "2026-01-30T10:04:31.158Z",
+    "startedAt": "2026-01-30T12:30:12.485Z",
+    "completedAt": "2026-01-30T12:32:46.241Z",
     "totalRuns": 300,
     "seeds": [
       707,
@@ -314,5 +314,5 @@
     ],
     "workerCount": 8
   },
-  "resultsHash": "hash:206c2086"
+  "resultsHash": "hash:7efea4ce"
 }

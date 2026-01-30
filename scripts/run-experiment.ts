@@ -217,6 +217,9 @@ function loadConfig(filePath: string): ExperimentConfig {
     tags: parsed.tags,
     baseConfig: parsed.baseConfig || {},
     sweep: parsed.sweep,
+    mode: parsed.mode,
+    baseCityConfig: parsed.baseCityConfig,
+    scenarios: parsed.scenarios,
     execution: { ...DEFAULT_EXECUTION_CONFIG, ...parsed.execution },
     metrics: parsed.metrics || DEFAULT_METRICS,
     output: { ...DEFAULT_OUTPUT_CONFIG, ...parsed.output },
@@ -329,7 +332,10 @@ async function main(): Promise<void> {
   let sweepInfo: string;
   let totalConfigs: number;
 
-  if (!config.sweep) {
+  if (config.mode === 'city' && config.scenarios) {
+    sweepInfo = `City Mode: ${config.scenarios.length} scenarios`;
+    totalConfigs = config.scenarios.length;
+  } else if (!config.sweep) {
     sweepInfo = 'No parameter sweep';
     totalConfigs = 1;
   } else if (config.sweep.grid) {
@@ -356,7 +362,8 @@ async function main(): Promise<void> {
 
   const totalRuns = config.execution.runsPerConfig * totalConfigs;
 
-  console.log(`Runs: ${totalRuns} (${config.execution.runsPerConfig} per config, ${config.execution.stepsPerRun} steps each)`);
+  const perLabel = config.mode === 'city' ? 'per scenario' : 'per config';
+  console.log(`Runs: ${totalRuns} (${config.execution.runsPerConfig} ${perLabel}, ${config.execution.stepsPerRun} steps each)`);
   console.log(`Workers: ${concurrency}${concurrency > 1 ? ' (parallel)' : ' (sequential)'}`);
   console.log(`Output: ${config.output.directory}`);
   console.log('');

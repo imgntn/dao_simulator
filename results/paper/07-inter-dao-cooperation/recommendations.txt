@@ -1,21 +1,21 @@
 ✓ Good sample size (60 runs per config) for statistical analysis.
 
-High variability in "ecosystem.Resource Flow Volume" (CV=74.6%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "ecosystem.Resource Flow Volume" (CV=60.0%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "ecosystem.Resource Flow Volume" (CV=54.4%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "dao-majority.Proposal Pass Rate" (CV=105.9%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "ecosystem.Resource Flow Volume" (CV=68.7%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "ecosystem.Resource Flow Volume" (CV=64.9%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "ecosystem.Resource Flow Volume" (CV=53.6%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "ecosystem.Resource Flow Volume" (CV=58.0%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "iso-1.Proposal Pass Rate" (CV=107.9%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "iso-1.Proposal Pass Rate" (CV=92.1%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "ecosystem.Resource Flow Volume" (skewness=1.88). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "dao-2.Proposal Pass Rate" (skewness=1.66). Bootstrap CIs are included in stats export.
 
-Non-normal distribution detected for "ecosystem.Joint Venture Rate" (skewness=1.02). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "dao-supermajority.Proposal Pass Rate" (skewness=1.35). Bootstrap CIs are included in stats export.
 
-Non-normal distribution detected for "ecosystem.Total Shared Budget" (skewness=1.07). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "dao-small.Proposal Pass Rate" (skewness=1.10). Bootstrap CIs are included in stats export.
 
-Non-normal distribution detected for "ecosystem.Resource Flow Volume" (skewness=1.08). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "dao-dev.Proposal Pass Rate" (skewness=1.78). Bootstrap CIs are included in stats export.
 
-Non-normal distribution detected for "ecosystem.Ecosystem Treasury Total" (skewness=-4.22). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "ecosystem.Ecosystem Treasury Total" (skewness=-4.19). Bootstrap CIs are included in stats export.
