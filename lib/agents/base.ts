@@ -91,10 +91,10 @@ export class DAOMember implements Agent {
   totalVotesCast: number = 0;      // Lifetime vote count
   proposalsConsidered: Set<string> = new Set(); // Track proposals we've already decided on (vote or skip)
   proposalsReminded: Set<string> = new Set();   // Track proposals given a reminder chance
-  static readonly FATIGUE_PER_VOTE = 0.08;    // Significant fatigue per vote
-  static readonly FATIGUE_DECAY_RATE = 0.003; // Slow recovery between votes
-  static readonly MAX_FATIGUE = 0.7;          // Can reduce participation by up to 70%
-  static readonly BASE_APATHY = 0.35;         // 35% base chance to skip voting (voter apathy)
+  static readonly FATIGUE_PER_VOTE = 0.04;    // Moderate fatigue per vote
+  static readonly FATIGUE_DECAY_RATE = 0.01;  // Faster recovery between votes (~4 steps per vote)
+  static readonly MAX_FATIGUE = 0.5;          // Can reduce participation by up to 50%
+  static readonly BASE_APATHY = 0.25;         // 25% base chance to skip voting (voter apathy)
   static readonly REMINDER_WINDOW_FRACTION = 0.2; // Last 20% of voting window
   static readonly REMINDER_BOOST = 0.1;           // Small boost for last-chance voting
   static readonly INACTIVITY_BOOST_THRESHOLD = 24; // Steps without voting before boost applies
