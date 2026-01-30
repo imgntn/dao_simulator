@@ -82,16 +82,16 @@
   },
   "seed": 859,
   "metrics": {
-    "Treasury Volatility": 0.5467669252637131,
-    "Treasury Growth Rate": -0.01359044337209878,
-    "Final Treasury": 49347.79140077907,
-    "Treasury Trend": 19.5955390798727,
-    "Final Token Price": 2.3412992979082428,
-    "Proposal Pass Rate": 0.09042553191489362,
-    "Quorum Reach Rate": 0.33505154639175255
+    "Treasury Volatility": 0.7691606901129905,
+    "Treasury Growth Rate": -0.5375248817046971,
+    "Final Treasury": 23136.561798636663,
+    "Treasury Trend": -29.716817136958408,
+    "Final Token Price": 1.6712905876961057,
+    "Proposal Pass Rate": 0.2028985507246377,
+    "Quorum Reach Rate": 0.49528301886792453
   },
-  "startedAt": "2026-01-30T10:01:49.531Z",
-  "completedAt": "2026-01-30T10:01:52.404Z",
-  "durationMs": 2873,
+  "startedAt": "2026-01-30T12:12:35.870Z",
+  "completedAt": "2026-01-30T12:12:40.328Z",
+  "durationMs": 4458,
   "stepsCompleted": 2000
 }

@@ -1,5 +1,5 @@
 {
-  "experimentId": "Academic Baseline-1769766093502",
+  "experimentId": "Academic Baseline-1769773585634",
   "configHash": "hash:2d663ddf",
   "software": {
     "simulatorVersion": "0.2.0",
@@ -7,28 +7,28 @@
     "platform": "win32"
   },
   "execution": {
-    "startedAt": "2026-01-30T09:41:33.502Z",
-    "completedAt": "2026-01-30T09:42:20.852Z",
+    "startedAt": "2026-01-30T11:46:25.634Z",
+    "completedAt": "2026-01-30T11:48:00.963Z",
     "totalRuns": 50,
     "seeds": [
+      43,
       45,
       44,
       42,
-      43,
-      49,
-      46,
       47,
       48,
-      50,
-      53,
-      51,
+      49,
+      46,
       52,
+      50,
+      51,
+      53,
+      55,
+      56,
       54,
       57,
-      56,
-      55,
-      58,
       60,
+      58,
       59,
       61,
       62,
@@ -64,5 +64,5 @@
     ],
     "workerCount": 4
   },
-  "resultsHash": "hash:77b6e3c0"
+  "resultsHash": "hash:7c1cad9e"
 }

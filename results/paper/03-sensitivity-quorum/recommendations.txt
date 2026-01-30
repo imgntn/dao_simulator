@@ -1,21 +1,21 @@
 ✓ Good sample size (30 runs per config) for statistical analysis.
 
-High variability in "Final Token Price" (CV=66.3%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Final Token Price" (CV=100.4%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "Final Token Price" (CV=178.2%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Final Token Price" (CV=146.7%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "Final Token Price" (CV=78.7%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Final Token Price" (CV=133.0%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "Final Token Price" (CV=119.8%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Final Token Price" (CV=153.6%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "Final Token Price" (CV=111.1%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Final Token Price" (CV=135.6%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Final Token Price" (skewness=1.79). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "Final Treasury" (skewness=-1.40). Bootstrap CIs are included in stats export.
 
-Non-normal distribution detected for "Final Treasury" (skewness=-1.94). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "Final Treasury" (skewness=-3.01). Bootstrap CIs are included in stats export.
 
-Non-normal distribution detected for "Final Treasury" (skewness=-2.46). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "Final Treasury" (skewness=-3.29). Bootstrap CIs are included in stats export.
 
-Non-normal distribution detected for "Final Treasury" (skewness=-2.41). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "Final Treasury" (skewness=-2.17). Bootstrap CIs are included in stats export.
 
-Non-normal distribution detected for "Final Treasury" (skewness=-1.71). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "Final Treasury" (skewness=-2.87). Bootstrap CIs are included in stats export.

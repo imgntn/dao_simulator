@@ -1,426 +1,426 @@
 # Pairwise T-Test Comparisons
 sweep_value_1,sweep_value_2,metric,t_statistic,df,p_value,significant,cohens_d,effect_interpretation
-0.01,0.03,Proposal Pass Rate,-1.748444,57.993787,0.085679,false,-0.451446,small
-0.01,0.03,Average Turnout,-0.960524,56.499718,0.340884,false,-0.248006,small
-0.01,0.03,Final Treasury,-1.545036,55.486424,0.128022,false,-0.398927,small
-0.01,0.03,Final Token Price,-1.359376,31.410278,0.183707,false,-0.350989,small
+0.01,0.03,Proposal Pass Rate,-1.879435,57.922609,0.065219,false,-0.485268,small
+0.01,0.03,Average Turnout,-2.694509,57.996449,0.009206,false,-0.695719,medium
+0.01,0.03,Final Treasury,-1.550664,50.096231,0.127277,false,-0.400380,small
+0.01,0.03,Final Token Price,-1.281052,39.319509,0.207680,false,-0.330766,small
 0.01,0.03,Final Member Count,0,58,1,false,0,negligible
-0.01,0.03,Total Proposals,1.202466,57.733881,0.234091,false,0.310475,small
-0.01,0.03,Quorum Reach Rate,-1.815293,57.767399,0.074671,false,-0.468707,small
-0.01,0.03,Avg Margin of Victory,-0.016708,57.954732,0.986727,false,-0.004314,negligible
-0.01,0.03,Avg Time to Decision,-1.219838,57.962937,0.227467,false,-0.314961,small
-0.01,0.03,Proposal Abandonment Rate,1.455168,47.234995,0.152237,false,0.375723,small
-0.01,0.03,Proposal Rejection Rate,1.748444,57.993787,0.085679,false,0.451446,small
-0.01,0.03,Governance Overhead,-0.113774,57.323124,0.909814,false,-0.029376,negligible
+0.01,0.03,Total Proposals,0.145326,57.741919,0.884959,false,0.037523,negligible
+0.01,0.03,Quorum Reach Rate,-1.893378,57.984960,0.063301,false,-0.488868,small
+0.01,0.03,Avg Margin of Victory,0.746287,55.866932,0.458623,false,0.192690,negligible
+0.01,0.03,Avg Time to Decision,-0.411096,55.221731,0.682593,false,-0.106144,negligible
+0.01,0.03,Proposal Abandonment Rate,0.246973,57.902928,0.805803,false,0.063768,negligible
+0.01,0.03,Proposal Rejection Rate,1.879435,57.922609,0.065219,false,0.485268,small
+0.01,0.03,Governance Overhead,-2.587644,57.993043,0.012191,false,-0.668127,medium
 0.01,0.03,Unique Voter Count,0,58,1,false,0,negligible
-0.01,0.03,Voter Participation Rate,-0.270499,56.961639,0.787754,false,-0.069843,negligible
-0.01,0.03,Voter Concentration Gini,-0.916794,53.748751,0.363346,false,-0.236715,small
-0.01,0.03,Delegate Concentration,-0.353059,49.382374,0.725547,false,-0.091159,negligible
-0.01,0.03,Avg Votes Per Proposal,-0.270499,56.961639,0.787754,false,-0.069843,negligible
+0.01,0.03,Voter Participation Rate,-2.607722,57.989968,0.011571,false,-0.673311,medium
+0.01,0.03,Voter Concentration Gini,3.848039,57.504302,0.000301,false,0.993559,large
+0.01,0.03,Delegate Concentration,3.183235,57.104755,0.002358,false,0.821908,large
+0.01,0.03,Avg Votes Per Proposal,-2.607722,57.989968,0.011571,false,-0.673311,medium
 0.01,0.03,Voter Retention Rate,0,58,1,false,0,negligible
-0.01,0.03,Voting Power Utilization,-0.960524,56.499718,0.340884,false,-0.248006,small
-0.01,0.03,Treasury Volatility,-0.759542,57.992024,0.450605,false,-0.196113,negligible
-0.01,0.03,Treasury Growth Rate,0.494361,57.359157,0.622939,false,0.127644,negligible
-0.01,0.03,Staking Participation,-1.282294,56.979968,0.204932,false,-0.331087,small
-0.01,0.03,Token Concentration Gini,2.361936,56.391528,0.021657,false,0.609849,medium
-0.01,0.03,Avg Member Wealth,1.363004,57.092659,0.178233,false,0.351926,small
-0.01,0.03,Wealth Mobility,-2.361936,56.391528,0.021657,false,-0.609849,medium
-0.01,0.03,Whale Influence,0.467647,57.895627,0.641793,false,0.120746,negligible
-0.01,0.03,Whale Proposal Rate,-0.158449,57.912209,0.874654,false,-0.040911,negligible
-0.01,0.03,Governance Capture Risk,-1.087072,46.958294,0.282554,false,-0.280681,small
-0.01,0.03,Vote Buying Vulnerability,-0.126946,56.774855,0.899432,false,-0.032777,negligible
-0.01,0.03,Single Entity Control,-1.350773,56.773499,0.182128,false,-0.348768,small
-0.01,0.03,Collusion Threshold,-1.577739,57.962083,0.120068,false,-0.407370,small
-0.01,0.03,Participation Trend,-1.085833,57.481443,0.282086,false,-0.280361,small
-0.01,0.03,Treasury Trend,-0.244600,57.981556,0.807630,false,-0.063155,negligible
+0.01,0.03,Voting Power Utilization,-2.694509,57.996449,0.009206,false,-0.695719,medium
+0.01,0.03,Treasury Volatility,-1.394611,57.952098,0.168456,false,-0.360087,small
+0.01,0.03,Treasury Growth Rate,0.776528,56.382013,0.440683,false,0.200499,small
+0.01,0.03,Staking Participation,-1.664938,57.628560,0.101353,false,-0.429885,small
+0.01,0.03,Token Concentration Gini,2.323711,57.864853,0.023675,false,0.599980,medium
+0.01,0.03,Avg Member Wealth,1.730002,57.647094,0.088981,false,0.446685,small
+0.01,0.03,Wealth Mobility,-2.323711,57.864853,0.023675,false,-0.599980,medium
+0.01,0.03,Whale Influence,2.420774,57.971280,0.018640,false,0.625041,medium
+0.01,0.03,Whale Proposal Rate,0.165374,49.585423,0.869322,false,0.042699,negligible
+0.01,0.03,Governance Capture Risk,2.803871,55.471395,0.006946,false,0.723956,medium
+0.01,0.03,Vote Buying Vulnerability,-2.056378,51.122122,0.044868,false,-0.530955,medium
+0.01,0.03,Single Entity Control,-1.756392,57.762580,0.084322,false,-0.453498,small
+0.01,0.03,Collusion Threshold,-1.893606,57.691220,0.063296,false,-0.488927,small
+0.01,0.03,Participation Trend,0.817094,57.255910,0.417262,false,0.210973,small
+0.01,0.03,Treasury Trend,0.484098,57.481387,0.630156,false,0.124994,negligible
 0.01,0.03,Member Growth Rate,0,58,1,false,0,negligible
-0.01,0.03,Proposal Rate,1.202466,57.733881,0.234091,false,0.310475,small
-0.01,0.03,Governance Activity Index,-0.316731,56.018606,0.752625,false,-0.081780,negligible
-0.01,0.03,Final Gini,2.361936,56.391528,0.021657,false,0.609849,medium
-0.01,0.03,Final Reputation Gini,0.638741,34.355808,0.527227,false,0.164922,negligible
-0.01,0.05,Proposal Pass Rate,-1.917636,57.100100,0.060164,false,-0.495132,small
-0.01,0.05,Average Turnout,-1.348453,52.055385,0.183351,false,-0.348169,small
-0.01,0.05,Final Treasury,-2.568790,45.537112,0.013551,false,-0.663259,medium
-0.01,0.05,Final Token Price,-1.035147,51.486799,0.305438,false,-0.267274,small
+0.01,0.03,Proposal Rate,0.145326,57.741919,0.884959,false,0.037523,negligible
+0.01,0.03,Governance Activity Index,-2.368730,57.931328,0.021205,false,-0.611603,medium
+0.01,0.03,Final Gini,2.323711,57.864853,0.023675,false,0.599980,medium
+0.01,0.03,Final Reputation Gini,1.382025,52.494971,0.172817,false,0.356837,small
+0.01,0.05,Proposal Pass Rate,-1.532816,57.694779,0.130787,false,-0.395771,small
+0.01,0.05,Average Turnout,-1.645930,57.099748,0.105272,false,-0.424977,small
+0.01,0.05,Final Treasury,-1.525194,52.566340,0.133205,false,-0.393803,small
+0.01,0.05,Final Token Price,-0.769300,47.056403,0.445560,false,-0.198632,negligible
 0.01,0.05,Final Member Count,0,58,1,false,0,negligible
-0.01,0.05,Total Proposals,-0.382562,57.935486,0.703444,false,-0.098777,negligible
-0.01,0.05,Quorum Reach Rate,-1.713731,56.933377,0.092019,false,-0.442483,small
-0.01,0.05,Avg Margin of Victory,0.017222,57.850613,0.986319,false,0.004447,negligible
-0.01,0.05,Avg Time to Decision,-1.098993,57.500152,0.276352,false,-0.283759,small
-0.01,0.05,Proposal Abandonment Rate,0.298191,55.209093,0.766677,false,0.076992,negligible
-0.01,0.05,Proposal Rejection Rate,1.917636,57.100100,0.060164,false,0.495132,small
-0.01,0.05,Governance Overhead,-0.830791,54.590412,0.409711,false,-0.214509,small
+0.01,0.05,Total Proposals,1.668199,57.813313,0.100684,false,0.430727,small
+0.01,0.05,Quorum Reach Rate,-1.638161,57.973974,0.106805,false,-0.422971,small
+0.01,0.05,Avg Margin of Victory,0.742707,57.832018,0.460665,false,0.191766,negligible
+0.01,0.05,Avg Time to Decision,-0.751428,57.998399,0.455434,false,-0.194018,negligible
+0.01,0.05,Proposal Abandonment Rate,-0.471967,57.972143,0.638722,false,-0.121861,negligible
+0.01,0.05,Proposal Rejection Rate,1.532816,57.694779,0.130787,false,0.395771,small
+0.01,0.05,Governance Overhead,-1.613346,57.276504,0.112166,false,-0.416564,small
 0.01,0.05,Unique Voter Count,0,58,1,false,0,negligible
-0.01,0.05,Voter Participation Rate,-0.877529,54.328173,0.384063,false,-0.226577,small
-0.01,0.05,Voter Concentration Gini,0.729537,52.897254,0.468891,false,0.188366,negligible
-0.01,0.05,Delegate Concentration,0.702671,51.233936,0.485442,false,0.181429,negligible
-0.01,0.05,Avg Votes Per Proposal,-0.877529,54.328173,0.384063,false,-0.226577,small
-0.01,0.05,Voter Retention Rate,1.000000,29,0.325582,false,0.258199,small
-0.01,0.05,Voting Power Utilization,-1.348453,52.055385,0.183351,false,-0.348169,small
-0.01,0.05,Treasury Volatility,-1.591335,57.840519,0.116985,false,-0.410881,small
-0.01,0.05,Treasury Growth Rate,-0.320952,48.150813,0.749636,false,-0.082869,negligible
-0.01,0.05,Staking Participation,-1.947761,56.824048,0.056390,false,-0.502910,medium
-0.01,0.05,Token Concentration Gini,2.038171,57.987299,0.046103,false,0.526253,medium
-0.01,0.05,Avg Member Wealth,1.985258,57.300264,0.051909,false,0.512591,medium
-0.01,0.05,Wealth Mobility,-2.038171,57.987299,0.046103,false,-0.526253,medium
-0.01,0.05,Whale Influence,1.236697,57.022680,0.221269,false,0.319314,small
-0.01,0.05,Whale Proposal Rate,0.190048,56.922112,0.849948,false,0.049070,negligible
-0.01,0.05,Governance Capture Risk,-0.078513,49.368196,0.937737,false,-0.020272,negligible
-0.01,0.05,Vote Buying Vulnerability,0.667792,57.885677,0.506920,false,0.172423,negligible
-0.01,0.05,Single Entity Control,-1.939024,56.871245,0.057466,false,-0.500654,medium
-0.01,0.05,Collusion Threshold,-1.937080,55.617214,0.057821,false,-0.500152,medium
-0.01,0.05,Participation Trend,-0.761230,56.687072,0.449675,false,-0.196549,negligible
-0.01,0.05,Treasury Trend,1.083077,49.786089,0.283992,false,0.279649,small
+0.01,0.05,Voter Participation Rate,-1.573613,57.644057,0.121050,false,-0.406305,small
+0.01,0.05,Voter Concentration Gini,1.575198,54.660551,0.120981,false,0.406714,small
+0.01,0.05,Delegate Concentration,1.096593,56.002017,0.277512,false,0.283139,small
+0.01,0.05,Avg Votes Per Proposal,-1.573613,57.644057,0.121050,false,-0.406305,small
+0.01,0.05,Voter Retention Rate,0,58,1,false,0,negligible
+0.01,0.05,Voting Power Utilization,-1.645930,57.099748,0.105272,false,-0.424977,small
+0.01,0.05,Treasury Volatility,-1.539039,57.098642,0.129319,false,-0.397378,small
+0.01,0.05,Treasury Growth Rate,0.336676,57.110731,0.737595,false,0.086929,negligible
+0.01,0.05,Staking Participation,-1.040046,57.820977,0.302648,false,-0.268539,small
+0.01,0.05,Token Concentration Gini,1.648419,57.912359,0.104682,false,0.425620,small
+0.01,0.05,Avg Member Wealth,1.070304,57.935508,0.288921,false,0.276351,small
+0.01,0.05,Wealth Mobility,-1.648419,57.912359,0.104682,false,-0.425620,small
+0.01,0.05,Whale Influence,0.251963,57.985816,0.801960,false,0.065057,negligible
+0.01,0.05,Whale Proposal Rate,0.175492,57.422487,0.861311,false,0.045312,negligible
+0.01,0.05,Governance Capture Risk,1.265787,52.744906,0.211152,false,0.326825,small
+0.01,0.05,Vote Buying Vulnerability,-0.785954,52.188475,0.435449,false,-0.202932,small
+0.01,0.05,Single Entity Control,-1.139406,57.593565,0.259251,false,-0.294193,small
+0.01,0.05,Collusion Threshold,-1.124049,57.196111,0.265688,false,-0.290228,small
+0.01,0.05,Participation Trend,0.018514,54.754952,0.985296,false,0.004780,negligible
+0.01,0.05,Treasury Trend,-0.310821,55.949004,0.757091,false,-0.080254,negligible
 0.01,0.05,Member Growth Rate,0,58,1,false,0,negligible
-0.01,0.05,Proposal Rate,-0.382562,57.935486,0.703444,false,-0.098777,negligible
-0.01,0.05,Governance Activity Index,-1.403756,53.048325,0.166219,false,-0.362448,small
-0.01,0.05,Final Gini,2.038171,57.987299,0.046103,false,0.526253,medium
-0.01,0.05,Final Reputation Gini,0.410841,55.645907,0.682767,false,0.106079,negligible
-0.01,0.08,Proposal Pass Rate,-0.481517,57.441096,0.631979,false,-0.124327,negligible
-0.01,0.08,Average Turnout,0.320867,56.823976,0.749488,false,0.082847,negligible
-0.01,0.08,Final Treasury,-2.703389,42.626079,0.009818,false,-0.698012,medium
-0.01,0.08,Final Token Price,-1.597881,35.938419,0.118826,false,-0.412571,small
+0.01,0.05,Proposal Rate,1.668199,57.813313,0.100684,false,0.430727,small
+0.01,0.05,Governance Activity Index,-0.672241,57.312319,0.504132,false,-0.173572,negligible
+0.01,0.05,Final Gini,1.648419,57.912359,0.104682,false,0.425620,small
+0.01,0.05,Final Reputation Gini,1.534474,56.485870,0.130496,false,0.396199,small
+0.01,0.08,Proposal Pass Rate,-0.699264,55.739056,0.487295,false,-0.180549,negligible
+0.01,0.08,Average Turnout,-1.460102,57.535746,0.149701,false,-0.376997,small
+0.01,0.08,Final Treasury,-0.912773,56.517726,0.365239,false,-0.235677,small
+0.01,0.08,Final Token Price,-1.242132,38.380141,0.221725,false,-0.320717,small
 0.01,0.08,Final Member Count,0,58,1,false,0,negligible
-0.01,0.08,Total Proposals,-0.607483,57.264258,0.545932,false,-0.156851,negligible
-0.01,0.08,Quorum Reach Rate,0.010258,55.829400,0.991852,false,0.002649,negligible
-0.01,0.08,Avg Margin of Victory,0.155667,50.744418,0.876913,false,0.040193,negligible
-0.01,0.08,Avg Time to Decision,-0.366917,57.224021,0.715034,false,-0.094738,negligible
-0.01,0.08,Proposal Abandonment Rate,1.121743,53.822737,0.266951,false,0.289633,small
-0.01,0.08,Proposal Rejection Rate,0.481517,57.441096,0.631979,false,0.124327,negligible
-0.01,0.08,Governance Overhead,0.522233,57.640670,0.603509,false,0.134840,negligible
+0.01,0.08,Total Proposals,0.960578,57.954341,0.340755,false,0.248020,small
+0.01,0.08,Quorum Reach Rate,-1.306601,57.815071,0.196522,false,-0.337363,small
+0.01,0.08,Avg Margin of Victory,0.260852,57.957759,0.795131,false,0.067352,negligible
+0.01,0.08,Avg Time to Decision,-0.160602,53.240977,0.873014,false,-0.041467,negligible
+0.01,0.08,Proposal Abandonment Rate,1.156388,57.717838,0.252287,false,0.298578,small
+0.01,0.08,Proposal Rejection Rate,0.699264,55.739056,0.487295,false,0.180549,negligible
+0.01,0.08,Governance Overhead,-1.483783,56.987104,0.143377,false,-0.383111,small
 0.01,0.08,Unique Voter Count,0,58,1,false,0,negligible
-0.01,0.08,Voter Participation Rate,0.405081,57.527545,0.686921,false,0.104591,negligible
-0.01,0.08,Voter Concentration Gini,-0.728920,53.672169,0.469220,false,-0.188206,negligible
-0.01,0.08,Delegate Concentration,-1.059870,51.084404,0.294189,false,-0.273657,small
-0.01,0.08,Avg Votes Per Proposal,0.405081,57.527545,0.686921,false,0.104591,negligible
+0.01,0.08,Voter Participation Rate,-1.585184,56.777740,0.118479,false,-0.409293,small
+0.01,0.08,Voter Concentration Gini,0.760688,53.678094,0.450172,false,0.196409,negligible
+0.01,0.08,Delegate Concentration,1.077469,57.982255,0.285733,false,0.278201,small
+0.01,0.08,Avg Votes Per Proposal,-1.585184,56.777740,0.118479,false,-0.409293,small
 0.01,0.08,Voter Retention Rate,0,58,1,false,0,negligible
-0.01,0.08,Voting Power Utilization,0.320867,56.823976,0.749488,false,0.082847,negligible
-0.01,0.08,Treasury Volatility,0.167318,57.551893,0.867707,false,0.043201,negligible
-0.01,0.08,Treasury Growth Rate,-1.404928,50.278799,0.166191,false,-0.362751,small
-0.01,0.08,Staking Participation,-0.598872,54.976098,0.551718,false,-0.154628,negligible
-0.01,0.08,Token Concentration Gini,0.120338,56.246202,0.904644,false,0.031071,negligible
-0.01,0.08,Avg Member Wealth,0.532729,55.026283,0.596366,false,0.137550,negligible
-0.01,0.08,Wealth Mobility,-0.120338,56.246202,0.904644,false,-0.031071,negligible
-0.01,0.08,Whale Influence,0.280184,54.631960,0.780395,false,0.072343,negligible
-0.01,0.08,Whale Proposal Rate,0.341727,56.978342,0.733813,false,0.088234,negligible
-0.01,0.08,Governance Capture Risk,-1.780696,44.586136,0.081776,false,-0.459774,small
-0.01,0.08,Vote Buying Vulnerability,0.693934,55.436086,0.490621,false,0.179173,negligible
-0.01,0.08,Single Entity Control,-0.714132,55.462384,0.478140,false,-0.184388,negligible
-0.01,0.08,Collusion Threshold,-0.441992,55.375863,0.660217,false,-0.114122,negligible
-0.01,0.08,Participation Trend,-1.580016,56.440929,0.119692,false,-0.407959,small
-0.01,0.08,Treasury Trend,-1.032130,57.460485,0.306336,false,-0.266495,small
+0.01,0.08,Voting Power Utilization,-1.460102,57.535746,0.149701,false,-0.376997,small
+0.01,0.08,Treasury Volatility,-0.365560,57.370373,0.716038,false,-0.094387,negligible
+0.01,0.08,Treasury Growth Rate,-0.356269,57.470027,0.722943,false,-0.091988,negligible
+0.01,0.08,Staking Participation,-0.505110,55.687004,0.615475,false,-0.130419,negligible
+0.01,0.08,Token Concentration Gini,0.747186,57.026371,0.458021,false,0.192922,negligible
+0.01,0.08,Avg Member Wealth,0.451780,55.795400,0.653179,false,0.116649,negligible
+0.01,0.08,Wealth Mobility,-0.747186,57.026371,0.458021,false,-0.192922,negligible
+0.01,0.08,Whale Influence,0.569884,57.959727,0.570959,false,0.147143,negligible
+0.01,0.08,Whale Proposal Rate,1.375385,57.577285,0.174340,false,0.355123,small
+0.01,0.08,Governance Capture Risk,0.506471,57.625649,0.614458,false,0.130770,negligible
+0.01,0.08,Vote Buying Vulnerability,-0.658012,55.363159,0.513257,false,-0.169898,negligible
+0.01,0.08,Single Entity Control,-0.405819,55.191062,0.686444,false,-0.104782,negligible
+0.01,0.08,Collusion Threshold,-0.694009,56.041706,0.490543,false,-0.179192,negligible
+0.01,0.08,Participation Trend,0.336969,57.538630,0.737366,false,0.087005,negligible
+0.01,0.08,Treasury Trend,0.215650,57.328884,0.830026,false,0.055681,negligible
 0.01,0.08,Member Growth Rate,0,58,1,false,0,negligible
-0.01,0.08,Proposal Rate,-0.607483,57.264258,0.545932,false,-0.156851,negligible
-0.01,0.08,Governance Activity Index,-0.191260,55.962978,0.849014,false,-0.049383,negligible
-0.01,0.08,Final Gini,0.120338,56.246202,0.904644,false,0.031071,negligible
-0.01,0.08,Final Reputation Gini,0.496705,57.998496,0.621275,false,0.128249,negligible
-0.01,0.1,Proposal Pass Rate,-0.814182,56.307167,0.418970,false,-0.210221,small
-0.01,0.1,Average Turnout,0.886659,56.732514,0.379006,false,0.228934,small
-0.01,0.1,Final Treasury,-1.897551,50.221291,0.063512,false,-0.489945,small
-0.01,0.1,Final Token Price,-2.387371,34.023339,0.022669,false,-0.616417,medium
+0.01,0.08,Proposal Rate,0.960578,57.954341,0.340755,false,0.248020,small
+0.01,0.08,Governance Activity Index,-0.870839,57.434452,0.387467,false,-0.224850,small
+0.01,0.08,Final Gini,0.747186,57.026371,0.458021,false,0.192922,negligible
+0.01,0.08,Final Reputation Gini,1.167512,55.137831,0.248028,false,0.301450,small
+0.01,0.1,Proposal Pass Rate,-2.451282,56.837675,0.017333,false,-0.632918,medium
+0.01,0.1,Average Turnout,-0.835929,57.822553,0.406636,false,-0.215836,small
+0.01,0.1,Final Treasury,-1.620421,49.187496,0.111536,false,-0.418391,small
+0.01,0.1,Final Token Price,-0.668713,47.346523,0.506926,false,-0.172661,negligible
 0.01,0.1,Final Member Count,0,58,1,false,0,negligible
-0.01,0.1,Total Proposals,-0.342439,54.235734,0.733344,false,-0.088417,negligible
-0.01,0.1,Quorum Reach Rate,0.591189,57.556270,0.556709,false,0.152644,negligible
-0.01,0.1,Avg Margin of Victory,-1.138224,57.763319,0.259726,false,-0.293888,small
-0.01,0.1,Avg Time to Decision,-0.914147,56.945464,0.364494,false,-0.236032,small
-0.01,0.1,Proposal Abandonment Rate,0.800275,51.082430,0.427258,false,0.206630,small
-0.01,0.1,Proposal Rejection Rate,0.814182,56.307167,0.418970,false,0.210221,small
-0.01,0.1,Governance Overhead,1.592990,57.787712,0.116618,false,0.411308,small
+0.01,0.1,Total Proposals,1.454909,57.361637,0.151145,false,0.375656,small
+0.01,0.1,Quorum Reach Rate,-1.265964,57.777982,0.210607,false,-0.326870,small
+0.01,0.1,Avg Margin of Victory,0.743268,57.880268,0.460326,false,0.191911,negligible
+0.01,0.1,Avg Time to Decision,-0.724647,53.859000,0.471805,false,-0.187103,negligible
+0.01,0.1,Proposal Abandonment Rate,0.001471,57.955968,0.998832,false,0.000380,negligible
+0.01,0.1,Proposal Rejection Rate,2.451282,56.837675,0.017333,false,0.632918,medium
+0.01,0.1,Governance Overhead,-0.648770,57.582602,0.519066,false,-0.167512,negligible
 0.01,0.1,Unique Voter Count,0,58,1,false,0,negligible
-0.01,0.1,Voter Participation Rate,1.517523,57.604843,0.134604,false,0.391823,small
-0.01,0.1,Voter Concentration Gini,-1.539531,57.809375,0.129131,false,-0.397505,small
-0.01,0.1,Delegate Concentration,-2.121756,55.869629,0.038307,false,-0.547835,medium
-0.01,0.1,Avg Votes Per Proposal,1.517523,57.604843,0.134604,false,0.391823,small
-0.01,0.1,Voter Retention Rate,1.000000,29,0.325582,false,0.258199,small
-0.01,0.1,Voting Power Utilization,0.886659,56.732514,0.379006,false,0.228934,small
-0.01,0.1,Treasury Volatility,-1.327050,57.892794,0.189703,false,-0.342643,small
-0.01,0.1,Treasury Growth Rate,-0.380759,55.946240,0.704824,false,-0.098312,negligible
-0.01,0.1,Staking Participation,-1.501693,57.306359,0.138667,false,-0.387736,small
-0.01,0.1,Token Concentration Gini,1.025029,57.701528,0.309628,false,0.264661,small
-0.01,0.1,Avg Member Wealth,1.534618,57.602344,0.130352,false,0.396237,small
-0.01,0.1,Wealth Mobility,-1.025029,57.701528,0.309628,false,-0.264661,small
-0.01,0.1,Whale Influence,-0.756764,57.992324,0.452255,false,-0.195396,negligible
-0.01,0.1,Whale Proposal Rate,0.092311,56.336046,0.926778,false,0.023835,negligible
-0.01,0.1,Governance Capture Risk,-1.886293,47.862994,0.065331,false,-0.487039,small
-0.01,0.1,Vote Buying Vulnerability,0.732328,53.874528,0.467143,false,0.189086,negligible
-0.01,0.1,Single Entity Control,-1.478734,57.428648,0.144676,false,-0.381807,small
-0.01,0.1,Collusion Threshold,-1.182125,57.916700,0.241987,false,-0.305223,small
-0.01,0.1,Participation Trend,-1.337544,56.233646,0.186430,false,-0.345352,small
-0.01,0.1,Treasury Trend,-0.638242,57.816734,0.525836,false,-0.164793,negligible
+0.01,0.1,Voter Participation Rate,-0.641905,57.762277,0.523474,false,-0.165739,negligible
+0.01,0.1,Voter Concentration Gini,2.315839,57.989006,0.024124,false,0.597947,medium
+0.01,0.1,Delegate Concentration,-0.042734,54.299758,0.966070,false,-0.011034,negligible
+0.01,0.1,Avg Votes Per Proposal,-0.641905,57.762277,0.523474,false,-0.165739,negligible
+0.01,0.1,Voter Retention Rate,0,58,1,false,0,negligible
+0.01,0.1,Voting Power Utilization,-0.835929,57.822553,0.406636,false,-0.215836,small
+0.01,0.1,Treasury Volatility,-2.386046,57.299229,0.020357,false,-0.616074,medium
+0.01,0.1,Treasury Growth Rate,-0.074176,53.678122,0.941146,false,-0.019152,negligible
+0.01,0.1,Staking Participation,-1.687744,56.416768,0.096982,false,-0.435774,small
+0.01,0.1,Token Concentration Gini,1.783741,56.194412,0.079866,false,0.460560,small
+0.01,0.1,Avg Member Wealth,1.721776,57.158184,0.090518,false,0.444561,small
+0.01,0.1,Wealth Mobility,-1.783741,56.194412,0.079866,false,-0.460560,small
+0.01,0.1,Whale Influence,0.822360,57.655994,0.414260,false,0.212332,small
+0.01,0.1,Whale Proposal Rate,1.315577,57.394323,0.193547,false,0.339681,small
+0.01,0.1,Governance Capture Risk,0.419143,54.825413,0.676749,false,0.108222,negligible
+0.01,0.1,Vote Buying Vulnerability,0.774291,56.811021,0.441969,false,0.199921,negligible
+0.01,0.1,Single Entity Control,-1.767317,56.706603,0.082556,false,-0.456319,small
+0.01,0.1,Collusion Threshold,-1.607708,57.974468,0.113332,false,-0.415108,small
+0.01,0.1,Participation Trend,-1.898120,57.709402,0.062685,false,-0.490092,small
+0.01,0.1,Treasury Trend,0.939102,57.781676,0.351588,false,0.242475,small
 0.01,0.1,Member Growth Rate,0,58,1,false,0,negligible
-0.01,0.1,Proposal Rate,-0.342439,54.235734,0.733344,false,-0.088417,negligible
-0.01,0.1,Governance Activity Index,0.557827,57.813734,0.579117,false,0.144030,negligible
-0.01,0.1,Final Gini,1.025029,57.701528,0.309628,false,0.264661,small
-0.01,0.1,Final Reputation Gini,-0.728852,52.412003,0.469337,false,-0.188189,negligible
-0.03,0.05,Proposal Pass Rate,-0.272848,57.238559,0.785952,false,-0.070449,negligible
-0.03,0.05,Average Turnout,-0.465136,56.077117,0.643635,false,-0.120098,negligible
-0.03,0.05,Final Treasury,-0.978230,51.696387,0.332516,false,-0.252578,small
-0.03,0.05,Final Token Price,0.973543,34.041358,0.337151,false,0.251368,small
+0.01,0.1,Proposal Rate,1.454909,57.361637,0.151145,false,0.375656,small
+0.01,0.1,Governance Activity Index,0.025993,57.986228,0.979352,false,0.006711,negligible
+0.01,0.1,Final Gini,1.783741,56.194412,0.079866,false,0.460560,small
+0.01,0.1,Final Reputation Gini,1.429671,56.204265,0.158347,false,0.369139,small
+0.03,0.05,Proposal Pass Rate,0.386520,57.923768,0.700528,false,0.099799,negligible
+0.03,0.05,Average Turnout,0.866887,56.988031,0.389640,false,0.223829,small
+0.03,0.05,Final Treasury,-0.021667,57.566495,0.982789,false,-0.005594,negligible
+0.03,0.05,Final Token Price,0.603315,52.911884,0.548877,false,0.155775,negligible
 0.03,0.05,Final Member Count,0,58,1,false,0,negligible
-0.03,0.05,Total Proposals,-1.589912,57.413930,0.117347,false,-0.410514,small
-0.03,0.05,Quorum Reach Rate,0.028145,57.683588,0.977644,false,0.007267,negligible
-0.03,0.05,Avg Margin of Victory,0.033715,57.643406,0.973221,false,0.008705,negligible
-0.03,0.05,Avg Time to Decision,0.162828,57.732182,0.871222,false,0.042042,negligible
-0.03,0.05,Proposal Abandonment Rate,-1.320927,53.701448,0.192127,false,-0.341062,small
-0.03,0.05,Proposal Rejection Rate,0.272848,57.238559,0.785952,false,0.070449,negligible
-0.03,0.05,Governance Overhead,-0.695324,56.802541,0.489687,false,-0.179532,negligible
+0.03,0.05,Total Proposals,1.576660,57.994122,0.120314,false,0.407092,small
+0.03,0.05,Quorum Reach Rate,0.221875,57.919503,0.825192,false,0.057288,negligible
+0.03,0.05,Avg Margin of Victory,0.046144,56.837543,0.963357,false,0.011914,negligible
+0.03,0.05,Avg Time to Decision,-0.251945,55.338498,0.802017,false,-0.065052,negligible
+0.03,0.05,Proposal Abandonment Rate,-0.706772,57.978979,0.482539,false,-0.182488,negligible
+0.03,0.05,Proposal Rejection Rate,-0.386520,57.923768,0.700528,false,-0.099799,negligible
+0.03,0.05,Governance Overhead,0.833926,57.407842,0.407779,false,0.215319,small
 0.03,0.05,Unique Voter Count,0,58,1,false,0,negligible
-0.03,0.05,Voter Participation Rate,-0.593963,57.043318,0.554885,false,-0.153361,negligible
-0.03,0.05,Voter Concentration Gini,1.444240,57.940076,0.154058,false,0.372901,small
-0.03,0.05,Delegate Concentration,0.888054,57.762933,0.378195,false,0.229295,small
-0.03,0.05,Avg Votes Per Proposal,-0.593963,57.043318,0.554885,false,-0.153361,negligible
-0.03,0.05,Voter Retention Rate,1.000000,29,0.325582,false,0.258199,small
-0.03,0.05,Voting Power Utilization,-0.465136,56.077117,0.643635,false,-0.120098,negligible
-0.03,0.05,Treasury Volatility,-0.821663,57.903578,0.414639,false,-0.212153,small
-0.03,0.05,Treasury Growth Rate,-0.956384,51.215285,0.343371,false,-0.246937,small
-0.03,0.05,Staking Participation,-0.879073,53.993311,0.383257,false,-0.226976,small
-0.03,0.05,Token Concentration Gini,-0.140646,56.116006,0.888653,false,-0.036315,negligible
-0.03,0.05,Avg Member Wealth,0.815531,55.005556,0.418286,false,0.210569,small
-0.03,0.05,Wealth Mobility,0.140646,56.116006,0.888653,false,0.036315,negligible
-0.03,0.05,Whale Influence,0.776356,57.544681,0.440718,false,0.200454,small
-0.03,0.05,Whale Proposal Rate,0.339947,56.264991,0.735163,false,0.087774,negligible
-0.03,0.05,Governance Capture Risk,0.865584,57.596053,0.390310,false,0.223493,small
-0.03,0.05,Vote Buying Vulnerability,0.847668,57.389610,0.400144,false,0.218867,small
-0.03,0.05,Single Entity Control,-0.816220,53.726752,0.417979,false,-0.210747,small
-0.03,0.05,Collusion Threshold,-0.555230,55.053711,0.580987,false,-0.143360,negligible
-0.03,0.05,Participation Trend,0.277636,57.805235,0.782282,false,0.071685,negligible
-0.03,0.05,Treasury Trend,1.358517,49.268863,0.180488,false,0.350767,small
+0.03,0.05,Voter Participation Rate,0.918766,57.516999,0.362055,false,0.237224,small
+0.03,0.05,Voter Concentration Gini,-1.672988,52.229531,0.100310,false,-0.431964,small
+0.03,0.05,Delegate Concentration,-1.863405,57.754355,0.067492,false,-0.481129,small
+0.03,0.05,Avg Votes Per Proposal,0.918766,57.516999,0.362055,false,0.237224,small
+0.03,0.05,Voter Retention Rate,0,58,1,false,0,negligible
+0.03,0.05,Voting Power Utilization,0.866887,56.988031,0.389640,false,0.223829,small
+0.03,0.05,Treasury Volatility,-0.037056,56.659118,0.970570,false,-0.009568,negligible
+0.03,0.05,Treasury Growth Rate,-0.464410,57.879746,0.644096,false,-0.119910,negligible
+0.03,0.05,Staking Participation,0.535770,56.957001,0.594204,false,0.138335,negligible
+0.03,0.05,Token Concentration Gini,-0.681338,57.994828,0.498370,false,-0.175921,negligible
+0.03,0.05,Avg Member Wealth,-0.588743,57.290107,0.558348,false,-0.152013,negligible
+0.03,0.05,Wealth Mobility,0.681338,57.994828,0.498370,false,0.175921,negligible
+0.03,0.05,Whale Influence,-2.146644,57.916874,0.036022,false,-0.554261,medium
+0.03,0.05,Whale Proposal Rate,0.035808,52.456265,0.971571,false,0.009246,negligible
+0.03,0.05,Governance Capture Risk,-1.239457,57.312524,0.220228,false,-0.320026,small
+0.03,0.05,Vote Buying Vulnerability,1.124191,57.917644,0.265570,false,0.290265,small
+0.03,0.05,Single Entity Control,0.504281,56.767897,0.616016,false,0.130205,negligible
+0.03,0.05,Collusion Threshold,0.698705,57.878637,0.487535,false,0.180405,negligible
+0.03,0.05,Participation Trend,-0.703108,56.989793,0.484851,false,-0.181542,negligible
+0.03,0.05,Treasury Trend,-0.737725,57.445307,0.463685,false,-0.190480,negligible
 0.03,0.05,Member Growth Rate,0,58,1,false,0,negligible
-0.03,0.05,Proposal Rate,-1.589912,57.413930,0.117347,false,-0.410514,small
-0.03,0.05,Governance Activity Index,-1.030994,57.113159,0.306890,false,-0.266202,small
-0.03,0.05,Final Gini,-0.140646,56.116006,0.888653,false,-0.036315,negligible
-0.03,0.05,Final Reputation Gini,-0.012534,32.545735,0.990076,false,-0.003236,negligible
-0.03,0.08,Proposal Pass Rate,1.181556,57.550465,0.242241,false,0.305077,small
-0.03,0.08,Average Turnout,1.196420,57.977839,0.236402,false,0.308914,small
-0.03,0.08,Final Treasury,-1.094910,48.429551,0.278972,false,-0.282705,small
-0.03,0.08,Final Token Price,0.342143,46.797003,0.733775,false,0.088341,negligible
+0.03,0.05,Proposal Rate,1.576660,57.994122,0.120314,false,0.407092,small
+0.03,0.05,Governance Activity Index,1.548601,56.830901,0.127029,false,0.399847,small
+0.03,0.05,Final Gini,-0.681338,57.994828,0.498370,false,-0.175921,negligible
+0.03,0.05,Final Reputation Gini,0.282244,56.388102,0.778790,false,0.072875,negligible
+0.03,0.08,Proposal Pass Rate,0.964072,54.934738,0.339235,false,0.248922,small
+0.03,0.08,Average Turnout,1.347597,57.612044,0.183064,false,0.347948,small
+0.03,0.08,Final Treasury,0.612619,54.551372,0.542674,false,0.158177,negligible
+0.03,0.08,Final Token Price,-0.011914,57.851341,0.990535,false,-0.003076,negligible
 0.03,0.08,Final Member Count,0,58,1,false,0,negligible
-0.03,0.08,Total Proposals,-1.725418,57.878540,0.089788,false,-0.445501,small
-0.03,0.08,Quorum Reach Rate,1.646770,56.955553,0.105113,false,0.425194,small
-0.03,0.08,Avg Margin of Victory,0.170106,49.936756,0.865614,false,0.043921,negligible
-0.03,0.08,Avg Time to Decision,0.918733,57.519156,0.362072,false,0.237216,small
-0.03,0.08,Proposal Abandonment Rate,-0.302826,55.102790,0.763163,false,-0.078189,negligible
-0.03,0.08,Proposal Rejection Rate,-1.181556,57.550465,0.242241,false,-0.305077,small
-0.03,0.08,Governance Overhead,0.604834,57.947963,0.547651,false,0.156167,negligible
+0.03,0.08,Total Proposals,0.845610,57.912549,0.401251,false,0.218336,small
+0.03,0.08,Quorum Reach Rate,0.521740,57.695937,0.603849,false,0.134713,negligible
+0.03,0.08,Avg Margin of Victory,-0.472340,56.383961,0.638507,false,-0.121958,negligible
+0.03,0.08,Avg Time to Decision,0.209911,57.630777,0.834477,false,0.054199,negligible
+0.03,0.08,Proposal Abandonment Rate,0.895567,57.951070,0.374189,false,0.231234,small
+0.03,0.08,Proposal Rejection Rate,-0.964072,54.934738,0.339235,false,-0.248922,small
+0.03,0.08,Governance Overhead,1.278174,56.820744,0.206385,false,0.330023,small
 0.03,0.08,Unique Voter Count,0,58,1,false,0,negligible
-0.03,0.08,Voter Participation Rate,0.638614,57.883092,0.525593,false,0.164889,negligible
-0.03,0.08,Voter Concentration Gini,0.164511,57.999492,0.869901,false,0.042477,negligible
-0.03,0.08,Delegate Concentration,-0.574005,57.799801,0.568192,false,-0.148207,negligible
-0.03,0.08,Avg Votes Per Proposal,0.638614,57.883092,0.525593,false,0.164889,negligible
+0.03,0.08,Voter Participation Rate,1.198063,56.979518,0.235852,false,0.309338,small
+0.03,0.08,Voter Concentration Gini,-2.429636,51.117632,0.018666,false,-0.627329,medium
+0.03,0.08,Delegate Concentration,-2.149865,57.331888,0.035798,false,-0.555093,medium
+0.03,0.08,Avg Votes Per Proposal,1.198063,56.979518,0.235852,false,0.309338,small
 0.03,0.08,Voter Retention Rate,0,58,1,false,0,negligible
-0.03,0.08,Voting Power Utilization,1.196420,57.977839,0.236402,false,0.308914,small
-0.03,0.08,Treasury Volatility,0.893092,57.427295,0.375535,false,0.230595,small
-0.03,0.08,Treasury Growth Rate,-2.104600,53.253604,0.040062,false,-0.543405,medium
-0.03,0.08,Staking Participation,0.476793,51.439664,0.635529,false,0.123107,negligible
-0.03,0.08,Token Concentration Gini,-1.983811,52.133118,0.052554,false,-0.512218,medium
-0.03,0.08,Avg Member Wealth,-0.619784,51.724248,0.538121,false,-0.160028,negligible
-0.03,0.08,Wealth Mobility,1.983811,52.133118,0.052554,false,0.512218,medium
-0.03,0.08,Whale Influence,-0.131981,55.594140,0.895476,false,-0.034077,negligible
-0.03,0.08,Whale Proposal Rate,0.494488,56.334489,0.622884,false,0.127676,negligible
-0.03,0.08,Governance Capture Risk,-0.639106,57.567954,0.525289,false,-0.165017,negligible
-0.03,0.08,Vote Buying Vulnerability,0.842424,51.642283,0.403435,false,0.217513,small
-0.03,0.08,Single Entity Control,0.426162,51.674171,0.671760,false,0.110035,negligible
-0.03,0.08,Collusion Threshold,0.945249,54.793285,0.348682,false,0.244062,small
-0.03,0.08,Participation Trend,-0.327931,54.403267,0.744223,false,-0.084671,negligible
-0.03,0.08,Treasury Trend,-0.766046,57.248980,0.446796,false,-0.197792,negligible
+0.03,0.08,Voting Power Utilization,1.347597,57.612044,0.183064,false,0.347948,small
+0.03,0.08,Treasury Volatility,0.960722,57.664822,0.340703,false,0.248057,small
+0.03,0.08,Treasury Growth Rate,-1.208090,57.679136,0.231942,false,-0.311928,small
+0.03,0.08,Staking Participation,0.952864,53.796977,0.344921,false,0.246029,small
+0.03,0.08,Token Concentration Gini,-1.397154,56.221298,0.167858,false,-0.360744,small
+0.03,0.08,Avg Member Wealth,-1.071125,53.983266,0.288879,false,-0.276563,small
+0.03,0.08,Wealth Mobility,1.397154,56.221298,0.167858,false,0.360744,small
+0.03,0.08,Whale Influence,-1.876832,57.999023,0.065574,false,-0.484596,small
+0.03,0.08,Whale Proposal Rate,1.488497,52.046957,0.142654,false,0.384328,small
+0.03,0.08,Governance Capture Risk,-2.258860,56.958367,0.027738,false,-0.583235,medium
+0.03,0.08,Vote Buying Vulnerability,1.349735,56.525997,0.182482,false,0.348500,small
+0.03,0.08,Single Entity Control,1.118937,53.626455,0.268154,false,0.288908,small
+0.03,0.08,Collusion Threshold,1.046510,57.238407,0.299725,false,0.270208,small
+0.03,0.08,Participation Trend,-0.464851,57.964620,0.643780,false,-0.120024,negligible
+0.03,0.08,Treasury Trend,-0.302909,55.745258,0.763086,false,-0.078211,negligible
 0.03,0.08,Member Growth Rate,0,58,1,false,0,negligible
-0.03,0.08,Proposal Rate,-1.725418,57.878540,0.089788,false,-0.445501,small
-0.03,0.08,Governance Activity Index,0.114657,57.999540,0.909113,false,0.029604,negligible
-0.03,0.08,Final Gini,-1.983811,52.133118,0.052554,false,-0.512218,medium
-0.03,0.08,Final Reputation Gini,0.031556,34.409681,0.975008,false,0.008148,negligible
-0.03,0.1,Proposal Pass Rate,1.083041,56.112385,0.283423,false,0.279640,small
-0.03,0.1,Average Turnout,1.718095,57.988925,0.091115,false,0.443610,small
-0.03,0.1,Final Treasury,-0.277739,55.828060,0.782239,false,-0.071712,negligible
-0.03,0.1,Final Token Price,-0.273119,51.538393,0.785853,false,-0.070519,negligible
+0.03,0.08,Proposal Rate,0.845610,57.912549,0.401251,false,0.218336,small
+0.03,0.08,Governance Activity Index,1.600510,57.755803,0.114942,false,0.413250,small
+0.03,0.08,Final Gini,-1.397154,56.221298,0.167858,false,-0.360744,small
+0.03,0.08,Final Reputation Gini,-0.195423,57.383586,0.845752,false,-0.050458,negligible
+0.03,0.1,Proposal Pass Rate,-0.487628,57.343358,0.627672,false,-0.125905,negligible
+0.03,0.1,Average Turnout,1.929362,57.868921,0.058594,false,0.498159,small
+0.03,0.1,Final Treasury,-0.071743,57.943093,0.943053,false,-0.018524,negligible
+0.03,0.1,Final Token Price,0.677751,52.633132,0.500898,false,0.174994,negligible
 0.03,0.1,Final Member Count,0,58,1,false,0,negligible
-0.03,0.1,Total Proposals,-1.667376,52.442978,0.101401,false,-0.430515,small
-0.03,0.1,Quorum Reach Rate,2.312343,57.965248,0.024331,false,0.597044,medium
-0.03,0.1,Avg Margin of Victory,-1.137804,57.924396,0.259887,false,-0.293780,small
-0.03,0.1,Avg Time to Decision,0.207814,56.537839,0.836121,false,0.053657,negligible
-0.03,0.1,Proposal Abandonment Rate,-0.803224,56.996150,0.425182,false,-0.207392,small
-0.03,0.1,Proposal Rejection Rate,-1.083041,56.112385,0.283423,false,-0.279640,small
-0.03,0.1,Governance Overhead,1.619565,57.864597,0.110764,false,0.418170,small
+0.03,0.1,Total Proposals,1.360520,56.349570,0.179083,false,0.351285,small
+0.03,0.1,Quorum Reach Rate,0.675399,57.877906,0.502112,false,0.174387,negligible
+0.03,0.1,Avg Margin of Victory,0.083161,54.871944,0.934026,false,0.021472,negligible
+0.03,0.1,Avg Time to Decision,-0.298161,57.815469,0.766650,false,-0.076985,negligible
+0.03,0.1,Proposal Abandonment Rate,-0.242242,57.989593,0.809447,false,-0.062547,negligible
+0.03,0.1,Proposal Rejection Rate,0.487628,57.343358,0.627672,false,0.125905,negligible
+0.03,0.1,Governance Overhead,1.830686,57.681950,0.072315,false,0.472681,small
 0.03,0.1,Unique Voter Count,0,58,1,false,0,negligible
-0.03,0.1,Voter Participation Rate,1.679839,57.838866,0.098383,false,0.433733,small
-0.03,0.1,Voter Concentration Gini,-0.359570,52.201692,0.720619,false,-0.092841,negligible
-0.03,0.1,Delegate Concentration,-1.358911,54.785462,0.179743,false,-0.350869,small
-0.03,0.1,Avg Votes Per Proposal,1.679839,57.838866,0.098383,false,0.433733,small
-0.03,0.1,Voter Retention Rate,1.000000,29,0.325582,false,0.258199,small
-0.03,0.1,Voting Power Utilization,1.718095,57.988925,0.091115,false,0.443610,small
-0.03,0.1,Treasury Volatility,-0.559237,57.943159,0.578155,false,-0.144394,negligible
-0.03,0.1,Treasury Growth Rate,-0.949689,57.557581,0.346241,false,-0.245209,small
-0.03,0.1,Staking Participation,-0.386466,54.834215,0.700647,false,-0.099785,negligible
-0.03,0.1,Token Concentration Gini,-1.345383,57.446489,0.183788,false,-0.347376,small
-0.03,0.1,Avg Member Wealth,0.321646,55.617220,0.748926,false,0.083049,negligible
-0.03,0.1,Wealth Mobility,1.345383,57.446489,0.183788,false,0.347376,small
-0.03,0.1,Whale Influence,-1.205767,57.944424,0.232808,false,-0.311328,small
-0.03,0.1,Whale Proposal Rate,0.237490,55.563740,0.813150,false,0.061320,negligible
-0.03,0.1,Governance Capture Risk,-0.629815,57.941414,0.531291,false,-0.162618,negligible
-0.03,0.1,Vote Buying Vulnerability,0.947164,56.956942,0.347556,false,0.244557,small
-0.03,0.1,Single Entity Control,-0.299854,54.762085,0.765423,false,-0.077422,negligible
-0.03,0.1,Collusion Threshold,0.350215,57.767508,0.727451,false,0.090425,negligible
-0.03,0.1,Participation Trend,-0.289968,57.596887,0.772882,false,-0.074870,negligible
-0.03,0.1,Treasury Trend,-0.380942,57.683597,0.704646,false,-0.098359,negligible
+0.03,0.1,Voter Participation Rate,1.875786,57.656024,0.065751,false,0.484326,small
+0.03,0.1,Voter Concentration Gini,-1.454410,57.638662,0.151257,false,-0.375527,small
+0.03,0.1,Delegate Concentration,-2.822873,56.878381,0.006548,false,-0.728863,medium
+0.03,0.1,Avg Votes Per Proposal,1.875786,57.656024,0.065751,false,0.484326,small
+0.03,0.1,Voter Retention Rate,0,58,1,false,0,negligible
+0.03,0.1,Voting Power Utilization,1.929362,57.868921,0.058594,false,0.498159,small
+0.03,0.1,Treasury Volatility,-1.037910,57.611672,0.303649,false,-0.267987,small
+0.03,0.1,Treasury Growth Rate,-0.983980,57.174981,0.329271,false,-0.254063,small
+0.03,0.1,Staking Participation,-0.233524,54.727938,0.816225,false,-0.060296,negligible
+0.03,0.1,Token Concentration Gini,-0.700100,57.005711,0.486712,false,-0.180765,negligible
+0.03,0.1,Avg Member Wealth,0.165449,55.817838,0.869189,false,0.042719,negligible
+0.03,0.1,Wealth Mobility,0.700100,57.005711,0.486712,false,0.180765,negligible
+0.03,0.1,Whale Influence,-1.492657,57.433332,0.141000,false,-0.385402,small
+0.03,0.1,Whale Proposal Rate,1.419947,52.524228,0.161532,false,0.366629,small
+0.03,0.1,Governance Capture Risk,-2.126985,57.952608,0.037690,false,-0.549185,medium
+0.03,0.1,Vote Buying Vulnerability,2.587549,54.974995,0.012340,false,0.668102,medium
+0.03,0.1,Single Entity Control,-0.203769,55.481141,0.839279,false,-0.052613,negligible
+0.03,0.1,Collusion Threshold,0.326099,57.842066,0.745526,false,0.084198,negligible
+0.03,0.1,Participation Trend,-2.621660,56.111094,0.011242,false,-0.676910,medium
+0.03,0.1,Treasury Trend,0.425649,57.934152,0.671941,false,0.109902,negligible
 0.03,0.1,Member Growth Rate,0,58,1,false,0,negligible
-0.03,0.1,Proposal Rate,-1.667376,52.442978,0.101401,false,-0.430515,small
-0.03,0.1,Governance Activity Index,0.814612,56.995956,0.418685,false,0.210332,small
-0.03,0.1,Final Gini,-1.345383,57.446489,0.183788,false,-0.347376,small
-0.03,0.1,Final Reputation Gini,-1.339488,31.736624,0.189926,false,-0.345854,small
-0.05,0.08,Proposal Pass Rate,1.378888,57.957010,0.173228,false,0.356027,small
-0.05,0.08,Average Turnout,1.546844,55.682971,0.127566,false,0.399393,small
-0.05,0.08,Final Treasury,-0.104519,57.270418,0.917123,false,-0.026987,negligible
-0.05,0.08,Final Token Price,-0.943081,42.906449,0.350920,false,-0.243503,small
+0.03,0.1,Proposal Rate,1.360520,56.349570,0.179083,false,0.351285,small
+0.03,0.1,Governance Activity Index,2.376213,57.856430,0.020823,false,0.613535,medium
+0.03,0.1,Final Gini,-0.700100,57.005711,0.486712,false,-0.180765,negligible
+0.03,0.1,Final Reputation Gini,0.381627,47.319877,0.704447,false,0.098536,negligible
+0.05,0.08,Proposal Pass Rate,0.640865,54.054219,0.524318,false,0.165471,negligible
+0.05,0.08,Average Turnout,0.350932,55.483049,0.726969,false,0.090610,negligible
+0.05,0.08,Final Treasury,0.610882,56.401927,0.543732,false,0.157729,negligible
+0.05,0.08,Final Token Price,-0.596789,51.501861,0.553262,false,-0.154090,negligible
 0.05,0.08,Final Member Count,0,58,1,false,0,negligible
-0.05,0.08,Total Proposals,-0.256821,56.786764,0.798245,false,-0.066311,negligible
-0.05,0.08,Quorum Reach Rate,1.566319,57.778071,0.122735,false,0.404422,small
-0.05,0.08,Avg Margin of Victory,0.139425,52.187659,0.889651,false,0.035999,negligible
-0.05,0.08,Avg Time to Decision,0.781835,57.968075,0.437494,false,0.201869,small
-0.05,0.08,Proposal Abandonment Rate,0.934006,57.809905,0.354186,false,0.241159,small
-0.05,0.08,Proposal Rejection Rate,-1.378888,57.957010,0.173228,false,-0.356027,small
-0.05,0.08,Governance Overhead,1.262126,56.287960,0.212108,false,0.325880,small
+0.05,0.08,Total Proposals,-0.704518,57.951923,0.483932,false,-0.181906,negligible
+0.05,0.08,Quorum Reach Rate,0.298657,57.927362,0.766270,false,0.077113,negligible
+0.05,0.08,Avg Margin of Victory,-0.485230,57.957945,0.629343,false,-0.125286,negligible
+0.05,0.08,Avg Time to Decision,0.469338,53.380263,0.640739,false,0.121183,negligible
+0.05,0.08,Proposal Abandonment Rate,1.600038,57.866278,0.115036,false,0.413128,small
+0.05,0.08,Proposal Rejection Rate,-0.640865,54.054219,0.524318,false,-0.165471,negligible
+0.05,0.08,Governance Overhead,0.317243,54.789132,0.752265,false,0.081912,negligible
 0.05,0.08,Unique Voter Count,0,58,1,false,0,negligible
-0.05,0.08,Voter Participation Rate,1.199507,56.306315,0.235354,false,0.309711,small
-0.05,0.08,Voter Concentration Gini,-1.280317,57.950583,0.205535,false,-0.330576,small
-0.05,0.08,Delegate Concentration,-1.508765,57.998413,0.136787,false,-0.389562,small
-0.05,0.08,Avg Votes Per Proposal,1.199507,56.306315,0.235354,false,0.309711,small
-0.05,0.08,Voter Retention Rate,-1.000000,29,0.325582,false,-0.258199,small
-0.05,0.08,Voting Power Utilization,1.546844,55.682971,0.127566,false,0.399393,small
-0.05,0.08,Treasury Volatility,1.687255,56.883496,0.097031,false,0.435647,small
-0.05,0.08,Treasury Growth Rate,-1.449103,57.689171,0.152723,false,-0.374157,small
-0.05,0.08,Staking Participation,1.169899,57.493725,0.246868,false,0.302067,small
-0.05,0.08,Token Concentration Gini,-1.732307,56.513113,0.088674,false,-0.447280,small
-0.05,0.08,Avg Member Wealth,-1.253029,57.105191,0.215302,false,-0.323531,small
-0.05,0.08,Wealth Mobility,1.732307,56.513113,0.088674,false,0.447280,small
-0.05,0.08,Whale Influence,-0.824540,57.158700,0.413061,false,-0.212895,small
-0.05,0.08,Whale Proposal Rate,0.141791,57.999174,0.887736,false,0.036610,negligible
-0.05,0.08,Governance Capture Risk,-1.487186,56.386673,0.142537,false,-0.383990,small
-0.05,0.08,Vote Buying Vulnerability,0.116985,54.405402,0.907303,false,0.030205,negligible
-0.05,0.08,Single Entity Control,1.073561,57.673085,0.287491,false,0.277192,small
-0.05,0.08,Collusion Threshold,1.350493,57.992715,0.182104,false,0.348696,small
-0.05,0.08,Participation Trend,-0.624915,52.898871,0.534713,false,-0.161352,negligible
-0.05,0.08,Treasury Trend,-2.406090,52.552639,0.019675,false,-0.621250,medium
+0.05,0.08,Voter Participation Rate,0.162542,55.258611,0.871472,false,0.041968,negligible
+0.05,0.08,Voter Concentration Gini,-0.698020,57.910382,0.487958,false,-0.180228,negligible
+0.05,0.08,Delegate Concentration,-0.116762,56.334232,0.907464,false,-0.030148,negligible
+0.05,0.08,Avg Votes Per Proposal,0.162542,55.258611,0.871472,false,0.041968,negligible
+0.05,0.08,Voter Retention Rate,0,58,1,false,0,negligible
+0.05,0.08,Voting Power Utilization,0.350932,55.483049,0.726969,false,0.090610,negligible
+0.05,0.08,Treasury Volatility,1.061386,55.148015,0.293141,false,0.274049,small
+0.05,0.08,Treasury Growth Rate,-0.734731,57.950918,0.465466,false,-0.189707,negligible
+0.05,0.08,Staking Participation,0.439676,56.726057,0.661842,false,0.113524,negligible
+0.05,0.08,Token Concentration Gini,-0.773412,56.394848,0.442508,false,-0.199694,negligible
+0.05,0.08,Avg Member Wealth,-0.515574,56.435172,0.608166,false,-0.133121,negligible
+0.05,0.08,Wealth Mobility,0.773412,56.394848,0.442508,false,0.199694,negligible
+0.05,0.08,Whale Influence,0.310084,57.897952,0.757611,false,0.080063,negligible
+0.05,0.08,Whale Proposal Rate,1.265295,57.987420,0.210826,false,0.326698,small
+0.05,0.08,Governance Capture Risk,-0.805029,54.811666,0.424281,false,-0.207858,small
+0.05,0.08,Vote Buying Vulnerability,0.163883,57.114262,0.870402,false,0.042314,negligible
+0.05,0.08,Single Entity Control,0.620183,56.816474,0.537617,false,0.160131,negligible
+0.05,0.08,Collusion Threshold,0.366064,57.717765,0.715656,false,0.094517,negligible
+0.05,0.08,Participation Trend,0.278482,56.599059,0.781657,false,0.071904,negligible
+0.05,0.08,Treasury Trend,0.515799,53.397747,0.608124,false,0.133179,negligible
 0.05,0.08,Member Growth Rate,0,58,1,false,0,negligible
-0.05,0.08,Proposal Rate,-0.256821,56.786764,0.798245,false,-0.066311,negligible
-0.05,0.08,Governance Activity Index,1.137015,57.151645,0.260277,false,0.293576,small
-0.05,0.08,Final Gini,-1.732307,56.513113,0.088674,false,-0.447280,small
-0.05,0.08,Final Reputation Gini,0.030784,55.537849,0.975552,false,0.007948,negligible
-0.05,0.1,Proposal Pass Rate,1.301789,53.427067,0.198574,false,0.336120,small
-0.05,0.1,Average Turnout,2.016644,55.801580,0.048555,false,0.520695,medium
-0.05,0.1,Final Treasury,0.774920,56.495454,0.441618,false,0.200084,small
-0.05,0.1,Final Token Price,-1.792935,39.302303,0.080682,false,-0.462934,small
+0.05,0.08,Proposal Rate,-0.704518,57.951923,0.483932,false,-0.181906,negligible
+0.05,0.08,Governance Activity Index,-0.116325,55.627338,0.907814,false,-0.030035,negligible
+0.05,0.08,Final Gini,-0.773412,56.394848,0.442508,false,-0.199694,negligible
+0.05,0.08,Final Reputation Gini,-0.449310,57.743899,0.654890,false,-0.116011,negligible
+0.05,0.1,Proposal Pass Rate,-0.904828,57.709028,0.369319,false,-0.233625,small
+0.05,0.1,Average Turnout,0.906072,56.185436,0.368767,false,0.233947,small
+0.05,0.1,Final Treasury,-0.046492,57.206202,0.963080,false,-0.012004,negligible
+0.05,0.1,Final Token Price,0.087202,57.993922,0.930811,false,0.022516,negligible
 0.05,0.1,Final Member Count,0,58,1,false,0,negligible
-0.05,0.1,Total Proposals,0.082270,55.034740,0.934731,false,0.021242,negligible
-0.05,0.1,Quorum Reach Rate,2.199263,57.857274,0.031870,false,0.567847,medium
-0.05,0.1,Avg Margin of Victory,-1.124863,57.250028,0.265341,false,-0.290438,small
-0.05,0.1,Avg Time to Decision,0.065257,55.170973,0.948206,false,0.016849,negligible
-0.05,0.1,Proposal Abandonment Rate,0.560608,56.620830,0.577276,false,0.144748,negligible
-0.05,0.1,Proposal Rejection Rate,-1.301789,53.427067,0.198574,false,-0.336120,small
-0.05,0.1,Governance Overhead,2.201606,55.933413,0.031835,false,0.568452,medium
+0.05,0.1,Total Proposals,-0.081835,56.528333,0.935067,false,-0.021130,negligible
+0.05,0.1,Quorum Reach Rate,0.435405,57.602531,0.664896,false,0.112421,negligible
+0.05,0.1,Avg Margin of Victory,0.037368,57.435552,0.970321,false,0.009648,negligible
+0.05,0.1,Avg Time to Decision,-0.083992,53.992877,0.933373,false,-0.021687,negligible
+0.05,0.1,Proposal Abandonment Rate,0.467012,57.998151,0.642241,false,0.120582,negligible
+0.05,0.1,Proposal Rejection Rate,0.904828,57.709028,0.369319,false,0.233625,small
+0.05,0.1,Governance Overhead,0.936403,57.956124,0.352951,false,0.241778,small
 0.05,0.1,Unique Voter Count,0,58,1,false,0,negligible
-0.05,0.1,Voter Participation Rate,2.169332,56.159200,0.034306,false,0.560119,medium
-0.05,0.1,Voter Concentration Gini,-2.010626,51.294376,0.049636,false,-0.519141,medium
-0.05,0.1,Delegate Concentration,-2.410322,56.160648,0.019237,false,-0.622343,medium
-0.05,0.1,Avg Votes Per Proposal,2.169332,56.159200,0.034306,false,0.560119,medium
+0.05,0.1,Voter Participation Rate,0.908425,57.987807,0.367414,false,0.234554,small
+0.05,0.1,Voter Concentration Gini,0.422628,54.325967,0.674235,false,0.109122,negligible
+0.05,0.1,Delegate Concentration,-1.006268,57.667747,0.318490,false,-0.259817,small
+0.05,0.1,Avg Votes Per Proposal,0.908425,57.987807,0.367414,false,0.234554,small
 0.05,0.1,Voter Retention Rate,0,58,1,false,0,negligible
-0.05,0.1,Voting Power Utilization,2.016644,55.801580,0.048555,false,0.520695,medium
-0.05,0.1,Treasury Volatility,0.264067,57.994768,0.792664,false,0.068182,negligible
-0.05,0.1,Treasury Growth Rate,-0.113532,53.631407,0.910033,false,-0.029314,negligible
-0.05,0.1,Staking Participation,0.451596,57.931519,0.653246,false,0.116602,negligible
-0.05,0.1,Token Concentration Gini,-1.092196,57.567979,0.279297,false,-0.282004,small
-0.05,0.1,Avg Member Wealth,-0.455749,57.955615,0.650274,false,-0.117674,negligible
-0.05,0.1,Wealth Mobility,1.092196,57.567979,0.279297,false,0.282004,small
-0.05,0.1,Whale Influence,-1.936512,57.182165,0.057752,false,-0.500005,medium
-0.05,0.1,Whale Proposal Rate,-0.088272,57.928705,0.929965,false,-0.022792,negligible
-0.05,0.1,Governance Capture Risk,-1.536943,57.843069,0.129760,false,-0.396837,small
-0.05,0.1,Vote Buying Vulnerability,-0.006167,54.960314,0.995102,false,-0.001592,negligible
-0.05,0.1,Single Entity Control,0.472494,57.899206,0.638350,false,0.121998,negligible
-0.05,0.1,Collusion Threshold,0.850640,56.363469,0.398569,false,0.219634,small
-0.05,0.1,Participation Trend,-0.548530,57.961603,0.585435,false,-0.141630,negligible
-0.05,0.1,Treasury Trend,-1.891748,51.408680,0.064164,false,-0.488447,small
+0.05,0.1,Voting Power Utilization,0.906072,56.185436,0.368767,false,0.233947,small
+0.05,0.1,Treasury Volatility,-1.072634,55.013517,0.288118,false,-0.276953,small
+0.05,0.1,Treasury Growth Rate,-0.468500,56.466377,0.641231,false,-0.120966,negligible
+0.05,0.1,Staking Participation,-0.694419,57.269629,0.490227,false,-0.179298,negligible
+0.05,0.1,Token Concentration Gini,0.028130,56.864102,0.977657,false,0.007263,negligible
+0.05,0.1,Avg Member Wealth,0.690951,57.550757,0.492374,false,0.178403,negligible
+0.05,0.1,Wealth Mobility,-0.028130,56.864102,0.977657,false,-0.007263,negligible
+0.05,0.1,Whale Influence,0.574214,57.780197,0.568052,false,0.148261,negligible
+0.05,0.1,Whale Proposal Rate,1.201890,57.999647,0.234291,false,0.310327,small
+0.05,0.1,Governance Capture Risk,-0.786759,57.620270,0.434647,false,-0.203140,small
+0.05,0.1,Vote Buying Vulnerability,1.392954,55.798694,0.169159,false,0.359659,small
+0.05,0.1,Single Entity Control,-0.645719,57.733974,0.521020,false,-0.166724,negligible
+0.05,0.1,Collusion Threshold,-0.397706,57.450372,0.692321,false,-0.102687,negligible
+0.05,0.1,Participation Trend,-1.655907,52.942802,0.103657,false,-0.427553,small
+0.05,0.1,Treasury Trend,1.152345,57.013466,0.253988,false,0.297534,small
 0.05,0.1,Member Growth Rate,0,58,1,false,0,negligible
-0.05,0.1,Proposal Rate,0.082270,55.034740,0.934731,false,0.021242,negligible
-0.05,0.1,Governance Activity Index,1.844264,54.506948,0.070582,false,0.476187,small
-0.05,0.1,Final Gini,-1.092196,57.567979,0.279297,false,-0.282004,small
-0.05,0.1,Final Reputation Gini,-1.021649,57.042778,0.311261,false,-0.263789,small
-0.08,0.1,Proposal Pass Rate,-0.249267,54.128044,0.804098,false,-0.064361,negligible
-0.08,0.1,Average Turnout,0.530221,57.998094,0.597983,false,0.136902,negligible
-0.08,0.1,Final Treasury,0.904799,54.030034,0.369589,false,0.233618,small
-0.08,0.1,Final Token Price,-0.804432,56.489384,0.424520,false,-0.207703,small
+0.05,0.1,Proposal Rate,-0.081835,56.528333,0.935067,false,-0.021130,negligible
+0.05,0.1,Governance Activity Index,0.692153,57.488922,0.491628,false,0.178713,negligible
+0.05,0.1,Final Gini,0.028130,56.864102,0.977657,false,0.007263,negligible
+0.05,0.1,Final Reputation Gini,0.149513,52.218811,0.881725,false,0.038604,negligible
+0.08,0.1,Proposal Pass Rate,-1.422637,52.155129,0.160795,false,-0.367323,small
+0.08,0.1,Average Turnout,0.628901,57.930637,0.531886,false,0.162381,negligible
+0.08,0.1,Final Treasury,-0.681536,53.767736,0.498457,false,-0.175972,negligible
+0.08,0.1,Final Token Price,0.668644,51.210315,0.506725,false,0.172643,negligible
 0.08,0.1,Final Member Count,0,58,1,false,0,negligible
-0.08,0.1,Total Proposals,0.355119,51.152541,0.723960,false,0.091691,negligible
-0.08,0.1,Quorum Reach Rate,0.524470,57.290291,0.601975,false,0.135418,negligible
-0.08,0.1,Avg Margin of Victory,-1.045582,48.889089,0.300897,false,-0.269968,small
-0.08,0.1,Avg Time to Decision,-0.619976,54.624332,0.537851,false,-0.160077,negligible
-0.08,0.1,Proposal Abandonment Rate,-0.429719,57.430072,0.669008,false,-0.110953,negligible
-0.08,0.1,Proposal Rejection Rate,0.249267,54.128044,0.804098,false,0.064361,negligible
-0.08,0.1,Governance Overhead,1.025105,57.980299,0.309572,false,0.264681,small
+0.08,0.1,Total Proposals,0.565850,56.989382,0.573717,false,0.146102,negligible
+0.08,0.1,Quorum Reach Rate,0.116641,57.201754,0.907553,false,0.030117,negligible
+0.08,0.1,Avg Margin of Victory,0.498078,57.697648,0.620323,false,0.128603,negligible
+0.08,0.1,Avg Time to Decision,-0.490986,57.967568,0.625290,false,-0.126772,negligible
+0.08,0.1,Proposal Abandonment Rate,-1.140020,57.895735,0.258972,false,-0.294352,small
+0.08,0.1,Proposal Rejection Rate,1.422637,52.155129,0.160795,false,0.367323,small
+0.08,0.1,Governance Overhead,0.724449,55.414417,0.471838,false,0.187052,negligible
 0.08,0.1,Unique Voter Count,0,58,1,false,0,negligible
-0.08,0.1,Voter Participation Rate,1.063183,57.996418,0.292106,false,0.274513,small
-0.08,0.1,Voter Concentration Gini,-0.548724,52.119160,0.585538,false,-0.141680,negligible
-0.08,0.1,Delegate Concentration,-0.764034,56.059958,0.448051,false,-0.197273,negligible
-0.08,0.1,Avg Votes Per Proposal,1.063183,57.996418,0.292106,false,0.274513,small
-0.08,0.1,Voter Retention Rate,1.000000,29,0.325582,false,0.258199,small
-0.08,0.1,Voting Power Utilization,0.530221,57.998094,0.597983,false,0.136902,negligible
-0.08,0.1,Treasury Volatility,-1.435306,57.024756,0.156662,false,-0.370594,small
-0.08,0.1,Treasury Growth Rate,1.127569,55.402256,0.264362,false,0.291137,small
-0.08,0.1,Staking Participation,-0.758733,57.067799,0.451135,false,-0.195904,negligible
-0.08,0.1,Token Concentration Gini,0.800479,54.705929,0.426896,false,0.206683,small
-0.08,0.1,Avg Member Wealth,0.842520,56.684768,0.403038,false,0.217538,small
-0.08,0.1,Wealth Mobility,-0.800479,54.705929,0.426896,false,-0.206683,small
-0.08,0.1,Whale Influence,-0.936028,54.903930,0.353358,false,-0.241681,small
-0.08,0.1,Whale Proposal Rate,-0.227706,57.912592,0.820677,false,-0.058793,negligible
-0.08,0.1,Governance Capture Risk,0.047207,57.202112,0.962513,false,0.012189,negligible
-0.08,0.1,Vote Buying Vulnerability,-0.131417,47.719237,0.895998,false,-0.033932,negligible
-0.08,0.1,Single Entity Control,-0.640364,57.221430,0.524492,false,-0.165341,negligible
-0.08,0.1,Collusion Threshold,-0.614584,56.155035,0.541312,false,-0.158685,negligible
-0.08,0.1,Participation Trend,-0.011084,52.191442,0.991199,false,-0.002862,negligible
-0.08,0.1,Treasury Trend,0.393412,57.903515,0.695460,false,0.101579,negligible
+0.08,0.1,Voter Participation Rate,0.842156,55.574598,0.403310,false,0.217444,small
+0.08,0.1,Voter Concentration Gini,1.191695,53.317098,0.238659,false,0.307694,small
+0.08,0.1,Delegate Concentration,-0.970797,54.724071,0.335921,false,-0.250659,small
+0.08,0.1,Avg Votes Per Proposal,0.842156,55.574598,0.403310,false,0.217444,small
+0.08,0.1,Voter Retention Rate,0,58,1,false,0,negligible
+0.08,0.1,Voting Power Utilization,0.628901,57.930637,0.531886,false,0.162381,negligible
+0.08,0.1,Treasury Volatility,-1.924031,57.997983,0.059262,false,-0.496783,small
+0.08,0.1,Treasury Growth Rate,0.330542,55.917564,0.742226,false,0.085346,negligible
+0.08,0.1,Staking Participation,-1.063418,57.918270,0.292006,false,-0.274573,small
+0.08,0.1,Token Concentration Gini,0.841930,53.128043,0.403601,false,0.217386,small
+0.08,0.1,Avg Member Wealth,1.131431,57.637253,0.262560,false,0.292134,small
+0.08,0.1,Wealth Mobility,-0.841930,53.128043,0.403601,false,-0.217386,small
+0.08,0.1,Whale Influence,0.285406,57.386535,0.776361,false,0.073691,negligible
+0.08,0.1,Whale Proposal Rate,-0.073848,57.982856,0.941386,false,-0.019067,negligible
+0.08,0.1,Governance Capture Risk,-0.039839,56.495337,0.968362,false,-0.010286,negligible
+0.08,0.1,Vote Buying Vulnerability,1.314075,57.667180,0.194024,false,0.339293,small
+0.08,0.1,Single Entity Control,-1.201973,57.656341,0.234288,false,-0.310348,small
+0.08,0.1,Collusion Threshold,-0.764488,56.433662,0.447761,false,-0.197390,negligible
+0.08,0.1,Participation Trend,-2.153033,56.561182,0.035595,false,-0.555911,medium
+0.08,0.1,Treasury Trend,0.777104,56.397897,0.440345,false,0.200647,small
 0.08,0.1,Member Growth Rate,0,58,1,false,0,negligible
-0.08,0.1,Proposal Rate,0.355119,51.152541,0.723960,false,0.091691,negligible
-0.08,0.1,Governance Activity Index,0.691306,56.954419,0.492182,false,0.178494,negligible
-0.08,0.1,Final Gini,0.800479,54.705929,0.426896,false,0.206683,small
-0.08,0.1,Final Reputation Gini,-1.137385,52.270916,0.260564,false,-0.293671,small
+0.08,0.1,Proposal Rate,0.565850,56.989382,0.573717,false,0.146102,negligible
+0.08,0.1,Governance Activity Index,0.890674,57.249864,0.376832,false,0.229971,small
+0.08,0.1,Final Gini,0.841930,53.128043,0.403601,false,0.217386,small
+0.08,0.1,Final Reputation Gini,0.515754,50.319930,0.608285,false,0.133167,negligible
 
 # One-Way ANOVA Results
 metric,f_statistic,df_between,df_within,p_value,significant
-Proposal Pass Rate,1.424805,4,145,0.228675,false
-Average Turnout,1.585661,4,145,0.181215,false
-Final Treasury,2.833425,4,145,0.026709,true
-Final Token Price,1.286174,4,145,0.278169,false
+Proposal Pass Rate,1.620458,4,145,0.172211,false
+Average Turnout,2.028549,4,145,0.093453,false
+Final Treasury,1.099664,4,145,0.359107,false
+Final Token Price,0.542664,4,145,0.704642,false
 Final Member Count,0,4,145,1,false
-Total Proposals,1.118248,4,145,0.350254,false
-Quorum Reach Rate,2.197899,4,145,0.072096,false
-Avg Margin of Victory,0.444585,4,145,0.776202,false
-Avg Time to Decision,0.548085,4,145,0.700701,false
-Proposal Abandonment Rate,0.815363,4,145,0.517303,false
-Proposal Rejection Rate,1.424805,4,145,0.228675,false
-Governance Overhead,1.483992,4,145,0.210043,false
+Total Proposals,1.165010,4,145,0.328765,false
+Quorum Reach Rate,1.060586,4,145,0.378313,false
+Avg Margin of Victory,0.248713,4,145,0.910059,false
+Avg Time to Decision,0.181497,4,145,0.947686,false
+Proposal Abandonment Rate,0.720773,4,145,0.579061,false
+Proposal Rejection Rate,1.620458,4,145,0.172211,false
+Governance Overhead,1.888490,4,145,0.115554,false
 Unique Voter Count,0,4,145,1,false
-Voter Participation Rate,1.453896,4,145,0.219340,false
-Voter Concentration Gini,1.225823,4,145,0.302474,false
-Delegate Concentration,1.682452,4,145,0.157183,false
-Avg Votes Per Proposal,1.453896,4,145,0.219340,false
-Voter Retention Rate,0.750000,4,145,0.559540,false
-Voting Power Utilization,1.585661,4,145,0.181215,false
-Treasury Volatility,1.173689,4,145,0.324900,false
-Treasury Growth Rate,1.116864,4,145,0.350907,false
-Staking Participation,1.109072,4,145,0.354602,false
-Token Concentration Gini,2.104701,4,145,0.083190,false
-Avg Member Wealth,1.181531,4,145,0.321440,false
-Wealth Mobility,2.104701,4,145,0.083190,false
-Whale Influence,0.946077,4,145,0.439260,false
-Whale Proposal Rate,0.065988,4,145,0.991930,false
-Governance Capture Risk,1.319899,4,145,0.265336,false
-Vote Buying Vulnerability,0.367324,4,145,0.831600,false
-Single Entity Control,1.073909,4,145,0.371675,false
-Collusion Threshold,1.206093,4,145,0.310802,false
-Participation Trend,0.650923,4,145,0.627124,false
-Treasury Trend,1.242570,4,145,0.295554,false
+Voter Participation Rate,1.942760,4,145,0.106459,false
+Voter Concentration Gini,3.127779,4,145,0.016749,true
+Delegate Concentration,3.020650,4,145,0.019856,true
+Avg Votes Per Proposal,1.942760,4,145,0.106459,false
+Voter Retention Rate,0,4,145,1,false
+Voting Power Utilization,2.028549,4,145,0.093453,false
+Treasury Volatility,1.866345,4,145,0.119473,false
+Treasury Growth Rate,0.424422,4,145,0.790824,false
+Staking Participation,0.967117,4,145,0.427537,false
+Token Concentration Gini,1.600000,4,145,0.177454,false
+Avg Member Wealth,1.051215,4,145,0.383038,false
+Wealth Mobility,1.600000,4,145,0.177454,false
+Whale Influence,1.733116,4,145,0.145813,false
+Whale Proposal Rate,1.093316,4,145,0.362172,false
+Governance Capture Risk,2.181363,4,145,0.073955,false
+Vote Buying Vulnerability,2.008856,4,145,0.096297,false
+Single Entity Control,1.103255,4,145,0.357382,false
+Collusion Threshold,0.992869,4,145,0.413510,false
+Participation Trend,1.748862,4,145,0.142438,false
+Treasury Trend,0.445938,4,145,0.775218,false
 Member Growth Rate,0,4,145,1,false
-Proposal Rate,1.118248,4,145,0.350254,false
-Governance Activity Index,1.000531,4,145,0.409405,false
-Final Gini,2.104701,4,145,0.083190,false
-Final Reputation Gini,0.633379,4,145,0.639473,false
+Proposal Rate,1.165010,4,145,0.328765,false
+Governance Activity Index,1.821105,4,145,0.127870,false
+Final Gini,1.600000,4,145,0.177454,false
+Final Reputation Gini,0.898107,4,145,0.466868,false
 
 # Power Analysis
 current_runs_per_config,30

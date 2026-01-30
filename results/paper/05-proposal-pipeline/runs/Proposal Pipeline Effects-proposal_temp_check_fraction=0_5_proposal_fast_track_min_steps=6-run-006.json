@@ -80,19 +80,19 @@
   },
   "seed": 720,
   "metrics": {
-    "Proposal Pass Rate": 0.1111111111111111,
-    "Quorum Reach Rate": 0.3127962085308057,
-    "Avg Time to Decision": 1027.888888888889,
-    "Proposal Abandonment Rate": 0.018957345971563982,
-    "Proposal Rejection Rate": 0.8888888888888888,
-    "Governance Overhead": 19.420289855072465,
-    "Average Turnout": 0.07076485716001987,
-    "Avg Margin of Victory": 0.4095030008659933,
-    "Proposal Rate": 10.549999999999999,
-    "Total Proposals": 211
+    "Proposal Pass Rate": 0.178743961352657,
+    "Quorum Reach Rate": 0.41784037558685444,
+    "Avg Time to Decision": 970.6231884057971,
+    "Proposal Abandonment Rate": 0.028169014084507043,
+    "Proposal Rejection Rate": 0.821256038647343,
+    "Governance Overhead": 24.246376811594203,
+    "Average Turnout": 0.08643783612371637,
+    "Avg Margin of Victory": 0.4105425051621499,
+    "Proposal Rate": 10.65,
+    "Total Proposals": 213
   },
-  "startedAt": "2026-01-30T09:57:50.863Z",
-  "completedAt": "2026-01-30T09:57:54.034Z",
-  "durationMs": 3171,
+  "startedAt": "2026-01-30T12:07:18.846Z",
+  "completedAt": "2026-01-30T12:07:22.362Z",
+  "durationMs": 3516,
   "stepsCompleted": 2000
 }

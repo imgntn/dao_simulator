@@ -1,0 +1,21 @@
+{
+  "experimentId": "Simple Example Experiment-1769773132626",
+  "configHash": "hash:56aa4e01",
+  "software": {
+    "simulatorVersion": "0.2.0",
+    "nodeVersion": "v22.19.0",
+    "platform": "win32"
+  },
+  "execution": {
+    "startedAt": "2026-01-30T11:38:52.626Z",
+    "completedAt": "2026-01-30T11:38:52.793Z",
+    "totalRuns": 3,
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "workerCount": 1
+  },
+  "resultsHash": "hash:1e41b099"
+}

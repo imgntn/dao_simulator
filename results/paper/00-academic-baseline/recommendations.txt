@@ -1,7 +1,7 @@
 ✓ Good sample size (50 runs per config) for statistical analysis.
 
-High variability in "Final Token Price" (CV=123.0%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Final Token Price" (CV=130.8%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Final Treasury" (skewness=-1.56). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "Average Turnout" (skewness=1.05). Bootstrap CIs are included in stats export.
 
 No parameter sweep configured. Add sweep values to compare configurations.
