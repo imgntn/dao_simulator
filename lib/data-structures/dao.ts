@@ -698,7 +698,7 @@ export class DAO {
 
     // Cap total interest payout by available treasury balance
     const token = 'DAO_TOKEN';
-    const treasuryBalance = this.treasury.getBalance(token);
+    const treasuryBalance = this.treasury.getTokenBalance(token);
     const stakingMembers = this.members.filter(m => m.stakedTokens > 0);
     const maxPerMember = stakingMembers.length > 0 ? treasuryBalance / stakingMembers.length : 0;
 

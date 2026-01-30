@@ -296,6 +296,8 @@ export class BatchRunner {
 
           return { success: true, taskId: tasks[index].id, result };
         } catch (error) {
+          console.error(`Task ${tasks[index].id} failed:`, (error as Error)?.message || error);
+          if ((error as Error)?.stack) console.error((error as Error).stack);
           this.failedRunIds.add(tasks[index].id);
           this.reportProgress(totalRuns);
           return { success: false, taskId: tasks[index].id };
