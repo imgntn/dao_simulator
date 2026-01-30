@@ -1,9 +1,14 @@
 % APPENDIX: STATISTICAL ANALYSIS DETAILS
 % AUTO-GENERATED from analysis scripts
+% AUTO: Source experiments for table population:
+%   Table 1 (Quorum) → 03-sensitivity-quorum
+%   Table 2 (ANOVA)  → 09-voting-mechanisms
+%   Table 3 (Effect sizes) → 09-voting-mechanisms
 
 \subsection{Descriptive Statistics}
 
 % AUTO-GENERATED: Full descriptive statistics tables
+% AUTO: Maps to experiment 03-sensitivity-quorum stats.csv
 \begin{table}[htbp]
 \centering
 \caption{Descriptive statistics for quorum sensitivity experiment}
@@ -11,11 +16,11 @@
 \toprule
 Quorum (\%) & N & Mean & SD & Min & Max \\
 \midrule
-1 & 30 & 0.94 & 0.03 & 0.88 & 0.99 \\
-5 & 30 & 0.82 & 0.05 & 0.72 & 0.91 \\
-10 & 30 & 0.68 & 0.07 & 0.55 & 0.80 \\
-15 & 30 & 0.54 & 0.08 & 0.40 & 0.68 \\
-20 & 30 & 0.45 & 0.09 & 0.30 & 0.62 \\
+\pl{1} & \pl{30} & \pl{0.94} & \pl{0.03} & \pl{0.88} & \pl{0.99} \\
+\pl{5} & \pl{30} & \pl{0.82} & \pl{0.05} & \pl{0.72} & \pl{0.91} \\
+\pl{10} & \pl{30} & \pl{0.68} & \pl{0.07} & \pl{0.55} & \pl{0.80} \\
+\pl{15} & \pl{30} & \pl{0.54} & \pl{0.08} & \pl{0.40} & \pl{0.68} \\
+\pl{20} & \pl{30} & \pl{0.45} & \pl{0.09} & \pl{0.30} & \pl{0.62} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -23,6 +28,7 @@ Quorum (\%) & N & Mean & SD & Min & Max \\
 \subsection{Regression Results}
 
 % AUTO-GENERATED: Full regression outputs
+% AUTO: Maps to experiment 03-sensitivity-quorum regression
 \begin{verbatim}
 Linear Regression: Pass Rate ~ Quorum
 ======================================
@@ -37,6 +43,7 @@ N observations:   390
 \subsection{ANOVA Tables}
 
 % AUTO-GENERATED: Full ANOVA results
+% AUTO: Maps to experiment 09-voting-mechanisms
 \begin{table}[htbp]
 \centering
 \caption{ANOVA: Voting mechanism comparison}
@@ -54,6 +61,7 @@ Total & 21.23 & 299 & & & \\
 \subsection{Effect Sizes}
 
 % AUTO-GENERATED: Cohen's d for all pairwise comparisons
+% AUTO: Maps to experiment 09-voting-mechanisms
 \begin{table}[htbp]
 \centering
 \caption{Effect sizes (Cohen's d) for pairwise comparisons}

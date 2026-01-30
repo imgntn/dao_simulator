@@ -235,6 +235,19 @@ export function randomShuffle<T>(array: T[]): T[] {
 }
 
 /**
+ * Weighted random choice from an array of items with weights
+ */
+export function weightedRandomChoice<T extends { weight: number }>(items: T[]): T {
+  const totalWeight = items.reduce((sum, item) => sum + item.weight, 0);
+  let r = random() * totalWeight;
+  for (const item of items) {
+    r -= item.weight;
+    if (r <= 0) return item;
+  }
+  return items[items.length - 1];
+}
+
+/**
  * Get Gaussian distributed random number
  */
 export function randomGaussian(mean: number = 0, stdDev: number = 1): number {

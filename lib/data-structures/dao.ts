@@ -12,6 +12,12 @@ import type { DAOMember } from '../agents/base';
 import type { NFTMarketplace } from './nft';
 import type { MarketShock } from './market-shock';
 
+export interface TopicConfig {
+  topic: string;
+  weight: number;
+  fundingRange: [number, number]; // [minFraction, maxFraction] of treasury
+}
+
 export interface TreasuryPolicyConfig {
   enabled: boolean;
   targetReserve: number;
@@ -119,6 +125,7 @@ export class DAO {
   participationBoost: number = 0;
   treasuryBuffer: number = 0;
   delegationLockSteps: number = 0;
+  proposalTopicConfig?: TopicConfig[];
 
   // Pending removal queues for safe iteration
   private pendingProposalRemovals: Set<Proposal> = new Set();

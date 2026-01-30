@@ -4,7 +4,7 @@
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
 import type { Proposal } from '../data-structures/proposal';
-import { random, randomChoice } from '../utils/random';
+import { random, randomChoice, randomBool } from '../utils/random';
 
 // Analysis configuration
 const ANALYSIS_DEPTH = 0.7;  // How thorough analysis is (affects vote quality)

@@ -309,6 +309,9 @@ export class MultiStageProposal extends Proposal {
     const nextConfig = this.stageConfigs[this.currentStageIndex];
     if (previousStage === 'temp_check' && nextConfig.stage === 'on_chain') {
       this.resetVotingData();
+      this.houseVotes.clear();
+      this.vetoSignals.clear();
+      this.totalVetoSignal = 0;
     }
     const startStep = this.dao.currentStep;
 

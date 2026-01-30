@@ -2,7 +2,17 @@
 
 import { DAOMember } from './base';
 import { createRandomProposal } from '../utils/proposal-utils';
-import { random, randomChoice, randomInt } from '../utils/random';
+import { random, randomChoice, randomInt, weightedRandomChoice } from '../utils/random';
+import type { TopicConfig } from '../data-structures/dao';
+
+const DEFAULT_TOPIC_CONFIG: TopicConfig[] = [
+  { topic: 'Funding', weight: 1, fundingRange: [0.005, 0.05] },
+  { topic: 'Governance', weight: 1, fundingRange: [0.0, 0.01] },
+  { topic: 'Marketing', weight: 1, fundingRange: [0.005, 0.03] },
+  { topic: 'Development', weight: 1, fundingRange: [0.01, 0.05] },
+  { topic: 'Community', weight: 1, fundingRange: [0.005, 0.02] },
+  { topic: 'Infrastructure', weight: 1, fundingRange: [0.01, 0.05] },
+];
 
 export class ProposalCreator extends DAOMember {
   step(): void {
@@ -22,15 +32,9 @@ export class ProposalCreator extends DAOMember {
   createRandomProposal(): void {
     if (!this.model.dao) return;
 
-    const topics = [
-      'Funding',
-      'Governance',
-      'Marketing',
-      'Development',
-      'Community',
-      'Infrastructure',
-    ];
-    const topic = randomChoice(topics);
+    const topicConfig = this.model.dao.proposalTopicConfig || DEFAULT_TOPIC_CONFIG;
+    const selected = weightedRandomChoice(topicConfig);
+    const topic = selected.topic;
 
     const titlePrefix = `${topic} Proposal`;
     const fixedDuration = (this.model as any).proposalDurationSteps ?? 0;
@@ -42,7 +46,7 @@ export class ProposalCreator extends DAOMember {
         ? fixedDuration
         : randomInt(Math.min(minDuration, maxDuration), Math.max(minDuration, maxDuration));
 
-    const proposal = createRandomProposal(this.model.dao, this, titlePrefix, topic, null, duration);
+    const proposal = createRandomProposal(this.model.dao, this, titlePrefix, topic, null, duration, selected.fundingRange);
     proposal.description = `A proposal about ${topic.toLowerCase()}`;
 
     this.model.dao.addProposal(proposal);

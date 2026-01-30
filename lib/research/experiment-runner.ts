@@ -1933,16 +1933,25 @@ export class ExperimentRunner {
     const history = simulation.dataCollector.history;
     const modelVars = simulation.dataCollector.modelVars;
 
-    return history.map((entry, index) => ({
-      step: entry.step,
-      memberCount: entry.memberCount,
-      proposalCount: entry.proposalCount,
-      projectCount: entry.projectCount,
-      tokenPrice: entry.tokenPrice,
-      treasuryFunds: entry.treasuryFunds,
-      gini: modelVars[index]?.gini ?? 0,
-      reputationGini: modelVars[index]?.repGini ?? 0,
-    }));
+    // Build step→modelVars index for safe alignment
+    const modelVarsByStep = new Map<number, any>();
+    for (const mv of modelVars) {
+      modelVarsByStep.set(mv.step, mv);
+    }
+
+    return history.map((entry) => {
+      const mv = modelVarsByStep.get(entry.step);
+      return {
+        step: entry.step,
+        memberCount: entry.memberCount,
+        proposalCount: entry.proposalCount,
+        projectCount: entry.projectCount,
+        tokenPrice: entry.tokenPrice,
+        treasuryFunds: entry.treasuryFunds,
+        gini: mv?.gini ?? 0,
+        reputationGini: mv?.repGini ?? 0,
+      };
+    });
   }
 
   /**

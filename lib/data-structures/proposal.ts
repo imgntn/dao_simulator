@@ -214,6 +214,7 @@ export class Proposal {
     this.votes.clear();
     this.votesFor = 0;
     this.votesAgainst = 0;
+    this.votesAbstain = 0;
     this.delegatedSupport.clear();
     this.delegationRevokedFor.clear();
   }

@@ -16,13 +16,15 @@ export function createRandomProposal(
   titlePrefix: string = 'Proposal',
   topic: string = 'Default Topic',
   project?: any,
-  durationOverride?: number
+  durationOverride?: number,
+  fundingRange?: [number, number]
 ): Proposal {
   const proposalId = dao.proposals.length;
   const title = `${titlePrefix} ${proposalId}`;
   const description = `This is the description for ${title}.`;
   const treasuryFunds = Math.max(dao.treasury?.funds || 0, 1000);
-  const fundingRatio = randomFloat(0.005, 0.05); // 0.5% - 5% of treasury
+  const [minRatio, maxRatio] = fundingRange || [0.005, 0.05];
+  const fundingRatio = randomFloat(minRatio, maxRatio);
   const fundingRequired = Math.round(treasuryFunds * fundingRatio * 100) / 100;
   const duration = durationOverride && durationOverride > 0
     ? durationOverride

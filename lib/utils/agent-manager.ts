@@ -286,7 +286,10 @@ export class AgentManager {
   }
 
   /**
-   * Remove members with negative reputation
+   * Remove members with negative reputation.
+   * NOTE: Creates selection pressure favoring high-initial-reputation agents
+   * (GovernanceExpert: 75, RiskManager: 60) over lower-rep types.
+   * This is an intentional simplification documented in limitations.
    */
   cullMembers(): void {
     const agentsToRemove: DAOMember[] = [];

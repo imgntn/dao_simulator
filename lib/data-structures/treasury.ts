@@ -274,6 +274,9 @@ export class Treasury {
 
   updateTokenPrice(token: string, newPrice: number): void {
     this.tokenPrices.set(token, newPrice);
+    if (this.oracle) {
+      this.oracle.setPrice(token, newPrice);
+    }
   }
 
   getTokenPrice(token: string): number {

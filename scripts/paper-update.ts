@@ -108,6 +108,13 @@ const PAPER_PROFILE_CONFIGS: Record<string, string[]> = {
     'experiments/paper/05-proposal-pipeline.yaml',
     'experiments/paper/06-treasury-resilience.yaml',
     'experiments/paper/07-inter-dao-cooperation.yaml',
+    'experiments/paper/08-scale-sweep.yaml',
+    'experiments/paper/09-voting-mechanisms.yaml',
+  ],
+  p3: [
+    'experiments/paper/00-academic-baseline.yaml',
+    'experiments/paper/08-scale-sweep.yaml',
+    'experiments/paper/09-voting-mechanisms.yaml',
   ],
   p1: [
     'experiments/paper/00-academic-baseline.yaml',
