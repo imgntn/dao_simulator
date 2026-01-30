@@ -1,0 +1,105 @@
+{
+  "runId": "Inter-DAO Cooperation-asymmetric-treasury-run-037",
+  "experimentName": "Inter-DAO Cooperation",
+  "sweepValue": "asymmetric-treasury",
+  "runIndex": 36,
+  "config": {
+    "daos": [
+      {
+        "id": "dao-wealthy",
+        "name": "Wealthy DAO",
+        "tokenSymbol": "RICH",
+        "initialTreasuryFunding": 500000,
+        "governanceRule": "majority",
+        "agentCounts": {
+          "num_developers": 15,
+          "num_investors": 10,
+          "num_delegators": 8,
+          "num_proposal_creators": 6,
+          "num_passive_members": 10,
+          "num_governance_experts": 4
+        }
+      },
+      {
+        "id": "dao-medium",
+        "name": "Medium DAO",
+        "tokenSymbol": "MED",
+        "initialTreasuryFunding": 100000,
+        "governanceRule": "majority",
+        "agentCounts": {
+          "num_developers": 10,
+          "num_investors": 5,
+          "num_delegators": 5,
+          "num_proposal_creators": 5,
+          "num_passive_members": 15,
+          "num_governance_experts": 2
+        }
+      },
+      {
+        "id": "dao-small",
+        "name": "Small DAO",
+        "tokenSymbol": "SMOL",
+        "initialTreasuryFunding": 20000,
+        "governanceRule": "majority",
+        "agentCounts": {
+          "num_developers": 5,
+          "num_investors": 2,
+          "num_delegators": 3,
+          "num_proposal_creators": 3,
+          "num_passive_members": 20,
+          "num_governance_experts": 1
+        }
+      }
+    ],
+    "globalMarketplaceConfig": {
+      "initialLiquidity": 100000,
+      "volatility": 0.02,
+      "priceUpdateFrequency": 1,
+      "baseTokenSymbol": "STABLE"
+    },
+    "bridgeFeeRate": 0.01,
+    "bridgeDelay": 5,
+    "enableInterDAOProposals": true,
+    "interDAOProposalConfig": {
+      "votingPeriod": 50,
+      "requiredApprovalRatio": 1,
+      "proposalTypes": [
+        "collaboration",
+        "treaty",
+        "resource_sharing",
+        "joint_venture"
+      ]
+    },
+    "interDAOProposalRate": 0.1
+  },
+  "seed": 863,
+  "metrics": {
+    "ecosystem.Inter-DAO Proposal Count": 52,
+    "ecosystem.Inter-DAO Proposal Success Rate": 0.28846153846153844,
+    "ecosystem.Collaboration Proposal Rate": 0.1346153846153846,
+    "ecosystem.Treaty Proposal Rate": 0.34615384615384615,
+    "ecosystem.Resource Sharing Rate": 0.34615384615384615,
+    "ecosystem.Joint Venture Rate": 0.17307692307692307,
+    "ecosystem.Inter-DAO Voting Participation": 97.15845239290958,
+    "ecosystem.Cross-DAO Approval Alignment": 0.6538461538461539,
+    "ecosystem.Total Shared Budget": 122670.46953551471,
+    "ecosystem.Resource Flow Volume": 46840.79739381559,
+    "ecosystem.Ecosystem Treasury Total": 22158.3009528718,
+    "dao-wealthy.Proposal Pass Rate": 0.07142857142857142,
+    "dao-medium.Proposal Pass Rate": 0.14285714285714285,
+    "dao-small.Proposal Pass Rate": 0.07692307692307693,
+    "dao-wealthy.Voter Participation Rate": 0.04962962962962963,
+    "dao-medium.Voter Participation Rate": 0.06962025316455697,
+    "dao-small.Voter Participation Rate": 0.016096579476861165,
+    "dao-wealthy.Final Treasury": 11997.196390625058,
+    "dao-medium.Final Treasury": 10161.10456224674,
+    "dao-small.Final Treasury": 0,
+    "dao-wealthy.Treasury Growth Rate": -0.7587194183464134,
+    "dao-medium.Treasury Growth Rate": -0.1635393915963789,
+    "dao-small.Treasury Growth Rate": 0.5341808831964204
+  },
+  "startedAt": "2026-01-30T10:03:30.915Z",
+  "completedAt": "2026-01-30T10:03:31.300Z",
+  "durationMs": 385,
+  "stepsCompleted": 500
+}

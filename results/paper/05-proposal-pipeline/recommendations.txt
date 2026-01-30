@@ -1,0 +1,11 @@
+✓ Good sample size (30 runs per config) for statistical analysis.
+
+High variability in "Proposal Pass Rate" (CV=93.9%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Proposal Abandonment Rate" (CV=59.1%). Consider longer simulation runs or more controlled initial conditions.
+
+Non-normal distribution detected for "Quorum Reach Rate" (skewness=-1.08). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Avg Margin of Victory" (skewness=-1.13). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=1.19). Bootstrap CIs are included in stats export.

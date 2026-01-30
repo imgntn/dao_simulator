@@ -1,0 +1,49 @@
+Sample size of 25 runs is acceptable. For detecting small effect sizes, consider 30+ runs per configuration.
+
+High variability in "Final Token Price" (CV=128.9%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Final Token Price" (CV=62.2%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Final Token Price" (CV=117.1%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Final Token Price" (CV=140.7%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Treasury Trend" (CV=50.9%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Treasury Trend" (CV=79.9%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Treasury Growth Rate" (CV=55.8%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Treasury Growth Rate" (CV=66.9%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Treasury Growth Rate" (CV=70.4%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Treasury Growth Rate" (CV=111.3%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Treasury Growth Rate" (CV=127.7%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Treasury Growth Rate" (CV=225.2%). Consider longer simulation runs or more controlled initial conditions.
+
+Non-normal distribution detected for "Final Token Price" (skewness=3.02). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Treasury Growth Rate" (skewness=1.04). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Treasury" (skewness=-2.71). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Treasury" (skewness=-3.01). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Treasury Growth Rate" (skewness=-1.02). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Treasury" (skewness=-1.64). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Treasury Growth Rate" (skewness=1.54). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Treasury" (skewness=1.01). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Treasury Volatility" (skewness=1.30). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Token Price" (skewness=3.50). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Token Price" (skewness=4.97). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Token Price" (skewness=2.16). Bootstrap CIs are included in stats export.

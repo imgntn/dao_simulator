@@ -1,0 +1,33 @@
+Sample size of 25 runs is acceptable. For detecting small effect sizes, consider 30+ runs per configuration.
+
+High variability in "Proposal Pass Rate" (CV=60.0%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Proposal Pass Rate" (CV=65.8%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Final Token Price" (CV=63.6%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Final Token Price" (CV=147.1%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Proposal Pass Rate" (CV=57.4%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Proposal Pass Rate" (CV=51.9%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Final Treasury" (CV=82.1%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Final Treasury" (CV=83.6%). Consider longer simulation runs or more controlled initial conditions.
+
+Non-normal distribution detected for "Final Treasury" (skewness=-1.66). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Treasury" (skewness=-4.28). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Treasury" (skewness=-2.50). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Treasury" (skewness=-2.34). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Token Price" (skewness=2.08). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Token Price" (skewness=3.96). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Treasury" (skewness=1.09). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Treasury" (skewness=1.43). Bootstrap CIs are included in stats export.

@@ -1,0 +1,878 @@
+{"timestamp":"2026-01-30T09:49:55.217Z","level":"info","message":"Starting experiment: Governance Capture Mitigations"}
+[2026-01-30T09:49:55.217Z] [INFO    ] Starting experiment: Governance Capture Mitigations
+{"timestamp":"2026-01-30T09:49:55.217Z","level":"info","message":"Description: Sweep vote power mitigations to quantify capture resistance vs throughput."}
+[2026-01-30T09:49:55.217Z] [INFO    ] Description: Sweep vote power mitigations to quantify capture resistance vs throughput.
+{"timestamp":"2026-01-30T09:49:55.218Z","level":"info","message":"Total runs: 675 (25 per config)"}
+[2026-01-30T09:49:55.218Z] [INFO    ] Total runs: 675 (25 per config)
+{"timestamp":"2026-01-30T09:49:55.218Z","level":"info","message":"Workers: 4"}
+[2026-01-30T09:49:55.218Z] [INFO    ] Workers: 4
+{"timestamp":"2026-01-30T09:49:55.218Z","level":"info","message":"Output: results/paper/04-governance-capture-mitigations"}
+[2026-01-30T09:49:55.218Z] [INFO    ] Output: results/paper/04-governance-capture-mitigations
+{"timestamp":"2026-01-30T09:49:55.218Z","level":"info","message":"Sweep parameter: undefined"}
+[2026-01-30T09:49:55.218Z] [INFO    ] Sweep parameter: undefined
+{"timestamp":"2026-01-30T09:49:55.226Z","level":"info","message":"Experiment state changed to: running"}
+[2026-01-30T09:49:55.226Z] [INFO    ] Experiment state changed to: running
+{"timestamp":"2026-01-30T09:50:12.883Z","level":"progress","message":"Progress: 5% (34/675)","data":{"runsPerSecond":"1.93","eta":"5m 33s"}}
+[2026-01-30T09:50:12.883Z] [PROGRESS] Progress: 5% (34/675) {"runsPerSecond":"1.93","eta":"5m 33s"}
+{"timestamp":"2026-01-30T09:50:13.047Z","level":"progress","message":"Progress: 5% (35/675)","data":{"runsPerSecond":"1.96","eta":"5m 26s"}}
+[2026-01-30T09:50:13.047Z] [PROGRESS] Progress: 5% (35/675) {"runsPerSecond":"1.96","eta":"5m 26s"}
+{"timestamp":"2026-01-30T09:50:13.371Z","level":"progress","message":"Progress: 5% (36/675)","data":{"runsPerSecond":"1.98","eta":"5m 22s"}}
+[2026-01-30T09:50:13.371Z] [PROGRESS] Progress: 5% (36/675) {"runsPerSecond":"1.98","eta":"5m 22s"}
+{"timestamp":"2026-01-30T09:50:14.655Z","level":"progress","message":"Progress: 5% (37/675)","data":{"runsPerSecond":"1.90","eta":"5m 35s"}}
+[2026-01-30T09:50:14.655Z] [PROGRESS] Progress: 5% (37/675) {"runsPerSecond":"1.90","eta":"5m 35s"}
+{"timestamp":"2026-01-30T09:50:14.766Z","level":"progress","message":"Progress: 5% (38/675)","data":{"runsPerSecond":"1.94","eta":"5m 28s"}}
+[2026-01-30T09:50:14.766Z] [PROGRESS] Progress: 5% (38/675) {"runsPerSecond":"1.94","eta":"5m 28s"}
+{"timestamp":"2026-01-30T09:50:15.002Z","level":"progress","message":"Progress: 5% (39/675)","data":{"runsPerSecond":"1.97","eta":"5m 22s"}}
+[2026-01-30T09:50:15.002Z] [PROGRESS] Progress: 5% (39/675) {"runsPerSecond":"1.97","eta":"5m 22s"}
+{"timestamp":"2026-01-30T09:50:15.153Z","level":"progress","message":"Progress: 5% (40/675)","data":{"runsPerSecond":"2.01","eta":"5m 16s"}}
+[2026-01-30T09:50:15.153Z] [PROGRESS] Progress: 5% (40/675) {"runsPerSecond":"2.01","eta":"5m 16s"}
+{"timestamp":"2026-01-30T09:50:28.467Z","level":"progress","message":"Progress: 10% (68/675)","data":{"runsPerSecond":"2.05","eta":"4m 57s"}}
+[2026-01-30T09:50:28.467Z] [PROGRESS] Progress: 10% (68/675) {"runsPerSecond":"2.05","eta":"4m 57s"}
+{"timestamp":"2026-01-30T09:50:29.220Z","level":"progress","message":"Progress: 10% (69/675)","data":{"runsPerSecond":"2.03","eta":"4m 59s"}}
+[2026-01-30T09:50:29.220Z] [PROGRESS] Progress: 10% (69/675) {"runsPerSecond":"2.03","eta":"4m 59s"}
+{"timestamp":"2026-01-30T09:50:29.926Z","level":"progress","message":"Progress: 10% (70/675)","data":{"runsPerSecond":"2.02","eta":"4m 60s"}}
+[2026-01-30T09:50:29.926Z] [PROGRESS] Progress: 10% (70/675) {"runsPerSecond":"2.02","eta":"4m 60s"}
+{"timestamp":"2026-01-30T09:50:30.007Z","level":"progress","message":"Progress: 10% (71/675)","data":{"runsPerSecond":"2.04","eta":"4m 56s"}}
+[2026-01-30T09:50:30.007Z] [PROGRESS] Progress: 10% (71/675) {"runsPerSecond":"2.04","eta":"4m 56s"}
+{"timestamp":"2026-01-30T09:50:30.284Z","level":"progress","message":"Progress: 10% (72/675)","data":{"runsPerSecond":"2.05","eta":"4m 54s"}}
+[2026-01-30T09:50:30.284Z] [PROGRESS] Progress: 10% (72/675) {"runsPerSecond":"2.05","eta":"4m 54s"}
+{"timestamp":"2026-01-30T09:50:30.965Z","level":"progress","message":"Progress: 10% (73/675)","data":{"runsPerSecond":"2.04","eta":"4m 55s"}}
+[2026-01-30T09:50:30.965Z] [PROGRESS] Progress: 10% (73/675) {"runsPerSecond":"2.04","eta":"4m 55s"}
+{"timestamp":"2026-01-30T09:50:31.649Z","level":"progress","message":"Progress: 10% (74/675)","data":{"runsPerSecond":"2.03","eta":"4m 56s"}}
+[2026-01-30T09:50:31.649Z] [PROGRESS] Progress: 10% (74/675) {"runsPerSecond":"2.03","eta":"4m 56s"}
+{"timestamp":"2026-01-30T09:50:44.815Z","level":"progress","message":"Progress: 15% (102/675)","data":{"runsPerSecond":"2.06","eta":"4m 39s"}}
+[2026-01-30T09:50:44.815Z] [PROGRESS] Progress: 15% (102/675) {"runsPerSecond":"2.06","eta":"4m 39s"}
+{"timestamp":"2026-01-30T09:50:45.003Z","level":"progress","message":"Progress: 15% (103/675)","data":{"runsPerSecond":"2.07","eta":"4m 36s"}}
+[2026-01-30T09:50:45.003Z] [PROGRESS] Progress: 15% (103/675) {"runsPerSecond":"2.07","eta":"4m 36s"}
+{"timestamp":"2026-01-30T09:50:45.120Z","level":"progress","message":"Progress: 15% (104/675)","data":{"runsPerSecond":"2.08","eta":"4m 34s"}}
+[2026-01-30T09:50:45.120Z] [PROGRESS] Progress: 15% (104/675) {"runsPerSecond":"2.08","eta":"4m 34s"}
+{"timestamp":"2026-01-30T09:50:45.222Z","level":"progress","message":"Progress: 15% (105/675)","data":{"runsPerSecond":"2.10","eta":"4m 31s"}}
+[2026-01-30T09:50:45.222Z] [PROGRESS] Progress: 15% (105/675) {"runsPerSecond":"2.10","eta":"4m 31s"}
+{"timestamp":"2026-01-30T09:50:46.688Z","level":"progress","message":"Progress: 15% (106/675)","data":{"runsPerSecond":"2.06","eta":"4m 36s"}}
+[2026-01-30T09:50:46.688Z] [PROGRESS] Progress: 15% (106/675) {"runsPerSecond":"2.06","eta":"4m 36s"}
+{"timestamp":"2026-01-30T09:50:46.957Z","level":"progress","message":"Progress: 15% (107/675)","data":{"runsPerSecond":"2.07","eta":"4m 35s"}}
+[2026-01-30T09:50:46.957Z] [PROGRESS] Progress: 15% (107/675) {"runsPerSecond":"2.07","eta":"4m 35s"}
+{"timestamp":"2026-01-30T09:50:59.570Z","level":"progress","message":"Progress: 20% (135/675)","data":{"runsPerSecond":"2.10","eta":"4m 17s"}}
+[2026-01-30T09:50:59.570Z] [PROGRESS] Progress: 20% (135/675) {"runsPerSecond":"2.10","eta":"4m 17s"}
+{"timestamp":"2026-01-30T09:50:59.721Z","level":"progress","message":"Progress: 20% (136/675)","data":{"runsPerSecond":"2.11","eta":"4m 16s"}}
+[2026-01-30T09:50:59.721Z] [PROGRESS] Progress: 20% (136/675) {"runsPerSecond":"2.11","eta":"4m 16s"}
+{"timestamp":"2026-01-30T09:51:00.286Z","level":"progress","message":"Progress: 20% (137/675)","data":{"runsPerSecond":"2.11","eta":"4m 15s"}}
+[2026-01-30T09:51:00.286Z] [PROGRESS] Progress: 20% (137/675) {"runsPerSecond":"2.11","eta":"4m 15s"}
+{"timestamp":"2026-01-30T09:51:01.222Z","level":"progress","message":"Progress: 20% (138/675)","data":{"runsPerSecond":"2.09","eta":"4m 17s"}}
+[2026-01-30T09:51:01.222Z] [PROGRESS] Progress: 20% (138/675) {"runsPerSecond":"2.09","eta":"4m 17s"}
+{"timestamp":"2026-01-30T09:51:01.413Z","level":"progress","message":"Progress: 20% (139/675)","data":{"runsPerSecond":"2.10","eta":"4m 15s"}}
+[2026-01-30T09:51:01.413Z] [PROGRESS] Progress: 20% (139/675) {"runsPerSecond":"2.10","eta":"4m 15s"}
+{"timestamp":"2026-01-30T09:51:01.573Z","level":"progress","message":"Progress: 20% (140/675)","data":{"runsPerSecond":"2.11","eta":"4m 14s"}}
+[2026-01-30T09:51:01.573Z] [PROGRESS] Progress: 20% (140/675) {"runsPerSecond":"2.11","eta":"4m 14s"}
+{"timestamp":"2026-01-30T09:51:02.013Z","level":"progress","message":"Progress: 20% (141/675)","data":{"runsPerSecond":"2.11","eta":"4m 13s"}}
+[2026-01-30T09:51:02.013Z] [PROGRESS] Progress: 20% (141/675) {"runsPerSecond":"2.11","eta":"4m 13s"}
+{"timestamp":"2026-01-30T09:51:14.380Z","level":"progress","message":"Progress: 25% (169/675)","data":{"runsPerSecond":"2.14","eta":"3m 57s"}}
+[2026-01-30T09:51:14.380Z] [PROGRESS] Progress: 25% (169/675) {"runsPerSecond":"2.14","eta":"3m 57s"}
+{"timestamp":"2026-01-30T09:51:15.430Z","level":"progress","message":"Progress: 25% (170/675)","data":{"runsPerSecond":"2.12","eta":"3m 58s"}}
+[2026-01-30T09:51:15.430Z] [PROGRESS] Progress: 25% (170/675) {"runsPerSecond":"2.12","eta":"3m 58s"}
+{"timestamp":"2026-01-30T09:51:15.633Z","level":"progress","message":"Progress: 25% (171/675)","data":{"runsPerSecond":"2.13","eta":"3m 57s"}}
+[2026-01-30T09:51:15.633Z] [PROGRESS] Progress: 25% (171/675) {"runsPerSecond":"2.13","eta":"3m 57s"}
+{"timestamp":"2026-01-30T09:51:15.711Z","level":"progress","message":"Progress: 25% (172/675)","data":{"runsPerSecond":"2.14","eta":"3m 55s"}}
+[2026-01-30T09:51:15.711Z] [PROGRESS] Progress: 25% (172/675) {"runsPerSecond":"2.14","eta":"3m 55s"}
+{"timestamp":"2026-01-30T09:51:15.932Z","level":"progress","message":"Progress: 25% (173/675)","data":{"runsPerSecond":"2.14","eta":"3m 54s"}}
+[2026-01-30T09:51:15.932Z] [PROGRESS] Progress: 25% (173/675) {"runsPerSecond":"2.14","eta":"3m 54s"}
+{"timestamp":"2026-01-30T09:51:17.298Z","level":"progress","message":"Progress: 25% (174/675)","data":{"runsPerSecond":"2.12","eta":"3m 56s"}}
+[2026-01-30T09:51:17.298Z] [PROGRESS] Progress: 25% (174/675) {"runsPerSecond":"2.12","eta":"3m 56s"}
+{"timestamp":"2026-01-30T09:51:17.460Z","level":"progress","message":"Progress: 25% (175/675)","data":{"runsPerSecond":"2.13","eta":"3m 55s"}}
+[2026-01-30T09:51:17.460Z] [PROGRESS] Progress: 25% (175/675) {"runsPerSecond":"2.13","eta":"3m 55s"}
+{"timestamp":"2026-01-30T09:51:29.466Z","level":"progress","message":"Progress: 30% (203/675)","data":{"runsPerSecond":"2.15","eta":"3m 39s"}}
+[2026-01-30T09:51:29.466Z] [PROGRESS] Progress: 30% (203/675) {"runsPerSecond":"2.15","eta":"3m 39s"}
+{"timestamp":"2026-01-30T09:51:29.751Z","level":"progress","message":"Progress: 30% (204/675)","data":{"runsPerSecond":"2.16","eta":"3m 38s"}}
+[2026-01-30T09:51:29.751Z] [PROGRESS] Progress: 30% (204/675) {"runsPerSecond":"2.16","eta":"3m 38s"}
+{"timestamp":"2026-01-30T09:51:30.096Z","level":"progress","message":"Progress: 30% (205/675)","data":{"runsPerSecond":"2.16","eta":"3m 38s"}}
+[2026-01-30T09:51:30.096Z] [PROGRESS] Progress: 30% (205/675) {"runsPerSecond":"2.16","eta":"3m 38s"}
+{"timestamp":"2026-01-30T09:51:31.051Z","level":"progress","message":"Progress: 30% (206/675)","data":{"runsPerSecond":"2.15","eta":"3m 38s"}}
+[2026-01-30T09:51:31.051Z] [PROGRESS] Progress: 30% (206/675) {"runsPerSecond":"2.15","eta":"3m 38s"}
+{"timestamp":"2026-01-30T09:51:31.219Z","level":"progress","message":"Progress: 30% (207/675)","data":{"runsPerSecond":"2.16","eta":"3m 37s"}}
+[2026-01-30T09:51:31.219Z] [PROGRESS] Progress: 30% (207/675) {"runsPerSecond":"2.16","eta":"3m 37s"}
+{"timestamp":"2026-01-30T09:51:31.439Z","level":"progress","message":"Progress: 30% (208/675)","data":{"runsPerSecond":"2.16","eta":"3m 36s"}}
+[2026-01-30T09:51:31.439Z] [PROGRESS] Progress: 30% (208/675) {"runsPerSecond":"2.16","eta":"3m 36s"}
+{"timestamp":"2026-01-30T09:51:31.728Z","level":"progress","message":"Progress: 30% (209/675)","data":{"runsPerSecond":"2.17","eta":"3m 35s"}}
+[2026-01-30T09:51:31.728Z] [PROGRESS] Progress: 30% (209/675) {"runsPerSecond":"2.17","eta":"3m 35s"}
+{"timestamp":"2026-01-30T09:51:44.158Z","level":"progress","message":"Progress: 35% (237/675)","data":{"runsPerSecond":"2.18","eta":"3m 21s"}}
+[2026-01-30T09:51:44.158Z] [PROGRESS] Progress: 35% (237/675) {"runsPerSecond":"2.18","eta":"3m 21s"}
+{"timestamp":"2026-01-30T09:51:44.797Z","level":"progress","message":"Progress: 35% (238/675)","data":{"runsPerSecond":"2.17","eta":"3m 21s"}}
+[2026-01-30T09:51:44.797Z] [PROGRESS] Progress: 35% (238/675) {"runsPerSecond":"2.17","eta":"3m 21s"}
+{"timestamp":"2026-01-30T09:51:45.278Z","level":"progress","message":"Progress: 35% (239/675)","data":{"runsPerSecond":"2.17","eta":"3m 21s"}}
+[2026-01-30T09:51:45.278Z] [PROGRESS] Progress: 35% (239/675) {"runsPerSecond":"2.17","eta":"3m 21s"}
+{"timestamp":"2026-01-30T09:51:45.473Z","level":"progress","message":"Progress: 35% (240/675)","data":{"runsPerSecond":"2.18","eta":"3m 20s"}}
+[2026-01-30T09:51:45.473Z] [PROGRESS] Progress: 35% (240/675) {"runsPerSecond":"2.18","eta":"3m 20s"}
+{"timestamp":"2026-01-30T09:51:45.844Z","level":"progress","message":"Progress: 35% (241/675)","data":{"runsPerSecond":"2.18","eta":"3m 19s"}}
+[2026-01-30T09:51:45.844Z] [PROGRESS] Progress: 35% (241/675) {"runsPerSecond":"2.18","eta":"3m 19s"}
+{"timestamp":"2026-01-30T09:51:46.591Z","level":"progress","message":"Progress: 35% (242/675)","data":{"runsPerSecond":"2.17","eta":"3m 19s"}}
+[2026-01-30T09:51:46.591Z] [PROGRESS] Progress: 35% (242/675) {"runsPerSecond":"2.17","eta":"3m 19s"}
+{"timestamp":"2026-01-30T09:51:58.762Z","level":"progress","message":"Progress: 40% (270/675)","data":{"runsPerSecond":"2.19","eta":"3m 5s"}}
+[2026-01-30T09:51:58.762Z] [PROGRESS] Progress: 40% (270/675) {"runsPerSecond":"2.19","eta":"3m 5s"}
+{"timestamp":"2026-01-30T09:51:59.305Z","level":"progress","message":"Progress: 40% (271/675)","data":{"runsPerSecond":"2.18","eta":"3m 5s"}}
+[2026-01-30T09:51:59.305Z] [PROGRESS] Progress: 40% (271/675) {"runsPerSecond":"2.18","eta":"3m 5s"}
+{"timestamp":"2026-01-30T09:51:59.334Z","level":"progress","message":"Progress: 40% (272/675)","data":{"runsPerSecond":"2.19","eta":"3m 4s"}}
+[2026-01-30T09:51:59.334Z] [PROGRESS] Progress: 40% (272/675) {"runsPerSecond":"2.19","eta":"3m 4s"}
+{"timestamp":"2026-01-30T09:51:59.940Z","level":"progress","message":"Progress: 40% (273/675)","data":{"runsPerSecond":"2.19","eta":"3m 4s"}}
+[2026-01-30T09:51:59.940Z] [PROGRESS] Progress: 40% (273/675) {"runsPerSecond":"2.19","eta":"3m 4s"}
+{"timestamp":"2026-01-30T09:52:00.495Z","level":"progress","message":"Progress: 40% (274/675)","data":{"runsPerSecond":"2.19","eta":"3m 3s"}}
+[2026-01-30T09:52:00.495Z] [PROGRESS] Progress: 40% (274/675) {"runsPerSecond":"2.19","eta":"3m 3s"}
+{"timestamp":"2026-01-30T09:52:00.967Z","level":"progress","message":"Progress: 40% (275/675)","data":{"runsPerSecond":"2.19","eta":"3m 3s"}}
+[2026-01-30T09:52:00.967Z] [PROGRESS] Progress: 40% (275/675) {"runsPerSecond":"2.19","eta":"3m 3s"}
+{"timestamp":"2026-01-30T09:52:01.159Z","level":"progress","message":"Progress: 40% (276/675)","data":{"runsPerSecond":"2.19","eta":"3m 2s"}}
+[2026-01-30T09:52:01.159Z] [PROGRESS] Progress: 40% (276/675) {"runsPerSecond":"2.19","eta":"3m 2s"}
+{"timestamp":"2026-01-30T09:52:13.706Z","level":"progress","message":"Progress: 45% (304/675)","data":{"runsPerSecond":"2.20","eta":"2m 49s"}}
+[2026-01-30T09:52:13.706Z] [PROGRESS] Progress: 45% (304/675) {"runsPerSecond":"2.20","eta":"2m 49s"}
+{"timestamp":"2026-01-30T09:52:14.234Z","level":"progress","message":"Progress: 45% (305/675)","data":{"runsPerSecond":"2.19","eta":"2m 49s"}}
+[2026-01-30T09:52:14.234Z] [PROGRESS] Progress: 45% (305/675) {"runsPerSecond":"2.19","eta":"2m 49s"}
+{"timestamp":"2026-01-30T09:52:14.608Z","level":"progress","message":"Progress: 45% (306/675)","data":{"runsPerSecond":"2.20","eta":"2m 48s"}}
+[2026-01-30T09:52:14.608Z] [PROGRESS] Progress: 45% (306/675) {"runsPerSecond":"2.20","eta":"2m 48s"}
+{"timestamp":"2026-01-30T09:52:14.763Z","level":"progress","message":"Progress: 45% (307/675)","data":{"runsPerSecond":"2.20","eta":"2m 47s"}}
+[2026-01-30T09:52:14.763Z] [PROGRESS] Progress: 45% (307/675) {"runsPerSecond":"2.20","eta":"2m 47s"}
+{"timestamp":"2026-01-30T09:52:15.440Z","level":"progress","message":"Progress: 45% (308/675)","data":{"runsPerSecond":"2.20","eta":"2m 47s"}}
+[2026-01-30T09:52:15.440Z] [PROGRESS] Progress: 45% (308/675) {"runsPerSecond":"2.20","eta":"2m 47s"}
+{"timestamp":"2026-01-30T09:52:16.105Z","level":"progress","message":"Progress: 45% (309/675)","data":{"runsPerSecond":"2.19","eta":"2m 47s"}}
+[2026-01-30T09:52:16.105Z] [PROGRESS] Progress: 45% (309/675) {"runsPerSecond":"2.19","eta":"2m 47s"}
+{"timestamp":"2026-01-30T09:52:16.385Z","level":"progress","message":"Progress: 45% (310/675)","data":{"runsPerSecond":"2.20","eta":"2m 46s"}}
+[2026-01-30T09:52:16.385Z] [PROGRESS] Progress: 45% (310/675) {"runsPerSecond":"2.20","eta":"2m 46s"}
+{"timestamp":"2026-01-30T09:52:28.336Z","level":"progress","message":"Progress: 50% (338/675)","data":{"runsPerSecond":"2.21","eta":"2m 33s"}}
+[2026-01-30T09:52:28.336Z] [PROGRESS] Progress: 50% (338/675) {"runsPerSecond":"2.21","eta":"2m 33s"}
+{"timestamp":"2026-01-30T09:52:28.535Z","level":"progress","message":"Progress: 50% (339/675)","data":{"runsPerSecond":"2.21","eta":"2m 32s"}}
+[2026-01-30T09:52:28.535Z] [PROGRESS] Progress: 50% (339/675) {"runsPerSecond":"2.21","eta":"2m 32s"}
+{"timestamp":"2026-01-30T09:52:29.131Z","level":"progress","message":"Progress: 50% (340/675)","data":{"runsPerSecond":"2.21","eta":"2m 32s"}}
+[2026-01-30T09:52:29.131Z] [PROGRESS] Progress: 50% (340/675) {"runsPerSecond":"2.21","eta":"2m 32s"}
+{"timestamp":"2026-01-30T09:52:29.642Z","level":"progress","message":"Progress: 50% (341/675)","data":{"runsPerSecond":"2.21","eta":"2m 31s"}}
+[2026-01-30T09:52:29.642Z] [PROGRESS] Progress: 50% (341/675) {"runsPerSecond":"2.21","eta":"2m 31s"}
+{"timestamp":"2026-01-30T09:52:29.973Z","level":"progress","message":"Progress: 50% (342/675)","data":{"runsPerSecond":"2.21","eta":"2m 31s"}}
+[2026-01-30T09:52:29.973Z] [PROGRESS] Progress: 50% (342/675) {"runsPerSecond":"2.21","eta":"2m 31s"}
+{"timestamp":"2026-01-30T09:52:30.344Z","level":"progress","message":"Progress: 50% (343/675)","data":{"runsPerSecond":"2.21","eta":"2m 30s"}}
+[2026-01-30T09:52:30.344Z] [PROGRESS] Progress: 50% (343/675) {"runsPerSecond":"2.21","eta":"2m 30s"}
+{"timestamp":"2026-01-30T09:52:30.980Z","level":"progress","message":"Progress: 50% (344/675)","data":{"runsPerSecond":"2.21","eta":"2m 30s"}}
+[2026-01-30T09:52:30.980Z] [PROGRESS] Progress: 50% (344/675) {"runsPerSecond":"2.21","eta":"2m 30s"}
+{"timestamp":"2026-01-30T09:52:42.634Z","level":"progress","message":"Progress: 55% (372/675)","data":{"runsPerSecond":"2.22","eta":"2m 16s"}}
+[2026-01-30T09:52:42.634Z] [PROGRESS] Progress: 55% (372/675) {"runsPerSecond":"2.22","eta":"2m 16s"}
+{"timestamp":"2026-01-30T09:52:43.171Z","level":"progress","message":"Progress: 55% (373/675)","data":{"runsPerSecond":"2.22","eta":"2m 16s"}}
+[2026-01-30T09:52:43.171Z] [PROGRESS] Progress: 55% (373/675) {"runsPerSecond":"2.22","eta":"2m 16s"}
+{"timestamp":"2026-01-30T09:52:43.212Z","level":"progress","message":"Progress: 55% (374/675)","data":{"runsPerSecond":"2.23","eta":"2m 15s"}}
+[2026-01-30T09:52:43.212Z] [PROGRESS] Progress: 55% (374/675) {"runsPerSecond":"2.23","eta":"2m 15s"}
+{"timestamp":"2026-01-30T09:52:43.935Z","level":"progress","message":"Progress: 55% (375/675)","data":{"runsPerSecond":"2.22","eta":"2m 15s"}}
+[2026-01-30T09:52:43.935Z] [PROGRESS] Progress: 55% (375/675) {"runsPerSecond":"2.22","eta":"2m 15s"}
+{"timestamp":"2026-01-30T09:52:44.574Z","level":"progress","message":"Progress: 55% (376/675)","data":{"runsPerSecond":"2.22","eta":"2m 15s"}}
+[2026-01-30T09:52:44.574Z] [PROGRESS] Progress: 55% (376/675) {"runsPerSecond":"2.22","eta":"2m 15s"}
+{"timestamp":"2026-01-30T09:52:44.874Z","level":"progress","message":"Progress: 55% (377/675)","data":{"runsPerSecond":"2.22","eta":"2m 14s"}}
+[2026-01-30T09:52:44.874Z] [PROGRESS] Progress: 55% (377/675) {"runsPerSecond":"2.22","eta":"2m 14s"}
+{"timestamp":"2026-01-30T09:52:56.897Z","level":"progress","message":"Progress: 60% (405/675)","data":{"runsPerSecond":"2.23","eta":"2m 1s"}}
+[2026-01-30T09:52:56.897Z] [PROGRESS] Progress: 60% (405/675) {"runsPerSecond":"2.23","eta":"2m 1s"}
+{"timestamp":"2026-01-30T09:52:57.639Z","level":"progress","message":"Progress: 60% (406/675)","data":{"runsPerSecond":"2.23","eta":"2m 1s"}}
+[2026-01-30T09:52:57.639Z] [PROGRESS] Progress: 60% (406/675) {"runsPerSecond":"2.23","eta":"2m 1s"}
+{"timestamp":"2026-01-30T09:52:57.898Z","level":"progress","message":"Progress: 60% (407/675)","data":{"runsPerSecond":"2.23","eta":"2m 0s"}}
+[2026-01-30T09:52:57.898Z] [PROGRESS] Progress: 60% (407/675) {"runsPerSecond":"2.23","eta":"2m 0s"}
+{"timestamp":"2026-01-30T09:52:58.609Z","level":"progress","message":"Progress: 60% (408/675)","data":{"runsPerSecond":"2.22","eta":"2m 0s"}}
+[2026-01-30T09:52:58.609Z] [PROGRESS] Progress: 60% (408/675) {"runsPerSecond":"2.22","eta":"2m 0s"}
+{"timestamp":"2026-01-30T09:52:58.690Z","level":"progress","message":"Progress: 60% (409/675)","data":{"runsPerSecond":"2.23","eta":"1m 59s"}}
+[2026-01-30T09:52:58.690Z] [PROGRESS] Progress: 60% (409/675) {"runsPerSecond":"2.23","eta":"1m 59s"}
+{"timestamp":"2026-01-30T09:52:59.518Z","level":"progress","message":"Progress: 60% (410/675)","data":{"runsPerSecond":"2.22","eta":"1m 59s"}}
+[2026-01-30T09:52:59.518Z] [PROGRESS] Progress: 60% (410/675) {"runsPerSecond":"2.22","eta":"1m 59s"}
+{"timestamp":"2026-01-30T09:52:59.683Z","level":"progress","message":"Progress: 60% (411/675)","data":{"runsPerSecond":"2.23","eta":"1m 58s"}}
+[2026-01-30T09:52:59.683Z] [PROGRESS] Progress: 60% (411/675) {"runsPerSecond":"2.23","eta":"1m 58s"}
+{"timestamp":"2026-01-30T09:53:12.551Z","level":"progress","message":"Progress: 65% (439/675)","data":{"runsPerSecond":"2.22","eta":"1m 46s"}}
+[2026-01-30T09:53:12.551Z] [PROGRESS] Progress: 65% (439/675) {"runsPerSecond":"2.22","eta":"1m 46s"}
+{"timestamp":"2026-01-30T09:53:12.588Z","level":"progress","message":"Progress: 65% (440/675)","data":{"runsPerSecond":"2.23","eta":"1m 45s"}}
+[2026-01-30T09:53:12.588Z] [PROGRESS] Progress: 65% (440/675) {"runsPerSecond":"2.23","eta":"1m 45s"}
+{"timestamp":"2026-01-30T09:53:13.441Z","level":"progress","message":"Progress: 65% (441/675)","data":{"runsPerSecond":"2.22","eta":"1m 45s"}}
+[2026-01-30T09:53:13.441Z] [PROGRESS] Progress: 65% (441/675) {"runsPerSecond":"2.22","eta":"1m 45s"}
+{"timestamp":"2026-01-30T09:53:13.818Z","level":"progress","message":"Progress: 65% (442/675)","data":{"runsPerSecond":"2.23","eta":"1m 45s"}}
+[2026-01-30T09:53:13.818Z] [PROGRESS] Progress: 65% (442/675) {"runsPerSecond":"2.23","eta":"1m 45s"}
+{"timestamp":"2026-01-30T09:53:14.242Z","level":"progress","message":"Progress: 65% (443/675)","data":{"runsPerSecond":"2.23","eta":"1m 44s"}}
+[2026-01-30T09:53:14.242Z] [PROGRESS] Progress: 65% (443/675) {"runsPerSecond":"2.23","eta":"1m 44s"}
+{"timestamp":"2026-01-30T09:53:14.294Z","level":"progress","message":"Progress: 65% (444/675)","data":{"runsPerSecond":"2.23","eta":"1m 44s"}}
+[2026-01-30T09:53:14.294Z] [PROGRESS] Progress: 65% (444/675) {"runsPerSecond":"2.23","eta":"1m 44s"}
+{"timestamp":"2026-01-30T09:53:15.110Z","level":"progress","message":"Progress: 65% (445/675)","data":{"runsPerSecond":"2.23","eta":"1m 43s"}}
+[2026-01-30T09:53:15.110Z] [PROGRESS] Progress: 65% (445/675) {"runsPerSecond":"2.23","eta":"1m 43s"}
+{"timestamp":"2026-01-30T09:53:27.204Z","level":"progress","message":"Progress: 70% (473/675)","data":{"runsPerSecond":"2.23","eta":"1m 31s"}}
+[2026-01-30T09:53:27.204Z] [PROGRESS] Progress: 70% (473/675) {"runsPerSecond":"2.23","eta":"1m 31s"}
+{"timestamp":"2026-01-30T09:53:28.070Z","level":"progress","message":"Progress: 70% (474/675)","data":{"runsPerSecond":"2.23","eta":"1m 30s"}}
+[2026-01-30T09:53:28.070Z] [PROGRESS] Progress: 70% (474/675) {"runsPerSecond":"2.23","eta":"1m 30s"}
+{"timestamp":"2026-01-30T09:53:28.083Z","level":"progress","message":"Progress: 70% (475/675)","data":{"runsPerSecond":"2.23","eta":"1m 30s"}}
+[2026-01-30T09:53:28.083Z] [PROGRESS] Progress: 70% (475/675) {"runsPerSecond":"2.23","eta":"1m 30s"}
+{"timestamp":"2026-01-30T09:53:28.402Z","level":"progress","message":"Progress: 70% (476/675)","data":{"runsPerSecond":"2.23","eta":"1m 29s"}}
+[2026-01-30T09:53:28.402Z] [PROGRESS] Progress: 70% (476/675) {"runsPerSecond":"2.23","eta":"1m 29s"}
+{"timestamp":"2026-01-30T09:53:28.765Z","level":"progress","message":"Progress: 70% (477/675)","data":{"runsPerSecond":"2.23","eta":"1m 29s"}}
+[2026-01-30T09:53:28.765Z] [PROGRESS] Progress: 70% (477/675) {"runsPerSecond":"2.23","eta":"1m 29s"}
+{"timestamp":"2026-01-30T09:53:29.643Z","level":"progress","message":"Progress: 70% (478/675)","data":{"runsPerSecond":"2.23","eta":"1m 28s"}}
+[2026-01-30T09:53:29.643Z] [PROGRESS] Progress: 70% (478/675) {"runsPerSecond":"2.23","eta":"1m 28s"}
+{"timestamp":"2026-01-30T09:53:29.700Z","level":"progress","message":"Progress: 70% (479/675)","data":{"runsPerSecond":"2.23","eta":"1m 28s"}}
+[2026-01-30T09:53:29.700Z] [PROGRESS] Progress: 70% (479/675) {"runsPerSecond":"2.23","eta":"1m 28s"}
+{"timestamp":"2026-01-30T09:53:41.493Z","level":"progress","message":"Progress: 75% (507/675)","data":{"runsPerSecond":"2.24","eta":"1m 15s"}}
+[2026-01-30T09:53:41.493Z] [PROGRESS] Progress: 75% (507/675) {"runsPerSecond":"2.24","eta":"1m 15s"}
+{"timestamp":"2026-01-30T09:53:42.033Z","level":"progress","message":"Progress: 75% (508/675)","data":{"runsPerSecond":"2.24","eta":"1m 15s"}}
+[2026-01-30T09:53:42.033Z] [PROGRESS] Progress: 75% (508/675) {"runsPerSecond":"2.24","eta":"1m 15s"}
+{"timestamp":"2026-01-30T09:53:42.518Z","level":"progress","message":"Progress: 75% (509/675)","data":{"runsPerSecond":"2.24","eta":"1m 14s"}}
+[2026-01-30T09:53:42.518Z] [PROGRESS] Progress: 75% (509/675) {"runsPerSecond":"2.24","eta":"1m 14s"}
+{"timestamp":"2026-01-30T09:53:43.025Z","level":"progress","message":"Progress: 75% (510/675)","data":{"runsPerSecond":"2.24","eta":"1m 14s"}}
+[2026-01-30T09:53:43.025Z] [PROGRESS] Progress: 75% (510/675) {"runsPerSecond":"2.24","eta":"1m 14s"}
+{"timestamp":"2026-01-30T09:53:43.075Z","level":"progress","message":"Progress: 75% (511/675)","data":{"runsPerSecond":"2.24","eta":"1m 13s"}}
+[2026-01-30T09:53:43.075Z] [PROGRESS] Progress: 75% (511/675) {"runsPerSecond":"2.24","eta":"1m 13s"}
+{"timestamp":"2026-01-30T09:53:43.765Z","level":"progress","message":"Progress: 75% (512/675)","data":{"runsPerSecond":"2.24","eta":"1m 13s"}}
+[2026-01-30T09:53:43.765Z] [PROGRESS] Progress: 75% (512/675) {"runsPerSecond":"2.24","eta":"1m 13s"}
+{"timestamp":"2026-01-30T09:53:56.502Z","level":"progress","message":"Progress: 80% (540/675)","data":{"runsPerSecond":"2.24","eta":"1m 0s"}}
+[2026-01-30T09:53:56.502Z] [PROGRESS] Progress: 80% (540/675) {"runsPerSecond":"2.24","eta":"1m 0s"}
+{"timestamp":"2026-01-30T09:53:56.540Z","level":"progress","message":"Progress: 80% (541/675)","data":{"runsPerSecond":"2.24","eta":"59.8s"}}
+[2026-01-30T09:53:56.540Z] [PROGRESS] Progress: 80% (541/675) {"runsPerSecond":"2.24","eta":"59.8s"}
+{"timestamp":"2026-01-30T09:53:56.665Z","level":"progress","message":"Progress: 80% (542/675)","data":{"runsPerSecond":"2.24","eta":"59.2s"}}
+[2026-01-30T09:53:56.665Z] [PROGRESS] Progress: 80% (542/675) {"runsPerSecond":"2.24","eta":"59.2s"}
+{"timestamp":"2026-01-30T09:53:56.743Z","level":"progress","message":"Progress: 80% (543/675)","data":{"runsPerSecond":"2.25","eta":"58.7s"}}
+[2026-01-30T09:53:56.743Z] [PROGRESS] Progress: 80% (543/675) {"runsPerSecond":"2.25","eta":"58.7s"}
+{"timestamp":"2026-01-30T09:53:58.061Z","level":"progress","message":"Progress: 80% (544/675)","data":{"runsPerSecond":"2.24","eta":"58.5s"}}
+[2026-01-30T09:53:58.061Z] [PROGRESS] Progress: 80% (544/675) {"runsPerSecond":"2.24","eta":"58.5s"}
+{"timestamp":"2026-01-30T09:53:58.372Z","level":"progress","message":"Progress: 80% (545/675)","data":{"runsPerSecond":"2.24","eta":"58.0s"}}
+[2026-01-30T09:53:58.372Z] [PROGRESS] Progress: 80% (545/675) {"runsPerSecond":"2.24","eta":"58.0s"}
+{"timestamp":"2026-01-30T09:53:58.461Z","level":"progress","message":"Progress: 80% (546/675)","data":{"runsPerSecond":"2.24","eta":"57.5s"}}
+[2026-01-30T09:53:58.461Z] [PROGRESS] Progress: 80% (546/675) {"runsPerSecond":"2.24","eta":"57.5s"}
+{"timestamp":"2026-01-30T09:54:11.128Z","level":"progress","message":"Progress: 85% (574/675)","data":{"runsPerSecond":"2.24","eta":"45.0s"}}
+[2026-01-30T09:54:11.128Z] [PROGRESS] Progress: 85% (574/675) {"runsPerSecond":"2.24","eta":"45.0s"}
+{"timestamp":"2026-01-30T09:54:11.692Z","level":"progress","message":"Progress: 85% (575/675)","data":{"runsPerSecond":"2.24","eta":"44.6s"}}
+[2026-01-30T09:54:11.692Z] [PROGRESS] Progress: 85% (575/675) {"runsPerSecond":"2.24","eta":"44.6s"}
+{"timestamp":"2026-01-30T09:54:12.005Z","level":"progress","message":"Progress: 85% (576/675)","data":{"runsPerSecond":"2.24","eta":"44.1s"}}
+[2026-01-30T09:54:12.005Z] [PROGRESS] Progress: 85% (576/675) {"runsPerSecond":"2.24","eta":"44.1s"}
+{"timestamp":"2026-01-30T09:54:12.058Z","level":"progress","message":"Progress: 85% (577/675)","data":{"runsPerSecond":"2.25","eta":"43.6s"}}
+[2026-01-30T09:54:12.058Z] [PROGRESS] Progress: 85% (577/675) {"runsPerSecond":"2.25","eta":"43.6s"}
+{"timestamp":"2026-01-30T09:54:12.934Z","level":"progress","message":"Progress: 85% (578/675)","data":{"runsPerSecond":"2.24","eta":"43.2s"}}
+[2026-01-30T09:54:12.934Z] [PROGRESS] Progress: 85% (578/675) {"runsPerSecond":"2.24","eta":"43.2s"}
+{"timestamp":"2026-01-30T09:54:13.627Z","level":"progress","message":"Progress: 85% (579/675)","data":{"runsPerSecond":"2.24","eta":"42.8s"}}
+[2026-01-30T09:54:13.627Z] [PROGRESS] Progress: 85% (579/675) {"runsPerSecond":"2.24","eta":"42.8s"}
+{"timestamp":"2026-01-30T09:54:14.038Z","level":"progress","message":"Progress: 85% (580/675)","data":{"runsPerSecond":"2.24","eta":"42.4s"}}
+[2026-01-30T09:54:14.038Z] [PROGRESS] Progress: 85% (580/675) {"runsPerSecond":"2.24","eta":"42.4s"}
+{"timestamp":"2026-01-30T09:54:26.539Z","level":"progress","message":"Progress: 90% (608/675)","data":{"runsPerSecond":"2.24","eta":"29.9s"}}
+[2026-01-30T09:54:26.539Z] [PROGRESS] Progress: 90% (608/675) {"runsPerSecond":"2.24","eta":"29.9s"}
+{"timestamp":"2026-01-30T09:54:26.713Z","level":"progress","message":"Progress: 90% (609/675)","data":{"runsPerSecond":"2.24","eta":"29.4s"}}
+[2026-01-30T09:54:26.713Z] [PROGRESS] Progress: 90% (609/675) {"runsPerSecond":"2.24","eta":"29.4s"}
+{"timestamp":"2026-01-30T09:54:27.598Z","level":"progress","message":"Progress: 90% (610/675)","data":{"runsPerSecond":"2.24","eta":"29.0s"}}
+[2026-01-30T09:54:27.598Z] [PROGRESS] Progress: 90% (610/675) {"runsPerSecond":"2.24","eta":"29.0s"}
+{"timestamp":"2026-01-30T09:54:28.228Z","level":"progress","message":"Progress: 90% (611/675)","data":{"runsPerSecond":"2.24","eta":"28.6s"}}
+[2026-01-30T09:54:28.228Z] [PROGRESS] Progress: 90% (611/675) {"runsPerSecond":"2.24","eta":"28.6s"}
+{"timestamp":"2026-01-30T09:54:28.347Z","level":"progress","message":"Progress: 90% (612/675)","data":{"runsPerSecond":"2.24","eta":"28.1s"}}
+[2026-01-30T09:54:28.347Z] [PROGRESS] Progress: 90% (612/675) {"runsPerSecond":"2.24","eta":"28.1s"}
+{"timestamp":"2026-01-30T09:54:28.646Z","level":"progress","message":"Progress: 90% (613/675)","data":{"runsPerSecond":"2.24","eta":"27.7s"}}
+[2026-01-30T09:54:28.646Z] [PROGRESS] Progress: 90% (613/675) {"runsPerSecond":"2.24","eta":"27.7s"}
+{"timestamp":"2026-01-30T09:54:29.401Z","level":"progress","message":"Progress: 90% (614/675)","data":{"runsPerSecond":"2.24","eta":"27.2s"}}
+[2026-01-30T09:54:29.401Z] [PROGRESS] Progress: 90% (614/675) {"runsPerSecond":"2.24","eta":"27.2s"}
+{"timestamp":"2026-01-30T09:54:41.172Z","level":"progress","message":"Progress: 95% (642/675)","data":{"runsPerSecond":"2.25","eta":"14.7s"}}
+[2026-01-30T09:54:41.172Z] [PROGRESS] Progress: 95% (642/675) {"runsPerSecond":"2.25","eta":"14.7s"}
+{"timestamp":"2026-01-30T09:54:41.673Z","level":"progress","message":"Progress: 95% (643/675)","data":{"runsPerSecond":"2.24","eta":"14.3s"}}
+[2026-01-30T09:54:41.673Z] [PROGRESS] Progress: 95% (643/675) {"runsPerSecond":"2.24","eta":"14.3s"}
+{"timestamp":"2026-01-30T09:54:42.120Z","level":"progress","message":"Progress: 95% (644/675)","data":{"runsPerSecond":"2.24","eta":"13.8s"}}
+[2026-01-30T09:54:42.120Z] [PROGRESS] Progress: 95% (644/675) {"runsPerSecond":"2.24","eta":"13.8s"}
+{"timestamp":"2026-01-30T09:54:42.650Z","level":"progress","message":"Progress: 95% (645/675)","data":{"runsPerSecond":"2.24","eta":"13.4s"}}
+[2026-01-30T09:54:42.650Z] [PROGRESS] Progress: 95% (645/675) {"runsPerSecond":"2.24","eta":"13.4s"}
+{"timestamp":"2026-01-30T09:54:42.788Z","level":"progress","message":"Progress: 95% (646/675)","data":{"runsPerSecond":"2.25","eta":"12.9s"}}
+[2026-01-30T09:54:42.788Z] [PROGRESS] Progress: 95% (646/675) {"runsPerSecond":"2.25","eta":"12.9s"}
+{"timestamp":"2026-01-30T09:54:43.281Z","level":"progress","message":"Progress: 95% (647/675)","data":{"runsPerSecond":"2.25","eta":"12.5s"}}
+[2026-01-30T09:54:43.281Z] [PROGRESS] Progress: 95% (647/675) {"runsPerSecond":"2.25","eta":"12.5s"}
+{"timestamp":"2026-01-30T09:54:55.410Z","level":"progress","message":"Progress: 100% (675/675)","data":{"runsPerSecond":"2.25","eta":"unknown"}}
+[2026-01-30T09:54:55.410Z] [PROGRESS] Progress: 100% (675/675) {"runsPerSecond":"2.25","eta":"unknown"}
+{"timestamp":"2026-01-30T09:54:55.591Z","level":"info","message":"Exporting results..."}
+[2026-01-30T09:54:55.591Z] [INFO    ] Exporting results...
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"info","message":"Experiment completed in 5m 1s"}
+[2026-01-30T09:54:56.057Z] [INFO    ] Experiment completed in 5m 1s
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"info","message":"Total runs: 675"}
+[2026-01-30T09:54:56.057Z] [INFO    ] Total runs: 675
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"info","message":"Successful: 675"}
+[2026-01-30T09:54:56.057Z] [INFO    ] Successful: 675
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"info","message":"Failed: 0"}
+[2026-01-30T09:54:56.057Z] [INFO    ] Failed: 0
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Whale Influence: 0.2448 (std: 0.0419)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Whale Influence: 0.2448 (std: 0.0419)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.4127 (std: 0.1028)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.4127 (std: 0.1028)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Governance Capture Risk: 0.5087 (std: 0.0344)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Governance Capture Risk: 0.5087 (std: 0.0344)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Single Entity Control: 0.0351 (std: 0.0042)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Single Entity Control: 0.0351 (std: 0.0042)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Collusion Threshold: 0.1535 (std: 0.0561)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Collusion Threshold: 0.1535 (std: 0.0561)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Delegate Concentration: 0.4391 (std: 0.0308)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Delegate Concentration: 0.4391 (std: 0.0308)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.2556 (std: 0.0189)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.2556 (std: 0.0189)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Voting Power Utilization: 0.1387 (std: 0.0173)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Voting Power Utilization: 0.1387 (std: 0.0173)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.2257 (std: 0.0364)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.2257 (std: 0.0364)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.5502 (std: 0.0616)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.5502 (std: 0.0616)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Avg Time to Decision: 1019.3706 (std: 71.2966)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Avg Time to Decision: 1019.3706 (std: 71.2966)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Whale Influence: 0.2350 (std: 0.0351)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Whale Influence: 0.2350 (std: 0.0351)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.4230 (std: 0.0556)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.4230 (std: 0.0556)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.5209 (std: 0.0472)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.5209 (std: 0.0472)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0332 (std: 0.0030)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0332 (std: 0.0030)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1293 (std: 0.0453)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1293 (std: 0.0453)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.4519 (std: 0.0431)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.4519 (std: 0.0431)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.2601 (std: 0.0239)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.2601 (std: 0.0239)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.1307 (std: 0.0143)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.1307 (std: 0.0143)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.2263 (std: 0.0451)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.2263 (std: 0.0451)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.5296 (std: 0.0527)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.5296 (std: 0.0527)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1019.4701 (std: 63.4957)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1019.4701 (std: 63.4957)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Whale Influence: 0.2504 (std: 0.0491)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Whale Influence: 0.2504 (std: 0.0491)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.4123 (std: 0.0969)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.4123 (std: 0.0969)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.5067 (std: 0.0432)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.5067 (std: 0.0432)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0345 (std: 0.0040)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0345 (std: 0.0040)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1459 (std: 0.0488)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1459 (std: 0.0488)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.4359 (std: 0.0436)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.4359 (std: 0.0436)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.2631 (std: 0.0201)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.2631 (std: 0.0201)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.1348 (std: 0.0114)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.1348 (std: 0.0114)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.2234 (std: 0.0442)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.2234 (std: 0.0442)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.5415 (std: 0.0370)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.5415 (std: 0.0370)
+{"timestamp":"2026-01-30T09:54:56.057Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1020.9180 (std: 57.5897)"}
+[2026-01-30T09:54:56.057Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1020.9180 (std: 57.5897)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Whale Influence: 0.1053 (std: 0.0208)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Whale Influence: 0.1053 (std: 0.0208)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.4390 (std: 0.0540)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.4390 (std: 0.0540)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Governance Capture Risk: 0.2891 (std: 0.0201)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Governance Capture Risk: 0.2891 (std: 0.0201)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Single Entity Control: 0.0344 (std: 0.0028)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Single Entity Control: 0.0344 (std: 0.0028)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Collusion Threshold: 0.1451 (std: 0.0444)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Collusion Threshold: 0.1451 (std: 0.0444)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Delegate Concentration: 0.2673 (std: 0.0192)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Delegate Concentration: 0.2673 (std: 0.0192)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.3147 (std: 0.0383)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.3147 (std: 0.0383)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Voting Power Utilization: 0.0776 (std: 0.0163)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Voting Power Utilization: 0.0776 (std: 0.0163)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.1701 (std: 0.0577)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.1701 (std: 0.0577)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.4062 (std: 0.0768)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.4062 (std: 0.0768)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Avg Time to Decision: 1026.0519 (std: 76.7401)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Avg Time to Decision: 1026.0519 (std: 76.7401)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Whale Influence: 0.1125 (std: 0.0423)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Whale Influence: 0.1125 (std: 0.0423)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.4030 (std: 0.0912)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.4030 (std: 0.0912)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.2949 (std: 0.0163)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.2949 (std: 0.0163)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0342 (std: 0.0035)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0342 (std: 0.0035)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1387 (std: 0.0376)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1387 (std: 0.0376)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.2694 (std: 0.0220)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.2694 (std: 0.0220)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.3124 (std: 0.0470)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.3124 (std: 0.0470)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.0777 (std: 0.0197)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.0777 (std: 0.0197)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.1505 (std: 0.0556)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.1505 (std: 0.0556)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.3993 (std: 0.0914)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.3993 (std: 0.0914)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1018.1836 (std: 63.3633)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1018.1836 (std: 63.3633)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Whale Influence: 0.1240 (std: 0.0679)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Whale Influence: 0.1240 (std: 0.0679)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.3750 (std: 0.1133)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.3750 (std: 0.1133)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.2992 (std: 0.0142)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.2992 (std: 0.0142)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0340 (std: 0.0043)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0340 (std: 0.0043)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1328 (std: 0.0486)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1328 (std: 0.0486)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.2708 (std: 0.0186)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.2708 (std: 0.0186)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.3098 (std: 0.0303)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.3098 (std: 0.0303)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.0742 (std: 0.0148)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.0742 (std: 0.0148)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.1473 (std: 0.0348)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.1473 (std: 0.0348)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.3874 (std: 0.0786)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.3874 (std: 0.0786)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1008.3225 (std: 62.0126)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1008.3225 (std: 62.0126)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Whale Influence: 0.1725 (std: 0.0318)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Whale Influence: 0.1725 (std: 0.0318)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.4059 (std: 0.0848)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.4059 (std: 0.0848)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Governance Capture Risk: 0.3906 (std: 0.0351)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Governance Capture Risk: 0.3906 (std: 0.0351)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Single Entity Control: 0.0341 (std: 0.0036)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Single Entity Control: 0.0341 (std: 0.0036)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Collusion Threshold: 0.1396 (std: 0.0502)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Collusion Threshold: 0.1396 (std: 0.0502)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Delegate Concentration: 0.3410 (std: 0.0266)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Delegate Concentration: 0.3410 (std: 0.0266)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.2761 (std: 0.0331)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.2761 (std: 0.0331)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Voting Power Utilization: 0.1035 (std: 0.0150)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Voting Power Utilization: 0.1035 (std: 0.0150)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.1959 (std: 0.0500)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.1959 (std: 0.0500)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.4799 (std: 0.0605)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.4799 (std: 0.0605)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Avg Time to Decision: 1003.3369 (std: 50.3266)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Avg Time to Decision: 1003.3369 (std: 50.3266)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Whale Influence: 0.1850 (std: 0.0661)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Whale Influence: 0.1850 (std: 0.0661)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.3719 (std: 0.1075)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.3719 (std: 0.1075)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.3834 (std: 0.0331)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.3834 (std: 0.0331)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0352 (std: 0.0046)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0352 (std: 0.0046)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1503 (std: 0.0556)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1503 (std: 0.0556)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.3344 (std: 0.0262)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.3344 (std: 0.0262)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.2858 (std: 0.0306)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.2858 (std: 0.0306)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.0996 (std: 0.0158)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.0996 (std: 0.0158)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.1933 (std: 0.0505)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.1933 (std: 0.0505)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.4659 (std: 0.0795)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.4659 (std: 0.0795)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Avg Time to Decision: 990.6832 (std: 60.1271)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Avg Time to Decision: 990.6832 (std: 60.1271)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Whale Influence: 0.1858 (std: 0.0394)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Whale Influence: 0.1858 (std: 0.0394)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.3956 (std: 0.0679)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.3956 (std: 0.0679)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.4048 (std: 0.0311)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.4048 (std: 0.0311)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0333 (std: 0.0034)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0333 (std: 0.0034)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1299 (std: 0.0419)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1299 (std: 0.0419)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.3507 (std: 0.0234)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.3507 (std: 0.0234)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.2708 (std: 0.0265)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.2708 (std: 0.0265)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.1025 (std: 0.0133)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.1025 (std: 0.0133)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.2070 (std: 0.0611)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.2070 (std: 0.0611)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.4791 (std: 0.0538)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.4791 (std: 0.0538)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1039.3804 (std: 72.0727)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1039.3804 (std: 72.0727)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Whale Influence: 0.2585 (std: 0.0467)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Whale Influence: 0.2585 (std: 0.0467)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.3883 (std: 0.1065)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.3883 (std: 0.1065)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Governance Capture Risk: 0.5171 (std: 0.0363)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Governance Capture Risk: 0.5171 (std: 0.0363)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Single Entity Control: 0.0341 (std: 0.0041)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Single Entity Control: 0.0341 (std: 0.0041)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Collusion Threshold: 0.1366 (std: 0.0481)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Collusion Threshold: 0.1366 (std: 0.0481)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Delegate Concentration: 0.4517 (std: 0.0364)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Delegate Concentration: 0.4517 (std: 0.0364)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.2566 (std: 0.0230)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.2566 (std: 0.0230)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Voting Power Utilization: 0.1334 (std: 0.0165)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Voting Power Utilization: 0.1334 (std: 0.0165)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.2350 (std: 0.0428)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.2350 (std: 0.0428)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.5382 (std: 0.0604)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.5382 (std: 0.0604)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Avg Time to Decision: 1002.0179 (std: 74.8202)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Avg Time to Decision: 1002.0179 (std: 74.8202)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Whale Influence: 0.2542 (std: 0.0521)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Whale Influence: 0.2542 (std: 0.0521)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.3863 (std: 0.0857)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.3863 (std: 0.0857)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.5172 (std: 0.0316)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.5172 (std: 0.0316)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0351 (std: 0.0040)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0351 (std: 0.0040)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1495 (std: 0.0516)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1495 (std: 0.0516)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.4465 (std: 0.0317)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.4465 (std: 0.0317)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.2612 (std: 0.0301)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.2612 (std: 0.0301)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.1335 (std: 0.0181)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.1335 (std: 0.0181)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.2346 (std: 0.0377)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.2346 (std: 0.0377)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.5379 (std: 0.0683)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.5379 (std: 0.0683)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1008.3108 (std: 62.5036)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1008.3108 (std: 62.5036)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Whale Influence: 0.2505 (std: 0.0451)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Whale Influence: 0.2505 (std: 0.0451)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.3992 (std: 0.0814)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.3992 (std: 0.0814)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.5047 (std: 0.0401)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.5047 (std: 0.0401)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0344 (std: 0.0039)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0344 (std: 0.0039)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1455 (std: 0.0537)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1455 (std: 0.0537)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.4397 (std: 0.0410)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.4397 (std: 0.0410)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.2562 (std: 0.0267)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.2562 (std: 0.0267)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.1390 (std: 0.0144)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.1390 (std: 0.0144)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.2322 (std: 0.0330)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.2322 (std: 0.0330)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.5532 (std: 0.0588)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.5532 (std: 0.0588)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1029.7334 (std: 56.8868)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1029.7334 (std: 56.8868)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Whale Influence: 0.1098 (std: 0.0393)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Whale Influence: 0.1098 (std: 0.0393)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.3981 (std: 0.0701)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.3981 (std: 0.0701)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Governance Capture Risk: 0.2931 (std: 0.0163)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Governance Capture Risk: 0.2931 (std: 0.0163)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Single Entity Control: 0.0344 (std: 0.0037)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Single Entity Control: 0.0344 (std: 0.0037)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Collusion Threshold: 0.1436 (std: 0.0539)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Collusion Threshold: 0.1436 (std: 0.0539)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Delegate Concentration: 0.2703 (std: 0.0193)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Delegate Concentration: 0.2703 (std: 0.0193)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.3132 (std: 0.0478)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.3132 (std: 0.0478)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Voting Power Utilization: 0.0736 (std: 0.0147)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Voting Power Utilization: 0.0736 (std: 0.0147)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.1547 (std: 0.0609)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.1547 (std: 0.0609)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.3898 (std: 0.0934)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.3898 (std: 0.0934)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Avg Time to Decision: 1005.7410 (std: 64.6663)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Avg Time to Decision: 1005.7410 (std: 64.6663)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Whale Influence: 0.1087 (std: 0.0433)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Whale Influence: 0.1087 (std: 0.0433)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.3992 (std: 0.0895)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.3992 (std: 0.0895)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.2943 (std: 0.0170)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.2943 (std: 0.0170)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0343 (std: 0.0036)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0343 (std: 0.0036)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1438 (std: 0.0456)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1438 (std: 0.0456)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.2689 (std: 0.0185)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.2689 (std: 0.0185)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.3098 (std: 0.0385)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.3098 (std: 0.0385)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.0745 (std: 0.0161)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.0745 (std: 0.0161)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.1654 (std: 0.0550)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.1654 (std: 0.0550)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.3890 (std: 0.0918)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.3890 (std: 0.0918)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1046.0185 (std: 55.0632)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1046.0185 (std: 55.0632)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Whale Influence: 0.1152 (std: 0.0609)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Whale Influence: 0.1152 (std: 0.0609)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.4122 (std: 0.0788)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.4122 (std: 0.0788)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.2959 (std: 0.0223)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.2959 (std: 0.0223)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0343 (std: 0.0039)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0343 (std: 0.0039)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1406 (std: 0.0511)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1406 (std: 0.0511)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.2712 (std: 0.0252)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.2712 (std: 0.0252)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.3177 (std: 0.0407)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.3177 (std: 0.0407)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.0744 (std: 0.0161)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.0744 (std: 0.0161)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.1516 (std: 0.0632)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.1516 (std: 0.0632)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.3862 (std: 0.0808)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.3862 (std: 0.0808)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1032.4715 (std: 68.4710)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1032.4715 (std: 68.4710)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Whale Influence: 0.1872 (std: 0.0516)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Whale Influence: 0.1872 (std: 0.0516)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.3879 (std: 0.0852)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.3879 (std: 0.0852)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Governance Capture Risk: 0.3950 (std: 0.0340)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Governance Capture Risk: 0.3950 (std: 0.0340)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Single Entity Control: 0.0347 (std: 0.0043)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Single Entity Control: 0.0347 (std: 0.0043)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Collusion Threshold: 0.1495 (std: 0.0536)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Collusion Threshold: 0.1495 (std: 0.0536)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Delegate Concentration: 0.3407 (std: 0.0255)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Delegate Concentration: 0.3407 (std: 0.0255)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.2768 (std: 0.0284)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.2768 (std: 0.0284)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Voting Power Utilization: 0.1028 (std: 0.0163)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Voting Power Utilization: 0.1028 (std: 0.0163)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.2243 (std: 0.0564)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.2243 (std: 0.0564)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.4948 (std: 0.0872)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.4948 (std: 0.0872)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Avg Time to Decision: 1015.6837 (std: 55.6424)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Avg Time to Decision: 1015.6837 (std: 55.6424)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Whale Influence: 0.1859 (std: 0.0328)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Whale Influence: 0.1859 (std: 0.0328)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.4233 (std: 0.0512)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.4233 (std: 0.0512)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.4004 (std: 0.0344)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.4004 (std: 0.0344)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0339 (std: 0.0034)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0339 (std: 0.0034)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1379 (std: 0.0449)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1379 (std: 0.0449)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.3455 (std: 0.0257)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.3455 (std: 0.0257)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.2769 (std: 0.0198)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.2769 (std: 0.0198)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.1033 (std: 0.0140)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.1033 (std: 0.0140)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.2111 (std: 0.0503)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.2111 (std: 0.0503)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.4973 (std: 0.0670)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.4973 (std: 0.0670)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1014.0797 (std: 68.7247)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1014.0797 (std: 68.7247)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Whale Influence: 0.1776 (std: 0.0379)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Whale Influence: 0.1776 (std: 0.0379)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.3843 (std: 0.0716)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.3843 (std: 0.0716)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.3918 (std: 0.0339)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.3918 (std: 0.0339)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0350 (std: 0.0035)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0350 (std: 0.0035)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1520 (std: 0.0486)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1520 (std: 0.0486)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.3419 (std: 0.0253)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.3419 (std: 0.0253)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.2715 (std: 0.0229)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.2715 (std: 0.0229)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.1026 (std: 0.0133)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.1026 (std: 0.0133)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.2180 (std: 0.0593)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.2180 (std: 0.0593)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.4823 (std: 0.0600)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.4823 (std: 0.0600)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1030.3257 (std: 56.7494)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.1_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1030.3257 (std: 56.7494)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Whale Influence: 0.2486 (std: 0.0469)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Whale Influence: 0.2486 (std: 0.0469)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.3838 (std: 0.1028)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.3838 (std: 0.1028)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Governance Capture Risk: 0.5034 (std: 0.0356)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Governance Capture Risk: 0.5034 (std: 0.0356)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Single Entity Control: 0.0360 (std: 0.0042)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Single Entity Control: 0.0360 (std: 0.0042)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Collusion Threshold: 0.1634 (std: 0.0577)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Collusion Threshold: 0.1634 (std: 0.0577)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Delegate Concentration: 0.4328 (std: 0.0335)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Delegate Concentration: 0.4328 (std: 0.0335)
+{"timestamp":"2026-01-30T09:54:56.058Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.2505 (std: 0.0215)"}
+[2026-01-30T09:54:56.058Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.2505 (std: 0.0215)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Voting Power Utilization: 0.1394 (std: 0.0174)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Voting Power Utilization: 0.1394 (std: 0.0174)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.2188 (std: 0.0458)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.2188 (std: 0.0458)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.5440 (std: 0.0537)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.5440 (std: 0.0537)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Avg Time to Decision: 1011.4465 (std: 62.2730)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0] Avg Time to Decision: 1011.4465 (std: 62.2730)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Whale Influence: 0.2439 (std: 0.0388)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Whale Influence: 0.2439 (std: 0.0388)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.4075 (std: 0.0723)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.4075 (std: 0.0723)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.5084 (std: 0.0421)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.5084 (std: 0.0421)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0341 (std: 0.0036)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0341 (std: 0.0036)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1444 (std: 0.0470)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1444 (std: 0.0470)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.4414 (std: 0.0408)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.4414 (std: 0.0408)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.2544 (std: 0.0232)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.2544 (std: 0.0232)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.1362 (std: 0.0165)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.1362 (std: 0.0165)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.2376 (std: 0.0459)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.2376 (std: 0.0459)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.5466 (std: 0.0573)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.5466 (std: 0.0573)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Avg Time to Decision: 992.4708 (std: 57.2767)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.3] Avg Time to Decision: 992.4708 (std: 57.2767)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Whale Influence: 0.2447 (std: 0.0516)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Whale Influence: 0.2447 (std: 0.0516)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.3982 (std: 0.0919)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.3982 (std: 0.0919)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.4987 (std: 0.0317)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.4987 (std: 0.0317)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0347 (std: 0.0033)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0347 (std: 0.0033)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1442 (std: 0.0449)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1442 (std: 0.0449)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.4300 (std: 0.0279)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.4300 (std: 0.0279)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.2593 (std: 0.0301)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.2593 (std: 0.0301)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.1356 (std: 0.0198)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.1356 (std: 0.0198)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.2325 (std: 0.0567)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.2325 (std: 0.0567)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.5436 (std: 0.0689)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.5436 (std: 0.0689)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1042.0243 (std: 48.1592)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=0_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1042.0243 (std: 48.1592)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Whale Influence: 0.1121 (std: 0.0593)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Whale Influence: 0.1121 (std: 0.0593)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.3894 (std: 0.0791)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.3894 (std: 0.0791)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Governance Capture Risk: 0.2967 (std: 0.0175)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Governance Capture Risk: 0.2967 (std: 0.0175)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Single Entity Control: 0.0339 (std: 0.0038)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Single Entity Control: 0.0339 (std: 0.0038)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Collusion Threshold: 0.1322 (std: 0.0477)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Collusion Threshold: 0.1322 (std: 0.0477)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Delegate Concentration: 0.2689 (std: 0.0191)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Delegate Concentration: 0.2689 (std: 0.0191)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.3089 (std: 0.0394)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.3089 (std: 0.0394)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Voting Power Utilization: 0.0743 (std: 0.0159)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Voting Power Utilization: 0.0743 (std: 0.0159)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.1492 (std: 0.0533)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.1492 (std: 0.0533)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.3832 (std: 0.0897)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.3832 (std: 0.0897)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Avg Time to Decision: 1014.2599 (std: 56.4351)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0] Avg Time to Decision: 1014.2599 (std: 56.4351)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Whale Influence: 0.1041 (std: 0.0302)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Whale Influence: 0.1041 (std: 0.0302)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.4020 (std: 0.0459)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.4020 (std: 0.0459)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.2902 (std: 0.0155)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.2902 (std: 0.0155)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0345 (std: 0.0027)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0345 (std: 0.0027)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1396 (std: 0.0439)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1396 (std: 0.0439)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.2643 (std: 0.0149)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.2643 (std: 0.0149)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.3063 (std: 0.0210)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.3063 (std: 0.0210)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.0786 (std: 0.0112)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.0786 (std: 0.0112)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.1642 (std: 0.0453)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.1642 (std: 0.0453)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.4033 (std: 0.0524)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.4033 (std: 0.0524)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1008.4193 (std: 75.3934)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1008.4193 (std: 75.3934)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Whale Influence: 0.1159 (std: 0.0551)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Whale Influence: 0.1159 (std: 0.0551)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.4015 (std: 0.0997)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.4015 (std: 0.0997)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.3027 (std: 0.0155)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.3027 (std: 0.0155)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0338 (std: 0.0043)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0338 (std: 0.0043)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1324 (std: 0.0513)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1324 (std: 0.0513)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.2775 (std: 0.0165)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.2775 (std: 0.0165)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.3237 (std: 0.0371)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.3237 (std: 0.0371)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.0723 (std: 0.0140)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.0723 (std: 0.0140)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.1387 (std: 0.0557)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.1387 (std: 0.0557)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.3763 (std: 0.0814)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.3763 (std: 0.0814)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1017.3038 (std: 61.1883)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=250_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1017.3038 (std: 61.1883)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Whale Influence: 0.1988 (std: 0.0580)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Whale Influence: 0.1988 (std: 0.0580)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.3821 (std: 0.1030)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Whale Proposal Rate: 0.3821 (std: 0.1030)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Governance Capture Risk: 0.3892 (std: 0.0307)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Governance Capture Risk: 0.3892 (std: 0.0307)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Single Entity Control: 0.0356 (std: 0.0043)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Single Entity Control: 0.0356 (std: 0.0043)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Collusion Threshold: 0.1535 (std: 0.0508)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Collusion Threshold: 0.1535 (std: 0.0508)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Delegate Concentration: 0.3413 (std: 0.0242)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Delegate Concentration: 0.3413 (std: 0.0242)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.2793 (std: 0.0344)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Voter Concentration Gini: 0.2793 (std: 0.0344)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Voting Power Utilization: 0.1051 (std: 0.0138)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Voting Power Utilization: 0.1051 (std: 0.0138)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.2151 (std: 0.0632)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Proposal Pass Rate: 0.2151 (std: 0.0632)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.4949 (std: 0.0589)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Quorum Reach Rate: 0.4949 (std: 0.0589)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Avg Time to Decision: 1004.9102 (std: 51.9580)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0] Avg Time to Decision: 1004.9102 (std: 51.9580)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Whale Influence: 0.1760 (std: 0.0370)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Whale Influence: 0.1760 (std: 0.0370)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.4156 (std: 0.0949)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Whale Proposal Rate: 0.4156 (std: 0.0949)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.3973 (std: 0.0259)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Governance Capture Risk: 0.3973 (std: 0.0259)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0336 (std: 0.0041)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Single Entity Control: 0.0336 (std: 0.0041)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1326 (std: 0.0494)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Collusion Threshold: 0.1326 (std: 0.0494)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.3430 (std: 0.0209)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Delegate Concentration: 0.3430 (std: 0.0209)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.2733 (std: 0.0193)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Voter Concentration Gini: 0.2733 (std: 0.0193)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.0974 (std: 0.0132)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Voting Power Utilization: 0.0974 (std: 0.0132)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.1996 (std: 0.0479)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Proposal Pass Rate: 0.1996 (std: 0.0479)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.4627 (std: 0.0583)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Quorum Reach Rate: 0.4627 (std: 0.0583)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1017.3716 (std: 61.2625)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.3] Avg Time to Decision: 1017.3716 (std: 61.2625)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Whale Influence: 0.1797 (std: 0.0339)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Whale Influence: 0.1797 (std: 0.0339)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.4344 (std: 0.0496)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Whale Proposal Rate: 0.4344 (std: 0.0496)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.4007 (std: 0.0292)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Governance Capture Risk: 0.4007 (std: 0.0292)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0330 (std: 0.0021)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Single Entity Control: 0.0330 (std: 0.0021)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1244 (std: 0.0279)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Collusion Threshold: 0.1244 (std: 0.0279)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.3484 (std: 0.0250)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Delegate Concentration: 0.3484 (std: 0.0250)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.2772 (std: 0.0234)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Voter Concentration Gini: 0.2772 (std: 0.0234)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.1010 (std: 0.0141)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Voting Power Utilization: 0.1010 (std: 0.0141)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.2131 (std: 0.0510)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Proposal Pass Rate: 0.2131 (std: 0.0510)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.4800 (std: 0.0542)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Quorum Reach Rate: 0.4800 (std: 0.0542)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"metric","message":"[vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1016.1535 (std: 52.5972)"}
+[2026-01-30T09:54:56.059Z] [METRIC  ] [vote_power_cap_fraction=0.2_vote_power_quadratic_threshold=500_vote_power_velocity_penalty=0.6] Avg Time to Decision: 1016.1535 (std: 52.5972)
+{"timestamp":"2026-01-30T09:54:56.059Z","level":"info","message":"Experiment state changed to: completed"}
+[2026-01-30T09:54:56.059Z] [INFO    ] Experiment state changed to: completed

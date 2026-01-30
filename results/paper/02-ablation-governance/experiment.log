@@ -1,0 +1,712 @@
+{"timestamp":"2026-01-30T09:45:19.962Z","level":"info","message":"Starting experiment: Ablation - Governance Mechanisms"}
+[2026-01-30T09:45:19.962Z] [INFO    ] Starting experiment: Ablation - Governance Mechanisms
+{"timestamp":"2026-01-30T09:45:19.962Z","level":"info","message":"Description: Disable key mechanisms to estimate their causal impact."}
+[2026-01-30T09:45:19.962Z] [INFO    ] Description: Disable key mechanisms to estimate their causal impact.
+{"timestamp":"2026-01-30T09:45:19.962Z","level":"info","message":"Total runs: 200 (25 per config)"}
+[2026-01-30T09:45:19.962Z] [INFO    ] Total runs: 200 (25 per config)
+{"timestamp":"2026-01-30T09:45:19.962Z","level":"info","message":"Workers: 4"}
+[2026-01-30T09:45:19.962Z] [INFO    ] Workers: 4
+{"timestamp":"2026-01-30T09:45:19.962Z","level":"info","message":"Output: results/paper/02-ablation-governance"}
+[2026-01-30T09:45:19.962Z] [INFO    ] Output: results/paper/02-ablation-governance
+{"timestamp":"2026-01-30T09:45:19.962Z","level":"info","message":"Sweep parameter: undefined"}
+[2026-01-30T09:45:19.962Z] [INFO    ] Sweep parameter: undefined
+{"timestamp":"2026-01-30T09:45:19.963Z","level":"info","message":"Experiment state changed to: running"}
+[2026-01-30T09:45:19.963Z] [INFO    ] Experiment state changed to: running
+{"timestamp":"2026-01-30T09:45:27.372Z","level":"progress","message":"Progress: 5% (10/200)","data":{"runsPerSecond":"1.35","eta":"2m 21s"}}
+[2026-01-30T09:45:27.372Z] [PROGRESS] Progress: 5% (10/200) {"runsPerSecond":"1.35","eta":"2m 21s"}
+{"timestamp":"2026-01-30T09:45:27.396Z","level":"progress","message":"Progress: 5% (11/200)","data":{"runsPerSecond":"1.48","eta":"2m 8s"}}
+[2026-01-30T09:45:27.396Z] [PROGRESS] Progress: 5% (11/200) {"runsPerSecond":"1.48","eta":"2m 8s"}
+{"timestamp":"2026-01-30T09:45:32.409Z","level":"progress","message":"Progress: 10% (20/200)","data":{"runsPerSecond":"1.61","eta":"1m 52s"}}
+[2026-01-30T09:45:32.409Z] [PROGRESS] Progress: 10% (20/200) {"runsPerSecond":"1.61","eta":"1m 52s"}
+{"timestamp":"2026-01-30T09:45:34.759Z","level":"progress","message":"Progress: 10% (21/200)","data":{"runsPerSecond":"1.42","eta":"2m 6s"}}
+[2026-01-30T09:45:34.759Z] [PROGRESS] Progress: 10% (21/200) {"runsPerSecond":"1.42","eta":"2m 6s"}
+{"timestamp":"2026-01-30T09:45:42.492Z","level":"progress","message":"Progress: 15% (30/200)","data":{"runsPerSecond":"1.33","eta":"2m 8s"}}
+[2026-01-30T09:45:42.492Z] [PROGRESS] Progress: 15% (30/200) {"runsPerSecond":"1.33","eta":"2m 8s"}
+{"timestamp":"2026-01-30T09:45:42.676Z","level":"progress","message":"Progress: 15% (31/200)","data":{"runsPerSecond":"1.36","eta":"2m 4s"}}
+[2026-01-30T09:45:42.676Z] [PROGRESS] Progress: 15% (31/200) {"runsPerSecond":"1.36","eta":"2m 4s"}
+{"timestamp":"2026-01-30T09:45:48.895Z","level":"progress","message":"Progress: 20% (40/200)","data":{"runsPerSecond":"1.38","eta":"1m 56s"}}
+[2026-01-30T09:45:48.895Z] [PROGRESS] Progress: 20% (40/200) {"runsPerSecond":"1.38","eta":"1m 56s"}
+{"timestamp":"2026-01-30T09:45:50.527Z","level":"progress","message":"Progress: 20% (41/200)","data":{"runsPerSecond":"1.34","eta":"1m 59s"}}
+[2026-01-30T09:45:50.527Z] [PROGRESS] Progress: 20% (41/200) {"runsPerSecond":"1.34","eta":"1m 59s"}
+{"timestamp":"2026-01-30T09:45:55.902Z","level":"progress","message":"Progress: 25% (50/200)","data":{"runsPerSecond":"1.39","eta":"1m 48s"}}
+[2026-01-30T09:45:55.902Z] [PROGRESS] Progress: 25% (50/200) {"runsPerSecond":"1.39","eta":"1m 48s"}
+{"timestamp":"2026-01-30T09:45:56.707Z","level":"progress","message":"Progress: 25% (51/200)","data":{"runsPerSecond":"1.39","eta":"1m 47s"}}
+[2026-01-30T09:45:56.707Z] [PROGRESS] Progress: 25% (51/200) {"runsPerSecond":"1.39","eta":"1m 47s"}
+{"timestamp":"2026-01-30T09:46:03.700Z","level":"progress","message":"Progress: 30% (60/200)","data":{"runsPerSecond":"1.37","eta":"1m 42s"}}
+[2026-01-30T09:46:03.700Z] [PROGRESS] Progress: 30% (60/200) {"runsPerSecond":"1.37","eta":"1m 42s"}
+{"timestamp":"2026-01-30T09:46:04.758Z","level":"progress","message":"Progress: 30% (61/200)","data":{"runsPerSecond":"1.36","eta":"1m 42s"}}
+[2026-01-30T09:46:04.758Z] [PROGRESS] Progress: 30% (61/200) {"runsPerSecond":"1.36","eta":"1m 42s"}
+{"timestamp":"2026-01-30T09:46:12.835Z","level":"progress","message":"Progress: 35% (70/200)","data":{"runsPerSecond":"1.32","eta":"1m 38s"}}
+[2026-01-30T09:46:12.835Z] [PROGRESS] Progress: 35% (70/200) {"runsPerSecond":"1.32","eta":"1m 38s"}
+{"timestamp":"2026-01-30T09:46:12.924Z","level":"progress","message":"Progress: 35% (71/200)","data":{"runsPerSecond":"1.34","eta":"1m 36s"}}
+[2026-01-30T09:46:12.924Z] [PROGRESS] Progress: 35% (71/200) {"runsPerSecond":"1.34","eta":"1m 36s"}
+{"timestamp":"2026-01-30T09:46:21.795Z","level":"progress","message":"Progress: 40% (80/200)","data":{"runsPerSecond":"1.29","eta":"1m 33s"}}
+[2026-01-30T09:46:21.795Z] [PROGRESS] Progress: 40% (80/200) {"runsPerSecond":"1.29","eta":"1m 33s"}
+{"timestamp":"2026-01-30T09:46:22.338Z","level":"progress","message":"Progress: 40% (81/200)","data":{"runsPerSecond":"1.30","eta":"1m 32s"}}
+[2026-01-30T09:46:22.338Z] [PROGRESS] Progress: 40% (81/200) {"runsPerSecond":"1.30","eta":"1m 32s"}
+{"timestamp":"2026-01-30T09:46:32.217Z","level":"progress","message":"Progress: 45% (90/200)","data":{"runsPerSecond":"1.25","eta":"1m 28s"}}
+[2026-01-30T09:46:32.217Z] [PROGRESS] Progress: 45% (90/200) {"runsPerSecond":"1.25","eta":"1m 28s"}
+{"timestamp":"2026-01-30T09:46:32.258Z","level":"progress","message":"Progress: 45% (91/200)","data":{"runsPerSecond":"1.26","eta":"1m 27s"}}
+[2026-01-30T09:46:32.258Z] [PROGRESS] Progress: 45% (91/200) {"runsPerSecond":"1.26","eta":"1m 27s"}
+{"timestamp":"2026-01-30T09:46:40.148Z","level":"progress","message":"Progress: 50% (100/200)","data":{"runsPerSecond":"1.25","eta":"1m 20s"}}
+[2026-01-30T09:46:40.148Z] [PROGRESS] Progress: 50% (100/200) {"runsPerSecond":"1.25","eta":"1m 20s"}
+{"timestamp":"2026-01-30T09:46:40.415Z","level":"progress","message":"Progress: 50% (101/200)","data":{"runsPerSecond":"1.26","eta":"1m 19s"}}
+[2026-01-30T09:46:40.415Z] [PROGRESS] Progress: 50% (101/200) {"runsPerSecond":"1.26","eta":"1m 19s"}
+{"timestamp":"2026-01-30T09:46:47.064Z","level":"progress","message":"Progress: 55% (110/200)","data":{"runsPerSecond":"1.26","eta":"1m 11s"}}
+[2026-01-30T09:46:47.064Z] [PROGRESS] Progress: 55% (110/200) {"runsPerSecond":"1.26","eta":"1m 11s"}
+{"timestamp":"2026-01-30T09:46:47.439Z","level":"progress","message":"Progress: 55% (111/200)","data":{"runsPerSecond":"1.27","eta":"1m 10s"}}
+[2026-01-30T09:46:47.439Z] [PROGRESS] Progress: 55% (111/200) {"runsPerSecond":"1.27","eta":"1m 10s"}
+{"timestamp":"2026-01-30T09:46:52.649Z","level":"progress","message":"Progress: 60% (120/200)","data":{"runsPerSecond":"1.29","eta":"1m 2s"}}
+[2026-01-30T09:46:52.649Z] [PROGRESS] Progress: 60% (120/200) {"runsPerSecond":"1.29","eta":"1m 2s"}
+{"timestamp":"2026-01-30T09:46:53.464Z","level":"progress","message":"Progress: 60% (121/200)","data":{"runsPerSecond":"1.29","eta":"1m 1s"}}
+[2026-01-30T09:46:53.464Z] [PROGRESS] Progress: 60% (121/200) {"runsPerSecond":"1.29","eta":"1m 1s"}
+{"timestamp":"2026-01-30T09:46:59.759Z","level":"progress","message":"Progress: 65% (130/200)","data":{"runsPerSecond":"1.30","eta":"53.7s"}}
+[2026-01-30T09:46:59.759Z] [PROGRESS] Progress: 65% (130/200) {"runsPerSecond":"1.30","eta":"53.7s"}
+{"timestamp":"2026-01-30T09:47:00.432Z","level":"progress","message":"Progress: 65% (131/200)","data":{"runsPerSecond":"1.30","eta":"52.9s"}}
+[2026-01-30T09:47:00.432Z] [PROGRESS] Progress: 65% (131/200) {"runsPerSecond":"1.30","eta":"52.9s"}
+{"timestamp":"2026-01-30T09:47:07.014Z","level":"progress","message":"Progress: 70% (140/200)","data":{"runsPerSecond":"1.31","eta":"45.9s"}}
+[2026-01-30T09:47:07.014Z] [PROGRESS] Progress: 70% (140/200) {"runsPerSecond":"1.31","eta":"45.9s"}
+{"timestamp":"2026-01-30T09:47:08.314Z","level":"progress","message":"Progress: 70% (141/200)","data":{"runsPerSecond":"1.30","eta":"45.3s"}}
+[2026-01-30T09:47:08.314Z] [PROGRESS] Progress: 70% (141/200) {"runsPerSecond":"1.30","eta":"45.3s"}
+{"timestamp":"2026-01-30T09:47:15.255Z","level":"progress","message":"Progress: 75% (150/200)","data":{"runsPerSecond":"1.30","eta":"38.4s"}}
+[2026-01-30T09:47:15.255Z] [PROGRESS] Progress: 75% (150/200) {"runsPerSecond":"1.30","eta":"38.4s"}
+{"timestamp":"2026-01-30T09:47:16.505Z","level":"progress","message":"Progress: 75% (151/200)","data":{"runsPerSecond":"1.30","eta":"37.8s"}}
+[2026-01-30T09:47:16.505Z] [PROGRESS] Progress: 75% (151/200) {"runsPerSecond":"1.30","eta":"37.8s"}
+{"timestamp":"2026-01-30T09:47:23.131Z","level":"progress","message":"Progress: 80% (160/200)","data":{"runsPerSecond":"1.30","eta":"30.8s"}}
+[2026-01-30T09:47:23.131Z] [PROGRESS] Progress: 80% (160/200) {"runsPerSecond":"1.30","eta":"30.8s"}
+{"timestamp":"2026-01-30T09:47:23.920Z","level":"progress","message":"Progress: 80% (161/200)","data":{"runsPerSecond":"1.30","eta":"30.0s"}}
+[2026-01-30T09:47:23.920Z] [PROGRESS] Progress: 80% (161/200) {"runsPerSecond":"1.30","eta":"30.0s"}
+{"timestamp":"2026-01-30T09:47:30.380Z","level":"progress","message":"Progress: 85% (170/200)","data":{"runsPerSecond":"1.30","eta":"23.0s"}}
+[2026-01-30T09:47:30.380Z] [PROGRESS] Progress: 85% (170/200) {"runsPerSecond":"1.30","eta":"23.0s"}
+{"timestamp":"2026-01-30T09:47:31.405Z","level":"progress","message":"Progress: 85% (171/200)","data":{"runsPerSecond":"1.30","eta":"22.3s"}}
+[2026-01-30T09:47:31.405Z] [PROGRESS] Progress: 85% (171/200) {"runsPerSecond":"1.30","eta":"22.3s"}
+{"timestamp":"2026-01-30T09:47:40.504Z","level":"progress","message":"Progress: 90% (180/200)","data":{"runsPerSecond":"1.28","eta":"15.6s"}}
+[2026-01-30T09:47:40.504Z] [PROGRESS] Progress: 90% (180/200) {"runsPerSecond":"1.28","eta":"15.6s"}
+{"timestamp":"2026-01-30T09:47:41.476Z","level":"progress","message":"Progress: 90% (181/200)","data":{"runsPerSecond":"1.28","eta":"14.9s"}}
+[2026-01-30T09:47:41.476Z] [PROGRESS] Progress: 90% (181/200) {"runsPerSecond":"1.28","eta":"14.9s"}
+{"timestamp":"2026-01-30T09:47:49.837Z","level":"progress","message":"Progress: 95% (190/200)","data":{"runsPerSecond":"1.27","eta":"7.9s"}}
+[2026-01-30T09:47:49.837Z] [PROGRESS] Progress: 95% (190/200) {"runsPerSecond":"1.27","eta":"7.9s"}
+{"timestamp":"2026-01-30T09:47:50.710Z","level":"progress","message":"Progress: 95% (191/200)","data":{"runsPerSecond":"1.27","eta":"7.1s"}}
+[2026-01-30T09:47:50.710Z] [PROGRESS] Progress: 95% (191/200) {"runsPerSecond":"1.27","eta":"7.1s"}
+{"timestamp":"2026-01-30T09:47:58.620Z","level":"progress","message":"Progress: 100% (200/200)","data":{"runsPerSecond":"1.26","eta":"unknown"}}
+[2026-01-30T09:47:58.620Z] [PROGRESS] Progress: 100% (200/200) {"runsPerSecond":"1.26","eta":"unknown"}
+{"timestamp":"2026-01-30T09:47:58.892Z","level":"info","message":"Exporting results..."}
+[2026-01-30T09:47:58.892Z] [INFO    ] Exporting results...
+{"timestamp":"2026-01-30T09:47:59.358Z","level":"info","message":"Experiment completed in 2m 39s"}
+[2026-01-30T09:47:59.358Z] [INFO    ] Experiment completed in 2m 39s
+{"timestamp":"2026-01-30T09:47:59.358Z","level":"info","message":"Total runs: 200"}
+[2026-01-30T09:47:59.358Z] [INFO    ] Total runs: 200
+{"timestamp":"2026-01-30T09:47:59.358Z","level":"info","message":"Successful: 200"}
+[2026-01-30T09:47:59.358Z] [INFO    ] Successful: 200
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"info","message":"Failed: 0"}
+[2026-01-30T09:47:59.359Z] [INFO    ] Failed: 0
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Proposal Pass Rate: 0.0098 (std: 0.0059)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Proposal Pass Rate: 0.0098 (std: 0.0059)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Average Turnout: 0.0603 (std: 0.0057)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Average Turnout: 0.0603 (std: 0.0057)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Final Treasury: 11712.7053 (std: 558.7371)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Final Treasury: 11712.7053 (std: 558.7371)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Final Token Price: 2.4591 (std: 2.6385)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Final Token Price: 2.4591 (std: 2.6385)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Final Member Count: 210.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Final Member Count: 210.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Total Proposals: 202.8800 (std: 13.4484)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Total Proposals: 202.8800 (std: 13.4484)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Quorum Reach Rate: 0.3091 (std: 0.0272)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Quorum Reach Rate: 0.3091 (std: 0.0272)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Avg Margin of Victory: 0.4875 (std: 0.0365)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Avg Margin of Victory: 0.4875 (std: 0.0365)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Avg Time to Decision: 1029.9463 (std: 43.4584)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Avg Time to Decision: 1029.9463 (std: 43.4584)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Proposal Abandonment Rate: 0.0211 (std: 0.0102)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Proposal Abandonment Rate: 0.0211 (std: 0.0102)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Proposal Rejection Rate: 0.9902 (std: 0.0059)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Proposal Rejection Rate: 0.9902 (std: 0.0059)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Governance Overhead: 16.8495 (std: 1.4328)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Governance Overhead: 16.8495 (std: 1.4328)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Unique Voter Count: 206.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Unique Voter Count: 206.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Voter Participation Rate: 0.0785 (std: 0.0065)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Voter Participation Rate: 0.0785 (std: 0.0065)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Voter Concentration Gini: 0.3636 (std: 0.0129)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Voter Concentration Gini: 0.3636 (std: 0.0129)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Delegate Concentration: 0.3966 (std: 0.0118)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Delegate Concentration: 0.3966 (std: 0.0118)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Avg Votes Per Proposal: 16.4906 (std: 1.3673)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Avg Votes Per Proposal: 16.4906 (std: 1.3673)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Voter Retention Rate: 0.9979 (std: 0.0032)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Voter Retention Rate: 0.9979 (std: 0.0032)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Voting Power Utilization: 0.0603 (std: 0.0057)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Voting Power Utilization: 0.0603 (std: 0.0057)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Treasury Volatility: 0.1947 (std: 0.0183)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Treasury Volatility: 0.1947 (std: 0.0183)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Treasury Growth Rate: -0.7145 (std: 0.0203)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Treasury Growth Rate: -0.7145 (std: 0.0203)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Staking Participation: 0.1224 (std: 0.0049)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Staking Participation: 0.1224 (std: 0.0049)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Token Concentration Gini: 0.5512 (std: 0.0140)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Token Concentration Gini: 0.5512 (std: 0.0140)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Avg Member Wealth: 117.6967 (std: 4.6344)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Avg Member Wealth: 117.6967 (std: 4.6344)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Wealth Mobility: 0.4488 (std: 0.0140)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Wealth Mobility: 0.4488 (std: 0.0140)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Whale Influence: 0.3579 (std: 0.0303)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Whale Influence: 0.3579 (std: 0.0303)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Whale Proposal Rate: 0.0927 (std: 0.0173)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Whale Proposal Rate: 0.0927 (std: 0.0173)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Governance Capture Risk: 0.4650 (std: 0.0176)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Governance Capture Risk: 0.4650 (std: 0.0176)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Vote Buying Vulnerability: 78.6579 (std: 12.1564)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Vote Buying Vulnerability: 78.6579 (std: 12.1564)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Single Entity Control: 0.0404 (std: 0.0017)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Single Entity Control: 0.0404 (std: 0.0017)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Collusion Threshold: 0.1166 (std: 0.0200)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Collusion Threshold: 0.1166 (std: 0.0200)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Participation Trend: 0.0000 (std: 0.0001)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Participation Trend: 0.0000 (std: 0.0001)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Treasury Trend: -1.0830 (std: 0.2720)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Treasury Trend: -1.0830 (std: 0.2720)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Member Growth Rate: 0.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Member Growth Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Proposal Rate: 10.1440 (std: 0.6724)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Proposal Rate: 10.1440 (std: 0.6724)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Governance Activity Index: 0.0060 (std: 0.0008)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Governance Activity Index: 0.0060 (std: 0.0008)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Final Gini: 0.5512 (std: 0.0140)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Final Gini: 0.5512 (std: 0.0140)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Final Reputation Gini: 0.9755 (std: 0.0012)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0] Final Reputation Gini: 0.9755 (std: 0.0012)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Pass Rate: 0.0131 (std: 0.0086)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Pass Rate: 0.0131 (std: 0.0086)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Average Turnout: 0.0653 (std: 0.0066)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Average Turnout: 0.0653 (std: 0.0066)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Final Treasury: 11934.4576 (std: 338.0620)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Final Treasury: 11934.4576 (std: 338.0620)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Final Token Price: 5.4602 (std: 7.9217)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Final Token Price: 5.4602 (std: 7.9217)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Final Member Count: 210.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Final Member Count: 210.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Total Proposals: 210.0400 (std: 13.9806)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Total Proposals: 210.0400 (std: 13.9806)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Quorum Reach Rate: 0.3406 (std: 0.0373)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Quorum Reach Rate: 0.3406 (std: 0.0373)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Margin of Victory: 0.4892 (std: 0.0388)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Margin of Victory: 0.4892 (std: 0.0388)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Time to Decision: 1013.1815 (std: 47.0894)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Time to Decision: 1013.1815 (std: 47.0894)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Abandonment Rate: 0.0203 (std: 0.0095)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Abandonment Rate: 0.0203 (std: 0.0095)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Rejection Rate: 0.9869 (std: 0.0086)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Rejection Rate: 0.9869 (std: 0.0086)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Governance Overhead: 18.4437 (std: 2.0579)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Governance Overhead: 18.4437 (std: 2.0579)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Unique Voter Count: 206.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Unique Voter Count: 206.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Voter Participation Rate: 0.0860 (std: 0.0096)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Voter Participation Rate: 0.0860 (std: 0.0096)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Voter Concentration Gini: 0.3594 (std: 0.0111)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Voter Concentration Gini: 0.3594 (std: 0.0111)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Delegate Concentration: 0.4029 (std: 0.0107)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Delegate Concentration: 0.4029 (std: 0.0107)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Votes Per Proposal: 18.0691 (std: 2.0095)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Votes Per Proposal: 18.0691 (std: 2.0095)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Voter Retention Rate: 0.9988 (std: 0.0032)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Voter Retention Rate: 0.9988 (std: 0.0032)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Voting Power Utilization: 0.0653 (std: 0.0066)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Voting Power Utilization: 0.0653 (std: 0.0066)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Treasury Volatility: 0.1892 (std: 0.0197)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Treasury Volatility: 0.1892 (std: 0.0197)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Treasury Growth Rate: -0.7128 (std: 0.0153)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Treasury Growth Rate: -0.7128 (std: 0.0153)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Staking Participation: 0.1225 (std: 0.0060)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Staking Participation: 0.1225 (std: 0.0060)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Token Concentration Gini: 0.5499 (std: 0.0168)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Token Concentration Gini: 0.5499 (std: 0.0168)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Member Wealth: 117.6313 (std: 5.7066)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Member Wealth: 117.6313 (std: 5.7066)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Wealth Mobility: 0.4501 (std: 0.0168)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Wealth Mobility: 0.4501 (std: 0.0168)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Whale Influence: 0.3407 (std: 0.0275)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Whale Influence: 0.3407 (std: 0.0275)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Whale Proposal Rate: 0.1040 (std: 0.0195)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Whale Proposal Rate: 0.1040 (std: 0.0195)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Governance Capture Risk: 0.4725 (std: 0.0142)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Governance Capture Risk: 0.4725 (std: 0.0142)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Vote Buying Vulnerability: 78.1338 (std: 15.7019)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Vote Buying Vulnerability: 78.1338 (std: 15.7019)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Single Entity Control: 0.0404 (std: 0.0020)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Single Entity Control: 0.0404 (std: 0.0020)
+{"timestamp":"2026-01-30T09:47:59.359Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Collusion Threshold: 0.1187 (std: 0.0232)"}
+[2026-01-30T09:47:59.359Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Collusion Threshold: 0.1187 (std: 0.0232)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Participation Trend: 0.0000 (std: 0.0001)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Participation Trend: 0.0000 (std: 0.0001)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Treasury Trend: -0.9837 (std: 0.2301)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Treasury Trend: -0.9837 (std: 0.2301)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Member Growth Rate: 0.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Member Growth Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Rate: 10.5020 (std: 0.6990)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Rate: 10.5020 (std: 0.6990)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Governance Activity Index: 0.0067 (std: 0.0008)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Governance Activity Index: 0.0067 (std: 0.0008)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Final Gini: 0.5499 (std: 0.0168)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Final Gini: 0.5499 (std: 0.0168)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Final Reputation Gini: 0.9751 (std: 0.0015)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0_proposal_bond_fraction=0.01] Final Reputation Gini: 0.9751 (std: 0.0015)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Pass Rate: 0.0891 (std: 0.0213)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Pass Rate: 0.0891 (std: 0.0213)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Average Turnout: 0.0766 (std: 0.0081)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Average Turnout: 0.0766 (std: 0.0081)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Final Treasury: 11852.1115 (std: 444.2637)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Final Treasury: 11852.1115 (std: 444.2637)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Final Token Price: 2.3139 (std: 1.4716)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Final Token Price: 2.3139 (std: 1.4716)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Final Member Count: 210.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Final Member Count: 210.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Total Proposals: 202.0400 (std: 17.9710)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Total Proposals: 202.0400 (std: 17.9710)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Quorum Reach Rate: 0.3428 (std: 0.0369)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Quorum Reach Rate: 0.3428 (std: 0.0369)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Margin of Victory: 0.5126 (std: 0.0272)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Margin of Victory: 0.5126 (std: 0.0272)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Time to Decision: 1024.2630 (std: 41.6081)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Time to Decision: 1024.2630 (std: 41.6081)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Abandonment Rate: 0.0235 (std: 0.0091)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Abandonment Rate: 0.0235 (std: 0.0091)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Rejection Rate: 0.9109 (std: 0.0213)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Rejection Rate: 0.9109 (std: 0.0213)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Governance Overhead: 20.9064 (std: 2.0753)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Governance Overhead: 20.9064 (std: 2.0753)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Unique Voter Count: 206.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Unique Voter Count: 206.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Voter Participation Rate: 0.0972 (std: 0.0100)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Voter Participation Rate: 0.0972 (std: 0.0100)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Voter Concentration Gini: 0.2286 (std: 0.0111)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Voter Concentration Gini: 0.2286 (std: 0.0111)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Delegate Concentration: 0.3248 (std: 0.0188)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Delegate Concentration: 0.3248 (std: 0.0188)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Votes Per Proposal: 20.4224 (std: 2.1050)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Votes Per Proposal: 20.4224 (std: 2.1050)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Voter Retention Rate: 1.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Voter Retention Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Voting Power Utilization: 0.0766 (std: 0.0081)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Voting Power Utilization: 0.0766 (std: 0.0081)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Treasury Volatility: 0.1911 (std: 0.0320)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Treasury Volatility: 0.1911 (std: 0.0320)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Treasury Growth Rate: -0.7147 (std: 0.0189)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Treasury Growth Rate: -0.7147 (std: 0.0189)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Staking Participation: 0.1241 (std: 0.0068)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Staking Participation: 0.1241 (std: 0.0068)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Token Concentration Gini: 0.5477 (std: 0.0169)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Token Concentration Gini: 0.5477 (std: 0.0169)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Member Wealth: 116.1778 (std: 6.1912)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Member Wealth: 116.1778 (std: 6.1912)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Wealth Mobility: 0.4523 (std: 0.0169)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Wealth Mobility: 0.4523 (std: 0.0169)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Whale Influence: 0.4987 (std: 0.0388)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Whale Influence: 0.4987 (std: 0.0388)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Whale Proposal Rate: 0.0954 (std: 0.0264)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Whale Proposal Rate: 0.0954 (std: 0.0264)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Governance Capture Risk: 0.3419 (std: 0.0159)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Governance Capture Risk: 0.3419 (std: 0.0159)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Vote Buying Vulnerability: 87.2124 (std: 15.9431)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Vote Buying Vulnerability: 87.2124 (std: 15.9431)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Single Entity Control: 0.0410 (std: 0.0022)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Single Entity Control: 0.0410 (std: 0.0022)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Collusion Threshold: 0.1232 (std: 0.0245)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Collusion Threshold: 0.1232 (std: 0.0245)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Participation Trend: -0.0000 (std: 0.0001)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Participation Trend: -0.0000 (std: 0.0001)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Treasury Trend: -0.9620 (std: 0.3438)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Treasury Trend: -0.9620 (std: 0.3438)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Member Growth Rate: 0.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Member Growth Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Rate: 10.1020 (std: 0.8985)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Rate: 10.1020 (std: 0.8985)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Governance Activity Index: 0.0076 (std: 0.0011)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Governance Activity Index: 0.0076 (std: 0.0011)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Final Gini: 0.5477 (std: 0.0169)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Final Gini: 0.5477 (std: 0.0169)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Final Reputation Gini: 0.9754 (std: 0.0038)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0] Final Reputation Gini: 0.9754 (std: 0.0038)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Pass Rate: 0.0792 (std: 0.0345)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Pass Rate: 0.0792 (std: 0.0345)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Average Turnout: 0.0713 (std: 0.0076)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Average Turnout: 0.0713 (std: 0.0076)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Treasury: 11914.6516 (std: 282.7655)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Treasury: 11914.6516 (std: 282.7655)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Token Price: 3.0653 (std: 4.5088)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Token Price: 3.0653 (std: 4.5088)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Member Count: 210.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Member Count: 210.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Total Proposals: 205.7600 (std: 15.5088)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Total Proposals: 205.7600 (std: 15.5088)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Quorum Reach Rate: 0.3235 (std: 0.0483)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Quorum Reach Rate: 0.3235 (std: 0.0483)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Margin of Victory: 0.5229 (std: 0.0258)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Margin of Victory: 0.5229 (std: 0.0258)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Time to Decision: 1036.5324 (std: 36.8689)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Time to Decision: 1036.5324 (std: 36.8689)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Abandonment Rate: 0.0218 (std: 0.0102)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Abandonment Rate: 0.0218 (std: 0.0102)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Rejection Rate: 0.9208 (std: 0.0345)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Rejection Rate: 0.9208 (std: 0.0345)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Governance Overhead: 19.7234 (std: 1.8409)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Governance Overhead: 19.7234 (std: 1.8409)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Unique Voter Count: 206.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Unique Voter Count: 206.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voter Participation Rate: 0.0919 (std: 0.0086)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voter Participation Rate: 0.0919 (std: 0.0086)
+{"timestamp":"2026-01-30T09:47:59.360Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voter Concentration Gini: 0.2390 (std: 0.0185)"}
+[2026-01-30T09:47:59.360Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voter Concentration Gini: 0.2390 (std: 0.0185)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Delegate Concentration: 0.3334 (std: 0.0163)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Delegate Concentration: 0.3334 (std: 0.0163)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Votes Per Proposal: 19.2923 (std: 1.8056)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Votes Per Proposal: 19.2923 (std: 1.8056)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voter Retention Rate: 1.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voter Retention Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voting Power Utilization: 0.0713 (std: 0.0076)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voting Power Utilization: 0.0713 (std: 0.0076)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Treasury Volatility: 0.1835 (std: 0.0331)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Treasury Volatility: 0.1835 (std: 0.0331)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Treasury Growth Rate: -0.7132 (std: 0.0160)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Treasury Growth Rate: -0.7132 (std: 0.0160)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Staking Participation: 0.1216 (std: 0.0083)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Staking Participation: 0.1216 (std: 0.0083)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Token Concentration Gini: 0.5571 (std: 0.0226)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Token Concentration Gini: 0.5571 (std: 0.0226)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Member Wealth: 118.7508 (std: 7.7923)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Member Wealth: 118.7508 (std: 7.7923)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Wealth Mobility: 0.4429 (std: 0.0226)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Wealth Mobility: 0.4429 (std: 0.0226)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Whale Influence: 0.5049 (std: 0.0367)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Whale Influence: 0.5049 (std: 0.0367)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Whale Proposal Rate: 0.0939 (std: 0.0238)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Whale Proposal Rate: 0.0939 (std: 0.0238)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Governance Capture Risk: 0.3453 (std: 0.0153)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Governance Capture Risk: 0.3453 (std: 0.0153)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Vote Buying Vulnerability: 85.0547 (std: 20.0464)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Vote Buying Vulnerability: 85.0547 (std: 20.0464)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Single Entity Control: 0.0402 (std: 0.0027)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Single Entity Control: 0.0402 (std: 0.0027)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Collusion Threshold: 0.1156 (std: 0.0289)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Collusion Threshold: 0.1156 (std: 0.0289)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Participation Trend: -0.0000 (std: 0.0001)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Participation Trend: -0.0000 (std: 0.0001)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Treasury Trend: -0.8382 (std: 0.3321)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Treasury Trend: -0.8382 (std: 0.3321)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Member Growth Rate: 0.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Member Growth Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Rate: 10.2880 (std: 0.7754)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Rate: 10.2880 (std: 0.7754)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Governance Activity Index: 0.0072 (std: 0.0011)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Governance Activity Index: 0.0072 (std: 0.0011)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Gini: 0.5571 (std: 0.0226)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Gini: 0.5571 (std: 0.0226)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Reputation Gini: 0.9750 (std: 0.0014)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=true_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Reputation Gini: 0.9750 (std: 0.0014)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Proposal Pass Rate: 0.0096 (std: 0.0055)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Proposal Pass Rate: 0.0096 (std: 0.0055)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Average Turnout: 0.0605 (std: 0.0072)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Average Turnout: 0.0605 (std: 0.0072)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Final Treasury: 31214.8557 (std: 23259.0088)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Final Treasury: 31214.8557 (std: 23259.0088)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Final Token Price: 2.7785 (std: 2.4338)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Final Token Price: 2.7785 (std: 2.4338)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Final Member Count: 210.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Final Member Count: 210.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Total Proposals: 202.6000 (std: 14.2974)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Total Proposals: 202.6000 (std: 14.2974)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Quorum Reach Rate: 0.3166 (std: 0.0379)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Quorum Reach Rate: 0.3166 (std: 0.0379)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Avg Margin of Victory: 0.4800 (std: 0.0300)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Avg Margin of Victory: 0.4800 (std: 0.0300)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Avg Time to Decision: 1021.9571 (std: 36.0471)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Avg Time to Decision: 1021.9571 (std: 36.0471)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Proposal Abandonment Rate: 0.0235 (std: 0.0137)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Proposal Abandonment Rate: 0.0235 (std: 0.0137)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Proposal Rejection Rate: 0.9904 (std: 0.0055)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Proposal Rejection Rate: 0.9904 (std: 0.0055)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Governance Overhead: 17.2249 (std: 1.8657)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Governance Overhead: 17.2249 (std: 1.8657)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Unique Voter Count: 206.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Unique Voter Count: 206.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Voter Participation Rate: 0.0801 (std: 0.0088)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Voter Participation Rate: 0.0801 (std: 0.0088)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Voter Concentration Gini: 0.3613 (std: 0.0100)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Voter Concentration Gini: 0.3613 (std: 0.0100)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Delegate Concentration: 0.3986 (std: 0.0100)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Delegate Concentration: 0.3986 (std: 0.0100)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Avg Votes Per Proposal: 16.8230 (std: 1.8580)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Avg Votes Per Proposal: 16.8230 (std: 1.8580)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Voter Retention Rate: 0.9973 (std: 0.0040)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Voter Retention Rate: 0.9973 (std: 0.0040)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Voting Power Utilization: 0.0605 (std: 0.0072)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Voting Power Utilization: 0.0605 (std: 0.0072)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Treasury Volatility: 0.4313 (std: 0.0889)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Treasury Volatility: 0.4313 (std: 0.0889)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Treasury Growth Rate: -0.3334 (std: 0.4923)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Treasury Growth Rate: -0.3334 (std: 0.4923)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Staking Participation: 0.1213 (std: 0.0056)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Staking Participation: 0.1213 (std: 0.0056)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Token Concentration Gini: 0.5529 (std: 0.0179)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Token Concentration Gini: 0.5529 (std: 0.0179)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Avg Member Wealth: 118.8482 (std: 5.3309)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Avg Member Wealth: 118.8482 (std: 5.3309)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Wealth Mobility: 0.4471 (std: 0.0179)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Wealth Mobility: 0.4471 (std: 0.0179)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Whale Influence: 0.3480 (std: 0.0278)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Whale Influence: 0.3480 (std: 0.0278)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Whale Proposal Rate: 0.1010 (std: 0.0212)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Whale Proposal Rate: 0.1010 (std: 0.0212)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Governance Capture Risk: 0.4695 (std: 0.0167)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Governance Capture Risk: 0.4695 (std: 0.0167)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Vote Buying Vulnerability: 77.1755 (std: 14.4160)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Vote Buying Vulnerability: 77.1755 (std: 14.4160)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Single Entity Control: 0.0400 (std: 0.0018)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Single Entity Control: 0.0400 (std: 0.0018)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Collusion Threshold: 0.1141 (std: 0.0242)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Collusion Threshold: 0.1141 (std: 0.0242)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Participation Trend: 0.0000 (std: 0.0001)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Participation Trend: 0.0000 (std: 0.0001)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Treasury Trend: 6.9336 (std: 12.2247)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Treasury Trend: 6.9336 (std: 12.2247)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Member Growth Rate: 0.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Member Growth Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Proposal Rate: 10.1300 (std: 0.7149)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Proposal Rate: 10.1300 (std: 0.7149)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Governance Activity Index: 0.0060 (std: 0.0009)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Governance Activity Index: 0.0060 (std: 0.0009)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Final Gini: 0.5529 (std: 0.0179)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Final Gini: 0.5529 (std: 0.0179)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Final Reputation Gini: 0.9753 (std: 0.0013)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0] Final Reputation Gini: 0.9753 (std: 0.0013)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Pass Rate: 0.0126 (std: 0.0066)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Pass Rate: 0.0126 (std: 0.0066)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Average Turnout: 0.0644 (std: 0.0066)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Average Turnout: 0.0644 (std: 0.0066)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Final Treasury: 29004.1702 (std: 22200.8252)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Final Treasury: 29004.1702 (std: 22200.8252)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Final Token Price: 4.9150 (std: 9.4814)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Final Token Price: 4.9150 (std: 9.4814)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Final Member Count: 210.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Final Member Count: 210.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Total Proposals: 204.3200 (std: 11.7570)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Total Proposals: 204.3200 (std: 11.7570)
+{"timestamp":"2026-01-30T09:47:59.361Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Quorum Reach Rate: 0.3357 (std: 0.0316)"}
+[2026-01-30T09:47:59.361Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Quorum Reach Rate: 0.3357 (std: 0.0316)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Margin of Victory: 0.4814 (std: 0.0278)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Margin of Victory: 0.4814 (std: 0.0278)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Time to Decision: 1019.2977 (std: 31.7098)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Time to Decision: 1019.2977 (std: 31.7098)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Abandonment Rate: 0.0217 (std: 0.0089)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Abandonment Rate: 0.0217 (std: 0.0089)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Rejection Rate: 0.9874 (std: 0.0066)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Rejection Rate: 0.9874 (std: 0.0066)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Governance Overhead: 18.1885 (std: 1.7561)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Governance Overhead: 18.1885 (std: 1.7561)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Unique Voter Count: 206.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Unique Voter Count: 206.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Voter Participation Rate: 0.0847 (std: 0.0083)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Voter Participation Rate: 0.0847 (std: 0.0083)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Voter Concentration Gini: 0.3592 (std: 0.0117)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Voter Concentration Gini: 0.3592 (std: 0.0117)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Delegate Concentration: 0.4039 (std: 0.0135)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Delegate Concentration: 0.4039 (std: 0.0135)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Votes Per Proposal: 17.7951 (std: 1.7414)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Votes Per Proposal: 17.7951 (std: 1.7414)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Voter Retention Rate: 0.9975 (std: 0.0051)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Voter Retention Rate: 0.9975 (std: 0.0051)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Voting Power Utilization: 0.0644 (std: 0.0066)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Voting Power Utilization: 0.0644 (std: 0.0066)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Treasury Volatility: 0.4908 (std: 0.1059)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Treasury Volatility: 0.4908 (std: 0.1059)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Treasury Growth Rate: -0.3960 (std: 0.4677)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Treasury Growth Rate: -0.3960 (std: 0.4677)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Staking Participation: 0.1228 (std: 0.0058)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Staking Participation: 0.1228 (std: 0.0058)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Token Concentration Gini: 0.5574 (std: 0.0104)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Token Concentration Gini: 0.5574 (std: 0.0104)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Member Wealth: 117.3981 (std: 5.2811)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Avg Member Wealth: 117.3981 (std: 5.2811)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Wealth Mobility: 0.4426 (std: 0.0104)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Wealth Mobility: 0.4426 (std: 0.0104)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Whale Influence: 0.3434 (std: 0.0260)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Whale Influence: 0.3434 (std: 0.0260)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Whale Proposal Rate: 0.0964 (std: 0.0227)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Whale Proposal Rate: 0.0964 (std: 0.0227)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Governance Capture Risk: 0.4762 (std: 0.0205)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Governance Capture Risk: 0.4762 (std: 0.0205)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Vote Buying Vulnerability: 76.0824 (std: 12.7068)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Vote Buying Vulnerability: 76.0824 (std: 12.7068)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Single Entity Control: 0.0405 (std: 0.0019)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Single Entity Control: 0.0405 (std: 0.0019)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Collusion Threshold: 0.1109 (std: 0.0164)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Collusion Threshold: 0.1109 (std: 0.0164)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Participation Trend: 0.0000 (std: 0.0001)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Participation Trend: 0.0000 (std: 0.0001)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Treasury Trend: 3.8829 (std: 14.0491)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Treasury Trend: 3.8829 (std: 14.0491)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Member Growth Rate: 0.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Member Growth Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Rate: 10.2160 (std: 0.5878)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Proposal Rate: 10.2160 (std: 0.5878)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Governance Activity Index: 0.0064 (std: 0.0008)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Governance Activity Index: 0.0064 (std: 0.0008)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Final Gini: 0.5574 (std: 0.0104)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Final Gini: 0.5574 (std: 0.0104)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Final Reputation Gini: 0.9750 (std: 0.0013)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0_proposal_bond_fraction=0.01] Final Reputation Gini: 0.9750 (std: 0.0013)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Pass Rate: 0.0859 (std: 0.0258)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Pass Rate: 0.0859 (std: 0.0258)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Average Turnout: 0.0790 (std: 0.0098)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Average Turnout: 0.0790 (std: 0.0098)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Final Treasury: 38304.4329 (std: 31465.5237)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Final Treasury: 38304.4329 (std: 31465.5237)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Final Token Price: 4.3576 (std: 5.8674)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Final Token Price: 4.3576 (std: 5.8674)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Final Member Count: 210.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Final Member Count: 210.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Total Proposals: 206.5200 (std: 17.0956)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Total Proposals: 206.5200 (std: 17.0956)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Quorum Reach Rate: 0.3562 (std: 0.0499)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Quorum Reach Rate: 0.3562 (std: 0.0499)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Margin of Victory: 0.5123 (std: 0.0331)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Margin of Victory: 0.5123 (std: 0.0331)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Time to Decision: 1021.1913 (std: 42.3214)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Time to Decision: 1021.1913 (std: 42.3214)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Abandonment Rate: 0.0217 (std: 0.0120)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Abandonment Rate: 0.0217 (std: 0.0120)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Rejection Rate: 0.9141 (std: 0.0258)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Rejection Rate: 0.9141 (std: 0.0258)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Governance Overhead: 21.6593 (std: 2.6513)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Governance Overhead: 21.6593 (std: 2.6513)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Unique Voter Count: 206.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Unique Voter Count: 206.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Voter Participation Rate: 0.1009 (std: 0.0126)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Voter Participation Rate: 0.1009 (std: 0.0126)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Voter Concentration Gini: 0.2300 (std: 0.0205)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Voter Concentration Gini: 0.2300 (std: 0.0205)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Delegate Concentration: 0.3216 (std: 0.0210)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Delegate Concentration: 0.3216 (std: 0.0210)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Votes Per Proposal: 21.1950 (std: 2.6538)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Votes Per Proposal: 21.1950 (std: 2.6538)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Voter Retention Rate: 1.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Voter Retention Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Voting Power Utilization: 0.0790 (std: 0.0098)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Voting Power Utilization: 0.0790 (std: 0.0098)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Treasury Volatility: 0.4385 (std: 0.1359)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Treasury Volatility: 0.4385 (std: 0.1359)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Treasury Growth Rate: -0.1943 (std: 0.6599)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Treasury Growth Rate: -0.1943 (std: 0.6599)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Staking Participation: 0.1235 (std: 0.0052)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Staking Participation: 0.1235 (std: 0.0052)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Token Concentration Gini: 0.5479 (std: 0.0146)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Token Concentration Gini: 0.5479 (std: 0.0146)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Member Wealth: 116.6542 (std: 4.7619)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Avg Member Wealth: 116.6542 (std: 4.7619)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Wealth Mobility: 0.4521 (std: 0.0146)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Wealth Mobility: 0.4521 (std: 0.0146)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Whale Influence: 0.4934 (std: 0.0223)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Whale Influence: 0.4934 (std: 0.0223)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Whale Proposal Rate: 0.0934 (std: 0.0258)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Whale Proposal Rate: 0.0934 (std: 0.0258)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Governance Capture Risk: 0.3399 (std: 0.0215)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Governance Capture Risk: 0.3399 (std: 0.0215)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Vote Buying Vulnerability: 93.8570 (std: 17.9005)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Vote Buying Vulnerability: 93.8570 (std: 17.9005)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Single Entity Control: 0.0408 (std: 0.0018)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Single Entity Control: 0.0408 (std: 0.0018)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Collusion Threshold: 0.1206 (std: 0.0207)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Collusion Threshold: 0.1206 (std: 0.0207)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Participation Trend: 0.0000 (std: 0.0001)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Participation Trend: 0.0000 (std: 0.0001)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Treasury Trend: 4.4893 (std: 17.7271)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Treasury Trend: 4.4893 (std: 17.7271)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Member Growth Rate: 0.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Member Growth Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Rate: 10.3260 (std: 0.8548)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Proposal Rate: 10.3260 (std: 0.8548)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Governance Activity Index: 0.0080 (std: 0.0011)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Governance Activity Index: 0.0080 (std: 0.0011)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Final Gini: 0.5479 (std: 0.0146)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Final Gini: 0.5479 (std: 0.0146)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Final Reputation Gini: 0.9752 (std: 0.0015)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0] Final Reputation Gini: 0.9752 (std: 0.0015)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Pass Rate: 0.0769 (std: 0.0276)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Pass Rate: 0.0769 (std: 0.0276)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Average Turnout: 0.0793 (std: 0.0123)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Average Turnout: 0.0793 (std: 0.0123)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Treasury: 35654.3912 (std: 29810.9975)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Treasury: 35654.3912 (std: 29810.9975)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Token Price: 3.8865 (std: 5.3612)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Token Price: 3.8865 (std: 5.3612)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Member Count: 210.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Member Count: 210.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Total Proposals: 204.9600 (std: 17.5487)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Total Proposals: 204.9600 (std: 17.5487)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Quorum Reach Rate: 0.3481 (std: 0.0616)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Quorum Reach Rate: 0.3481 (std: 0.0616)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Margin of Victory: 0.5178 (std: 0.0365)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Margin of Victory: 0.5178 (std: 0.0365)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Time to Decision: 1022.4707 (std: 34.5771)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Time to Decision: 1022.4707 (std: 34.5771)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Abandonment Rate: 0.0234 (std: 0.0096)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Abandonment Rate: 0.0234 (std: 0.0096)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Rejection Rate: 0.9231 (std: 0.0276)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Rejection Rate: 0.9231 (std: 0.0276)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Governance Overhead: 21.8972 (std: 3.0669)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Governance Overhead: 21.8972 (std: 3.0669)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Unique Voter Count: 206.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Unique Voter Count: 206.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voter Participation Rate: 0.1018 (std: 0.0141)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voter Participation Rate: 0.1018 (std: 0.0141)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voter Concentration Gini: 0.2295 (std: 0.0190)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voter Concentration Gini: 0.2295 (std: 0.0190)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Delegate Concentration: 0.3187 (std: 0.0199)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Delegate Concentration: 0.3187 (std: 0.0199)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Votes Per Proposal: 21.3803 (std: 2.9653)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Votes Per Proposal: 21.3803 (std: 2.9653)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voter Retention Rate: 1.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voter Retention Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voting Power Utilization: 0.0793 (std: 0.0123)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Voting Power Utilization: 0.0793 (std: 0.0123)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Treasury Volatility: 0.4340 (std: 0.1035)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Treasury Volatility: 0.4340 (std: 0.1035)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Treasury Growth Rate: -0.2566 (std: 0.6054)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Treasury Growth Rate: -0.2566 (std: 0.6054)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Staking Participation: 0.1236 (std: 0.0077)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Staking Participation: 0.1236 (std: 0.0077)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Token Concentration Gini: 0.5560 (std: 0.0186)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Token Concentration Gini: 0.5560 (std: 0.0186)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Member Wealth: 116.7585 (std: 7.0671)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Avg Member Wealth: 116.7585 (std: 7.0671)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Wealth Mobility: 0.4440 (std: 0.0186)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Wealth Mobility: 0.4440 (std: 0.0186)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Whale Influence: 0.4985 (std: 0.0365)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Whale Influence: 0.4985 (std: 0.0365)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Whale Proposal Rate: 0.1006 (std: 0.0280)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Whale Proposal Rate: 0.1006 (std: 0.0280)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Governance Capture Risk: 0.3362 (std: 0.0165)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Governance Capture Risk: 0.3362 (std: 0.0165)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Vote Buying Vulnerability: 87.9265 (std: 18.0073)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Vote Buying Vulnerability: 87.9265 (std: 18.0073)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Single Entity Control: 0.0408 (std: 0.0025)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Single Entity Control: 0.0408 (std: 0.0025)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Collusion Threshold: 0.1175 (std: 0.0242)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Collusion Threshold: 0.1175 (std: 0.0242)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Participation Trend: 0.0000 (std: 0.0001)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Participation Trend: 0.0000 (std: 0.0001)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Treasury Trend: 6.4843 (std: 14.9055)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Treasury Trend: 6.4843 (std: 14.9055)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Member Growth Rate: 0.0000 (std: 0.0000)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Member Growth Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Rate: 10.2480 (std: 0.8774)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Proposal Rate: 10.2480 (std: 0.8774)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Governance Activity Index: 0.0079 (std: 0.0015)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Governance Activity Index: 0.0079 (std: 0.0015)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Gini: 0.5560 (std: 0.0186)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Gini: 0.5560 (std: 0.0186)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"metric","message":"[treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Reputation Gini: 0.9755 (std: 0.0021)"}
+[2026-01-30T09:47:59.362Z] [METRIC  ] [treasury_stabilization_enabled=false_participation_target_rate=0.2_proposal_bond_fraction=0.01] Final Reputation Gini: 0.9755 (std: 0.0021)
+{"timestamp":"2026-01-30T09:47:59.362Z","level":"info","message":"Experiment state changed to: completed"}
+[2026-01-30T09:47:59.362Z] [INFO    ] Experiment state changed to: completed

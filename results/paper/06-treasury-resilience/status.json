@@ -1,0 +1,16 @@
+{
+  "name": "Treasury Resilience",
+  "state": "completed",
+  "lastUpdate": "2026-01-30T10:02:25.514Z",
+  "progress": {
+    "completedRuns": 300,
+    "totalRuns": 300,
+    "failedRuns": 0,
+    "percentComplete": 100,
+    "runsPerSecond": 1.314290721107509,
+    "estimatedRemainingMs": 0
+  },
+  "outputDirectory": "results/paper/06-treasury-resilience",
+  "logFile": "results\\paper\\06-treasury-resilience\\experiment.log",
+  "startTime": "2026-01-30T09:58:36.982Z"
+}
