@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { AppProviders } from "@/components/providers/AppProviders";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,23 +14,23 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "DAO Simulator",
-    template: "%s | DAO Simulator",
+    default: "DAO Research Console",
+    template: "%s | DAO Research Console",
   },
-  description: "Real-time decentralized governance simulation dashboard. Explore DAO dynamics, agent behaviors, and governance mechanisms.",
-  keywords: ["DAO", "simulation", "governance", "blockchain", "decentralized", "agent-based modeling"],
-  authors: [{ name: "DAO Simulator Team" }],
+  description: "Academic experiment management for DAO governance simulations.",
+  keywords: ["DAO", "simulation", "governance", "experiment", "research", "analysis"],
+  authors: [{ name: "DAO Research Team" }],
   openGraph: {
-    title: "DAO Simulator",
-    description: "Real-time decentralized governance simulation dashboard",
+    title: "DAO Research Console",
+    description: "Academic experiment management for DAO governance simulations.",
     type: "website",
     locale: "en_US",
-    siteName: "DAO Simulator",
+    siteName: "DAO Research Console",
   },
   twitter: {
     card: "summary_large_image",
-    title: "DAO Simulator",
-    description: "Real-time decentralized governance simulation dashboard",
+    title: "DAO Research Console",
+    description: "Academic experiment management for DAO governance simulations.",
   },
   robots: {
     index: true,
@@ -46,7 +45,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#111827",
+  themeColor: "#0f172a",
 };
 
 export default function RootLayout({
@@ -55,42 +54,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-900 text-gray-100`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-950 text-slate-100`}
       >
-        <AppProviders>
-          {/* Skip to main content link for keyboard users */}
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900"
-          >
-            Skip to main content
-          </a>
+        {/* Skip to main content link for keyboard users */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-slate-800 focus:text-white focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400"
+        >
+          Skip to main content
+        </a>
 
-          {/* Main content wrapper */}
-          <main id="main-content" tabIndex={-1} className="outline-none">
-            {children}
-          </main>
-
-          {/* ARIA live region for dynamic announcements */}
-          <div
-            id="aria-live-region"
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
-            className="sr-only"
-          />
-
-          {/* Assertive announcements for critical alerts */}
-          <div
-            id="aria-alert-region"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-            className="sr-only"
-          />
-        </AppProviders>
+        <main id="main-content" tabIndex={-1} className="outline-none">
+          {children}
+        </main>
       </body>
     </html>
   );

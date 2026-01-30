@@ -34,12 +34,6 @@ export default function NotFound() {
           >
             {m.errors.goHome}
           </Link>
-          <Link
-            href="/dashboard"
-            className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
-          >
-            {m.errors.openDashboard}
-          </Link>
         </div>
 
         {/* Decorative Elements */}

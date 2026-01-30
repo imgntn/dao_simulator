@@ -1,60 +1,389 @@
-import Link from "next/link";
-import { messages as m } from '@/lib/i18n';
+import fs from 'fs';
+import path from 'path';
+import yaml from 'yaml';
+import Link from 'next/link';
 
-export default function Home() {
+const ROOT_DIR = process.cwd();
+const EXPERIMENTS_DIR = path.join(ROOT_DIR, 'experiments');
+const RESULTS_DIR = path.join(ROOT_DIR, 'results');
+
+type ExperimentConfigSummary = {
+  id: string;
+  path: string;
+  name: string;
+  description: string;
+  tags: string[];
+  sweepParameter?: string;
+};
+
+type ResultSummary = {
+  name: string;
+  state: string;
+  progress: number | null;
+  completedRuns: number | null;
+  totalRuns: number | null;
+  lastUpdate: string | null;
+  hasReport: boolean;
+  hasQualityReport: boolean;
+};
+
+function parseExperimentConfig(filePath: string): ExperimentConfigSummary {
+  const raw = fs.readFileSync(filePath, 'utf8');
+  const ext = path.extname(filePath).toLowerCase();
+  let parsed: any = {};
+
+  try {
+    parsed = ext === '.json' ? JSON.parse(raw) : yaml.parse(raw);
+  } catch {
+    parsed = {};
+  }
+
+  const relativePath = path.relative(ROOT_DIR, filePath).replace(/\\/g, '/');
+  const name = typeof parsed?.name === 'string' ? parsed.name : path.basename(filePath);
+  const description = typeof parsed?.description === 'string' ? parsed.description : '';
+  const tags = Array.isArray(parsed?.tags) ? parsed.tags.filter((tag: unknown) => typeof tag === 'string') : [];
+  const sweepParameter = typeof parsed?.sweep?.parameter === 'string' ? parsed.sweep.parameter : undefined;
+
+  return {
+    id: relativePath,
+    path: relativePath,
+    name,
+    description,
+    tags,
+    sweepParameter,
+  };
+}
+
+function listExperimentConfigs(): ExperimentConfigSummary[] {
+  if (!fs.existsSync(EXPERIMENTS_DIR)) return [];
+
+  const configs: ExperimentConfigSummary[] = [];
+  const stack = [EXPERIMENTS_DIR];
+
+  while (stack.length > 0) {
+    const current = stack.pop();
+    if (!current) continue;
+
+    const entries = fs.readdirSync(current, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        stack.push(fullPath);
+      } else if (entry.isFile()) {
+        const ext = path.extname(entry.name).toLowerCase();
+        if (ext === '.yaml' || ext === '.yml' || ext === '.json') {
+          configs.push(parseExperimentConfig(fullPath));
+        }
+      }
+    }
+  }
+
+  return configs.sort((a, b) => a.path.localeCompare(b.path));
+}
+
+function listResults(): ResultSummary[] {
+  if (!fs.existsSync(RESULTS_DIR)) return [];
+
+  const dirs = fs.readdirSync(RESULTS_DIR, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory());
+
+  return dirs.map((entry) => {
+    const resultDir = path.join(RESULTS_DIR, entry.name);
+    const statusPath = path.join(resultDir, 'status.json');
+    const reportPath = path.join(resultDir, 'report.md');
+    const qualityReportPath = path.join(resultDir, 'research-quality-report.md');
+
+    let state = 'unknown';
+    let progress: number | null = null;
+    let completedRuns: number | null = null;
+    let totalRuns: number | null = null;
+    let lastUpdate: string | null = null;
+
+    if (fs.existsSync(statusPath)) {
+      try {
+        const status = JSON.parse(fs.readFileSync(statusPath, 'utf8')) as {
+          state?: string;
+          lastUpdate?: string;
+          progress?: {
+            completedRuns?: number;
+            totalRuns?: number;
+            percentComplete?: number;
+          };
+        };
+        state = status.state ?? state;
+        lastUpdate = status.lastUpdate ?? null;
+        progress = typeof status.progress?.percentComplete === 'number'
+          ? status.progress.percentComplete
+          : null;
+        completedRuns = typeof status.progress?.completedRuns === 'number'
+          ? status.progress.completedRuns
+          : null;
+        totalRuns = typeof status.progress?.totalRuns === 'number'
+          ? status.progress.totalRuns
+          : null;
+      } catch {
+        state = 'invalid_status';
+      }
+    }
+
+    return {
+      name: entry.name,
+      state,
+      progress,
+      completedRuns,
+      totalRuns,
+      lastUpdate,
+      hasReport: fs.existsSync(reportPath),
+      hasQualityReport: fs.existsSync(qualityReportPath),
+    };
+  }).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function getParam(value: string | string[] | undefined): string {
+  if (!value) return '';
+  return Array.isArray(value) ? value[0] ?? '' : value;
+}
+
+export default function Home({
+  searchParams,
+}: {
+  searchParams?: Record<string, string | string[] | undefined>;
+}) {
+  const configs = listExperimentConfigs();
+  const results = listResults();
+  const action = getParam(searchParams?.action);
+  const target = getParam(searchParams?.target);
+  const pid = getParam(searchParams?.pid);
+  const log = getParam(searchParams?.log);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 flex items-center justify-center p-8">
-      <div className="max-w-4xl mx-auto text-center space-y-8">
-        <div className="space-y-4">
-          <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-pulse">
-            {m.home.title}
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300">
-            {m.home.subtitle}
+    <div className="min-h-screen bg-slate-950 text-slate-100">
+      <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
+        <header className="space-y-3">
+          <p className="text-sm uppercase tracking-[0.3em] text-slate-500">DAO Research Console</p>
+          <h1 className="text-3xl sm:text-4xl font-semibold text-slate-100">Experiment Management</h1>
+          <p className="text-slate-400 max-w-2xl">
+            Manage experiment runs, review results, generate reports, and update paper artifacts.
+            All actions run locally and write logs to the results directory.
           </p>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            {m.home.description}
+        </header>
+
+        {(action || log || pid) && (
+          <section className="rounded-lg border border-slate-800 bg-slate-900/60 p-4 text-sm text-slate-200">
+            <p className="font-medium">Latest action queued</p>
+            <div className="mt-2 space-y-1 text-slate-400">
+              {action && <p>Action: {action}</p>}
+              {target && <p>Target: {target}</p>}
+              {pid && <p>PID: {pid}</p>}
+              {log && <p>Log: {log}</p>}
+            </div>
+          </section>
+        )}
+
+        <section className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
+            <h2 className="text-lg font-semibold">Run Experiments</h2>
+            <p className="text-sm text-slate-400">
+              Select a configuration file to start or resume a batch run.
+            </p>
+            <form action="/api/research" method="post" className="space-y-3">
+              <input type="hidden" name="action" value="run" />
+              <label className="block text-xs uppercase tracking-wide text-slate-500">Experiment Config</label>
+              <select
+                name="configPath"
+                required
+                className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+              >
+                <option value="" disabled>Select a config</option>
+                {configs.map((config) => (
+                  <option key={config.id} value={config.path}>
+                    {config.path}
+                  </option>
+                ))}
+              </select>
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500"
+                >
+                  Run
+                </button>
+              </div>
+            </form>
+
+            <form action="/api/research" method="post" className="space-y-3 pt-3 border-t border-slate-800">
+              <input type="hidden" name="action" value="resume" />
+              <label className="block text-xs uppercase tracking-wide text-slate-500">Resume Config</label>
+              <select
+                name="configPath"
+                required
+                className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+              >
+                <option value="" disabled>Select a config</option>
+                {configs.map((config) => (
+                  <option key={`${config.id}-resume`} value={config.path}>
+                    {config.path}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
+              >
+                Resume
+              </button>
+            </form>
+          </div>
+
+          <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
+            <h2 className="text-lg font-semibold">Reports</h2>
+            <p className="text-sm text-slate-400">
+              Generate research-quality reports from existing results.
+            </p>
+            <form action="/api/research" method="post" className="space-y-3">
+              <input type="hidden" name="action" value="report" />
+              <label className="block text-xs uppercase tracking-wide text-slate-500">Results Directory</label>
+              <select
+                name="resultsDir"
+                required
+                className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+              >
+                <option value="" disabled>Select a result set</option>
+                {results.map((result) => (
+                  <option key={result.name} value={`results/${result.name}`}>
+                    results/{result.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium rounded-md bg-emerald-600 text-white hover:bg-emerald-500"
+              >
+                Generate Report
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
+          <h2 className="text-lg font-semibold">Paper Pipeline</h2>
+          <p className="text-sm text-slate-400">
+            Update the academic paper from the latest results, compile PDFs, and archive releases.
           </p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
-          <Link
-            href="/dashboard"
-            className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full font-bold text-lg text-white shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
-          >
-            <span className="relative z-10">{m.home.launchDashboard}</span>
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 opacity-0 group-hover:opacity-100 blur transition-opacity duration-300"></div>
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 text-left">
-          <div className="p-6 bg-gray-800/50 backdrop-blur-lg rounded-lg border border-gray-700 hover:border-purple-500 transition-all duration-300">
-            <div className="text-2xl font-semibold mb-4 text-purple-300">{m.home.feature3dLabel}</div>
-            <h3 className="text-xl font-bold text-white mb-2">{m.home.feature3dTitle}</h3>
-            <p className="text-gray-400">
-              {m.home.feature3dDesc}
-            </p>
+          <div className="flex flex-wrap gap-2">
+            <form action="/api/research" method="post">
+              <input type="hidden" name="action" value="paper-update" />
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium rounded-md bg-slate-100 text-slate-900 hover:bg-white"
+              >
+                Update Paper
+              </button>
+            </form>
+            <form action="/api/research" method="post">
+              <input type="hidden" name="action" value="paper-compile" />
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
+              >
+                Compile PDF
+              </button>
+            </form>
+            <form action="/api/research" method="post">
+              <input type="hidden" name="action" value="paper-archive" />
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
+              >
+                Archive Paper
+              </button>
+            </form>
           </div>
+        </section>
 
-          <div className="p-6 bg-gray-800/50 backdrop-blur-lg rounded-lg border border-gray-700 hover:border-blue-500 transition-all duration-300">
-            <div className="text-2xl font-semibold mb-4 text-blue-300">{m.home.featureLiveLabel}</div>
-            <h3 className="text-xl font-bold text-white mb-2">{m.home.featureLiveTitle}</h3>
-            <p className="text-gray-400">
-              {m.home.featureLiveDesc}
-            </p>
+        <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Experiment Configs</h2>
+            <span className="text-xs text-slate-500">{configs.length} configs</span>
           </div>
+          {configs.length === 0 ? (
+            <p className="text-sm text-slate-500">No experiment configs found.</p>
+          ) : (
+            <div className="overflow-auto">
+              <table className="min-w-full text-sm">
+                <thead className="text-xs uppercase text-slate-500 border-b border-slate-800">
+                  <tr>
+                    <th className="text-left py-2 pr-4">Path</th>
+                    <th className="text-left py-2 pr-4">Name</th>
+                    <th className="text-left py-2 pr-4">Description</th>
+                    <th className="text-left py-2 pr-4">Sweep</th>
+                    <th className="text-left py-2">Tags</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {configs.map((config) => (
+                    <tr key={config.id} className="border-b border-slate-900">
+                      <td className="py-2 pr-4 text-slate-300">{config.path}</td>
+                      <td className="py-2 pr-4 text-slate-200">{config.name}</td>
+                      <td className="py-2 pr-4 text-slate-500">{config.description || '-'}</td>
+                      <td className="py-2 pr-4 text-slate-500">{config.sweepParameter || '-'}</td>
+                      <td className="py-2 text-slate-500">{config.tags.join(', ') || '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
 
-          <div className="p-6 bg-gray-800/50 backdrop-blur-lg rounded-lg border border-gray-700 hover:border-pink-500 transition-all duration-300">
-            <div className="text-2xl font-semibold mb-4 text-pink-300">{m.home.featureAgentsLabel}</div>
-            <h3 className="text-xl font-bold text-white mb-2">{m.home.featureAgentsTitle}</h3>
-            <p className="text-gray-400">
-              {m.home.featureAgentsDesc}
-            </p>
+        <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Results Archive</h2>
+            <span className="text-xs text-slate-500">{results.length} result sets</span>
           </div>
-        </div>
+          {results.length === 0 ? (
+            <p className="text-sm text-slate-500">No results found in ./results.</p>
+          ) : (
+            <div className="overflow-auto">
+              <table className="min-w-full text-sm">
+                <thead className="text-xs uppercase text-slate-500 border-b border-slate-800">
+                  <tr>
+                    <th className="text-left py-2 pr-4">Result</th>
+                    <th className="text-left py-2 pr-4">State</th>
+                    <th className="text-left py-2 pr-4">Progress</th>
+                    <th className="text-left py-2 pr-4">Last Update</th>
+                    <th className="text-left py-2">Reports</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {results.map((result) => (
+                    <tr key={result.name} className="border-b border-slate-900">
+                      <td className="py-2 pr-4 text-slate-200">
+                        <Link href={`/results/${result.name}`} className="text-blue-400 hover:text-blue-300">
+                          {result.name}
+                        </Link>
+                      </td>
+                      <td className="py-2 pr-4 text-slate-400">{result.state}</td>
+                      <td className="py-2 pr-4 text-slate-400">
+                        {result.progress !== null
+                          ? `${result.progress.toFixed(1)}% (${result.completedRuns ?? 0}/${result.totalRuns ?? 0})`
+                          : '-'}
+                      </td>
+                      <td className="py-2 pr-4 text-slate-500">{result.lastUpdate ?? '-'}</td>
+                      <td className="py-2 text-slate-500">
+                        {result.hasReport ? 'report.md' : '-'}
+                        {result.hasQualityReport ? `${result.hasReport ? ', ' : ''}research-quality-report.md` : ''}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
 
-        <footer className="mt-16 text-gray-500 text-sm">
-          <p>{m.footer.tagline}</p>
+        <footer className="text-xs text-slate-600">
+          Workspace: {ROOT_DIR}
         </footer>
       </div>
     </div>
