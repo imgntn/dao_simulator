@@ -100,10 +100,10 @@ function pickSweepFinding(summary: ExperimentSummary): string {
   let bestCV = 0;
 
   for (const name of metricNames) {
-    const means = groups.map((g) => {
-      const m = g.metrics.find((x) => x.name === name);
-      return m ? m.mean : 0;
-    });
+    // Skip metrics that don't exist in all sweep arms
+    const entries = groups.map((g) => g.metrics.find((x) => x.name === name));
+    if (entries.some((e) => !e)) continue;
+    const means = entries.map((e) => e!.mean);
     const avg = means.reduce((a, b) => a + b, 0) / means.length;
     if (avg === 0) continue;
     const std = Math.sqrt(means.reduce((a, b) => a + (b - avg) ** 2, 0) / means.length);
@@ -114,14 +114,23 @@ function pickSweepFinding(summary: ExperimentSummary): string {
     }
   }
 
+  // If no metric varied across arms, fall back to non-sweep reporting
+  if (bestCV === 0) {
+    return pickNonSweepFinding(summary);
+  }
+
   const first = groups[0].metrics.find((m) => m.name === bestMetric);
   const last = groups[groups.length - 1].metrics.find((m) => m.name === bestMetric);
   if (!first || !last) return bestMetric;
 
   const sweepRange = `${groups[0].sweepValue}→${groups[groups.length - 1].sweepValue}`;
   const change = last.mean - first.mean;
-  const pctChange = first.mean !== 0 ? ((change / Math.abs(first.mean)) * 100).toFixed(1) : 'N/A';
-  return `${bestMetric}: ${pctChange}% change across sweep (${sweepRange})`;
+  if (first.mean !== 0) {
+    const pctChange = ((change / Math.abs(first.mean)) * 100).toFixed(1);
+    return `${bestMetric}: ${pctChange}% change across sweep (${sweepRange})`;
+  }
+  // First arm mean is 0 — report absolute change instead of percentage
+  return `${bestMetric}: ${first.mean.toFixed(4)}→${last.mean.toFixed(4)} across sweep (${sweepRange})`;
 }
 
 function pickNonSweepFinding(summary: ExperimentSummary): string {
