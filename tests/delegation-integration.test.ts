@@ -254,15 +254,15 @@ describe('Delegation and Quorum Achievement', () => {
 
 describe('Multi-run Delegation Experiments', () => {
   it('should show delegation consistently improves quorum over multiple runs', () => {
-    const NUM_RUNS = 10;
+    const NUM_RUNS = 30;
     const quorumWithDelegation: number[] = [];
     const quorumWithoutDelegation: number[] = [];
 
     for (let run = 0; run < NUM_RUNS; run++) {
-      // Set unique seed for each run but reproducible
-      setSeed(42 + run);
+      // Use separate seed ranges so the two arms don't share random state
+      setSeed(1000 + run);
 
-      // Without delegation
+      // Without delegation: 5 equal members, each votes with 30% probability
       const simNoDel = new DAOSimulation({
         num_developers: 0,
         num_investors: 0,
@@ -280,7 +280,6 @@ describe('Multi-run Delegation Experiments', () => {
       simNoDel.dao.proposals.push(propNoDel);
       propNoDel.takeVotingPowerSnapshot();
 
-      // Simulate 30% voting probability
       for (const m of simNoDel.dao.members) {
         if (random() < 0.3) {
           m.voteOnProposal(propNoDel);
@@ -288,8 +287,8 @@ describe('Multi-run Delegation Experiments', () => {
       }
       quorumWithoutDelegation.push(propNoDel.votesFor + propNoDel.votesAgainst);
 
-      // With delegation
-      setSeed(42 + run); // Reset seed for fair comparison
+      // With delegation: 1 active + 4 passive who delegate 80% to active
+      setSeed(2000 + run);
       const simWithDel = new DAOSimulation({
         num_developers: 0,
         num_investors: 0,
@@ -304,7 +303,7 @@ describe('Multi-run Delegation Experiments', () => {
       for (let i = 0; i < 4; i++) {
         const passive = new DAOMember(`p${i}`, simWithDel, 100, 10, 'NA');
         simWithDel.dao.addMember(passive);
-        passive.delegate(80, activeM); // Delegate 80% to active member
+        passive.delegate(80, activeM);
       }
 
       const propWithDel = new Proposal(simWithDel.dao, 'active', 'Test', 'Desc', 100, 100, 'topic');
@@ -312,7 +311,7 @@ describe('Multi-run Delegation Experiments', () => {
       simWithDel.dao.proposals.push(propWithDel);
       propWithDel.takeVotingPowerSnapshot();
 
-      // Active member always votes
+      // Active member always votes (carries delegated weight)
       activeM.voteOnProposal(propWithDel);
 
       // Passive members vote with 30% probability
@@ -324,7 +323,6 @@ describe('Multi-run Delegation Experiments', () => {
       quorumWithDelegation.push(propWithDel.votesFor + propWithDel.votesAgainst);
     }
 
-    // Calculate averages
     const avgNoDel = quorumWithoutDelegation.reduce((a, b) => a + b, 0) / NUM_RUNS;
     const avgWithDel = quorumWithDelegation.reduce((a, b) => a + b, 0) / NUM_RUNS;
 
