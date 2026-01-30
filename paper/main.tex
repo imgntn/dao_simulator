@@ -7,6 +7,7 @@
 % ============================================================================
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}   % Scalable fonts required for microtype expansion
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
@@ -24,7 +25,7 @@
 \usepackage{tikz}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
-\usepackage{microtype}  % Improves text justification and reduces overfull/underfull boxes
+\usepackage{microtype}  % Enables font expansion with scalable fonts
 
 \geometry{margin=1in}
 
@@ -33,8 +34,8 @@
 % ============================================================================
 \newcommand{\paperstatus}{DRAFT}
 \newcommand{\lastupdate}{\today}
-\newcommand{\experimentcount}{5}  % AUTO: updated by pipeline
-\newcommand{\totalruns}{966}        % AUTO: updated by pipeline
+\newcommand{\experimentcount}{10}  % AUTO: updated by pipeline
+\newcommand{\totalruns}{21402}        % AUTO: updated by pipeline
 
 % ============================================================================
 % CUSTOM COMMANDS
@@ -151,5 +152,9 @@
 \section{Reproducibility Manifest}
 \label{app:reproducibility}
 \input{sections/appendix_reproducibility}
+
+\section{RQ Checklist}
+\label{app:rq-checklist}
+\input{sections/appendix_rq_checklist}
 
 \end{document}

@@ -1,0 +1,69 @@
+% DISCUSSION - AUTO-UPDATED SECTION
+% Last generated: 2026-01-15T07:27:20.548Z
+
+\subsection{Interpretation of Results}
+
+\subsubsection{Quorum Design Implications}
+
+The model is designed to test whether quorum thresholds should be calibrated to expected participation rates rather than set arbitrarily. A hypothesized non-linear relationship between quorum and pass rate implies:
+
+\begin{itemize}
+    \item DAOs with low participation should use lower quorums
+    \item High-engagement communities can sustain higher thresholds
+    \item Dynamic quorum mechanisms may be optimal, adjusting based on recent participation
+\end{itemize}
+
+% AUTO-UPDATED: quorum recommendation
+Simulation-conditional numeric recommendations are inserted after calibration targets are locked; values here are placeholders until full results are populated.
+
+\subsubsection{Scale Considerations}
+
+A hypothesized power-law decay of participation with scale has profound implications for DAO design:
+
+\begin{enumerate}
+    \item Large DAOs must invest in engagement mechanisms
+    \item Delegation becomes essential above $\sim$100 members
+    \item Sub-DAOs or working groups may preserve participation
+\end{enumerate}
+
+This expectation aligns with observations from real DAOs like Uniswap and Compound, though formal calibration is pending.
+
+\subsubsection{Voting Mechanism Trade-offs}
+
+We frame fundamental trade-offs for empirical comparison:
+
+\begin{itemize}
+    \item \textbf{Token voting}: Simple, familiar, but plutocratic
+    \item \textbf{Quadratic voting}: More egalitarian, but complex and susceptible to sybil attacks
+    \item \textbf{Conviction voting}: Favors persistent preferences, but slower decisions
+\end{itemize}
+
+No single mechanism dominates; the choice depends on the DAO's values and context.
+
+\subsection{Theoretical Contributions}
+
+This work contributes to theory in several ways:
+
+\begin{enumerate}
+    \item \textbf{Quantified trade-offs}: A framework for numerical estimates of previously qualitative relationships
+    \item \textbf{Scale effects}: A systematic study design for participation decay in DAO simulations
+    \item \textbf{Mechanism comparison}: A controlled comparison setup across voting systems
+\end{enumerate}
+
+\subsection{Practical Implications}
+
+For DAO practitioners, this framework suggests:
+
+\begin{enumerate}
+    \item \textbf{Start with low quorums}: Begin conservatively and increase if participation supports it
+    \item \textbf{Plan for scale}: Design delegation and engagement systems before they're needed
+    \item \textbf{Match mechanism to values}: Choose voting systems aligned with community goals
+    \item \textbf{Iterate with data}: Use simulation to test changes before on-chain deployment
+\end{enumerate}
+
+\noindent
+Numeric recommendations should be interpreted as simulation-conditional and comparative rather than universal prescriptions.
+
+\subsection{Connection to Real-World DAOs}
+
+Validation against real DAO pipeline and treasury data is planned as part of the calibration phase. We will report empirical comparisons once relevant on-chain and governance artifacts are integrated into the analysis pipeline.

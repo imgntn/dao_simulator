@@ -5,16 +5,16 @@
 
 We have presented a comprehensive multi-agent simulation framework for studying DAO governance mechanisms. Our framework supports multiple voting systems, agent heterogeneity, and systematic parameter exploration, enabling reproducible research into fundamental questions of decentralized governance.
 
-Through 6 simulation runs across 1 experimental configurations, we have established several key findings:
+Across {{TOTAL_RUNS}} simulation runs and {{EXPERIMENT_COUNT}} experiment sets, we target the following empirical questions:
 
 \begin{enumerate}
-    \item \textbf{Quorum sensitivity}: Proposal pass rates decline approximately linearly with quorum threshold, with the relationship moderated by baseline participation rates.
+    \item \textbf{Quorum sensitivity}: How proposal pass rates change with quorum thresholds under different baseline participation regimes.
 
-    \item \textbf{Scale effects}: Participation decays as a power law with DAO size ($\beta \approx 0.35$), suggesting fundamental coordination costs.
+    \item \textbf{Scale effects}: Whether participation decays as DAOs scale, and the functional form of that decay.
 
-    \item \textbf{Mechanism trade-offs}: Quadratic voting reduces wealth concentration but at the cost of complexity; conviction voting favors persistent preferences but slows decisions.
+    \item \textbf{Mechanism trade-offs}: How voting mechanisms redistribute influence and affect decision latency.
 
-    \item \textbf{Design principles}: We derive actionable recommendations for quorum selection, scale planning, and mechanism choice.
+    \item \textbf{Design principles}: What simulation-conditional guidance emerges from the above mechanisms and constraints.
 \end{enumerate}
 
 \subsection{Contributions}
@@ -24,7 +24,7 @@ This work makes the following contributions:
 \begin{enumerate}
     \item An open-source simulation framework for DAO governance research
     \item A research CLI enabling reproducible batch experiments
-    \item Novel empirical findings on quorum, scale, and mechanism effects
+    \item Empirical analysis infrastructure for quorum, scale, and mechanism effects
     \item A theoretical framework connecting multi-agent systems, mechanism design, and social choice
 \end{enumerate}
 
@@ -32,7 +32,7 @@ This work makes the following contributions:
 
 For researchers, our framework provides infrastructure for systematic governance studies. The combination of formal models, simulation capabilities, and empirical methodology establishes a foundation for computational governance science.
 
-For practitioners, our findings offer evidence-based guidance for DAO design. Rather than relying on intuition or copying existing designs, builders can use simulation to explore their specific parameter space.
+For practitioners, this work provides a structured way to explore parameter space and test governance hypotheses before on-chain deployment. Specific numeric guidance should be interpreted as simulation-conditional and comparative rather than universal prescriptions.
 
 For the broader ecosystem, our work contributes to the maturation of decentralized governance from experimentation to engineering discipline.
 
@@ -44,5 +44,5 @@ We release our framework as open-source software, inviting the community to exte
 
 % === LIVING DOCUMENT NOTE ===
 % This paper is a living document, updated as new experiments are run.
-% Current version reflects 1 experiments with 6 total runs.
-% Last updated: 2026-01-15T07:27:20.548Z
+% Current version reflects {{EXPERIMENT_COUNT}} experiment sets with {{TOTAL_RUNS}} total runs.
+% Last updated: {{TIMESTAMP}}

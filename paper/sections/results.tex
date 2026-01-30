@@ -1,184 +1,239 @@
 % RESULTS - AUTO-UPDATED SECTION
-% Last generated: 2026-01-15T07:27:20.548Z
-% This section is regenerated from experiment results
+% This section is scaffolded for the RQ-driven paper suite.
+% It will be populated with findings once experiments run.
+
+\newcommand{\pl}[1]{\textcolor{gray}{#1}}
 
 \subsection{Overview}
 
-% AUTO-UPDATED: summary statistics
-We present results from 6 simulation runs across 1 experimental configurations. Table~\ref{tab:summary} provides an overview.
+We present results from the curated paper suite (baseline, calibration, ablations, sensitivity,
+and RQ-specific experiments). Table~\ref{tab:summary} provides a high-level overview.
 
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
-\caption{Summary of experimental results}
+\caption{Summary of experimental results (placeholder)}
 \label{tab:summary}
-% AUTO-GENERATED TABLE
 \begin{tabular}{lrrr}
 \toprule
 Experiment & Configurations & Total Runs & Key Finding \\
 \midrule
-Quorum Sensitivity & 6 & 6 & Higher quorum reduces pass rate \\
+\pl{Baseline} & \pl{--} & \pl{--} & \pl{TBD} \\
+\pl{Calibration} & \pl{--} & \pl{--} & \pl{TBD} \\
+\pl{Ablation} & \pl{--} & \pl{--} & \pl{TBD} \\
+\pl{Sensitivity} & \pl{--} & \pl{--} & \pl{TBD} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 % ============================================================================
-\subsection{RQ1: Quorum Sensitivity}
+\subsection{RQ1: Participation Dynamics}
 % ============================================================================
 
 \subsubsection{Findings}
 
-% AUTO-UPDATED: quorum analysis
-Figure~\ref{fig:quorum-passrate} shows the relationship between quorum threshold and proposal pass rate.
-
-\begin{figure}[h]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/quorum_passrate}
-    \caption{Proposal pass rate as a function of quorum threshold. Error bars show 95\% CI. Pass rate declines approximately linearly with increasing quorum.}
-    \label{fig:quorum-passrate}
+    \includegraphics[width=0.8\textwidth]{figures/rq1_turnout}
+    \caption{Turnout as a function of participation targets (placeholder).}
+    \label{fig:rq1-turnout}
 \end{figure}
 
-Key findings:
-\begin{itemize}
-    \item Higher quorum thresholds correlate with lower proposal pass rates
-    \item The relationship is approximately linear in the 1--20\% range
-    \item Optimal quorum appears to be 4--6\% balancing legitimacy and accessibility
-\end{itemize}
-
-\subsubsection{Statistical Analysis}
-
-% AUTO-GENERATED: regression results
-Linear regression of pass rate on quorum:
-\begin{equation}
-\text{PassRate} = 0.95 - 0.024 \times \text{Quorum\%} \quad (R^2 = 0.89)
-\end{equation}
-
-The relationship is statistically significant ($p < 0.001$) with a large effect size ($d = 1.2$).
-
-% ============================================================================
-\subsection{RQ2: DAO Scale Effects}
-% ============================================================================
-
-\subsubsection{Findings}
-
-% AUTO-UPDATED: scale analysis
-Figure~\ref{fig:scale-participation} shows how participation changes with DAO size.
-
-\begin{figure}[h]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/scale_participation}
-    \caption{Average voter turnout as a function of DAO size. Participation follows power-law decay.}
-    \label{fig:scale-participation}
+    \includegraphics[width=0.8\textwidth]{figures/rq1_retention}
+    \caption{Voter retention vs participation targets (placeholder).}
+    \label{fig:rq1-retention}
 \end{figure}
 
-Key findings:
-\begin{itemize}
-    \item Participation decreases with organizational scale
-    \item The relationship follows a power-law decay pattern
-    \item DAOs with 50--100 members show optimal participation-scale balance
-\end{itemize}
-
-\subsubsection{Power Law Fit}
-
-Participation follows a power-law decay:
-\begin{equation}
-\text{Turnout}(n) = 0.6 \times n^{-0.35}
-\end{equation}
-
-This is consistent with coordination cost theories predicting $\beta \approx 0.3-0.5$.
-
-% ============================================================================
-\subsection{RQ3: Voting System Comparison}
-% ============================================================================
-
-\subsubsection{Findings}
-
-% AUTO-UPDATED: voting comparison
-Figure~\ref{fig:voting-comparison} compares outcomes across voting mechanisms.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/voting_comparison}
-    \caption{Comparison of voting mechanisms across key metrics. Quadratic voting shows improved fairness at cost of efficiency.}
-    \label{fig:voting-comparison}
-\end{figure}
-
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
-\caption{Voting mechanism comparison (mean $\pm$ std)}
-\label{tab:voting-comparison}
+\caption{RQ1 summary stats (placeholder)}
+\label{tab:rq1-summary}
 \begin{tabular}{lccc}
 \toprule
-Metric & Token & Quadratic & Conviction \\
+Metric & Mean & Std & 95\% CI \\
 \midrule
-% AUTO-GENERATED ROWS
-Pass Rate & $0.72 \pm 0.08$ & $0.68 \pm 0.09$ & $0.81 \pm 0.06$ \\
-Final Gini & $0.65 \pm 0.04$ & $0.52 \pm 0.05$ & $0.58 \pm 0.04$ \\
-Avg Turnout & $0.34 \pm 0.07$ & $0.41 \pm 0.08$ & $0.38 \pm 0.06$ \\
+\pl{Turnout} & \pl{--} & \pl{--} & \pl{--} \\
+\pl{Quorum reach} & \pl{--} & \pl{--} & \pl{--} \\
+\pl{Retention} & \pl{--} & \pl{--} & \pl{--} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Key findings:
-\begin{itemize}
-    \item Token-weighted voting shows highest wealth concentration (Gini)
-    \item Quadratic voting reduces plutocratic influence but slightly lowers efficiency
-    \item Conviction voting achieves highest pass rate through continuous signaling
-\end{itemize}
-
-\subsubsection{Statistical Comparison}
-
-ANOVA results show significant differences between mechanisms for:
-\begin{itemize}
-    \item Pass Rate: $F(2, 297) = 18.4$, $p < 0.001$
-    \item Final Gini: $F(2, 297) = 42.1$, $p < 0.001$
-\end{itemize}
-
 % ============================================================================
-\subsection{RQ4: Participation Effects}
+\subsection{RQ2: Governance Capture Mitigation}
 % ============================================================================
 
 \subsubsection{Findings}
 
-% AUTO-UPDATED: participation analysis
-Figure~\ref{fig:participation-effects} shows how baseline participation affects outcomes.
-
-\begin{figure}[h]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/participation_effects}
-    \caption{Effect of participation rate on governance outcomes. Both quality and legitimacy improve with participation.}
-    \label{fig:participation-effects}
+    \includegraphics[width=0.8\textwidth]{figures/rq2_whale_influence}
+    \caption{Whale influence across mitigation settings (placeholder).}
+    \label{fig:rq2-whale-influence}
 \end{figure}
 
-Key findings:
-\begin{itemize}
-    \item Decision quality improves logarithmically with participation
-    \item Legitimacy scores increase linearly with voter turnout
-    \item Diminishing returns appear above 50\% participation
-\end{itemize}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/rq2_tradeoff}
+    \caption{Capture risk vs throughput (placeholder).}
+    \label{fig:rq2-tradeoff}
+\end{figure}
 
-% ============================================================================
-\subsection{Summary of Results}
-% ============================================================================
-
-Table~\ref{tab:results-summary} summarizes support for our theoretical predictions.
-
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
-\caption{Summary of theoretical predictions and evidence}
-\label{tab:results-summary}
-\begin{tabular}{lcc}
+\caption{Top mitigation configs (placeholder)}
+\label{tab:rq2-top-configs}
+\begin{tabular}{lccc}
 \toprule
-Prediction & Supported? & Effect Size \\
+Config & Capture Risk & Throughput & Notes \\
 \midrule
-Quorum-Participation Trade-off & Yes & Large \\
-Scale-Participation Decay & Yes & Medium \\
-Quadratic Egalitarianism & Partial & Medium \\
-Delegation Concentration & Yes & Large \\
+\pl{A} & \pl{--} & \pl{--} & \pl{--} \\
+\pl{B} & \pl{--} & \pl{--} & \pl{--} \\
+\pl{C} & \pl{--} & \pl{--} & \pl{--} \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+% ============================================================================
+\subsection{RQ3: Proposal Pipeline Effects}
+% ============================================================================
+
+\subsubsection{Findings}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/rq3_time}
+    \caption{Decision time vs temp-check fraction (placeholder).}
+    \label{fig:rq3-time}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/rq3_passrate}
+    \caption{Pass rate vs fast-track settings (placeholder).}
+    \label{fig:rq3-passrate}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\caption{Abandonment and quorum reach by pipeline settings (placeholder)}
+\label{tab:rq3-summary}
+\begin{tabular}{lccc}
+\toprule
+Config & Abandonment Rate & Quorum Reach & Pass Rate \\
+\midrule
+\pl{A} & \pl{--} & \pl{--} & \pl{--} \\
+\pl{B} & \pl{--} & \pl{--} & \pl{--} \\
+\pl{C} & \pl{--} & \pl{--} & \pl{--} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================================
+\subsection{RQ4: Treasury Resilience}
+% ============================================================================
+
+\subsubsection{Findings}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/rq4_volatility}
+    \caption{Treasury volatility under stabilization policies (placeholder).}
+    \label{fig:rq4-volatility}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/rq4_growth}
+    \caption{Treasury trend/growth vs buffer fraction (placeholder).}
+    \label{fig:rq4-growth}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\caption{Final treasury and volatility by config (placeholder)}
+\label{tab:rq4-summary}
+\begin{tabular}{lccc}
+\toprule
+Config & Final Treasury & Volatility & Trend \\
+\midrule
+\pl{A} & \pl{--} & \pl{--} & \pl{--} \\
+\pl{B} & \pl{--} & \pl{--} & \pl{--} \\
+\pl{C} & \pl{--} & \pl{--} & \pl{--} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================================
+\subsection{RQ5: Inter-DAO Cooperation}
+% ============================================================================
+
+\subsubsection{Findings}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/rq5_success}
+    \caption{Inter-DAO success rate across scenarios (placeholder).}
+    \label{fig:rq5-success}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/rq5_resources}
+    \caption{Resource flow volume by scenario (placeholder).}
+    \label{fig:rq5-resources}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\caption{Cross-DAO alignment and shared budget summary (placeholder)}
+\label{tab:rq5-summary}
+\begin{tabular}{lccc}
+\toprule
+Scenario & Alignment & Shared Budget & Success Rate \\
+\midrule
+\pl{Homogeneous} & \pl{--} & \pl{--} & \pl{--} \\
+\pl{Heterogeneous} & \pl{--} & \pl{--} & \pl{--} \\
+\pl{Asymmetric} & \pl{--} & \pl{--} & \pl{--} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================================
+\subsection{Baseline and Robustness}
+% ============================================================================
+
+\begin{table}[htbp]
+\centering
+\caption{Baseline headline metrics (placeholder)}
+\label{tab:baseline-summary}
+\begin{tabular}{lccc}
+\toprule
+Metric & Mean & Std & Notes \\
+\midrule
+\pl{Pass Rate} & \pl{--} & \pl{--} & \pl{--} \\
+\pl{Turnout} & \pl{--} & \pl{--} & \pl{--} \\
+\pl{Treasury Volatility} & \pl{--} & \pl{--} & \pl{--} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/ablation_impact}
+    \caption{Ablation impacts on governance outcomes (placeholder).}
+    \label{fig:ablation-impact}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/quorum_sensitivity}
+    \caption{Quorum sensitivity curve (placeholder).}
+    \label{fig:quorum-sensitivity}
+\end{figure}
 
 % === AUTO-GENERATION METADATA ===
 % Regenerate this section:
 %   npm run paper:update -- --section results
-% Source experiments: quorum-sensitivity-2026-01-15
+% Source experiments: paper suite (placeholders until runs complete)

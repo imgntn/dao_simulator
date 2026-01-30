@@ -111,6 +111,15 @@ Metrics are organized by research concern:
 npm run exp -- run experiments/quick-validation-suite.yaml
 ```
 
+### Paper Suite (academic‑grade)
+```bash
+# Run the curated paper suite
+npm run paper:suite
+
+# Build report pack from existing results
+npm run paper:pack
+```
+
 ### Full Research Suite (~2-3 hours total)
 ```bash
 # Core experiments (run sequentially or in parallel)
