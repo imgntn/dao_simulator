@@ -56,7 +56,7 @@ import { DelegationResolver } from '../delegation/delegation-resolver';
 export class DAOMember implements Agent {
   uniqueId: string;
   model: DAOModel;
-  tokens: number;
+  private _tokens: number;
   reputation: number;
   location: string;
   stakedTokens: number = 0;
@@ -89,10 +89,18 @@ export class DAOMember implements Agent {
   lastVoteStep: number = 0;        // Step when last vote was cast
   totalVotesCast: number = 0;      // Lifetime vote count
   proposalsConsidered: Set<string> = new Set(); // Track proposals we've already decided on (vote or skip)
+  proposalsReminded: Set<string> = new Set();   // Track proposals given a reminder chance
   static readonly FATIGUE_PER_VOTE = 0.08;    // Significant fatigue per vote
   static readonly FATIGUE_DECAY_RATE = 0.003; // Slow recovery between votes
   static readonly MAX_FATIGUE = 0.7;          // Can reduce participation by up to 70%
   static readonly BASE_APATHY = 0.35;         // 35% base chance to skip voting (voter apathy)
+  static readonly REMINDER_WINDOW_FRACTION = 0.2; // Last 20% of voting window
+  static readonly REMINDER_BOOST = 0.1;           // Small boost for last-chance voting
+  static readonly INACTIVITY_BOOST_THRESHOLD = 24; // Steps without voting before boost applies
+
+  // Voting power velocity tracking (time-weighted voting)
+  recentTokenInflow: number = 0;
+  lastTokenVelocityStep: number = 0;
 
   constructor(
     uniqueId: string,
@@ -117,11 +125,12 @@ export class DAOMember implements Agent {
 
     this.uniqueId = uniqueId;
     this.model = model;
-    this.tokens = sanitizedTokens;
+    this._tokens = sanitizedTokens;
     this.reputation = sanitizedReputation;
     this.location = location || 'node_0';
     this.stakingRate = model.dao?.stakingInterestRate || 0;
     this.optimism = random();
+    this.lastTokenVelocityStep = model.currentStep ?? 0;
     // Set daoId from parameter, model's DAO, or default
     this.daoId = daoId || model.dao?.daoId || 'default';
 
@@ -134,13 +143,33 @@ export class DAOMember implements Agent {
     }
   }
 
+  get tokens(): number {
+    return this._tokens;
+  }
+
+  set tokens(value: number) {
+    const sanitized = Number.isFinite(value) && value >= 0 ? value : 0;
+    const delta = sanitized - this._tokens;
+    this._tokens = sanitized;
+
+    if (delta > 0 && this.model) {
+      const step = this.model.currentStep ?? 0;
+      this.recordTokenInflow(delta, step);
+    }
+
+    if (delta !== 0 && this.model?.dao?.invalidateVotingPowerCache) {
+      this.model.dao.invalidateVotingPowerCache();
+    }
+  }
+
   markActive(): void {
     this._active = true;
   }
 
   voteOnProposal(proposal: Proposal): void {
     // Calculate effective voting power including all delegations
-    const effectiveWeight = DelegationResolver.resolveVotingPower(this);
+    let effectiveWeight = DelegationResolver.resolveVotingPower(this);
+    effectiveWeight = this.applyVotingPowerPolicy(effectiveWeight);
 
     // Vote with effective weight
     this.votingStrategy.voteWithWeight(this, proposal, effectiveWeight);
@@ -220,15 +249,128 @@ export class DAOMember implements Agent {
   }
 
   /**
+   * Record inflows for time-weighted voting power
+   */
+  private recordTokenInflow(amount: number, step: number): void {
+    if (amount <= 0) return;
+    this.updateTokenVelocity(step);
+    this.recentTokenInflow += amount;
+  }
+
+  /**
+   * Decay recent inflow tracking (exponential decay)
+   */
+  updateTokenVelocity(currentStep: number): void {
+    const policy = this.model?.dao?.votingPowerPolicy;
+    const window = policy?.velocityWindow ?? 0;
+    if (window <= 0) {
+      this.lastTokenVelocityStep = currentStep;
+      return;
+    }
+
+    const stepsSince = currentStep - this.lastTokenVelocityStep;
+    if (stepsSince <= 0) return;
+
+    const decayFactor = Math.pow(0.5, stepsSince / Math.max(1, window));
+    this.recentTokenInflow *= decayFactor;
+    this.lastTokenVelocityStep = currentStep;
+  }
+
+  private getVelocityPenalty(): number {
+    const policy = this.model?.dao?.votingPowerPolicy;
+    if (!policy || policy.velocityWindow <= 0 || policy.velocityPenalty <= 0) {
+      return 0;
+    }
+
+    const balance = Math.max(this.tokens + this.stakedTokens, 1);
+    const ratio = this.recentTokenInflow / balance;
+    const penalty = Math.min(1, ratio * policy.velocityPenalty);
+    return Math.max(0, penalty);
+  }
+
+  /**
+   * Apply vote power caps and time-weighted penalties
+   */
+  private applyVotingPowerPolicy(weight: number): number {
+    const policy = this.model?.dao?.votingPowerPolicy;
+    if (!policy) return weight;
+
+    let adjusted = weight;
+
+    if (policy.quadraticThreshold > 0 && adjusted > policy.quadraticThreshold) {
+      const excess = adjusted - policy.quadraticThreshold;
+      adjusted = policy.quadraticThreshold + Math.sqrt(excess);
+    }
+
+    if (policy.capFraction > 0 && this.model?.dao) {
+      const totalVotingPower = this.model.dao.getTotalVotingPower();
+      const cap = totalVotingPower * policy.capFraction;
+      if (cap > 0) {
+        adjusted = Math.min(adjusted, cap);
+      }
+    }
+
+    const penalty = this.getVelocityPenalty();
+    if (penalty > 0) {
+      adjusted *= 1 - penalty;
+    }
+
+    return Math.max(0, adjusted);
+  }
+
+  /**
+   * Record an external vote (e.g., inter-DAO proposals) to keep fatigue consistent.
+   */
+  recordExternalVote(): void {
+    this.applyVoteFatigue();
+  }
+
+  /**
    * Get the effective voting probability considering fatigue and apathy
    * Models realistic DAO participation where many members don't vote
    */
   getEffectiveVotingProbability(): number {
     const baseActivity = this.model.dao?.votingActivity ?? 0.3;
+    const boost = this.model.dao?.participationBoost ?? 0;
     // First apply base apathy (many members simply don't engage)
-    const afterApathy = baseActivity * (1 - DAOMember.BASE_APATHY);
+    const afterApathy = (baseActivity + boost) * (1 - DAOMember.BASE_APATHY);
     // Then apply fatigue reduction
-    return afterApathy * (1 - this.voterFatigue);
+    let probability = afterApathy * (1 - this.voterFatigue);
+
+    const inactivityBoost = this.model.dao?.participationPolicy?.inactivityBoost ?? 0;
+    if (inactivityBoost > 0) {
+      const stepsSinceVote = this.model.currentStep - this.lastVoteStep;
+      if (stepsSinceVote >= DAOMember.INACTIVITY_BOOST_THRESHOLD) {
+        probability *= 1 + inactivityBoost;
+      }
+    }
+
+    return Math.min(1, Math.max(0, probability));
+  }
+
+  private getProposalSalience(proposal: Proposal): number {
+    const treasuryFunds = this.model.dao?.treasury?.funds ?? 0;
+    if (proposal.fundingGoal <= 0 || treasuryFunds <= 0) {
+      return 0.6;
+    }
+
+    // Scale salience based on funding ask relative to treasury (10% ask => max salience)
+    const ratio = proposal.fundingGoal / Math.max(treasuryFunds, 1);
+    const scaled = Math.min(1, ratio / 0.1);
+    return 0.4 + 0.6 * scaled;
+  }
+
+  private getProposalVotingProbability(proposal: Proposal, isReminder: boolean): number {
+    const base = this.getEffectiveVotingProbability();
+    const salience = this.getProposalSalience(proposal);
+    const probability = base * salience;
+    if (!isReminder) {
+      return Math.min(1, probability);
+    }
+    if (probability <= 0) {
+      return 0;
+    }
+    return Math.min(1, probability * (1 + DAOMember.REMINDER_BOOST));
   }
 
   voteOnRandomProposal(): void {
@@ -237,22 +379,64 @@ export class DAOMember implements Agent {
     // Update fatigue (decay over time)
     this.updateVoterFatigue();
 
+    const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+    const activeIds = new Set(openProposals.map(p => p.uniqueId));
+    if (this.proposalsConsidered.size > 0) {
+      for (const id of this.proposalsConsidered) {
+        if (!activeIds.has(id)) {
+          this.proposalsConsidered.delete(id);
+          this.proposalsReminded.delete(id);
+        }
+      }
+    }
+
     // Get all open proposals we haven't considered yet
     // KEY: Only consider each proposal ONCE (prevents cumulative probability inflation)
     // Without this, 45% chance per step over 5 steps = 95% eventual participation
-    const openProps = this.model.dao.proposals.filter(p => {
-      const isOpen = p.status === 'open';
+    const openProps = openProposals.filter(p => {
+      const isMultiStage = Array.isArray((p as any).stageConfigs);
+      if (isMultiStage) {
+        const multiStage = p as any;
+        if (!multiStage.isInVotingStage || multiStage.isCurrentStageExpired) {
+          return false;
+        }
+      }
+
       const inVotingPeriod =
         this.model.currentStep <= p.creationTime + p.votingPeriod;
       const notYetConsidered = !this.proposalsConsidered.has(p.uniqueId);
-      return isOpen && inVotingPeriod && notYetConsidered;
+      return inVotingPeriod && notYetConsidered;
     });
 
-    if (openProps.length === 0) return;
+    const reminderProps = openProposals.filter(p => {
+      if (!this.proposalsConsidered.has(p.uniqueId)) return false;
+      if (this.proposalsReminded.has(p.uniqueId)) return false;
+      if (this.votes.has(p.uniqueId)) return false;
+      const isMultiStage = Array.isArray((p as any).stageConfigs);
+      if (isMultiStage) {
+        const multiStage = p as any;
+        if (!multiStage.isInVotingStage || !multiStage.currentStageState) {
+          return false;
+        }
+      }
+      const stageDuration = isMultiStage && (p as any).currentStageState
+        ? (p as any).currentStageState.endStep - (p as any).currentStageState.startStep
+        : p.votingPeriod;
+      const votingEnd = isMultiStage
+        ? (p as any).currentStageState.endStep
+        : p.creationTime + p.votingPeriod;
+      const remaining = votingEnd - this.model.currentStep;
+      const reminderWindow = Math.max(
+        1,
+        Math.floor(stageDuration * DAOMember.REMINDER_WINDOW_FRACTION)
+      );
+      return remaining <= reminderWindow && remaining >= 0;
+    });
+
+    if (openProps.length === 0 && reminderProps.length === 0) return;
 
     // Vote on proposals with per-proposal probability (one chance per proposal)
     // This models real DAO behavior: members see a proposal and decide once
-    const effectiveActivity = this.getEffectiveVotingProbability();
     let votedCount = 0;
 
     for (const proposal of openProps) {
@@ -260,7 +444,16 @@ export class DAOMember implements Agent {
       this.proposalsConsidered.add(proposal.uniqueId);
 
       // Each proposal gets ONE independent chance of being voted on
-      if (random() < effectiveActivity) {
+      if (random() < this.getProposalVotingProbability(proposal, false)) {
+        this.voteOnProposal(proposal);
+        votedCount++;
+      }
+    }
+
+    // Reminder pass near the end of the voting window
+    for (const proposal of reminderProps) {
+      this.proposalsReminded.add(proposal.uniqueId);
+      if (random() < this.getProposalVotingProbability(proposal, true)) {
         this.voteOnProposal(proposal);
         votedCount++;
       }

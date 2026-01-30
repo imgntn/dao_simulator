@@ -2,12 +2,6 @@
 // Port from utils/event_engine.py
 
 import type { DAOModel } from '../engine/model';
-import {
-  DemandBoostCampaign,
-  RecruitmentCampaign,
-  SocialMediaCampaign,
-  ReferralBonusCampaign,
-} from '../data-structures/marketing-events';
 import { createRandomProposal } from './proposal-utils';
 
 export interface EventConfig {
@@ -80,10 +74,6 @@ export class EventEngine {
           this.triggerMarketShock(evt, sim);
           break;
 
-        case 'marketing_campaign':
-          this.runCampaign(evt, sim);
-          break;
-
         case 'create_proposal':
           this.createProposal(evt, sim);
           break;
@@ -117,54 +107,6 @@ export class EventEngine {
         });
       }
     }
-  }
-
-  /**
-   * Run a marketing campaign
-   */
-  private runCampaign(evt: EventConfig, sim: DAOModel): void {
-    const campaignType = evt.campaign_type || 'social_media';
-    const budget = evt.budget || 50;
-
-    let campaign;
-
-    switch (campaignType) {
-      case 'demand_boost':
-        campaign = new DemandBoostCampaign(
-          sim.dao,
-          budget,
-          evt.price_boost || 0.1
-        );
-        break;
-
-      case 'recruitment':
-        campaign = new RecruitmentCampaign(
-          sim.dao,
-          budget,
-          evt.recruits || 2
-        );
-        break;
-
-      case 'referral_bonus':
-        campaign = new ReferralBonusCampaign(
-          sim.dao,
-          budget,
-          evt.recruits || 1,
-          evt.bonus || 10
-        );
-        break;
-
-      case 'social_media':
-      default:
-        campaign = new SocialMediaCampaign(
-          sim.dao,
-          budget,
-          evt.price_boost || 0.05
-        );
-        break;
-    }
-
-    campaign.execute(sim);
   }
 
   /**

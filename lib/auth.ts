@@ -60,7 +60,11 @@ class RateLimiter {
 
     // Clean up expired entries every minute
     if (typeof setInterval !== 'undefined') {
-      setInterval(() => this.cleanup(), 60000);
+      const timer = setInterval(() => this.cleanup(), 60000);
+      // Allow process to exit in test/CLI environments
+      if (typeof (timer as any).unref === 'function') {
+        (timer as any).unref();
+      }
     }
   }
 

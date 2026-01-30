@@ -22,6 +22,7 @@ import {
   Collector,
   Speculator,
   PassiveMember,
+  StakerAgent,
 } from '../agents';
 import { generateRandomLocation } from './locations';
 import * as constants from '../config/constants';
@@ -122,6 +123,10 @@ export class AgentManager {
       tokens: constants.SPECULATOR_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
     }],
+    [StakerAgent as AgentClass, {
+      tokens: constants.STAKER_TOKENS,
+      reputation: constants.DEFAULT_AGENT_REPUTATION,
+    }],
     [PassiveMember as AgentClass, {
       tokens: constants.PASSIVE_MEMBER_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
@@ -186,6 +191,24 @@ export class AgentManager {
     const config = { ...baseConfig, ...overrides };
     const location = overrides.location || generateRandomLocation();
 
+    if (agentClass === StakerAgent) {
+      const totalTokens = Math.max(0, config.tokens || 0);
+      const stakedTokens = Math.min(
+        totalTokens,
+        Math.floor(totalTokens * constants.STAKER_STAKE_RATIO)
+      );
+      const liquidTokens = Math.max(0, totalTokens - stakedTokens);
+
+      return new StakerAgent(
+        agentId,
+        this.simulation,
+        liquidTokens,
+        config.reputation,
+        location,
+        stakedTokens
+      );
+    }
+
     return new agentClass(
       agentId,
       this.simulation,
@@ -219,6 +242,7 @@ export class AgentManager {
       Artist,
       Collector,
       Speculator,
+      StakerAgent,
       PassiveMember,
     ];
 

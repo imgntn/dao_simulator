@@ -9,7 +9,7 @@ import { random } from './random';
 export abstract class BasePriceOracle implements PriceOracle {
   protected prices: Map<string, number> = new Map();
 
-  abstract updatePrice(token: string, step: number): void;
+  abstract updatePrice(token: string, step?: number, volatility?: number): void;
 
   getPrice(token: string): number {
     return this.prices.get(token) || 100; // Default price
@@ -26,17 +26,18 @@ export abstract class BasePriceOracle implements PriceOracle {
 export class RandomWalkOracle extends BasePriceOracle {
   private volatility: number;
 
-  constructor(volatility: number = 0.02) {
+  constructor(volatility: number = 0.005) {
     super();
     this.volatility = volatility;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  updatePrice(token: string, _step?: number): void {
+  updatePrice(token: string, _step?: number, volatilityOverride?: number): void {
     // _step parameter reserved for future time-based price modeling
     const currentPrice = this.getPrice(token);
     // Random walk: price can go up or down by volatility percentage
-    const change = (random() - 0.5) * 2 * this.volatility;
+    const volatility = Number.isFinite(volatilityOverride) ? volatilityOverride! : this.volatility;
+    const change = (random() - 0.5) * 2 * volatility;
     const newPrice = Math.max(1, currentPrice * (1 + change));
     this.setPrice(token, newPrice);
   }
@@ -56,10 +57,12 @@ export class GeometricBrownianOracle extends BasePriceOracle {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  updatePrice(token: string, _step?: number): void {
+  updatePrice(token: string, _step?: number, volatilityOverride?: number): void {
     // _step parameter reserved for advanced time-series modeling
     const currentPrice = this.getPrice(token);
     const dt = 1; // time step
+
+    const volatility = Number.isFinite(volatilityOverride) ? volatilityOverride! : this.volatility;
 
     // Box-Muller transform for normal distribution
     const u1 = random();
@@ -68,7 +71,7 @@ export class GeometricBrownianOracle extends BasePriceOracle {
 
     // Geometric Brownian Motion formula
     const drift_term = this.drift * dt;
-    const diffusion_term = this.volatility * Math.sqrt(dt) * z;
+    const diffusion_term = volatility * Math.sqrt(dt) * z;
     const newPrice = Math.max(1, currentPrice * Math.exp(drift_term + diffusion_term));
 
     this.setPrice(token, newPrice);
@@ -79,7 +82,8 @@ export class GeometricBrownianOracle extends BasePriceOracle {
  * Fixed Price Oracle - price never changes
  */
 export class FixedPriceOracle extends BasePriceOracle {
-  updatePrice(): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  updatePrice(_token?: string, _step?: number, _volatility?: number): void {
     // Price stays constant - no parameters needed
   }
 }
@@ -98,9 +102,9 @@ export class MarketShockOracle extends BasePriceOracle {
     this.baseOracle = baseOracle;
   }
 
-  updatePrice(token: string, step: number): void {
+  updatePrice(token: string, step: number = 0, volatilityOverride?: number): void {
     // Update using base oracle
-    this.baseOracle.updatePrice(token, step);
+    this.baseOracle.updatePrice(token, step, volatilityOverride);
     let price = this.baseOracle.getPrice(token);
 
     // Apply shock if active

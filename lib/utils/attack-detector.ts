@@ -93,6 +93,18 @@ export class AttackDetector {
   private clusters: Map<string, ClusterAnalysis> = new Map();
   private eventBus: EventBus | null = null;
   private alertCounter: number = 0;
+  private voterVotes: Map<string, Map<string, VotingRecord>> = new Map();
+  private lastPruneCutoff: number = -1;
+  private tokenCacheDirty: boolean = true;
+  private tokenDirectCounts: Map<string, Map<string, number>> = new Map();
+  private tokenSources: Map<string, Set<string>> = new Map();
+  private pairwiseStatsStep: number | null = null;
+  private pairwiseVoters: string[] = [];
+  private pairwiseIndex: Map<string, number> = new Map();
+  private pairwiseShared: Int32Array = new Int32Array(0);
+  private pairwiseMatches: Int32Array = new Int32Array(0);
+  private pairwiseTemporal: Int32Array = new Int32Array(0);
+  private pairwiseSize: number = 0;
 
   // Cached metrics
   private cachedGini: number = 0;
@@ -126,10 +138,20 @@ export class AttackDetector {
   recordVote(record: VotingRecord): void {
     if (!this.config.enabled) return;
     this.votingHistory.push(record);
+    let votes = this.voterVotes.get(record.voterId);
+    if (!votes) {
+      votes = new Map();
+      this.voterVotes.set(record.voterId, votes);
+    }
+    votes.set(record.proposalId, record);
 
     // Trim old records
     const cutoff = record.step - this.config.votingPatternWindow;
     this.votingHistory = this.votingHistory.filter(r => r.step >= cutoff);
+    if (cutoff > this.lastPruneCutoff) {
+      this.pruneVoterVotes(cutoff);
+      this.lastPruneCutoff = cutoff;
+    }
   }
 
   /**
@@ -142,6 +164,7 @@ export class AttackDetector {
     // Trim old records
     const cutoff = transfer.step - this.config.votingPatternWindow;
     this.tokenTransfers = this.tokenTransfers.filter(t => t.step >= cutoff);
+    this.tokenCacheDirty = true;
   }
 
   /**
@@ -151,48 +174,113 @@ export class AttackDetector {
     if (!this.config.enabled) return [];
 
     const alerts: AttackAlert[] = [];
-    const voterProposalVotes = new Map<string, Map<string, boolean>>();
-
-    // Build voter -> {proposal -> vote} map
-    for (const record of this.votingHistory) {
-      if (!voterProposalVotes.has(record.voterId)) {
-        voterProposalVotes.set(record.voterId, new Map());
-      }
-      voterProposalVotes.get(record.voterId)!.set(record.proposalId, record.vote);
-    }
+    const cutoff = currentStep - this.config.votingPatternWindow;
+    this.computePairwiseStats(currentStep, cutoff);
 
     // Calculate voting correlations between all pairs
-    const voters = Array.from(voterProposalVotes.keys());
+    const voters = this.pairwiseVoters;
+    const size = this.pairwiseSize;
+    const edges: Array<{ a: string; b: string; correlation: number; temporal: number }> = [];
 
     for (let i = 0; i < voters.length; i++) {
       for (let j = i + 1; j < voters.length; j++) {
-        const voter1Votes = voterProposalVotes.get(voters[i])!;
-        const voter2Votes = voterProposalVotes.get(voters[j])!;
-
-        const correlation = this.calculateVotingCorrelation(voter1Votes, voter2Votes);
+        const pairIndex = this.getPairIndex(i, j, size);
+        const shared = this.pairwiseShared[pairIndex];
+        if (shared === 0) continue;
+        const correlation = this.pairwiseMatches[pairIndex] / shared;
 
         if (correlation >= this.config.sybilThresholdCorrelation) {
           // Check if they also have temporal clustering
-          const temporalScore = this.calculateTemporalClustering(voters[i], voters[j]);
+          const temporalScore = this.pairwiseTemporal[pairIndex] / shared;
 
           if (temporalScore >= this.config.temporalClusteringThreshold * 0.5) {
-            // Potential sybil detected
-            const alert = this.createAlert(
-              'sybil',
-              this.calculateSeverity(correlation, temporalScore),
-              currentStep,
-              this.getSharedProposals(voter1Votes, voter2Votes),
-              [voters[i], voters[j]],
-              (correlation + temporalScore) / 2,
-              {
-                votingCorrelation: correlation,
-                temporalCorrelation: temporalScore,
-              }
-            );
-            alerts.push(alert);
+            edges.push({
+              a: voters[i],
+              b: voters[j],
+              correlation,
+              temporal: temporalScore,
+            });
           }
         }
       }
+    }
+
+    if (edges.length === 0) {
+      return alerts;
+    }
+
+    // Cluster correlated pairs to avoid combinatorial alert explosions
+    const parent = new Map<string, string>();
+    const find = (x: string): string => {
+      const p = parent.get(x) || x;
+      if (p === x) return x;
+      const root = find(p);
+      parent.set(x, root);
+      return root;
+    };
+    const union = (a: string, b: string): void => {
+      const ra = find(a);
+      const rb = find(b);
+      if (ra !== rb) {
+        parent.set(rb, ra);
+      }
+    };
+
+    for (const voter of voters) {
+      parent.set(voter, voter);
+    }
+    for (const edge of edges) {
+      union(edge.a, edge.b);
+    }
+
+    const clusters = new Map<string, { members: Set<string>; correlations: number[]; temporals: number[] }>();
+    for (const edge of edges) {
+      const root = find(edge.a);
+      const entry = clusters.get(root) || { members: new Set<string>(), correlations: [], temporals: [] };
+      entry.members.add(edge.a);
+      entry.members.add(edge.b);
+      entry.correlations.push(edge.correlation);
+      entry.temporals.push(edge.temporal);
+      clusters.set(root, entry);
+    }
+
+    for (const cluster of clusters.values()) {
+      if (cluster.members.size < this.config.minClusterSize) {
+        continue;
+      }
+
+      const avgCorrelation = cluster.correlations.length
+        ? cluster.correlations.reduce((sum, v) => sum + v, 0) / cluster.correlations.length
+        : 0;
+      const avgTemporal = cluster.temporals.length
+        ? cluster.temporals.reduce((sum, v) => sum + v, 0) / cluster.temporals.length
+        : 0;
+
+      const affectedProposals = new Set<string>();
+      for (const memberId of cluster.members) {
+        const proposals = this.voterVotes.get(memberId);
+        if (!proposals) continue;
+        for (const [proposalId, record] of proposals) {
+          if (record.step >= cutoff) {
+            affectedProposals.add(proposalId);
+          }
+        }
+      }
+
+      const alert = this.createAlert(
+        'sybil',
+        this.calculateSeverity(avgCorrelation, avgTemporal),
+        currentStep,
+        Array.from(affectedProposals),
+        Array.from(cluster.members),
+        (avgCorrelation + avgTemporal) / 2,
+        {
+          clusterSize: cluster.members.size,
+          votingCorrelation: avgCorrelation,
+          temporalCorrelation: avgTemporal,
+        }
+      );
+      alerts.push(alert);
     }
 
     return alerts;
@@ -316,9 +404,12 @@ export class AttackDetector {
 
     const clusters: ClusterAnalysis[] = [];
     const voterSimilarity = new Map<string, Map<string, number>>();
+    const cutoff = currentStep - this.config.votingPatternWindow;
+    this.computePairwiseStats(currentStep, cutoff);
 
     // Build similarity matrix
-    const voters = [...new Set(this.votingHistory.map(v => v.voterId))];
+    const voters = this.pairwiseVoters;
+    const size = this.pairwiseSize;
 
     for (let i = 0; i < voters.length; i++) {
       if (!voterSimilarity.has(voters[i])) {
@@ -326,11 +417,10 @@ export class AttackDetector {
       }
 
       for (let j = i + 1; j < voters.length; j++) {
-        const voter1Votes = this.getVoterVotes(voters[i]);
-        const voter2Votes = this.getVoterVotes(voters[j]);
-
-        const votingCorr = this.calculateVotingCorrelation(voter1Votes, voter2Votes);
-        const temporalCorr = this.calculateTemporalClustering(voters[i], voters[j]);
+        const pairIndex = this.getPairIndex(i, j, size);
+        const shared = this.pairwiseShared[pairIndex];
+        const votingCorr = shared > 0 ? this.pairwiseMatches[pairIndex] / shared : 0;
+        const temporalCorr = shared > 0 ? this.pairwiseTemporal[pairIndex] / shared : 0;
         const tokenCorr = this.calculateTokenCorrelation(voters[i], voters[j]);
 
         const similarity = (votingCorr * 0.5 + temporalCorr * 0.3 + tokenCorr * 0.2);
@@ -360,16 +450,16 @@ export class AttackDetector {
         }
       }
 
-      if (cluster.length >= this.config.minClusterSize) {
-        clusterCounter++;
-        const analysis: ClusterAnalysis = {
-          clusterId: `cluster_${clusterCounter}`,
-          members: cluster,
-          votingCorrelation: this.calculateClusterVotingCorrelation(cluster),
-          temporalCorrelation: this.calculateClusterTemporalCorrelation(cluster),
-          tokenCorrelation: this.calculateClusterTokenCorrelation(cluster),
-          riskScore: 0,
-        };
+        if (cluster.length >= this.config.minClusterSize) {
+          clusterCounter++;
+          const analysis: ClusterAnalysis = {
+            clusterId: `cluster_${clusterCounter}`,
+            members: cluster,
+            votingCorrelation: this.calculateClusterVotingCorrelation(cluster),
+            temporalCorrelation: this.calculateClusterTemporalCorrelation(cluster),
+            tokenCorrelation: this.calculateClusterTokenCorrelation(cluster),
+            riskScore: 0,
+          };
 
         analysis.riskScore = (
           analysis.votingCorrelation * 0.4 +
@@ -434,63 +524,48 @@ export class AttackDetector {
   // Helper Methods
   // ==========================================================================
 
-  private getVoterVotes(voterId: string): Map<string, boolean> {
-    const votes = new Map<string, boolean>();
-    for (const record of this.votingHistory) {
-      if (record.voterId === voterId) {
-        votes.set(record.proposalId, record.vote);
-      }
-    }
-    return votes;
+  private getVoterVotes(voterId: string): Map<string, VotingRecord> {
+    return this.voterVotes.get(voterId) ?? new Map<string, VotingRecord>();
   }
 
   private calculateVotingCorrelation(
-    votes1: Map<string, boolean>,
-    votes2: Map<string, boolean>
+    votes1: Map<string, VotingRecord>,
+    votes2: Map<string, VotingRecord>,
+    cutoff: number
   ): number {
-    const sharedProposals = this.getSharedProposals(votes1, votes2);
-    if (sharedProposals.length === 0) return 0;
-
     let matches = 0;
-    for (const proposalId of sharedProposals) {
-      if (votes1.get(proposalId) === votes2.get(proposalId)) {
+    let shared = 0;
+
+    const [small, large] = votes1.size <= votes2.size ? [votes1, votes2] : [votes2, votes1];
+    for (const [proposalId, recordSmall] of small) {
+      if (recordSmall.step < cutoff) continue;
+      const recordLarge = large.get(proposalId);
+      if (!recordLarge || recordLarge.step < cutoff) continue;
+      shared++;
+      if (recordSmall.vote === recordLarge.vote) {
         matches++;
       }
     }
 
-    return matches / sharedProposals.length;
+    return shared > 0 ? matches / shared : 0;
   }
 
-  private getSharedProposals(
-    votes1: Map<string, boolean>,
-    votes2: Map<string, boolean>
-  ): string[] {
-    const shared: string[] = [];
-    for (const proposalId of votes1.keys()) {
-      if (votes2.has(proposalId)) {
-        shared.push(proposalId);
-      }
-    }
-    return shared;
-  }
-
-  private calculateTemporalClustering(voter1: string, voter2: string): number {
-    const votes1 = this.votingHistory.filter(v => v.voterId === voter1);
-    const votes2 = this.votingHistory.filter(v => v.voterId === voter2);
-
-    if (votes1.length === 0 || votes2.length === 0) return 0;
-
+  private calculateTemporalClustering(
+    votes1: Map<string, VotingRecord>,
+    votes2: Map<string, VotingRecord>,
+    cutoff: number
+  ): number {
     let clustered = 0;
     let total = 0;
 
-    for (const v1 of votes1) {
-      for (const v2 of votes2) {
-        if (v1.proposalId === v2.proposalId) {
-          total++;
-          if (Math.abs(v1.step - v2.step) <= 2) {
-            clustered++;
-          }
-        }
+    const [small, large] = votes1.size <= votes2.size ? [votes1, votes2] : [votes2, votes1];
+    for (const [proposalId, recordSmall] of small) {
+      if (recordSmall.step < cutoff) continue;
+      const recordLarge = large.get(proposalId);
+      if (!recordLarge || recordLarge.step < cutoff) continue;
+      total++;
+      if (Math.abs(recordSmall.step - recordLarge.step) <= 2) {
+        clustered++;
       }
     }
 
@@ -498,39 +573,150 @@ export class AttackDetector {
   }
 
   private calculateTokenCorrelation(voter1: string, voter2: string): number {
-    // Check for token movements between voters
-    const directTransfers = this.tokenTransfers.filter(
-      t => (t.from === voter1 && t.to === voter2) ||
-           (t.from === voter2 && t.to === voter1)
-    );
+    this.ensureTokenCaches();
+    const directScore = Math.min((this.tokenDirectCounts.get(voter1)?.get(voter2) ?? 0) / 5, 1);
 
-    // Check for common sources
-    const sources1 = new Set(
-      this.tokenTransfers.filter(t => t.to === voter1).map(t => t.from)
-    );
-    const sources2 = new Set(
-      this.tokenTransfers.filter(t => t.to === voter2).map(t => t.from)
-    );
+    const sources1 = this.tokenSources.get(voter1);
+    const sources2 = this.tokenSources.get(voter2);
 
-    const commonSources = [...sources1].filter(s => sources2.has(s)).length;
+    let commonSources = 0;
+    if (sources1 && sources2) {
+      if (sources1.size <= sources2.size) {
+        for (const source of sources1) {
+          if (sources2.has(source)) commonSources++;
+        }
+      } else {
+        for (const source of sources2) {
+          if (sources1.has(source)) commonSources++;
+        }
+      }
+    }
 
-    const directScore = Math.min(directTransfers.length / 5, 1);
     const commonScore = Math.min(commonSources / 3, 1);
 
     return directScore * 0.6 + commonScore * 0.4;
   }
+
+  private pruneVoterVotes(cutoff: number): void {
+    for (const [voterId, votes] of this.voterVotes) {
+      for (const [proposalId, record] of votes) {
+        if (record.step < cutoff) {
+          votes.delete(proposalId);
+        }
+      }
+      if (votes.size === 0) {
+        this.voterVotes.delete(voterId);
+      }
+    }
+  }
+
+  private ensureTokenCaches(): void {
+    if (!this.tokenCacheDirty) return;
+
+    this.tokenDirectCounts.clear();
+    this.tokenSources.clear();
+
+    for (const transfer of this.tokenTransfers) {
+      let fromMap = this.tokenDirectCounts.get(transfer.from);
+      if (!fromMap) {
+        fromMap = new Map();
+        this.tokenDirectCounts.set(transfer.from, fromMap);
+      }
+      fromMap.set(transfer.to, (fromMap.get(transfer.to) ?? 0) + 1);
+
+      let toMap = this.tokenDirectCounts.get(transfer.to);
+      if (!toMap) {
+        toMap = new Map();
+        this.tokenDirectCounts.set(transfer.to, toMap);
+      }
+      toMap.set(transfer.from, (toMap.get(transfer.from) ?? 0) + 1);
+
+      let sources = this.tokenSources.get(transfer.to);
+      if (!sources) {
+        sources = new Set();
+        this.tokenSources.set(transfer.to, sources);
+      }
+      sources.add(transfer.from);
+    }
+
+    this.tokenCacheDirty = false;
+  }
+
+  private computePairwiseStats(currentStep: number, cutoff: number): void {
+    if (this.pairwiseStatsStep === currentStep) return;
+
+    const voters = Array.from(this.voterVotes.keys());
+    const size = voters.length;
+    this.pairwiseVoters = voters;
+    this.pairwiseIndex = new Map();
+    for (let i = 0; i < voters.length; i++) {
+      this.pairwiseIndex.set(voters[i], i);
+    }
+
+    this.pairwiseShared = new Int32Array(size * size);
+    this.pairwiseMatches = new Int32Array(size * size);
+    this.pairwiseTemporal = new Int32Array(size * size);
+    this.pairwiseSize = size;
+
+    const proposals = new Map<string, Array<{ idx: number; vote: boolean; step: number }>>();
+    for (const [voterId, votes] of this.voterVotes) {
+      const voterIdx = this.pairwiseIndex.get(voterId);
+      if (voterIdx === undefined) continue;
+      for (const [proposalId, record] of votes) {
+        if (record.step < cutoff) continue;
+        let list = proposals.get(proposalId);
+        if (!list) {
+          list = [];
+          proposals.set(proposalId, list);
+        }
+        list.push({ idx: voterIdx, vote: record.vote, step: record.step });
+      }
+    }
+
+    for (const list of proposals.values()) {
+      for (let i = 0; i < list.length; i++) {
+        const a = list[i];
+        for (let j = i + 1; j < list.length; j++) {
+          const b = list[j];
+          if (a.idx === b.idx) continue;
+          const pairIndex = this.getPairIndex(a.idx, b.idx, size);
+          this.pairwiseShared[pairIndex]++;
+          if (a.vote === b.vote) {
+            this.pairwiseMatches[pairIndex]++;
+          }
+          if (Math.abs(a.step - b.step) <= 2) {
+            this.pairwiseTemporal[pairIndex]++;
+          }
+        }
+      }
+    }
+
+    this.pairwiseStatsStep = currentStep;
+  }
+
+  private getPairIndex(i: number, j: number, size: number): number {
+    return i < j ? i * size + j : j * size + i;
+  }
+
 
   private calculateClusterVotingCorrelation(members: string[]): number {
     if (members.length < 2) return 0;
 
     let totalCorr = 0;
     let count = 0;
+    const size = this.pairwiseSize;
 
     for (let i = 0; i < members.length; i++) {
       for (let j = i + 1; j < members.length; j++) {
-        const votes1 = this.getVoterVotes(members[i]);
-        const votes2 = this.getVoterVotes(members[j]);
-        totalCorr += this.calculateVotingCorrelation(votes1, votes2);
+        const idx = this.pairwiseIndex.get(members[i]);
+        const jdx = this.pairwiseIndex.get(members[j]);
+        if (idx === undefined || jdx === undefined) {
+          count++;
+          continue;
+        }
+        const pairIndex = this.getPairIndex(idx, jdx, size);
+        const shared = this.pairwiseShared[pairIndex];
+        totalCorr += shared > 0 ? this.pairwiseMatches[pairIndex] / shared : 0;
         count++;
       }
     }
@@ -543,10 +729,19 @@ export class AttackDetector {
 
     let totalCorr = 0;
     let count = 0;
+    const size = this.pairwiseSize;
 
     for (let i = 0; i < members.length; i++) {
       for (let j = i + 1; j < members.length; j++) {
-        totalCorr += this.calculateTemporalClustering(members[i], members[j]);
+        const idx = this.pairwiseIndex.get(members[i]);
+        const jdx = this.pairwiseIndex.get(members[j]);
+        if (idx === undefined || jdx === undefined) {
+          count++;
+          continue;
+        }
+        const pairIndex = this.getPairIndex(idx, jdx, size);
+        const shared = this.pairwiseShared[pairIndex];
+        totalCorr += shared > 0 ? this.pairwiseTemporal[pairIndex] / shared : 0;
         count++;
       }
     }
@@ -616,6 +811,7 @@ export class AttackDetector {
       severity,
       confidence,
       suspectedAccounts: suspectedAccounts.length,
+      affectedProposals,
     });
 
     if (severity === 'critical' || severity === 'high') {

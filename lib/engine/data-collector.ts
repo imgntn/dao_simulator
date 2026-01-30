@@ -27,15 +27,6 @@ export interface ModelVarEntry {
   numMembers: number;
 }
 
-export interface CampaignEntry {
-  step: number;
-  oldPrice: number;
-  newPrice: number;
-  priceChange: number;
-  oldMembers: number;
-  newMembers: number;
-  memberChange: number;
-}
 
 export class SimpleDataCollector implements DataCollectorData {
   private _modelVars: CircularBuffer<ModelVarEntry>;
@@ -47,8 +38,8 @@ export class SimpleDataCollector implements DataCollectorData {
   private _delegationCentrality: CircularBuffer<Map<string, number>>;
   private _tokenRankingHistory: CircularBuffer<Array<[string, number]>>;
   private _influenceRankingHistory: CircularBuffer<Array<[string, number]>>;
+  private _campaignHistory: CircularBuffer<any>;
   achievements: Map<string, string> = new Map();
-  private _campaignHistory: CircularBuffer<CampaignEntry>;
   private _history: CircularBuffer<HistoryEntry>;
 
   // Gini calculation cache - cleared when token distribution changes
@@ -80,7 +71,7 @@ export class SimpleDataCollector implements DataCollectorData {
   get influenceRankingHistory(): Array<Array<[string, number]>> {
     return this._influenceRankingHistory.toArray();
   }
-  get campaignHistory(): CampaignEntry[] {
+  get campaignHistory(): any[] {
     return this._campaignHistory.toArray();
   }
   get history(): HistoryEntry[] {
@@ -90,7 +81,6 @@ export class SimpleDataCollector implements DataCollectorData {
   private centralityInterval: number;
   private lastCentralityStep: number | null = null;
   private dao: DAO | null = null;
-  private lastCampaign: CampaignEntry | null = null;
 
   constructor(dao?: DAO, centralityInterval: number = 1) {
     this.centralityInterval = Math.max(1, Math.floor(centralityInterval));
@@ -105,7 +95,7 @@ export class SimpleDataCollector implements DataCollectorData {
     this._delegationCentrality = new CircularBuffer<Map<string, number>>(MAX_HISTORY_SIZE);
     this._tokenRankingHistory = new CircularBuffer<Array<[string, number]>>(MAX_HISTORY_SIZE);
     this._influenceRankingHistory = new CircularBuffer<Array<[string, number]>>(MAX_HISTORY_SIZE);
-    this._campaignHistory = new CircularBuffer<CampaignEntry>(MAX_HISTORY_SIZE);
+    this._campaignHistory = new CircularBuffer<any>(MAX_HISTORY_SIZE);
     this._history = new CircularBuffer<HistoryEntry>(MAX_HISTORY_SIZE);
 
     if (dao && dao.eventBus) {
@@ -117,29 +107,6 @@ export class SimpleDataCollector implements DataCollectorData {
     const { event } = data;
     this.eventCounts.set(event, (this.eventCounts.get(event) || 0) + 1);
 
-    if (event === 'marketing_campaign') {
-      const latestPrice = this._priceHistory.latest();
-      const prevPrice =
-        (data as Record<string, unknown>).oldPrice as number ||
-        (latestPrice !== undefined
-          ? latestPrice
-          : this.dao?.treasury.getTokenPrice('DAO_TOKEN') || 100);
-
-      const newPrice = (data as Record<string, unknown>).newPrice as number || this.dao?.treasury.getTokenPrice('DAO_TOKEN') || 100;
-      const prevMembers = (data as Record<string, unknown>).oldMembers as number || 0;
-      const newMembers = (data as Record<string, unknown>).newMembers as number || 0;
-
-      this.lastCampaign = {
-        step: data.step,
-        oldPrice: prevPrice,
-        newPrice: newPrice,
-        priceChange: newPrice - prevPrice,
-        oldMembers: prevMembers,
-        newMembers: newMembers,
-        memberChange: newMembers - prevMembers,
-      };
-      this._campaignHistory.push(this.lastCampaign);
-    }
   }
 
   /**
@@ -291,11 +258,10 @@ export class SimpleDataCollector implements DataCollectorData {
     this._delegationCentrality.clear();
     this._tokenRankingHistory.clear();
     this._influenceRankingHistory.clear();
-    this.achievements.clear();
     this._campaignHistory.clear();
+    this.achievements.clear();
     this._history.clear();
     this.lastCentralityStep = null;
-    this.lastCampaign = null;
     this.giniCache = null;
   }
 

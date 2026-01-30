@@ -36,6 +36,9 @@ export class InterDAOProposal implements InterDAOProposalData {
   resourceAmount?: number;
 
   private eventBus: EventBus | null;
+  private votersByDao: Map<string, Set<string>> = new Map();
+  private consideredByDao: Map<string, Set<string>> = new Map();
+  private remindedByDao: Map<string, Set<string>> = new Map();
 
   constructor(
     uniqueId: string,
@@ -75,6 +78,53 @@ export class InterDAOProposal implements InterDAOProposalData {
         quorumMet: false,
         approved: null, // Pending
       };
+      this.votersByDao.set(daoId, new Set());
+      this.consideredByDao.set(daoId, new Set());
+      this.remindedByDao.set(daoId, new Set());
+    }
+  }
+
+  /**
+   * Check if a member has already voted on this proposal for a given DAO
+   */
+  hasVoted(daoId: string, memberId: string): boolean {
+    const voters = this.votersByDao.get(daoId);
+    return voters ? voters.has(memberId) : false;
+  }
+
+  /**
+   * Check if a member has already considered voting on this proposal
+   */
+  hasConsidered(daoId: string, memberId: string): boolean {
+    const considered = this.consideredByDao.get(daoId);
+    return considered ? considered.has(memberId) : false;
+  }
+
+  /**
+   * Check if a member has already received a reminder chance
+   */
+  hasReminded(daoId: string, memberId: string): boolean {
+    const reminded = this.remindedByDao.get(daoId);
+    return reminded ? reminded.has(memberId) : false;
+  }
+
+  /**
+   * Mark a member as having considered this proposal
+   */
+  markConsidered(daoId: string, memberId: string): void {
+    const considered = this.consideredByDao.get(daoId);
+    if (considered) {
+      considered.add(memberId);
+    }
+  }
+
+  /**
+   * Mark a member as having received a reminder chance
+   */
+  markReminded(daoId: string, memberId: string): void {
+    const reminded = this.remindedByDao.get(daoId);
+    if (reminded) {
+      reminded.add(memberId);
     }
   }
 
@@ -98,12 +148,20 @@ export class InterDAOProposal implements InterDAOProposalData {
       return false;
     }
 
+    const voters = this.votersByDao.get(daoId);
+    if (!voters || voters.has(memberId)) {
+      return false;
+    }
+
     // Record vote
     if (inFavor) {
       daoResult.votesFor += weight;
     } else {
       daoResult.votesAgainst += weight;
     }
+
+    voters.add(memberId);
+    this.markConsidered(daoId, memberId);
 
     if (this.eventBus) {
       this.eventBus.publish('inter_dao_vote', {

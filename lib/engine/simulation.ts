@@ -42,9 +42,11 @@ import {
   RiskManager,
   MarketMaker,
   Whistleblower,
+  StakerAgent,
 } from '../agents';
 import type { DAOMember } from '../agents/base';
 import type { DAOModel } from './model';
+import type { Proposal } from '../data-structures/proposal';
 
 // Type for agent constructor classes - uses DAOModel since that's what agents accept
 type AgentClass = new (
@@ -74,6 +76,7 @@ export interface DAOSimulationConfig extends Partial<SimulationSettings> {
   reportFile?: string;
   seed?: number;
   centralityInterval?: number;
+  useSharedRandom?: boolean;
   // Governance rule configuration (quorum percentage, thresholds, etc.)
   governance_config?: GovernanceRuleConfig;
 }
@@ -95,9 +98,6 @@ export class DAOSimulation extends Model {
   seed?: number;
 
   // Simulation settings
-  enableMarketing: boolean;
-  marketingLevel: string;
-  enablePlayer: boolean;
   tokenEmissionRate: number;
   tokenBurnRate: number;
   stakingInterestRate: number;
@@ -106,8 +106,14 @@ export class DAOSimulation extends Model {
   marketShockFrequency: number;
   adaptiveLearningRate: number;
   adaptiveEpsilon: number;
+  priceVolatility: number;
   governanceRuleName: string;
   governanceRule: any;
+
+  // Policy state
+  private treasuryEma: number = 0;
+  private votesThisStep: number = 0;
+  private votersThisStep: Set<string> = new Set();
 
   // Agent counts
   numDevelopers: number;
@@ -128,6 +134,7 @@ export class DAOSimulation extends Model {
   numArtists: number;
   numCollectors: number;
   numSpeculators: number;
+  numStakers: number;
   numRLTraders: number;
   numGovernanceExperts: number;
   numRiskManagers: number;
@@ -136,6 +143,10 @@ export class DAOSimulation extends Model {
 
   // Probabilities and parameters
   commentProbability: number;
+  proposalCreationProbability: number;
+  proposalDurationSteps: number;
+  proposalDurationMinSteps: number;
+  proposalDurationMaxSteps: number;
   externalPartnerInteractProbability: number;
   violationProbability: number;
   reputationPenalty: number;
@@ -169,17 +180,26 @@ export class DAOSimulation extends Model {
     // Use the DAO's event bus
     this.eventBus = this.dao.eventBus;
 
+    // Clear delegation cache to avoid cross-simulation contamination
+    DelegationResolver.clearCache();
+
     // CRITICAL: Reset global random state before setting seed
     // This ensures each simulation starts fresh and is reproducible
     // Without this, state from previous simulations persists
-    if (config.seed !== undefined) {
-      this.seed = config.seed;
-      // Reset and set seed for deterministic runs
-      resetGlobalRandom(config.seed);
+    const useSharedRandom = config.useSharedRandom ?? false;
+    if (!useSharedRandom) {
+      if (config.seed !== undefined) {
+        this.seed = config.seed;
+        // Reset and set seed for deterministic runs
+        resetGlobalRandom(config.seed);
+      } else {
+        // No seed provided - use timestamp but still reset to clear old state
+        resetGlobalRandom();
+        this.seed = undefined;
+      }
     } else {
-      // No seed provided - use timestamp but still reset to clear old state
-      resetGlobalRandom();
-      this.seed = undefined;
+      // City simulations share a single RNG seeded at the run level
+      this.seed = config.seed;
     }
 
     // Configuration
@@ -196,9 +216,6 @@ export class DAOSimulation extends Model {
     this.reportFile = config.reportFile;
 
     // Settings
-    this.enableMarketing = config.enable_marketing ?? settings.enable_marketing;
-    this.marketingLevel = config.marketing_level ?? settings.marketing_level;
-    this.enablePlayer = config.enable_player ?? settings.enable_player;
     this.tokenEmissionRate = config.token_emission_rate ?? settings.token_emission_rate;
     this.tokenBurnRate = config.token_burn_rate ?? settings.token_burn_rate;
     this.stakingInterestRate = config.staking_interest_rate ?? settings.staking_interest_rate;
@@ -207,6 +224,7 @@ export class DAOSimulation extends Model {
     this.marketShockFrequency = config.market_shock_frequency ?? settings.market_shock_frequency;
     this.adaptiveLearningRate = config.adaptive_learning_rate ?? settings.adaptive_learning_rate;
     this.adaptiveEpsilon = config.adaptive_epsilon ?? settings.adaptive_epsilon;
+    this.priceVolatility = config.price_volatility ?? settings.price_volatility;
 
     // Governance
     this.governanceRuleName = config.governance_rule ?? settings.governance_rule;
@@ -236,6 +254,7 @@ export class DAOSimulation extends Model {
     this.numArtists = config.num_artists ?? settings.num_artists;
     this.numCollectors = config.num_collectors ?? settings.num_collectors;
     this.numSpeculators = config.num_speculators ?? settings.num_speculators;
+    this.numStakers = config.num_stakers ?? settings.num_stakers;
     this.numRLTraders = config.num_rl_traders ?? settings.num_rl_traders;
     this.numGovernanceExperts = config.num_governance_experts ?? settings.num_governance_experts;
     this.numRiskManagers = config.num_risk_managers ?? settings.num_risk_managers;
@@ -244,9 +263,50 @@ export class DAOSimulation extends Model {
 
     // Probabilities
     this.commentProbability = config.comment_probability ?? settings.comment_probability;
+    this.proposalCreationProbability = config.proposal_creation_probability ?? settings.proposal_creation_probability;
+    this.proposalDurationSteps = config.proposal_duration_steps ?? settings.proposal_duration_steps;
+    this.proposalDurationMinSteps = config.proposal_duration_min_steps ?? settings.proposal_duration_min_steps;
+    this.proposalDurationMaxSteps = config.proposal_duration_max_steps ?? settings.proposal_duration_max_steps;
     this.externalPartnerInteractProbability = config.external_partner_interact_probability ?? settings.external_partner_interact_probability;
     this.violationProbability = config.violation_probability ?? settings.violation_probability;
     this.reputationPenalty = config.reputation_penalty ?? settings.reputation_penalty;
+
+    // Policy configuration
+    this.dao.treasuryPolicy = {
+      enabled: config.treasury_stabilization_enabled ?? settings.treasury_stabilization_enabled,
+      targetReserve: config.treasury_target_reserve ?? settings.treasury_target_reserve,
+      targetReserveFraction: config.treasury_target_reserve_fraction ?? settings.treasury_target_reserve_fraction,
+      emaAlpha: config.treasury_ema_alpha ?? settings.treasury_ema_alpha,
+      bufferFraction: config.treasury_buffer_fraction ?? settings.treasury_buffer_fraction,
+      bufferFillRate: config.treasury_buffer_fill_rate ?? settings.treasury_buffer_fill_rate,
+      emergencyTopupRate: config.treasury_emergency_topup_rate ?? settings.treasury_emergency_topup_rate,
+      maxSpendFraction: config.treasury_max_spend_fraction ?? settings.treasury_max_spend_fraction,
+    };
+    this.dao.proposalPolicy = {
+      bondFraction: config.proposal_bond_fraction ?? settings.proposal_bond_fraction,
+      bondMin: config.proposal_bond_min ?? settings.proposal_bond_min,
+      bondMax: config.proposal_bond_max ?? settings.proposal_bond_max,
+      inactivitySteps: config.proposal_inactivity_steps ?? settings.proposal_inactivity_steps,
+      tempCheckFraction: config.proposal_temp_check_fraction ?? settings.proposal_temp_check_fraction,
+      fastTrackMinSteps: config.proposal_fast_track_min_steps ?? settings.proposal_fast_track_min_steps,
+      fastTrackApproval: config.proposal_fast_track_approval ?? settings.proposal_fast_track_approval,
+      fastTrackQuorum: config.proposal_fast_track_quorum ?? settings.proposal_fast_track_quorum,
+    };
+    this.dao.participationPolicy = {
+      targetRate: config.participation_target_rate ?? settings.participation_target_rate,
+      boostStrength: config.participation_boost_strength ?? settings.participation_boost_strength,
+      boostDecay: config.participation_boost_decay ?? settings.participation_boost_decay,
+      boostMax: config.participation_boost_max ?? settings.participation_boost_max,
+      inactivityBoost: config.participation_inactivity_boost ?? settings.participation_inactivity_boost,
+      rewardPerVote: config.participation_reward_per_vote ?? settings.participation_reward_per_vote,
+    };
+    this.dao.votingPowerPolicy = {
+      capFraction: config.vote_power_cap_fraction ?? settings.vote_power_cap_fraction,
+      quadraticThreshold: config.vote_power_quadratic_threshold ?? settings.vote_power_quadratic_threshold,
+      velocityWindow: config.vote_power_velocity_window ?? settings.vote_power_velocity_window,
+      velocityPenalty: config.vote_power_velocity_penalty ?? settings.vote_power_velocity_penalty,
+    };
+    this.dao.delegationLockSteps = config.delegation_lock_steps ?? settings.delegation_lock_steps;
 
     // Initialize event logger
     if (this.eventLogging) {
@@ -262,6 +322,13 @@ export class DAOSimulation extends Model {
       });
     }
 
+    // Track per-step voting participation
+    this.eventBus.subscribe('vote_cast', (data: any) => {
+      if (typeof data?.member === 'string') {
+        this.votersThisStep.add(data.member);
+      }
+    });
+
     // Initialize marketplace
     this.marketplace = new NFTMarketplace(this.eventBus);
     this.dao.marketplace = this.marketplace;
@@ -270,9 +337,6 @@ export class DAOSimulation extends Model {
     const initialFunding = constants.INITIAL_TREASURY_FUNDING;
     this.dao.treasury.deposit('DAO_TOKEN', initialFunding, this.currentStep);
 
-    if (this.enableMarketing) {
-      this.dao.treasury.deposit('DAO_TOKEN', constants.MARKETING_BUDGET_BOOST, this.currentStep);
-    }
 
     // Initialize reputation tracker
     this.reputationTracker = new ReputationTracker(this.dao, this.reputationDecayRate);
@@ -360,6 +424,7 @@ export class DAOSimulation extends Model {
       { class: Artist as AgentClass, count: this.numArtists, params: {} },
       { class: Collector as AgentClass, count: this.numCollectors, params: {} },
       { class: Speculator as AgentClass, count: this.numSpeculators, params: {} },
+      { class: StakerAgent as AgentClass, count: this.numStakers, params: {} },
       { class: RLTrader as AgentClass, count: this.numRLTraders, params: { learningRate: this.adaptiveLearningRate, epsilon: this.adaptiveEpsilon } },
       { class: GovernanceExpert as AgentClass, count: this.numGovernanceExperts, params: {} },
       { class: RiskManager as AgentClass, count: this.numRiskManagers, params: {} },
@@ -441,10 +506,44 @@ export class DAOSimulation extends Model {
 
   resolveBasicProposals(): void {
     const openProposals = this.dao.proposals.filter(p => p.status === 'open');
+    const inactivitySteps = this.dao.proposalPolicy.inactivitySteps;
 
     for (const proposal of openProposals) {
+      const isMultiStage = this.isMultiStageProposal(proposal);
+      const inVotingStage = !isMultiStage || (proposal as any).isInVotingStage;
+
+      // Auto-expire inactive proposals (no votes/comments/delegations)
+      if (
+        inactivitySteps > 0 &&
+        inVotingStage &&
+        this.currentStep - proposal.lastActivityStep > inactivitySteps
+      ) {
+        proposal.status = 'expired';
+        proposal.resolvedTime = this.currentStep;
+        proposal.quorumMet = false;
+        this.eventBus.publish('proposal_expired', {
+          step: this.currentStep,
+          proposalId: proposal.uniqueId,
+          title: proposal.title,
+          votesFor: proposal.votesFor,
+          votesAgainst: proposal.votesAgainst,
+          participationRate: 0,
+          requiredQuorum: (this.governanceRule as any).quorumPercentage ?? 0,
+          reason: 'inactivity',
+        });
+        this.settleProposalBond(proposal, false, 'inactivity');
+        continue;
+      }
+
+      // Skip multi-stage proposals (handled by governance processor)
+      if (isMultiStage) {
+        continue;
+      }
+
       // Check if voting period has ended
-      const votingEnded = this.currentStep > proposal.creationTime + proposal.votingPeriod;
+      const votingEnded =
+        this.currentStep > proposal.creationTime + proposal.votingPeriod ||
+        this.shouldFastTrackProposal(proposal);
 
       if (!votingEnded) continue;
 
@@ -461,8 +560,9 @@ export class DAOSimulation extends Model {
         );
         const votingTokens = proposal.votesFor + proposal.votesAgainst;
         const participationRate = votingTokens / Math.max(totalTokens, 1);
+        proposal.quorumMet = participationRate >= quorumConfig;
 
-        if (participationRate < quorumConfig) {
+        if (!proposal.quorumMet) {
           // Quorum not met - mark as expired (abandoned)
           proposal.status = 'expired';
           this.eventBus.publish('proposal_expired', {
@@ -475,8 +575,11 @@ export class DAOSimulation extends Model {
             requiredQuorum: quorumConfig,
             reason: 'quorum_not_met',
           });
+          this.settleProposalBond(proposal, false, 'quorum_not_met');
           continue; // Skip to next proposal
         }
+      } else {
+        proposal.quorumMet = true;
       }
 
       // Apply governance rule to determine outcome (quorum already met if we get here)
@@ -502,9 +605,69 @@ export class DAOSimulation extends Model {
         });
       }
 
+      this.settleProposalBond(proposal, true, approved ? 'approved' : 'rejected');
+
       // Update reputation based on voting outcomes
       this.updateReputationFromVoting(proposal, approved);
     }
+  }
+
+  private isMultiStageProposal(proposal: Proposal): boolean {
+    return Array.isArray((proposal as any).stageConfigs);
+  }
+
+  private shouldFastTrackProposal(proposal: Proposal): boolean {
+    const policy = this.dao.proposalPolicy;
+    if (policy.fastTrackMinSteps <= 0) return false;
+
+    const elapsed = this.currentStep - proposal.creationTime;
+    if (elapsed < policy.fastTrackMinSteps) return false;
+
+    const totalVotes = proposal.votesFor + proposal.votesAgainst;
+    if (totalVotes <= 0) return false;
+
+    const approval = proposal.votesFor / Math.max(totalVotes, 1);
+    const totalVotingPower = this.dao.getTotalVotingPower();
+    const participation = totalVotes / Math.max(totalVotingPower, 1);
+
+    return approval >= policy.fastTrackApproval && participation >= policy.fastTrackQuorum;
+  }
+
+  private settleProposalBond(proposal: Proposal, refundEligible: boolean, reason: string): void {
+    if (proposal.bondAmount <= 0 || proposal.bondRefunded || proposal.bondSlashed) {
+      return;
+    }
+
+    const creator = this.dao.members.find(m => m.uniqueId === proposal.creator);
+    if (refundEligible && proposal.quorumMet && creator) {
+      const token = this.dao.getPrimaryTokenSymbol();
+      const refundable = Math.min(
+        proposal.bondAmount,
+        this.dao.treasury.getTokenBalance(token)
+      );
+      if (refundable > 0) {
+        this.dao.treasury.withdraw(token, refundable, this.currentStep);
+        creator.tokens += refundable;
+      }
+      proposal.bondRefunded = true;
+      this.eventBus.publish('proposal_bond_refunded', {
+        step: this.currentStep,
+        proposalId: proposal.uniqueId,
+        creator: proposal.creator,
+        amount: refundable,
+        reason,
+      });
+      return;
+    }
+
+    proposal.bondSlashed = true;
+    this.eventBus.publish('proposal_bond_slashed', {
+      step: this.currentStep,
+      proposalId: proposal.uniqueId,
+      creator: proposal.creator,
+      amount: proposal.bondAmount,
+      reason,
+    });
   }
 
   /**
@@ -512,17 +675,28 @@ export class DAOSimulation extends Model {
    */
   performBuybacks(): void {
     const treasury = this.dao.treasury;
-    const price = treasury.getTokenPrice('DAO_TOKEN');
+    const token = this.dao.getPrimaryTokenSymbol();
+    const price = treasury.getTokenPrice(token);
     const funds = treasury.funds;
+
+    const policy = this.dao.treasuryPolicy;
+    const minReserve = policy.enabled
+      ? policy.targetReserve
+      : constants.MIN_TREASURY_RESERVE;
+    const available = Math.max(0, funds - minReserve);
+    const maxSpend = policy.enabled
+      ? available * policy.maxSpendFraction
+      : funds * constants.BUYBACK_PERCENTAGE;
 
     if (
       funds >= constants.BUYBACK_FUND_THRESHOLD &&
-      price < constants.BUYBACK_PRICE_THRESHOLD
+      price < constants.BUYBACK_PRICE_THRESHOLD &&
+      available > 0
     ) {
-      const buybackAmount = funds * constants.BUYBACK_PERCENTAGE;
+      const buybackAmount = Math.min(funds * constants.BUYBACK_PERCENTAGE, maxSpend);
       const bought = buybackAmount / price;
 
-      treasury.withdraw('DAO_TOKEN', buybackAmount, this.currentStep);
+      treasury.withdraw(token, buybackAmount, this.currentStep);
 
       this.eventBus.publish('buyback_executed', {
         step: this.currentStep,
@@ -530,6 +704,122 @@ export class DAOSimulation extends Model {
         tokens: bought,
         price,
       });
+    }
+  }
+
+  private applyTreasuryPolicy(): void {
+    const policy = this.dao.treasuryPolicy;
+    if (!policy.enabled) return;
+
+    const token = this.dao.getPrimaryTokenSymbol();
+    const funds = this.dao.treasury.getTokenBalance(token);
+
+    if (this.treasuryEma <= 0) {
+      this.treasuryEma = funds;
+    }
+    this.treasuryEma =
+      policy.emaAlpha * funds + (1 - policy.emaAlpha) * this.treasuryEma;
+
+    const targetReserve = Math.max(
+      policy.targetReserve,
+      this.treasuryEma * policy.targetReserveFraction
+    );
+    const bufferTarget = targetReserve * policy.bufferFraction;
+
+    const excess = funds - (targetReserve + bufferTarget);
+    if (excess > 0) {
+      const moved = excess * policy.bufferFillRate;
+      if (moved > 0) {
+        this.dao.treasury.withdraw(token, moved, this.currentStep);
+        this.dao.treasuryBuffer += moved;
+        this.eventBus.publish('treasury_buffer_filled', {
+          step: this.currentStep,
+          amount: moved,
+          buffer: this.dao.treasuryBuffer,
+          targetReserve,
+        });
+      }
+    }
+
+    const shortfall = targetReserve - funds;
+    if (shortfall > 0 && this.dao.treasuryBuffer > 0) {
+      const released = Math.min(shortfall, this.dao.treasuryBuffer);
+      this.dao.treasury.deposit(token, released, this.currentStep);
+      this.dao.treasuryBuffer -= released;
+      this.eventBus.publish('treasury_buffer_released', {
+        step: this.currentStep,
+        amount: released,
+        buffer: this.dao.treasuryBuffer,
+        targetReserve,
+      });
+    }
+
+    if (shortfall > 0 && this.dao.treasuryBuffer <= 0 && policy.emergencyTopupRate > 0) {
+      const topup = shortfall * policy.emergencyTopupRate;
+      if (topup > 0) {
+        this.dao.treasury.deposit(token, topup, this.currentStep);
+        this.eventBus.publish('treasury_emergency_topup', {
+          step: this.currentStep,
+          amount: topup,
+          targetReserve,
+        });
+      }
+    }
+  }
+
+  private applyParticipationPolicy(): void {
+    const policy = this.dao.participationPolicy;
+    if (policy.targetRate <= 0) return;
+
+    const memberCount = this.dao.members.length || 1;
+    const participationRate = this.votersThisStep.size / memberCount;
+
+    if (participationRate < policy.targetRate) {
+      const gap = policy.targetRate - participationRate;
+      const boost = Math.min(policy.boostMax, gap * policy.boostStrength);
+      this.dao.participationBoost = Math.min(
+        policy.boostMax,
+        this.dao.participationBoost + boost
+      );
+
+      if (policy.rewardPerVote > 0 && this.votersThisStep.size > 0) {
+        const token = this.dao.getPrimaryTokenSymbol();
+        const totalReward = policy.rewardPerVote * this.votersThisStep.size;
+        const available = this.dao.treasury.getTokenBalance(token);
+        const payout = Math.min(totalReward, available);
+        const perVoter = payout / this.votersThisStep.size;
+
+        if (payout > 0) {
+          this.dao.treasury.withdraw(token, payout, this.currentStep);
+          for (const voterId of this.votersThisStep) {
+            const member = this.dao.members.find(m => m.uniqueId === voterId);
+            if (member) {
+              member.tokens += perVoter;
+            }
+          }
+        }
+      }
+    }
+
+    if (policy.boostDecay > 0) {
+      this.dao.participationBoost = Math.max(
+        0,
+        this.dao.participationBoost * (1 - policy.boostDecay)
+      );
+    }
+
+    this.eventBus.publish('participation_boost_updated', {
+      step: this.currentStep,
+      participationRate,
+      boost: this.dao.participationBoost,
+      voters: this.votersThisStep.size,
+    });
+  }
+
+  private updateTokenVelocityForMembers(): void {
+    if (this.dao.votingPowerPolicy.velocityWindow <= 0) return;
+    for (const member of this.dao.members) {
+      member.updateTokenVelocity(this.currentStep);
     }
   }
 
@@ -542,6 +832,8 @@ export class DAOSimulation extends Model {
     // Clear per-step caches at step boundaries for consistent calculations
     // DelegationResolver memoizes voting power calculations within a step
     DelegationResolver.setCurrentStep(this.currentStep, this.dao.daoId);
+    this.votersThisStep.clear();
+    this.votesThisStep = 0;
 
     // Process scheduled events
     if (this.eventEngine) {
@@ -568,6 +860,9 @@ export class DAOSimulation extends Model {
     if (this.tokenBurnRate > 0) {
       this.dao.treasury.withdraw('DAO_TOKEN', this.tokenBurnRate, this.currentStep);
     }
+
+    // Staking rewards (annual APY converted to per-step rate in DAO)
+    this.dao.applyStakingInterest();
 
     // Treasury revenue mechanisms - sustainable DAO economics
     // Real DAOs generate revenue from: protocol fees, staking, grants, services
@@ -602,6 +897,9 @@ export class DAOSimulation extends Model {
       });
     }
 
+    // Apply treasury stabilization policy before agent actions
+    this.applyTreasuryPolicy();
+
     // Step agents - await to handle async schedulers
     const result = this.schedule.step();
     if (result instanceof Promise) {
@@ -611,6 +909,10 @@ export class DAOSimulation extends Model {
     // Agent lifecycle management
     this.agentManager.addNewMembers();
     this.agentManager.cullMembers();
+
+    this.votesThisStep = this.votersThisStep.size;
+    this.applyParticipationPolicy();
+    this.updateTokenVelocityForMembers();
 
     // Reputation decay
     this.reputationTracker.decayReputation();
@@ -624,7 +926,7 @@ export class DAOSimulation extends Model {
     }
 
     // Update token prices with market dynamics
-    this.dao.treasury.updatePrices(0.02); // 2% volatility per step
+    this.dao.treasury.updatePrices(this.currentStep, this.priceVolatility);
 
     // Treasury buybacks
     this.performBuybacks();
@@ -691,7 +993,7 @@ export class DAOSimulation extends Model {
 
     // Restore treasury state
     if (checkpoint.daoState.tokenBalances) {
-      this.dao.treasury.tokenBalances = new Map(
+      this.dao.treasury.tokens = new Map(
         Object.entries(checkpoint.daoState.tokenBalances)
       );
     }
@@ -712,6 +1014,8 @@ export class DAOSimulation extends Model {
         agent.optimism = agentState.optimism;
         agent.stakeLocks = agentState.stakeLocks || [];
         agent.transferCooldown = agentState.transferCooldown || 0;
+        agent.recentTokenInflow = 0;
+        agent.lastTokenVelocityStep = this.currentStep;
         if (agentState.delegations) {
           agent.delegations = new Map(Object.entries(agentState.delegations));
         }

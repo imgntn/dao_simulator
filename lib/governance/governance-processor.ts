@@ -28,6 +28,7 @@ import { PaymentStreamController } from '../data-structures/payment-stream';
 import { VestingController } from '../data-structures/vesting-schedule';
 import { SubDAOController } from '../data-structures/sub-dao';
 import { AttackDetector } from '../utils/attack-detector';
+import { random } from '../utils/random';
 
 // =============================================================================
 // TYPES
@@ -208,6 +209,7 @@ export class GovernanceProcessor {
     if (this.config.attackDetectionEnabled) {
       this.systems.attackDetector = new AttackDetector();
       this.systems.attackDetector.setEventBus(this.eventBus);
+      this.setupAttackDetection();
     }
   }
 
@@ -300,6 +302,105 @@ export class GovernanceProcessor {
     }
   }
 
+  private setupAttackDetection(): void {
+    const detector = this.systems.attackDetector;
+    if (!detector) return;
+
+    // Record standard votes
+    this.eventBus.subscribe('proposal_voted', (data) => {
+      const voteData = data as any;
+      if (!voteData?.proposalId || !voteData?.agentId) return;
+      detector.recordVote({
+        voterId: String(voteData.agentId),
+        proposalId: String(voteData.proposalId),
+        vote: String(voteData.vote || '').toLowerCase() === 'yes',
+        weight: Number(voteData.weight ?? 1),
+        step: Number(voteData.step ?? 0),
+      });
+    });
+
+    // Record sybil puppet votes
+    this.eventBus.subscribe('sybil_vote_coordinated', (data) => {
+      const voteData = data as any;
+      if (!voteData?.proposalId || !voteData?.puppetId) return;
+      detector.recordVote({
+        voterId: String(voteData.puppetId),
+        proposalId: String(voteData.proposalId),
+        vote: Boolean(voteData.vote),
+        weight: Number(voteData.weight ?? 1),
+        step: Number(voteData.step ?? 0),
+      });
+    });
+
+    // Record flashloan votes
+    this.eventBus.subscribe('flashloan_vote_cast', (data) => {
+      const voteData = data as any;
+      if (!voteData?.proposalId || !voteData?.borrower) return;
+      detector.recordVote({
+        voterId: String(voteData.borrower),
+        proposalId: String(voteData.proposalId),
+        vote: Boolean(voteData.vote),
+        weight: Number(voteData.voteWeight ?? 1),
+        step: Number(voteData.step ?? 0),
+      });
+    });
+
+    // Track flashloan token flows (borrow + repay)
+    this.eventBus.subscribe('flashloan_borrowed', (data) => {
+      const transfer = data as any;
+      if (!transfer?.borrower || !transfer?.amount) return;
+      detector.recordTransfer({
+        from: 'treasury',
+        to: String(transfer.borrower),
+        amount: Number(transfer.amount),
+        step: Number(transfer.step ?? 0),
+      });
+    });
+
+    this.eventBus.subscribe('flashloan_repaid', (data) => {
+      const transfer = data as any;
+      if (!transfer?.borrower || !transfer?.amount) return;
+      detector.recordTransfer({
+        from: String(transfer.borrower),
+        to: 'treasury',
+        amount: Number(transfer.amount),
+        step: Number(transfer.step ?? 0),
+      });
+    });
+
+    // Simple defense response on detection
+    this.eventBus.subscribe('attack_detected', (data) => {
+      const alert = data as any;
+      const severity = String(alert?.severity || 'low').toLowerCase();
+      const step = Number(alert?.step ?? this.dao.currentStep);
+      const probability = this.getMitigationProbability(severity);
+
+      if (random() < probability) {
+        this.systems.attackDetector?.resolveAlert?.(alert?.alertId, step);
+        this.eventBus.publish('attack_mitigated', {
+          step,
+          alertId: alert?.alertId,
+          attackType: alert?.attackType,
+          severity: alert?.severity,
+          confidence: alert?.confidence,
+        });
+      }
+    });
+  }
+
+  private getMitigationProbability(severity: string): number {
+    switch (severity) {
+      case 'critical':
+        return 0.7;
+      case 'high':
+        return 0.5;
+      case 'medium':
+        return 0.3;
+      default:
+        return 0.15;
+    }
+  }
+
   /**
    * Update supply trackers
    */
@@ -357,7 +458,53 @@ export class GovernanceProcessor {
       if (advanced) {
         this.handleStageAdvancement(multiStage, currentStep);
       }
+
+      // Settle proposal bond once proposal resolves
+      if (multiStage.status !== 'open') {
+        this.settleProposalBond(multiStage, multiStage.status);
+      }
     }
+  }
+
+  private settleProposalBond(proposal: MultiStageProposal, status: string): void {
+    if (proposal.bondAmount <= 0 || proposal.bondRefunded || proposal.bondSlashed) {
+      return;
+    }
+
+    const refundEligible =
+      proposal.quorumMet !== false &&
+      (status === 'approved' || status === 'completed' || status === 'rejected');
+
+    const creator = this.dao.members.find(m => m.uniqueId === proposal.creator);
+    if (refundEligible && creator) {
+      const token = this.dao.getPrimaryTokenSymbol();
+      const refundable = Math.min(
+        proposal.bondAmount,
+        this.dao.treasury.getTokenBalance(token)
+      );
+      if (refundable > 0) {
+        this.dao.treasury.withdraw(token, refundable, this.dao.currentStep);
+        creator.tokens += refundable;
+      }
+      proposal.bondRefunded = true;
+      this.eventBus.publish('proposal_bond_refunded', {
+        step: this.dao.currentStep,
+        proposalId: proposal.uniqueId,
+        creator: proposal.creator,
+        amount: refundable,
+        reason: status,
+      });
+      return;
+    }
+
+    proposal.bondSlashed = true;
+    this.eventBus.publish('proposal_bond_slashed', {
+      step: this.dao.currentStep,
+      proposalId: proposal.uniqueId,
+      creator: proposal.creator,
+      amount: proposal.bondAmount,
+      reason: status,
+    });
   }
 
   /**
@@ -369,6 +516,9 @@ export class GovernanceProcessor {
       approvalThresholdPercent: this.config.approvalThresholdPercent ?? 51,
       isBicameral: this.config.bicameralEnabled,
       hasDualGovernance: this.config.rageQuitEnabled,
+      fastTrackMinSteps: this.dao.proposalPolicy.fastTrackMinSteps,
+      fastTrackApprovalPercent: (this.dao.proposalPolicy.fastTrackApproval || 0) * 100,
+      fastTrackQuorumPercent: (this.dao.proposalPolicy.fastTrackQuorum || 0) * 100,
     };
 
     return new ProposalStateMachine(proposal, this.dao, config);
@@ -850,7 +1000,10 @@ export function createGovernanceProcessor(
   };
 
   const normalizedType = daoType.toLowerCase().replace(/[\s-]/g, '_');
-  const config = configs[normalizedType] || configs.default;
+  const config = {
+    ...(configs[normalizedType] || configs.default),
+    attackDetectionEnabled: true,
+  };
 
   return new GovernanceProcessor(dao, eventBus, config);
 }

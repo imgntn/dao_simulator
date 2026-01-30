@@ -2,6 +2,7 @@
 
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
+import { submitRandomProposal } from '../utils/proposal-utils';
 import { random, randomChoice } from '../utils/random';
 
 export class Investor extends DAOMember {
@@ -28,6 +29,10 @@ export class Investor extends DAOMember {
     this.adjustBudgetBasedOnPrice();
     this.investInRandomProposal();
     this.voteOnRandomProposal();
+
+    if (this.model.dao && random() < 0.001) {
+      submitRandomProposal(this.model.dao, this);
+    }
 
     if (random() < (this.model.dao?.commentProbability || 0.5)) {
       this.leaveCommentOnRandomProposal();

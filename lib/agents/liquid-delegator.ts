@@ -27,6 +27,7 @@ import { random, randomChoice } from '../utils/random';
 export class LiquidDelegator extends Delegator {
   // representative field is inherited from DAOMember base class
   delegationHistory: Array<{ step: number; representative: string }> = [];
+  lastDelegationStep: number = -Infinity;
 
   constructor(
     uniqueId: string,
@@ -89,6 +90,7 @@ export class LiquidDelegator extends Delegator {
       step: this.model.currentStep,
       representative: member.uniqueId,
     });
+    this.lastDelegationStep = this.model.currentStep;
 
     // Emit delegation event
     if (this.model.eventBus) {
@@ -118,6 +120,10 @@ export class LiquidDelegator extends Delegator {
    */
   evaluateRepresentative(): void {
     if (!this.representative || !this.model.dao) return;
+    const lockSteps = this.model.dao.delegationLockSteps || 0;
+    if (this.model.currentStep - this.lastDelegationStep < lockSteps) {
+      return;
+    }
 
     // If representative's reputation dropped significantly, consider switching
     const avgReputation =
@@ -126,7 +132,7 @@ export class LiquidDelegator extends Delegator {
 
     if (this.representative.reputation < avgReputation * 0.5) {
       // 30% chance to switch if representative is underperforming
-      if (random() < 0.3) {
+      if (random() < 0.2) {
         const newRep = this.chooseRepresentative();
         if (newRep && newRep !== this.representative) {
           this.delegateToMember(newRep);

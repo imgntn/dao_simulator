@@ -71,7 +71,6 @@ export interface CheckpointConfig {
   numInvestors: number;
   numTraders: number;
   governanceRule: string;
-  enableMarketing: boolean;
   tokenEmissionRate: number;
   tokenBurnRate: number;
   stakingInterestRate: number;
@@ -192,7 +191,6 @@ export class CheckpointManager {
       numInvestors: simulation.numInvestors,
       numTraders: simulation.numTraders,
       governanceRule: simulation.governanceRuleName,
-      enableMarketing: simulation.enableMarketing,
       tokenEmissionRate: simulation.tokenEmissionRate,
       tokenBurnRate: simulation.tokenBurnRate,
       stakingInterestRate: simulation.stakingInterestRate,
@@ -237,7 +235,7 @@ export class CheckpointManager {
       })),
       treasuryFunds: dao.treasury.funds,
       tokenPrices: Object.fromEntries(dao.treasury.tokenPrices),
-      tokenBalances: Object.fromEntries(dao.treasury.tokenBalances),
+      tokenBalances: Object.fromEntries(dao.treasury.tokens),
     };
   }
 

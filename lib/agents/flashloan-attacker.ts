@@ -238,6 +238,9 @@ export class FlashLoanAttacker extends DAOMember {
       successful: false,
     };
 
+    // Mark proposal as maliciously targeted for metrics
+    proposal.isMalicious = true;
+
     // CRITICAL FIX: Withdraw from treasury and track properly
     this.model.dao.treasury.withdraw(token, borrowAmount, this.model.currentStep);
     this.borrowedFromTreasury = borrowAmount;
@@ -356,6 +359,17 @@ export class FlashLoanAttacker extends DAOMember {
         const weight = this.tokens / openProposals.length;
         p.addVote(this.uniqueId, true, weight);
         this.votes.set(p.uniqueId, { vote: true, weight });
+        if (this.model.eventBus) {
+          this.model.eventBus.publish('flashloan_vote_cast', {
+            step: this.model.currentStep,
+            loanId: this.activeLoan?.loanId,
+            borrower: this.uniqueId,
+            proposalId: p.uniqueId,
+            vote: true,
+            voteWeight: weight,
+            borrowedAmount,
+          });
+        }
         votedCount++;
       }
     }
@@ -398,6 +412,16 @@ export class FlashLoanAttacker extends DAOMember {
     // Pay the fee from our own tokens
     this.tokens -= this.activeLoan.fee;
     this.activeLoan.repaidStep = this.model.currentStep;
+
+    if (this.model.eventBus) {
+      this.model.eventBus.publish('flashloan_repaid', {
+        step: this.model.currentStep,
+        loanId: this.activeLoan.loanId,
+        borrower: this.uniqueId,
+        amount: this.activeLoan.amount,
+        fee: this.activeLoan.fee,
+      });
+    }
 
     // Track success
     // NOTE: With voting power snapshots, flash loan attacks will now mostly fail

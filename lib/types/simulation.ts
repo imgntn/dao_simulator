@@ -25,23 +25,26 @@ export interface SimulationConfig {
   num_artists?: number;
   num_collectors?: number;
   num_speculators?: number;
+  num_stakers?: number;
 
   // Simulation parameters
   governance_rule?: 'majority' | 'quorum' | 'supermajority' | string;
-  enable_marketing?: boolean;
-  marketing_level?: string;
-  enable_player?: boolean;
   token_emission_rate?: number;
   token_burn_rate?: number;
   staking_interest_rate?: number;
   slash_fraction?: number;
   reputation_decay_rate?: number;
   market_shock_frequency?: number;
+  price_volatility?: number;
   adaptive_learning_rate?: number;
   adaptive_epsilon?: number;
 
   // Probabilities
   comment_probability?: number;
+  proposal_creation_probability?: number;
+  proposal_duration_steps?: number;
+  proposal_duration_min_steps?: number;
+  proposal_duration_max_steps?: number;
   voting_activity?: number;  // 0-1 probability that agents vote when given the chance
   external_partner_interact_probability?: number;
   violation_probability?: number;
@@ -76,7 +79,6 @@ export interface SimulationConfigSnapshot {
   numInvestors: number;
   numTraders: number;
   governanceRule: string;
-  enableMarketing: boolean;
   tokenEmissionRate: number;
   tokenBurnRate: number;
   stakingInterestRate: number;

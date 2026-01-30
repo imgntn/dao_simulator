@@ -71,7 +71,6 @@ export function stepsToDays(steps: number): number {
 // Treasury Configuration
 export const MIN_TREASURY_RESERVE = 10000; // Minimum treasury balance to maintain
 export const INITIAL_TREASURY_FUNDING = 50000; // Base treasury funding
-export const MARKETING_BUDGET_BOOST = 10000; // Additional marketing budget
 
 // Agent Token Configuration
 export const DEFAULT_AGENT_TOKENS = 100; // Default starting tokens for agents
@@ -94,6 +93,8 @@ export const COLLECTOR_TOKENS = 100;
 export const SPECULATOR_TOKENS = 100;
 export const PASSIVE_MEMBER_TOKENS = 100;
 export const PLAYER_TOKENS = 100;
+export const STAKER_TOKENS = 500;
+export const STAKER_STAKE_RATIO = 0.6;
 
 // Agent Budget Configuration
 export const INVESTOR_BUDGET = 500;
@@ -159,3 +160,4 @@ export const TEST_REVENUE_AMOUNT = 1000;
 // Default Token Emission/Burn Rates
 export const DEFAULT_TOKEN_EMISSION_RATE = 100.0; // Default tokens minted per step
 export const DEFAULT_TOKEN_BURN_RATE = 0.0; // Default tokens burned per step
+export const DEFAULT_PRICE_VOLATILITY = 0.005; // Default per-step price volatility

@@ -243,6 +243,9 @@ export class SybilAttacker extends DAOMember {
 
     this.attacksInitiated++;
 
+    // Mark proposal as maliciously targeted for metrics
+    proposal.isMalicious = true;
+
     if (this.model.eventBus) {
       this.model.eventBus.publish('sybil_attack_started', {
         step: this.model.currentStep,
@@ -363,6 +366,17 @@ export class SybilAttacker extends DAOMember {
     proposal.addVote(this.uniqueId, vote, this.tokens);
     this.votes.set(proposal.uniqueId, { vote, weight: this.tokens });
     this.markActive();
+
+    if (this.model.eventBus) {
+      this.model.eventBus.publish('sybil_vote_coordinated', {
+        step: this.model.currentStep,
+        masterId: this.uniqueId,
+        puppetId: this.uniqueId,
+        proposalId: proposal.uniqueId,
+        vote,
+        weight: this.tokens,
+      });
+    }
   }
 
   /**

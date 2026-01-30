@@ -374,6 +374,13 @@ export class GlobalMarketplace {
   }
 
   /**
+   * Get current 24h volume for a token
+   */
+  getTokenVolume24h(symbol: string): number {
+    return this.volume24h.get(symbol) || 0;
+  }
+
+  /**
    * Get all registered tokens
    */
   getAllTokens(): string[] {

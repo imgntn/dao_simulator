@@ -36,7 +36,7 @@ export interface EventBus {
 export interface PriceOracle {
   getPrice(token: string): number;
   setPrice(token: string, price: number): void;
-  updatePrice(token: string, step: number): void;
+  updatePrice(token: string, step?: number, volatility?: number): void;
 }
 
 // Data Structure Types
@@ -50,7 +50,7 @@ export interface ProposalData {
   creationTime: number;
   votingPeriod: number;
   duration?: number;
-  status: 'open' | 'approved' | 'rejected' | 'completed';
+  status: 'open' | 'approved' | 'rejected' | 'completed' | 'expired';
   closed: boolean;
   votes: Map<string, { vote: boolean; weight: number }>;
   yesVotes: number;
@@ -188,14 +188,20 @@ export interface SimulationSettings {
   numArtists: number;
   numCollectors: number;
   numSpeculators: number;
+  numStakers: number;
   violationProbability: number;
   reputationPenalty: number;
   commentProbability: number;
+  proposalCreationProbability: number;
+  proposalDurationSteps: number;
+  proposalDurationMinSteps: number;
+  proposalDurationMaxSteps: number;
   externalPartnerInteractProbability: number;
   stakingInterestRate: number;
   slashFraction: number;
   reputationDecayRate: number;
   marketShockFrequency: number;
+  priceVolatility: number;
   adaptiveLearningRate: number;
   adaptiveEpsilon: number;
   governanceRule: string;

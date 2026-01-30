@@ -280,7 +280,7 @@ export class Treasury {
     return this.tokenPrices.get(token) || 0;
   }
 
-  updatePrices(volatility: number = 0.05): void {
+  updatePrices(step: number, volatility: number = 0.05): void {
     // Update prices for all tokens using both oracle randomness AND market pressure
     for (const token of this.tokens.keys()) {
       // Get accumulated price pressure (positive = selling pressure, negative = buying pressure)
@@ -297,7 +297,7 @@ export class Treasury {
       const pressureImpact = Math.max(-0.05, Math.min(0.05, -pressureRatio * 0.1));
 
       // Apply random walk from oracle for market noise
-      this.oracle.updatePrice(token, volatility);
+      this.oracle.updatePrice(token, step, volatility);
       const oraclePrice = this.oracle.getPrice(token);
 
       // Blend oracle randomness with market pressure effects

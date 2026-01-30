@@ -20,11 +20,17 @@ export class Proposal {
   delegatedSupport: Map<string, number> = new Map();
   topic: string;
   creationTime: number = 0;
+  lastActivityStep: number = 0;
   resolvedTime?: number;  // Timestamp when proposal was resolved (approved/rejected/expired)
   votingPeriod: number;
   currentFunding: number = 0;
   uniqueId: string;
   type: string = 'default';
+  isMalicious: boolean = false;
+  bondAmount: number = 0;
+  bondRefunded: boolean = false;
+  bondSlashed: boolean = false;
+  quorumMet?: boolean;
 
   // Voting power snapshot - captures member balances at proposal creation
   // This prevents flash loan attacks and ensures votes are counted against
@@ -56,6 +62,13 @@ export class Proposal {
     this.topic = topic;
     this.votingPeriod = duration;
     this.uniqueId = '';  // Will be set by DAO when added
+  }
+
+  /**
+   * Record activity on the proposal for inactivity tracking
+   */
+  recordActivity(step: number): void {
+    this.lastActivityStep = step;
   }
 
   /**
@@ -180,9 +193,21 @@ export class Proposal {
           weight: effectiveWeight,
         });
       }
+      this.recordActivity(this.dao.currentStep);
       return true;
     }
     return false;  // Already voted
+  }
+
+  /**
+   * Reset voting-related data (used between multi-stage voting phases)
+   */
+  resetVotingData(): void {
+    this.votes.clear();
+    this.votesFor = 0;
+    this.votesAgainst = 0;
+    this.delegatedSupport.clear();
+    this.delegationRevokedFor.clear();
   }
 
   addComment(memberId: string, sentiment: string): void {
@@ -196,15 +221,18 @@ export class Proposal {
         sentiment,
       });
     }
+    this.recordActivity(this.dao.currentStep);
   }
 
   receiveDelegatedSupport(delegatorId: string, tokenAmount: number): void {
     const current = this.delegatedSupport.get(delegatorId) || 0;
     this.delegatedSupport.set(delegatorId, current + tokenAmount);
+    this.recordActivity(this.dao.currentStep);
   }
 
   receiveInvestment(investorId: string, amount: number): void {
     this.currentFunding += amount;
+    this.recordActivity(this.dao.currentStep);
   }
 
   get closed(): boolean {
@@ -225,9 +253,15 @@ export class Proposal {
       currentFunding: this.currentFunding,
       creator: this.creator,
       creationTime: this.creationTime,
+      lastActivityStep: this.lastActivityStep,
       resolvedTime: this.resolvedTime,
       votingPeriod: this.votingPeriod,
       type: this.type,
+      isMalicious: this.isMalicious,
+      bondAmount: this.bondAmount,
+      bondRefunded: this.bondRefunded,
+      bondSlashed: this.bondSlashed,
+      quorumMet: this.quorumMet,
       // Serialize voting power snapshot for checkpoint restore
       votingPowerSnapshot: Object.fromEntries(this.votingPowerSnapshot),
       snapshotTaken: this.snapshotTaken,
@@ -251,10 +285,16 @@ export class Proposal {
     proposal.votesAgainst = data.votesAgainst || 0;
     proposal.currentFunding = data.currentFunding || 0;
     proposal.creationTime = data.creationTime || 0;
+    proposal.lastActivityStep = data.lastActivityStep || proposal.creationTime || 0;
     proposal.resolvedTime = data.resolvedTime;
     proposal.votingPeriod = data.votingPeriod || proposal.duration;
     proposal.uniqueId = data.uniqueId || '';
     proposal.type = data.type || 'default';
+    proposal.isMalicious = data.isMalicious || false;
+    proposal.bondAmount = data.bondAmount || 0;
+    proposal.bondRefunded = data.bondRefunded || false;
+    proposal.bondSlashed = data.bondSlashed || false;
+    proposal.quorumMet = data.quorumMet;
 
     // Restore voting power snapshot
     if (data.votingPowerSnapshot) {

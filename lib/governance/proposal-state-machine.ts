@@ -40,6 +40,11 @@ export interface GovernanceConfig {
   // Category-based quorum (Arbitrum-style)
   constitutionalQuorumPercent?: number;
   nonConstitutionalQuorumPercent?: number;
+
+  // Fast-track thresholds (percentages, not fractions)
+  fastTrackMinSteps?: number;
+  fastTrackApprovalPercent?: number;
+  fastTrackQuorumPercent?: number;
 }
 
 // =============================================================================
@@ -77,6 +82,10 @@ export class ProposalStateMachine {
 
     // Check if stage has expired
     if (!this.proposal.isCurrentStageExpired) {
+      if (this.shouldFastTrack(currentStage)) {
+        const result = this.evaluateStageCompletion(currentStage);
+        return this.proposal.advanceToNextStage(result.passed, result.reason, result.details);
+      }
       return false; // Stage still in progress
     }
 
@@ -84,7 +93,35 @@ export class ProposalStateMachine {
     const result = this.evaluateStageCompletion(currentStage);
 
     // Advance to next stage (or reject)
-    return this.proposal.advanceToNextStage(result.passed, result.reason);
+    return this.proposal.advanceToNextStage(result.passed, result.reason, result.details);
+  }
+
+  /**
+   * Check if current stage qualifies for fast-track approval
+   */
+  private shouldFastTrack(stage: ProposalStage): boolean {
+    const minSteps = this.config.fastTrackMinSteps ?? 0;
+    if (minSteps <= 0) return false;
+
+    if (stage !== 'temp_check' && stage !== 'on_chain') return false;
+    if (!this.proposal.currentStageState) return false;
+
+    const elapsed = this.dao.currentStep - this.proposal.currentStageState.startStep;
+    if (elapsed < minSteps) return false;
+
+    const votesFor = this.proposal.votesFor;
+    const votesAgainst = this.proposal.votesAgainst;
+    const totalVotes = votesFor + votesAgainst;
+    if (totalVotes <= 0) return false;
+
+    const approvalPercent = (votesFor / totalVotes) * 100;
+    const totalVotingPower = this.calculateTotalVotingPower();
+    const participationPercent = (totalVotes / Math.max(totalVotingPower, 1)) * 100;
+
+    const approvalThreshold = this.config.fastTrackApprovalPercent ?? 60;
+    const quorumThreshold = this.config.fastTrackQuorumPercent ?? this.getQuorumForCategory();
+
+    return approvalPercent >= approvalThreshold && participationPercent >= quorumThreshold;
   }
 
   /**
@@ -136,6 +173,7 @@ export class ProposalStateMachine {
     const votesFor = this.proposal.votesFor;
     const votesAgainst = this.proposal.votesAgainst;
     const totalVotes = votesFor + votesAgainst;
+    this.proposal.quorumMet = totalVotes > 0;
 
     // Simple majority for temp check
     if (totalVotes === 0) {
@@ -191,6 +229,7 @@ export class ProposalStateMachine {
     const quorumVotes = (totalVotingPower * quorumPercent) / 100;
     const totalParticipation = votesFor + votesAgainst;
     const quorumMet = totalParticipation >= quorumVotes;
+    this.proposal.quorumMet = quorumMet;
 
     if (!quorumMet) {
       return {
@@ -220,6 +259,7 @@ export class ProposalStateMachine {
   private evaluateBicameralVoting(): StageCheckResult {
     // Check Token House first
     const tokenHouseResult = this.evaluateHouseVote('token_house');
+    this.proposal.quorumMet = tokenHouseResult.quorumMet;
 
     if (!tokenHouseResult.approved) {
       return {

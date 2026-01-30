@@ -16,7 +16,6 @@ export function snapshotConfig(simulation: DAOSimulation): SimulationConfigSnaps
     numInvestors: simulation.numInvestors,
     numTraders: simulation.numTraders,
     governanceRule: simulation.governanceRuleName,
-    enableMarketing: simulation.enableMarketing,
     tokenEmissionRate: simulation.tokenEmissionRate,
     tokenBurnRate: simulation.tokenBurnRate,
     stakingInterestRate: simulation.stakingInterestRate,

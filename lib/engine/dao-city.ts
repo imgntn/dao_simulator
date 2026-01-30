@@ -12,6 +12,8 @@ import { GovernanceProcessor, createGovernanceProcessor } from '../governance';
 import { EventBus } from '../utils/event-bus';
 import { random, randomChoice } from '../utils/random';
 import type { DAOMember } from '../agents/base';
+import { SybilAttacker, FlashLoanAttacker } from '../agents';
+import { DelegationResolver } from '../delegation/delegation-resolver';
 import { TwinAgentFactory, createAgentsFromTwin } from '../agents/twin-agent-factory';
 import {
   DigitalTwinLoader,
@@ -36,6 +38,8 @@ import type {
   DAOMemberCityData,
   InterDAOEdge,
   DAOCityNetworkData,
+  CityAttackConfig,
+  InterDAODefenseConfig,
   DEFAULT_CITY_CONFIG,
 } from '../types/dao-city';
 
@@ -79,6 +83,14 @@ export class DAOCity {
   private bridgeFeeRate: number;
   private bridgeDelay: number;
   private enableInterDAOProposals: boolean;
+  private memberTransferEnabled: boolean;
+  private bridgesEnabled: boolean;
+  private interDAOProposalRate: number;
+  private memberTransferRate: number;
+  private tokenSwapRate: number;
+  private interDAOProposalConfig?: DAOCityConfig['interDAOProposalConfig'];
+  private attackConfig?: CityAttackConfig;
+  private interDAODefense?: InterDAODefenseConfig;
 
   // State
   private currentStep: number = 0;
@@ -92,7 +104,6 @@ export class DAOCity {
   private timelockControllers: Map<string, TimelockController> = new Map();
   private bicameralSystems: Map<string, BicameralGovernance> = new Map();
   private governanceProcessors: Map<string, GovernanceProcessor> = new Map();
-  private playerControlledDaoId: string | null = null;
   private twinLoader: DigitalTwinLoader;
 
   constructor(config?: DAOCityConfig) {
@@ -141,6 +152,14 @@ export class DAOCity {
     this.bridgeFeeRate = this.config.bridgeFeeRate;
     this.bridgeDelay = this.config.bridgeDelay;
     this.enableInterDAOProposals = this.config.enableInterDAOProposals;
+    this.memberTransferEnabled = this.config.memberTransferEnabled ?? true;
+    this.bridgesEnabled = this.config.bridgesEnabled ?? true;
+    this.interDAOProposalRate = this.config.interDAOProposalRate ?? 0.02;
+    this.memberTransferRate = this.config.memberTransferRate ?? 0.01;
+    this.tokenSwapRate = this.config.tokenSwapRate ?? 0.05;
+    this.interDAOProposalConfig = this.config.interDAOProposalConfig;
+    this.attackConfig = this.config.attackConfig;
+    this.interDAODefense = this.config.interDAODefense;
 
     // Create city-wide event bus
     this.eventBus = new EventBus(false);
@@ -157,6 +176,9 @@ export class DAOCity {
     // Initialize DAOs
     this.initializeDAOs();
 
+    // Initialize attack agents if configured
+    this.initializeAttackers();
+
     // Calculate tower positions
     this.calculateTowerPositions();
 
@@ -169,8 +191,9 @@ export class DAOCity {
    */
   private initializeDAOs(): void {
     for (const daoConfig of this.config.daos) {
+      const governanceRule = this.normalizeGovernanceRule(daoConfig.governanceRule);
       const simConfig: DAOSimulationConfig = {
-        governance_rule: daoConfig.governanceRule,
+        governance_rule: governanceRule,
         violation_probability: daoConfig.violationProbability,
         reputation_penalty: daoConfig.reputationPenalty,
         comment_probability: daoConfig.commentProbability,
@@ -201,9 +224,22 @@ export class DAOCity {
         num_risk_managers: daoConfig.agentCounts.num_risk_managers,
         num_market_makers: daoConfig.agentCounts.num_market_makers,
         num_whistleblowers: daoConfig.agentCounts.num_whistleblowers,
+        useSharedRandom: true,
         // Apply base settings if provided
         ...this.config.baseSettings,
+        // Apply per-DAO simulation params if provided
+        ...daoConfig.simulationParams,
       };
+
+      if (daoConfig.quorumPercent !== undefined) {
+        const quorumPercent = daoConfig.quorumPercent > 1
+          ? daoConfig.quorumPercent / 100
+          : daoConfig.quorumPercent;
+        simConfig.governance_config = {
+          ...(simConfig.governance_config || {}),
+          quorumPercentage: quorumPercent,
+        };
+      }
 
       const simulation = new DAOSimulation(simConfig);
 
@@ -229,7 +265,7 @@ export class DAOCity {
       }
 
       // Register token in global marketplace
-      const initialPrice = 1.0 + random() * 0.5; // Random starting price 1.0-1.5
+      const initialPrice = daoConfig.initialTokenPrice ?? (1.0 + random() * 0.5); // Random starting price 1.0-1.5
       const totalSupply = simulation.dao.members.reduce((sum, m) => sum + m.tokens, 0) +
         simulation.dao.treasury.getTokenBalance(daoConfig.tokenSymbol);
 
@@ -257,6 +293,104 @@ export class DAOCity {
   }
 
   /**
+   * Initialize attack agents based on scenario configuration
+   */
+  private initializeAttackers(): void {
+    if (!this.attackConfig) {
+      return;
+    }
+
+    const attackTypes = this.attackConfig.attackTypes ?? [];
+    const hasSybilType = attackTypes.includes('governance_capture') || attackTypes.includes('proposal_spam');
+    const hasFlashType = attackTypes.includes('whale_manipulation');
+
+    const sybilCount = this.attackConfig.sybilAttackers ?? (hasSybilType ? 1 : 0);
+    const flashCount = this.attackConfig.flashLoanAttackers ?? (hasFlashType ? 1 : 0);
+    const totalAttackers = sybilCount + flashCount;
+
+    if (totalAttackers <= 0) {
+      return;
+    }
+
+    const targetDaoIds = this.resolveAttackTargets();
+    if (targetDaoIds.length === 0) {
+      return;
+    }
+
+    for (const daoId of targetDaoIds) {
+      const sim = this.simulations.get(daoId);
+      if (!sim) continue;
+
+      const budgetPerAttacker = this.attackConfig.attackerBudget && totalAttackers > 0
+        ? this.attackConfig.attackerBudget / totalAttackers
+        : undefined;
+
+      for (let i = 0; i < sybilCount; i++) {
+        const attackerId = `${daoId}_sybil_attacker_${i}`;
+        const attacker = new SybilAttacker(
+          attackerId,
+          sim,
+          budgetPerAttacker ?? 1000,
+          50,
+          'node_0',
+          this.attackConfig.sybilConfig
+        );
+        sim.dao.addMember(attacker);
+        sim.schedule.add(attacker);
+      }
+
+      for (let i = 0; i < flashCount; i++) {
+        const attackerId = `${daoId}_flashloan_attacker_${i}`;
+        const attacker = new FlashLoanAttacker(
+          attackerId,
+          sim,
+          budgetPerAttacker ?? 100,
+          30,
+          'node_0',
+          this.attackConfig.flashLoanConfig
+        );
+        sim.dao.addMember(attacker);
+        sim.schedule.add(attacker);
+      }
+
+      sim.agentManager.invalidateCache();
+    }
+  }
+
+  /**
+   * Resolve which DAOs should receive attack agents
+   */
+  private resolveAttackTargets(): string[] {
+    const daoIds = Array.from(this.simulations.keys());
+    if (daoIds.length === 0) return [];
+
+    if (this.attackConfig?.coordinatedAttack || this.attackConfig?.targetSelection === 'all') {
+      return daoIds;
+    }
+
+    const selection = this.attackConfig?.targetSelection ?? 'random';
+    if (selection === 'weakest' || selection === 'strongest') {
+      let chosen = daoIds[0];
+      let chosenPrice = this.globalMarketplace.getTokenPrice(
+        this.simulations.get(chosen)?.dao.tokenSymbol || ''
+      );
+      for (const id of daoIds.slice(1)) {
+        const sim = this.simulations.get(id);
+        if (!sim) continue;
+        const price = this.globalMarketplace.getTokenPrice(sim.dao.tokenSymbol);
+        const isBetter = selection === 'weakest' ? price < chosenPrice : price > chosenPrice;
+        if (isBetter) {
+          chosen = id;
+          chosenPrice = price;
+        }
+      }
+      return [chosen];
+    }
+
+    return [randomChoice(daoIds)];
+  }
+
+  /**
    * Map governance rule string to governance processor type
    */
   private mapGovernanceRuleToType(governanceRule: string): string {
@@ -269,6 +403,14 @@ export class DAOCity {
       'dualgovernance': 'lido',
     };
     return ruleToTypeMap[governanceRule] || 'default';
+  }
+
+  private normalizeGovernanceRule(governanceRule: string): string {
+    const normalized = governanceRule.toLowerCase();
+    if (normalized === 'liquid_democracy' || normalized === 'liquid-democracy') {
+      return 'majority';
+    }
+    return governanceRule;
   }
 
   /**
@@ -294,6 +436,69 @@ export class DAOCity {
     simulation.eventBus.subscribe('member_transfer_requested', (data) => {
       this.handleTransferRequest(data as unknown as { step: number; memberId: string; fromDaoId: string; toDaoId: string });
     });
+
+    simulation.eventBus.subscribe('attack_detected', (data) => {
+      this.handleInterDAODefenseAlert(daoId, data as Record<string, unknown>);
+    });
+  }
+
+  private handleInterDAODefenseAlert(sourceDaoId: string, data: Record<string, unknown>): void {
+    if (!this.interDAODefense) return;
+
+    const alertId = typeof data.alertId === 'string' ? data.alertId : undefined;
+    const attackType = typeof data.attackType === 'string' ? data.attackType : 'unknown';
+    const confidence = typeof data.confidence === 'number' ? data.confidence : undefined;
+    const affectedProposals = Array.isArray(data.affectedProposals)
+      ? (data.affectedProposals as string[])
+      : [];
+
+    if (this.interDAODefense.crossDAOAlerts || this.interDAODefense.mutualMonitoring) {
+      this.eventBus.publish('cross_dao_alert', {
+        step: this.currentStep,
+        sourceDaoId,
+        alertId,
+        attackType,
+        confidence,
+        affectedProposals,
+      });
+    }
+
+    if (this.interDAODefense.coordinatedResponse) {
+      this.eventBus.publish('coordinated_defense_action', {
+        step: this.currentStep,
+        sourceDaoId,
+        alertId,
+        attackType,
+        confidence,
+      });
+    }
+
+    if (this.interDAODefense.mutualVeto) {
+      const vetoThreshold = this.interDAODefense.vetoThreshold ?? 0;
+      if (confidence !== undefined && confidence < vetoThreshold) {
+        return;
+      }
+
+      const sim = this.simulations.get(sourceDaoId);
+      if (!sim || affectedProposals.length === 0) {
+        return;
+      }
+
+      for (const proposalId of affectedProposals) {
+        const proposal = sim.dao.proposals.find(p => p.uniqueId === proposalId);
+        if (!proposal || proposal.status !== 'open') continue;
+
+        proposal.status = 'rejected';
+        proposal.resolvedTime = this.currentStep;
+
+        sim.eventBus.publish('mutual_veto_triggered', {
+          step: this.currentStep,
+          proposalId,
+          sourceDaoId,
+          reason: 'Inter-DAO mutual veto',
+        });
+      }
+    }
   }
 
   /**
@@ -315,6 +520,9 @@ export class DAOCity {
    * Initialize bridges between all DAO pairs
    */
   private initializeBridges(): void {
+    if (!this.bridgesEnabled) {
+      return;
+    }
     const daoIds = this.config.daos.map(d => d.id);
 
     for (let i = 0; i < daoIds.length; i++) {
@@ -350,6 +558,9 @@ export class DAOCity {
     fromDaoId: string;
     toDaoId: string;
   }): void {
+    if (!this.memberTransferEnabled) {
+      return;
+    }
     const request: MemberTransferRequest = {
       requestId: `transfer_${this.currentStep}_${data.memberId}`,
       memberId: data.memberId,
@@ -373,6 +584,9 @@ export class DAOCity {
    * Process pending member transfers
    */
   private processTransfers(): void {
+    if (!this.memberTransferEnabled) {
+      return;
+    }
     const processed: MemberTransferRequest[] = [];
 
     for (const request of this.pendingTransfers) {
@@ -463,6 +677,9 @@ export class DAOCity {
     // Process pending transfers
     this.processTransfers();
 
+    // Cast inter-DAO votes before finalization
+    this.castInterDAOVotes();
+
     // Process inter-DAO proposals
     this.processInterDAOProposals();
 
@@ -505,7 +722,9 @@ export class DAOCity {
           const sim = this.simulations.get(daoId);
           if (sim) {
             proposal.setEligibleVoters(daoId, sim.dao.members.length);
-            proposal.finalizeDAOVote(daoId);
+            const quorumThreshold = this.interDAOProposalConfig?.quorumThreshold ?? 0.5;
+            const approvalThreshold = this.interDAOProposalConfig?.approvalThreshold ?? 0.5;
+            proposal.finalizeDAOVote(daoId, quorumThreshold, approvalThreshold);
           }
         }
 
@@ -524,6 +743,9 @@ export class DAOCity {
    * Process bridge token transfers
    */
   private processBridgeTransfers(): void {
+    if (!this.bridgesEnabled) {
+      return;
+    }
     for (const bridge of this.bridges.values()) {
       const completed: number[] = [];
 
@@ -554,18 +776,88 @@ export class DAOCity {
     if (!this.enableInterDAOProposals) return;
 
     // Small chance of new inter-DAO proposal each step
-    if (random() < 0.02) {
+    if (random() < this.interDAOProposalRate) {
       this.createRandomInterDAOProposal();
     }
 
     // Random member considers transferring
-    if (random() < 0.01) {
+    if (this.memberTransferEnabled && random() < this.memberTransferRate) {
       this.considerRandomMemberTransfer();
     }
 
     // Random cross-DAO token swap
-    if (random() < 0.05) {
+    if (random() < this.tokenSwapRate) {
       this.executeRandomTokenSwap();
+    }
+  }
+
+  /**
+   * Cast votes on open inter-DAO proposals
+   */
+  private castInterDAOVotes(): void {
+    const reminderWindowFraction = 0.2;
+    const reminderBoost = 0.1;
+
+    for (const proposal of this.interDaoProposals) {
+      if (proposal.status !== 'open') continue;
+
+      const votingEnd = proposal.creationStep + proposal.votingPeriod;
+      const remaining = votingEnd - this.currentStep;
+      const reminderWindow = Math.max(1, Math.floor(proposal.votingPeriod * reminderWindowFraction));
+      const inReminderWindow = remaining <= reminderWindow && remaining >= 0;
+
+      for (const daoId of proposal.participatingDaos) {
+        const sim = this.simulations.get(daoId);
+        if (!sim) continue;
+
+        // Ensure delegation cache is correct per DAO
+        DelegationResolver.setCurrentStep(this.currentStep, daoId);
+
+        for (const member of sim.dao.members) {
+          if (proposal.hasVoted(daoId, member.uniqueId)) {
+            continue;
+          }
+
+          const alreadyConsidered = proposal.hasConsidered(daoId, member.uniqueId);
+
+          // First-pass consideration
+          if (!alreadyConsidered) {
+            proposal.markConsidered(daoId, member.uniqueId);
+
+            const probability = member.getEffectiveVotingProbability();
+            if (random() >= probability) {
+              continue;
+            }
+
+            const weight = DelegationResolver.resolveVotingPower(member);
+            if (weight <= 0) continue;
+
+            const inFavor = member.decideVote(proposal.title) === 'yes';
+            if (proposal.vote(daoId, member.uniqueId, inFavor, weight, this.currentStep)) {
+              member.recordExternalVote();
+            }
+            continue;
+          }
+
+          // Reminder pass near end of voting window
+          if (inReminderWindow && !proposal.hasReminded(daoId, member.uniqueId)) {
+            proposal.markReminded(daoId, member.uniqueId);
+
+            const probability = Math.min(1, member.getEffectiveVotingProbability() * (1 + reminderBoost));
+            if (random() >= probability) {
+              continue;
+            }
+
+            const weight = DelegationResolver.resolveVotingPower(member);
+            if (weight <= 0) continue;
+
+            const inFavor = member.decideVote(proposal.title) === 'yes';
+            if (proposal.vote(daoId, member.uniqueId, inFavor, weight, this.currentStep)) {
+              member.recordExternalVote();
+            }
+          }
+        }
+      }
     }
   }
 
@@ -584,9 +876,12 @@ export class DAOCity {
     if (!creatorSim || creatorSim.dao.members.length === 0) return;
 
     const creator = randomChoice(creatorSim.dao.members);
-    const proposalTypes = ['collaboration', 'treaty', 'resource_sharing', 'joint_venture'] as const;
+    const proposalTypes = this.interDAOProposalConfig?.proposalTypes
+      ? [...this.interDAOProposalConfig.proposalTypes]
+      : (['collaboration', 'treaty', 'resource_sharing', 'joint_venture'] as const);
     const proposalType = randomChoice([...proposalTypes]);
 
+    const votingPeriod = this.interDAOProposalConfig?.votingPeriod ?? 100;
     const proposal = new InterDAOProposal(
       `inter_dao_${this.currentStep}_${this.interDaoProposals.length}`,
       `${proposalType.charAt(0).toUpperCase() + proposalType.slice(1)} Proposal`,
@@ -596,9 +891,14 @@ export class DAOCity {
       creator.uniqueId,
       [creatorDaoId, partnerDaoId],
       this.currentStep,
-      100,
+      votingPeriod,
       this.eventBus
     );
+
+    if (this.interDAOProposalConfig?.requiredApprovalRatio !== undefined) {
+      const ratio = this.interDAOProposalConfig.requiredApprovalRatio;
+      proposal.requiredApprovalCount = Math.max(1, Math.ceil(ratio * proposal.participatingDaos.length));
+    }
 
     if (proposalType === 'collaboration' || proposalType === 'joint_venture') {
       proposal.sharedBudget = 10000 + random() * 40000;
@@ -625,6 +925,7 @@ export class DAOCity {
    * Consider a random member transfer
    */
   private considerRandomMemberTransfer(): void {
+    if (!this.memberTransferEnabled) return;
     const daoIds = Array.from(this.simulations.keys());
     if (daoIds.length < 2) return;
 
@@ -961,6 +1262,7 @@ export class DAOCity {
     const simConfig: DAOSimulationConfig = {
       governance_rule: this.getGovernanceRuleForTwin(twinConfig),
       staking_interest_rate: 0.05,  // Default
+      useSharedRandom: true,
       // Let twin agent factory handle member creation
       num_passive_members: 0,
       num_developers: 0,
@@ -1198,64 +1500,4 @@ export class DAOCity {
     return this.governanceProcessors.get(daoId);
   }
 
-  // ===========================================================================
-  // PLAYER CONTROL
-  // ===========================================================================
-
-  /**
-   * Take control of a specific DAO
-   */
-  takeControl(daoId: string): boolean {
-    if (!this.simulations.has(daoId)) {
-      return false;
-    }
-
-    this.playerControlledDaoId = daoId;
-
-    this.eventBus.publish('player_control_changed', {
-      step: this.currentStep,
-      daoId,
-      active: true,
-    });
-
-    return true;
-  }
-
-  /**
-   * Release control of the current DAO
-   */
-  releaseControl(): void {
-    const daoId = this.playerControlledDaoId;
-    this.playerControlledDaoId = null;
-
-    if (daoId) {
-      this.eventBus.publish('player_control_changed', {
-        step: this.currentStep,
-        daoId,
-        active: false,
-      });
-    }
-  }
-
-  /**
-   * Get the currently controlled DAO ID
-   */
-  getPlayerControlledDaoId(): string | null {
-    return this.playerControlledDaoId;
-  }
-
-  /**
-   * Check if player is controlling a DAO
-   */
-  isPlayerControlling(daoId: string): boolean {
-    return this.playerControlledDaoId === daoId;
-  }
-
-  /**
-   * Get the player-controlled DAO
-   */
-  getPlayerControlledDAO(): DAO | undefined {
-    if (!this.playerControlledDaoId) return undefined;
-    return this.getDAO(this.playerControlledDaoId);
-  }
 }

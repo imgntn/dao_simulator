@@ -27,12 +27,7 @@ export const SimulationConfigSchema = z.object({
   num_speculators: z.number().int().min(0).max(1000).optional(),
 
   // Governance settings
-  governance_rule: z.enum(['majority', 'quorum', 'supermajority']).optional(),
-
-  // Feature flags
-  enable_marketing: z.boolean().optional(),
-  marketing_level: z.string().max(50).optional(),
-  enable_player: z.boolean().optional(),
+  governance_rule: z.string().min(1).max(64).optional(),
 
   // Numeric parameters with ranges
   token_emission_rate: z.number().min(0).max(10000).optional(),
@@ -46,10 +41,51 @@ export const SimulationConfigSchema = z.object({
 
   // Probabilities
   comment_probability: z.number().min(0).max(1).optional(),
+  proposal_creation_probability: z.number().min(0).max(1).optional(),
+  proposal_duration_steps: z.number().int().min(0).max(10000).optional(),
+  proposal_duration_min_steps: z.number().int().min(1).max(10000).optional(),
+  proposal_duration_max_steps: z.number().int().min(1).max(10000).optional(),
   voting_activity: z.number().min(0).max(1).optional(),
   external_partner_interact_probability: z.number().min(0).max(1).optional(),
   violation_probability: z.number().min(0).max(1).optional(),
   reputation_penalty: z.number().min(0).max(1000).optional(),
+
+  // Treasury policy
+  treasury_stabilization_enabled: z.boolean().optional(),
+  treasury_target_reserve: z.number().min(0).max(1_000_000_000).optional(),
+  treasury_target_reserve_fraction: z.number().min(0).max(10).optional(),
+  treasury_ema_alpha: z.number().min(0).max(1).optional(),
+  treasury_buffer_fraction: z.number().min(0).max(1).optional(),
+  treasury_buffer_fill_rate: z.number().min(0).max(1).optional(),
+  treasury_emergency_topup_rate: z.number().min(0).max(1).optional(),
+  treasury_max_spend_fraction: z.number().min(0).max(1).optional(),
+
+  // Proposal lifecycle
+  proposal_bond_fraction: z.number().min(0).max(1).optional(),
+  proposal_bond_min: z.number().min(0).max(1_000_000).optional(),
+  proposal_bond_max: z.number().min(0).max(1_000_000_000).optional(),
+  proposal_inactivity_steps: z.number().int().min(0).max(100000).optional(),
+  proposal_temp_check_fraction: z.number().min(0).max(1).optional(),
+  proposal_fast_track_min_steps: z.number().int().min(0).max(100000).optional(),
+  proposal_fast_track_approval: z.number().min(0).max(1).optional(),
+  proposal_fast_track_quorum: z.number().min(0).max(1).optional(),
+
+  // Participation incentives
+  participation_target_rate: z.number().min(0).max(1).optional(),
+  participation_boost_strength: z.number().min(0).max(10).optional(),
+  participation_boost_decay: z.number().min(0).max(1).optional(),
+  participation_boost_max: z.number().min(0).max(1).optional(),
+  participation_inactivity_boost: z.number().min(0).max(1).optional(),
+  participation_reward_per_vote: z.number().min(0).max(1000).optional(),
+
+  // Voting power mitigation
+  vote_power_cap_fraction: z.number().min(0).max(1).optional(),
+  vote_power_quadratic_threshold: z.number().min(0).max(1_000_000_000).optional(),
+  vote_power_velocity_window: z.number().int().min(0).max(100000).optional(),
+  vote_power_velocity_penalty: z.number().min(0).max(1).optional(),
+
+  // Delegation dynamics
+  delegation_lock_steps: z.number().int().min(0).max(100000).optional(),
 
   // Export/logging options
   exportCsv: z.boolean().optional(),

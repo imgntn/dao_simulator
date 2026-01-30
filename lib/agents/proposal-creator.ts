@@ -1,16 +1,14 @@
 // Proposal Creator Agent
 
 import { DAOMember } from './base';
-import { Proposal } from '../data-structures/proposal';
+import { createRandomProposal } from '../utils/proposal-utils';
 import { random, randomChoice, randomInt } from '../utils/random';
 
 export class ProposalCreator extends DAOMember {
   step(): void {
-    // Reduced from 30% to 0.5% to prevent proposal flood
-    // With many ProposalCreators, high rates created thousands of proposals
-    // causing vote dilution and near-zero quorum reach rates
-    // Target: ~100-150 proposals per 500-step run with ~40 creators
-    if (random() < 0.005) {
+    const creationProbability =
+      (this.model as any).proposalCreationProbability ?? 0.005;
+    if (random() < creationProbability) {
       this.createRandomProposal();
     }
 
@@ -34,20 +32,18 @@ export class ProposalCreator extends DAOMember {
     ];
     const topic = randomChoice(topics);
 
-    const title = `${topic} Proposal ${randomInt(0, 999)}`;
-    const description = `A proposal about ${topic.toLowerCase()}`;
-    const fundingGoal = random() * 1000 + 100;
-    const duration = randomInt(10, 30);
+    const titlePrefix = `${topic} Proposal`;
+    const fixedDuration = (this.model as any).proposalDurationSteps ?? 0;
+    const minDuration = (this.model as any).proposalDurationMinSteps ?? 10;
+    const maxDuration = (this.model as any).proposalDurationMaxSteps ?? 30;
 
-    const proposal = new Proposal(
-      this.model.dao,
-      this.uniqueId,
-      title,
-      description,
-      fundingGoal,
-      duration,
-      topic
-    );
+    const duration =
+      fixedDuration && fixedDuration > 0
+        ? fixedDuration
+        : randomInt(Math.min(minDuration, maxDuration), Math.max(minDuration, maxDuration));
+
+    const proposal = createRandomProposal(this.model.dao, this, titlePrefix, topic, null, duration);
+    proposal.description = `A proposal about ${topic.toLowerCase()}`;
 
     this.model.dao.addProposal(proposal);
     this.markActive();

@@ -25,6 +25,23 @@ export interface GovernanceRuleConfig {
   threshold?: number;             // For supermajority (0-1)
   convictionThreshold?: number;   // For conviction voting
   convictionHalfLife?: number;    // For conviction voting decay
+  constitutionalQuorum?: number;  // Category quorum rules
+  nonConstitutionalQuorum?: number;
+  approvalThreshold?: number;
+  bicameralSystem?: BicameralGovernance | null;
+  tokenHouseQuorum?: number;
+  tokenHouseApproval?: number;
+  citizensHouseVetoEnabled?: boolean;
+  vetoThresholdPercent?: number;
+  rageQuitThresholdPercent?: number;
+  minTimelockSteps?: number;
+  maxTimelockSteps?: number;
+  councilMembers?: string[];
+  vetoThreshold?: number;
+  vetoPeriodSteps?: number;
+  stakingThreshold?: number;
+  boostedQuorum?: number;
+  normalQuorum?: number;
 }
 
 /**
@@ -396,15 +413,11 @@ export class CategoryQuorumRule extends GovernanceRule {
   private nonConstitutionalQuorum: number;
   private approvalThreshold: number;
 
-  constructor(
-    constitutionalQuorum: number = 0.05,  // 5%
-    nonConstitutionalQuorum: number = 0.03,  // 3%
-    approvalThreshold: number = 0.51  // 51%
-  ) {
+  constructor(config?: GovernanceRuleConfig) {
     super();
-    this.constitutionalQuorum = constitutionalQuorum;
-    this.nonConstitutionalQuorum = nonConstitutionalQuorum;
-    this.approvalThreshold = approvalThreshold;
+    this.constitutionalQuorum = config?.constitutionalQuorum ?? 0.05;
+    this.nonConstitutionalQuorum = config?.nonConstitutionalQuorum ?? 0.03;
+    this.approvalThreshold = config?.approvalThreshold ?? 0.51;
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
@@ -449,17 +462,12 @@ export class BicameralRule extends GovernanceRule {
   private tokenHouseApproval: number;
   private citizensHouseVetoEnabled: boolean;
 
-  constructor(
-    bicameralSystem: BicameralGovernance | null = null,
-    tokenHouseQuorum: number = 0.30,  // 30%
-    tokenHouseApproval: number = 0.51,  // 51%
-    citizensHouseVetoEnabled: boolean = true
-  ) {
+  constructor(config?: GovernanceRuleConfig) {
     super();
-    this.bicameralSystem = bicameralSystem;
-    this.tokenHouseQuorum = tokenHouseQuorum;
-    this.tokenHouseApproval = tokenHouseApproval;
-    this.citizensHouseVetoEnabled = citizensHouseVetoEnabled;
+    this.bicameralSystem = config?.bicameralSystem ?? null;
+    this.tokenHouseQuorum = config?.tokenHouseQuorum ?? 0.30;
+    this.tokenHouseApproval = config?.tokenHouseApproval ?? 0.51;
+    this.citizensHouseVetoEnabled = config?.citizensHouseVetoEnabled ?? true;
   }
 
   setBicameralSystem(system: BicameralGovernance): void {
@@ -508,17 +516,12 @@ export class DualGovernanceRule extends GovernanceRule {
   private minTimelockSteps: number;
   private maxTimelockSteps: number;
 
-  constructor(
-    vetoThresholdPercent: number = 1,  // 1% stETH supply
-    rageQuitThresholdPercent: number = 10,  // 10% triggers rage quit
-    minTimelockSteps: number = 120,  // 5 days
-    maxTimelockSteps: number = 1080  // 45 days
-  ) {
+  constructor(config?: GovernanceRuleConfig) {
     super();
-    this.vetoThresholdPercent = vetoThresholdPercent;
-    this.rageQuitThresholdPercent = rageQuitThresholdPercent;
-    this.minTimelockSteps = minTimelockSteps;
-    this.maxTimelockSteps = maxTimelockSteps;
+    this.vetoThresholdPercent = config?.vetoThresholdPercent ?? 1;
+    this.rageQuitThresholdPercent = config?.rageQuitThresholdPercent ?? 10;
+    this.minTimelockSteps = config?.minTimelockSteps ?? 120;
+    this.maxTimelockSteps = config?.maxTimelockSteps ?? 1080;
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
@@ -577,7 +580,7 @@ export class DualGovernanceRule extends GovernanceRule {
 export class ApprovalVotingRule extends GovernanceRule {
   private competingProposals: Map<string, number> = new Map();
 
-  constructor() {
+  constructor(_config?: GovernanceRuleConfig) {
     super();
   }
 
@@ -623,13 +626,10 @@ export class SecurityCouncilRule extends GovernanceRule {
   private councilMembers: Set<string>;
   private approvalThreshold: number;  // e.g., 9 of 12
 
-  constructor(
-    councilMembers: string[] = [],
-    approvalThreshold: number = 0.75  // 75% = 9 of 12
-  ) {
+  constructor(config?: GovernanceRuleConfig) {
     super();
-    this.councilMembers = new Set(councilMembers);
-    this.approvalThreshold = approvalThreshold;
+    this.councilMembers = new Set(config?.councilMembers ?? []);
+    this.approvalThreshold = config?.approvalThreshold ?? 0.75;
   }
 
   addCouncilMember(memberId: string): void {
@@ -670,13 +670,10 @@ export class OptimisticApprovalRule extends GovernanceRule {
   private vetoThreshold: number;  // Number of veto votes to block
   private vetoPeriodSteps: number;
 
-  constructor(
-    vetoThreshold: number = 100,
-    vetoPeriodSteps: number = 168  // 7 days
-  ) {
+  constructor(config?: GovernanceRuleConfig) {
     super();
-    this.vetoThreshold = vetoThreshold;
-    this.vetoPeriodSteps = vetoPeriodSteps;
+    this.vetoThreshold = config?.vetoThreshold ?? 100;
+    this.vetoPeriodSteps = config?.vetoPeriodSteps ?? 168;
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
@@ -702,15 +699,11 @@ export class HolographicConsensusRule extends GovernanceRule {
   private boostedQuorum: number;  // Lower quorum when boosted
   private normalQuorum: number;  // Higher quorum when not boosted
 
-  constructor(
-    stakingThreshold: number = 100,
-    boostedQuorum: number = 0.01,  // 1% when boosted
-    normalQuorum: number = 0.50  // 50% when not boosted
-  ) {
+  constructor(config?: GovernanceRuleConfig) {
     super();
-    this.stakingThreshold = stakingThreshold;
-    this.boostedQuorum = boostedQuorum;
-    this.normalQuorum = normalQuorum;
+    this.stakingThreshold = config?.stakingThreshold ?? 100;
+    this.boostedQuorum = config?.boostedQuorum ?? 0.01;
+    this.normalQuorum = config?.normalQuorum ?? 0.50;
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {

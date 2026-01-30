@@ -2,6 +2,7 @@
 // Port from utils/proposal_utils.py
 
 import { Proposal } from '../data-structures/proposal';
+import { MultiStageProposal, type StageConfig } from '../data-structures/multi-stage-proposal';
 import type { DAO } from '../data-structures/dao';
 import type { DAOMember } from '../agents/base';
 import { randomFloat, randomInt } from './random';
@@ -14,15 +15,31 @@ export function createRandomProposal(
   creator?: DAOMember,
   titlePrefix: string = 'Proposal',
   topic: string = 'Default Topic',
-  project?: any
+  project?: any,
+  durationOverride?: number
 ): Proposal {
   const proposalId = dao.proposals.length;
   const title = `${titlePrefix} ${proposalId}`;
   const description = `This is the description for ${title}.`;
-  const fundingRequired = Math.round(randomFloat(1, 101) * 100) / 100;
-  const duration = randomInt(1, 13);
+  const treasuryFunds = Math.max(dao.treasury?.funds || 0, 1000);
+  const fundingRatio = randomFloat(0.005, 0.05); // 0.5% - 5% of treasury
+  const fundingRequired = Math.round(treasuryFunds * fundingRatio * 100) / 100;
+  const duration = durationOverride && durationOverride > 0
+    ? durationOverride
+    : randomInt(1, 13);
 
-  return new Proposal(
+  const tempFraction = dao.proposalPolicy?.tempCheckFraction ?? 0.25;
+  const tempDuration = Math.max(1, Math.round(duration * tempFraction));
+  const onChainDuration = Math.max(1, duration - tempDuration);
+
+  const stageConfigs: StageConfig[] = duration >= 2
+    ? [
+        { stage: 'temp_check', durationSteps: tempDuration, platform: 'snapshot' },
+        { stage: 'on_chain', durationSteps: onChainDuration, platform: 'on_chain' },
+      ]
+    : [{ stage: 'on_chain', durationSteps: duration, platform: 'on_chain' }];
+
+  return new MultiStageProposal(
     dao,
     creator?.uniqueId || '',
     title,
@@ -30,7 +47,8 @@ export function createRandomProposal(
     fundingRequired,
     duration,
     topic,
-    project || null
+    project || null,
+    stageConfigs
   );
 }
 

@@ -12,6 +12,44 @@ import type { DAOMember } from '../agents/base';
 import type { NFTMarketplace } from './nft';
 import type { MarketShock } from './market-shock';
 
+export interface TreasuryPolicyConfig {
+  enabled: boolean;
+  targetReserve: number;
+  targetReserveFraction: number;
+  emaAlpha: number;
+  bufferFraction: number;
+  bufferFillRate: number;
+  emergencyTopupRate: number;
+  maxSpendFraction: number;
+}
+
+export interface ProposalPolicyConfig {
+  bondFraction: number;
+  bondMin: number;
+  bondMax: number;
+  inactivitySteps: number;
+  tempCheckFraction: number;
+  fastTrackMinSteps: number;
+  fastTrackApproval: number;
+  fastTrackQuorum: number;
+}
+
+export interface ParticipationPolicyConfig {
+  targetRate: number;
+  boostStrength: number;
+  boostDecay: number;
+  boostMax: number;
+  inactivityBoost: number;
+  rewardPerVote: number;
+}
+
+export interface VotingPowerPolicyConfig {
+  capFraction: number;
+  quadraticThreshold: number;
+  velocityWindow: number;
+  velocityPenalty: number;
+}
+
 export class DAO {
   name: string;
   // Multi-DAO support properties
@@ -40,6 +78,47 @@ export class DAO {
   currentStep: number = 0;
   marketShocks: MarketShock[] = [];
   currentShock: number = 0;
+
+  private cachedVotingPower: number = 0;
+  private cachedVotingPowerStep: number = -1;
+
+  treasuryPolicy: TreasuryPolicyConfig = {
+    enabled: false,
+    targetReserve: 0,
+    targetReserveFraction: 0,
+    emaAlpha: 0.05,
+    bufferFraction: 0,
+    bufferFillRate: 0.5,
+    emergencyTopupRate: 0,
+    maxSpendFraction: 1,
+  };
+  proposalPolicy: ProposalPolicyConfig = {
+    bondFraction: 0,
+    bondMin: 0,
+    bondMax: 0,
+    inactivitySteps: 0,
+    tempCheckFraction: 0.25,
+    fastTrackMinSteps: 0,
+    fastTrackApproval: 0.6,
+    fastTrackQuorum: 0.2,
+  };
+  participationPolicy: ParticipationPolicyConfig = {
+    targetRate: 0,
+    boostStrength: 0,
+    boostDecay: 0,
+    boostMax: 0,
+    inactivityBoost: 0,
+    rewardPerVote: 0,
+  };
+  votingPowerPolicy: VotingPowerPolicyConfig = {
+    capFraction: 0,
+    quadraticThreshold: 0,
+    velocityWindow: 0,
+    velocityPenalty: 0,
+  };
+  participationBoost: number = 0;
+  treasuryBuffer: number = 0;
+  delegationLockSteps: number = 0;
 
   // Pending removal queues for safe iteration
   private pendingProposalRemovals: Set<Proposal> = new Set();
@@ -94,6 +173,19 @@ export class DAO {
   }
 
   /**
+   * Get the primary treasury token symbol, falling back to DAO_TOKEN when needed.
+   */
+  getPrimaryTokenSymbol(): string {
+    if (
+      this.treasury.tokenPrices.has(this.tokenSymbol) ||
+      this.treasury.getTokenBalance(this.tokenSymbol) > 0
+    ) {
+      return this.tokenSymbol;
+    }
+    return 'DAO_TOKEN';
+  }
+
+  /**
    * Get summary of DAO state for broadcasting
    */
   getState(): {
@@ -122,6 +214,7 @@ export class DAO {
 
   addProposal(proposal: Proposal): void {
     proposal.creationTime = this.currentStep;
+    proposal.lastActivityStep = this.currentStep;
     if (!proposal.uniqueId) {
       proposal.uniqueId = `proposal_${this.proposals.length}`;
     }
@@ -130,6 +223,36 @@ export class DAO {
     // This is critical for preventing flash loan attacks
     // All real DAOs (Compound, Aave, Uniswap) use block-height snapshots
     proposal.takeVotingPowerSnapshot();
+
+    // Apply proposal bond (escrow in treasury) if configured
+    const policy = this.proposalPolicy;
+    if (policy.bondFraction > 0 || policy.bondMin > 0) {
+      const fundingBase = Math.max(0, proposal.fundingGoal || 0);
+      const rawBond = fundingBase * policy.bondFraction;
+      const requiredBond = Math.min(policy.bondMax, Math.max(policy.bondMin, rawBond));
+      const creator = this.members.find(m => m.uniqueId === proposal.creator);
+
+      if (creator && requiredBond > 0) {
+        const paidBond = Math.min(creator.tokens, requiredBond);
+        if (paidBond > 0) {
+          creator.tokens -= paidBond;
+          this.treasury.deposit(this.getPrimaryTokenSymbol(), paidBond, this.currentStep);
+          proposal.bondAmount = paidBond;
+          proposal.bondRefunded = false;
+          proposal.bondSlashed = false;
+        }
+
+        if (this.eventBus) {
+          this.eventBus.publish('proposal_bond_posted', {
+            step: this.currentStep,
+            proposalId: proposal.uniqueId,
+            creator: proposal.creator,
+            requiredBond,
+            paidBond,
+          });
+        }
+      }
+    }
 
     this.proposals.push(proposal);
 
@@ -159,6 +282,25 @@ export class DAO {
 
   addMember(member: DAOMember): void {
     this.members.push(member);
+  }
+
+  /**
+   * Get total voting power with per-step caching
+   */
+  getTotalVotingPower(): number {
+    if (this.cachedVotingPowerStep !== this.currentStep) {
+      this.cachedVotingPower = this.members.reduce(
+        (sum, member) => sum + member.tokens + member.stakedTokens,
+        0
+      );
+      this.cachedVotingPowerStep = this.currentStep;
+    }
+
+    return Math.max(this.cachedVotingPower, 1);
+  }
+
+  invalidateVotingPowerCache(): void {
+    this.cachedVotingPowerStep = -1;
   }
 
   // ==========================================================================
@@ -471,6 +613,8 @@ export class DAO {
       });
     }
 
+    this.invalidateVotingPowerCache();
+
     return stake;
   }
 
@@ -520,6 +664,8 @@ export class DAO {
       });
     }
 
+    this.invalidateVotingPowerCache();
+
     return toUnstake;
   }
 
@@ -565,6 +711,8 @@ export class DAO {
         }
       }
     }
+
+    this.invalidateVotingPowerCache();
   }
 
   applyReputationDecay(): void {

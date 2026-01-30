@@ -48,6 +48,7 @@ export interface StageState {
   endStep: number;
   passed: boolean | null;  // null = in progress
   reason?: string;
+  details?: Record<string, unknown>;
 }
 
 /**
@@ -190,7 +191,10 @@ export class MultiStageProposal extends Proposal {
    * Check if the proposal has completed all stages
    */
   get isComplete(): boolean {
-    return this.status === 'approved' || this.status === 'rejected' || this.status === 'completed';
+    return this.status === 'approved' ||
+      this.status === 'rejected' ||
+      this.status === 'completed' ||
+      this.status === 'expired';
   }
 
   /**
@@ -272,11 +276,14 @@ export class MultiStageProposal extends Proposal {
   /**
    * Advance to the next stage
    */
-  advanceToNextStage(passed: boolean, reason?: string): boolean {
+  advanceToNextStage(passed: boolean, reason?: string, details?: Record<string, unknown>): boolean {
     // Mark current stage as completed
     if (this.currentStageState) {
       this.currentStageState.passed = passed;
       this.currentStageState.reason = reason;
+      if (details) {
+        this.currentStageState.details = details;
+      }
     }
 
     // If stage failed, reject the proposal
@@ -285,6 +292,8 @@ export class MultiStageProposal extends Proposal {
       this.emitStageChange('rejected', reason);
       return false;
     }
+
+    const previousStage = this.currentStage;
 
     // Move to next stage
     this.currentStageIndex++;
@@ -298,6 +307,9 @@ export class MultiStageProposal extends Proposal {
 
     // Initialize next stage
     const nextConfig = this.stageConfigs[this.currentStageIndex];
+    if (previousStage === 'temp_check' && nextConfig.stage === 'on_chain') {
+      this.resetVotingData();
+    }
     const startStep = this.dao.currentStep;
 
     this.stageStates.push({
@@ -306,6 +318,7 @@ export class MultiStageProposal extends Proposal {
       endStep: startStep + nextConfig.durationSteps,
       passed: null,
     });
+    this.recordActivity(this.dao.currentStep);
 
     this.emitStageChange(nextConfig.stage);
     return true;

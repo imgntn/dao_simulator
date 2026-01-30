@@ -240,7 +240,7 @@ export class GovernanceHouse {
     const totalVotes = votesFor + votesAgainst;
     const totalPower = this.getTotalVotingPower();
     const quorumVotes = (totalPower * this.config.quorumPercent) / 100;
-    const quorumMet = votesFor >= quorumVotes;
+    const quorumMet = totalVotes >= quorumVotes;
 
     const approvalPercent = totalVotes > 0 ? (votesFor / totalVotes) * 100 : 0;
     const approved = quorumMet && approvalPercent >= this.config.approvalThresholdPercent;

@@ -6,7 +6,7 @@ import type { Proposal } from '../data-structures/proposal';
 import { random, randomChoice } from '../utils/random';
 
 // Service configuration
-const SERVICES = ['marketing', 'legal', 'financial', 'technical', 'advisory'] as const;
+const SERVICES = ['legal', 'financial', 'technical', 'advisory'] as const;
 type ServiceType = (typeof SERVICES)[number];
 
 interface ServiceValue {
@@ -16,7 +16,6 @@ interface ServiceValue {
 }
 
 const SERVICE_VALUES: Record<ServiceType, number> = {
-  marketing: 5,
   legal: 8,
   financial: 6,
   technical: 7,
