@@ -219,13 +219,14 @@ describe('ExternalPartner agent', () => {
   it('should track collaborated projects', () => {
     // Create a project
     const project = new Project(
-      'test_project',
+      simulation.dao,
+      simulation.dao.members[0].uniqueId,
+      'Test Project',
       'Test Project',
       100,
-      simulation.dao.members[0].uniqueId,
-      50,
-      10
+      50
     );
+    project.uniqueId = 'test_project';
     simulation.dao.projects.push(project);
 
     partner.collaborateOnProject(project);
@@ -288,13 +289,14 @@ describe('Validator behavior', () => {
   it('should flag projects behind schedule', () => {
     // Create a project that's behind schedule
     const project = new Project(
-      'behind_project',
+      simulation.dao,
+      simulation.dao.members[0].uniqueId,
+      'Behind Project',
       'Behind Project',
       100,
-      simulation.dao.members[0].uniqueId,
-      10, // Short duration
-      0   // No work done
+      10 // Short duration
     );
+    project.uniqueId = 'behind_project';
     project.startTime = simulation.currentStep - 20; // Started long ago
     simulation.dao.projects.push(project);
 
@@ -307,13 +309,14 @@ describe('Validator behavior', () => {
 
   it('should decrease monitoring budget on use', () => {
     const project = new Project(
-      'test_proj',
+      simulation.dao,
+      simulation.dao.members[0].uniqueId,
+      'Test',
       'Test',
       100,
-      simulation.dao.members[0].uniqueId,
-      50,
-      10
+      50
     );
+    project.uniqueId = 'test_proj';
     simulation.dao.projects.push(project);
 
     const initialBudget = validator.monitoringBudget;

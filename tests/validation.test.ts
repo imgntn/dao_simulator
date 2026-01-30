@@ -51,10 +51,11 @@ describe('SimulationConfigSchema', () => {
     expect(SimulationConfigSchema.safeParse({ governance_rule: 'majority' }).success).toBe(true);
     expect(SimulationConfigSchema.safeParse({ governance_rule: 'quorum' }).success).toBe(true);
     expect(SimulationConfigSchema.safeParse({ governance_rule: 'supermajority' }).success).toBe(true);
+    expect(SimulationConfigSchema.safeParse({ governance_rule: 'quadratic' }).success).toBe(true);
   });
 
-  it('should reject invalid governance rules', () => {
-    const result = SimulationConfigSchema.safeParse({ governance_rule: 'invalid' });
+  it('should reject empty governance rules', () => {
+    const result = SimulationConfigSchema.safeParse({ governance_rule: '' });
     expect(result.success).toBe(false);
   });
 
@@ -64,6 +65,13 @@ describe('SimulationConfigSchema', () => {
     expect(SimulationConfigSchema.safeParse({ comment_probability: 1 }).success).toBe(true);
     expect(SimulationConfigSchema.safeParse({ comment_probability: 1.5 }).success).toBe(false);
     expect(SimulationConfigSchema.safeParse({ comment_probability: -0.1 }).success).toBe(false);
+  });
+
+  it('should validate proposal cadence settings', () => {
+    expect(SimulationConfigSchema.safeParse({ proposal_creation_probability: 0.01 }).success).toBe(true);
+    expect(SimulationConfigSchema.safeParse({ proposal_creation_probability: -0.1 }).success).toBe(false);
+    expect(SimulationConfigSchema.safeParse({ proposal_duration_steps: 24 }).success).toBe(true);
+    expect(SimulationConfigSchema.safeParse({ proposal_duration_steps: -1 }).success).toBe(false);
   });
 
   it('should reject unknown fields with strict mode', () => {

@@ -9,7 +9,7 @@ describe('InMemorySimulationStore', () => {
       num_investors: 1,
       num_passive_members: 1,
       eventLogging: false,
-      marketShockFrequency: 0,
+      market_shock_frequency: 0,
     }) as any;
     fakeSimulation.currentStep = 12;
 

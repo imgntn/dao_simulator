@@ -36,12 +36,22 @@
     "validate": "tsx scripts/run-validation.ts",
     "generate-baselines": "tsx scripts/generate-baselines.ts",
     "paper:update": "tsx scripts/paper-update.ts",
+    "paper:update:p1": "tsx scripts/paper-update.ts --paper-dir paper_p1 --profile p1",
+    "paper:update:p2": "tsx scripts/paper-update.ts --paper-dir paper_p2 --profile p2",
     "paper:charts": "tsx scripts/paper-update.ts --charts-only",
     "paper:archive": "tsx scripts/paper-archive.ts",
     "paper:archive:list": "tsx scripts/paper-archive.ts --list",
     "paper:compile": "tsx scripts/paper-compile.ts --archive",
     "paper:compile:quick": "tsx scripts/paper-compile.ts",
-    "paper:full": "npm run paper:update && npm run paper:compile"
+    "paper:full": "npm run paper:update && npm run paper:compile",
+    "paper:suite": "tsx scripts/run-paper-suite.ts all",
+    "paper:suite:p1": "tsx scripts/run-paper-suite.ts all --profile p1",
+    "paper:suite:p2": "tsx scripts/run-paper-suite.ts all --profile p2",
+    "paper:pack": "tsx scripts/run-paper-suite.ts pack",
+    "paper:build:p1": "npm run paper:suite:p1 && npm run paper:update:p1 -- --compile",
+    "paper:build:p2": "npm run paper:suite:p2 && npm run paper:update:p2 -- --compile",
+    "paper:build:both": "npm run paper:suite && npm run paper:update:p1 -- --compile && npm run paper:update:p2 -- --compile",
+    "paper:build:all": "npm run paper:build:both && npm run paper:pack"
   },
   "dependencies": {
     "@auth/core": "^0.41.1",

@@ -14,6 +14,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import * as yaml from 'yaml';
 
 // =============================================================================
 // CONFIGURATION
@@ -64,6 +65,16 @@ const CONFIG = {
   },
 };
 
+function applyPaperDirOverride(paperDir: string): void {
+  const resolved = path.isAbsolute(paperDir)
+    ? paperDir
+    : path.join(process.cwd(), paperDir);
+  CONFIG.paperDir = resolved;
+  CONFIG.figuresDir = path.join(resolved, 'figures');
+  CONFIG.generatedDir = path.join(resolved, 'generated');
+  CONFIG.workflowsDir = path.join(resolved, 'workflows');
+}
+
 // =============================================================================
 // TYPES
 // =============================================================================
@@ -87,7 +98,55 @@ interface PaperMetadata {
 // RESULTS LOADING
 // =============================================================================
 
-async function loadAllResults(): Promise<ExperimentResults[]> {
+const PAPER_PROFILE_CONFIGS: Record<string, string[]> = {
+  full: [
+    'experiments/paper/00-academic-baseline.yaml',
+    'experiments/paper/01-calibration-participation.yaml',
+    'experiments/paper/02-ablation-governance.yaml',
+    'experiments/paper/03-sensitivity-quorum.yaml',
+    'experiments/paper/04-governance-capture-mitigations.yaml',
+    'experiments/paper/05-proposal-pipeline.yaml',
+    'experiments/paper/06-treasury-resilience.yaml',
+    'experiments/paper/07-inter-dao-cooperation.yaml',
+  ],
+  p1: [
+    'experiments/paper/00-academic-baseline.yaml',
+    'experiments/paper/01-calibration-participation.yaml',
+    'experiments/paper/02-ablation-governance.yaml',
+    'experiments/paper/03-sensitivity-quorum.yaml',
+    'experiments/paper/04-governance-capture-mitigations.yaml',
+  ],
+  p2: [
+    'experiments/paper/00-academic-baseline.yaml',
+    'experiments/paper/02-ablation-governance.yaml',
+    'experiments/paper/05-proposal-pipeline.yaml',
+    'experiments/paper/06-treasury-resilience.yaml',
+    'experiments/paper/07-inter-dao-cooperation.yaml',
+  ],
+};
+
+function resolveOutputDir(configPath: string): string {
+  const absolutePath = path.resolve(configPath);
+  if (!fs.existsSync(absolutePath)) return '';
+  const content = fs.readFileSync(absolutePath, 'utf8');
+  const parsed = yaml.parse(content);
+  const outputDir = parsed?.output?.directory;
+  if (outputDir) return path.isAbsolute(outputDir) ? outputDir : path.join(process.cwd(), outputDir);
+  if (parsed?.name) {
+    return path.join(process.cwd(), 'results', String(parsed.name).replace(/[^\w\-]+/g, '_').toLowerCase());
+  }
+  return '';
+}
+
+function resolveProfileOutputDirs(profile: string): Set<string> {
+  const configs = PAPER_PROFILE_CONFIGS[profile] || PAPER_PROFILE_CONFIGS.full;
+  const dirs = configs
+    .map(resolveOutputDir)
+    .filter((dir) => dir);
+  return new Set(dirs.map((dir) => path.resolve(dir)));
+}
+
+async function loadAllResults(allowedDirs?: Set<string>): Promise<ExperimentResults[]> {
   const results: ExperimentResults[] = [];
 
   if (!fs.existsSync(CONFIG.resultsDir)) {
@@ -95,14 +154,31 @@ async function loadAllResults(): Promise<ExperimentResults[]> {
     return results;
   }
 
-  const dirs = fs.readdirSync(CONFIG.resultsDir, { withFileTypes: true })
+  const rootDirs = fs.readdirSync(CONFIG.resultsDir, { withFileTypes: true })
     .filter(d => d.isDirectory())
     .map(d => d.name);
 
-  for (const dir of dirs) {
-    const summaryPath = path.join(CONFIG.resultsDir, dir, 'summary.json');
-    const metricsPath = path.join(CONFIG.resultsDir, dir, 'metrics.csv');
-    const statsPath = path.join(CONFIG.resultsDir, dir, 'stats.csv');
+  const candidateDirs: string[] = [];
+  for (const dir of rootDirs) {
+    if (dir === 'paper') {
+      const paperRoot = path.join(CONFIG.resultsDir, dir);
+      if (!fs.existsSync(paperRoot)) continue;
+      const paperDirs = fs.readdirSync(paperRoot, { withFileTypes: true })
+        .filter(d => d.isDirectory())
+        .map(d => path.join(paperRoot, d.name));
+      candidateDirs.push(...paperDirs);
+    } else {
+      candidateDirs.push(path.join(CONFIG.resultsDir, dir));
+    }
+  }
+
+  for (const dirPath of candidateDirs) {
+    if (allowedDirs && !allowedDirs.has(path.resolve(dirPath))) {
+      continue;
+    }
+    const summaryPath = path.join(dirPath, 'summary.json');
+    const metricsPath = path.join(dirPath, 'metrics.csv');
+    const statsPath = path.join(dirPath, 'stats.csv');
 
     if (fs.existsSync(summaryPath)) {
       const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
@@ -113,9 +189,11 @@ async function loadAllResults(): Promise<ExperimentResults[]> {
         ? parseCSV(fs.readFileSync(statsPath, 'utf8'))
         : [];
 
+      const name = path.basename(dirPath);
+
       results.push({
-        name: dir,
-        directory: path.join(CONFIG.resultsDir, dir),
+        name,
+        directory: dirPath,
         summary,
         metrics,
         stats,
@@ -289,6 +367,64 @@ async function generateChartWithPython(
   }
 }
 
+async function generatePlaceholderChart(
+  label: string,
+  outputPath: string
+): Promise<boolean> {
+  const scriptPath = path.join(CONFIG.generatedDir, `placeholder_${Date.now()}.py`);
+  const safeLabel = label.replace(/'/g, "\\'");
+
+  const pythonScript = `
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
+
+plt.figure(figsize=(8, 5))
+plt.text(0.5, 0.5, '${safeLabel}', ha='center', va='center', fontsize=14)
+plt.axis('off')
+plt.tight_layout()
+plt.savefig('${outputPath.replace(/\\/g, '/')}', dpi=300, bbox_inches='tight')
+plt.close()
+print('Placeholder chart saved to ${outputPath.replace(/\\/g, '/')}')
+`;
+
+  fs.writeFileSync(scriptPath, pythonScript);
+
+  try {
+    const { execSync } = require('child_process');
+    execSync(`python "${scriptPath}"`, { stdio: 'inherit' });
+    return true;
+  } catch (error) {
+    console.error(`Placeholder chart generation failed: ${error}`);
+    return false;
+  }
+}
+
+async function ensurePlaceholderFigures(): Promise<void> {
+  const placeholders = [
+    { file: 'rq1_turnout.png', label: 'RQ1: Turnout vs participation_target_rate' },
+    { file: 'rq1_retention.png', label: 'RQ1: Voter retention vs participation_target_rate' },
+    { file: 'rq2_whale_influence.png', label: 'RQ2: Whale influence vs mitigation settings' },
+    { file: 'rq2_tradeoff.png', label: 'RQ2: Capture risk vs throughput tradeoff' },
+    { file: 'rq3_time.png', label: 'RQ3: Time-to-decision vs temp-check fraction' },
+    { file: 'rq3_passrate.png', label: 'RQ3: Pass rate vs fast-track settings' },
+    { file: 'rq4_volatility.png', label: 'RQ4: Treasury volatility vs stabilization' },
+    { file: 'rq4_growth.png', label: 'RQ4: Treasury trend/growth vs buffer fraction' },
+    { file: 'rq5_success.png', label: 'RQ5: Inter-DAO success rate by scenario' },
+    { file: 'rq5_resources.png', label: 'RQ5: Resource flow volume by scenario' },
+    { file: 'ablation_impact.png', label: 'Ablation: Mechanism removal impacts' },
+    { file: 'quorum_sensitivity.png', label: 'Sensitivity: Quorum curve' },
+  ];
+
+  for (const placeholder of placeholders) {
+    const outputPath = path.join(CONFIG.figuresDir, placeholder.file);
+    if (fs.existsSync(outputPath)) {
+      continue;
+    }
+    await generatePlaceholderChart(placeholder.label, outputPath);
+  }
+}
+
 function generateMatplotlibScript(
   chartType: string,
   data: any[],
@@ -420,6 +556,131 @@ function replaceTemplateVars(content: string, vars: Record<string, string | numb
   return result;
 }
 
+function escapeLatex(text: string): string {
+  return text
+    .replace(/\\/g, '\\textbackslash{}')
+    .replace(/%/g, '\\%')
+    .replace(/\$/g, '\\$')
+    .replace(/#/g, '\\#')
+    .replace(/&/g, '\\&')
+    .replace(/_/g, '\\_')
+    .replace(/{/g, '\\{')
+    .replace(/}/g, '\\}')
+    .replace(/\^/g, '\\^{}')
+    .replace(/~/g, '\\~{}');
+}
+
+function formatInlineCode(text: string): string {
+  const parts = text.split(/`([^`]+)`/g);
+  return parts.map((part, idx) => {
+    if (idx % 2 === 1) {
+      return `\\texttt{${escapeLatex(part)}}`;
+    }
+    return escapeLatex(part);
+  }).join('');
+}
+
+function buildRqChecklistSection(metadata: PaperMetadata, sourcePath?: string): void {
+  const resolvedSource = sourcePath
+    ? (path.isAbsolute(sourcePath) ? sourcePath : path.join(process.cwd(), sourcePath))
+    : path.join(process.cwd(), 'docs', 'RQ_PAPER_CHECKLIST.md');
+  const targetPath = path.join(CONFIG.paperDir, 'sections', 'appendix_rq_checklist.tex');
+
+  if (!fs.existsSync(resolvedSource)) {
+    console.warn('RQ checklist source not found:', resolvedSource);
+    return;
+  }
+
+  const lines = fs.readFileSync(resolvedSource, 'utf8').split(/\r?\n/);
+  const output: string[] = [];
+
+  output.push('% AUTO-GENERATED RQ CHECKLIST');
+  output.push(`% Source: ${path.relative(process.cwd(), resolvedSource)}`);
+  output.push(`% Last generated: ${metadata.timestamp}`);
+  output.push('');
+  output.push('\\subsection*{Legend}');
+  output.push('\\begin{itemize}');
+  output.push('  \\item[$\\Box$] todo');
+  output.push('  \\item[$\\boxtimes$] done');
+  output.push('\\end{itemize}');
+  output.push('');
+
+  let inList = false;
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line) {
+      if (inList) {
+        output.push('\\end{itemize}');
+        output.push('');
+        inList = false;
+      }
+      continue;
+    }
+
+    if (line.startsWith('# ')) {
+      // Skip document title
+      continue;
+    }
+
+    if (line.toLowerCase().startsWith('legend:')) {
+      // We provide our own legend
+      continue;
+    }
+
+    if (line.startsWith('## ')) {
+      if (inList) {
+        output.push('\\end{itemize}');
+        output.push('');
+        inList = false;
+      }
+      const heading = formatInlineCode(line.slice(3).trim());
+      output.push(`\\subsection{${heading}}`);
+      output.push('');
+      continue;
+    }
+
+    if (line.startsWith('- ')) {
+      if (!inList) {
+        output.push('\\begin{itemize}');
+        inList = true;
+      }
+
+      let content = line.slice(2).trim();
+      let checkbox: string | null = null;
+      if (content.startsWith('[ ] ')) {
+        checkbox = '\\Box';
+        content = content.slice(4);
+      } else if (content.startsWith('[x] ') || content.startsWith('[X] ')) {
+        checkbox = '\\boxtimes';
+        content = content.slice(4);
+      }
+
+      const formatted = formatInlineCode(content);
+      if (checkbox) {
+        output.push(`  \\item[$${checkbox}$] ${formatted}`);
+      } else {
+        output.push(`  \\item ${formatted}`);
+      }
+      continue;
+    }
+
+    if (inList) {
+      output.push('\\end{itemize}');
+      output.push('');
+      inList = false;
+    }
+    output.push(formatInlineCode(line));
+  }
+
+  if (inList) {
+    output.push('\\end{itemize}');
+  }
+
+  fs.writeFileSync(targetPath, output.join('\n'));
+  console.log(`Generated: ${path.basename(targetPath)}`);
+}
+
 async function updateSection(
   sectionPath: string,
   results: ExperimentResults[],
@@ -456,6 +717,9 @@ async function generateAllCharts(results: ExperimentResults[]): Promise<void> {
   if (!fs.existsSync(CONFIG.figuresDir)) {
     fs.mkdirSync(CONFIG.figuresDir, { recursive: true });
   }
+  if (!fs.existsSync(CONFIG.generatedDir)) {
+    fs.mkdirSync(CONFIG.generatedDir, { recursive: true });
+  }
 
   // Find quorum sweep results
   const quorumResults = results.find(r => r.name.includes('quorum'));
@@ -465,8 +729,8 @@ async function generateAllCharts(results: ExperimentResults[]): Promise<void> {
       'line_with_error',
       quorumResults.stats.map(s => ({
         sweep_value: s.sweep_value,
-        mean: s['Proposal Pass Rate_mean'] || s['proposal_pass_rate_mean'],
-        std: s['Proposal Pass Rate_std'] || s['proposal_pass_rate_std'] || 0,
+        mean: s['Proposal Pass Rate_mean'] ?? s['proposal_pass_rate_mean'] ?? 0,
+        std: s['Proposal Pass Rate_std'] ?? s['proposal_pass_rate_std'] ?? 0,
       })),
       path.join(CONFIG.figuresDir, 'quorum_passrate.png'),
       {
@@ -485,8 +749,8 @@ async function generateAllCharts(results: ExperimentResults[]): Promise<void> {
       'line_with_error',
       scaleResults.stats.map(s => ({
         sweep_value: s.sweep_value,
-        mean: s['Average Turnout_mean'] || s['average_turnout_mean'],
-        std: s['Average Turnout_std'] || s['average_turnout_std'] || 0,
+        mean: s['Average Turnout_mean'] ?? s['average_turnout_mean'] ?? 0,
+        std: s['Average Turnout_std'] ?? s['average_turnout_std'] ?? 0,
       })),
       path.join(CONFIG.figuresDir, 'scale_participation.png'),
       {
@@ -517,6 +781,9 @@ async function generateAllCharts(results: ExperimentResults[]): Promise<void> {
     );
   }
 
+  console.log('Ensuring placeholder figures for new RQs...');
+  await ensurePlaceholderFigures();
+
   console.log('Chart generation complete.\n');
 }
 
@@ -530,12 +797,38 @@ async function main(): Promise<void> {
   const compile = args.includes('--compile');
   const sectionArg = args.find(a => a.startsWith('--section='));
   const targetSection = sectionArg?.split('=')[1];
+  const paperDirArg = (() => {
+    const inline = args.find(a => a.startsWith('--paper-dir='));
+    if (inline) return inline.split('=')[1];
+    const idx = args.findIndex(a => a === '--paper-dir');
+    if (idx !== -1) return args[idx + 1];
+    return '';
+  })();
+  const rqChecklistArg = (() => {
+    const inline = args.find(a => a.startsWith('--rq-checklist='));
+    if (inline) return inline.split('=')[1];
+    const idx = args.findIndex(a => a === '--rq-checklist');
+    if (idx !== -1) return args[idx + 1];
+    return '';
+  })();
+  const profileArg = (() => {
+    const inline = args.find(a => a.startsWith('--profile='));
+    if (inline) return inline.split('=')[1];
+    const idx = args.findIndex(a => a === '--profile' || a === '--paper');
+    if (idx !== -1) return args[idx + 1];
+    return '';
+  })();
+
+  if (paperDirArg) {
+    applyPaperDirOverride(paperDirArg);
+  }
 
   console.log('=== Living Document Paper Updater ===\n');
 
   // Load results
   console.log('Loading experiment results...');
-  const results = await loadAllResults();
+  const allowedDirs = profileArg ? resolveProfileOutputDirs(profileArg) : undefined;
+  const results = await loadAllResults(allowedDirs);
   console.log(`Found ${results.length} experiment result sets\n`);
 
   // Calculate metadata
@@ -547,6 +840,18 @@ async function main(): Promise<void> {
   };
 
   console.log(`Total runs across all experiments: ${metadata.totalRuns}\n`);
+
+  // Generate RQ checklist appendix section from docs
+  const defaultChecklist = (() => {
+    if (paperDirArg && paperDirArg.includes('paper_p1')) {
+      return 'docs/RQ_PAPER_CHECKLIST_P1.md';
+    }
+    if (paperDirArg && paperDirArg.includes('paper_p2')) {
+      return 'docs/RQ_PAPER_CHECKLIST_P2.md';
+    }
+    return '';
+  })();
+  buildRqChecklistSection(metadata, rqChecklistArg || defaultChecklist || undefined);
 
   // Generate charts
   await generateAllCharts(results);
@@ -595,7 +900,7 @@ async function main(): Promise<void> {
       execSync('bibtex main', { stdio: 'inherit' });
       execSync('pdflatex -interaction=nonstopmode main.tex', { stdio: 'inherit' });
       execSync('pdflatex -interaction=nonstopmode main.tex', { stdio: 'inherit' });
-      console.log('\nPDF compiled: paper/main.pdf');
+      console.log(`\nPDF compiled: ${path.join(CONFIG.paperDir, 'main.pdf')}`);
     } catch (error) {
       console.error('PDF compilation failed. Ensure LaTeX is installed.');
     }

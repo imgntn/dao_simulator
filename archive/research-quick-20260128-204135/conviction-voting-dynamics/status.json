@@ -1,0 +1,16 @@
+{
+  "name": "Conviction Voting Dynamics",
+  "state": "running",
+  "lastUpdate": "2026-01-29T04:37:21.548Z",
+  "progress": {
+    "completedRuns": 140,
+    "totalRuns": 500,
+    "failedRuns": 0,
+    "percentComplete": 28.000000000000004,
+    "runsPerSecond": 14.094432699083862,
+    "estimatedRemainingMs": 25541.999999999996
+  },
+  "outputDirectory": "results/research-quick/conviction-voting-dynamics",
+  "logFile": "results\\research-quick\\conviction-voting-dynamics\\experiment.log",
+  "startTime": "2026-01-29T04:37:11.615Z"
+}

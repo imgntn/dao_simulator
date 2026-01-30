@@ -150,14 +150,16 @@ Config File Format (YAML):
 
   baseConfig:
     template: "compound"    # Or inline: {...}
+    population:
+      totalMembers: 100
     overrides:              # Optional modifications
-      quorumConfig:
-        baseQuorumPercent: 5
+      governance_config:
+        quorumPercentage: 0.05
 
   sweep:                    # Optional - omit for single config
-    parameter: "quorumConfig.baseQuorumPercent"
-    range: { min: 1, max: 20, step: 1 }
-    # Or values: [1, 5, 10, 15, 20]
+    parameter: "governance_config.quorumPercentage"
+    range: { min: 0.01, max: 0.2, step: 0.01 }
+    # Or values: [0.01, 0.05, 0.1, 0.15, 0.2]
 
   execution:
     runsPerConfig: 30

@@ -176,7 +176,7 @@ describe('ServiceProvider fixes', () => {
     const provider = simulation.dao.members.find(m => m instanceof ServiceProvider) as ServiceProvider;
     expect(provider).toBeDefined();
     expect(provider.specialization).toBeDefined();
-    expect(['marketing', 'legal', 'financial', 'technical', 'advisory']).toContain(provider.specialization);
+    expect(['legal', 'financial', 'technical', 'advisory']).toContain(provider.specialization);
     expect(provider.qualityRating).toBeGreaterThanOrEqual(0.5);
     expect(provider.qualityRating).toBeLessThanOrEqual(1.5);
   });

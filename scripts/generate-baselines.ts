@@ -72,10 +72,8 @@ async function generateBaselineForConfig(config: BaselineConfig): Promise<void> 
     name: `baseline-${config.name}`,
     baseConfig: {
       template: config.template,
-      overrides: {
-        memberDistribution: {
-          totalMembers: config.totalMembers,
-        },
+      population: {
+        totalMembers: config.totalMembers,
       },
     },
     execution: {

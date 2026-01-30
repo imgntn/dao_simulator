@@ -104,21 +104,28 @@ describe('RateLimiter', () => {
 });
 
 describe('requireAuth', () => {
-  const originalEnv = process.env;
+  const mutableEnv = process.env as Record<string, string | undefined>;
+  const originalEnv = { ...mutableEnv };
 
   beforeEach(() => {
     // Reset environment
-    process.env = { ...originalEnv };
-    delete process.env.API_KEY;
-    delete process.env.NODE_ENV;
+    for (const key of Object.keys(mutableEnv)) {
+      delete mutableEnv[key];
+    }
+    Object.assign(mutableEnv, originalEnv);
+    delete mutableEnv.API_KEY;
+    delete mutableEnv.NODE_ENV;
   });
 
   afterEach(() => {
-    process.env = originalEnv;
+    for (const key of Object.keys(mutableEnv)) {
+      delete mutableEnv[key];
+    }
+    Object.assign(mutableEnv, originalEnv);
   });
 
   it('should allow requests in development without API_KEY', async () => {
-    process.env.NODE_ENV = 'development';
+    mutableEnv.NODE_ENV = 'development';
 
     const request = new Request('http://localhost/api/test', {
       headers: {},
@@ -129,7 +136,7 @@ describe('requireAuth', () => {
   });
 
   it('should reject requests in production without API_KEY', async () => {
-    process.env.NODE_ENV = 'production';
+    mutableEnv.NODE_ENV = 'production';
 
     const request = new Request('http://localhost/api/test', {
       headers: {},
@@ -141,8 +148,8 @@ describe('requireAuth', () => {
   });
 
   it('should allow requests with valid API_KEY', async () => {
-    process.env.NODE_ENV = 'production';
-    process.env.API_KEY = 'valid-api-key';
+    mutableEnv.NODE_ENV = 'production';
+    mutableEnv.API_KEY = 'valid-api-key';
 
     const request = new Request('http://localhost/api/test', {
       headers: {
@@ -155,8 +162,8 @@ describe('requireAuth', () => {
   });
 
   it('should reject requests with invalid API_KEY', async () => {
-    process.env.NODE_ENV = 'production';
-    process.env.API_KEY = 'valid-api-key';
+    mutableEnv.NODE_ENV = 'production';
+    mutableEnv.API_KEY = 'valid-api-key';
 
     const request = new Request('http://localhost/api/test', {
       headers: {
@@ -170,9 +177,9 @@ describe('requireAuth', () => {
   });
 
   it('should reject rate-limited clients', async () => {
-    process.env.NODE_ENV = 'production';
-    process.env.API_KEY = 'valid-api-key';
-    process.env.TRUST_PROXY = 'true';
+    mutableEnv.NODE_ENV = 'production';
+    mutableEnv.API_KEY = 'valid-api-key';
+    mutableEnv.TRUST_PROXY = 'true';
 
     const clientIp = '192.168.1.100';
 

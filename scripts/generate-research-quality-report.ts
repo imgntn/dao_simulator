@@ -33,8 +33,11 @@ interface MetricStats {
   se: number;
   ci95Lower: number;
   ci95Upper: number;
+  bootstrapCi95Lower?: number;
+  bootstrapCi95Upper?: number;
   min: number;
   max: number;
+  iqr?: number;
   cv: number;
 }
 
@@ -157,7 +160,22 @@ function parseCSV(content: string): Record<string, string>[] {
   const rows: Record<string, string>[] = [];
 
   for (let i = 1; i < lines.length; i++) {
-    const values = lines[i].split(',');
+    const rawValues = lines[i].split(',');
+    let values = rawValues;
+    if (rawValues.length > headers.length) {
+      const runCountCandidate = rawValues[1];
+      const runCountNumeric = runCountCandidate !== undefined && runCountCandidate !== '' && !Number.isNaN(Number(runCountCandidate));
+      if (!runCountNumeric) {
+        // Extra commas are in sweep_value; merge into first column.
+        values = [
+          rawValues.slice(0, rawValues.length - headers.length + 1).join(','),
+          ...rawValues.slice(rawValues.length - headers.length + 1),
+        ];
+      } else {
+        // Extra columns are beyond the header (e.g., additional DAO metrics); truncate.
+        values = rawValues.slice(0, headers.length);
+      }
+    }
     const row: Record<string, string> = {};
     headers.forEach((h, idx) => {
       row[h.trim()] = values[idx]?.trim() || '';
@@ -172,12 +190,15 @@ function parseStatsCSV(content: string): Map<string, MetricStats[]> {
   const rows = parseCSV(content);
   const stats = new Map<string, MetricStats[]>();
 
-  // Get all metric names from headers (excluding sweep_value and run_count)
+  // Get all metric names from base stats headers
   const headers = content.split('\n')[0].split(',');
   const metricNames = new Set<string>();
 
   for (const header of headers) {
-    const match = header.match(/^(.+)_(mean|median|std|se|ci95_lower|ci95_upper|min|max|cv)$/);
+    if (header.includes('_bootstrap_ci95_')) {
+      continue;
+    }
+    const match = header.match(/^(.+?)_(mean|median|std|se|ci95_lower|ci95_upper|min|max|cv|iqr)$/);
     if (match) {
       metricNames.add(match[1]);
     }
@@ -196,8 +217,11 @@ function parseStatsCSV(content: string): Map<string, MetricStats[]> {
         se: parseFloat(row[`${metricName}_se`]) || 0,
         ci95Lower: parseFloat(row[`${metricName}_ci95_lower`]) || 0,
         ci95Upper: parseFloat(row[`${metricName}_ci95_upper`]) || 0,
+        bootstrapCi95Lower: parseFloat(row[`${metricName}_bootstrap_ci95_lower`]) || undefined,
+        bootstrapCi95Upper: parseFloat(row[`${metricName}_bootstrap_ci95_upper`]) || undefined,
         min: parseFloat(row[`${metricName}_min`]) || 0,
         max: parseFloat(row[`${metricName}_max`]) || 0,
+        iqr: parseFloat(row[`${metricName}_iqr`]) || undefined,
         cv: parseFloat(row[`${metricName}_cv`]) || 0,
       });
     }
@@ -250,17 +274,16 @@ function parseSignificanceCSV(content: string): { significance: SignificanceResu
         significant: row['significant'] === 'true',
       }));
     } else if (header.includes('Power Analysis')) {
-      const rows = parseCSV(lines.slice(1).join('\n'));
-      for (const row of rows) {
-        if (Object.keys(row).length === 2) {
-          // Key-value format
-          const key = Object.keys(row)[0];
-          const value = Object.values(row)[0];
-          if (key === 'current_runs_per_config') power.currentRunsPerConfig = parseFloat(value);
-          if (key === 'recommended_runs') power.recommendedRuns = parseFloat(value);
-          if (key === 'current_power') power.currentPower = parseFloat(value);
-          if (key === 'minimum_effect_detectable') power.minimumEffectDetectable = parseFloat(value);
-        }
+      for (const line of lines.slice(1)) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        const [key, value] = trimmed.split(',');
+        if (!key || value === undefined) continue;
+        const parsed = parseFloat(value);
+        if (key === 'current_runs_per_config') power.currentRunsPerConfig = parsed;
+        if (key === 'recommended_runs') power.recommendedRuns = parsed;
+        if (key === 'current_power') power.currentPower = parsed;
+        if (key === 'minimum_effect_detectable') power.minimumEffectDetectable = parsed;
       }
     }
   }
@@ -272,6 +295,7 @@ function parseResults(resultsDir: string): ParsedResults {
   const statsPath = path.join(resultsDir, 'stats.csv');
   const significancePath = path.join(resultsDir, 'significance.csv');
   const recommendationsPath = path.join(resultsDir, 'recommendations.txt');
+  const summaryPath = path.join(resultsDir, 'summary.json');
 
   let stats = new Map<string, MetricStats[]>();
   let significance: SignificanceResult[] = [];
@@ -315,19 +339,31 @@ function parseResults(resultsDir: string): ParsedResults {
       totalRuns += s.runCount;
     }
   }
+  if (fs.existsSync(summaryPath)) {
+    try {
+      const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf-8'));
+      if (typeof summary.totalRuns === 'number') {
+        totalRuns = summary.totalRuns;
+      }
+    } catch {
+      // ignore summary parse errors
+    }
+  }
 
   // Try to infer experiment name from directory
   const experimentName = path.basename(resultsDir);
 
   // Try to infer sweep parameter from significance results
-  let sweepParameter = 'Sweep Parameter';
-  if (significance.length > 0) {
-    // Check if values look like percentages
-    const v1 = parseFloat(significance[0].sweepValue1);
-    const v2 = parseFloat(significance[0].sweepValue2);
-    if (v1 <= 100 && v2 <= 100 && v1 > 0 && v2 > 0) {
-      sweepParameter = 'Quorum Percentage';
-    }
+  let sweepParameter = 'Sweep Value';
+  const nameLower = experimentName.toLowerCase();
+  if (nameLower.includes('quorum')) {
+    sweepParameter = 'Quorum Percentage';
+  } else if (nameLower.includes('participation')) {
+    sweepParameter = 'Voting Activity';
+  } else if (nameLower.includes('voting-period')) {
+    sweepParameter = 'Voting Period (Days)';
+  } else if (nameLower.includes('threshold')) {
+    sweepParameter = 'Threshold';
   }
 
   return {
@@ -930,7 +966,7 @@ function generateMethodology(results: ParsedResults): string {
 ### Statistical Methods
 
 - **Descriptive Statistics:** Mean, median, standard deviation, coefficient of variation
-- **Confidence Intervals:** 95% CI using t-distribution
+  - **Confidence Intervals:** 95% CI using t-distribution (bootstrap CI reported when available)
 - **Omnibus Test:** One-way ANOVA for each metric
 - **Post-hoc Comparisons:** Welch's t-test with effect size (Cohen's d)
 - **Effect Size Interpretation:**
@@ -958,13 +994,47 @@ function generateAppendix(results: ParsedResults): string {
 `;
 
   for (const [metricName, stats] of results.stats) {
+    const hasBootstrap = stats.some(s =>
+      s.bootstrapCi95Lower !== undefined || s.bootstrapCi95Upper !== undefined
+    );
+    const hasIqr = stats.some(s => s.iqr !== undefined);
+
     section += `#### ${metricName}\n\n`;
-    section += `| ${results.sweepParameter} | n | Mean | Median | Std | SE | 95% CI | Min | Max | CV |\n`;
-    section += `|------|---|------|--------|-----|----|----|-----|-----|----|\n`;
+    section += `| ${results.sweepParameter} | n | Mean | Median | Std | SE | 95% CI |`;
+    if (hasBootstrap) {
+      section += ` Bootstrap 95% CI |`;
+    }
+    if (hasIqr) {
+      section += ` IQR |`;
+    }
+    section += ` Min | Max | CV |\n`;
+
+    section += `|------|---|------|--------|-----|----|----|`;
+    if (hasBootstrap) {
+      section += `--------------|`;
+    }
+    if (hasIqr) {
+      section += `------|`;
+    }
+    section += `-----|-----|----|\n`;
 
     for (const s of stats) {
       const ci = `[${s.ci95Lower.toFixed(4)}, ${s.ci95Upper.toFixed(4)}]`;
-      section += `| ${s.sweepValue} | ${s.runCount} | ${s.mean.toFixed(6)} | ${s.median.toFixed(6)} | ${s.std.toFixed(6)} | ${s.se.toFixed(6)} | ${ci} | ${s.min.toFixed(4)} | ${s.max.toFixed(4)} | ${(s.cv * 100).toFixed(2)}% |\n`;
+      const bootstrapCi = s.bootstrapCi95Lower !== undefined && s.bootstrapCi95Upper !== undefined
+        ? `[${s.bootstrapCi95Lower.toFixed(4)}, ${s.bootstrapCi95Upper.toFixed(4)}]`
+        : '-';
+      const iqr = s.iqr !== undefined ? s.iqr.toFixed(4) : '-';
+      const rowPrefix = `| ${s.sweepValue} | ${s.runCount} | ${s.mean.toFixed(6)} | ${s.median.toFixed(6)} | ${s.std.toFixed(6)} | ${s.se.toFixed(6)} | ${ci} |`;
+      const rowTail = ` ${s.min.toFixed(4)} | ${s.max.toFixed(4)} | ${(s.cv * 100).toFixed(2)}% |`;
+      let row = rowPrefix;
+      if (hasBootstrap) {
+        row += ` ${bootstrapCi} |`;
+      }
+      if (hasIqr) {
+        row += ` ${iqr} |`;
+      }
+      row += rowTail;
+      section += row + '\n';
     }
 
     section += '\n';

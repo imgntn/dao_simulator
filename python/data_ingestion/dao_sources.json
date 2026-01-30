@@ -1,0 +1,126 @@
+{
+  "default": {
+    "vs_currency": "usd",
+    "hourly_chunk_days": 30,
+    "rate_limits": {
+      "coingecko_min_interval_sec": 1.5,
+      "defillama_min_interval_sec": 0.5,
+      "snapshot_min_interval_sec": 1.5,
+      "tally_min_interval_sec": 0.8,
+      "discourse_min_interval_sec": 1.0,
+      "cryptocompare_min_interval_sec": 2.5,
+      "coincap_min_interval_sec": 2.0
+    }
+  },
+  "daos": [
+    {
+      "id": "uniswap",
+      "coingecko_id": "uniswap",
+      "cryptocompare_symbol": "UNI",
+      "coincap_id": "uniswap",
+      "defillama": { "type": "protocol", "slug": "uniswap" },
+      "snapshot_spaces": ["uniswapgovernance.eth"],
+      "discourse_base_url": "https://gov.uniswap.org",
+      "tally": { "organization_slug": "uniswap" },
+      "needs_verify": false,
+      "notes": "Snapshot space verified via Snapshot GraphQL search."
+    },
+    {
+      "id": "compound",
+      "coingecko_id": "compound-governance-token",
+      "cryptocompare_symbol": "COMP",
+      "coincap_id": "compound",
+      "defillama": { "type": "protocol", "slug": "compound-v2" },
+      "snapshot_spaces": [],
+      "discourse_base_url": "https://www.comp.xyz",
+      "tally": { "organization_slug": "compound" },
+      "needs_verify": false,
+      "notes": "No verified Snapshot space found; Tally slug confirmed by public gov page."
+    },
+    {
+      "id": "aave",
+      "coingecko_id": "aave",
+      "cryptocompare_symbol": "AAVE",
+      "coincap_id": "aave",
+      "defillama": { "type": "protocol", "slug": "aave" },
+      "snapshot_spaces": ["aavedao.eth"],
+      "discourse_base_url": "https://governance.aave.com",
+      "tally": { "organization_slug": "aave" },
+      "needs_verify": false,
+      "notes": "Snapshot space verified via Snapshot GraphQL search."
+    },
+    {
+      "id": "arbitrum",
+      "coingecko_id": "arbitrum",
+      "cryptocompare_symbol": "ARB",
+      "coincap_id": "arbitrum",
+      "defillama": { "type": "chain", "slug": "Arbitrum" },
+      "snapshot_spaces": ["arbitrumfoundation.eth"],
+      "discourse_base_url": "https://forum.arbitrum.foundation",
+      "tally": { "organization_slug": "arbitrum" },
+      "needs_verify": false,
+      "notes": "Snapshot space verified via Snapshot GraphQL search."
+    },
+    {
+      "id": "optimism",
+      "coingecko_id": "optimism",
+      "cryptocompare_symbol": "OP",
+      "coincap_id": "optimism",
+      "defillama": { "type": "chain", "slug": "Optimism" },
+      "snapshot_spaces": ["opcollective.eth", "citizenshouse.eth"],
+      "discourse_base_url": "https://gov.optimism.io",
+      "tally": { "organization_slug": "optimism" },
+      "needs_verify": false,
+      "notes": "Snapshot spaces verified for Token House and Citizens' House."
+    },
+    {
+      "id": "ens",
+      "coingecko_id": "ethereum-name-service",
+      "cryptocompare_symbol": "ENS",
+      "coincap_id": "ethereum-name-service",
+      "defillama": null,
+      "snapshot_spaces": ["ens.eth"],
+      "discourse_base_url": "https://discuss.ens.domains",
+      "tally": { "organization_slug": "ens" },
+      "needs_verify": false,
+      "notes": "Snapshot space verified via Snapshot GraphQL search."
+    },
+    {
+      "id": "lido",
+      "coingecko_id": "lido-dao",
+      "cryptocompare_symbol": "LDO",
+      "coincap_id": "lido-dao",
+      "defillama": { "type": "protocol", "slug": "lido" },
+      "snapshot_spaces": ["lido-snapshot.eth"],
+      "discourse_base_url": "https://research.lido.fi",
+      "tally": { "organization_slug": "lido" },
+      "needs_verify": false,
+      "notes": "Snapshot space verified; Tally slug confirmed by public gov page."
+    },
+    {
+      "id": "gitcoin",
+      "coingecko_id": "gitcoin",
+      "cryptocompare_symbol": "GTC",
+      "coincap_id": "gitcoin",
+      "defillama": null,
+      "snapshot_spaces": ["gitcoindao.eth"],
+      "discourse_base_url": "https://gov.gitcoin.co",
+      "tally": { "organization_slug": "gitcoin" },
+      "needs_verify": false,
+      "notes": "Snapshot space verified via Snapshot GraphQL search."
+    },
+    {
+      "id": "maker_sky",
+      "coingecko_id": "maker",
+      "cryptocompare_symbol": "MKR",
+      "coincap_id": "maker",
+      "defillama": { "type": "protocol", "slug": "makerdao" },
+      "snapshot_spaces": [],
+      "discourse_base_url": "https://forum.makerdao.com",
+      "maker_api_base": "https://vote.makerdao.com",
+      "tally": null,
+      "needs_verify": true,
+      "notes": "No verified Snapshot space found; Maker uses its own governance portal."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Bicameral Attack Resistance",
+  "state": "completed",
+  "lastUpdate": "2026-01-29T04:37:10.552Z",
+  "progress": {
+    "completedRuns": 500,
+    "totalRuns": 500,
+    "failedRuns": 0,
+    "percentComplete": 100,
+    "runsPerSecond": 8.930644613928234,
+    "estimatedRemainingMs": 0
+  },
+  "outputDirectory": "results/research-quick/bicameral-attack-resistance",
+  "logFile": "results\\research-quick\\bicameral-attack-resistance\\experiment.log",
+  "startTime": "2026-01-29T04:36:14.215Z"
+}

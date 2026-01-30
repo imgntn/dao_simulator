@@ -7,7 +7,7 @@ import { LiquidDelegator } from '@/lib/agents/liquid-delegator';
 import { DAOSimulation } from '@/lib/engine/simulation';
 import { Proposal } from '@/lib/data-structures/proposal';
 import { DelegationResolver } from '@/lib/delegation/delegation-resolver';
-import { setSeed } from '@/lib/utils/random';
+import { setSeed, random } from '@/lib/utils/random';
 
 describe('Delegation and Quorum Achievement', () => {
   beforeEach(() => {
@@ -22,6 +22,10 @@ describe('Delegation and Quorum Achievement', () => {
       num_validators: 0,
       num_proposal_creators: 0,
       num_passive_members: 0,
+      vote_power_cap_fraction: 0,
+      vote_power_quadratic_threshold: 0,
+      vote_power_velocity_window: 0,
+      vote_power_velocity_penalty: 0,
     });
 
     // Create 10 members with varying activity levels
@@ -75,6 +79,10 @@ describe('Delegation and Quorum Achievement', () => {
       num_validators: 0,
       num_proposal_creators: 0,
       num_passive_members: 0,
+      vote_power_cap_fraction: 0,
+      vote_power_quadratic_threshold: 0,
+      vote_power_velocity_window: 0,
+      vote_power_velocity_penalty: 0,
     });
 
     const activeMembers2: DAOMember[] = [];
@@ -274,7 +282,7 @@ describe('Multi-run Delegation Experiments', () => {
 
       // Simulate 30% voting probability
       for (const m of simNoDel.dao.members) {
-        if (Math.random() < 0.3) {
+        if (random() < 0.3) {
           m.voteOnProposal(propNoDel);
         }
       }
@@ -309,7 +317,7 @@ describe('Multi-run Delegation Experiments', () => {
 
       // Passive members vote with 30% probability
       for (const m of simWithDel.dao.members) {
-        if (m !== activeM && Math.random() < 0.3) {
+        if (m !== activeM && random() < 0.3) {
           m.voteOnProposal(propWithDel);
         }
       }
