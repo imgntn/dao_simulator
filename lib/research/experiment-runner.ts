@@ -1655,6 +1655,10 @@ export class ExperimentRunner {
         return initial > 0 ? (final - initial) / initial : 0;
       }
 
+      case 'emergency_topup_total': {
+        return simulation.totalEmergencyTopup || 0;
+      }
+
       case 'staking_participation': {
         let totalTokens = 0;
         let stakedTokens = 0;

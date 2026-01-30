@@ -37,6 +37,7 @@ export class Proposal {
   // This prevents flash loan attacks and ensures votes are counted against
   // the balance at proposal creation, not current balance
   votingPowerSnapshot: Map<string, number> = new Map();
+  totalSupplySnapshot: number = 0;
   snapshotTaken: boolean = false;
 
   // Track members who have had their delegation revoked for this proposal
@@ -87,11 +88,15 @@ export class Proposal {
       return; // Snapshot already taken
     }
 
+    let totalSupply = 0;
     for (const member of this.dao.members) {
       // Voting power = own tokens + staked + all delegated power (transitive)
       const votingPower = DelegationResolver.resolveVotingPower(member);
       this.votingPowerSnapshot.set(member.uniqueId, votingPower);
+      // Track total token supply (tokens + staked) for quorum denominator
+      totalSupply += member.tokens + member.stakedTokens;
     }
+    this.totalSupplySnapshot = totalSupply;
     this.snapshotTaken = true;
   }
 
@@ -267,6 +272,7 @@ export class Proposal {
       quorumMet: this.quorumMet,
       // Serialize voting power snapshot for checkpoint restore
       votingPowerSnapshot: Object.fromEntries(this.votingPowerSnapshot),
+      totalSupplySnapshot: this.totalSupplySnapshot,
       snapshotTaken: this.snapshotTaken,
     };
   }
@@ -303,6 +309,7 @@ export class Proposal {
     if (data.votingPowerSnapshot) {
       proposal.votingPowerSnapshot = new Map(Object.entries(data.votingPowerSnapshot));
     }
+    proposal.totalSupplySnapshot = data.totalSupplySnapshot || 0;
     proposal.snapshotTaken = data.snapshotTaken || false;
 
     return proposal;

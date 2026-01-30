@@ -50,6 +50,7 @@ export class FoundationAgent extends DAOMember {
   actionsLog: FoundationAction[] = [];
   grantsApproved: number = 0;
   proposalsSupported: number = 0;
+  private sponsoredProposalIds: Set<string> = new Set();
 
   constructor(
     uniqueId: string,
@@ -76,6 +77,19 @@ export class FoundationAgent extends DAOMember {
 
     // Initialize grant programs
     this.initializeGrantPrograms();
+  }
+
+  /**
+   * Override vote decision: always vote yes on sponsored proposals.
+   */
+  override decideVote(topic: Proposal | string): 'yes' | 'no' {
+    if (typeof topic === 'object' && topic !== null && 'uniqueId' in topic) {
+      const proposal = topic as Proposal;
+      if (this.sponsoredProposalIds.has(proposal.uniqueId)) {
+        return 'yes';
+      }
+    }
+    return super.decideVote(topic);
   }
 
   /**
@@ -290,11 +304,10 @@ export class FoundationAgent extends DAOMember {
       return false;
     }
 
-    // Foundations typically vote with significant weight
-    const weight = Math.min(this.tokens, 10000);
-    proposal.addVote(this.uniqueId, true, weight);
-    this.votes.set(proposal.uniqueId, { vote: true, weight });
-    this.markActive();
+    // Mark as sponsored so decideVote returns 'yes', then vote through
+    // the base class pipeline (delegation resolution, power policy)
+    this.sponsoredProposalIds.add(proposal.uniqueId);
+    this.voteOnProposal(proposal);
 
     const action: FoundationAction = {
       type: 'governance_support',

@@ -48,6 +48,7 @@ export class StewardAgent extends DAOMember {
   grantsApproved: number = 0;
   grantsRejected: number = 0;
   grantReviews: GrantReview[] = [];
+  private pendingStewardDecision: boolean | null = null;
 
   constructor(
     uniqueId: string,
@@ -76,6 +77,16 @@ export class StewardAgent extends DAOMember {
 
     // Set initial budget authority based on workstream
     this.setBudgetAuthorityForWorkstream();
+  }
+
+  /**
+   * Override vote decision to use steward-specific assessment when available.
+   */
+  override decideVote(topic: Proposal | string): 'yes' | 'no' {
+    if (this.pendingStewardDecision !== null) {
+      return this.pendingStewardDecision ? 'yes' : 'no';
+    }
+    return super.decideVote(topic);
   }
 
   /**
@@ -338,27 +349,21 @@ export class StewardAgent extends DAOMember {
   }
 
   /**
-   * Vote on a proposal as a steward
+   * Vote on a proposal as a steward through the base class pipeline.
    */
   private voteAsStEward(proposal: Proposal): void {
-    // Check if already reviewed
+    // Store assessment for decideVote override
     const review = this.grantReviews.find(r => r.proposalId === proposal.uniqueId);
-
-    let support: boolean;
     if (review) {
-      // Vote based on review
-      support = review.recommendation === 'approve';
+      this.pendingStewardDecision = review.recommendation === 'approve';
     } else {
-      // Quick assessment
       const assessment = this.assessProposal(proposal);
-      support = assessment.recommendation === 'approve';
+      this.pendingStewardDecision = assessment.recommendation === 'approve';
     }
 
-    // Stewards vote with their token weight
-    const weight = Math.min(this.tokens, 1000);  // Cap influence
-    proposal.addVote(this.uniqueId, support, weight);
-    this.votes.set(proposal.uniqueId, { vote: support, weight });
-    this.markActive();
+    // Vote through base class pipeline (delegation, power policy, fatigue)
+    this.voteOnProposal(proposal);
+    this.pendingStewardDecision = null;
   }
 
   /**

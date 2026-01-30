@@ -250,6 +250,7 @@ export type BuiltinMetricType =
   // === Economic Health Metrics ===
   | 'treasury_volatility'         // Coefficient of variation of treasury over time
   | 'treasury_growth_rate'        // (final - initial) / initial treasury
+  | 'emergency_topup_total'       // Total tokens created via emergency treasury topups
   | 'staking_participation'       // stakedTokens / totalTokens
   | 'token_concentration_gini'    // Gini of token holdings (same as final_gini but explicit)
   | 'avg_member_wealth'           // Average tokens per member

@@ -47,6 +47,9 @@ export class NodeOperator extends DAOMember {
   isApproved: boolean = true;
   isCapped: boolean = false;  // Reached max validators
 
+  // Transient state for decideVote override
+  private pendingOperatorAssessment: boolean | null = null;
+
   constructor(
     uniqueId: string,
     model: DAOModel,
@@ -85,6 +88,16 @@ export class NodeOperator extends DAOMember {
     // Behavioral traits
     this.reliability = 0.8 + random() * 0.2;  // 0.8-1.0
     this.expansionWillingness = 0.3 + random() * 0.5;  // 0.3-0.8
+  }
+
+  /**
+   * Override vote decision to use operator-specific assessment when available.
+   */
+  override decideVote(topic: Proposal | string): 'yes' | 'no' {
+    if (this.pendingOperatorAssessment !== null) {
+      return this.pendingOperatorAssessment ? 'yes' : 'no';
+    }
+    return super.decideVote(topic);
   }
 
   step(): void {
@@ -199,10 +212,10 @@ export class NodeOperator extends DAOMember {
     );
 
     for (const proposal of proposals) {
-      const support = this.assessOperatorProposal(proposal);
-      proposal.addVote(this.uniqueId, support, 1);
-      this.votes.set(proposal.uniqueId, { vote: support, weight: 1 });
-      this.markActive();
+      // Store assessment for decideVote override, then vote through base pipeline
+      this.pendingOperatorAssessment = this.assessOperatorProposal(proposal);
+      this.voteOnProposal(proposal);
+      this.pendingOperatorAssessment = null;
       break;  // One vote per step
     }
   }

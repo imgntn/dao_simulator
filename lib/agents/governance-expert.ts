@@ -4,11 +4,10 @@
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
 import type { Proposal } from '../data-structures/proposal';
-import { random, randomChoice, randomBool } from '../utils/random';
+import { random, randomChoice } from '../utils/random';
 
 // Analysis configuration
 const ANALYSIS_DEPTH = 0.7;  // How thorough analysis is (affects vote quality)
-const INFLUENCE_FACTOR = 1.5;  // Vote weight multiplier for expertise
 const MIN_REPUTATION_FOR_ADVICE = 30;  // Min reputation to give advice
 
 interface ProposalAnalysis {
@@ -45,11 +44,11 @@ export class GovernanceExpert extends DAOMember {
   step(): void {
     if (!this.model.dao) return;
 
-    // Analyze proposals
+    // Analyze proposals (before voting so decideVote can use analyses)
     this.analyzeProposals();
 
-    // Vote with informed strategy
-    this.voteWithExpertise();
+    // Vote through the base class pipeline (fatigue, delegation, power policy)
+    this.voteOnRandomProposal();
 
     // Optionally advise other members
     if (this.reputation >= MIN_REPUTATION_FOR_ADVICE && randomBool(0.3)) {
@@ -157,54 +156,31 @@ export class GovernanceExpert extends DAOMember {
   }
 
   /**
-   * Vote based on expert analysis - votes on ALL open proposals
+   * Override base class vote decision to use expert analysis.
+   * Vote direction is informed by proposal analysis when available;
+   * voting power, fatigue, and delegation are handled by the base class pipeline.
    */
-  private voteWithExpertise(): void {
-    if (!this.model.dao) return;
-
-    const openProposals = this.model.dao.proposals.filter(p =>
-      p.status === 'open' &&
-      !this.votes.has(p.uniqueId)
-    );
-
-    if (openProposals.length === 0) return;
-
-    // Vote on ALL open proposals with per-proposal probability
-    const votingActivity = this.model.dao.votingActivity ?? 0.3;
-
-    for (const proposal of openProposals) {
-      // Each proposal gets an independent chance of being voted on
-      if (random() >= votingActivity) {
-        continue;  // Skip this proposal
-      }
-
+  override decideVote(topic: Proposal | string): 'yes' | 'no' {
+    if (typeof topic === 'object' && topic !== null && 'uniqueId' in topic) {
+      const proposal = topic as Proposal;
       const analysis = this.analyses.get(proposal.uniqueId);
-      let vote: boolean;
 
       if (analysis) {
-        // Vote based on analysis
         switch (analysis.recommendation) {
           case 'strong_yes':
           case 'yes':
-            vote = true;
-            break;
+            return 'yes';
           case 'strong_no':
           case 'no':
-            vote = false;
-            break;
+            return 'no';
           default:
-            vote = randomBool(0.5);
+            // Neutral: fall through to base class heuristics
+            break;
         }
-      } else {
-        vote = randomBool(0.5);
       }
-
-      // Apply vote with expertise weight
-      const weight = this.tokens * INFLUENCE_FACTOR * (this.accuracyRating);
-      proposal.addVote(this.uniqueId, vote, weight);
-      this.votes.set(proposal.uniqueId, { vote, weight });
-      this.markActive();
     }
+
+    return super.decideVote(topic);
   }
 
   /**

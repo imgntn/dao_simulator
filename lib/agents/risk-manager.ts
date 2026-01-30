@@ -3,6 +3,7 @@
 
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
+import type { Proposal } from '../data-structures/proposal';
 import { random, randomBool } from '../utils/random';
 
 // Risk thresholds
@@ -57,8 +58,9 @@ export class RiskManager extends DAOMember {
     // Rebalance if needed
     this.rebalancePortfolio();
 
-    // Participate in governance (vote conservatively)
-    this.voteConservatively();
+    // Participate in governance through the base class pipeline
+    // (handles fatigue, delegation, voting power policy)
+    this.voteOnRandomProposal();
 
     // Leave comments about risk-related proposals
     if (random() < (this.model.dao?.commentProbability || 0.2)) {
@@ -235,34 +237,15 @@ export class RiskManager extends DAOMember {
   }
 
   /**
-   * Vote conservatively - prefer low-risk proposals
+   * Override vote decision to use risk-based assessment.
+   * Voting mechanics (weight, fatigue, delegation) handled by base class.
    */
-  private voteConservatively(): void {
-    if (!this.model.dao) return;
-
-    // Respect votingActivity parameter
-    const votingActivity = this.model.dao.votingActivity ?? 0.3;
-    if (random() >= votingActivity) {
-      return;  // Risk manager decides not to vote this step
+  override decideVote(topic: Proposal | string): 'yes' | 'no' {
+    if (typeof topic === 'object' && topic !== null && 'fundingGoal' in topic) {
+      const proposal = topic as Proposal;
+      const riskScore = Math.min(1, proposal.fundingGoal / 5000);
+      return riskScore <= this.riskTolerance ? 'yes' : 'no';
     }
-
-    const openProposals = this.model.dao.proposals.filter(p =>
-      p.status === 'open' && !this.votes.has(p.uniqueId)
-    );
-
-    if (openProposals.length === 0) return;
-
-    // Prefer proposals with lower funding goals (less risky)
-    openProposals.sort((a, b) => a.fundingGoal - b.fundingGoal);
-
-    const proposal = openProposals[0];
-
-    // Vote yes on low-risk, no on high-risk (based on funding goal)
-    const riskScore = Math.min(1, proposal.fundingGoal / 5000);
-    const voteYes = riskScore <= this.riskTolerance;
-
-    proposal.addVote(this.uniqueId, voteYes, this.tokens);
-    this.votes.set(proposal.uniqueId, { vote: voteYes, weight: this.tokens });
-    this.markActive();
+    return super.decideVote(topic);
   }
 }

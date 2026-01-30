@@ -556,10 +556,14 @@ export class DAOSimulation extends Model {
       // This ensures proposals that fail quorum are marked as 'expired', not 'rejected'
       const quorumConfig = (this.governanceRule as any).quorumPercentage;
       if (quorumConfig !== undefined && quorumConfig > 0) {
-        const totalTokens = this.dao.members.reduce(
-          (sum, member) => sum + member.tokens + member.stakedTokens,
-          0
-        );
+        // Use snapshot total supply if available for consistency with snapshot-based voting weights.
+        // Falls back to live supply for proposals without snapshots (backwards compatibility).
+        const totalTokens = (proposal.snapshotTaken && proposal.totalSupplySnapshot > 0)
+          ? proposal.totalSupplySnapshot
+          : this.dao.members.reduce(
+              (sum, member) => sum + member.tokens + member.stakedTokens,
+              0
+            );
         const votingTokens = proposal.votesFor + proposal.votesAgainst;
         const participationRate = votingTokens / Math.max(totalTokens, 1);
         proposal.quorumMet = participationRate >= quorumConfig;
