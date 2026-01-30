@@ -10,13 +10,6 @@ export { Dispute } from './dispute';
 export { Violation } from './violation';
 export { Bridge } from './bridge';
 export { MarketShock } from './market-shock';
-export {
-  MarketingCampaign,
-  DemandBoostCampaign,
-  RecruitmentCampaign,
-  SocialMediaCampaign,
-  ReferralBonusCampaign,
-} from './marketing-events';
 export { PredictionMarket } from './prediction-market';
 export { ReputationTracker } from './reputation';
 

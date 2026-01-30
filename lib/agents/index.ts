@@ -22,7 +22,6 @@ export { LiquidDelegator } from './liquid-delegator';
 export { Speculator } from './speculator';
 export { ExternalPartner } from './external-partner';
 export { RLTrader } from './rl-trader';
-export { PlayerAgent } from './player-agent';
 
 // New specialized agents
 export { GovernanceExpert } from './governance-expert';
@@ -59,15 +58,3 @@ export {
 } from './twin-agent-factory';
 
 // Player controller
-export {
-  PlayerController,
-  createPlayerController,
-  type PlayerActionType,
-  type PlayerAction,
-  type VoteAction,
-  type ProposalCreationParams,
-  type DelegationParams,
-  type VetoSignalParams,
-  type SwapParams,
-  type ControllerState,
-} from './player-controller';

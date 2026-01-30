@@ -1,6 +1,8 @@
 // DAO City - Multi-DAO Type Definitions
 
 import type { SimulationSettings } from '../config/settings';
+import type { SybilAttackConfig } from '../agents/sybil-attacker';
+import type { FlashLoanConfig } from '../agents/flashloan-attacker';
 
 // =============================================================================
 // DAO Configuration Types
@@ -37,7 +39,9 @@ export interface DAOConfig {
   name: string;
   tokenSymbol: string;
   initialTreasuryFunding: number;
+  initialTokenPrice?: number;
   governanceRule: string;
+  quorumPercent?: number;
   agentCounts: Partial<AgentCountConfig>;
   color: string;
   // Optional DAO-specific settings
@@ -47,6 +51,9 @@ export interface DAOConfig {
   stakingInterestRate?: number;
   slashFraction?: number;
   reputationDecayRate?: number;
+  simulationParams?: Partial<SimulationSettings>;
+  features?: Record<string, unknown>;
+  tokenDistribution?: Record<string, unknown>;
 }
 
 export interface GlobalMarketplaceConfig {
@@ -62,8 +69,41 @@ export interface DAOCityConfig {
   bridgeFeeRate: number;
   bridgeDelay: number;
   enableInterDAOProposals: boolean;
+  attackConfig?: CityAttackConfig;
+  interDAODefense?: InterDAODefenseConfig;
   // Simulation settings applied to all DAOs
   baseSettings?: Partial<SimulationSettings>;
+  memberTransferEnabled?: boolean;
+  bridgesEnabled?: boolean;
+  interDAOProposalRate?: number;
+  memberTransferRate?: number;
+  tokenSwapRate?: number;
+  interDAOProposalConfig?: {
+    votingPeriod?: number;
+    requiredApprovalRatio?: number;
+    quorumThreshold?: number;
+    approvalThreshold?: number;
+    proposalTypes?: InterDAOProposalType[];
+  };
+}
+
+export interface InterDAODefenseConfig {
+  mutualMonitoring?: boolean;
+  crossDAOAlerts?: boolean;
+  coordinatedResponse?: boolean;
+  mutualVeto?: boolean;
+  vetoThreshold?: number;
+}
+
+export interface CityAttackConfig {
+  attackerBudget?: number;
+  attackTypes?: string[];
+  targetSelection?: 'random' | 'all' | 'weakest' | 'strongest';
+  coordinatedAttack?: boolean;
+  sybilAttackers?: number;
+  flashLoanAttackers?: number;
+  sybilConfig?: Partial<SybilAttackConfig>;
+  flashLoanConfig?: Partial<FlashLoanConfig>;
 }
 
 // =============================================================================
