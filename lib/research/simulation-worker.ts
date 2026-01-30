@@ -6,12 +6,10 @@
  */
 
 import { parentPort, workerData } from 'worker_threads';
-import { DAOSimulation, type DAOSimulationConfig } from '../engine/simulation';
-import { getTemplate } from '../dao-designer';
-import { toSimulationConfig } from '../dao-designer/builder';
+import { DAOSimulation } from '../engine/simulation';
+import { resolveSimulationConfig, type ResearchConfig } from './config-resolver';
 import { setSeed } from '../utils/random';
-import type { DAODesignerConfig } from '../dao-designer/types';
-import type { RunResult, MetricConfig, BuiltinMetricType, TimelineEntry } from './experiment-config';
+import type { RunResult, MetricConfig, BuiltinMetricType, TimelineEntry, SimulationOverrides } from './experiment-config';
 
 // =============================================================================
 // TYPES
@@ -19,8 +17,8 @@ import type { RunResult, MetricConfig, BuiltinMetricType, TimelineEntry } from '
 
 export interface WorkerTask {
   taskId: number;
-  daoConfig: DAODesignerConfig;
-  simConfig: Partial<DAOSimulationConfig>;
+  config: ResearchConfig;
+  simConfig: SimulationOverrides;
   seed: number;
   stepsPerRun: number;
   metrics: MetricConfig[];
@@ -72,19 +70,7 @@ async function runSimulation(task: WorkerTask): Promise<RunResult> {
   setSeed(task.seed);
 
   // Convert to simulation config
-  const simConfig = toSimulationConfig(task.daoConfig);
-  simConfig.seed = task.seed;
-
-  // Apply simulation overrides
-  if (task.simConfig.checkpointInterval !== undefined) {
-    simConfig.checkpointInterval = task.simConfig.checkpointInterval;
-  }
-  if (task.simConfig.eventLogging !== undefined) {
-    simConfig.eventLogging = task.simConfig.eventLogging;
-  }
-
-  // Disable IndexedDB for workers
-  simConfig.useIndexedDB = false;
+  const simConfig = resolveSimulationConfig(task.config, task.seed, task.simConfig);
 
   // Create and run simulation
   const simulation = new DAOSimulation(simConfig);
@@ -110,7 +96,7 @@ async function runSimulation(task: WorkerTask): Promise<RunResult> {
     experimentName: task.experimentName,
     sweepValue: task.sweepValue,
     runIndex: task.runIndex,
-    config: task.daoConfig,
+    config: simConfig,
     seed: task.seed,
     metrics,
     timeline,
@@ -191,7 +177,7 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
     }
 
     case 'final_treasury':
-      return dao.treasury.funds;
+      return dao.treasury.getTokenBalance('DAO_TOKEN') || dao.treasury.funds;
 
     case 'final_token_price':
       return dao.treasury.getTokenPrice('DAO_TOKEN');

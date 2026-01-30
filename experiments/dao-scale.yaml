@@ -1,41 +1,41 @@
-# DAO Scale Effects Study
-# Research question: How do governance dynamics change as DAOs grow?
-name: "DAO Scale Effects"
-description: "Study how governance changes with organization size"
-
+name: DAO Scale Effects
+description: Study how governance changes with organization size
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    simulationParams:
-      proposalFrequency: 0.5
-      votingActivity: 0.4
-
+    voting_activity: 0.4
+    proposal_creation_probability: 0.005
 sweep:
-  parameter: "memberDistribution.totalMembers"
-  values: [25, 50, 100, 200, 300, 500]
-
+  parameter: population.totalMembers
+  values:
+    - 25
+    - 50
+    - 100
+    - 200
+    - 300
+    - 500
 execution:
   runsPerConfig: 30
   stepsPerRun: 500
   seedStrategy: sequential
   baseSeed: 12345
-
 metrics:
-  - name: "Average Turnout"
+  - name: Average Turnout
     type: builtin
     builtin: average_turnout
-  - name: "Final Gini"
+  - name: Final Gini
     type: builtin
     builtin: final_gini
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-  - name: "Total Proposals"
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-
 output:
-  directory: "results/dao-scale"
-  formats: ["json", "csv"]
+  directory: results/dao-scale
+  formats:
+    - json
+    - csv
   includeRawRuns: true
   includeManifest: true

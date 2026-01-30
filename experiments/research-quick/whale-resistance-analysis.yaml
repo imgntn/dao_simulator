@@ -1,0 +1,157 @@
+﻿name: Whale Resistance Analysis
+description: |
+  Systematic analysis of how different voting mechanisms resist governance capture
+  by wealthy minorities. Tests quadratic voting's theoretical advantage in reducing
+  whale influence compared to token-weighted alternatives.
+version: 2.0.0
+author: DAO Simulator Research
+tags:
+  - whale-resistance
+  - plutocracy
+  - quadratic-voting
+  - attack-resistance
+  - grid-search
+baseConfig:
+  template: compound
+  overrides:
+    voting_activity: 0.35
+    proposal_creation_probability: 0.0025
+    governance_config:
+      quorumPercentage: 0.1
+  population:
+    totalMembers: 100
+    distribution:
+      - archetype: passive_holder
+        percentage: 60
+      - archetype: delegate
+        percentage: 15
+      - archetype: governance_expert
+        percentage: 10
+      - archetype: developer
+        percentage: 10
+      - archetype: whale
+        percentage: 5
+sweep:
+  grid:
+    - parameter: population.distribution
+      label: whaleConcentration
+      values:
+        - - archetype: passive_holder
+            percentage: 55
+          - archetype: delegate
+            percentage: 15
+          - archetype: governance_expert
+            percentage: 10
+          - archetype: developer
+            percentage: 10
+          - archetype: whale
+            percentage: 10
+        - - archetype: passive_holder
+            percentage: 45
+          - archetype: delegate
+            percentage: 15
+          - archetype: governance_expert
+            percentage: 10
+          - archetype: developer
+            percentage: 10
+          - archetype: whale
+            percentage: 20
+        - - archetype: passive_holder
+            percentage: 32
+          - archetype: delegate
+            percentage: 15
+          - archetype: governance_expert
+            percentage: 10
+          - archetype: developer
+            percentage: 10
+          - archetype: whale
+            percentage: 33
+        - - archetype: passive_holder
+            percentage: 15
+          - archetype: delegate
+            percentage: 15
+          - archetype: governance_expert
+            percentage: 10
+          - archetype: developer
+            percentage: 10
+          - archetype: whale
+            percentage: 50
+        - - archetype: passive_holder
+            percentage: 3
+          - archetype: delegate
+            percentage: 10
+          - archetype: governance_expert
+            percentage: 10
+          - archetype: developer
+            percentage: 10
+          - archetype: whale
+            percentage: 67
+    - parameter: governance_rule
+      label: votingType
+      values:
+        - majority
+        - supermajority
+        - quadratic
+        - conviction
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 54321
+  workers: 10
+metrics:
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+  - name: Whale Proposal Rate
+    type: builtin
+    builtin: whale_proposal_rate
+  - name: Single Entity Control
+    type: builtin
+    builtin: single_entity_control
+  - name: Collusion Threshold
+    type: builtin
+    builtin: collusion_threshold
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+  - name: Voter Concentration Gini
+    type: builtin
+    builtin: voter_concentration_gini
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Average Turnout
+    type: builtin
+    builtin: avg_votes_per_proposal
+  - name: Voting Power Utilization
+    type: builtin
+    builtin: voting_power_utilization
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Token Concentration Gini
+    type: builtin
+    builtin: token_concentration_gini
+output:
+  directory: results/research-quick/whale-resistance-analysis
+  formats:
+    - json
+    - csv
+  includeRawRuns: false
+  includeManifest: true
+  includeStatistics: true
+  includeRecommendations: true
+

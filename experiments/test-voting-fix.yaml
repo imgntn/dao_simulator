@@ -4,26 +4,25 @@ version: 1.0.0
 baseConfig:
   template: compound
   overrides:
-    memberDistribution:
-      totalMembers: 150
-      distribution:
-        - archetype: active_voter
-          percentage: 70
-        - archetype: delegate
-          percentage: 15
-        - archetype: whale
-          percentage: 10
-        - archetype: governance_expert
-          percentage: 5
-    simulationParams:
-      votingActivity: 0.4
-      proposalFrequency: 0.4
+    voting_activity: 0.4
+    proposal_creation_probability: 0.004
+  population:
+    totalMembers: 150
+    distribution:
+      - archetype: active_voter
+        percentage: 70
+      - archetype: delegate
+        percentage: 15
+      - archetype: whale
+        percentage: 10
+      - archetype: governance_expert
+        percentage: 5
 sweep:
-  parameter: quorumConfig.baseQuorumPercent
+  parameter: governance_config.quorumPercentage
   values:
-    - 5
-    - 10
-    - 20
+    - 0.05
+    - 0.1
+    - 0.2
 execution:
   runsPerConfig: 50
   stepsPerRun: 500

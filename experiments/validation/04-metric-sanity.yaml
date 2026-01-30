@@ -1,48 +1,49 @@
-name: "Metric Sanity Checks"
+name: Metric Sanity Checks
 description: |
   Verify all metrics produce valid, reasonable values.
   Run a standard simulation and check:
   - All metrics are within expected bounds
   - No NaN or Infinity values
   - Metrics behave sensibly over time
-
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    memberDistribution:
-      totalMembers: 100
-    simulationParams:
-      votingActivity: 0.3
     economicParams:
       tokenEmissionRate: 100
-
+    voting_activity: 0.3
+  population:
+    totalMembers: 100
 sweep:
-  parameter: "seed"
-  values: [42, 123, 456, 789, 1000]
-
+  parameter: seed
+  values:
+    - 42
+    - 123
+    - 456
+    - 789
+    - 1000
 execution:
   runsPerConfig: 5
   stepsPerRun: 500
   seedStrategy: sequential
   baseSeed: 42
-
 metrics:
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-  - name: "Average Turnout"
+  - name: Average Turnout
     type: builtin
     builtin: average_turnout
-  - name: "Total Proposals"
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-  - name: "Final Treasury"
+  - name: Final Treasury
     type: builtin
     builtin: final_treasury
-  - name: "Final Gini"
+  - name: Final Gini
     type: builtin
     builtin: gini_coefficient
-
 output:
-  directory: "results/validation/metric-sanity"
-  formats: [json, csv]
+  directory: results/validation/metric-sanity
+  formats:
+    - json
+    - csv

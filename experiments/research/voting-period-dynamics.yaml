@@ -1,108 +1,111 @@
-# Voting Period Dynamics Study
-#
-# Research Question: How does voting period length affect governance outcomes?
-#
-# Longer periods allow more deliberation but may reduce urgency.
-# This experiment tests period effects across voting systems.
-#
-# Grid: 6 periods × 4 voting systems = 24 configs × 250 runs = 6,000 runs
-
-name: "Voting Period Dynamics"
+name: Voting Period Dynamics
 description: |
   Analysis of how voting period length affects participation, decision quality,
   and time-sensitive governance. Tests conviction voting's time-weighted
   advantage in longer voting periods.
-
-version: "2.0.0"
-author: "DAO Simulator Research"
+version: 2.0.0
+author: DAO Simulator Research
 tags:
   - voting-period
   - temporal-dynamics
   - conviction-voting
   - deliberation
   - grid-search
-
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    tokenSupply: 1000000
-    memberDistribution:
-      totalMembers: 100
-      distribution:
-        - archetype: "passive_holder"
-          percentage: 50
-        - archetype: "delegate"
-          percentage: 20
-        - archetype: "governance_expert"
-          percentage: 15
-        - archetype: "whale"
-          percentage: 10
-        - archetype: "developer"
-          percentage: 5
-    quorumConfig:
-      baseQuorumPercent: 10
-    simulationParams:
-      votingActivity: 0.35
-      proposalFrequency: 0.25
-
+    voting_activity: 0.35
+    proposal_creation_probability: 0.0025
+    governance_config:
+      quorumPercentage: 0.1
+  population:
+    totalMembers: 100
+    distribution:
+      - archetype: passive_holder
+        percentage: 50
+      - archetype: delegate
+        percentage: 20
+      - archetype: governance_expert
+        percentage: 15
+      - archetype: whale
+        percentage: 10
+      - archetype: developer
+        percentage: 5
 sweep:
   grid:
-    # Voting period sweep (days)
-    - parameter: "votingSystem.votingPeriodDays"
-      label: "votingPeriod"
+    - parameter: proposal_duration_steps
+      label: votingPeriod
       values:
-        - 1       # Instant (emergency)
-        - 3       # Short (Compound)
-        - 7       # Standard (Uniswap)
-        - 14      # Long (Arbitrum)
-        - 21      # Very long
-        - 30      # Extended (MakerDAO)
-
-    # Voting system interaction
-    - parameter: "votingSystem.type"
-      label: "votingType"
+        - 24
+        - 72
+        - 168
+        - 336
+        - 504
+        - 720
+    - parameter: governance_rule
+      label: votingType
       values:
-        - "simple_majority"
-        - "supermajority"
-        - "quadratic"
-        - "conviction"
-
+        - majority
+        - supermajority
+        - quadratic
+        - conviction
 execution:
   runsPerConfig: 250
   stepsPerRun: 500
   seedStrategy: sequential
   baseSeed: 22222
   workers: 10
-
 metrics:
-  # Timing metrics
-  - { name: "Avg Time to Decision", type: builtin, builtin: avg_time_to_decision }
-  - { name: "Proposal Abandonment Rate", type: builtin, builtin: proposal_abandonment_rate }
-  - { name: "Proposal Rate", type: builtin, builtin: proposal_rate }
-
-  # Participation trends
-  - { name: "Voter Participation Rate", type: builtin, builtin: voter_participation_rate }
-  - { name: "Average Turnout", type: builtin, builtin: avg_votes_per_proposal }
-  - { name: "Voter Retention Rate", type: builtin, builtin: voter_retention_rate }
-  - { name: "Participation Trend", type: builtin, builtin: participation_trend }
-
-  # Decision quality
-  - { name: "Proposal Pass Rate", type: builtin, builtin: proposal_pass_rate }
-  - { name: "Quorum Reach Rate", type: builtin, builtin: quorum_reach_rate }
-  - { name: "Avg Margin of Victory", type: builtin, builtin: avg_margin_of_victory }
-
-  # Power dynamics
-  - { name: "Delegate Concentration", type: builtin, builtin: delegate_concentration }
-  - { name: "Whale Influence", type: builtin, builtin: whale_influence }
-  - { name: "Voting Power Utilization", type: builtin, builtin: voting_power_utilization }
-
-  # Economics
-  - { name: "Final Treasury", type: builtin, builtin: final_treasury }
-  - { name: "Treasury Trend", type: builtin, builtin: treasury_trend }
-
+  - name: Avg Time to Decision
+    type: builtin
+    builtin: avg_time_to_decision
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+  - name: Proposal Rate
+    type: builtin
+    builtin: proposal_rate
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Average Turnout
+    type: builtin
+    builtin: avg_votes_per_proposal
+  - name: Voter Retention Rate
+    type: builtin
+    builtin: voter_retention_rate
+  - name: Participation Trend
+    type: builtin
+    builtin: participation_trend
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+  - name: Voting Power Utilization
+    type: builtin
+    builtin: voting_power_utilization
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Treasury Trend
+    type: builtin
+    builtin: treasury_trend
 output:
-  directory: "results/research/voting-period-dynamics"
-  formats: [json, csv]
+  directory: results/research/voting-period-dynamics
+  formats:
+    - json
+    - csv
   includeRawRuns: false
   includeManifest: true
   includeStatistics: true

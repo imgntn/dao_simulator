@@ -6,12 +6,17 @@
  */
 
 import { DAOSimulation, type DAOSimulationConfig } from '../engine/simulation';
-import { getTemplate } from '../dao-designer';
-import { toSimulationConfig } from '../dao-designer/builder';
+import { DAOCity } from '../engine/dao-city';
+import type { DAOCityConfig } from '../types/dao-city';
+import { getBaselineConfig } from './baselines';
+import { resolveSimulationConfig, type ResearchConfig } from './config-resolver';
+import { mergePopulation, type PopulationSpec } from './population';
+import { applySweepValue } from './sweep-mapper';
 import { setSeed } from '../utils/random';
-import type { DAODesignerConfig } from '../dao-designer/types';
 import type {
   ExperimentConfig,
+  CityBaseConfig,
+  CityScenarioConfig,
   RunResult,
   TimelineEntry,
   MetricConfig,
@@ -25,7 +30,7 @@ import type {
   PowerAnalysisResult,
 } from './experiment-config';
 import * as stats from './statistics';
-import { WorkerPool, getRecommendedWorkerCount } from './worker-pool';
+import { WorkerPool } from './worker-pool';
 import type { WorkerTask } from './simulation-worker';
 
 // =============================================================================
@@ -60,23 +65,38 @@ function deepMerge<T extends object>(target: T, source: Partial<T>): T {
   return result;
 }
 
-/**
- * Set a nested property using dot notation
- */
-function setNestedProperty(obj: any, path: string, value: any): void {
-  const parts = path.split('.');
-  let current = obj;
+type CityRunConfig = {
+  baseCityConfig: CityBaseConfig;
+  scenario: CityScenarioConfig;
+};
 
-  for (let i = 0; i < parts.length - 1; i++) {
-    const part = parts[i];
-    if (!(part in current)) {
-      current[part] = {};
-    }
-    current = current[part];
-  }
+type RunConfig = ResearchConfig | CityRunConfig;
 
-  current[parts[parts.length - 1]] = value;
+interface CityRunContext {
+  city: DAOCity;
+  scenario: CityScenarioConfig;
+  tokenByDao: Map<string, string>;
+  initialMembers: Map<string, number>;
+  initialTreasury: Map<string, number>;
+  initialTokenPrice: Map<string, number>;
+  priceHistory: Map<string, number[]>;
+  transferRequests: Map<string, number>;
+  transferCompletions: Map<string, number>;
+  transfersIn: Map<string, number>;
+  transfersOut: Map<string, number>;
+  transferOrigins: Map<string, Map<string, number>>;
+  attackAttempts: Map<string, number>;
+  attackSuccesses: Map<string, number>;
+  attackDetections: Map<string, number>;
+  attackMitigations: Map<string, number>;
+  vetoActions: Map<string, number>;
+  coordinatedDefenseActions: number;
+  ecosystemAlerts: number;
+  ecosystemAlertIds: Set<string>;
+  maliciousProposals: Map<string, Set<string>>;
+  stepCount: number;
 }
+
 
 // =============================================================================
 // HELPER FUNCTIONS FOR STATISTICAL CALCULATIONS
@@ -117,6 +137,41 @@ function calculateCV(values: number[]): number {
   const std = Math.sqrt(variance);
 
   return std / mean;
+}
+
+function calculateCorrelation(a: number[], b: number[]): number {
+  if (a.length === 0 || b.length === 0) return 0;
+  const n = Math.min(a.length, b.length);
+  if (n < 2) return 0;
+
+  let sumA = 0;
+  let sumB = 0;
+  for (let i = 0; i < n; i++) {
+    sumA += a[i];
+    sumB += b[i];
+  }
+  const meanA = sumA / n;
+  const meanB = sumB / n;
+
+  let cov = 0;
+  let varA = 0;
+  let varB = 0;
+  for (let i = 0; i < n; i++) {
+    const da = a[i] - meanA;
+    const db = b[i] - meanB;
+    cov += da * db;
+    varA += da * da;
+    varB += db * db;
+  }
+
+  const denom = Math.sqrt(varA * varB);
+  return denom === 0 ? 0 : cov / denom;
+}
+
+function calculateVariance(values: number[]): number {
+  if (values.length < 2) return 0;
+  const mean = values.reduce((a, b) => a + b, 0) / values.length;
+  return values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length;
 }
 
 /**
@@ -165,7 +220,7 @@ function getProposalStats(proposals: any[]): ProposalStats {
 
   for (const p of proposals) {
     const status = p.status?.toLowerCase() || 'unknown';
-    if (status === 'approved' || status === 'passed' || status === 'executed') {
+    if (status === 'approved' || status === 'completed' || status === 'passed' || status === 'executed') {
       stats.passed++;
     } else if (status === 'rejected') {
       stats.rejected++;
@@ -228,7 +283,7 @@ function getTotalVotingPower(members: any[]): number {
  */
 function getMemberTokensSorted(members: any[]): { id: string; tokens: number }[] {
   return members
-    .map(m => ({ id: m.uniqueId || m.id, tokens: (m.tokens || 0) + (m.stakedTokens || 0) }))
+    .map(m => ({ id: m.uniqueId, tokens: (m.tokens || 0) + (m.stakedTokens || 0) }))
     .sort((a, b) => b.tokens - a.tokens);
 }
 
@@ -331,7 +386,7 @@ export class ExperimentRunner {
         const seed = this.getSeed(runIndex);
 
         tasks.push({
-          daoConfig,
+          config: daoConfig,
           simConfig: {
             checkpointInterval: this.config.baseConfig.simulationOverrides?.checkpointInterval,
             eventLogging: this.config.baseConfig.simulationOverrides?.eventLogging,
@@ -388,18 +443,25 @@ export class ExperimentRunner {
    * Run a single simulation
    */
   async runSingle(
-    daoConfig: DAODesignerConfig,
+    daoConfig: RunConfig,
     seed: number,
     sweepValue: number | string | boolean | undefined,
     runIndexWithinSweep: number
   ): Promise<RunResult> {
+    if (this.config.mode === 'city') {
+      return this.runSingleCity(daoConfig as CityRunConfig, seed, sweepValue, runIndexWithinSweep);
+    }
     const runStartTime = Date.now();
 
     // Set random seed for reproducibility
     setSeed(seed);
 
     // Convert to simulation config
-    const simConfig = this.toSimConfig(daoConfig, seed);
+    const simConfig = resolveSimulationConfig(
+      daoConfig,
+      seed,
+      this.config.baseConfig.simulationOverrides
+    );
 
     // Create and run simulation
     const simulation = new DAOSimulation(simConfig);
@@ -427,7 +489,7 @@ export class ExperimentRunner {
       experimentName: this.config.name,
       sweepValue,
       runIndex: runIndexWithinSweep,
-      config: daoConfig,
+      config: simConfig,
       seed,
       metrics,
       timeline,
@@ -438,19 +500,642 @@ export class ExperimentRunner {
     };
   }
 
+  private async runSingleCity(
+    runConfig: CityRunConfig,
+    seed: number,
+    sweepValue: number | string | boolean | undefined,
+    runIndexWithinSweep: number
+  ): Promise<RunResult> {
+    const runStartTime = Date.now();
+
+    // Set random seed for reproducibility
+    setSeed(seed);
+
+    const cityConfig = this.buildCityConfig(runConfig.baseCityConfig, runConfig.scenario);
+    const city = new DAOCity(cityConfig);
+    const context = this.initializeCityRunContext(city, runConfig.scenario);
+
+    const stepsToRun = this.config.execution.stepsPerRun;
+    for (let step = 0; step < stepsToRun; step++) {
+      await city.step();
+      this.recordCityStep(context);
+    }
+
+    const metrics = this.collectCityMetrics(context);
+    const runEndTime = Date.now();
+
+    // Build run ID
+    const sweepPart = sweepValue !== undefined ? `-${String(sweepValue).replace(/\./g, '_')}` : '';
+    const runId = `${this.config.name}${sweepPart}-run-${String(runIndexWithinSweep + 1).padStart(3, '0')}`;
+
+    return {
+      runId,
+      experimentName: this.config.name,
+      sweepValue,
+      runIndex: runIndexWithinSweep,
+      config: cityConfig,
+      seed,
+      metrics,
+      startedAt: new Date(runStartTime).toISOString(),
+      completedAt: new Date(runEndTime).toISOString(),
+      durationMs: runEndTime - runStartTime,
+      stepsCompleted: stepsToRun,
+    };
+  }
+
+  private buildCityConfig(baseCityConfig: CityBaseConfig, scenario: CityScenarioConfig): DAOCityConfig {
+    const defaultConfig: DAOCityConfig = {
+      daos: [],
+      globalMarketplaceConfig: {
+        initialLiquidity: 50000,
+        volatility: 0.02,
+        priceUpdateFrequency: 1,
+        baseTokenSymbol: 'STABLE',
+      },
+      bridgeFeeRate: 0.01,
+      bridgeDelay: 5,
+      enableInterDAOProposals: true,
+    };
+
+    const mergedBase = deepMerge(defaultConfig, baseCityConfig);
+    const mergedScenario = scenario.overrides ? deepMerge(mergedBase, scenario.overrides) : mergedBase;
+
+    // Map scenario-level marketConfig fields onto globalMarketplaceConfig where applicable
+    if (scenario.marketConfig && mergedScenario.globalMarketplaceConfig) {
+      const marketConfig = scenario.marketConfig as Record<string, unknown>;
+      if (typeof marketConfig.volatility === 'number') {
+        mergedScenario.globalMarketplaceConfig.volatility = marketConfig.volatility;
+      }
+      if (typeof marketConfig.priceUpdateFrequency === 'number') {
+        mergedScenario.globalMarketplaceConfig.priceUpdateFrequency = marketConfig.priceUpdateFrequency;
+      }
+    }
+
+    if (scenario.interDAOProposalRate !== undefined) {
+      mergedScenario.interDAOProposalRate = scenario.interDAOProposalRate;
+    }
+
+    if (scenario.interDAOProposalConfig) {
+      mergedScenario.interDAOProposalConfig = {
+        ...(mergedScenario.interDAOProposalConfig || {}),
+        ...scenario.interDAOProposalConfig,
+      };
+    }
+
+    if (scenario.attackConfig) {
+      mergedScenario.attackConfig = scenario.attackConfig;
+    }
+
+    if (scenario.interDAODefense) {
+      mergedScenario.interDAODefense = {
+        ...(mergedScenario.interDAODefense || {}),
+        ...scenario.interDAODefense,
+      };
+    }
+
+    mergedScenario.daos = scenario.daos;
+    return mergedScenario;
+  }
+
+  private initializeCityRunContext(city: DAOCity, scenario: CityScenarioConfig): CityRunContext {
+    const tokenByDao = new Map<string, string>();
+    for (const dao of scenario.daos) {
+      tokenByDao.set(dao.id, dao.tokenSymbol);
+    }
+
+    const context: CityRunContext = {
+      city,
+      scenario,
+      tokenByDao,
+      initialMembers: new Map(),
+      initialTreasury: new Map(),
+      initialTokenPrice: new Map(),
+      priceHistory: new Map(),
+      transferRequests: new Map(),
+      transferCompletions: new Map(),
+      transfersIn: new Map(),
+      transfersOut: new Map(),
+      transferOrigins: new Map(),
+      attackAttempts: new Map(),
+      attackSuccesses: new Map(),
+      attackDetections: new Map(),
+      attackMitigations: new Map(),
+      vetoActions: new Map(),
+      coordinatedDefenseActions: 0,
+      ecosystemAlerts: 0,
+      ecosystemAlertIds: new Set(),
+      maliciousProposals: new Map(),
+      stepCount: 0,
+    };
+
+    const marketplace = city.getGlobalMarketplace();
+
+    for (const [daoId, tokenSymbol] of tokenByDao.entries()) {
+      const sim = city.getSimulation(daoId);
+      if (!sim) continue;
+      context.initialMembers.set(daoId, sim.dao.members.length);
+      context.initialTreasury.set(daoId, sim.dao.treasury.getTokenBalance(tokenSymbol));
+      const initialPrice = marketplace.getTokenPrice(tokenSymbol);
+      context.initialTokenPrice.set(daoId, initialPrice);
+      context.priceHistory.set(daoId, [initialPrice]);
+      context.transferOrigins.set(daoId, new Map());
+    }
+
+    // Track city-level events
+    const eventBus = city.getEventBus();
+    eventBus.subscribe('member_transfer_queued', (data) => {
+      const request = (data as any).request as { fromDaoId: string; toDaoId: string } | undefined;
+      if (!request) return;
+      context.transferRequests.set(request.fromDaoId, (context.transferRequests.get(request.fromDaoId) || 0) + 1);
+    });
+
+    eventBus.subscribe('member_transfer_completed', (data) => {
+      const result = (data as any).result as { fromDaoId: string; toDaoId: string } | undefined;
+      if (!result) return;
+
+      context.transferCompletions.set(result.fromDaoId, (context.transferCompletions.get(result.fromDaoId) || 0) + 1);
+      context.transfersOut.set(result.fromDaoId, (context.transfersOut.get(result.fromDaoId) || 0) + 1);
+      context.transfersIn.set(result.toDaoId, (context.transfersIn.get(result.toDaoId) || 0) + 1);
+
+      const originMap = context.transferOrigins.get(result.toDaoId);
+      if (originMap) {
+        originMap.set(result.fromDaoId, (originMap.get(result.fromDaoId) || 0) + 1);
+      }
+    });
+
+    eventBus.subscribe('cross_dao_alert', (data) => {
+      const alertId = (data as any).alertId as string | undefined;
+      if (alertId) {
+        context.ecosystemAlertIds.add(alertId);
+      } else {
+        context.ecosystemAlerts += 1;
+      }
+    });
+
+    eventBus.subscribe('coordinated_defense_action', () => {
+      context.coordinatedDefenseActions += 1;
+    });
+
+    // Track per-DAO events
+    for (const [daoId] of tokenByDao.entries()) {
+      const sim = city.getSimulation(daoId);
+      if (!sim) continue;
+
+      sim.eventBus.subscribe('sybil_attack_started', (data) => {
+        context.attackAttempts.set(daoId, (context.attackAttempts.get(daoId) || 0) + 1);
+        const proposalId = (data as any).proposalId as string | undefined;
+        if (!proposalId) return;
+        const malicious = context.maliciousProposals.get(daoId) || new Set<string>();
+        malicious.add(proposalId);
+        context.maliciousProposals.set(daoId, malicious);
+      });
+      sim.eventBus.subscribe('sybil_attack_succeeded', () => {
+        context.attackSuccesses.set(daoId, (context.attackSuccesses.get(daoId) || 0) + 1);
+      });
+      sim.eventBus.subscribe('flashloan_attack_succeeded', () => {
+        context.attackAttempts.set(daoId, (context.attackAttempts.get(daoId) || 0) + 1);
+        context.attackSuccesses.set(daoId, (context.attackSuccesses.get(daoId) || 0) + 1);
+      });
+      sim.eventBus.subscribe('flashloan_attack_failed', () => {
+        context.attackAttempts.set(daoId, (context.attackAttempts.get(daoId) || 0) + 1);
+      });
+      sim.eventBus.subscribe('flashloan_borrowed', (data) => {
+        const proposalId = (data as any).proposalId as string | undefined;
+        if (!proposalId) return;
+        const malicious = context.maliciousProposals.get(daoId) || new Set<string>();
+        malicious.add(proposalId);
+        context.maliciousProposals.set(daoId, malicious);
+      });
+      sim.eventBus.subscribe('attack_detected', () => {
+        context.attackDetections.set(daoId, (context.attackDetections.get(daoId) || 0) + 1);
+      });
+      sim.eventBus.subscribe('attack_mitigated', () => {
+        context.attackMitigations.set(daoId, (context.attackMitigations.get(daoId) || 0) + 1);
+      });
+      sim.eventBus.subscribe('timelock_vetoed', () => {
+        context.vetoActions.set(daoId, (context.vetoActions.get(daoId) || 0) + 1);
+      });
+      sim.eventBus.subscribe('house_veto_triggered', () => {
+        context.vetoActions.set(daoId, (context.vetoActions.get(daoId) || 0) + 1);
+      });
+      sim.eventBus.subscribe('security_veto_initiated', () => {
+        context.vetoActions.set(daoId, (context.vetoActions.get(daoId) || 0) + 1);
+      });
+      sim.eventBus.subscribe('citizen_veto_vote', () => {
+        context.vetoActions.set(daoId, (context.vetoActions.get(daoId) || 0) + 1);
+      });
+      sim.eventBus.subscribe('staker_veto_signal', () => {
+        context.vetoActions.set(daoId, (context.vetoActions.get(daoId) || 0) + 1);
+      });
+      sim.eventBus.subscribe('mutual_veto_triggered', () => {
+        context.vetoActions.set(daoId, (context.vetoActions.get(daoId) || 0) + 1);
+      });
+    }
+
+    return context;
+  }
+
+  private recordCityStep(context: CityRunContext): void {
+    const marketplace = context.city.getGlobalMarketplace();
+    context.stepCount += 1;
+    for (const [daoId, tokenSymbol] of context.tokenByDao.entries()) {
+      const history = context.priceHistory.get(daoId);
+      if (!history) continue;
+      history.push(marketplace.getTokenPrice(tokenSymbol));
+    }
+  }
+
+  private collectCityMetrics(context: CityRunContext): Record<string, number> {
+    const metrics: Record<string, number> = {};
+
+    for (const metricConfig of this.config.metrics) {
+      const scope = metricConfig.scope ?? 'per_dao';
+      const metricName = this.normalizeMetricName(metricConfig.builtin ?? metricConfig.name);
+
+      if (scope === 'ecosystem') {
+        const key = `ecosystem.${metricConfig.name}`;
+        metrics[key] = this.extractCityEcosystemMetric(metricName, context);
+        continue;
+      }
+
+      for (const [daoId] of context.tokenByDao.entries()) {
+        const sim = context.city.getSimulation(daoId);
+        if (!sim) continue;
+        const key = `${daoId}.${metricConfig.name}`;
+        metrics[key] = this.extractCityDaoMetric(sim, daoId, metricName, context);
+      }
+    }
+
+    return metrics;
+  }
+
+  private extractCityDaoMetric(
+    simulation: DAOSimulation,
+    daoId: string,
+    metric: BuiltinMetricType,
+    context: CityRunContext
+  ): number {
+    const marketplace = context.city.getGlobalMarketplace();
+    const tokenSymbol = context.tokenByDao.get(daoId);
+    const clamp01 = (value: number): number => Math.max(0, Math.min(1, value));
+
+    switch (metric) {
+      case 'final_treasury':
+        return tokenSymbol ? simulation.dao.treasury.getTokenBalance(tokenSymbol) : simulation.dao.treasury.funds;
+
+      case 'final_token_price':
+        return tokenSymbol ? marketplace.getTokenPrice(tokenSymbol) : 0;
+
+      case 'token_price_change': {
+        const initial = context.initialTokenPrice.get(daoId) ?? 0;
+        const final = tokenSymbol ? marketplace.getTokenPrice(tokenSymbol) : 0;
+        return initial > 0 ? (final - initial) / initial : 0;
+      }
+
+      case 'token_price_volatility': {
+        const history = context.priceHistory.get(daoId) || [];
+        return calculateCV(history);
+      }
+
+      case 'price_governance_correlation': {
+        const history = context.priceHistory.get(daoId) || [];
+        const proposalCounts = simulation.dataCollector.history.map(h => h.proposalCount || 0);
+        return calculateCorrelation(history, proposalCounts);
+      }
+
+      case 'final_market_rank': {
+        if (!tokenSymbol) return 0;
+        const ranking = marketplace.getTokenRankings().find(r => r.tokenSymbol === tokenSymbol);
+        return ranking?.rank ?? 0;
+      }
+
+      case 'market_cap': {
+        if (!tokenSymbol) return 0;
+        const info = marketplace.getTokenInfo(tokenSymbol);
+        return info ? info.price * info.circulatingSupply : 0;
+      }
+
+      case 'trading_volume':
+        return tokenSymbol ? marketplace.getTokenVolume24h(tokenSymbol) : 0;
+
+      case 'net_member_flow': {
+        const inFlow = context.transfersIn.get(daoId) || 0;
+        const outFlow = context.transfersOut.get(daoId) || 0;
+        return inFlow - outFlow;
+      }
+
+      case 'transfer_origin_distribution': {
+        const originMap = context.transferOrigins.get(daoId);
+        if (!originMap || originMap.size === 0) return 0;
+        const total = Array.from(originMap.values()).reduce((sum, v) => sum + v, 0);
+        if (total === 0) return 0;
+        let hhi = 0;
+        for (const count of originMap.values()) {
+          const share = count / total;
+          hhi += share * share;
+        }
+        return hhi;
+      }
+
+      case 'attack_attempts':
+        return context.attackAttempts.get(daoId) || 0;
+
+      case 'successful_attacks':
+        return context.attackSuccesses.get(daoId) || 0;
+
+      case 'attack_success_rate': {
+        const attempts = context.attackAttempts.get(daoId) || 0;
+        const successes = context.attackSuccesses.get(daoId) || 0;
+        return attempts > 0 ? clamp01(successes / attempts) : 0;
+      }
+
+      case 'attack_detection_rate': {
+        const attempts = context.attackAttempts.get(daoId) || 0;
+        const detections = context.attackDetections.get(daoId) || 0;
+        return attempts > 0 ? clamp01(detections / attempts) : 0;
+      }
+
+      case 'attack_mitigation_rate': {
+        const detections = context.attackDetections.get(daoId) || 0;
+        const mitigations = context.attackMitigations.get(daoId) || 0;
+        if (detections <= 0) return 0;
+        return clamp01(mitigations / detections);
+      }
+
+      case 'treasury_loss': {
+        const initial = context.initialTreasury.get(daoId) ?? 0;
+        const final = simulation.dao.treasury.getTokenBalance(tokenSymbol || 'DAO_TOKEN');
+        return initial > final ? initial - final : 0;
+      }
+
+      case 'malicious_proposal_pass_rate': {
+        const malicious = context.maliciousProposals.get(daoId);
+        if (!malicious || malicious.size === 0) return 0;
+        let passed = 0;
+        for (const proposalId of malicious.values()) {
+          const proposal = simulation.dao.proposals.find(p => p.uniqueId === proposalId);
+          if (proposal && (proposal.status === 'approved' || proposal.status === 'completed')) {
+            passed++;
+          }
+        }
+        return clamp01(passed / malicious.size);
+      }
+
+      case 'veto_actions':
+        return context.vetoActions.get(daoId) || 0;
+
+      default:
+        return this.extractBuiltinMetric(simulation, metric);
+    }
+  }
+
+  private extractCityEcosystemMetric(metric: BuiltinMetricType, context: CityRunContext): number {
+    const marketplace = context.city.getGlobalMarketplace();
+    const daoIds = Array.from(context.tokenByDao.keys());
+    const simulations = daoIds.map(id => context.city.getSimulation(id)).filter(Boolean) as DAOSimulation[];
+
+    switch (metric) {
+      case 'total_market_cap': {
+        const rankings = marketplace.getTokenRankings();
+        return rankings.reduce((sum, r) => sum + r.marketCap, 0);
+      }
+
+      case 'market_concentration': {
+        const caps = marketplace.getTokenRankings().map(r => r.marketCap);
+        const total = caps.reduce((sum, v) => sum + v, 0);
+        if (total === 0) return 0;
+        return caps.reduce((hhi, cap) => {
+          const share = cap / total;
+          return hhi + share * share;
+        }, 0);
+      }
+
+      case 'price_dispersion': {
+        const prices = marketplace.getTokenRankings().map(r => r.currentPrice);
+        return calculateVariance(prices);
+      }
+
+      case 'cross_dao_alerts':
+        return context.ecosystemAlertIds.size > 0 ? context.ecosystemAlertIds.size : context.ecosystemAlerts;
+
+      case 'coordinated_defense_actions': {
+        return context.coordinatedDefenseActions;
+      }
+
+      case 'ecosystem_survival_rate': {
+        if (simulations.length === 0) return 0;
+        let survivors = 0;
+        for (const sim of simulations) {
+          const tokenSymbol = context.tokenByDao.get(sim.dao.daoId) || 'DAO_TOKEN';
+          const treasury = sim.dao.treasury.getTokenBalance(tokenSymbol);
+          if (sim.dao.members.length > 0 && treasury > 0) {
+            survivors++;
+          }
+        }
+        return survivors / simulations.length;
+      }
+
+      case 'ecosystem_recovery_time': {
+        if (simulations.length === 0) return 0;
+        let totalRecovery = 0;
+        for (const sim of simulations) {
+          const history = sim.dataCollector.history;
+          if (history.length === 0) continue;
+          const initial = context.initialTreasury.get(sim.dao.daoId) ?? 0;
+          let dipped = false;
+          let recoveryStep = history[history.length - 1]?.step || 0;
+          for (const entry of history) {
+            if (entry.treasuryFunds < initial) {
+              dipped = true;
+            }
+            if (dipped && entry.treasuryFunds >= initial) {
+              recoveryStep = entry.step;
+              break;
+            }
+          }
+          totalRecovery += recoveryStep;
+        }
+        return simulations.length > 0 ? totalRecovery / simulations.length : 0;
+      }
+
+      case 'ecosystem_treasury_total': {
+        let total = 0;
+        for (const sim of simulations) {
+          const tokenSymbol = context.tokenByDao.get(sim.dao.daoId) || 'DAO_TOKEN';
+          total += sim.dao.treasury.getTokenBalance(tokenSymbol);
+        }
+        return total;
+      }
+
+      case 'participation_convergence': {
+        const rates = simulations.map(sim => this.extractBuiltinMetric(sim, 'voter_participation_rate'));
+        if (rates.length === 0) return 0;
+        const cv = calculateCV(rates);
+        return Math.max(0, 1 - cv);
+      }
+
+      case 'governance_quality_variance': {
+        const risks = simulations.map(sim => this.extractBuiltinMetric(sim, 'governance_capture_risk'));
+        return calculateVariance(risks);
+      }
+
+      case 'transferred_member_impact': {
+        if (simulations.length < 2) return 0;
+        const flows = daoIds.map(id => (context.transfersIn.get(id) || 0) - (context.transfersOut.get(id) || 0));
+        const participation = simulations.map(sim => this.extractBuiltinMetric(sim, 'voter_participation_rate'));
+        return Math.abs(calculateCorrelation(flows, participation));
+      }
+
+      case 'transfer_count': {
+        let total = 0;
+        for (const count of context.transferCompletions.values()) {
+          total += count;
+        }
+        return total;
+      }
+
+      case 'transfer_request_count': {
+        let total = 0;
+        for (const count of context.transferRequests.values()) {
+          total += count;
+        }
+        return total;
+      }
+
+      case 'transfer_completion_rate': {
+        let requests = 0;
+        let completions = 0;
+        for (const count of context.transferRequests.values()) {
+          requests += count;
+        }
+        for (const count of context.transferCompletions.values()) {
+          completions += count;
+        }
+        return requests > 0 ? completions / requests : 0;
+      }
+
+      case 'total_ecosystem_members': {
+        return simulations.reduce((sum, sim) => sum + sim.dao.members.length, 0);
+      }
+
+      case 'ecosystem_member_gini': {
+        const counts = simulations.map(sim => sim.dao.members.length);
+        return calculateGini(counts);
+      }
+
+      case 'dao_dominance_index': {
+        const counts = simulations.map(sim => sim.dao.members.length);
+        const total = counts.reduce((sum, v) => sum + v, 0);
+        if (total === 0) return 0;
+        return counts.reduce((hhi, count) => {
+          const share = count / total;
+          return hhi + share * share;
+        }, 0);
+      }
+
+      case 'inter_dao_proposal_count': {
+        return context.city.getState().interDaoProposals.length;
+      }
+
+      case 'inter_dao_proposal_success_rate': {
+        const proposals = context.city.getState().interDaoProposals;
+        if (proposals.length === 0) return 0;
+        const success = proposals.filter(p => p.status === 'approved' || p.status === 'executed').length;
+        return success / proposals.length;
+      }
+
+      case 'collaboration_proposal_rate':
+      case 'treaty_proposal_rate':
+      case 'resource_sharing_rate':
+      case 'joint_venture_rate': {
+        const proposals = context.city.getState().interDaoProposals;
+        if (proposals.length === 0) return 0;
+        const typeMap: Record<string, string> = {
+          collaboration_proposal_rate: 'collaboration',
+          treaty_proposal_rate: 'treaty',
+          resource_sharing_rate: 'resource_sharing',
+          joint_venture_rate: 'joint_venture',
+        };
+        const targetType = typeMap[metric] || metric.replace('_proposal_rate', '');
+        const count = proposals.filter(p => p.proposalType === targetType).length;
+        return count / proposals.length;
+      }
+
+      case 'inter_dao_voting_participation': {
+        const proposals = context.city.getState().interDaoProposals;
+        if (proposals.length === 0) return 0;
+        let totalParticipation = 0;
+        let count = 0;
+        for (const proposal of proposals) {
+          for (const result of Object.values(proposal.votingResults)) {
+            const totalVotes = result.votesFor + result.votesAgainst;
+            if (result.totalEligibleVoters > 0) {
+              totalParticipation += totalVotes / result.totalEligibleVoters;
+              count++;
+            }
+          }
+        }
+        return count > 0 ? totalParticipation / count : 0;
+      }
+
+      case 'cross_dao_approval_alignment': {
+        const proposals = context.city.getState().interDaoProposals;
+        if (proposals.length === 0) return 0;
+        let totalAlignment = 0;
+        for (const proposal of proposals) {
+          const approvals = Object.values(proposal.votingResults).map(r => r.approved ? 1 : 0);
+          if (approvals.length === 0) continue;
+          const approvalRate = approvals.reduce((sum, v) => sum + v, 0) / approvals.length;
+          const alignment = 1 - 2 * Math.min(approvalRate, 1 - approvalRate);
+          totalAlignment += alignment;
+        }
+        return totalAlignment / proposals.length;
+      }
+
+      case 'total_shared_budget': {
+        const proposals = context.city.getState().interDaoProposals;
+        return proposals
+          .filter(p => p.status === 'approved' || p.status === 'executed')
+          .reduce((sum, p) => sum + (p.sharedBudget || 0), 0);
+      }
+
+      case 'resource_flow_volume': {
+        const proposals = context.city.getState().interDaoProposals;
+        return proposals
+          .filter(p => p.status === 'approved' || p.status === 'executed')
+          .reduce((sum, p) => sum + (p.resourceAmount || 0), 0);
+      }
+
+      default:
+        return 0;
+    }
+  }
+
+  private normalizeMetricName(name: string): BuiltinMetricType {
+    const normalized = name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '') as BuiltinMetricType;
+    return normalized;
+  }
+
   /**
    * Generate all DAO configurations to run (handling sweeps)
    * Public for use by BatchRunner
    * Supports single-parameter sweeps and multi-parameter grid searches
    */
   generateConfigs(): Array<{
-    daoConfig: DAODesignerConfig;
+    daoConfig: RunConfig;
     sweepValue?: number | string | boolean;
     gridValues?: Record<string, number | string | boolean>;
   }> {
+    if (this.config.mode === 'city') {
+      return this.generateCityConfigs();
+    }
+
     const baseConfig = this.loadBaseConfig();
     const configs: Array<{
-      daoConfig: DAODesignerConfig;
+      daoConfig: RunConfig;
       sweepValue?: number | string | boolean;
       gridValues?: Record<string, number | string | boolean>;
     }> = [];
@@ -464,10 +1149,10 @@ export class ExperimentRunner {
 
       for (const combination of gridCombinations) {
         // Clone base config and apply all grid parameters
-        const sweptConfig = JSON.parse(JSON.stringify(baseConfig)) as DAODesignerConfig;
+        const sweptConfig = JSON.parse(JSON.stringify(baseConfig)) as ResearchConfig;
 
         for (const [param, value] of Object.entries(combination)) {
-          setNestedProperty(sweptConfig, param, value);
+          applySweepValue(sweptConfig, param, value);
         }
 
         // Create a composite sweep value string for identification
@@ -487,8 +1172,8 @@ export class ExperimentRunner {
 
       for (const value of sweepValues) {
         // Clone base config and apply sweep value
-        const sweptConfig = JSON.parse(JSON.stringify(baseConfig)) as DAODesignerConfig;
-        setNestedProperty(sweptConfig, this.config.sweep.parameter, value);
+        const sweptConfig = JSON.parse(JSON.stringify(baseConfig)) as ResearchConfig;
+        applySweepValue(sweptConfig, this.config.sweep.parameter, value);
         configs.push({ daoConfig: sweptConfig, sweepValue: value });
       }
     }
@@ -550,31 +1235,55 @@ export class ExperimentRunner {
   }
 
   /**
+   * Generate configs for multi-DAO (city) experiments
+   */
+  private generateCityConfigs(): Array<{
+    daoConfig: RunConfig;
+    sweepValue?: number | string | boolean;
+  }> {
+    const baseCityConfig = this.config.baseCityConfig;
+    const scenarios = this.config.scenarios || [];
+
+    if (!baseCityConfig || scenarios.length === 0) {
+      throw new Error('City mode requires baseCityConfig and scenarios');
+    }
+
+    return scenarios.map((scenario) => ({
+      daoConfig: { baseCityConfig, scenario },
+      sweepValue: scenario.name,
+    }));
+  }
+
+  /**
    * Load the base DAO configuration
    */
-  private loadBaseConfig(): DAODesignerConfig {
-    let config: DAODesignerConfig;
+  private loadBaseConfig(): ResearchConfig {
+    let config: ResearchConfig;
+    let basePopulation: PopulationSpec | undefined;
 
     if (this.config.baseConfig.template) {
-      // Load from template
-      const template = getTemplate(this.config.baseConfig.template);
-      if (!template) {
-        throw new Error(`Unknown template: ${this.config.baseConfig.template}`);
+      const baseline = getBaselineConfig(this.config.baseConfig.template);
+      if (!baseline) {
+        throw new Error(`Unknown baseline: ${this.config.baseConfig.template}`);
       }
-      config = JSON.parse(JSON.stringify(template)) as DAODesignerConfig;
+      config = JSON.parse(JSON.stringify(baseline.config)) as ResearchConfig;
+      basePopulation = baseline.population;
     } else if (this.config.baseConfig.inline) {
-      // Use inline config
-      config = JSON.parse(JSON.stringify(this.config.baseConfig.inline)) as DAODesignerConfig;
+      config = JSON.parse(JSON.stringify(this.config.baseConfig.inline)) as ResearchConfig;
     } else if (this.config.baseConfig.file) {
-      // Load from file - would need fs access
       throw new Error('File-based config loading not yet implemented');
     } else {
       throw new Error('No base configuration specified');
     }
 
-    // Apply overrides
+    const mergedPopulation = mergePopulation(basePopulation, this.config.baseConfig.population);
+
+    if (mergedPopulation) {
+      config.population = mergedPopulation;
+    }
+
     if (this.config.baseConfig.overrides) {
-      config = deepMerge(config, this.config.baseConfig.overrides);
+      config = deepMerge(config, this.config.baseConfig.overrides as Partial<ResearchConfig>);
     }
 
     return config;
@@ -621,32 +1330,6 @@ export class ExperimentRunner {
       default:
         return baseSeed + runIndex;
     }
-  }
-
-  /**
-   * Convert DAODesignerConfig to DAOSimulationConfig
-   */
-  private toSimConfig(daoConfig: DAODesignerConfig, seed: number): DAOSimulationConfig {
-    const simConfig = toSimulationConfig(daoConfig);
-
-    // Add seed
-    simConfig.seed = seed;
-
-    // Apply simulation overrides
-    if (this.config.baseConfig.simulationOverrides) {
-      const overrides = this.config.baseConfig.simulationOverrides;
-      if (overrides.checkpointInterval !== undefined) {
-        simConfig.checkpointInterval = overrides.checkpointInterval;
-      }
-      if (overrides.eventLogging !== undefined) {
-        simConfig.eventLogging = overrides.eventLogging;
-      }
-    }
-
-    // Disable IndexedDB for CLI (not available in Node)
-    simConfig.useIndexedDB = false;
-
-    return simConfig;
   }
 
   /**
@@ -730,7 +1413,7 @@ export class ExperimentRunner {
       }
 
       case 'final_treasury':
-        return dao.treasury?.funds ?? 0;
+        return dao.treasury?.getTokenBalance?.('DAO_TOKEN') ?? dao.treasury?.funds ?? 0;
 
       case 'final_token_price':
         return dao.treasury?.getTokenPrice?.('DAO_TOKEN') ?? 1;
@@ -778,8 +1461,8 @@ export class ExperimentRunner {
 
       case 'avg_margin_of_victory': {
         const resolvedProposals = proposals.filter(p =>
-          p.status === 'approved' || p.status === 'passed' ||
-          p.status === 'executed' || p.status === 'rejected'
+          p.status === 'approved' || p.status === 'completed' ||
+          p.status === 'rejected'
         );
         if (resolvedProposals.length === 0) return 0;
 
@@ -795,15 +1478,15 @@ export class ExperimentRunner {
 
       case 'avg_time_to_decision': {
         const resolvedProposals = proposals.filter(p =>
-          p.status === 'approved' || p.status === 'passed' ||
-          p.status === 'executed' || p.status === 'rejected'
+          p.status === 'approved' || p.status === 'completed' ||
+          p.status === 'rejected' || p.status === 'expired'
         );
         if (resolvedProposals.length === 0) return 0;
 
         let totalTime = 0;
         for (const p of resolvedProposals) {
           const creationTime = p.creationTime || 0;
-          const resolvedTime = p.resolvedTime || p.executedTime || simulation.currentStep;
+          const resolvedTime = p.resolvedTime ?? simulation.currentStep;
           totalTime += resolvedTime - creationTime;
         }
         return totalTime / resolvedProposals.length;
@@ -850,14 +1533,24 @@ export class ExperimentRunner {
       }
 
       case 'voter_participation_rate': {
-        const uniqueVoters = new Set<string>();
+        if (proposals.length === 0) return 0;
+
+        let totalRate = 0;
+        let counted = 0;
+
         for (const p of proposals) {
           const votes = getProposalVotes(p);
-          for (const v of votes) {
-            uniqueVoters.add(v.voterId);
-          }
+          const eligible = p.snapshotTaken
+            ? p.votingPowerSnapshot.size
+            : members.length;
+          if (eligible <= 0) continue;
+
+          const uniqueVoters = new Set<string>(votes.map(v => v.voterId));
+          totalRate += uniqueVoters.size / eligible;
+          counted++;
         }
-        return members.length > 0 ? uniqueVoters.size / members.length : 0;
+
+        return counted > 0 ? totalRate / counted : 0;
       }
 
       case 'voter_concentration_gini': {
@@ -868,7 +1561,7 @@ export class ExperimentRunner {
             voterCounts.set(v.voterId, (voterCounts.get(v.voterId) || 0) + 1);
           }
         }
-        const allMemberVotes = members.map(m => voterCounts.get(m.uniqueId || m.id) || 0);
+        const allMemberVotes = members.map(m => voterCounts.get(m.uniqueId) || 0);
         return calculateGini(allMemberVotes);
       }
 
@@ -996,24 +1689,46 @@ export class ExperimentRunner {
       // =========================================================================
 
       case 'whale_influence': {
-        const sortedMembers = getMemberTokensSorted(members);
-        const top10Count = Math.max(1, Math.ceil(sortedMembers.length * 0.1));
-        const whaleIds = new Set(sortedMembers.slice(0, top10Count).map(m => m.id));
+        if (proposals.length === 0) return 0;
 
-        let whaleVotes = 0;
-        let totalVotes = 0;
+        let totalRate = 0;
+        let counted = 0;
 
         for (const p of proposals) {
           const votes = getProposalVotes(p);
+          if (votes.length === 0) {
+            totalRate += 0;
+            counted++;
+            continue;
+          }
+
+          let whaleIds: Set<string>;
+          if (p.snapshotTaken && p.votingPowerSnapshot.size > 0) {
+            const snapshotHoldings = Array.from(p.votingPowerSnapshot.entries())
+              .map(([memberId, power]) => ({ memberId, power }))
+              .sort((a, b) => b.power - a.power);
+            const top10Count = Math.max(1, Math.ceil(snapshotHoldings.length * 0.1));
+            whaleIds = new Set(snapshotHoldings.slice(0, top10Count).map(m => m.memberId));
+          } else {
+            const sortedMembers = getMemberTokensSorted(members);
+            const top10Count = Math.max(1, Math.ceil(sortedMembers.length * 0.1));
+            whaleIds = new Set(sortedMembers.slice(0, top10Count).map(m => m.id));
+          }
+
+          let whaleVotes = 0;
+          let totalVotes = 0;
           for (const v of votes) {
             totalVotes += v.weight;
             if (whaleIds.has(v.voterId)) {
               whaleVotes += v.weight;
             }
           }
+
+          totalRate += totalVotes > 0 ? whaleVotes / totalVotes : 0;
+          counted++;
         }
 
-        return totalVotes > 0 ? whaleVotes / totalVotes : 0;
+        return counted > 0 ? totalRate / counted : 0;
       }
 
       case 'whale_proposal_rate': {
@@ -1043,7 +1758,7 @@ export class ExperimentRunner {
         }
 
         const allMemberProposals = members.map(m =>
-          proposerCounts.get(m.uniqueId || m.id) || 0
+          proposerCounts.get(m.uniqueId) || 0
         );
         return calculateGini(allMemberProposals);
       }
@@ -1077,7 +1792,7 @@ export class ExperimentRunner {
           maxPower = Math.max(maxPower, power);
         }
 
-        return maxPower / totalSupply;
+        return Math.max(0, Math.min(1, maxPower / totalSupply));
       }
 
       case 'collusion_threshold': {
@@ -1390,9 +2105,12 @@ export class ExperimentRunner {
     for (const summary of metricsSummary) {
       for (const metric of summary.metrics) {
         if (Math.abs(metric.skewness) > 1) {
+          const bootstrapNote = metric.bootstrapCi95
+            ? 'Bootstrap CIs are included in stats export.'
+            : 'Consider using bootstrap confidence intervals or non-parametric tests.';
           recommendations.push(
             `Non-normal distribution detected for "${metric.name}" (skewness=${metric.skewness.toFixed(2)}). ` +
-            `Consider using bootstrap confidence intervals or non-parametric tests.`
+            bootstrapNote
           );
           break;
         }
@@ -1453,8 +2171,11 @@ export class ExperimentRunner {
           standardError: 0,
           ci95: { lower: 0, upper: 0, level: 0.95 },
           ci99: { lower: 0, upper: 0, level: 0.99 },
+          bootstrapCi95: undefined,
+          bootstrapCi99: undefined,
           coefficientOfVariation: 0,
           skewness: 0,
+          iqr: 0,
         });
         continue;
       }
@@ -1473,8 +2194,11 @@ export class ExperimentRunner {
         standardError: analysis.standardError,
         ci95: analysis.ci95,
         ci99: analysis.ci99,
+        bootstrapCi95: analysis.bootstrapCi95,
+        bootstrapCi99: analysis.bootstrapCi99,
         coefficientOfVariation: analysis.coefficientOfVariation,
         skewness: analysis.skewness,
+        iqr: analysis.iqr,
       });
     }
 
@@ -1571,7 +2295,7 @@ export async function runExperiment(
  * Run a single simulation with a DAO config
  */
 export async function runSingleSimulation(
-  daoConfig: DAODesignerConfig,
+  daoConfig: DAOSimulationConfig,
   steps: number,
   seed?: number
 ): Promise<RunResult> {

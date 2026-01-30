@@ -1,49 +1,47 @@
-name: "Token Conservation"
+name: Token Conservation
 description: |
   Verify that token conservation holds throughout the simulation.
   Total tokens (agents + treasury) should not exceed initial supply.
   This test runs a standard simulation and checks conservation at the end.
-
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    memberDistribution:
-      totalMembers: 100
-      distribution:
-        - archetype: passive_holder
-          percentage: 40
-        - archetype: active_voter
-          percentage: 40
-        - archetype: delegate
-          percentage: 20
-    simulationParams:
-      votingActivity: 0.3
-      proposalFrequency: 0.5
-
+    voting_activity: 0.3
+    proposal_creation_probability: 0.005
+  population:
+    totalMembers: 100
+    distribution:
+      - archetype: passive_holder
+        percentage: 40
+      - archetype: active_voter
+        percentage: 40
+      - archetype: delegate
+        percentage: 20
 sweep:
-  parameter: "seed"
-  values: [42, 123, 456]
-
+  parameter: seed
+  values:
+    - 42
+    - 123
+    - 456
 execution:
   runsPerConfig: 5
   stepsPerRun: 300
   seedStrategy: sequential
   baseSeed: 42
-
 metrics:
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-  - name: "Total Proposals"
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-  - name: "Final Treasury"
+  - name: Final Treasury
     type: builtin
     builtin: final_treasury
-  - name: "Final Token Price"
+  - name: Final Token Price
     type: builtin
     builtin: final_token_price
-
 output:
-  directory: "results/validation/conservation"
-  formats: [json]
+  directory: results/validation/conservation
+  formats:
+    - json

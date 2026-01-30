@@ -1,157 +1,112 @@
-# RQ4: Can Bicameral Governance Prevent Governance Attacks?
-#
-# Background: Single-chamber DAOs are vulnerable to flash loan attacks.
-# Can higher passing thresholds (supermajority) provide similar protection?
-#
-# Hypothesis: Higher passing thresholds reduce attack success by requiring
-# broader consensus, similar to bicameral checks.
-#
-# This experiment sweeps passing threshold as proxy for governance strictness.
-#
-# Citation: Use this configuration for reproducible research results.
-
-name: "Bicameral Attack Resistance"
-description: "Compare passing thresholds for attack resistance vs throughput"
-version: "1.0.0"
-author: "DAO Simulator Research Framework"
+name: Bicameral Attack Resistance
+description: Compare passing thresholds for attack resistance vs throughput
+version: 1.0.0
+author: DAO Simulator Research Framework
 tags:
   - research
   - bicameral
   - governance-attacks
   - passing-threshold
   - security
-
-# Base DAO configuration
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    memberDistribution:
-      totalMembers: 200
-      distribution:
-        - archetype: "active_voter"
-          percentage: 50
-        - archetype: "delegate"
-          percentage: 20
-        - archetype: "whale"
-          percentage: 15
-        - archetype: "governance_expert"
-          percentage: 10
-        - archetype: "passive_holder"
-          percentage: 5
-    simulationParams:
-      votingActivity: 0.4
-      proposalFrequency: 0.35
-
-# Sweep across passing threshold (0.5 = majority, 0.67 = supermajority, etc.)
+    voting_activity: 0.4
+    proposal_creation_probability: 0.0035
+  population:
+    totalMembers: 200
+    distribution:
+      - archetype: active_voter
+        percentage: 50
+      - archetype: delegate
+        percentage: 20
+      - archetype: whale
+        percentage: 15
+      - archetype: governance_expert
+        percentage: 10
+      - archetype: passive_holder
+        percentage: 5
 sweep:
-  parameter: "votingSystem.passingThreshold"
+  parameter: governance_config.threshold
   values:
-    - 0.5     # Simple majority (50%)
-    - 0.55    # Slight supermajority
-    - 0.6     # Moderate supermajority
-    - 0.67    # Standard supermajority (2/3)
-    - 0.75    # High supermajority (3/4)
-
-# Execution settings
+    - 0.5
+    - 0.55
+    - 0.6
+    - 0.67
+    - 0.75
 execution:
-  runsPerConfig: 2000    # 2000 x 5 = 10,000 total runs
+  runsPerConfig: 2000
   stepsPerRun: 500
   seedStrategy: sequential
   baseSeed: 42
   workers: 10
-
-# Key metrics for RQ4
 metrics:
-  # Primary security metrics
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-    description: "Legitimate proposal throughput"
-
-  - name: "Proposal Rejection Rate"
+    description: Legitimate proposal throughput
+  - name: Proposal Rejection Rate
     type: builtin
     builtin: proposal_rejection_rate
     description: "% of proposals rejected"
-
-  - name: "Governance Capture Risk"
+  - name: Governance Capture Risk
     type: builtin
     builtin: governance_capture_risk
-    description: "Concentration of proposal creation"
-
-  - name: "Single Entity Control"
+    description: Concentration of proposal creation
+  - name: Single Entity Control
     type: builtin
     builtin: single_entity_control
-    description: "Max % any one member could control"
-
-  # Timing metrics
-  - name: "Avg Time to Decision"
+    description: Max % any one member could control
+  - name: Avg Time to Decision
     type: builtin
     builtin: avg_time_to_decision
-    description: "Average steps to resolution"
-
-  - name: "Proposal Abandonment Rate"
+    description: Average steps to resolution
+  - name: Proposal Abandonment Rate
     type: builtin
     builtin: proposal_abandonment_rate
     description: "% of proposals that expired"
-
-  # Power balance metrics
-  - name: "Whale Influence"
+  - name: Whale Influence
     type: builtin
     builtin: whale_influence
     description: "% of votes from top 10% holders"
-
-  - name: "Delegate Concentration"
+  - name: Delegate Concentration
     type: builtin
     builtin: delegate_concentration
     description: "% of votes from top 10% voters"
-
-  - name: "Collusion Threshold"
+  - name: Collusion Threshold
     type: builtin
     builtin: collusion_threshold
-    description: "Min % of members for majority"
-
-  # Consensus quality
-  - name: "Avg Margin of Victory"
+    description: Min % of members for majority
+  - name: Avg Margin of Victory
     type: builtin
     builtin: avg_margin_of_victory
-    description: "How decisive votes are"
-
-  # Participation metrics
-  - name: "Voter Participation Rate"
+    description: How decisive votes are
+  - name: Voter Participation Rate
     type: builtin
     builtin: voter_participation_rate
     description: "% of members who voted"
-
-  - name: "Average Turnout"
+  - name: Average Turnout
     type: builtin
     builtin: average_turnout
-    description: "Average participation per proposal"
-
-  - name: "Quorum Reach Rate"
+    description: Average participation per proposal
+  - name: Quorum Reach Rate
     type: builtin
     builtin: quorum_reach_rate
     description: "% meeting quorum threshold"
-
-  # Governance efficiency
-  - name: "Total Proposals"
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-    description: "Total proposals created"
-
-  - name: "Governance Overhead"
+    description: Total proposals created
+  - name: Governance Overhead
     type: builtin
     builtin: governance_overhead
-    description: "Votes cast per resolved proposal"
-
-  # Economic health
-  - name: "Final Treasury"
+    description: Votes cast per resolved proposal
+  - name: Final Treasury
     type: builtin
     builtin: final_treasury
-    description: "Treasury at end"
-
-# Output settings
+    description: Treasury at end
 output:
-  directory: "results/research/bicameral-attack-resistance"
+  directory: results/research/bicameral-attack-resistance
   formats:
     - json
     - csv

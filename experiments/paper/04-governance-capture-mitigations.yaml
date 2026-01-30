@@ -1,0 +1,119 @@
+name: Governance Capture Mitigations
+description: Sweep vote power mitigations to quantify capture resistance vs throughput.
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - paper
+  - governance
+  - capture
+  - mitigations
+baseConfig:
+  template: compound
+  population:
+    totalMembers: 200
+    distribution:
+      - archetype: passive_holder
+        percentage: 50
+      - archetype: delegate
+        percentage: 20
+      - archetype: governance_expert
+        percentage: 10
+      - archetype: developer
+        percentage: 10
+      - archetype: whale
+        percentage: 10
+  overrides:
+    governance_rule: majority
+    governance_config:
+      quorumPercentage: 0.05
+    voting_activity: 0.25
+    proposal_creation_probability: 0.004
+    proposal_duration_min_steps: 24
+    proposal_duration_max_steps: 96
+    treasury_stabilization_enabled: true
+    treasury_target_reserve: 10000
+    treasury_target_reserve_fraction: 0.6
+    treasury_buffer_fraction: 0.2
+    treasury_buffer_fill_rate: 0.5
+    treasury_emergency_topup_rate: 0.25
+    treasury_max_spend_fraction: 0.15
+    participation_target_rate: 0.2
+    participation_boost_strength: 0.6
+    participation_boost_decay: 0.1
+    participation_boost_max: 0.25
+    participation_inactivity_boost: 0.15
+    proposal_bond_fraction: 0.01
+    proposal_bond_min: 10
+    proposal_bond_max: 1000
+    proposal_inactivity_steps: 72
+    proposal_temp_check_fraction: 0.25
+    proposal_fast_track_min_steps: 6
+    proposal_fast_track_approval: 0.6
+    proposal_fast_track_quorum: 0.2
+sweep:
+  grid:
+    - parameter: vote_power_cap_fraction
+      values: [0.0, 0.1, 0.2]
+    - parameter: vote_power_quadratic_threshold
+      values: [0, 250, 500]
+    - parameter: vote_power_velocity_penalty
+      values: [0.0, 0.3, 0.6]
+execution:
+  runsPerConfig: 25
+  stepsPerRun: 2000
+  seedStrategy: sequential
+  baseSeed: 404
+  workers: 4
+metrics:
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% token holders"
+  - name: Whale Proposal Rate
+    type: builtin
+    builtin: whale_proposal_rate
+    description: "% of proposals created by whales"
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+    description: Concentration of proposal creation
+  - name: Single Entity Control
+    type: builtin
+    builtin: single_entity_control
+    description: Max % any one member could control
+  - name: Collusion Threshold
+    type: builtin
+    builtin: collusion_threshold
+    description: Min % of members for majority control
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+    description: "% of votes from top 10% of voters"
+  - name: Voter Concentration Gini
+    type: builtin
+    builtin: voter_concentration_gini
+    description: Inequality of voting activity
+  - name: Voting Power Utilization
+    type: builtin
+    builtin: voting_power_utilization
+    description: "% of available voting power actually used"
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "% of resolved proposals that passed"
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% of proposals meeting quorum"
+  - name: Avg Time to Decision
+    type: builtin
+    builtin: avg_time_to_decision
+    description: Average steps from proposal to resolution
+output:
+  directory: results/paper/04-governance-capture-mitigations
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeManifest: true
+  includeTimeline: false

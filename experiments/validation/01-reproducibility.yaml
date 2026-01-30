@@ -1,45 +1,42 @@
-name: "Reproducibility Validation"
+name: Reproducibility Validation
 description: |
   Verify that the simulation produces deterministic results with the same seed.
   All runs with the same seed should produce identical metrics (std = 0).
   This is critical for scientific reproducibility.
-
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    memberDistribution:
-      totalMembers: 50
-    simulationParams:
-      votingActivity: 0.3
     seed: 12345
-
+    voting_activity: 0.3
+  population:
+    totalMembers: 50
 sweep:
-  parameter: "seed"
-  values: [12345]
-
+  parameter: seed
+  values:
+    - 12345
 execution:
   runsPerConfig: 10
   stepsPerRun: 100
   seedStrategy: fixed
   baseSeed: 12345
-
 metrics:
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-  - name: "Average Turnout"
+  - name: Average Turnout
     type: builtin
     builtin: average_turnout
-  - name: "Total Proposals"
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-  - name: "Final Treasury"
+  - name: Final Treasury
     type: builtin
     builtin: final_treasury
-  - name: "Final Gini"
+  - name: Final Gini
     type: builtin
     builtin: gini_coefficient
-
 output:
-  directory: "results/validation/reproducibility"
-  formats: [json, csv]
+  directory: results/validation/reproducibility
+  formats:
+    - json
+    - csv

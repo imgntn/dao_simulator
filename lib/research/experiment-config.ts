@@ -2,11 +2,14 @@
  * Experiment Configuration Types
  *
  * These types define the structure for research experiments that can be run
- * via CLI. Experiments can use DAO Designer configs directly or reference
- * templates, and define parameter sweeps, metrics to capture, and output settings.
+ * via CLI. Experiments can use baseline configs or inline simulation settings,
+ * and define parameter sweeps, metrics to capture, and output settings.
  */
 
-import type { DAODesignerConfig } from '../dao-designer/types';
+import type { DAOSimulationConfig } from '../engine/simulation';
+import type { DAOCityConfig, DAOConfig, InterDAOProposalType, CityAttackConfig } from '../types/dao-city';
+import type { SimulationSettings } from '../config/settings';
+import type { PopulationOverride } from './population';
 
 // =============================================================================
 // EXPERIMENT CONFIGURATION
@@ -23,8 +26,17 @@ export interface ExperimentConfig {
   author?: string;
   tags?: string[];
 
+  // Execution mode
+  mode?: 'single' | 'city';
+
   // Base DAO configuration
   baseConfig: BaseConfigSpec;
+
+  // Base City configuration (multi-DAO)
+  baseCityConfig?: CityBaseConfig;
+
+  // City scenarios (multi-DAO)
+  scenarios?: CityScenarioConfig[];
 
   // Parameter sweep (optional - if not provided, runs single experiment)
   sweep?: SweepConfig;
@@ -43,24 +55,69 @@ export interface ExperimentConfig {
  * How to specify the base DAO configuration
  */
 export interface BaseConfigSpec {
-  // Option 1: Use a template name (compound, optimism, etc.)
+  // Option 1: Use a baseline name (compound, lido, etc.)
   template?: string;
 
   // Option 2: Provide inline config
-  inline?: DAODesignerConfig;
+  inline?: DAOSimulationConfig;
 
   // Option 3: Load from a JSON file
   file?: string;
 
   // Overrides to apply on top of template/inline/file
-  overrides?: Partial<DAODesignerConfig>;
+  overrides?: BaseConfigOverrides;
+
+  // Population overrides (preferred)
+  population?: PopulationOverride;
 
   // Simulation-specific overrides (steps, etc.)
   simulationOverrides?: SimulationOverrides;
 }
 
+// =============================================================================
+// MULTI-DAO (CITY) CONFIGURATION
+// =============================================================================
+
+export interface CityBaseConfig extends Partial<DAOCityConfig> {
+  interDAOProposalConfig?: {
+    votingPeriod?: number;
+    requiredApprovalRatio?: number;
+    quorumThreshold?: number;
+    approvalThreshold?: number;
+    proposalTypes?: InterDAOProposalType[];
+  };
+  interDAOProposalRate?: number;
+  memberTransferRate?: number;
+  tokenSwapRate?: number;
+  memberTransferEnabled?: boolean;
+  bridgesEnabled?: boolean;
+}
+
+export interface CityScenarioConfig {
+  name: string;
+  description?: string;
+  daos: CityDAOConfig[];
+  overrides?: Partial<CityBaseConfig>;
+  interDAOProposalRate?: number;
+  interDAOProposalConfig?: CityBaseConfig['interDAOProposalConfig'];
+  marketConfig?: Record<string, unknown>;
+  attackConfig?: CityAttackConfig;
+  interDAODefense?: Record<string, unknown>;
+}
+
+export interface CityDAOConfig extends DAOConfig {
+  quorumPercent?: number;
+  initialTokenPrice?: number;
+  simulationParams?: Partial<SimulationSettings>;
+  features?: Record<string, unknown>;
+  tokenDistribution?: Record<string, unknown>;
+}
+
+export interface BaseConfigOverrides extends Partial<DAOSimulationConfig> {
+}
+
 /**
- * Simulation-level overrides not part of DAODesignerConfig
+ * Simulation-level overrides not part of the base config
  */
 export interface SimulationOverrides {
   stepsToRun?: number;
@@ -78,7 +135,7 @@ export interface SimulationOverrides {
  */
 export interface SweepConfig {
   // === Single Parameter Sweep (original) ===
-  // Path to the parameter (dot notation, e.g., "quorumConfig.baseQuorumPercent")
+  // Path to the parameter (dot notation, e.g., "governance_config.quorumPercentage")
   parameter?: string;
 
   // Option 1: Explicit values
@@ -211,7 +268,58 @@ export type BuiltinMetricType =
   | 'treasury_trend'              // Slope of treasury over time
   | 'member_growth_rate'          // (final - initial) / initial members
   | 'proposal_rate'               // Proposals per 100 steps
-  | 'governance_activity_index';  // Composite: proposals * participation * resolution
+  | 'governance_activity_index'   // Composite: proposals * participation * resolution
+
+  // === Multi-DAO / Market Metrics ===
+  | 'token_price_change'
+  | 'token_price_volatility'
+  | 'price_governance_correlation'
+  | 'final_market_rank'
+  | 'market_cap'
+  | 'trading_volume'
+  | 'net_member_flow'
+  | 'total_market_cap'
+  | 'market_concentration'
+  | 'price_dispersion'
+  | 'total_ecosystem_members'
+  | 'ecosystem_member_gini'
+  | 'dao_dominance_index'
+
+  // === Inter-DAO / Ecosystem Governance ===
+  | 'inter_dao_proposal_count'
+  | 'inter_dao_proposal_success_rate'
+  | 'collaboration_proposal_rate'
+  | 'treaty_proposal_rate'
+  | 'resource_sharing_rate'
+  | 'joint_venture_rate'
+  | 'inter_dao_voting_participation'
+  | 'cross_dao_approval_alignment'
+  | 'total_shared_budget'
+  | 'resource_flow_volume'
+  | 'ecosystem_treasury_total'
+
+  // === Attack / Security Metrics ===
+  | 'attack_attempts'
+  | 'successful_attacks'
+  | 'attack_success_rate'
+  | 'attack_detection_rate'
+  | 'attack_mitigation_rate'
+  | 'treasury_loss'
+  | 'malicious_proposal_pass_rate'
+  | 'veto_actions'
+  | 'cross_dao_alerts'
+  | 'coordinated_defense_actions'
+  | 'ecosystem_survival_rate'
+  | 'ecosystem_recovery_time'
+
+  // === Transfer / Contagion Metrics ===
+  | 'participation_convergence'
+  | 'governance_quality_variance'
+  | 'transferred_member_impact'
+  | 'transfer_count'
+  | 'transfer_origin_distribution'
+  | 'transfer_request_count'
+  | 'transfer_completion_rate';
 
 /**
  * Configuration for a single metric to capture
@@ -232,6 +340,9 @@ export interface MetricConfig {
 
   // Optional description
   description?: string;
+
+  // Optional scope for multi-DAO experiments
+  scope?: 'per_dao' | 'ecosystem';
 }
 
 // =============================================================================
@@ -275,7 +386,7 @@ export interface RunResult {
   runIndex: number;
 
   // Configuration used
-  config: DAODesignerConfig;
+  config: DAOSimulationConfig | DAOCityConfig;
   seed: number;
 
   // Computed metrics
@@ -353,8 +464,11 @@ export interface MetricStatistics {
   standardError: number;
   ci95: ConfidenceIntervalResult;
   ci99: ConfidenceIntervalResult;
+  bootstrapCi95?: ConfidenceIntervalResult;
+  bootstrapCi99?: ConfidenceIntervalResult;
   coefficientOfVariation: number;  // std/mean - measure of consistency
   skewness: number;  // distribution symmetry
+  iqr?: number;      // robust spread (75th - 25th percentile)
 }
 
 /**

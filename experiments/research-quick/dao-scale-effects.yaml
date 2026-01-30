@@ -1,0 +1,106 @@
+﻿name: DAO Scale Effects
+description: |
+  Analysis of how DAO membership size affects governance outcomes. Tests whether
+  mechanisms that work for small DAOs scale to larger organizations. Examines
+  coordination costs, participation rates, and power concentration at scale.
+version: 2.0.0
+author: DAO Simulator Research
+tags:
+  - scale
+  - membership-size
+  - coordination
+  - scalability
+  - grid-search
+baseConfig:
+  template: compound
+  overrides:
+    voting_activity: 0.35
+    proposal_creation_probability: 0.002
+    governance_config:
+      quorumPercentage: 0.1
+    proposal_duration_steps: 168
+sweep:
+  grid:
+    - parameter: population.totalMembers
+      label: daoSize
+      values:
+        - 25
+        - 50
+        - 100
+        - 200
+        - 500
+    - parameter: governance_rule
+      label: votingType
+      values:
+        - majority
+        - quadratic
+        - conviction
+        - supermajority
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 33333
+  workers: 10
+metrics:
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Average Turnout
+    type: builtin
+    builtin: avg_votes_per_proposal
+  - name: Unique Voter Count
+    type: builtin
+    builtin: unique_voter_count
+  - name: Governance Activity Index
+    type: builtin
+    builtin: governance_activity_index
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+  - name: Avg Time to Decision
+    type: builtin
+    builtin: avg_time_to_decision
+  - name: Governance Overhead
+    type: builtin
+    builtin: governance_overhead
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+  - name: Voter Concentration Gini
+    type: builtin
+    builtin: voter_concentration_gini
+  - name: Single Entity Control
+    type: builtin
+    builtin: single_entity_control
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Total Proposals
+    type: builtin
+    builtin: total_proposals
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Avg Member Wealth
+    type: builtin
+    builtin: avg_member_wealth
+  - name: Token Concentration Gini
+    type: builtin
+    builtin: token_concentration_gini
+output:
+  directory: results/research-quick/dao-scale-effects
+  formats:
+    - json
+    - csv
+  includeRawRuns: false
+  includeManifest: true
+  includeStatistics: true
+  includeRecommendations: true
+

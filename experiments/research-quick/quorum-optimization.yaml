@@ -1,0 +1,119 @@
+﻿name: Quorum Optimization
+description: |
+  Fine-grained analysis of quorum thresholds from 2% to 40%. Maps the trade-off
+  between governance legitimacy (higher quorum) and efficiency (faster decisions).
+  Considers interaction with voting period length.
+version: 2.0.0
+author: DAO Simulator Research
+tags:
+  - quorum
+  - optimization
+  - legitimacy
+  - efficiency
+  - grid-search
+baseConfig:
+  template: compound
+  overrides:
+    voting_activity: 0.35
+    proposal_creation_probability: 0.003
+    governance_rule: majority
+    governance_config:
+      threshold: 0.5
+  population:
+    totalMembers: 100
+    distribution:
+      - archetype: passive_holder
+        percentage: 55
+      - archetype: delegate
+        percentage: 20
+      - archetype: governance_expert
+        percentage: 12
+      - archetype: whale
+        percentage: 8
+      - archetype: developer
+        percentage: 5
+sweep:
+  grid:
+    - parameter: governance_config.quorumPercentage
+      label: quorum
+      values:
+        - 0.02
+        - 0.05
+        - 0.08
+        - 0.1
+        - 0.15
+        - 0.2
+        - 0.3
+        - 0.4
+    - parameter: proposal_duration_steps
+      label: votingPeriod
+      values:
+        - 72
+        - 168
+        - 336
+        - 504
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 98765
+  workers: 10
+metrics:
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+  - name: Avg Time to Decision
+    type: builtin
+    builtin: avg_time_to_decision
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Total Proposals
+    type: builtin
+    builtin: total_proposals
+  - name: Governance Overhead
+    type: builtin
+    builtin: governance_overhead
+  - name: Average Turnout
+    type: builtin
+    builtin: avg_votes_per_proposal
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Voting Power Utilization
+    type: builtin
+    builtin: voting_power_utilization
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+  - name: Single Entity Control
+    type: builtin
+    builtin: single_entity_control
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+  - name: Voter Retention Rate
+    type: builtin
+    builtin: voter_retention_rate
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Treasury Growth Rate
+    type: builtin
+    builtin: treasury_growth_rate
+output:
+  directory: results/research-quick/quorum-optimization
+  formats:
+    - json
+    - csv
+  includeRawRuns: false
+  includeManifest: true
+  includeStatistics: true
+  includeRecommendations: true
+

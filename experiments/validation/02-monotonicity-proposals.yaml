@@ -1,45 +1,46 @@
-name: "Proposal Creator Monotonicity"
+name: Proposal Creator Monotonicity
 description: |
   Verify that member count affects proposal count as expected:
   - More members with active_voter archetype = more proposals
   - This tests the proposal creation rate scales with population
-
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    simulationParams:
-      votingActivity: 0.3
-      proposalFrequency: 0.5
-    memberDistribution:
-      distribution:
-        - archetype: passive_holder
-          percentage: 40
-        - archetype: active_voter
-          percentage: 40
-        - archetype: delegate
-          percentage: 20
-
+    voting_activity: 0.3
+    proposal_creation_probability: 0.005
+  population:
+    distribution:
+      - archetype: passive_holder
+        percentage: 40
+      - archetype: active_voter
+        percentage: 40
+      - archetype: delegate
+        percentage: 20
 sweep:
-  parameter: "memberDistribution.totalMembers"
-  values: [10, 25, 50, 100, 200]
-
+  parameter: population.totalMembers
+  values:
+    - 10
+    - 25
+    - 50
+    - 100
+    - 200
 execution:
   runsPerConfig: 5
   stepsPerRun: 150
   seedStrategy: sequential
   baseSeed: 42
-
 metrics:
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-  - name: "Average Turnout"
+  - name: Average Turnout
     type: builtin
     builtin: average_turnout
-  - name: "Total Proposals"
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-
 output:
-  directory: "results/validation/monotonicity-proposals"
-  formats: [json, csv]
+  directory: results/validation/monotonicity-proposals
+  formats:
+    - json
+    - csv

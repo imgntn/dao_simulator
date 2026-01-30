@@ -1,6 +1,4 @@
-# Quorum Participation Validation
-# Tests the CRITICAL fix: quorum must check total participation, not just votes for
-name: "Quorum Total Participation"
+name: Quorum Total Participation
 description: |
   Verify that quorum requires total participation (votesFor + votesAgainst),
   not just votes for. This is critical for preventing proposals from passing
@@ -8,39 +6,39 @@ description: |
 
   Test: With very low voting activity, proposals should fail due to
   insufficient TOTAL participation, even if all votes are "for".
-
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    memberDistribution:
-      totalMembers: 100
-    simulationParams:
-      votingActivity: 0.05  # Very low activity
-    quorumConfig:
-      baseQuorumPercent: 10  # Requires 10% participation
-
+    voting_activity: 0.05
+    governance_config:
+      quorumPercentage: 0.1
+  population:
+    totalMembers: 100
 sweep:
-  parameter: "quorumConfig.baseQuorumPercent"
-  values: [5, 10, 15, 20]
-
+  parameter: governance_config.quorumPercentage
+  values:
+    - 0.05
+    - 0.1
+    - 0.15
+    - 0.2
 execution:
-  runsPerConfig: 10  # 10 runs for statistical significance
+  runsPerConfig: 10
   stepsPerRun: 200
   seedStrategy: sequential
   baseSeed: 42
-
 metrics:
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-  - name: "Average Turnout"
+  - name: Average Turnout
     type: builtin
     builtin: average_turnout
-  - name: "Total Proposals"
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-
 output:
-  directory: "results/validation/quorum-participation"
-  formats: ["json", "csv"]
+  directory: results/validation/quorum-participation
+  formats:
+    - json
+    - csv
   includeRawRuns: true

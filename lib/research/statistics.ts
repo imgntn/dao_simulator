@@ -65,6 +65,14 @@ export function percentile(values: number[], p: number): number {
   return sorted[lower] + (sorted[upper] - sorted[lower]) * (index - lower);
 }
 
+/**
+ * Calculate interquartile range (IQR)
+ */
+export function interquartileRange(values: number[]): number {
+  if (values.length === 0) return 0;
+  return percentile(values, 75) - percentile(values, 25);
+}
+
 // =============================================================================
 // T-DISTRIBUTION (for confidence intervals with small samples)
 // =============================================================================
@@ -478,12 +486,15 @@ export interface StatisticalAnalysis {
   // Confidence intervals
   ci95: ConfidenceInterval;
   ci99: ConfidenceInterval;
+  bootstrapCi95?: ConfidenceInterval;
+  bootstrapCi99?: ConfidenceInterval;
 
   // Standard error
   standardError: number;
 
   // Distribution shape
   skewness: number;
+  iqr: number;
 
   // Sample quality
   coefficientOfVariation: number;  // std/mean - lower is more consistent
@@ -506,6 +517,9 @@ export function analyzeDistribution(values: number[]): StatisticalAnalysis {
   }
 
   const sorted = [...values].sort((a, b) => a - b);
+  const iqr = interquartileRange(values);
+  const useBootstrap = Math.abs(skewness) > 1 || values.length < 30;
+  const bootstrapSeed = seedFromValues(values);
 
   return {
     n: values.length,
@@ -516,10 +530,22 @@ export function analyzeDistribution(values: number[]): StatisticalAnalysis {
     max: sorted[sorted.length - 1] || 0,
     ci95: confidenceInterval(values, 0.95),
     ci99: confidenceInterval(values, 0.99),
+    bootstrapCi95: useBootstrap ? bootstrapConfidenceInterval(values, 0.95, 800, bootstrapSeed) : undefined,
+    bootstrapCi99: useBootstrap ? bootstrapConfidenceInterval(values, 0.99, 800, bootstrapSeed + 11) : undefined,
     standardError: se,
     skewness,
+    iqr,
     coefficientOfVariation: m !== 0 ? std / Math.abs(m) : 0,
   };
+}
+
+function seedFromValues(values: number[]): number {
+  let hash = values.length || 1;
+  for (const value of values) {
+    const scaled = Math.round(value * 1e6);
+    hash = (hash * 31 + scaled) | 0;
+  }
+  return Math.max(1, Math.abs(hash));
 }
 
 /**

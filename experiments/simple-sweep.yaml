@@ -1,37 +1,35 @@
-# Simple Parameter Sweep Test
-name: "Simple Sweep Test"
-description: "Test parameter sweep with fewer values"
-
+name: Simple Sweep Test
+description: Test parameter sweep with fewer values
 baseConfig:
-  template: "compound"
-  overrides:
-    memberDistribution:
-      totalMembers: 30
-
+  template: compound
+  population:
+    totalMembers: 30
 sweep:
-  parameter: "quorumConfig.baseQuorumPercent"
-  values: [2, 5, 10]
-
+  parameter: governance_config.quorumPercentage
+  values:
+    - 0.02
+    - 0.05
+    - 0.1
 execution:
-  runsPerConfig: 10  # Minimum 10 for basic statistical significance
+  runsPerConfig: 10
   stepsPerRun: 100
   seedStrategy: sequential
   baseSeed: 42
-  workers: 8  # Parallel execution using 8 worker threads
-
+  workers: 8
 metrics:
-  - name: "Final Treasury"
+  - name: Final Treasury
     type: builtin
     builtin: final_treasury
-  - name: "Final Gini"
+  - name: Final Gini
     type: builtin
     builtin: final_gini
-  - name: "Total Proposals"
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-
 output:
-  directory: "results/simple-sweep"
-  formats: ["json", "csv"]
+  directory: results/simple-sweep
+  formats:
+    - json
+    - csv
   includeRawRuns: true
   includeManifest: true

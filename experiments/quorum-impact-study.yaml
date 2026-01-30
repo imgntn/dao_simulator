@@ -1,59 +1,50 @@
-# Quorum Impact Study - Improved Experiment Design
-# Based on findings from initial 10k run statistical analysis
-name: "Quorum Impact Study"
-description: "Measure actual quorum impact with wider range and proper metrics"
-
+name: Quorum Impact Study
+description: Measure actual quorum impact with wider range and proper metrics
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    memberDistribution:
-      totalMembers: 50  # More members for quorum variation
     proposalConfig:
-      proposalProbability: 0.08  # Higher proposal rate to see more outcomes
-
+      proposalProbability: 0.08
+  population:
+    totalMembers: 50
 sweep:
-  parameter: "quorumConfig.baseQuorumPercent"
-  # Range designed to capture the transition point
-  # With ~0.8-5% token turnout, values near this range show gradual effect
-  values: [1, 2, 3, 5, 10]
-
+  parameter: governance_config.quorumPercentage
+  values:
+    - 0.01
+    - 0.02
+    - 0.03
+    - 0.05
+    - 0.1
 execution:
-  runsPerConfig: 100  # 400 total runs for statistical power
-  stepsPerRun: 500    # Longer runs for stable treasury/gini
+  runsPerConfig: 100
+  stepsPerRun: 500
   seedStrategy: sequential
   baseSeed: 42
   workers: 8
-
 metrics:
-  # Primary metrics - directly affected by quorum
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-
-  - name: "Average Turnout"
+  - name: Average Turnout
     type: builtin
     builtin: average_turnout
-
-  - name: "Total Proposals"
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-
-  # Secondary metrics - indirect effects
-  - name: "Final Treasury"
+  - name: Final Treasury
     type: builtin
     builtin: final_treasury
-
-  - name: "Final Gini"
+  - name: Final Gini
     type: builtin
     builtin: final_gini
-
-  - name: "Final Member Count"
+  - name: Final Member Count
     type: builtin
     builtin: final_member_count
-
 output:
-  directory: "results/quorum-impact-study"
-  formats: ["json", "csv"]
+  directory: results/quorum-impact-study
+  formats:
+    - json
+    - csv
   includeRawRuns: true
   includeManifest: true
-  includeTimeline: false  # Skip for performance
+  includeTimeline: false

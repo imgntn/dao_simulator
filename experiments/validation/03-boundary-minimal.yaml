@@ -2,39 +2,39 @@ name: "Boundary: Minimal Agents"
 description: |
   Test system behavior with minimal agent counts.
   Verifies system doesn't crash with very few agents.
-
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    memberDistribution:
-      totalMembers: 10
-    simulationParams:
-      votingActivity: 0.5
-
+    voting_activity: 0.5
+  population:
+    totalMembers: 10
 sweep:
-  parameter: "memberDistribution.totalMembers"
-  values: [1, 2, 5, 10]
-
+  parameter: population.totalMembers
+  values:
+    - 1
+    - 2
+    - 5
+    - 10
 execution:
   runsPerConfig: 5
   stepsPerRun: 50
   seedStrategy: sequential
   baseSeed: 42
-
 metrics:
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-  - name: "Total Proposals"
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-  - name: "Final Treasury"
+  - name: Final Treasury
     type: builtin
     builtin: final_treasury
-  - name: "Final Gini"
+  - name: Final Gini
     type: builtin
     builtin: gini_coefficient
-
 output:
-  directory: "results/validation/boundary-minimal"
-  formats: [json, csv]
+  directory: results/validation/boundary-minimal
+  formats:
+    - json
+    - csv

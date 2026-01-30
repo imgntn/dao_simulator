@@ -1,145 +1,102 @@
-# RQ2: What Token Distribution Thresholds Enable Governance Capture?
-#
-# Background: Plutocracy is the #1 concern in token-weighted voting.
-# At what Gini coefficient does a minority control outcomes?
-#
-# Hypothesis: Governance capture becomes likely when Gini > 0.6,
-# with Nakamoto coefficient < 5.
-#
-# This experiment sweeps across initial token Gini coefficients.
-#
-# Citation: Use this configuration for reproducible research results.
-
-name: "Governance Capture Thresholds"
-description: "Identify token distribution thresholds enabling governance capture"
-version: "1.0.0"
-author: "DAO Simulator Research Framework"
+name: Governance Capture Thresholds
+description: Identify token distribution thresholds enabling governance capture
+version: 1.0.0
+author: DAO Simulator Research Framework
 tags:
   - research
   - plutocracy
   - governance-capture
   - token-distribution
   - gini
-
-# Base DAO configuration
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    memberDistribution:
-      totalMembers: 150
-      distribution:
-        - archetype: "active_voter"
-          percentage: 70
-        - archetype: "delegate"
-          percentage: 15
-        - archetype: "whale"
-          percentage: 10
-        - archetype: "governance_expert"
-          percentage: 5
-    simulationParams:
-      votingActivity: 0.4
-      proposalFrequency: 0.4
-
-# Sweep across quorum percentages as proxy for capture resistance
-# (Higher quorum = harder for minorities to capture)
-# Note: Direct Gini sweeping requires custom config; using quorum as measurable proxy
+    voting_activity: 0.4
+    proposal_creation_probability: 0.004
+  population:
+    totalMembers: 150
+    distribution:
+      - archetype: active_voter
+        percentage: 70
+      - archetype: delegate
+        percentage: 15
+      - archetype: whale
+        percentage: 10
+      - archetype: governance_expert
+        percentage: 5
 sweep:
-  parameter: "quorumConfig.baseQuorumPercent"
+  parameter: governance_config.quorumPercentage
   values:
-    - 2      # Very low - easy capture
-    - 5      # Low
-    - 10     # Moderate
-    - 20     # High
-    - 33     # Very high - capture resistant
-
-# Execution settings
+    - 0.02
+    - 0.05
+    - 0.1
+    - 0.2
+    - 0.33
 execution:
-  runsPerConfig: 2000    # 2000 x 5 = 10,000 total runs
+  runsPerConfig: 2000
   stepsPerRun: 500
   seedStrategy: sequential
   baseSeed: 42
   workers: 10
-
-# Key metrics for RQ2
 metrics:
-  # Primary capture metrics
-  - name: "Token Concentration Gini"
+  - name: Token Concentration Gini
     type: builtin
     builtin: token_concentration_gini
-    description: "Inequality of token holdings"
-
-  - name: "Single Entity Control"
+    description: Inequality of token holdings
+  - name: Single Entity Control
     type: builtin
     builtin: single_entity_control
-    description: "Max % any one member could control"
-
-  - name: "Collusion Threshold"
+    description: Max % any one member could control
+  - name: Collusion Threshold
     type: builtin
     builtin: collusion_threshold
-    description: "Min % of members needed for majority"
-
-  # Whale influence metrics
-  - name: "Whale Influence"
+    description: Min % of members needed for majority
+  - name: Whale Influence
     type: builtin
     builtin: whale_influence
     description: "% of votes from top 10% token holders"
-
-  - name: "Whale Proposal Rate"
+  - name: Whale Proposal Rate
     type: builtin
     builtin: whale_proposal_rate
     description: "% of proposals created by whales"
-
-  - name: "Governance Capture Risk"
+  - name: Governance Capture Risk
     type: builtin
     builtin: governance_capture_risk
-    description: "Concentration of proposal creation"
-
-  # Outcome metrics
-  - name: "Proposal Pass Rate"
+    description: Concentration of proposal creation
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-    description: "Fraction of proposals that passed"
-
-  - name: "Quorum Reach Rate"
+    description: Fraction of proposals that passed
+  - name: Quorum Reach Rate
     type: builtin
     builtin: quorum_reach_rate
     description: "% of proposals meeting quorum"
-
-  - name: "Avg Margin of Victory"
+  - name: Avg Margin of Victory
     type: builtin
     builtin: avg_margin_of_victory
-    description: "How decisive votes are"
-
-  # Participation metrics
-  - name: "Voter Participation Rate"
+    description: How decisive votes are
+  - name: Voter Participation Rate
     type: builtin
     builtin: voter_participation_rate
     description: "% of members who voted"
-
-  - name: "Average Turnout"
+  - name: Average Turnout
     type: builtin
     builtin: average_turnout
-    description: "Average participation per proposal"
-
-  - name: "Delegate Concentration"
+    description: Average participation per proposal
+  - name: Delegate Concentration
     type: builtin
     builtin: delegate_concentration
     description: "% of votes from top 10% voters"
-
-  # Economic outcomes
-  - name: "Final Treasury"
+  - name: Final Treasury
     type: builtin
     builtin: final_treasury
-    description: "Treasury at end"
-
-  - name: "Treasury Growth Rate"
+    description: Treasury at end
+  - name: Treasury Growth Rate
     type: builtin
     builtin: treasury_growth_rate
-    description: "(final - initial) / initial"
-
-# Output settings
+    description: (final - initial) / initial
 output:
-  directory: "results/research/governance-capture-thresholds"
+  directory: results/research/governance-capture-thresholds
   formats:
     - json
     - csv

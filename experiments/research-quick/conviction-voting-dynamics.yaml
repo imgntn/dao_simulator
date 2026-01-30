@@ -1,0 +1,116 @@
+﻿name: Conviction Voting Dynamics
+description: Study how voting period length affects outcomes and whale dominance
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - research
+  - conviction-voting
+  - voting-period
+  - whale-resistance
+  - deliberation
+baseConfig:
+  template: compound
+  overrides:
+    voting_activity: 0.4
+    proposal_creation_probability: 0.0035
+  population:
+    totalMembers: 150
+    distribution:
+      - archetype: active_voter
+        percentage: 40
+      - archetype: delegate
+        percentage: 30
+      - archetype: whale
+        percentage: 15
+      - archetype: governance_expert
+        percentage: 10
+      - archetype: passive_holder
+        percentage: 5
+sweep:
+  parameter: proposal_duration_steps
+  values:
+    - 24
+    - 72
+    - 168
+    - 336
+    - 720
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 10
+metrics:
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% token holders"
+  - name: Whale Proposal Rate
+    type: builtin
+    builtin: whale_proposal_rate
+    description: "% of proposals created by whales"
+  - name: Single Entity Control
+    type: builtin
+    builtin: single_entity_control
+    description: Max % any one member could control
+  - name: Avg Time to Decision
+    type: builtin
+    builtin: avg_time_to_decision
+    description: Average steps from proposal to resolution
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+    description: "% of proposals that expired unresolved"
+  - name: Voter Concentration Gini
+    type: builtin
+    builtin: voter_concentration_gini
+    description: Inequality of voting activity
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+    description: "% of votes from top 10% of voters"
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+    description: Concentration of proposal creation
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who ever voted"
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+    description: Average participation per proposal
+  - name: Voter Retention Rate
+    type: builtin
+    builtin: voter_retention_rate
+    description: "% of early voters still voting late"
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+    description: Fraction of proposals that passed
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+    description: How decisive votes are
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% of proposals meeting quorum"
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+    description: Treasury at end
+  - name: Treasury Growth Rate
+    type: builtin
+    builtin: treasury_growth_rate
+    description: (final - initial) / initial
+output:
+  directory: results/research-quick/conviction-voting-dynamics
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: false
+  includeManifest: true
+

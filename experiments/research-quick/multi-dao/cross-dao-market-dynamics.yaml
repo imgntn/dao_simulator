@@ -1,0 +1,470 @@
+﻿# Multi-DAO RQ4: How Do Token Markets Affect Governance Quality?
+#
+# Background: In a global marketplace, DAO tokens compete for value.
+# Token price may signal governance quality to potential members and
+# investors. Does market pressure improve governance?
+#
+# Hypothesis: DAOs with better governance will see higher token prices,
+# which attracts more members and capital, creating a virtuous cycle.
+# Conversely, poor governance leads to price decline and member exodus.
+#
+# Citation: Use this configuration for reproducible research results.
+
+name: "Cross-DAO Market Dynamics"
+description: "Study how token markets create feedback loops with governance quality"
+version: "1.0.0"
+author: "DAO Simulator Research Framework"
+tags:
+  - research
+  - multi-dao
+  - token-markets
+  - price-discovery
+  - market-feedback
+  - governance-signaling
+
+# Multi-DAO mode
+mode: "city"
+
+# Base city configuration
+baseCityConfig:
+  globalMarketplaceConfig:
+    initialLiquidity: 200000
+    volatility: 0.03
+    priceUpdateFrequency: 1
+    baseTokenSymbol: "STABLE"
+    priceGovernanceCorrelation: true  # Token price responds to governance metrics
+  bridgeFeeRate: 0.01
+  bridgeDelay: 5
+  enableInterDAOProposals: true
+  baseSettings:
+    memberTransferEnabled: true
+    transferCooldown: 30
+    marketSensitivity: true  # Agents consider token price in decisions
+
+# Scenarios testing market-governance dynamics
+scenarios:
+  # Scenario 1: High market sensitivity
+  - name: "high-market-sensitivity"
+    description: "Token prices strongly correlated to governance metrics"
+    marketConfig:
+      governanceWeight: 0.8
+      volatility: 0.02
+      priceUpdateFrequency: 1
+    daos:
+      - id: "dao-well-governed"
+        name: "Well Governed DAO"
+        tokenSymbol: "WGOV"
+        initialTreasuryFunding: 100000
+        governanceRule: "liquid_democracy"
+        color: "#10B981"
+        initialTokenPrice: 1.0
+        features:
+          liquidDemocracy: true
+        simulationParams:
+          votingActivity: 0.5
+        agentCounts:
+          num_developers: 12
+          num_investors: 6
+          num_traders: 4
+          num_delegators: 8
+          num_liquid_delegators: 6
+          num_proposal_creators: 5
+          num_passive_members: 8
+          num_governance_experts: 5
+
+      - id: "dao-moderate"
+        name: "Moderate DAO"
+        tokenSymbol: "MODR"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F59E0B"
+        initialTokenPrice: 1.0
+        simulationParams:
+          votingActivity: 0.3
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_traders: 5
+          num_delegators: 5
+          num_proposal_creators: 5
+          num_passive_members: 15
+          num_governance_experts: 3
+
+      - id: "dao-poor"
+        name: "Poorly Governed DAO"
+        tokenSymbol: "POOR"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#EF4444"
+        initialTokenPrice: 1.0
+        tokenDistribution:
+          type: "pareto"
+          targetGini: 0.75
+        simulationParams:
+          votingActivity: 0.15
+        agentCounts:
+          num_developers: 5
+          num_investors: 3
+          num_traders: 10
+          num_delegators: 2
+          num_proposal_creators: 2
+          num_passive_members: 30
+          num_governance_experts: 1
+
+  # Scenario 2: Low market sensitivity (control)
+  - name: "low-market-sensitivity"
+    description: "Token prices weakly correlated to governance"
+    marketConfig:
+      governanceWeight: 0.1
+      volatility: 0.05
+      priceUpdateFrequency: 1
+    daos:
+      - id: "dao-well-low"
+        name: "Well Governed DAO (Low Sensitivity)"
+        tokenSymbol: "WGLO"
+        initialTreasuryFunding: 100000
+        governanceRule: "liquid_democracy"
+        color: "#10B981"
+        initialTokenPrice: 1.0
+        features:
+          liquidDemocracy: true
+        simulationParams:
+          votingActivity: 0.5
+        agentCounts:
+          num_developers: 12
+          num_investors: 6
+          num_traders: 4
+          num_delegators: 8
+          num_liquid_delegators: 6
+          num_proposal_creators: 5
+          num_passive_members: 8
+          num_governance_experts: 5
+
+      - id: "dao-moderate-low"
+        name: "Moderate DAO (Low Sensitivity)"
+        tokenSymbol: "MDLO"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F59E0B"
+        initialTokenPrice: 1.0
+        simulationParams:
+          votingActivity: 0.3
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_traders: 5
+          num_delegators: 5
+          num_proposal_creators: 5
+          num_passive_members: 15
+          num_governance_experts: 3
+
+      - id: "dao-poor-low"
+        name: "Poorly Governed DAO (Low Sensitivity)"
+        tokenSymbol: "PRLO"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#EF4444"
+        initialTokenPrice: 1.0
+        tokenDistribution:
+          type: "pareto"
+          targetGini: 0.75
+        simulationParams:
+          votingActivity: 0.15
+        agentCounts:
+          num_developers: 5
+          num_investors: 3
+          num_traders: 10
+          num_delegators: 2
+          num_proposal_creators: 2
+          num_passive_members: 30
+          num_governance_experts: 1
+
+  # Scenario 3: High volatility market
+  - name: "high-volatility"
+    description: "High market volatility may obscure governance signals"
+    marketConfig:
+      governanceWeight: 0.5
+      volatility: 0.15
+      priceUpdateFrequency: 1
+    daos:
+      - id: "dao-well-vol"
+        name: "Well Governed DAO (High Vol)"
+        tokenSymbol: "WGVL"
+        initialTreasuryFunding: 100000
+        governanceRule: "liquid_democracy"
+        color: "#10B981"
+        initialTokenPrice: 1.0
+        features:
+          liquidDemocracy: true
+        simulationParams:
+          votingActivity: 0.5
+        agentCounts:
+          num_developers: 12
+          num_investors: 6
+          num_traders: 8
+          num_delegators: 8
+          num_liquid_delegators: 6
+          num_proposal_creators: 5
+          num_passive_members: 8
+          num_governance_experts: 5
+
+      - id: "dao-moderate-vol"
+        name: "Moderate DAO (High Vol)"
+        tokenSymbol: "MDVL"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F59E0B"
+        initialTokenPrice: 1.0
+        simulationParams:
+          votingActivity: 0.3
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_traders: 8
+          num_delegators: 5
+          num_proposal_creators: 5
+          num_passive_members: 15
+          num_governance_experts: 3
+
+      - id: "dao-poor-vol"
+        name: "Poorly Governed DAO (High Vol)"
+        tokenSymbol: "PRVL"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#EF4444"
+        initialTokenPrice: 1.0
+        tokenDistribution:
+          type: "pareto"
+          targetGini: 0.75
+        simulationParams:
+          votingActivity: 0.15
+        agentCounts:
+          num_developers: 5
+          num_investors: 3
+          num_traders: 15
+          num_delegators: 2
+          num_proposal_creators: 2
+          num_passive_members: 30
+          num_governance_experts: 1
+
+  # Scenario 4: Trader-dominated ecosystem
+  - name: "trader-heavy"
+    description: "More traders may disconnect price from governance"
+    marketConfig:
+      governanceWeight: 0.5
+      volatility: 0.05
+      priceUpdateFrequency: 1
+    daos:
+      - id: "dao-well-trade"
+        name: "Well Governed DAO (Trader Heavy)"
+        tokenSymbol: "WGTR"
+        initialTreasuryFunding: 100000
+        governanceRule: "liquid_democracy"
+        color: "#10B981"
+        initialTokenPrice: 1.0
+        features:
+          liquidDemocracy: true
+        simulationParams:
+          votingActivity: 0.5
+        agentCounts:
+          num_developers: 8
+          num_investors: 10
+          num_traders: 15
+          num_speculators: 8
+          num_delegators: 5
+          num_liquid_delegators: 4
+          num_proposal_creators: 3
+          num_passive_members: 5
+          num_governance_experts: 3
+
+      - id: "dao-moderate-trade"
+        name: "Moderate DAO (Trader Heavy)"
+        tokenSymbol: "MDTR"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F59E0B"
+        initialTokenPrice: 1.0
+        simulationParams:
+          votingActivity: 0.3
+        agentCounts:
+          num_developers: 6
+          num_investors: 10
+          num_traders: 15
+          num_speculators: 8
+          num_delegators: 3
+          num_proposal_creators: 3
+          num_passive_members: 10
+          num_governance_experts: 2
+
+      - id: "dao-poor-trade"
+        name: "Poorly Governed DAO (Trader Heavy)"
+        tokenSymbol: "PRTR"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#EF4444"
+        initialTokenPrice: 1.0
+        tokenDistribution:
+          type: "pareto"
+          targetGini: 0.75
+        simulationParams:
+          votingActivity: 0.15
+        agentCounts:
+          num_developers: 3
+          num_investors: 8
+          num_traders: 20
+          num_speculators: 12
+          num_delegators: 2
+          num_proposal_creators: 1
+          num_passive_members: 15
+          num_governance_experts: 1
+
+# Execution settings
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 8
+
+# Statistical configuration
+statistical:
+  confidenceLevel: 0.95
+  bootstrapSamples: 1000
+  powerAnalysis: true
+  effectSizeThreshold: 0.3
+
+# Metrics
+metrics:
+  # Token price metrics
+  - name: "Final Token Price"
+    type: builtin
+    builtin: final_token_price
+    description: "Token price at simulation end"
+    scope: per_dao
+
+  - name: "Token Price Change"
+    type: builtin
+    builtin: token_price_change
+    description: "(final - initial) / initial price"
+    scope: per_dao
+
+  - name: "Token Price Volatility"
+    type: builtin
+    builtin: token_price_volatility
+    description: "Price coefficient of variation"
+    scope: per_dao
+
+  - name: "Price-Governance Correlation"
+    type: builtin
+    builtin: price_governance_correlation
+    description: "Correlation between price and governance quality"
+    scope: per_dao
+
+  # Market ranking metrics
+  - name: "Final Market Rank"
+    type: builtin
+    builtin: final_market_rank
+    description: "Token ranking by market cap at end"
+    scope: per_dao
+
+  - name: "Market Cap"
+    type: builtin
+    builtin: market_cap
+    description: "Total market capitalization"
+    scope: per_dao
+
+  - name: "Trading Volume"
+    type: builtin
+    builtin: trading_volume
+    description: "Total trading volume"
+    scope: per_dao
+
+  # Governance quality metrics
+  - name: "Voter Participation Rate"
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who voted"
+    scope: per_dao
+    trackOverTime: true
+
+  - name: "Whale Influence"
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% holders"
+    scope: per_dao
+
+  - name: "Proposal Pass Rate"
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "Fraction of proposals passed"
+    scope: per_dao
+
+  - name: "Governance Capture Risk"
+    type: builtin
+    builtin: governance_capture_risk
+    description: "Proposal creation concentration"
+    scope: per_dao
+
+  # Member dynamics
+  - name: "Final Member Count"
+    type: builtin
+    builtin: final_member_count
+    description: "Members at end"
+    scope: per_dao
+
+  - name: "Member Growth Rate"
+    type: builtin
+    builtin: member_growth_rate
+    description: "(final - initial) / initial members"
+    scope: per_dao
+
+  - name: "Net Member Flow"
+    type: builtin
+    builtin: net_member_flow
+    description: "Net members gained/lost"
+    scope: per_dao
+
+  # Treasury metrics
+  - name: "Final Treasury"
+    type: builtin
+    builtin: final_treasury
+    description: "Treasury at end"
+    scope: per_dao
+
+  - name: "Treasury Growth Rate"
+    type: builtin
+    builtin: treasury_growth_rate
+    description: "(final - initial) / initial"
+    scope: per_dao
+
+  # Ecosystem metrics
+  - name: "Total Market Cap"
+    type: builtin
+    builtin: total_market_cap
+    description: "Sum of all DAO market caps"
+    scope: ecosystem
+
+  - name: "Market Concentration"
+    type: builtin
+    builtin: market_concentration
+    description: "HHI of market cap distribution"
+    scope: ecosystem
+
+  - name: "Price Dispersion"
+    type: builtin
+    builtin: price_dispersion
+    description: "Variance in token prices"
+    scope: ecosystem
+
+# Output settings
+output:
+  directory: "results/research-quick/multi-dao/cross-dao-market-dynamics"
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: true
+  includeManifest: true
+  includePerDaoMetrics: true
+  includePriceHistory: true
+

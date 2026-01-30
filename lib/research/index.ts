@@ -10,6 +10,7 @@ export type {
   ExperimentConfig,
   BaseConfigSpec,
   SimulationOverrides,
+  BaseConfigOverrides,
   SweepConfig,
   RangeSpec,
   ExecutionConfig,
@@ -29,6 +30,11 @@ export type {
   StatisticalSignificance,
   ReproducibilityManifest,
 } from './experiment-config';
+
+export type { ResearchConfig } from './config-resolver';
+export type { PopulationSpec, PopulationOverride } from './population';
+
+export { getBaselineConfig, listBaselineIds } from './baselines';
 
 // Defaults
 export {

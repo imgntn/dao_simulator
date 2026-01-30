@@ -1,0 +1,118 @@
+﻿name: Quadratic Voting Robustness
+description: Compare voting power models for concentration and participation
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - research
+  - quadratic-voting
+  - voting-power
+  - power-concentration
+  - fairness
+baseConfig:
+  template: compound
+  overrides:
+    voting_activity: 0.45
+    proposal_creation_probability: 0.004
+  population:
+    totalMembers: 150
+    distribution:
+      - archetype: active_voter
+        percentage: 50
+      - archetype: whale
+        percentage: 20
+      - archetype: delegate
+        percentage: 15
+      - archetype: governance_expert
+        percentage: 10
+      - archetype: passive_holder
+        percentage: 5
+sweep:
+  parameter: governance_rule
+  values:
+    - majority
+    - quadratic
+    - supermajority
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 10
+metrics:
+  - name: Voter Concentration Gini
+    type: builtin
+    builtin: voter_concentration_gini
+    description: Inequality of voting activity
+  - name: Token Concentration Gini
+    type: builtin
+    builtin: token_concentration_gini
+    description: Inequality of token holdings
+  - name: Single Entity Control
+    type: builtin
+    builtin: single_entity_control
+    description: Max % any one member could control
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% holders"
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+    description: "% of votes from top 10% voters"
+  - name: Avg Member Wealth
+    type: builtin
+    builtin: avg_member_wealth
+    description: Average tokens per member
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+    description: How decisive votes are
+  - name: Voting Power Utilization
+    type: builtin
+    builtin: voting_power_utilization
+    description: "% of voting power used"
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who voted"
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+    description: Average participation per proposal
+  - name: Unique Voter Count
+    type: builtin
+    builtin: unique_voter_count
+    description: Members who voted at least once
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+    description: Fraction that passed
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% meeting quorum"
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+    description: Proposal creation concentration
+  - name: Collusion Threshold
+    type: builtin
+    builtin: collusion_threshold
+    description: Min % for majority control
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+    description: Treasury at end
+  - name: Wealth Mobility
+    type: builtin
+    builtin: wealth_mobility
+    description: Inverse of wealth concentration
+output:
+  directory: results/research-quick/quadratic-voting-robustness
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: false
+  includeManifest: true
+

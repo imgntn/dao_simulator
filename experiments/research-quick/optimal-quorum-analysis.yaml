@@ -1,0 +1,118 @@
+﻿name: Optimal Quorum Analysis
+description: Find optimal quorum thresholds balancing legitimacy against decision efficiency
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - research
+  - quorum
+  - legitimacy
+  - efficiency
+  - participation
+baseConfig:
+  template: compound
+  overrides:
+    voting_activity: 0.25
+    proposal_creation_probability: 0.004
+  population:
+    totalMembers: 200
+    distribution:
+      - archetype: passive_holder
+        percentage: 60
+      - archetype: active_voter
+        percentage: 20
+      - archetype: governance_expert
+        percentage: 10
+      - archetype: delegate
+        percentage: 10
+sweep:
+  parameter: governance_config.quorumPercentage
+  values:
+    - 0.05
+    - 0.1
+    - 0.2
+    - 0.33
+    - 0.5
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 10
+metrics:
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% of proposals meeting participation threshold"
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who ever voted"
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+    description: Average token-weighted voter participation
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+    description: Fraction of proposals that passed
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+    description: How decisive votes are (legitimacy indicator)
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+    description: Concentration of proposal creation
+  - name: Single Entity Control
+    type: builtin
+    builtin: single_entity_control
+    description: Max % any one member could control
+  - name: Avg Time to Decision
+    type: builtin
+    builtin: avg_time_to_decision
+    description: Average steps from proposal to resolution
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+    description: "% of proposals that expired unresolved"
+  - name: Proposal Rejection Rate
+    type: builtin
+    builtin: proposal_rejection_rate
+    description: "% of resolved proposals that were rejected"
+  - name: Total Proposals
+    type: builtin
+    builtin: total_proposals
+    description: Total proposals created
+  - name: Governance Overhead
+    type: builtin
+    builtin: governance_overhead
+    description: Total votes cast per resolved proposal
+  - name: Unique Voter Count
+    type: builtin
+    builtin: unique_voter_count
+    description: Members who voted at least once
+  - name: Voter Retention Rate
+    type: builtin
+    builtin: voter_retention_rate
+    description: "% of early voters still voting late"
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+    description: "% of votes from top 10% of voters"
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+    description: Treasury balance at end
+  - name: Treasury Growth Rate
+    type: builtin
+    builtin: treasury_growth_rate
+    description: (final - initial) / initial
+output:
+  directory: results/research-quick/optimal-quorum-analysis
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: false
+  includeManifest: true
+

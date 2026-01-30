@@ -7,8 +7,8 @@
  * Includes comprehensive metric extraction for academic research validity.
  */
 
-import { DAOSimulation, type DAOSimulationConfig } from '../engine/simulation';
-import { toSimulationConfig } from '../dao-designer/builder';
+import { DAOSimulation } from '../engine/simulation';
+import { resolveSimulationConfig } from './config-resolver';
 import { setSeed } from '../utils/random';
 import type { RunResult, MetricConfig, BuiltinMetricType, TimelineEntry } from './experiment-config';
 import type { WorkerTask, WorkerResult } from './simulation-worker';
@@ -121,7 +121,7 @@ function getProposalStats(proposals: any[]): ProposalStats {
 
   for (const p of proposals) {
     const status = p.status?.toLowerCase() || 'unknown';
-    if (status === 'approved' || status === 'passed' || status === 'executed') {
+    if (status === 'approved' || status === 'completed' || status === 'passed' || status === 'executed') {
       stats.passed++;
     } else if (status === 'rejected') {
       stats.rejected++;
@@ -181,7 +181,7 @@ function getTotalVotingPower(members: any[]): number {
  */
 function getMemberTokensSorted(members: any[]): { id: string; tokens: number }[] {
   return members
-    .map(m => ({ id: m.uniqueId || m.id, tokens: (m.tokens || 0) + (m.stakedTokens || 0) }))
+    .map(m => ({ id: m.uniqueId, tokens: (m.tokens || 0) + (m.stakedTokens || 0) }))
     .sort((a, b) => b.tokens - a.tokens);
 }
 
@@ -199,19 +199,7 @@ async function runSimulation(task: WorkerTask): Promise<RunResult> {
   setSeed(task.seed);
 
   // Convert to simulation config
-  const simConfig = toSimulationConfig(task.daoConfig);
-  simConfig.seed = task.seed;
-
-  // Apply simulation overrides
-  if (task.simConfig.checkpointInterval !== undefined) {
-    simConfig.checkpointInterval = task.simConfig.checkpointInterval;
-  }
-  if (task.simConfig.eventLogging !== undefined) {
-    simConfig.eventLogging = task.simConfig.eventLogging;
-  }
-
-  // Disable IndexedDB for workers
-  simConfig.useIndexedDB = false;
+  const simConfig = resolveSimulationConfig(task.config, task.seed, task.simConfig);
 
   // Create and run simulation
   const simulation = new DAOSimulation(simConfig);
@@ -237,7 +225,7 @@ async function runSimulation(task: WorkerTask): Promise<RunResult> {
     experimentName: task.experimentName,
     sweepValue: task.sweepValue,
     runIndex: task.runIndex,
-    config: task.daoConfig,
+    config: simConfig,
     seed: task.seed,
     metrics,
     timeline,
@@ -333,7 +321,7 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
     }
 
     case 'final_treasury':
-      return dao.treasury?.funds ?? 0;
+      return dao.treasury?.getTokenBalance?.('DAO_TOKEN') ?? dao.treasury?.funds ?? 0;
 
     case 'final_token_price':
       return dao.treasury?.getTokenPrice?.('DAO_TOKEN') ?? 1;
@@ -383,8 +371,8 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
     case 'avg_margin_of_victory': {
       // Average |votesFor - votesAgainst| / totalVotes
       const resolvedProposals = proposals.filter(p =>
-        p.status === 'approved' || p.status === 'passed' ||
-        p.status === 'executed' || p.status === 'rejected'
+        p.status === 'approved' || p.status === 'completed' ||
+        p.status === 'rejected'
       );
       if (resolvedProposals.length === 0) return 0;
 
@@ -402,8 +390,8 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
       // Average steps from creation to resolution
       // Include 'expired' proposals since they are also resolved (quorum not met)
       const resolvedProposals = proposals.filter(p =>
-        p.status === 'approved' || p.status === 'passed' ||
-        p.status === 'executed' || p.status === 'rejected' ||
+        p.status === 'approved' || p.status === 'completed' ||
+        p.status === 'rejected' ||
         p.status === 'expired'
       );
       if (resolvedProposals.length === 0) return 0;
@@ -412,7 +400,7 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
       for (const p of resolvedProposals) {
         const creationTime = p.creationTime || 0;
         // Use resolvedTime if available (now properly set in simulation.ts)
-        const resolvedTime = p.resolvedTime || p.executedTime || simulation.currentStep;
+        const resolvedTime = p.resolvedTime ?? simulation.currentStep;
         totalTime += resolvedTime - creationTime;
       }
       return totalTime / resolvedProposals.length;
@@ -463,15 +451,24 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
     }
 
     case 'voter_participation_rate': {
-      // unique_voters / total_members
-      const uniqueVoters = new Set<string>();
+      if (proposals.length === 0) return 0;
+
+      let totalRate = 0;
+      let counted = 0;
+
       for (const p of proposals) {
         const votes = getProposalVotes(p);
-        for (const v of votes) {
-          uniqueVoters.add(v.voterId);
-        }
+        const eligible = p.snapshotTaken
+          ? p.votingPowerSnapshot.size
+          : members.length;
+        if (eligible <= 0) continue;
+
+        const uniqueVoters = new Set<string>(votes.map(v => v.voterId));
+        totalRate += uniqueVoters.size / eligible;
+        counted++;
       }
-      return members.length > 0 ? uniqueVoters.size / members.length : 0;
+
+      return counted > 0 ? totalRate / counted : 0;
     }
 
     case 'voter_concentration_gini': {
@@ -485,7 +482,7 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
       }
 
       // Include non-voters as 0
-      const allMemberVotes = members.map(m => voterCounts.get(m.uniqueId || m.id) || 0);
+      const allMemberVotes = members.map(m => voterCounts.get(m.uniqueId) || 0);
       return calculateGini(allMemberVotes);
     }
 
@@ -629,25 +626,46 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
     // =========================================================================
 
     case 'whale_influence': {
-      // % of total votes from top 10% token holders
-      const sortedMembers = getMemberTokensSorted(members);
-      const top10Count = Math.max(1, Math.ceil(sortedMembers.length * 0.1));
-      const whaleIds = new Set(sortedMembers.slice(0, top10Count).map(m => m.id));
+      if (proposals.length === 0) return 0;
 
-      let whaleVotes = 0;
-      let totalVotes = 0;
+      let totalRate = 0;
+      let counted = 0;
 
       for (const p of proposals) {
         const votes = getProposalVotes(p);
+        if (votes.length === 0) {
+          totalRate += 0;
+          counted++;
+          continue;
+        }
+
+        let whaleIds: Set<string>;
+        if (p.snapshotTaken && p.votingPowerSnapshot.size > 0) {
+          const snapshotHoldings = Array.from(p.votingPowerSnapshot.entries())
+            .map(([memberId, power]) => ({ memberId, power }))
+            .sort((a, b) => b.power - a.power);
+          const top10Count = Math.max(1, Math.ceil(snapshotHoldings.length * 0.1));
+          whaleIds = new Set(snapshotHoldings.slice(0, top10Count).map(m => m.memberId));
+        } else {
+          const sortedMembers = getMemberTokensSorted(members);
+          const top10Count = Math.max(1, Math.ceil(sortedMembers.length * 0.1));
+          whaleIds = new Set(sortedMembers.slice(0, top10Count).map(m => m.id));
+        }
+
+        let whaleVotes = 0;
+        let totalVotes = 0;
         for (const v of votes) {
           totalVotes += v.weight;
           if (whaleIds.has(v.voterId)) {
             whaleVotes += v.weight;
           }
         }
+
+        totalRate += totalVotes > 0 ? whaleVotes / totalVotes : 0;
+        counted++;
       }
 
-      return totalVotes > 0 ? whaleVotes / totalVotes : 0;
+      return counted > 0 ? totalRate / counted : 0;
     }
 
     case 'whale_proposal_rate': {
@@ -678,12 +696,12 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
       for (const p of proposals) {
         // Only count resolved proposals
         if (p.status !== 'approved' && p.status !== 'rejected' &&
-            p.status !== 'passed' && p.status !== 'executed') {
+            p.status !== 'completed') {
           continue;
         }
 
         const votes = getProposalVotes(p);
-        const isApproved = p.status === 'approved' || p.status === 'passed' || p.status === 'executed';
+        const isApproved = p.status === 'approved' || p.status === 'completed';
 
         for (const v of votes) {
           // Did this voter vote with the winning side?
@@ -739,7 +757,7 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
         maxPower = Math.max(maxPower, power);
       }
 
-      return maxPower / totalSupply;
+      return Math.max(0, Math.min(1, maxPower / totalSupply));
     }
 
     case 'collusion_threshold': {

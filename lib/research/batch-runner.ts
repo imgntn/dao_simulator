@@ -10,11 +10,13 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import type { DAODesignerConfig } from '../dao-designer/types';
+import type { ResearchConfig } from './config-resolver';
 import type {
   ExperimentConfig,
   RunResult,
   ExperimentSummary,
+  CityBaseConfig,
+  CityScenarioConfig,
 } from './experiment-config';
 import { ExperimentRunner, type ProgressCallback } from './experiment-runner';
 import { WorkerPool } from './worker-pool';
@@ -65,7 +67,7 @@ export interface BatchCheckpoint {
 
 interface RunTask {
   id: string;
-  daoConfig: DAODesignerConfig;
+  daoConfig: ResearchConfig | { baseCityConfig: CityBaseConfig; scenario: CityScenarioConfig };
   sweepValue?: number | string | boolean;
   runIndex: number;
   seed: number;
@@ -212,7 +214,11 @@ export class BatchRunner {
    * Uses Worker Threads for true CPU parallelism when concurrency > 1
    */
   private async runTasksWithConcurrency(tasks: RunTask[], totalRuns: number): Promise<void> {
-    const { concurrency, checkpointInterval } = this.batchConfig;
+    let { concurrency, checkpointInterval } = this.batchConfig;
+
+    if (this.experimentConfig.mode === 'city' && concurrency > 1) {
+      concurrency = 1;
+    }
 
     // Use Worker Threads for parallelism when concurrency > 1
     if (concurrency > 1) {
@@ -247,6 +253,9 @@ export class BatchRunner {
    */
   private async runTasksWithWorkerPool(tasks: RunTask[], totalRuns: number, workerCount: number): Promise<void> {
     const { checkpointInterval } = this.batchConfig;
+    if (this.experimentConfig.mode === 'city') {
+      throw new Error('City experiments do not support worker pool execution');
+    }
 
     // Create worker pool
     const pool = new WorkerPool({ workerCount });
@@ -254,7 +263,7 @@ export class BatchRunner {
     try {
       // Convert tasks to worker tasks
       const workerTasks: Omit<WorkerTask, 'taskId'>[] = tasks.map((task) => ({
-        daoConfig: task.daoConfig,
+        config: task.daoConfig,
         simConfig: {
           checkpointInterval: this.experimentConfig.baseConfig.simulationOverrides?.checkpointInterval,
           eventLogging: this.experimentConfig.baseConfig.simulationOverrides?.eventLogging,

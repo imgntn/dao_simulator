@@ -1,110 +1,112 @@
-# Supermajority Threshold Analysis
-#
-# Research Question: When should DAOs require supermajority vs simple majority?
-#
-# Higher thresholds increase consensus but may cause gridlock.
-# This experiment maps threshold effects across quorum levels.
-#
-# Grid: 6 thresholds × 5 quorum levels = 30 configs × 200 runs = 6,000 runs
-
-name: "Supermajority Threshold Analysis"
+name: Supermajority Threshold Analysis
 description: |
   Analysis of passing threshold effects from simple majority (50%) to near-unanimity (90%).
   Tests the hypothesis that higher thresholds improve decision quality but reduce throughput.
   Examines interaction with quorum requirements.
-
-version: "2.0.0"
-author: "DAO Simulator Research"
+version: 2.0.0
+author: DAO Simulator Research
 tags:
   - supermajority
   - thresholds
   - consensus
   - gridlock
   - grid-search
-
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    tokenSupply: 1000000
-    memberDistribution:
-      totalMembers: 100
-      distribution:
-        - archetype: "passive_holder"
-          percentage: 50
-        - archetype: "delegate"
-          percentage: 20
-        - archetype: "governance_expert"
-          percentage: 15
-        - archetype: "whale"
-          percentage: 10
-        - archetype: "developer"
-          percentage: 5
-    votingSystem:
-      type: "supermajority"
-      votingPeriodDays: 7
-    simulationParams:
-      votingActivity: 0.35
-      proposalFrequency: 0.25
-
+    voting_activity: 0.35
+    proposal_creation_probability: 0.0025
+    governance_rule: supermajority
+    proposal_duration_steps: 168
+  population:
+    totalMembers: 100
+    distribution:
+      - archetype: passive_holder
+        percentage: 50
+      - archetype: delegate
+        percentage: 20
+      - archetype: governance_expert
+        percentage: 15
+      - archetype: whale
+        percentage: 10
+      - archetype: developer
+        percentage: 5
 sweep:
   grid:
-    # Passing threshold sweep
-    - parameter: "votingSystem.passingThreshold"
-      label: "threshold"
+    - parameter: governance_config.threshold
+      label: threshold
       values:
-        - 0.5     # Simple majority
-        - 0.55    # Slight supermajority
-        - 0.6     # Moderate
-        - 0.67    # Standard 2/3
-        - 0.75    # 3/4 supermajority
-        - 0.9     # Near-unanimity
-
-    # Quorum interaction
-    - parameter: "quorumConfig.baseQuorumPercent"
-      label: "quorum"
+        - 0.5
+        - 0.55
+        - 0.6
+        - 0.67
+        - 0.75
+        - 0.9
+    - parameter: governance_config.quorumPercentage
+      label: quorum
       values:
-        - 5
-        - 10
-        - 15
-        - 20
-        - 30
-
+        - 0.05
+        - 0.1
+        - 0.15
+        - 0.2
+        - 0.3
 execution:
   runsPerConfig: 200
   stepsPerRun: 500
   seedStrategy: sequential
   baseSeed: 11111
   workers: 10
-
 metrics:
-  # Throughput/gridlock
-  - { name: "Proposal Pass Rate", type: builtin, builtin: proposal_pass_rate }
-  - { name: "Proposal Rejection Rate", type: builtin, builtin: proposal_rejection_rate }
-  - { name: "Proposal Abandonment Rate", type: builtin, builtin: proposal_abandonment_rate }
-  - { name: "Avg Time to Decision", type: builtin, builtin: avg_time_to_decision }
-
-  # Consensus quality
-  - { name: "Avg Margin of Victory", type: builtin, builtin: avg_margin_of_victory }
-  - { name: "Quorum Reach Rate", type: builtin, builtin: quorum_reach_rate }
-
-  # Participation effects
-  - { name: "Voter Participation Rate", type: builtin, builtin: voter_participation_rate }
-  - { name: "Average Turnout", type: builtin, builtin: avg_votes_per_proposal }
-  - { name: "Voter Retention Rate", type: builtin, builtin: voter_retention_rate }
-  - { name: "Delegate Concentration", type: builtin, builtin: delegate_concentration }
-
-  # Security
-  - { name: "Whale Influence", type: builtin, builtin: whale_influence }
-  - { name: "Governance Capture Risk", type: builtin, builtin: governance_capture_risk }
-  - { name: "Collusion Threshold", type: builtin, builtin: collusion_threshold }
-
-  # Economics
-  - { name: "Final Treasury", type: builtin, builtin: final_treasury }
-  - { name: "Treasury Growth Rate", type: builtin, builtin: treasury_growth_rate }
-
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Proposal Rejection Rate
+    type: builtin
+    builtin: proposal_rejection_rate
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+  - name: Avg Time to Decision
+    type: builtin
+    builtin: avg_time_to_decision
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Average Turnout
+    type: builtin
+    builtin: avg_votes_per_proposal
+  - name: Voter Retention Rate
+    type: builtin
+    builtin: voter_retention_rate
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+  - name: Collusion Threshold
+    type: builtin
+    builtin: collusion_threshold
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Treasury Growth Rate
+    type: builtin
+    builtin: treasury_growth_rate
 output:
-  directory: "results/research/supermajority-thresholds"
-  formats: [json, csv]
+  directory: results/research/supermajority-thresholds
+  formats:
+    - json
+    - csv
   includeRawRuns: false
   includeManifest: true
   includeStatistics: true

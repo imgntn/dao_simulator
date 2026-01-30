@@ -247,8 +247,11 @@ export class ResultsExporter {
         `${name}_se`,           // Standard error
         `${name}_ci95_lower`,   // 95% CI lower
         `${name}_ci95_upper`,   // 95% CI upper
+        `${name}_bootstrap_ci95_lower`, // Bootstrap 95% CI lower (if computed)
+        `${name}_bootstrap_ci95_upper`, // Bootstrap 95% CI upper (if computed)
         `${name}_min`,
         `${name}_max`,
+        `${name}_iqr`,          // Interquartile range
         `${name}_cv`            // Coefficient of variation
       );
     }
@@ -269,8 +272,11 @@ export class ResultsExporter {
           this.formatNumber(metric.standardError || 0),
           this.formatNumber(metric.ci95?.lower || 0),
           this.formatNumber(metric.ci95?.upper || 0),
+          this.formatNumber(metric.bootstrapCi95?.lower || 0),
+          this.formatNumber(metric.bootstrapCi95?.upper || 0),
           this.formatNumber(metric.min),
           this.formatNumber(metric.max),
+          this.formatNumber(metric.iqr || 0),
           this.formatNumber(metric.coefficientOfVariation || 0)
         );
       }

@@ -1,0 +1,97 @@
+﻿name: Liquid Democracy Effectiveness
+description: Compare voting system types on participation and power concentration
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - research
+  - liquid-democracy
+  - voting-systems
+  - participation
+  - power-concentration
+baseConfig:
+  template: compound
+  overrides:
+    voting_activity: 0.3
+    proposal_creation_probability: 0.004
+  population:
+    totalMembers: 200
+    distribution:
+      - archetype: passive_holder
+        percentage: 60
+      - archetype: delegate
+        percentage: 20
+      - archetype: governance_expert
+        percentage: 15
+      - archetype: whale
+        percentage: 5
+sweep:
+  parameter: governance_rule
+  values:
+    - majority
+    - quadratic
+    - conviction
+    - supermajority
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 10
+metrics:
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who voted at least once"
+  - name: Voter Concentration Gini
+    type: builtin
+    builtin: voter_concentration_gini
+    description: Inequality of effective voting power (0=equal, 1=concentrated)
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+    description: Fraction of proposals that passed
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+    description: Average token-weighted voter participation per proposal
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+    description: "% of votes from top 10% of voters"
+  - name: Voting Power Utilization
+    type: builtin
+    builtin: voting_power_utilization
+    description: "% of available voting power actually used"
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+    description: How decisive votes are (0=tied, 1=unanimous)
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% of proposals meeting participation threshold"
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+    description: Treasury balance at end of simulation
+  - name: Token Concentration Gini
+    type: builtin
+    builtin: token_concentration_gini
+    description: Inequality of token holdings
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% token holders"
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+    description: Concentration of proposal creation
+output:
+  directory: results/research-quick/liquid-democracy-effectiveness
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: false
+  includeManifest: true
+

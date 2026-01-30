@@ -1,158 +1,114 @@
-# RQ6: What Quorum Levels Balance Legitimacy and Efficiency?
-#
-# Background: High quorums ensure legitimacy but cause gridlock.
-# Low quorums risk minority capture.
-#
-# Hypothesis: Moderate quorum levels (20-33%) optimize the
-# legitimacy vs efficiency trade-off.
-#
-# This experiment sweeps across quorum percentage values.
-#
-# Citation: Use this configuration for reproducible research results.
-
-name: "Optimal Quorum Analysis"
-description: "Find optimal quorum thresholds balancing legitimacy against decision efficiency"
-version: "1.0.0"
-author: "DAO Simulator Research Framework"
+name: Optimal Quorum Analysis
+description: Find optimal quorum thresholds balancing legitimacy against decision efficiency
+version: 1.0.0
+author: DAO Simulator Research Framework
 tags:
   - research
   - quorum
   - legitimacy
   - efficiency
   - participation
-
-# Base DAO configuration
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    memberDistribution:
-      totalMembers: 200
-      distribution:
-        - archetype: "passive_holder"
-          percentage: 60
-        - archetype: "active_voter"
-          percentage: 20
-        - archetype: "governance_expert"
-          percentage: 10
-        - archetype: "delegate"
-          percentage: 10
-    simulationParams:
-      votingActivity: 0.25
-      proposalFrequency: 0.4
-
-# Sweep across quorum percentages
+    voting_activity: 0.25
+    proposal_creation_probability: 0.004
+  population:
+    totalMembers: 200
+    distribution:
+      - archetype: passive_holder
+        percentage: 60
+      - archetype: active_voter
+        percentage: 20
+      - archetype: governance_expert
+        percentage: 10
+      - archetype: delegate
+        percentage: 10
 sweep:
-  parameter: "quorumConfig.baseQuorumPercent"
+  parameter: governance_config.quorumPercentage
   values:
-    - 5       # Very low - easy to reach, risk of minority capture
-    - 10      # Low - standard for many DAOs
-    - 20      # Moderate - balanced approach
-    - 33      # High - strong legitimacy requirement
-    - 50      # Very high - may cause gridlock
-
-# Execution settings
+    - 0.05
+    - 0.1
+    - 0.2
+    - 0.33
+    - 0.5
 execution:
-  runsPerConfig: 2000    # 2000 x 5 = 10,000 total runs
+  runsPerConfig: 2000
   stepsPerRun: 500
   seedStrategy: sequential
   baseSeed: 42
   workers: 10
-
-# Key metrics for RQ6
 metrics:
-  # Primary quorum impact metrics
-  - name: "Quorum Reach Rate"
+  - name: Quorum Reach Rate
     type: builtin
     builtin: quorum_reach_rate
     description: "% of proposals meeting participation threshold"
-
-  - name: "Voter Participation Rate"
+  - name: Voter Participation Rate
     type: builtin
     builtin: voter_participation_rate
     description: "% of members who ever voted"
-
-  - name: "Average Turnout"
+  - name: Average Turnout
     type: builtin
     builtin: average_turnout
-    description: "Average token-weighted voter participation"
-
-  # Legitimacy metrics
-  - name: "Proposal Pass Rate"
+    description: Average token-weighted voter participation
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-    description: "Fraction of proposals that passed"
-
-  - name: "Avg Margin of Victory"
+    description: Fraction of proposals that passed
+  - name: Avg Margin of Victory
     type: builtin
     builtin: avg_margin_of_victory
-    description: "How decisive votes are (legitimacy indicator)"
-
-  - name: "Governance Capture Risk"
+    description: How decisive votes are (legitimacy indicator)
+  - name: Governance Capture Risk
     type: builtin
     builtin: governance_capture_risk
-    description: "Concentration of proposal creation"
-
-  - name: "Single Entity Control"
+    description: Concentration of proposal creation
+  - name: Single Entity Control
     type: builtin
     builtin: single_entity_control
-    description: "Max % any one member could control"
-
-  # Efficiency metrics
-  - name: "Avg Time to Decision"
+    description: Max % any one member could control
+  - name: Avg Time to Decision
     type: builtin
     builtin: avg_time_to_decision
-    description: "Average steps from proposal to resolution"
-
-  - name: "Proposal Abandonment Rate"
+    description: Average steps from proposal to resolution
+  - name: Proposal Abandonment Rate
     type: builtin
     builtin: proposal_abandonment_rate
     description: "% of proposals that expired unresolved"
-
-  - name: "Proposal Rejection Rate"
+  - name: Proposal Rejection Rate
     type: builtin
     builtin: proposal_rejection_rate
     description: "% of resolved proposals that were rejected"
-
-  - name: "Total Proposals"
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-    description: "Total proposals created"
-
-  - name: "Governance Overhead"
+    description: Total proposals created
+  - name: Governance Overhead
     type: builtin
     builtin: governance_overhead
-    description: "Total votes cast per resolved proposal"
-
-  # Participation quality
-  - name: "Unique Voter Count"
+    description: Total votes cast per resolved proposal
+  - name: Unique Voter Count
     type: builtin
     builtin: unique_voter_count
-    description: "Members who voted at least once"
-
-  - name: "Voter Retention Rate"
+    description: Members who voted at least once
+  - name: Voter Retention Rate
     type: builtin
     builtin: voter_retention_rate
     description: "% of early voters still voting late"
-
-  - name: "Delegate Concentration"
+  - name: Delegate Concentration
     type: builtin
     builtin: delegate_concentration
     description: "% of votes from top 10% of voters"
-
-  # Economic outcomes
-  - name: "Final Treasury"
+  - name: Final Treasury
     type: builtin
     builtin: final_treasury
-    description: "Treasury balance at end"
-
-  - name: "Treasury Growth Rate"
+    description: Treasury balance at end
+  - name: Treasury Growth Rate
     type: builtin
     builtin: treasury_growth_rate
-    description: "(final - initial) / initial"
-
-# Output settings
+    description: (final - initial) / initial
 output:
-  directory: "results/research/optimal-quorum-analysis"
+  directory: results/research/optimal-quorum-analysis
   formats:
     - json
     - csv

@@ -1,37 +1,36 @@
-name: "Governance Rules Validation"
+name: Governance Rules Validation
 description: |
   Verify each governance rule behaves distinctly.
   Different rules should produce different pass rates.
-
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    memberDistribution:
-      totalMembers: 90
-    simulationParams:
-      votingActivity: 0.3
-
+    voting_activity: 0.3
+  population:
+    totalMembers: 90
 sweep:
-  parameter: "governanceParams.governanceRule"
-  values: ["majority", "quorum", "supermajority"]
-
+  parameter: governance_rule
+  values:
+    - majority
+    - quorum
+    - supermajority
 execution:
   runsPerConfig: 20
   stepsPerRun: 300
   seedStrategy: sequential
   baseSeed: 42
-
 metrics:
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-  - name: "Average Turnout"
+  - name: Average Turnout
     type: builtin
     builtin: average_turnout
-  - name: "Total Proposals"
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-
 output:
-  directory: "results/validation/governance-rules"
-  formats: [json, csv]
+  directory: results/validation/governance-rules
+  formats:
+    - json
+    - csv

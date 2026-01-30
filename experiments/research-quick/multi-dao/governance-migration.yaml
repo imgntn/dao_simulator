@@ -1,0 +1,403 @@
+﻿# Multi-DAO RQ1: Do Members Migrate to Better-Governed DAOs?
+#
+# Background: In a multi-DAO ecosystem, members can transfer between DAOs.
+# Does governance quality create competitive pressure through member migration?
+#
+# Hypothesis: DAOs with better governance (higher participation, lower whale
+# dominance) attract members from poorly-governed DAOs, creating a
+# "governance market" that rewards good practices.
+#
+# Citation: Use this configuration for reproducible research results.
+
+name: "Governance Migration Dynamics"
+description: "Study member migration patterns between DAOs with varying governance quality"
+version: "1.0.0"
+author: "DAO Simulator Research Framework"
+tags:
+  - research
+  - multi-dao
+  - migration
+  - governance-competition
+  - member-mobility
+
+# Multi-DAO mode
+mode: "city"
+
+# Base city configuration
+baseCityConfig:
+  globalMarketplaceConfig:
+    initialLiquidity: 100000
+    volatility: 0.02
+    priceUpdateFrequency: 1
+    baseTokenSymbol: "STABLE"
+  bridgeFeeRate: 0.01
+  bridgeDelay: 5
+  enableInterDAOProposals: true
+  baseSettings:
+    memberTransferEnabled: true
+    transferCooldown: 25
+    transferFee: 0.02
+
+# Scenarios with different governance quality distributions
+scenarios:
+  # Scenario 1: All DAOs have equal governance quality
+  - name: "equal-governance"
+    description: "Three DAOs with identical governance mechanisms"
+    daos:
+      - id: "dao-a"
+        name: "DAO Alpha"
+        tokenSymbol: "ALPHA"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#4ADE80"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_traders: 3
+          num_delegators: 8
+          num_liquid_delegators: 4
+          num_proposal_creators: 5
+          num_validators: 3
+          num_passive_members: 20
+          num_governance_experts: 2
+
+      - id: "dao-b"
+        name: "DAO Beta"
+        tokenSymbol: "BETA"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#60A5FA"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_traders: 3
+          num_delegators: 8
+          num_liquid_delegators: 4
+          num_proposal_creators: 5
+          num_validators: 3
+          num_passive_members: 20
+          num_governance_experts: 2
+
+      - id: "dao-c"
+        name: "DAO Gamma"
+        tokenSymbol: "GAMMA"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F472B6"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_traders: 3
+          num_delegators: 8
+          num_liquid_delegators: 4
+          num_proposal_creators: 5
+          num_validators: 3
+          num_passive_members: 20
+          num_governance_experts: 2
+
+  # Scenario 2: One DAO has superior governance (liquid democracy)
+  - name: "one-superior"
+    description: "One DAO with liquid democracy vs two with standard voting"
+    daos:
+      - id: "dao-liquid"
+        name: "Liquid DAO"
+        tokenSymbol: "LIQD"
+        initialTreasuryFunding: 100000
+        governanceRule: "liquid_democracy"
+        color: "#4ADE80"
+        features:
+          liquidDemocracy: true
+          liquidDemocracyConfig:
+            maxDelegationDepth: 5
+            allowTransitiveDelegation: true
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 8
+          num_liquid_delegators: 10
+          num_proposal_creators: 5
+          num_passive_members: 15
+          num_governance_experts: 4
+
+      - id: "dao-standard-1"
+        name: "Standard DAO 1"
+        tokenSymbol: "STD1"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#60A5FA"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 5
+          num_proposal_creators: 5
+          num_passive_members: 25
+          num_governance_experts: 2
+
+      - id: "dao-standard-2"
+        name: "Standard DAO 2"
+        tokenSymbol: "STD2"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F472B6"
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 5
+          num_proposal_creators: 5
+          num_passive_members: 25
+          num_governance_experts: 2
+
+  # Scenario 3: Gradient of governance quality
+  - name: "governance-gradient"
+    description: "Three DAOs with progressively better governance"
+    daos:
+      - id: "dao-poor"
+        name: "High Whale DAO"
+        tokenSymbol: "WHALE"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#EF4444"
+        tokenDistribution:
+          type: "pareto"
+          targetGini: 0.8
+        agentCounts:
+          num_developers: 5
+          num_investors: 3
+          num_delegators: 2
+          num_proposal_creators: 2
+          num_passive_members: 35
+          num_governance_experts: 1
+          # High whale concentration
+          num_traders: 10
+
+      - id: "dao-medium"
+        name: "Moderate DAO"
+        tokenSymbol: "MOD"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F59E0B"
+        tokenDistribution:
+          type: "pareto"
+          targetGini: 0.5
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 5
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+
+      - id: "dao-good"
+        name: "Well-Governed DAO"
+        tokenSymbol: "GOOD"
+        initialTreasuryFunding: 100000
+        governanceRule: "quadratic"
+        color: "#10B981"
+        tokenDistribution:
+          type: "pareto"
+          targetGini: 0.3
+        features:
+          liquidDemocracy: true
+        agentCounts:
+          num_developers: 12
+          num_investors: 4
+          num_delegators: 8
+          num_liquid_delegators: 6
+          num_proposal_creators: 6
+          num_passive_members: 10
+          num_governance_experts: 5
+
+  # Scenario 4: No migration allowed (control)
+  - name: "no-migration"
+    description: "Same as governance-gradient but transfers disabled"
+    overrides:
+      memberTransferEnabled: false
+    daos:
+      - id: "dao-poor-locked"
+        name: "High Whale DAO (Locked)"
+        tokenSymbol: "WHLK"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#EF4444"
+        tokenDistribution:
+          type: "pareto"
+          targetGini: 0.8
+        agentCounts:
+          num_developers: 5
+          num_investors: 3
+          num_delegators: 2
+          num_proposal_creators: 2
+          num_passive_members: 35
+          num_governance_experts: 1
+          num_traders: 10
+
+      - id: "dao-medium-locked"
+        name: "Moderate DAO (Locked)"
+        tokenSymbol: "MODLK"
+        initialTreasuryFunding: 100000
+        governanceRule: "majority"
+        color: "#F59E0B"
+        tokenDistribution:
+          type: "pareto"
+          targetGini: 0.5
+        agentCounts:
+          num_developers: 10
+          num_investors: 5
+          num_delegators: 5
+          num_proposal_creators: 5
+          num_passive_members: 20
+          num_governance_experts: 3
+
+      - id: "dao-good-locked"
+        name: "Well-Governed DAO (Locked)"
+        tokenSymbol: "GDLK"
+        initialTreasuryFunding: 100000
+        governanceRule: "quadratic"
+        color: "#10B981"
+        tokenDistribution:
+          type: "pareto"
+          targetGini: 0.3
+        agentCounts:
+          num_developers: 12
+          num_investors: 4
+          num_delegators: 8
+          num_liquid_delegators: 6
+          num_proposal_creators: 6
+          num_passive_members: 10
+          num_governance_experts: 5
+
+# Execution settings
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 8
+
+# Statistical configuration
+statistical:
+  confidenceLevel: 0.95
+  bootstrapSamples: 1000
+  powerAnalysis: true
+  effectSizeThreshold: 0.3
+
+# Metrics - collected per DAO and ecosystem-wide
+metrics:
+  # Migration metrics
+  - name: "Net Member Flow"
+    type: builtin
+    builtin: net_member_flow
+    description: "Net members gained/lost per DAO"
+    scope: per_dao
+
+  - name: "Transfer Request Count"
+    type: builtin
+    builtin: transfer_request_count
+    description: "Total transfer requests initiated"
+    scope: ecosystem
+
+  - name: "Transfer Completion Rate"
+    type: builtin
+    builtin: transfer_completion_rate
+    description: "% of transfer requests completed"
+    scope: ecosystem
+
+  # DAO health metrics (per DAO)
+  - name: "Final Member Count"
+    type: builtin
+    builtin: final_member_count
+    description: "Members at simulation end"
+    scope: per_dao
+
+  - name: "Member Growth Rate"
+    type: builtin
+    builtin: member_growth_rate
+    description: "(final - initial) / initial members"
+    scope: per_dao
+
+  - name: "Voter Participation Rate"
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who voted"
+    scope: per_dao
+
+  - name: "Whale Influence"
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% holders"
+    scope: per_dao
+
+  - name: "Token Concentration Gini"
+    type: builtin
+    builtin: token_concentration_gini
+    description: "Inequality of token holdings"
+    scope: per_dao
+
+  # Economic metrics
+  - name: "Final Treasury"
+    type: builtin
+    builtin: final_treasury
+    description: "Treasury balance at end"
+    scope: per_dao
+
+  - name: "Final Token Price"
+    type: builtin
+    builtin: final_token_price
+    description: "Token price at end"
+    scope: per_dao
+
+  - name: "Token Price Volatility"
+    type: builtin
+    builtin: token_price_volatility
+    description: "Price coefficient of variation"
+    scope: per_dao
+
+  # Governance quality metrics
+  - name: "Proposal Pass Rate"
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "Fraction of proposals passed"
+    scope: per_dao
+
+  - name: "Average Turnout"
+    type: builtin
+    builtin: average_turnout
+    description: "Average voter participation"
+    scope: per_dao
+
+  - name: "Governance Capture Risk"
+    type: builtin
+    builtin: governance_capture_risk
+    description: "Proposal creation concentration"
+    scope: per_dao
+
+  # Ecosystem-wide metrics
+  - name: "Total Ecosystem Members"
+    type: builtin
+    builtin: total_ecosystem_members
+    description: "Sum of all DAO members"
+    scope: ecosystem
+
+  - name: "Ecosystem Gini"
+    type: builtin
+    builtin: ecosystem_member_gini
+    description: "Inequality of member distribution across DAOs"
+    scope: ecosystem
+
+  - name: "DAO Dominance Index"
+    type: builtin
+    builtin: dao_dominance_index
+    description: "Largest DAO's share of total members"
+    scope: ecosystem
+
+# Output settings
+output:
+  directory: "results/research-quick/multi-dao/governance-migration"
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: false
+  includeManifest: true
+  includePerDaoMetrics: true
+

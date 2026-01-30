@@ -1,43 +1,45 @@
-name: "Homogeneous Agent Voting Test"
+name: Homogeneous Agent Voting Test
 description: |
   Test voting_activity parameter with homogeneous agent populations.
   Using only passive_holder agents (which respect voting_activity)
   ensures we can properly test the parameter's effect.
 
   This isolates the voting_activity parameter from agent-type bypasses.
-
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    memberDistribution:
-      totalMembers: 100
-      distribution:
-        - archetype: passive_holder
-          percentage: 100  # Only passive holders - they respect voting_activity
-    simulationParams:
-      proposalFrequency: 0.5  # Still need some proposals to vote on
-
+    proposal_creation_probability: 0.005
+  population:
+    totalMembers: 100
+    distribution:
+      - archetype: passive_holder
+        percentage: 100
 sweep:
-  parameter: "simulationParams.votingActivity"
-  values: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
-
+  parameter: voting_activity
+  values:
+    - 0
+    - 0.2
+    - 0.4
+    - 0.6
+    - 0.8
+    - 1
 execution:
-  runsPerConfig: 5
-  stepsPerRun: 150
+  runsPerConfig: 30
+  stepsPerRun: 300
   seedStrategy: sequential
   baseSeed: 42
-
 metrics:
-  - name: "Average Turnout"
+  - name: Average Turnout
     type: builtin
     builtin: average_turnout
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-  - name: "Total Proposals"
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-
 output:
-  directory: "results/validation/homogeneous-voting"
-  formats: [json, csv]
+  directory: results/validation/homogeneous-voting
+  formats:
+    - json
+    - csv

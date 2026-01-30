@@ -1,0 +1,106 @@
+﻿name: Governance Capture Thresholds
+description: Identify token distribution thresholds enabling governance capture
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - research
+  - plutocracy
+  - governance-capture
+  - token-distribution
+  - gini
+baseConfig:
+  template: compound
+  overrides:
+    voting_activity: 0.4
+    proposal_creation_probability: 0.004
+  population:
+    totalMembers: 150
+    distribution:
+      - archetype: active_voter
+        percentage: 70
+      - archetype: delegate
+        percentage: 15
+      - archetype: whale
+        percentage: 10
+      - archetype: governance_expert
+        percentage: 5
+sweep:
+  parameter: governance_config.quorumPercentage
+  values:
+    - 0.02
+    - 0.05
+    - 0.1
+    - 0.2
+    - 0.33
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 10
+metrics:
+  - name: Token Concentration Gini
+    type: builtin
+    builtin: token_concentration_gini
+    description: Inequality of token holdings
+  - name: Single Entity Control
+    type: builtin
+    builtin: single_entity_control
+    description: Max % any one member could control
+  - name: Collusion Threshold
+    type: builtin
+    builtin: collusion_threshold
+    description: Min % of members needed for majority
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% token holders"
+  - name: Whale Proposal Rate
+    type: builtin
+    builtin: whale_proposal_rate
+    description: "% of proposals created by whales"
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+    description: Concentration of proposal creation
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+    description: Fraction of proposals that passed
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% of proposals meeting quorum"
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+    description: How decisive votes are
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who voted"
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+    description: Average participation per proposal
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+    description: "% of votes from top 10% voters"
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+    description: Treasury at end
+  - name: Treasury Growth Rate
+    type: builtin
+    builtin: treasury_growth_rate
+    description: (final - initial) / initial
+output:
+  directory: results/research-quick/governance-capture-thresholds
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: false
+  includeManifest: true
+

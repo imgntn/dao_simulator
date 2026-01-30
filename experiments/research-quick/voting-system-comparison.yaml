@@ -1,0 +1,106 @@
+﻿name: Voting System Comparison
+description: |
+  Comprehensive comparison of voting mechanisms (simple majority, supermajority,
+  quadratic, conviction, approval) across different quorum thresholds. Measures
+  efficiency, participation quality, and attack resistance.
+version: 2.0.0
+author: DAO Simulator Research
+tags:
+  - voting-systems
+  - grid-search
+  - governance-efficiency
+  - participation
+baseConfig:
+  template: compound
+  overrides:
+    voting_activity: 0.4
+    proposal_creation_probability: 0.003
+  population:
+    totalMembers: 100
+    distribution:
+      - archetype: passive_holder
+        percentage: 50
+      - archetype: delegate
+        percentage: 20
+      - archetype: governance_expert
+        percentage: 15
+      - archetype: whale
+        percentage: 10
+      - archetype: developer
+        percentage: 5
+sweep:
+  grid:
+    - parameter: governance_rule
+      label: votingType
+      values:
+        - majority
+        - supermajority
+        - quadratic
+        - conviction
+        - majority
+    - parameter: governance_config.quorumPercentage
+      label: quorum
+      values:
+        - 0.05
+        - 0.1
+        - 0.2
+        - 0.3
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 12345
+  workers: 10
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+  - name: Avg Time to Decision
+    type: builtin
+    builtin: avg_time_to_decision
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Average Turnout
+    type: builtin
+    builtin: avg_votes_per_proposal
+  - name: Voter Concentration Gini
+    type: builtin
+    builtin: voter_concentration_gini
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+  - name: Single Entity Control
+    type: builtin
+    builtin: single_entity_control
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Treasury Growth Rate
+    type: builtin
+    builtin: treasury_growth_rate
+  - name: Token Concentration Gini
+    type: builtin
+    builtin: token_concentration_gini
+output:
+  directory: results/research-quick/voting-system-comparison
+  formats:
+    - json
+    - csv
+  includeRawRuns: false
+  includeManifest: true
+  includeStatistics: true
+  includeRecommendations: true
+

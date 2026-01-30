@@ -1,0 +1,116 @@
+﻿name: Bicameral Attack Resistance
+description: Compare passing thresholds for attack resistance vs throughput
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - research
+  - bicameral
+  - governance-attacks
+  - passing-threshold
+  - security
+baseConfig:
+  template: compound
+  overrides:
+    voting_activity: 0.4
+    proposal_creation_probability: 0.0035
+  population:
+    totalMembers: 200
+    distribution:
+      - archetype: active_voter
+        percentage: 50
+      - archetype: delegate
+        percentage: 20
+      - archetype: whale
+        percentage: 15
+      - archetype: governance_expert
+        percentage: 10
+      - archetype: passive_holder
+        percentage: 5
+sweep:
+  parameter: governance_config.threshold
+  values:
+    - 0.5
+    - 0.55
+    - 0.6
+    - 0.67
+    - 0.75
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 10
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+    description: Legitimate proposal throughput
+  - name: Proposal Rejection Rate
+    type: builtin
+    builtin: proposal_rejection_rate
+    description: "% of proposals rejected"
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+    description: Concentration of proposal creation
+  - name: Single Entity Control
+    type: builtin
+    builtin: single_entity_control
+    description: Max % any one member could control
+  - name: Avg Time to Decision
+    type: builtin
+    builtin: avg_time_to_decision
+    description: Average steps to resolution
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+    description: "% of proposals that expired"
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% holders"
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+    description: "% of votes from top 10% voters"
+  - name: Collusion Threshold
+    type: builtin
+    builtin: collusion_threshold
+    description: Min % of members for majority
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+    description: How decisive votes are
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who voted"
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+    description: Average participation per proposal
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% meeting quorum threshold"
+  - name: Total Proposals
+    type: builtin
+    builtin: total_proposals
+    description: Total proposals created
+  - name: Governance Overhead
+    type: builtin
+    builtin: governance_overhead
+    description: Votes cast per resolved proposal
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+    description: Treasury at end
+output:
+  directory: results/research-quick/bicameral-attack-resistance
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeTimeline: false
+  includeManifest: true
+

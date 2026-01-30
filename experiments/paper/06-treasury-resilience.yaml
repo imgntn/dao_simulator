@@ -1,0 +1,95 @@
+name: Treasury Resilience
+description: Evaluate treasury stabilization policies under identical governance loads.
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - paper
+  - treasury
+  - resilience
+baseConfig:
+  template: compound
+  population:
+    totalMembers: 200
+  overrides:
+    governance_rule: majority
+    governance_config:
+      quorumPercentage: 0.05
+    voting_activity: 0.25
+    proposal_creation_probability: 0.004
+    proposal_duration_min_steps: 24
+    proposal_duration_max_steps: 96
+    treasury_target_reserve: 10000
+    treasury_target_reserve_fraction: 0.6
+    treasury_buffer_fill_rate: 0.5
+    treasury_emergency_topup_rate: 0.25
+    treasury_max_spend_fraction: 0.15
+    participation_target_rate: 0.2
+    participation_boost_strength: 0.6
+    participation_boost_decay: 0.1
+    participation_boost_max: 0.25
+    participation_inactivity_boost: 0.15
+    participation_reward_per_vote: 0.0
+    proposal_bond_fraction: 0.01
+    proposal_bond_min: 10
+    proposal_bond_max: 1000
+    proposal_inactivity_steps: 72
+    proposal_temp_check_fraction: 0.25
+    proposal_fast_track_min_steps: 6
+    proposal_fast_track_approval: 0.6
+    proposal_fast_track_quorum: 0.2
+    vote_power_cap_fraction: 0.15
+    vote_power_quadratic_threshold: 250
+    vote_power_velocity_window: 72
+    vote_power_velocity_penalty: 0.5
+    delegation_lock_steps: 48
+sweep:
+  grid:
+    - parameter: treasury_stabilization_enabled
+      values: [true, false]
+    - parameter: treasury_buffer_fraction
+      values: [0.0, 0.2, 0.4]
+    - parameter: treasury_max_spend_fraction
+      values: [0.1, 0.2]
+execution:
+  runsPerConfig: 25
+  stepsPerRun: 2000
+  seedStrategy: sequential
+  baseSeed: 606
+  workers: 4
+metrics:
+  - name: Treasury Volatility
+    type: builtin
+    builtin: treasury_volatility
+    description: Coefficient of variation of treasury over time
+  - name: Treasury Growth Rate
+    type: builtin
+    builtin: treasury_growth_rate
+    description: (final - initial) / initial treasury
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+    description: Treasury balance at simulation end
+  - name: Treasury Trend
+    type: builtin
+    builtin: treasury_trend
+    description: Slope of treasury over time
+  - name: Final Token Price
+    type: builtin
+    builtin: final_token_price
+    description: Token price at simulation end
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "% of resolved proposals that passed"
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% of proposals meeting participation threshold"
+output:
+  directory: results/paper/06-treasury-resilience
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeManifest: true
+  includeTimeline: false

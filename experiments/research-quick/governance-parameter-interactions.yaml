@@ -1,0 +1,134 @@
+﻿name: Governance Parameter Interactions
+description: |
+  Comprehensive multi-parameter study examining how governance parameters
+  interact. Real DAOs must tune multiple parameters simultaneously, and
+  the optimal settings for one parameter depend on others. This experiment
+  maps the full parameter space to identify:
+  - Optimal parameter combinations for different DAO goals
+  - Dangerous parameter combinations that enable attacks
+  - Trade-offs between security, efficiency, and inclusivity
+version: 1.0.0
+author: DAO Simulator Research
+tags:
+  - multi-parameter
+  - grid-search
+  - governance
+  - parameter-interactions
+  - comprehensive
+baseConfig:
+  template: compound
+  overrides:
+    tokenDistribution:
+      type: pareto
+      paretoAlpha: 1.5
+      totalSupply: 1000000
+    memberConfig:
+      totalMembers: 105
+      distribution:
+        developers: 15
+        investors: 20
+        traders: 10
+        delegators: 15
+        proposalCreators: 5
+        validators: 10
+        passiveMembers: 30
+sweep:
+  grid:
+    - parameter: governance_config.quorumPercentage
+      label: quorum
+      values:
+        - 0.05
+        - 0.1
+        - 0.15
+        - 0.2
+        - 0.25
+        - 0.3
+    - parameter: proposal_duration_steps
+      label: votingPeriod
+      values:
+        - 72
+        - 168
+        - 336
+        - 504
+    - parameter: governance_config.threshold
+      label: threshold
+      values:
+        - 0.5
+        - 0.6
+        - 0.67
+        - 0.75
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 10
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+  - name: Avg Time to Decision
+    type: builtin
+    builtin: avg_time_to_decision
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+  - name: Total Proposals
+    type: builtin
+    builtin: total_proposals
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Average Turnout
+    type: builtin
+    builtin: avg_votes_per_proposal
+  - name: Voter Concentration Gini
+    type: builtin
+    builtin: voter_concentration_gini
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+  - name: Single Entity Control
+    type: builtin
+    builtin: single_entity_control
+  - name: Collusion Threshold
+    type: builtin
+    builtin: collusion_threshold
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Treasury Growth Rate
+    type: builtin
+    builtin: treasury_growth_rate
+  - name: Token Concentration Gini
+    type: builtin
+    builtin: token_concentration_gini
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+  - name: Voter Retention Rate
+    type: builtin
+    builtin: voter_retention_rate
+  - name: Voting Power Utilization
+    type: builtin
+    builtin: voting_power_utilization
+output:
+  directory: results/research-quick/governance-parameter-interactions
+  formats:
+    - json
+    - csv
+  includeRawRuns: false
+  includeTimeline: false
+  includeManifest: true
+  includeStatistics: true
+  includeRecommendations: true
+

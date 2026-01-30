@@ -1,158 +1,112 @@
-# RQ3: Does Conviction Voting Favor Long-Term Thinking Over Plutocracy?
-#
-# Background: Conviction voting accumulates power over time.
-# Does this favor committed members over wealthy newcomers?
-#
-# NOTE: Current conviction voting implementation has parameter issues
-# (default 10% threshold is too high). This experiment compares voting
-# period lengths as a proxy for conviction accumulation time.
-#
-# Hypothesis: Longer voting periods allow more conviction accumulation,
-# potentially favoring committed long-term participants.
-#
-# Citation: Use this configuration for reproducible research results.
-
-name: "Conviction Voting Dynamics"
-description: "Study how voting period length affects outcomes and whale dominance"
-version: "1.0.0"
-author: "DAO Simulator Research Framework"
+name: Conviction Voting Dynamics
+description: Study how voting period length affects outcomes and whale dominance
+version: 1.0.0
+author: DAO Simulator Research Framework
 tags:
   - research
   - conviction-voting
   - voting-period
   - whale-resistance
   - deliberation
-
-# Base DAO configuration
 baseConfig:
-  template: "compound"
+  template: compound
   overrides:
-    memberDistribution:
-      totalMembers: 150
-      distribution:
-        - archetype: "active_voter"
-          percentage: 40
-        - archetype: "delegate"
-          percentage: 30
-        - archetype: "whale"
-          percentage: 15
-        - archetype: "governance_expert"
-          percentage: 10
-        - archetype: "passive_holder"
-          percentage: 5
-    simulationParams:
-      votingActivity: 0.4
-      proposalFrequency: 0.35
-
-# Sweep across voting period (days) - longer periods = more deliberation
+    voting_activity: 0.4
+    proposal_creation_probability: 0.0035
+  population:
+    totalMembers: 150
+    distribution:
+      - archetype: active_voter
+        percentage: 40
+      - archetype: delegate
+        percentage: 30
+      - archetype: whale
+        percentage: 15
+      - archetype: governance_expert
+        percentage: 10
+      - archetype: passive_holder
+        percentage: 5
 sweep:
-  parameter: "votingSystem.votingPeriodDays"
+  parameter: proposal_duration_steps
   values:
-    - 1      # Very short - snap decisions
-    - 3      # Short - standard Compound
-    - 7      # Medium - standard Uniswap
-    - 14     # Long - Arbitrum style
-    - 30     # Very long - MakerDAO style
-
-# Execution settings
+    - 24
+    - 72
+    - 168
+    - 336
+    - 720
 execution:
-  runsPerConfig: 2000    # 2000 x 5 = 10,000 total runs
+  runsPerConfig: 2000
   stepsPerRun: 500
   seedStrategy: sequential
   baseSeed: 42
   workers: 10
-
-# Key metrics for RQ3
 metrics:
-  # Primary whale resistance metrics
-  - name: "Whale Influence"
+  - name: Whale Influence
     type: builtin
     builtin: whale_influence
     description: "% of votes from top 10% token holders"
-
-  - name: "Whale Proposal Rate"
+  - name: Whale Proposal Rate
     type: builtin
     builtin: whale_proposal_rate
     description: "% of proposals created by whales"
-
-  - name: "Single Entity Control"
+  - name: Single Entity Control
     type: builtin
     builtin: single_entity_control
-    description: "Max % any one member could control"
-
-  # Deliberation metrics
-  - name: "Avg Time to Decision"
+    description: Max % any one member could control
+  - name: Avg Time to Decision
     type: builtin
     builtin: avg_time_to_decision
-    description: "Average steps from proposal to resolution"
-
-  - name: "Proposal Abandonment Rate"
+    description: Average steps from proposal to resolution
+  - name: Proposal Abandonment Rate
     type: builtin
     builtin: proposal_abandonment_rate
     description: "% of proposals that expired unresolved"
-
-  # Power concentration metrics
-  - name: "Voter Concentration Gini"
+  - name: Voter Concentration Gini
     type: builtin
     builtin: voter_concentration_gini
-    description: "Inequality of voting activity"
-
-  - name: "Delegate Concentration"
+    description: Inequality of voting activity
+  - name: Delegate Concentration
     type: builtin
     builtin: delegate_concentration
     description: "% of votes from top 10% of voters"
-
-  - name: "Governance Capture Risk"
+  - name: Governance Capture Risk
     type: builtin
     builtin: governance_capture_risk
-    description: "Concentration of proposal creation"
-
-  # Participation metrics
-  - name: "Voter Participation Rate"
+    description: Concentration of proposal creation
+  - name: Voter Participation Rate
     type: builtin
     builtin: voter_participation_rate
     description: "% of members who ever voted"
-
-  - name: "Average Turnout"
+  - name: Average Turnout
     type: builtin
     builtin: average_turnout
-    description: "Average participation per proposal"
-
-  - name: "Voter Retention Rate"
+    description: Average participation per proposal
+  - name: Voter Retention Rate
     type: builtin
     builtin: voter_retention_rate
     description: "% of early voters still voting late"
-
-  # Outcome quality metrics
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-    description: "Fraction of proposals that passed"
-
-  - name: "Avg Margin of Victory"
+    description: Fraction of proposals that passed
+  - name: Avg Margin of Victory
     type: builtin
     builtin: avg_margin_of_victory
-    description: "How decisive votes are"
-
-  - name: "Quorum Reach Rate"
+    description: How decisive votes are
+  - name: Quorum Reach Rate
     type: builtin
     builtin: quorum_reach_rate
     description: "% of proposals meeting quorum"
-
-  # Economic health
-  - name: "Final Treasury"
+  - name: Final Treasury
     type: builtin
     builtin: final_treasury
-    description: "Treasury at end"
-
-  - name: "Treasury Growth Rate"
+    description: Treasury at end
+  - name: Treasury Growth Rate
     type: builtin
     builtin: treasury_growth_rate
-    description: "(final - initial) / initial"
-
-# Output settings
+    description: (final - initial) / initial
 output:
-  directory: "results/research/conviction-voting-dynamics"
+  directory: results/research/conviction-voting-dynamics
   formats:
     - json
     - csv

@@ -1,71 +1,45 @@
-# Example Experiment Configuration
-# This runs a simple experiment with the Compound template
-
-name: "Simple Example Experiment"
-description: "Basic test of the experiment runner with Compound-style governance"
-version: "1.0.0"
-author: "DAO Simulator"
+name: Simple Example Experiment
+description: Basic test of the experiment runner with Compound-style governance
+version: 1.0.0
+author: DAO Simulator
 tags:
   - example
   - compound
   - basic
-
-# Base DAO configuration
 baseConfig:
-  # Use the built-in Compound template
-  template: "compound"
-
-  # Optional: Override specific settings
-  overrides:
-    memberDistribution:
-      totalMembers: 50  # Smaller DAO for faster runs
-
-  # Simulation-specific settings
+  template: compound
   simulationOverrides:
-    eventLogging: false  # Disable logging for performance
-
-# No sweep - just run the base configuration
-# sweep:
-#   parameter: "quorumConfig.baseQuorumPercent"
-#   range: { min: 1, max: 10, step: 1 }
-
-# Execution settings
+    eventLogging: false
+  population:
+    totalMembers: 50
 execution:
-  runsPerConfig: 10      # Minimum 10 for statistical significance
-  stepsPerRun: 200       # Simulation steps per run
+  runsPerConfig: 10
+  stepsPerRun: 200
   seedStrategy: sequential
   baseSeed: 42
-
-# Metrics to capture
 metrics:
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-    description: "Fraction of proposals that passed"
-
-  - name: "Final Treasury"
+    description: Fraction of proposals that passed
+  - name: Final Treasury
     type: builtin
     builtin: final_treasury
-    description: "Treasury balance at end of simulation"
-
-  - name: "Final Token Price"
+    description: Treasury balance at end of simulation
+  - name: Final Token Price
     type: builtin
     builtin: final_token_price
-    description: "Token price at end of simulation"
-
-  - name: "Final Gini"
+    description: Token price at end of simulation
+  - name: Final Gini
     type: builtin
     builtin: final_gini
-    description: "Token distribution inequality (0=equal, 1=one holder)"
-
-  - name: "Total Proposals"
+    description: Token distribution inequality (0=equal, 1=one holder)
+  - name: Total Proposals
     type: builtin
     builtin: total_proposals
-    description: "Total number of proposals created"
-
-# Output settings
+    description: Total number of proposals created
 output:
-  directory: "results/example"
+  directory: results/example
   formats:
     - json
     - csv

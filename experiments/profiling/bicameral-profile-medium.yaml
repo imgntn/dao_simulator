@@ -1,0 +1,46 @@
+name: Bicameral Attack Resistance (Profile Medium)
+description: Medium profiling run for CPU hotspots
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - profiling
+  - bicameral
+baseConfig:
+  template: compound
+  overrides:
+    voting_activity: 0.4
+    proposal_creation_probability: 0.0035
+  population:
+    totalMembers: 200
+    distribution:
+      - archetype: active_voter
+        percentage: 50
+      - archetype: delegate
+        percentage: 20
+      - archetype: whale
+        percentage: 15
+      - archetype: governance_expert
+        percentage: 10
+      - archetype: passive_holder
+        percentage: 5
+sweep:
+  parameter: governance_config.threshold
+  values:
+    - 0.6
+execution:
+  runsPerConfig: 3
+  stepsPerRun: 2000
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 1
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+output:
+  directory: results/profiling/bicameral-profile-medium
+  formats:
+    - json
+  includeRawRuns: false
+  includeTimeline: false
+  includeManifest: true
