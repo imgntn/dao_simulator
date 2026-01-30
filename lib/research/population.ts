@@ -114,7 +114,7 @@ const AGENT_COUNT_FIELDS: Array<keyof SimulationSettings> = [
 
 type AgentCountKey = (typeof AGENT_COUNT_FIELDS)[number];
 
-export function buildAgentCounts(population: PopulationSpec): Partial<SimulationSettings> {
+export function buildAgentCounts(population: PopulationSpec, config?: { injectDefaultAgents?: boolean }): Partial<SimulationSettings> {
   const totalMembers = population.totalMembers;
   const distribution = population.distribution;
 
@@ -140,9 +140,11 @@ export function buildAgentCounts(population: PopulationSpec): Partial<Simulation
   if (counts.proposal_creators < 1) counts.proposal_creators = 1;
   if (counts.delegators < 1) counts.delegators = 1;
 
-  counts.traders = Math.max(1, Math.round(totalMembers * 0.02));
-  counts.speculators = Math.max(1, Math.round(totalMembers * 0.02));
-  counts.whistleblowers = Math.max(1, Math.round(totalMembers * 0.01));
+  if (config?.injectDefaultAgents !== false) {
+    counts.traders = Math.max(1, Math.round(totalMembers * 0.02));
+    counts.speculators = Math.max(1, Math.round(totalMembers * 0.02));
+    counts.whistleblowers = Math.max(1, Math.round(totalMembers * 0.01));
+  }
 
   const result: Partial<Record<AgentCountKey, number>> = {};
   for (const [agentType, count] of Object.entries(counts)) {

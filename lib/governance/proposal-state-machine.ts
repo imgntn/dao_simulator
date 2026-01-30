@@ -173,7 +173,9 @@ export class ProposalStateMachine {
     const votesFor = this.proposal.votesFor;
     const votesAgainst = this.proposal.votesAgainst;
     const totalVotes = votesFor + votesAgainst;
-    this.proposal.quorumMet = totalVotes > 0;
+    const memberCount = this.dao.members?.length || 0;
+    const minQuorum = Math.max(1, Math.ceil(memberCount * 0.01));
+    this.proposal.quorumMet = totalVotes >= minQuorum;
 
     // Simple majority for temp check
     if (totalVotes === 0) {

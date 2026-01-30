@@ -124,7 +124,7 @@ export class SimpleDataCollector implements DataCollectorData {
     this._priceHistory.push(price);
 
     // Get token balances (needed for multiple calculations)
-    const tokenBalances = dao.members.map(m => m.tokens);
+    const tokenBalances = dao.members.map(m => m.tokens + m.stakedTokens);
 
     // Calculate Gini coefficients with caching
     // Cache is valid for the current step only
@@ -227,12 +227,17 @@ export class SimpleDataCollector implements DataCollectorData {
   private calculateDelegationCentrality(dao: DAO): Map<string, number> {
     const centrality = new Map<string, number>();
 
+    // Initialize all members with zero centrality
     for (const member of dao.members) {
-      let totalDelegated = 0;
-      for (const [, amount] of member.delegations) {
-        totalDelegated += amount;
+      centrality.set(member.uniqueId, 0);
+    }
+
+    // Accumulate on the delegate (recipient), not the delegator
+    for (const member of dao.members) {
+      for (const [delegateId, amount] of member.delegations) {
+        const current = centrality.get(delegateId) || 0;
+        centrality.set(delegateId, current + amount);
       }
-      centrality.set(member.uniqueId, totalDelegated);
     }
 
     return centrality;

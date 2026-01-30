@@ -648,11 +648,8 @@ export class DAOCity {
       await simulation.step();
       simulation.dao.currentStep = this.currentStep;
 
-      // Process governance systems for this DAO
-      const governanceProcessor = this.governanceProcessors.get(daoId);
-      if (governanceProcessor) {
-        governanceProcessor.processStep(this.currentStep);
-      }
+      // Governance processing already handled by simulation.step()
+      // Do not call governanceProcessor.processStep() again here
 
       // Process timelocks for this DAO
       const timelockController = this.timelockControllers.get(daoId);

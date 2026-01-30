@@ -322,18 +322,16 @@ export class FlashLoanAttacker extends DAOMember {
     const treasury = this.model.dao.treasury;
     const token = this.model.dao.tokenSymbol;
 
-    // Large deposit/withdraw to move price
+    // Deposit/withdraw is a no-op that doesn't actually manipulate price
     treasury.deposit(token, borrowedAmount, this.model.currentStep);
-
-    if (this.activeLoan) {
-      this.activeLoan.successful = true;  // Price movement always "succeeds"
-    }
-
-    // Withdraw back
     treasury.withdraw(token, borrowedAmount, this.model.currentStep);
 
+    if (this.activeLoan) {
+      this.activeLoan.successful = false;  // No-op deposit/withdraw doesn't manipulate price
+    }
+
     if (this.model.eventBus) {
-      this.model.eventBus.publish('flashloan_price_manipulation', {
+      this.model.eventBus.publish('flashloan_price_manipulation_failed', {
         step: this.model.currentStep,
         loanId: this.activeLoan?.loanId,
         borrower: this.uniqueId,

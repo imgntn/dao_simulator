@@ -52,6 +52,7 @@ import { getStrategy, DefaultVotingStrategy } from '../utils/voting-strategies';
 import type { DAOModel } from '../engine/model';
 import { random, randomChoice } from '../utils/random';
 import { DelegationResolver } from '../delegation/delegation-resolver';
+import { settings } from '../config/settings';
 
 export class DAOMember implements Agent {
   uniqueId: string;
@@ -523,16 +524,6 @@ export class DAOMember implements Agent {
       const proposal = topic as Proposal;
       const pTopic = proposal.topic || '';
 
-      // String-based heuristics for certain topics
-      if (pTopic && typeof pTopic === 'string') {
-        if (pTopic.toLowerCase().includes('topic b')) {
-          return random() < 0.7 ? 'yes' : 'no';
-        }
-        if (pTopic.toLowerCase().includes('topic a')) {
-          return random() < 0.3 ? 'yes' : 'no';
-        }
-      }
-
       // Subjective belief based on proposal characteristics
       let belief = 0.5;
 
@@ -542,11 +533,11 @@ export class DAOMember implements Agent {
         belief += fundingRatio * 0.2;
       }
 
-      // Factor in vote ratio
+      // Factor in vote ratio (information cascade / herding effect)
       const totalVotes = proposal.votesFor + proposal.votesAgainst;
       if (totalVotes > 0) {
         const supportRatio = proposal.votesFor / totalVotes;
-        belief += supportRatio * 0.2;
+        belief += supportRatio * settings.voteHerdingFactor;
       }
 
       // Add personal optimism noise
@@ -555,15 +546,6 @@ export class DAOMember implements Agent {
       belief = clamp(belief);
 
       return random() < belief ? 'yes' : 'no';
-    }
-
-    // String-based topic
-    const topicStr = typeof topic === 'string' ? topic : '';
-    if (topicStr.toLowerCase().includes('topic b')) {
-      return random() < 0.7 ? 'yes' : 'no';
-    }
-    if (topicStr.toLowerCase().includes('topic a')) {
-      return random() < 0.3 ? 'yes' : 'no';
     }
 
     // Default: random decision

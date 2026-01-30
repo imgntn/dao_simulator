@@ -171,7 +171,7 @@ function calculateCorrelation(a: number[], b: number[]): number {
 function calculateVariance(values: number[]): number {
   if (values.length < 2) return 0;
   const mean = values.reduce((a, b) => a + b, 0) / values.length;
-  return values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length;
+  return values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / (values.length - 1);
 }
 
 /**
@@ -1446,7 +1446,7 @@ export class ExperimentRunner {
       case 'quorum_reach_rate': {
         if (proposals.length === 0) return 0;
         const totalSupply = getTotalVotingPower(members);
-        const quorumThreshold = 0.04;
+        const quorumThreshold = (simulation as any).governanceRule?.quorumPercentage ?? 0.04;
 
         let quorumMet = 0;
         for (const proposal of proposals) {
@@ -1990,35 +1990,48 @@ export class ExperimentRunner {
     const pairwiseComparisons: SweepComparison[] = [];
     const anovaResults: StatisticalSignificance['anova'] = [];
 
-    // Pairwise t-tests between consecutive sweep values
-    for (let i = 0; i < sweepValues.length - 1; i++) {
-      const sv1 = sweepValues[i];
-      const sv2 = sweepValues[i + 1];
-      const group1 = groupedResults.get(sv1) || [];
-      const group2 = groupedResults.get(sv2) || [];
+    // All-pairs t-tests between sweep values
+    for (let i = 0; i < sweepValues.length; i++) {
+      for (let j = i + 1; j < sweepValues.length; j++) {
+        const sv1 = sweepValues[i];
+        const sv2 = sweepValues[j];
+        const group1 = groupedResults.get(sv1) || [];
+        const group2 = groupedResults.get(sv2) || [];
 
-      for (const metricName of metricNames) {
-        const values1 = group1.map(r => r.metrics[metricName]).filter(v => typeof v === 'number');
-        const values2 = group2.map(r => r.metrics[metricName]).filter(v => typeof v === 'number');
+        for (const metricName of metricNames) {
+          const values1 = group1.map(r => r.metrics[metricName]).filter(v => typeof v === 'number');
+          const values2 = group2.map(r => r.metrics[metricName]).filter(v => typeof v === 'number');
 
-        if (values1.length >= 2 && values2.length >= 2) {
-          const tTest = stats.independentTTest(values1, values2);
-          const effectSize = stats.cohensD(values1, values2);
+          if (values1.length >= 2 && values2.length >= 2) {
+            const tTest = stats.independentTTest(values1, values2);
+            const effectSize = stats.cohensD(values1, values2);
 
-          pairwiseComparisons.push({
-            sweepValue1: this.parseSweepValue(sv1),
-            sweepValue2: this.parseSweepValue(sv2),
-            metricName,
-            tStatistic: tTest.tStatistic,
-            degreesOfFreedom: tTest.degreesOfFreedom,
-            pValue: tTest.pValue,
-            significant: tTest.significant,
-            effectSize: {
-              cohensD: effectSize.cohensD,
-              interpretation: effectSize.interpretation,
-            },
-          });
+            pairwiseComparisons.push({
+              sweepValue1: this.parseSweepValue(sv1),
+              sweepValue2: this.parseSweepValue(sv2),
+              metricName,
+              tStatistic: tTest.tStatistic,
+              degreesOfFreedom: tTest.degreesOfFreedom,
+              pValue: tTest.pValue,
+              significant: tTest.significant,
+              effectSize: {
+                cohensD: effectSize.cohensD,
+                interpretation: effectSize.interpretation,
+              },
+            });
+          }
         }
+      }
+    }
+
+    // Apply Benjamini-Hochberg correction for multiple comparisons
+    if (pairwiseComparisons.length > 1) {
+      const rawPValues = pairwiseComparisons.map(c => c.pValue);
+      const correctedPValues = stats.benjaminiHochberg(rawPValues);
+      for (let i = 0; i < pairwiseComparisons.length; i++) {
+        pairwiseComparisons[i].correctedPValue = correctedPValues[i];
+        pairwiseComparisons[i].correctionMethod = 'benjamini-hochberg';
+        pairwiseComparisons[i].significant = correctedPValues[i] < 0.05;
       }
     }
 

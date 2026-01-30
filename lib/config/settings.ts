@@ -95,6 +95,18 @@ export interface SimulationSettings {
   adaptive_learning_rate: number;
   adaptive_epsilon: number;
 
+  // Treasury revenue parameters
+  treasuryProposalFee: number;
+  treasuryStakingYield: number;
+  treasuryMemberFee: number;
+  treasuryTransactionFee: number;
+
+  // Treasury emergency topup
+  treasuryEmergencyTopupEnabled: boolean;
+
+  // Vote herding
+  voteHerdingFactor: number;
+
   // Governance
   governance_rule: string;
 }
@@ -178,6 +190,15 @@ export const defaultSettings: SimulationSettings = {
   vote_power_quadratic_threshold: 250,
   vote_power_velocity_window: 72,
   vote_power_velocity_penalty: 0.5,
+
+  treasuryProposalFee: 0.5,
+  treasuryStakingYield: 0.001,
+  treasuryMemberFee: 0.05,
+  treasuryTransactionFee: 0.02,
+
+  treasuryEmergencyTopupEnabled: true,
+
+  voteHerdingFactor: 0.2,
 };
 
 /**

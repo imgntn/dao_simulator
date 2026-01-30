@@ -489,6 +489,8 @@ export interface SweepComparison {
   tStatistic: number;
   degreesOfFreedom: number;
   pValue: number;
+  correctedPValue?: number;
+  correctionMethod?: string;
   significant: boolean;
   effectSize: EffectSizeResult;
 }

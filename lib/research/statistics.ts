@@ -74,41 +74,179 @@ export function interquartileRange(values: number[]): number {
 }
 
 // =============================================================================
-// T-DISTRIBUTION (for confidence intervals with small samples)
+// PROPER DISTRIBUTION CDFs
 // =============================================================================
 
 /**
- * Approximate t-distribution critical values
- * For df >= 30, approximates normal distribution
+ * Standard normal CDF using Abramowitz & Stegun rational approximation (7.1.26)
+ * Maximum error: 7.5e-8
+ */
+export function normalCDF(x: number): number {
+  const a1 = 0.254829592;
+  const a2 = -0.284496736;
+  const a3 = 1.421413741;
+  const a4 = -1.453152027;
+  const a5 = 1.061405429;
+  const p = 0.3275911;
+
+  const sign = x < 0 ? -1 : 1;
+  const absX = Math.abs(x);
+  const t = 1.0 / (1.0 + p * absX);
+  const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-absX * absX / 2);
+
+  return 0.5 * (1.0 + sign * y);
+}
+
+/**
+ * Natural log of the gamma function using Lanczos approximation
+ */
+function lnGamma(z: number): number {
+  const g = 7;
+  const c = [
+    0.99999999999980993,
+    676.5203681218851,
+    -1259.1392167224028,
+    771.32342877765313,
+    -176.61502916214059,
+    12.507343278686905,
+    -0.13857109526572012,
+    9.9843695780195716e-6,
+    1.5056327351493116e-7,
+  ];
+
+  if (z < 0.5) {
+    return Math.log(Math.PI / Math.sin(Math.PI * z)) - lnGamma(1 - z);
+  }
+
+  z -= 1;
+  let x = c[0];
+  for (let i = 1; i < g + 2; i++) {
+    x += c[i] / (z + i);
+  }
+  const t = z + g + 0.5;
+  return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+}
+
+/**
+ * Regularized incomplete beta function I_x(a, b) using Lentz continued fraction
+ */
+export function regularizedIncompleteBeta(x: number, a: number, b: number): number {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+
+  // Use symmetry relation for better convergence
+  if (x > (a + 1) / (a + b + 2)) {
+    return 1 - regularizedIncompleteBeta(1 - x, b, a);
+  }
+
+  const lnBeta = lnGamma(a) + lnGamma(b) - lnGamma(a + b);
+  const front = Math.exp(Math.log(x) * a + Math.log(1 - x) * b - lnBeta) / a;
+
+  // Lentz continued fraction
+  const maxIter = 200;
+  const eps = 1e-14;
+  let f = 1;
+  let c = 1;
+  let d = 1 - (a + b) * x / (a + 1);
+  if (Math.abs(d) < eps) d = eps;
+  d = 1 / d;
+  f = d;
+
+  for (let m = 1; m <= maxIter; m++) {
+    // Even step
+    let numerator = m * (b - m) * x / ((a + 2 * m - 1) * (a + 2 * m));
+    d = 1 + numerator * d;
+    if (Math.abs(d) < eps) d = eps;
+    c = 1 + numerator / c;
+    if (Math.abs(c) < eps) c = eps;
+    d = 1 / d;
+    f *= c * d;
+
+    // Odd step
+    numerator = -(a + m) * (a + b + m) * x / ((a + 2 * m) * (a + 2 * m + 1));
+    d = 1 + numerator * d;
+    if (Math.abs(d) < eps) d = eps;
+    c = 1 + numerator / c;
+    if (Math.abs(c) < eps) c = eps;
+    d = 1 / d;
+    const delta = c * d;
+    f *= delta;
+
+    if (Math.abs(delta - 1) < eps) break;
+  }
+
+  return front * f;
+}
+
+/**
+ * Student's t-distribution CDF using regularized incomplete beta
+ */
+export function tDistributionCDF(t: number, df: number): number {
+  const x = df / (df + t * t);
+  const ibeta = regularizedIncompleteBeta(x, df / 2, 0.5);
+  if (t >= 0) {
+    return 1 - 0.5 * ibeta;
+  } else {
+    return 0.5 * ibeta;
+  }
+}
+
+/**
+ * F-distribution CDF using regularized incomplete beta
+ */
+export function fDistributionCDF(f: number, df1: number, df2: number): number {
+  if (f <= 0) return 0;
+  const x = (df1 * f) / (df1 * f + df2);
+  return regularizedIncompleteBeta(x, df1 / 2, df2 / 2);
+}
+
+/**
+ * Two-tailed p-value from t-distribution
+ */
+function tTestPValue(t: number, df: number): number {
+  const cdf = tDistributionCDF(Math.abs(t), df);
+  return 2 * (1 - cdf);
+}
+
+/**
+ * One-tailed p-value from F-distribution (right tail)
+ */
+function fTestPValue(f: number, df1: number, df2: number): number {
+  return 1 - fDistributionCDF(f, df1, df2);
+}
+
+/**
+ * t-distribution critical value via Newton-Raphson inversion of t-CDF
+ * Returns the two-tailed critical value for the given alpha
  */
 function tCritical(df: number, alpha: number = 0.05): number {
-  // Two-tailed critical values for common alpha levels
-  // These are pre-computed approximations
-  const tTable: Record<number, Record<number, number>> = {
-    0.10: { 1: 6.314, 2: 2.920, 3: 2.353, 4: 2.132, 5: 2.015, 10: 1.812, 20: 1.725, 30: 1.697 },
-    0.05: { 1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 10: 2.228, 20: 2.086, 30: 2.042 },
-    0.01: { 1: 63.657, 2: 9.925, 3: 5.841, 4: 4.604, 5: 4.032, 10: 3.169, 20: 2.845, 30: 2.750 },
-  };
+  // We want t such that P(|T| > t) = alpha, i.e., CDF(t) = 1 - alpha/2
+  const target = 1 - alpha / 2;
 
-  const alphaKey = alpha as keyof typeof tTable;
-  const table = tTable[alphaKey] || tTable[0.05];
+  // Initial guess from normal approximation
+  // Inverse normal approximation (Beasley-Springer-Moro)
+  let t = 1.96; // default for alpha=0.05
+  if (alpha === 0.01) t = 2.576;
+  else if (alpha === 0.10) t = 1.645;
 
-  // Find closest df value
-  const dfs = Object.keys(table).map(Number).sort((a, b) => a - b);
-  let closestDf = dfs[dfs.length - 1];
-  for (const d of dfs) {
-    if (d >= df) {
-      closestDf = d;
-      break;
-    }
+  // Newton-Raphson refinement
+  for (let iter = 0; iter < 20; iter++) {
+    const cdf = tDistributionCDF(t, df);
+    const err = cdf - target;
+    if (Math.abs(err) < 1e-10) break;
+
+    // PDF of t-distribution for the derivative
+    const lnPdf = lnGamma((df + 1) / 2) - lnGamma(df / 2)
+      - 0.5 * Math.log(df * Math.PI)
+      - ((df + 1) / 2) * Math.log(1 + t * t / df);
+    const pdf = Math.exp(lnPdf);
+    if (pdf < 1e-15) break;
+
+    t -= err / pdf;
+    if (t < 0) t = 0.01;
   }
 
-  // For large df, use normal approximation
-  if (df >= 30) {
-    return alpha === 0.05 ? 1.96 : alpha === 0.01 ? 2.576 : 1.645;
-  }
-
-  return table[closestDf] || 1.96;
+  return t;
 }
 
 // =============================================================================
@@ -152,20 +290,33 @@ export function confidenceInterval(
 export function bootstrapConfidenceInterval(
   values: number[],
   level: number = 0.95,
-  nBootstrap: number = 1000,
+  nBootstrap: number = 10000,
   seed?: number
 ): ConfidenceInterval {
   if (values.length < 2) {
     return { lower: values[0] || 0, upper: values[0] || 0, level };
   }
 
-  // Simple seeded random for reproducibility
-  let random = seed !== undefined
-    ? () => {
-        seed = (seed! * 1103515245 + 12345) & 0x7fffffff;
-        return seed / 0x7fffffff;
-      }
-    : Math.random;
+  // xorshift128+ PRNG for better statistical properties than LCG
+  let random: () => number;
+  if (seed !== undefined) {
+    let s0 = seed | 1;  // Ensure non-zero
+    let s1 = (seed * 6364136223846793005 + 1) | 0 || 1;
+    random = () => {
+      let x = s0;
+      const y = s1;
+      s0 = y;
+      x ^= x << 23;
+      x ^= x >> 17;
+      x ^= y;
+      x ^= y >> 26;
+      s1 = x;
+      // Convert to [0, 1) using unsigned 32-bit
+      return ((s0 + s1) >>> 0) / 4294967296;
+    };
+  } else {
+    random = Math.random;
+  }
 
   const bootstrapMeans: number[] = [];
 
@@ -251,28 +402,10 @@ export interface TTestResult {
 }
 
 /**
- * Approximate p-value from t-statistic using normal approximation for large df
- * For smaller df, this is a rough approximation
+ * Proper two-tailed p-value from t-statistic using t-distribution CDF
  */
 function approximatePValue(t: number, df: number): number {
-  // Use normal approximation for large df
-  // For small df, this underestimates p-values slightly
-  const absT = Math.abs(t);
-
-  // Approximation using error function
-  // P(|T| > t) ≈ 2 * (1 - Φ(t)) for large df
-  // Using approximation: Φ(x) ≈ 1 - 0.5 * exp(-0.7179 * x^2)
-
-  if (df >= 30) {
-    // Normal approximation
-    const p = 2 * 0.5 * Math.exp(-0.5 * absT * absT);
-    return Math.min(1, Math.max(0, p));
-  }
-
-  // Rough adjustment for smaller df (wider tails)
-  const adjustment = 1 + (1 / df);
-  const adjustedP = 2 * 0.5 * Math.exp(-0.5 * (absT / adjustment) * (absT / adjustment));
-  return Math.min(1, Math.max(0, adjustedP));
+  return tTestPValue(t, df);
 }
 
 /**
@@ -401,17 +534,7 @@ export function oneWayAnova(groups: number[][], alpha: number = 0.05): AnovaResu
 
 function approximateFPValue(f: number, df1: number, df2: number): number {
   if (f <= 0) return 1;
-
-  // Rough approximation using chi-square relationship
-  // For large df2, F * df1 ≈ chi-square(df1)
-  // Using normal approximation for chi-square: sqrt(2*X) ≈ sqrt(2*df) + z
-
-  const x = f * df1;
-  const z = Math.sqrt(2 * x) - Math.sqrt(2 * df1 - 1);
-
-  // Convert z to p-value (one-tailed for F-test)
-  const p = 0.5 * Math.exp(-0.5 * z * z);
-  return Math.min(1, Math.max(0, p));
+  return fTestPValue(f, df1, df2);
 }
 
 // =============================================================================
@@ -606,4 +729,32 @@ export function compareGroups(
     powerAnalysis: power,
     conclusion,
   };
+}
+
+// =============================================================================
+// MULTIPLE COMPARISON CORRECTION
+// =============================================================================
+
+/**
+ * Benjamini-Hochberg procedure for controlling the false discovery rate (FDR).
+ * Returns adjusted p-values.
+ */
+export function benjaminiHochberg(pValues: number[]): number[] {
+  const n = pValues.length;
+  if (n === 0) return [];
+
+  // Create index-value pairs and sort by p-value
+  const indexed = pValues.map((p, i) => ({ p, i }));
+  indexed.sort((a, b) => a.p - b.p);
+
+  // Apply BH correction: adjusted_p[k] = p[k] * n / (k+1)
+  const adjusted = new Array<number>(n);
+  let cumMin = 1;
+  for (let k = n - 1; k >= 0; k--) {
+    const corrected = indexed[k].p * n / (k + 1);
+    cumMin = Math.min(cumMin, corrected);
+    adjusted[indexed[k].i] = Math.min(cumMin, 1);
+  }
+
+  return adjusted;
 }

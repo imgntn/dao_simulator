@@ -601,7 +601,8 @@ export class DAO {
     const unlockStep = this.currentStep + lockupPeriod;
     member.stakeLocks.push({ amount: stake, unlockStep });
 
-    this.treasury.deposit(token, stake, this.currentStep);
+    // Staked tokens tracked on member only, not deposited into treasury
+    // (they remain locked but are not treasury funds)
 
     if (this.eventBus) {
       this.eventBus.publish('tokens_staked', {
@@ -652,7 +653,7 @@ export class DAO {
 
     member.stakeLocks = newLocks;
     member.stakedTokens -= toUnstake;
-    this.treasury.withdraw(token, toUnstake, this.currentStep);
+    // Staked tokens tracked on member only, no treasury withdrawal needed
     member.tokens += toUnstake;
 
     if (this.eventBus) {
@@ -695,9 +696,16 @@ export class DAO {
     // Therefore: perStepRate = (1 + APY)^(1/stepsPerYear) - 1
     const perStepRate = Math.pow(1 + this.stakingInterestRate, 1 / STEPS_PER_YEAR) - 1;
 
-    for (const member of this.members) {
-      if (member.stakedTokens > 0) {
-        const interest = member.stakedTokens * perStepRate;
+    // Cap total interest payout by available treasury balance
+    const token = 'DAO_TOKEN';
+    const treasuryBalance = this.treasury.getBalance(token);
+    const stakingMembers = this.members.filter(m => m.stakedTokens > 0);
+    const maxPerMember = stakingMembers.length > 0 ? treasuryBalance / stakingMembers.length : 0;
+
+    for (const member of stakingMembers) {
+      const interest = Math.min(member.stakedTokens * perStepRate, maxPerMember);
+      if (interest > 0) {
+        this.treasury.withdraw(token, interest, this.currentStep);
         member.stakedTokens += interest;
 
         if (this.eventBus) {

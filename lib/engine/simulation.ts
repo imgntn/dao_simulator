@@ -109,6 +109,7 @@ export class DAOSimulation extends Model {
   priceVolatility: number;
   governanceRuleName: string;
   governanceRule: any;
+  totalEmergencyTopup: number;
 
   // Policy state
   private treasuryEma: number = 0;
@@ -234,6 +235,7 @@ export class DAOSimulation extends Model {
       throw new Error(`Unknown governance rule: ${this.governanceRuleName}`);
     }
     this.governanceRule = rule;
+    this.totalEmergencyTopup = 0;
 
     // Agent counts
     this.numDevelopers = config.num_developers ?? settings.num_developers;
@@ -754,13 +756,15 @@ export class DAOSimulation extends Model {
       });
     }
 
-    if (shortfall > 0 && this.dao.treasuryBuffer <= 0 && policy.emergencyTopupRate > 0) {
+    if (settings.treasuryEmergencyTopupEnabled && shortfall > 0 && this.dao.treasuryBuffer <= 0 && policy.emergencyTopupRate > 0) {
       const topup = shortfall * policy.emergencyTopupRate;
       if (topup > 0) {
         this.dao.treasury.deposit(token, topup, this.currentStep);
+        this.totalEmergencyTopup = (this.totalEmergencyTopup || 0) + topup;
         this.eventBus.publish('treasury_emergency_topup', {
           step: this.currentStep,
           amount: topup,
+          totalTopup: this.totalEmergencyTopup,
           targetReserve,
         });
       }
@@ -870,17 +874,17 @@ export class DAOSimulation extends Model {
 
     // 1. Protocol activity fees: Fee per active proposal (governance participation cost)
     const activeProposals = this.dao.proposals.filter(p => p.status === 'open').length;
-    const proposalFees = activeProposals * 0.5; // 0.5 tokens per active proposal per step
+    const proposalFees = activeProposals * settings.treasuryProposalFee;
 
     // 2. Staking protocol yield: Treasury earns portion of staking rewards
     const totalStaked = this.dao.members.reduce((sum, m) => sum + m.stakedTokens, 0);
-    const treasuryStakingYield = totalStaked * 0.001; // 0.1% per step to treasury
+    const treasuryStakingYield = totalStaked * settings.treasuryStakingYield;
 
     // 3. Membership/protocol fees: Base revenue from DAO operations
-    const memberActivityFee = this.dao.members.length * 0.05; // 0.05 tokens per member per step
+    const memberActivityFee = this.dao.members.length * settings.treasuryMemberFee;
 
     // 4. Transaction fees: Revenue from token transfers and trades
-    const transactionFees = this.dao.members.length * 0.02; // Simulated transaction activity
+    const transactionFees = this.dao.members.length * settings.treasuryTransactionFee;
 
     const totalRevenue = proposalFees + treasuryStakingYield + memberActivityFee + transactionFees;
     if (totalRevenue > 0) {

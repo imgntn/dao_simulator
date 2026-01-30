@@ -160,6 +160,10 @@ export class SybilAttacker extends DAOMember {
 
     this.puppets.set(puppetId, puppet);
 
+    // Register puppet as a DAO member so attack detectors can see voting patterns
+    const puppetMember = new DAOMember(puppetId, this.model, tokensForPuppet, 0, this.location);
+    this.model.dao.addMember(puppetMember);
+
     // Emit event
     if (this.model.eventBus) {
       this.model.eventBus.publish('sybil_puppet_created', {
@@ -456,6 +460,15 @@ export class SybilAttacker extends DAOMember {
     if (!puppet) return false;
 
     puppet.active = false;
+
+    // Remove puppet from DAO members
+    if (this.model.dao) {
+      const puppetMember = this.model.dao.members.find(m => m.uniqueId === puppetId);
+      if (puppetMember) {
+        this.model.dao.removeMember(puppetMember);
+      }
+    }
+
     return true;
   }
 

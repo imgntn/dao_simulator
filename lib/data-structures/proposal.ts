@@ -13,9 +13,10 @@ export class Proposal {
   duration: number;
   project: Project | null;
   status: 'open' | 'approved' | 'rejected' | 'completed' | 'expired' = 'open';
-  votes: Map<string, { vote: boolean; weight: number }> = new Map();
+  votes: Map<string, { vote: boolean | 'abstain'; weight: number }> = new Map();
   votesFor: number = 0;
   votesAgainst: number = 0;
+  votesAbstain: number = 0;
   comments: Array<{ member: string; sentiment: string }> = [];
   delegatedSupport: Map<string, number> = new Map();
   topic: string;
@@ -134,7 +135,7 @@ export class Proposal {
     return this.delegationRevokedFor.has(memberId);
   }
 
-  addVote(memberId: string, vote: boolean, weight: number = 1): boolean {
+  addVote(memberId: string, vote: boolean | 'abstain', weight: number = 1): boolean {
     // Reject votes on closed proposals
     if (this.status !== 'open') {
       return false;
@@ -166,7 +167,9 @@ export class Proposal {
 
       this.votes.set(memberId, { vote, weight: effectiveWeight });
 
-      if (vote) {
+      if (vote === 'abstain') {
+        this.votesAbstain += effectiveWeight;
+      } else if (vote) {
         this.votesFor += effectiveWeight;
       } else {
         this.votesAgainst += effectiveWeight;

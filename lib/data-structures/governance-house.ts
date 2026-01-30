@@ -328,7 +328,7 @@ export class GovernanceHouse {
         total += member.votingPower + member.delegatedPower;
       }
     }
-    return Math.max(total, 1);  // Avoid division by zero
+    return total;
   }
 
   /**

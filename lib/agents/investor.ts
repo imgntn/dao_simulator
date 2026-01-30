@@ -46,7 +46,8 @@ export class Investor extends DAOMember {
     if (openProps.length === 0 || this.investmentBudget <= 0) return;
 
     const proposal = randomChoice(openProps);
-    const investmentAmount = random() * this.investmentBudget;
+    const investmentAmount = Math.min(random() * this.investmentBudget, this.tokens);
+    if (investmentAmount <= 0) return;
 
     proposal.receiveInvestment(this.uniqueId, investmentAmount);
 
@@ -59,6 +60,7 @@ export class Investor extends DAOMember {
       });
     }
 
+    this.tokens -= investmentAmount;
     this.investmentBudget -= investmentAmount;
     // Note: Reputation is updated by ReputationTracker via 'proposal_invested' event
     this.markActive();

@@ -677,12 +677,11 @@ export class OptimisticApprovalRule extends GovernanceRule {
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
-    // Check if veto period has passed
     const age = dao.currentStep - proposal.creationTime;
 
     if (age < this.vetoPeriodSteps) {
-      // Still in veto period - check for vetoes
-      return proposal.votesAgainst < this.vetoThreshold;
+      // Still in veto period - not yet approved (pending)
+      return false;
     }
 
     // Veto period passed - auto-approve if not vetoed

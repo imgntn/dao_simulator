@@ -132,7 +132,7 @@ export class LiquidDelegator extends Delegator {
 
     if (this.representative.reputation < avgReputation * 0.5) {
       // 30% chance to switch if representative is underperforming
-      if (random() < 0.2) {
+      if (random() < 0.3) {
         const newRep = this.chooseRepresentative();
         if (newRep && newRep !== this.representative) {
           this.delegateToMember(newRep);
