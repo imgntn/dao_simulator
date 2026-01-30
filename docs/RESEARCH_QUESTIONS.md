@@ -16,6 +16,11 @@ Selected top 5 (locked):
 7) Delegation stickiness: How does lock-in (and its decay) influence responsiveness, minority representation, and voter fatigue?
 8) Calibration transfer: Which parameter shifts are required to align the simulator with anchor DAO metrics (participation, pass rate, quorum)?
 
+Paper assignments:
+- **Paper 1 (paper_p1/)**: RQ1-RQ3 — Core governance mechanics (participation, capture, proposal pipeline)
+- **Paper 2 (paper_p2/)**: RQ4-RQ5 — Economic and coordination dynamics (treasury, inter-DAO)
+- RQ6-RQ8: Future work / appendix material
+
 Notes:
 - Each RQ can be paired with a primary hypothesis (H1-H5).
 - We can select a smaller set that best fits an AI/agents venue.

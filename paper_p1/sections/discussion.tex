@@ -3,51 +3,49 @@
 
 \subsection{Interpretation of Results}
 
-\subsubsection{Quorum Design Implications}
+\subsubsection{Participation Dynamics (RQ1)}
 
-The model is designed to test whether quorum thresholds should be calibrated to expected participation rates rather than set arbitrarily. A hypothesized non-linear relationship between quorum and pass rate implies:
+The model tests whether participation incentives and delegation policies meaningfully affect turnout and decision quality. Key design implications include:
 
 \begin{itemize}
-    \item DAOs with low participation should use lower quorums
-    \item High-engagement communities can sustain higher thresholds
+    \item DAOs with low participation should use lower quorums calibrated to expected turnout
+    \item Delegation becomes essential above $\sim$100 members to sustain quorum reach
     \item Dynamic quorum mechanisms may be optimal, adjusting based on recent participation
 \end{itemize}
 
-% AUTO-UPDATED: quorum recommendation
+% AUTO-UPDATED: participation findings
 Simulation-conditional numeric recommendations are inserted after calibration targets are locked; values here are placeholders until full results are populated.
 
-\subsubsection{Scale Considerations}
+\subsubsection{Governance Capture Mitigation (RQ2)}
 
-A hypothesized power-law decay of participation with scale has profound implications for DAO design:
-
-\begin{enumerate}
-    \item Large DAOs must invest in engagement mechanisms
-    \item Delegation becomes essential above $\sim$100 members
-    \item Sub-DAOs or working groups may preserve participation
-\end{enumerate}
-
-This expectation aligns with observations from real DAOs like Uniswap and Compound, though formal calibration is pending.
-
-\subsubsection{Voting Mechanism Trade-offs}
-
-We frame fundamental trade-offs for empirical comparison:
+Voting power mitigations create fundamental trade-offs between capture resistance and throughput:
 
 \begin{itemize}
-    \item \textbf{Token voting}: Simple, familiar, but plutocratic
-    \item \textbf{Quadratic voting}: More egalitarian, but complex and susceptible to sybil attacks
-    \item \textbf{Conviction voting}: Favors persistent preferences, but slower decisions
+    \item \textbf{Token caps}: Limit whale influence but may reduce large-holder engagement
+    \item \textbf{Quadratic thresholds}: More egalitarian, but complex and susceptible to sybil attacks
+    \item \textbf{Velocity penalties}: Discourage rapid accumulation but slow legitimate growth
 \end{itemize}
 
-No single mechanism dominates; the choice depends on the DAO's values and context.
+No single mitigation dominates; the choice depends on the DAO's threat model and governance goals.
+
+\subsubsection{Proposal Pipeline Design (RQ3)}
+
+The temp-check $\rightarrow$ on-chain pipeline introduces a pre-filtering stage that may reduce on-chain noise at the cost of increased time-to-decision. Key considerations:
+
+\begin{enumerate}
+    \item Temp-check stages filter low-quality proposals before they consume on-chain governance bandwidth
+    \item Fast-track mechanisms can offset latency for urgent proposals
+    \item Abandonment rates may increase if the pipeline creates excessive friction
+\end{enumerate}
 
 \subsection{Theoretical Contributions}
 
 This work contributes to theory in several ways:
 
 \begin{enumerate}
-    \item \textbf{Quantified trade-offs}: A framework for numerical estimates of previously qualitative relationships
-    \item \textbf{Scale effects}: A systematic study design for participation decay in DAO simulations
-    \item \textbf{Mechanism comparison}: A controlled comparison setup across voting systems
+    \item \textbf{Participation models}: A framework for quantifying how incentives and delegation affect turnout and decision quality
+    \item \textbf{Capture--throughput trade-offs}: Systematic measurement of governance capture mitigation costs
+    \item \textbf{Pipeline analysis}: Controlled comparison of proposal filtering mechanisms and their effects on governance efficiency
 \end{enumerate}
 
 \subsection{Practical Implications}
@@ -55,10 +53,10 @@ This work contributes to theory in several ways:
 For DAO practitioners, this framework suggests:
 
 \begin{enumerate}
-    \item \textbf{Start with low quorums}: Begin conservatively and increase if participation supports it
-    \item \textbf{Plan for scale}: Design delegation and engagement systems before they're needed
-    \item \textbf{Match mechanism to values}: Choose voting systems aligned with community goals
-    \item \textbf{Iterate with data}: Use simulation to test changes before on-chain deployment
+    \item \textbf{Calibrate quorums to participation}: Set thresholds based on expected turnout rather than arbitrary values
+    \item \textbf{Layer capture mitigations}: Combine caps, quadratic scaling, and velocity penalties rather than relying on one
+    \item \textbf{Add temp-check stages}: Pre-filter proposals to reduce on-chain governance load
+    \item \textbf{Iterate with data}: Use simulation to test governance changes before on-chain deployment
 \end{enumerate}
 
 \noindent
