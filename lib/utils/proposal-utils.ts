@@ -26,9 +26,17 @@ export function createRandomProposal(
   const [minRatio, maxRatio] = fundingRange || [0.005, 0.05];
   const fundingRatio = randomFloat(minRatio, maxRatio);
   const fundingRequired = Math.round(treasuryFunds * fundingRatio * 100) / 100;
-  const duration = durationOverride && durationOverride > 0
-    ? durationOverride
-    : randomInt(1, 13);
+
+  // Use DAO proposal policy for duration if no override provided
+  // Fall back to reasonable defaults if policy not available
+  let duration: number;
+  if (durationOverride && durationOverride > 0) {
+    duration = durationOverride;
+  } else {
+    const minDuration = dao.proposalPolicy?.durationMinSteps ?? 24;
+    const maxDuration = dao.proposalPolicy?.durationMaxSteps ?? 96;
+    duration = randomInt(minDuration, maxDuration + 1);
+  }
 
   const tempFraction = dao.proposalPolicy?.tempCheckFraction ?? 0.25;
   const tempDuration = Math.max(1, Math.round(duration * tempFraction));
@@ -83,8 +91,10 @@ export function hasQuorum(
   quorumPercentage: number = 0.5
 ): boolean {
   const totalVotes = proposal.votesFor + proposal.votesAgainst;
-  const totalMembers = dao.members.length;
-  const participationRate = totalVotes / Math.max(totalMembers, 1);
+  const totalSupply = dao.members.reduce(
+    (sum, m) => sum + m.tokens + m.stakedTokens, 0
+  );
+  const participationRate = totalVotes / Math.max(totalSupply, 1);
   return participationRate >= quorumPercentage;
 }
 
@@ -102,7 +112,7 @@ export function getProposalsByStatus(
  * Get active proposals (pending status)
  */
 export function getActiveProposals(dao: DAO): Proposal[] {
-  return getProposalsByStatus(dao, 'pending');
+  return getProposalsByStatus(dao, 'open');
 }
 
 /**

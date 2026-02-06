@@ -25,6 +25,7 @@ export { RLTrader } from './rl-trader';
 
 // New specialized agents
 export { GovernanceExpert } from './governance-expert';
+export { GovernanceWhale } from './governance-whale';
 export { RiskManager } from './risk-manager';
 export { MarketMaker } from './market-maker';
 export { Whistleblower } from './whistleblower';

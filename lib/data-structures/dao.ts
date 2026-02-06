@@ -38,6 +38,8 @@ export interface ProposalPolicyConfig {
   fastTrackMinSteps: number;
   fastTrackApproval: number;
   fastTrackQuorum: number;
+  durationMinSteps: number;
+  durationMaxSteps: number;
 }
 
 export interface ParticipationPolicyConfig {
@@ -88,6 +90,10 @@ export class DAO {
   private cachedVotingPower: number = 0;
   private cachedVotingPowerStep: number = -1;
 
+  // OPTIMIZATION: Cache open proposals per step to avoid repeated filtering
+  private _cachedOpenProposals: Proposal[] = [];
+  private _cachedOpenProposalsStep: number = -1;
+
   treasuryPolicy: TreasuryPolicyConfig = {
     enabled: false,
     targetReserve: 0,
@@ -107,6 +113,8 @@ export class DAO {
     fastTrackMinSteps: 0,
     fastTrackApproval: 0.6,
     fastTrackQuorum: 0.2,
+    durationMinSteps: 24,
+    durationMaxSteps: 96,
   };
   participationPolicy: ParticipationPolicyConfig = {
     targetRate: 0,
@@ -126,6 +134,13 @@ export class DAO {
   treasuryBuffer: number = 0;
   delegationLockSteps: number = 0;
   proposalTopicConfig?: TopicConfig[];
+
+  // Monotonic counters for unique ID generation (prevents collisions after removals)
+  private _nextProposalId: number = 0;
+  private _nextProjectId: number = 0;
+
+  // Track removed members for scheduler sync
+  lastRemovedMembers: DAOMember[] = [];
 
   // Pending removal queues for safe iteration
   private pendingProposalRemovals: Set<Proposal> = new Set();
@@ -193,6 +208,19 @@ export class DAO {
   }
 
   /**
+   * OPTIMIZATION: Get open proposals with per-step caching
+   * Avoids O(n) filter on every agent's voteOnRandomProposal call
+   */
+  getOpenProposals(): Proposal[] {
+    if (this._cachedOpenProposalsStep === this.currentStep) {
+      return this._cachedOpenProposals;
+    }
+    this._cachedOpenProposals = this.proposals.filter(p => p.status === 'open');
+    this._cachedOpenProposalsStep = this.currentStep;
+    return this._cachedOpenProposals;
+  }
+
+  /**
    * Get summary of DAO state for broadcasting
    */
   getState(): {
@@ -223,7 +251,7 @@ export class DAO {
     proposal.creationTime = this.currentStep;
     proposal.lastActivityStep = this.currentStep;
     if (!proposal.uniqueId) {
-      proposal.uniqueId = `proposal_${this.proposals.length}`;
+      proposal.uniqueId = `proposal_${this._nextProposalId++}`;
     }
 
     // Take voting power snapshot at proposal creation
@@ -274,7 +302,7 @@ export class DAO {
 
   addProject(project: Project): void {
     if (!project.uniqueId) {
-      project.uniqueId = `project_${this.projects.length}`;
+      project.uniqueId = `project_${this._nextProjectId++}`;
     }
     this.projects.push(project);
   }
@@ -404,10 +432,12 @@ export class DAO {
     this.pendingProjectRemovals.clear();
 
     // Process member removals
+    this.lastRemovedMembers = [];
     for (const member of this.pendingMemberRemovals) {
       const index = this.members.indexOf(member);
       if (index > -1) {
         this.members.splice(index, 1);
+        this.lastRemovedMembers.push(member);
       }
     }
     this.pendingMemberRemovals.clear();
@@ -568,15 +598,18 @@ export class DAO {
 
   distributeRevenue(amount: number, token: string): number {
     const totalStaked = this.members.reduce((sum, m) => sum + m.stakedTokens, 0);
+    if (amount <= 0 || totalStaked <= 0) return 0;
 
-    if (amount <= 0 || totalStaked <= 0) {
-      return 0;
-    }
+    // Withdraw from treasury first — can't distribute what isn't available
+    const available = this.treasury.getTokenBalance(token);
+    const distributable = Math.min(amount, available);
+    if (distributable <= 0) return 0;
+    this.treasury.withdraw(token, distributable, this.currentStep);
 
     for (const member of this.members) {
       if (member.stakedTokens <= 0) continue;
 
-      const share = amount * (member.stakedTokens / totalStaked);
+      const share = distributable * (member.stakedTokens / totalStaked);
       member.tokens += share;
 
       if (this.eventBus) {
@@ -589,7 +622,7 @@ export class DAO {
       }
     }
 
-    return amount;
+    return distributable;
   }
 
   buybackTokens(amount: number, token: string = 'DAO_TOKEN'): void {
@@ -703,23 +736,29 @@ export class DAO {
     // Therefore: perStepRate = (1 + APY)^(1/stepsPerYear) - 1
     const perStepRate = Math.pow(1 + this.stakingInterestRate, 1 / STEPS_PER_YEAR) - 1;
 
-    // Cap total interest payout by available treasury balance
-    const token = 'DAO_TOKEN';
+    // Use DAO's primary token, cap total interest payout proportionally
+    const token = this.getPrimaryTokenSymbol();
     const treasuryBalance = this.treasury.getTokenBalance(token);
     const stakingMembers = this.members.filter(m => m.stakedTokens > 0);
-    const maxPerMember = stakingMembers.length > 0 ? treasuryBalance / stakingMembers.length : 0;
+    const totalStaked = stakingMembers.reduce((sum, m) => sum + m.stakedTokens, 0);
+    if (totalStaked <= 0 || treasuryBalance <= 0) return;
 
+    let totalWithdrawn = 0;
     for (const member of stakingMembers) {
-      const interest = Math.min(member.stakedTokens * perStepRate, maxPerMember);
-      if (interest > 0) {
-        this.treasury.withdraw(token, interest, this.currentStep);
-        member.stakedTokens += interest;
+      const interest = member.stakedTokens * perStepRate;
+      // Cap proportionally to treasury balance
+      const maxFromTreasury = treasuryBalance * (member.stakedTokens / totalStaked);
+      const capped = Math.min(interest, maxFromTreasury);
+      if (capped > 0 && totalWithdrawn + capped <= treasuryBalance) {
+        this.treasury.withdraw(token, capped, this.currentStep);
+        member.stakedTokens += capped;
+        totalWithdrawn += capped;
 
         if (this.eventBus) {
           this.eventBus.publish('staking_interest', {
             step: this.currentStep,
             member: member.uniqueId,
-            amount: interest,
+            amount: capped,
             perStepRate,
             annualRate: this.stakingInterestRate,
           });

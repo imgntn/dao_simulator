@@ -14,7 +14,7 @@ import { EventLogger, IndexedDBEventLogger } from '../utils/event-logger';
 import { AgentManager } from '../utils/agent-manager';
 import { settings, SimulationSettings } from '../config/settings';
 import * as constants from '../config/constants';
-import { getRule, GovernanceRuleConfig } from '../utils/governance-plugins';
+import { getRule, GovernanceRuleConfig, QuadraticVotingRule } from '../utils/governance-plugins';
 import { setSeed, resetGlobalRandom, getRandomState, setRandomState, random } from '../utils/random';
 import { GovernanceProcessor, createGovernanceProcessor } from '../governance';
 import { DelegationResolver } from '../delegation/delegation-resolver';
@@ -39,12 +39,13 @@ import {
   Speculator,
   RLTrader,
   GovernanceExpert,
+  GovernanceWhale,
   RiskManager,
   MarketMaker,
   Whistleblower,
   StakerAgent,
 } from '../agents';
-import type { DAOMember } from '../agents/base';
+import { DAOMember } from '../agents/base';
 import type { DAOModel } from './model';
 import type { Proposal } from '../data-structures/proposal';
 
@@ -110,10 +111,11 @@ export class DAOSimulation extends Model {
   governanceRuleName: string;
   governanceRule: any;
   totalEmergencyTopup: number;
+  private emergencyTopupTotal: number = 0;
+  private readonly EMERGENCY_TOPUP_LIFETIME_CAP = 500000;
 
   // Policy state
   private treasuryEma: number = 0;
-  private votesThisStep: number = 0;
   private votersThisStep: Set<string> = new Set();
 
   // Agent counts
@@ -138,6 +140,7 @@ export class DAOSimulation extends Model {
   numStakers: number;
   numRLTraders: number;
   numGovernanceExperts: number;
+  numGovernanceWhales: number;
   numRiskManagers: number;
   numMarketMakers: number;
   numWhistleblowers: number;
@@ -181,8 +184,9 @@ export class DAOSimulation extends Model {
     // Use the DAO's event bus
     this.eventBus = this.dao.eventBus;
 
-    // Clear delegation cache to avoid cross-simulation contamination
+    // Clear caches to avoid cross-simulation contamination
     DelegationResolver.clearCache();
+    DAOMember.clearMemberLookupCache();
 
     // CRITICAL: Reset global random state before setting seed
     // This ensures each simulation starts fresh and is reproducible
@@ -259,6 +263,7 @@ export class DAOSimulation extends Model {
     this.numStakers = config.num_stakers ?? settings.num_stakers;
     this.numRLTraders = config.num_rl_traders ?? settings.num_rl_traders;
     this.numGovernanceExperts = config.num_governance_experts ?? settings.num_governance_experts;
+    this.numGovernanceWhales = config.num_governance_whales ?? settings.num_governance_whales;
     this.numRiskManagers = config.num_risk_managers ?? settings.num_risk_managers;
     this.numMarketMakers = config.num_market_makers ?? settings.num_market_makers;
     this.numWhistleblowers = config.num_whistleblowers ?? settings.num_whistleblowers;
@@ -293,6 +298,8 @@ export class DAOSimulation extends Model {
       fastTrackMinSteps: config.proposal_fast_track_min_steps ?? settings.proposal_fast_track_min_steps,
       fastTrackApproval: config.proposal_fast_track_approval ?? settings.proposal_fast_track_approval,
       fastTrackQuorum: config.proposal_fast_track_quorum ?? settings.proposal_fast_track_quorum,
+      durationMinSteps: config.proposal_duration_min_steps ?? settings.proposal_duration_min_steps,
+      durationMaxSteps: config.proposal_duration_max_steps ?? settings.proposal_duration_max_steps,
     };
     this.dao.participationPolicy = {
       targetRate: config.participation_target_rate ?? settings.participation_target_rate,
@@ -429,6 +436,7 @@ export class DAOSimulation extends Model {
       { class: StakerAgent as AgentClass, count: this.numStakers, params: {} },
       { class: RLTrader as AgentClass, count: this.numRLTraders, params: { learningRate: this.adaptiveLearningRate, epsilon: this.adaptiveEpsilon } },
       { class: GovernanceExpert as AgentClass, count: this.numGovernanceExperts, params: {} },
+      { class: GovernanceWhale as AgentClass, count: this.numGovernanceWhales, params: {} },
       { class: RiskManager as AgentClass, count: this.numRiskManagers, params: {} },
       { class: MarketMaker as AgentClass, count: this.numMarketMakers, params: {} },
       { class: Whistleblower as AgentClass, count: this.numWhistleblowers, params: {} },
@@ -534,6 +542,24 @@ export class DAOSimulation extends Model {
           reason: 'inactivity',
         });
         this.settleProposalBond(proposal, false, 'inactivity');
+        // Return delegated support to delegators
+        if (proposal.delegatedSupport) {
+          for (const [delegatorId, amount] of proposal.delegatedSupport) {
+            if (amount > 0) {
+              const member = this.dao.members.find(m => m.uniqueId === delegatorId);
+              if (member) {
+                member.tokens += amount;
+                if ('delegationBudget' in member && 'maxDelegationBudget' in member) {
+                  (member as any).delegationBudget = Math.min(
+                    (member as any).delegationBudget + amount,
+                    (member as any).maxDelegationBudget
+                  );
+                }
+              }
+            }
+          }
+          proposal.delegatedSupport.clear();
+        }
         continue;
       }
 
@@ -554,8 +580,10 @@ export class DAOSimulation extends Model {
 
       // Check quorum FIRST before applying governance rule
       // This ensures proposals that fail quorum are marked as 'expired', not 'rejected'
+      // Skip pre-check for QuadraticVotingRule — it uses sqrt'd weights and handles its own quorum
+      const isQuadraticRule = this.governanceRule instanceof QuadraticVotingRule;
       const quorumConfig = (this.governanceRule as any).quorumPercentage;
-      if (quorumConfig !== undefined && quorumConfig > 0) {
+      if (!isQuadraticRule && quorumConfig !== undefined && quorumConfig > 0) {
         // Use snapshot total supply if available for consistency with snapshot-based voting weights.
         // Falls back to live supply for proposals without snapshots (backwards compatibility).
         const totalTokens = (proposal.snapshotTaken && proposal.totalSupplySnapshot > 0)
@@ -582,8 +610,29 @@ export class DAOSimulation extends Model {
             reason: 'quorum_not_met',
           });
           this.settleProposalBond(proposal, false, 'quorum_not_met');
+          // Return delegated support to delegators
+          if (proposal.delegatedSupport) {
+            for (const [delegatorId, amount] of proposal.delegatedSupport) {
+              if (amount > 0) {
+                const member = this.dao.members.find(m => m.uniqueId === delegatorId);
+                if (member) {
+                  member.tokens += amount;
+                  if ('delegationBudget' in member && 'maxDelegationBudget' in member) {
+                    (member as any).delegationBudget = Math.min(
+                      (member as any).delegationBudget + amount,
+                      (member as any).maxDelegationBudget
+                    );
+                  }
+                }
+              }
+            }
+            proposal.delegatedSupport.clear();
+          }
           continue; // Skip to next proposal
         }
+      } else if (isQuadraticRule) {
+        // Let QuadraticVotingRule handle its own quorum check
+        proposal.quorumMet = true;
       } else {
         proposal.quorumMet = true;
       }
@@ -612,6 +661,26 @@ export class DAOSimulation extends Model {
       }
 
       this.settleProposalBond(proposal, true, approved ? 'approved' : 'rejected');
+
+      // Return delegated support to delegators
+      if (proposal.delegatedSupport) {
+        for (const [delegatorId, amount] of proposal.delegatedSupport) {
+          if (amount > 0) {
+            const member = this.dao.members.find(m => m.uniqueId === delegatorId);
+            if (member) {
+              member.tokens += amount;
+              // Restore delegation budget if member is a Delegator
+              if ('delegationBudget' in member && 'maxDelegationBudget' in member) {
+                (member as any).delegationBudget = Math.min(
+                  (member as any).delegationBudget + amount,
+                  (member as any).maxDelegationBudget
+                );
+              }
+            }
+          }
+        }
+        proposal.delegatedSupport.clear();
+      }
 
       // Update reputation based on voting outcomes
       this.updateReputationFromVoting(proposal, approved);
@@ -700,14 +769,13 @@ export class DAOSimulation extends Model {
       available > 0
     ) {
       const buybackAmount = Math.min(funds * constants.BUYBACK_PERCENTAGE, maxSpend);
-      const bought = buybackAmount / price;
 
-      treasury.withdraw(token, buybackAmount, this.currentStep);
+      const burned = treasury.burnTokens(token, buybackAmount, this.currentStep);
 
       this.eventBus.publish('buyback_executed', {
         step: this.currentStep,
         amount: buybackAmount,
-        tokens: bought,
+        burned,
         price,
       });
     }
@@ -737,7 +805,8 @@ export class DAOSimulation extends Model {
       const moved = excess * policy.bufferFillRate;
       if (moved > 0) {
         this.dao.treasury.withdraw(token, moved, this.currentStep);
-        this.dao.treasuryBuffer += moved;
+        this.dao.treasury.deposit('DAO_BUFFER', moved, this.currentStep);
+        this.dao.treasuryBuffer = this.dao.treasury.getTokenBalance('DAO_BUFFER');
         this.eventBus.publish('treasury_buffer_filled', {
           step: this.currentStep,
           amount: moved,
@@ -748,27 +817,39 @@ export class DAOSimulation extends Model {
     }
 
     const shortfall = targetReserve - funds;
-    if (shortfall > 0 && this.dao.treasuryBuffer > 0) {
-      const released = Math.min(shortfall, this.dao.treasuryBuffer);
-      this.dao.treasury.deposit(token, released, this.currentStep);
-      this.dao.treasuryBuffer -= released;
+    const bufferAvailable = this.dao.treasury.getTokenBalance('DAO_BUFFER');
+    if (shortfall > 0 && bufferAvailable > 0) {
+      const draw = Math.min(shortfall, bufferAvailable);
+      this.dao.treasury.withdraw('DAO_BUFFER', draw, this.currentStep);
+      this.dao.treasury.deposit(token, draw, this.currentStep);
+      this.dao.treasuryBuffer = this.dao.treasury.getTokenBalance('DAO_BUFFER');
       this.eventBus.publish('treasury_buffer_released', {
         step: this.currentStep,
-        amount: released,
+        amount: draw,
         buffer: this.dao.treasuryBuffer,
         targetReserve,
       });
     }
 
-    if (settings.treasuryEmergencyTopupEnabled && shortfall > 0 && this.dao.treasuryBuffer <= 0 && policy.emergencyTopupRate > 0) {
-      const topup = shortfall * policy.emergencyTopupRate;
+    if (settings.treasuryEmergencyTopupEnabled && shortfall > 0 && bufferAvailable <= 0 && policy.emergencyTopupRate > 0) {
+      let topup = shortfall * policy.emergencyTopupRate;
+      // Apply lifetime cap
+      const remaining = this.EMERGENCY_TOPUP_LIFETIME_CAP - this.emergencyTopupTotal;
+      if (remaining <= 0) {
+        topup = 0;
+      } else if (topup > remaining) {
+        topup = remaining;
+      }
       if (topup > 0) {
-        this.dao.treasury.deposit(token, topup, this.currentStep);
+        this.dao.treasury.mintTokens(token, topup, this.currentStep);
+        this.emergencyTopupTotal += topup;
         this.totalEmergencyTopup = (this.totalEmergencyTopup || 0) + topup;
         this.eventBus.publish('treasury_emergency_topup', {
           step: this.currentStep,
           amount: topup,
           totalTopup: this.totalEmergencyTopup,
+          lifetimeTopup: this.emergencyTopupTotal,
+          lifetimeCap: this.EMERGENCY_TOPUP_LIFETIME_CAP,
           targetReserve,
         });
       }
@@ -837,11 +918,14 @@ export class DAOSimulation extends Model {
    * this method MUST be awaited to ensure agents complete their steps.
    */
   async step(): Promise<void> {
+    // CRITICAL: Sync DAO's currentStep with simulation's currentStep at START of step
+    // This ensures governance rules that use dao.currentStep see the correct value
+    this.dao.currentStep = this.currentStep;
+
     // Clear per-step caches at step boundaries for consistent calculations
     // DelegationResolver memoizes voting power calculations within a step
     DelegationResolver.setCurrentStep(this.currentStep, this.dao.daoId);
     this.votersThisStep.clear();
-    this.votesThisStep = 0;
 
     // Process scheduled events
     if (this.eventEngine) {
@@ -861,12 +945,16 @@ export class DAOSimulation extends Model {
 
     // Token emission
     if (this.tokenEmissionRate > 0) {
-      this.dao.treasury.deposit('DAO_TOKEN', this.tokenEmissionRate, this.currentStep);
+      this.dao.treasury.mintTokens('DAO_TOKEN', this.tokenEmissionRate, this.currentStep);
     }
 
-    // Token burning
+    // Token burning (capped to available balance)
     if (this.tokenBurnRate > 0) {
-      this.dao.treasury.withdraw('DAO_TOKEN', this.tokenBurnRate, this.currentStep);
+      const available = this.dao.treasury.getTokenBalance('DAO_TOKEN');
+      const burnAmount = Math.min(this.tokenBurnRate, available);
+      if (burnAmount > 0) {
+        this.dao.treasury.withdraw('DAO_TOKEN', burnAmount, this.currentStep);
+      }
     }
 
     // Staking rewards (annual APY converted to per-step rate in DAO)
@@ -892,11 +980,12 @@ export class DAOSimulation extends Model {
 
     const totalRevenue = proposalFees + treasuryStakingYield + memberActivityFee + transactionFees;
     if (totalRevenue > 0) {
-      this.dao.treasury.deposit('DAO_TOKEN', totalRevenue, this.currentStep);
+      this.dao.treasury.mintTokens('DAO_TOKEN', totalRevenue, this.currentStep);
 
       // Emit revenue event for tracking
       this.eventBus.publish('treasury_revenue', {
         step: this.currentStep,
+        source: 'emission',
         proposalFees,
         stakingYield: treasuryStakingYield,
         memberFees: memberActivityFee,
@@ -918,7 +1007,6 @@ export class DAOSimulation extends Model {
     this.agentManager.addNewMembers();
     this.agentManager.cullMembers();
 
-    this.votesThisStep = this.votersThisStep.size;
     this.applyParticipationPolicy();
     this.updateTokenVelocityForMembers();
 
@@ -939,17 +1027,24 @@ export class DAOSimulation extends Model {
     // Treasury buybacks
     this.performBuybacks();
 
+    // Process pending removals from this step
+    this.dao.processPendingRemovals();
+
+    // Sync scheduler with removed members
+    for (const member of this.dao.lastRemovedMembers) {
+      this.schedule.remove(member);
+    }
+
     // Collect data
     this.dataCollector.collect(this.dao);
 
     // Update step counter
+    const completedStep = this.currentStep;
     this.currentStep++;
-    // CRITICAL: Sync DAO's currentStep with simulation's currentStep
-    // This is needed for governance rules that use dao.currentStep (e.g., ConvictionVotingRule)
     this.dao.currentStep = this.currentStep;
 
-    // Emit step_end event
-    this.eventBus.publish('step_end', { step: this.currentStep });
+    // Emit step_end event with the step that just completed
+    this.eventBus.publish('step_end', { step: completedStep });
 
     // Checkpoint if needed
     if (this.checkpointInterval > 0 && this.currentStep % this.checkpointInterval === 0) {
