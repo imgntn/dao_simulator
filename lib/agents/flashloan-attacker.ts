@@ -428,7 +428,7 @@ export class FlashLoanAttacker extends DAOMember {
       // Assume some profit from successful manipulation
       const profit = this.activeLoan.amount * 0.01 - this.activeLoan.fee;
       this.totalProfit += profit;
-      this.tokens += Math.max(0, profit);
+      // No economic profit in simulation — flash loan attacks affect governance only
 
       if (this.model.eventBus) {
         this.model.eventBus.publish('flashloan_attack_succeeded', {

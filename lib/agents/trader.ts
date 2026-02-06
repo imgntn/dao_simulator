@@ -30,6 +30,9 @@ export class Trader extends DAOMember {
   step(): void {
     if (!this.model.dao) return;
 
+    // Traders participate in governance like other token holders
+    this.voteOnRandomProposal();
+
     const treasury = this.model.dao.treasury;
     if (treasury.pools.size === 0) return;
 

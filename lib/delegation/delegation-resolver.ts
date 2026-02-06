@@ -69,15 +69,24 @@ export class DelegationResolver {
    * @param visited - Set of already-visited member IDs (for cycle detection)
    * @returns Total voting power including delegated tokens
    */
-  static resolveVotingPower(member: DAOMember, visited: Set<string> = new Set()): number {
+  static resolveVotingPower(member: DAOMember): number {
     // Cache key includes daoId for multi-DAO isolation
     const cacheKey = `${member.daoId}:${member.uniqueId}`;
 
-    // Check memoization cache first (only for top-level calls without visited set)
-    if (visited.size === 0 && this.votingPowerCache.has(cacheKey)) {
+    // Check memoization cache first
+    if (this.votingPowerCache.has(cacheKey)) {
       return this.votingPowerCache.get(cacheKey)!;
     }
 
+    const result = this.resolveVotingPowerUncached(member, new Set());
+
+    // Cache result
+    this.votingPowerCache.set(cacheKey, result);
+
+    return result;
+  }
+
+  private static resolveVotingPowerUncached(member: DAOMember, visited: Set<string>): number {
     // Cycle detection: if we've seen this member, don't count again
     if (visited.has(member.uniqueId)) {
       return 0;
@@ -90,23 +99,23 @@ export class DelegationResolver {
     // Add power from all delegators (members who delegated TO this member)
     // This is stored in the delegates array
     for (const delegator of member.delegates) {
-      // Get the amount this delegator delegated to this member
+      // Get the amount this delegator delegated to this member (TOKEN delegation)
       const delegatedAmount = delegator.delegations.get(member.uniqueId) || 0;
 
       if (delegatedAmount > 0) {
-        // Add the delegated amount directly (tokens were already transferred)
+        // TOKEN DELEGATION: Add the delegated amount directly (tokens were already transferred)
         totalPower += delegatedAmount;
+      } else if (delegator.representative === member) {
+        // LIQUID DELEGATION: Add delegator's full voting power (no tokens moved, just vote authority)
+        // This handles the case where a LiquidDelegator sets this member as their representative
+        // We add their tokens + staked tokens directly (not recursively, to avoid double-counting)
+        totalPower += delegator.tokens + delegator.stakedTokens;
       }
 
       // For transitive chains, we need to get what was delegated TO the delegator
       // (not the delegator's own tokens, since they already gave those away)
       // This handles A -> B -> C: C gets B's delegated amount, plus what A delegated to B
       totalPower += this.getReceivedDelegations(delegator, visited);
-    }
-
-    // Cache result for top-level calls
-    if (visited.size === 1) {
-      this.votingPowerCache.set(cacheKey, totalPower);
     }
 
     return totalPower;
@@ -130,7 +139,9 @@ export class DelegationResolver {
       }
 
       // Recursively get what was delegated to the delegator
-      total += this.getReceivedDelegations(delegator, new Set(visited));
+      // Pass the SAME visited set to prevent double-counting in diamond patterns
+      visited.add(delegator.uniqueId);
+      total += this.getReceivedDelegations(delegator, visited);
     }
 
     return total;

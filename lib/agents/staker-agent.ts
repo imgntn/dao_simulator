@@ -51,8 +51,10 @@ export class StakerAgent extends DAOMember {
   ) {
     super(uniqueId, model, tokens, reputation, location, 'majority', daoId);
 
-    // Set initial staked tokens
-    this.stakedTokens = stakedTokens;
+    // Set initial staked tokens — deduct from available tokens
+    const stakeAmount = Math.min(stakedTokens, this.tokens);
+    this.stakedTokens = stakeAmount;
+    this.tokens -= stakeAmount;
     this.stakedSince = model.currentStep;
 
     // Behavioral traits
@@ -77,8 +79,8 @@ export class StakerAgent extends DAOMember {
       this.monitorForVeto();
     }
 
-    // Occasionally vote on governance
-    if (random() < 0.05) {
+    // Occasionally vote on governance (use configurable activity)
+    if (random() < (this.model.dao?.votingActivity ?? 0.05)) {
       this.voteOnRandomProposal();
     }
   }

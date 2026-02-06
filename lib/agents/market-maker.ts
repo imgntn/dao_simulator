@@ -35,6 +35,7 @@ export class MarketMaker extends DAOMember {
   targetLiquidityRatio: number;
   riskAversion: number;  // 0-1, higher = more conservative
   lastPrices: Map<string, number> = new Map();
+  private pendingFees: number = 0;
 
   constructor(
     uniqueId: string,
@@ -133,66 +134,27 @@ export class MarketMaker extends DAOMember {
     if (!this.model.dao) return;
 
     const treasury = this.model.dao.treasury;
-    const poolKeys = Array.from(treasury.pools.keys());
+    const liquidityAmount = Math.min(this.tokens * 0.5, 1000);
+    if (liquidityAmount <= 0) return;
 
-    if (poolKeys.length === 0) return;
+    // Agent contributes DAO_TOKEN from own balance
+    this.tokens -= liquidityAmount;
+    treasury.deposit('DAO_TOKEN', liquidityAmount, this.model.currentStep);
 
-    const poolKey = randomChoice(poolKeys);
-    const parts = poolKey.split('|');
-    if (parts.length !== 2) return;
-
-    const [tokenA, tokenB] = parts;
-    const liquidityAmount = this.tokens * this.targetLiquidityRatio * 0.5;
-
-    if (liquidityAmount < 1) return;
-
-    try {
-      // Deposit tokens
-      treasury.deposit(tokenA, liquidityAmount, this.model.currentStep);
-      treasury.deposit(tokenB, liquidityAmount, this.model.currentStep);
-
-      // Add liquidity
-      const lpTokens = treasury.addLiquidity(
-        tokenA, tokenB,
-        liquidityAmount, liquidityAmount,
-        this.model.currentStep
-      );
-
-      this.tokens -= liquidityAmount * 2;
-
-      // Track position
-      const currentPrice = treasury.getPoolPrice(poolKey) || 1;
-      this.positions.set(poolKey, {
-        poolKey,
-        tokenA,
-        tokenB,
-        amountA: liquidityAmount,
-        amountB: liquidityAmount,
-        entryPrice: currentPrice,
-        lpTokens,
-      });
-
-      // Emit event
-      if (this.model.eventBus) {
-        this.model.eventBus.publish('liquidity_added', {
-          step: this.model.currentStep,
-          marketMaker: this.uniqueId,
-          poolKey,
-          amountA: liquidityAmount,
-          amountB: liquidityAmount,
-        });
-      }
-
-      this.markActive();
-    } catch {
-      // Failed to add liquidity, recover deposits
-      try {
-        treasury.withdraw(tokenA, liquidityAmount, this.model.currentStep);
-        treasury.withdraw(tokenB, liquidityAmount, this.model.currentStep);
-      } catch {
-        // Ignore withdrawal failures
-      }
+    // Treasury provides matching USDC from its own balance
+    const usdcAvailable = treasury.getTokenBalance('USDC');
+    const usdcAmount = Math.min(liquidityAmount, usdcAvailable);
+    if (usdcAmount <= 0) {
+      // Can't add liquidity without matching pair, return tokens
+      this.tokens += liquidityAmount;
+      treasury.withdraw('DAO_TOKEN', liquidityAmount, this.model.currentStep);
+      return;
     }
+
+    treasury.addLiquidity('DAO_TOKEN', 'USDC', liquidityAmount, usdcAmount);
+
+    this.stats.totalVolume += liquidityAmount;
+    this.markActive();
   }
 
   /**
@@ -231,13 +193,10 @@ export class MarketMaker extends DAOMember {
    * Collect trading fees (simulated based on pool activity)
    */
   private collectFees(): void {
-    if (!this.model.dao) return;
-
-    for (const [, position] of this.positions) {
-      // Simulate fee collection based on position size
-      const feeEarned = (position.amountA + position.amountB) * FEE_RATE * random() * 0.1;
-      this.stats.feesEarned += feeEarned;
-      this.tokens += feeEarned;
+    if (this.pendingFees > 0) {
+      this.tokens += this.pendingFees;
+      this.stats.feesEarned += this.pendingFees;
+      this.pendingFees = 0;
     }
   }
 
@@ -256,26 +215,36 @@ export class MarketMaker extends DAOMember {
     if (deviation > SPREAD_TARGET && this.tokens > 10) {
       const tradeAmount = Math.min(this.tokens * 0.1, 10);
 
+      if (this.tokens < tradeAmount) return;
+
       try {
         if (price < 1.0) {
           // Buy DAO_TOKEN (it's cheap)
+          this.tokens -= tradeAmount;
           treasury.deposit('USDC', tradeAmount, this.model.currentStep);
           const out = treasury.swap('USDC', 'DAO_TOKEN', tradeAmount, this.model.currentStep);
           if (out > 0) {
-            this.tokens -= tradeAmount;
             this.tokens += treasury.withdraw('DAO_TOKEN', out, this.model.currentStep);
+            this.pendingFees += out * 0.003;
             this.stats.totalVolume += tradeAmount;
             this.stats.tradesExecuted++;
+          } else {
+            treasury.withdraw('USDC', tradeAmount, this.model.currentStep);
+            this.tokens += tradeAmount;
           }
         } else {
           // Sell DAO_TOKEN (it's expensive)
+          this.tokens -= tradeAmount;
           treasury.deposit('DAO_TOKEN', tradeAmount, this.model.currentStep);
           const out = treasury.swap('DAO_TOKEN', 'USDC', tradeAmount, this.model.currentStep);
           if (out > 0) {
-            this.tokens -= tradeAmount;
             this.tokens += treasury.withdraw('USDC', out, this.model.currentStep);
+            this.pendingFees += out * 0.003;
             this.stats.totalVolume += tradeAmount;
             this.stats.tradesExecuted++;
+          } else {
+            treasury.withdraw('DAO_TOKEN', tradeAmount, this.model.currentStep);
+            this.tokens += tradeAmount;
           }
         }
 

@@ -23,6 +23,7 @@ import type { DAOModel } from '../engine/model';
 import type { Proposal } from '../data-structures/proposal';
 import { DAOMember } from './base';
 import { random, randomChoice } from '../utils/random';
+import { DelegationResolver } from '../delegation/delegation-resolver';
 
 export class LiquidDelegator extends Delegator {
   // representative field is inherited from DAOMember base class
@@ -82,6 +83,9 @@ export class LiquidDelegator extends Delegator {
    * Delegate voting power to a specific member
    */
   delegateToMember(member: DAOMember): void {
+    // Check for delegation cycles before proceeding
+    if (DelegationResolver.wouldCreateCycle(this, member)) return;
+
     // Use inherited setRepresentative method which handles bidirectional relationship
     this.setRepresentative(member);
 
@@ -110,8 +114,17 @@ export class LiquidDelegator extends Delegator {
     voteBool: boolean,
     weight: number = 1
   ): void {
-    proposal.addVote(this.uniqueId, voteBool, weight);
-    this.votes.set(proposal.uniqueId, { vote: voteBool, weight });
+    // Representative's vote already includes our delegated power via DelegationResolver.
+    // Just track the event, don't add a separate vote.
+    if (this.model.eventBus) {
+      this.model.eventBus.publish('representative_voted', {
+        step: this.model.currentStep,
+        delegator: this.uniqueId,
+        representative: this.representative?.uniqueId,
+        proposal: proposal.title,
+        vote: voteBool,
+      });
+    }
     this.markActive();
   }
 
@@ -147,6 +160,9 @@ export class LiquidDelegator extends Delegator {
       const rep = this.chooseRepresentative();
       if (rep) {
         this.delegateToMember(rep);
+      } else {
+        // No representative found — vote directly
+        this.voteOnRandomProposal();
       }
     } else {
       // Periodically evaluate representative

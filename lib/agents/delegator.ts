@@ -48,6 +48,15 @@ export class Delegator extends DAOMember {
   }
 
   step(): void {
+    // Replenish budget from tokens earned since last check
+    if (this.tokens > this.delegationBudget && this.delegationBudget < this.maxDelegationBudget) {
+      const replenish = Math.min(
+        this.tokens * 0.1,
+        this.maxDelegationBudget - this.delegationBudget
+      );
+      this.delegationBudget += replenish;
+    }
+
     const proposal = this.chooseProposalToDelegateTo();
     if (proposal && this.delegationBudget > 0 && this.tokens > 0) {
       // Calculate delegation amount as fraction of budget

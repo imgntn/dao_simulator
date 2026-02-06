@@ -342,7 +342,7 @@ export class StewardAgent extends DAOMember {
       // More likely to vote on relevant proposals
       const relevant = this.isRelevantToWorkstream(proposal);
       if (relevant || random() < 0.2) {
-        this.voteAsStEward(proposal);
+        this.voteAsSteward(proposal);
         break;  // One vote per step
       }
     }
@@ -351,7 +351,7 @@ export class StewardAgent extends DAOMember {
   /**
    * Vote on a proposal as a steward through the base class pipeline.
    */
-  private voteAsStEward(proposal: Proposal): void {
+  private voteAsSteward(proposal: Proposal): void {
     // Store assessment for decideVote override
     const review = this.grantReviews.find(r => r.proposalId === proposal.uniqueId);
     if (review) {

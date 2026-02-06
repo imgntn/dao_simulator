@@ -94,13 +94,17 @@ export class AdaptiveInvestor extends Investor {
     }
 
     // Invest a fraction of budget (not the entire budget randomly)
-    const maxInvestment = Math.min(this.investmentBudget, this.investmentBudget * 0.2);
+    const maxInvestment = Math.min(this.tokens, this.investmentBudget * 0.2);
     const amount = random() * maxInvestment;
 
     if (amount <= 0) return;
 
     proposal.receiveInvestment(this.uniqueId, amount);
     this.investmentBudget -= amount;
+    this.tokens -= amount;
+    if (this.model.dao) {
+      this.model.dao.treasury.deposit('DAO_TOKEN', amount, this.model.currentStep);
+    }
 
     // Track investment with type information
     const proposalType = this.getProposalType(proposal);

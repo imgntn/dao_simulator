@@ -115,13 +115,14 @@ export class RLTrader extends DAOMember {
     const oldQ = this.qTable.get(oldKey) || 0;
 
     // Find max Q-value for new state
-    let maxFutureQ = 0;
+    let maxFutureQ = -Infinity;
     for (const action of RLTrader.ACTIONS) {
       const q = this.qTable.get(`${newState},${action}`) || 0;
       if (q > maxFutureQ) {
         maxFutureQ = q;
       }
     }
+    if (!Number.isFinite(maxFutureQ)) maxFutureQ = 0;
 
     // Q-learning update: Q(s,a) = Q(s,a) + α * (r + γ * max(Q(s',a')) - Q(s,a))
     let newQ = oldQ + this.learningRate * (reward + this.discount * maxFutureQ - oldQ);
@@ -135,6 +136,9 @@ export class RLTrader extends DAOMember {
 
   step(): void {
     if (!this.model.dao) return;
+
+    // RL traders participate in governance like other token holders
+    this.voteOnRandomProposal();
 
     const price = this.model.dao.treasury.getTokenPrice('DAO_TOKEN');
     const state = this.getState(price);
@@ -187,14 +191,20 @@ export class RLTrader extends DAOMember {
           }
           break;
 
-        case 'remove_lp':
+        case 'remove_lp': {
           try {
-            treasury.removeLiquidity('DAO_TOKEN', 'USDC', 0.1, this.model.currentStep);
+            const removed = treasury.removeLiquidity('DAO_TOKEN', 'USDC', 0.1, this.model.currentStep);
+            if (removed) {
+              // Agent claims the DAO_TOKEN portion
+              const claimed = treasury.withdraw('DAO_TOKEN', removed[0] || 0, this.model.currentStep);
+              this.tokens += claimed;
+            }
             reward = -0.01; // Small negative reward for removing liquidity
           } catch {
             reward = -0.02; // Penalty for failed action
           }
           break;
+        }
 
         case 'hold': {
           // Calculate reward based on portfolio change

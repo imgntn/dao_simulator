@@ -473,6 +473,24 @@ export class SybilAttacker extends DAOMember {
   }
 
   /**
+   * Clean up all puppets - removes them from DAO and clears the puppet map.
+   * Call this when the attacker is done or being removed from the simulation.
+   */
+  cleanupAllPuppets(): void {
+    for (const puppetId of this.puppets.keys()) {
+      this.deactivatePuppet(puppetId);
+    }
+    this.puppets.clear();
+
+    if (this.model.eventBus) {
+      this.model.eventBus.publish('sybil_puppets_cleaned', {
+        step: this.model.currentStep,
+        masterId: this.uniqueId,
+      });
+    }
+  }
+
+  /**
    * Get attack statistics
    */
   getAttackStats(): SybilAttackStats {

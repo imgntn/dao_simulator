@@ -8,6 +8,7 @@ import { random, randomChoice } from '../utils/random';
 export class Investor extends DAOMember {
   investmentBudget: number;
   investments: Map<string, number> = new Map();
+  private readonly initialBudget: number;
 
   constructor(
     uniqueId: string,
@@ -23,6 +24,7 @@ export class Investor extends DAOMember {
     this.investmentBudget = Number.isFinite(investmentBudget) && investmentBudget >= 0
       ? investmentBudget
       : 100;
+    this.initialBudget = this.investmentBudget;
   }
 
   step(): void {
@@ -61,6 +63,9 @@ export class Investor extends DAOMember {
     }
 
     this.tokens -= investmentAmount;
+    if (this.model.dao) {
+      this.model.dao.treasury.deposit('DAO_TOKEN', investmentAmount, this.model.currentStep);
+    }
     this.investmentBudget -= investmentAmount;
     // Note: Reputation is updated by ReputationTracker via 'proposal_invested' event
     this.markActive();
@@ -82,6 +87,9 @@ export class Investor extends DAOMember {
     } else {
       this.investmentBudget *= 0.9;
     }
+
+    // Cap budget growth to prevent unbounded accumulation
+    this.investmentBudget = Math.min(this.investmentBudget, this.initialBudget * 20);
 
     // Ensure budget is always valid and non-negative
     if (!Number.isFinite(this.investmentBudget) || this.investmentBudget < 0) {

@@ -113,7 +113,11 @@ export class ServiceProvider extends DAOMember {
     });
     this.servicesProvided.set(proposal.uniqueId, provided);
 
-    // Add scaled value to proposal funding
+    // Add scaled value to proposal funding (in-kind service contribution)
+    // Note: This models professional services (legal, financial, technical) where
+    // providers contribute expertise rather than tokens. The value is added to
+    // currentFunding to reflect the total resources supporting the proposal.
+    // Provider's serviceBudget is already decremented above.
     proposal.currentFunding += serviceValue;
 
     if (this.model.eventBus) {

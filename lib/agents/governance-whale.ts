@@ -38,11 +38,6 @@ export class GovernanceWhale extends DAOMember {
     super(uniqueId, model, tokens, reputation, location, votingStrategy);
   }
 
-  // Track voting statistics for debugging
-  private static totalVoteAttempts: number = 0;
-  private static successfulVotes: number = 0;
-  private static debugLogged: boolean = false;
-
   /**
    * Override voting probability for whales
    * Real governance whales (a16z, Polychain, etc) have much higher participation
@@ -52,24 +47,7 @@ export class GovernanceWhale extends DAOMember {
     const baseProb = super.getEffectiveVotingProbability();
     // Whales are more engaged - multiply base probability
     // but cap at 90% to leave room for fatigue/apathy on less important proposals
-    const result = Math.min(0.9, baseProb * this.voteActivityMultiplier);
-
-    // Debug log once per simulation to verify override is being called
-    if (!GovernanceWhale.debugLogged && this.model.currentStep === 100) {
-      console.log(`[GovernanceWhale] baseProb=${baseProb.toFixed(4)}, multiplier=${this.voteActivityMultiplier}, result=${result.toFixed(4)}`);
-      GovernanceWhale.debugLogged = true;
-    }
-
-    return result;
-  }
-
-  /**
-   * Reset debug logging for new simulation
-   */
-  static resetDebugState(): void {
-    GovernanceWhale.debugLogged = false;
-    GovernanceWhale.totalVoteAttempts = 0;
-    GovernanceWhale.successfulVotes = 0;
+    return Math.min(0.9, baseProb * this.voteActivityMultiplier);
   }
 
   step(): void {
