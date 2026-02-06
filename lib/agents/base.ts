@@ -799,13 +799,16 @@ export class DAOMember implements Agent {
   }
 
   /**
-   * Default step method - override in subclasses
+   * Default step method - override in subclasses.
+   *
+   * Subclasses should call super.step() if they need base behaviors:
+   * - transferCooldown decrement (for multi-DAO transfers)
+   *
+   * Note: Most agents don't need to call super.step() unless using multi-DAO
+   * transfer features. However, calling it is good practice for future compatibility.
    */
   step(): void {
-    // Base implementation does nothing
-    // Subclasses should override this
-
-    // Decrement transfer cooldown if active
+    // Decrement transfer cooldown if active (for multi-DAO transfers)
     if (this.transferCooldown > 0) {
       this.transferCooldown--;
     }

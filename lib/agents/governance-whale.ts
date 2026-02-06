@@ -8,7 +8,7 @@
 // - Don't spend tokens on investments
 //
 // This matches real DAO whales like:
-// - a]6z (Compound)
+// - a16z (Compound)
 // - Polychain Capital governance wallets
 // - Protocol treasuries with voting rights
 
@@ -17,15 +17,48 @@ import type { DAOModel } from '../engine/model';
 import { submitRandomProposal } from '../utils/proposal-utils';
 import { random, randomChoice } from '../utils/random';
 
+/**
+ * Configuration for GovernanceWhale behavior
+ */
+export interface GovernanceWhaleConfig {
+  /** Multiplier for base voting probability (default: 5.0) */
+  voteActivityMultiplier?: number;
+  /** Maximum voting probability cap (default: 0.9) */
+  maxVotingProbability?: number;
+  /** Probability to delegate when considering (default: 0.3) */
+  delegationProbability?: number;
+  /** Fraction of tokens to delegate (default: 0.3) */
+  delegateFraction?: number;
+  /** Per-step chance to consider delegation (default: 0.01) */
+  delegationConsiderationChance?: number;
+  /** Per-step chance to create a proposal (default: 0.002) */
+  proposalCreationProbability?: number;
+  /** Multiplier for comment probability (default: 1.5) */
+  commentMultiplier?: number;
+  /** Per-step chance to consider staking (default: 0.01) */
+  stakingConsiderationChance?: number;
+  /** Fraction of tokens to stake when staking (default: 0.1) */
+  stakeFraction?: number;
+}
+
+const DEFAULT_CONFIG: Required<GovernanceWhaleConfig> = {
+  voteActivityMultiplier: 5.0,
+  maxVotingProbability: 0.9,
+  delegationProbability: 0.3,
+  delegateFraction: 0.3,
+  delegationConsiderationChance: 0.01,
+  proposalCreationProbability: 0.002,
+  commentMultiplier: 1.5,
+  stakingConsiderationChance: 0.01,
+  stakeFraction: 0.1,
+};
+
 export class GovernanceWhale extends DAOMember {
-  // Whales are more likely to vote than average members
-  // In real DAOs, large holders like a16z have ~80-90% vote participation
-  // We use a 5x multiplier to counteract base apathy and fatigue
-  private readonly voteActivityMultiplier: number = 5.0;
+  // Configuration
+  private readonly config: Required<GovernanceWhaleConfig>;
 
   // Track if we've delegated (whales often delegate to professional delegates)
   private hasDelegated: boolean = false;
-  private delegationProbability: number = 0.3; // 30% chance to delegate
 
   constructor(
     uniqueId: string,
@@ -33,9 +66,11 @@ export class GovernanceWhale extends DAOMember {
     tokens: number,
     reputation: number,
     location: string,
-    votingStrategy?: string
+    votingStrategy?: string,
+    config?: GovernanceWhaleConfig
   ) {
     super(uniqueId, model, tokens, reputation, location, votingStrategy);
+    this.config = { ...DEFAULT_CONFIG, ...config };
   }
 
   /**
@@ -46,13 +81,13 @@ export class GovernanceWhale extends DAOMember {
   getEffectiveVotingProbability(): number {
     const baseProb = super.getEffectiveVotingProbability();
     // Whales are more engaged - multiply base probability
-    // but cap at 90% to leave room for fatigue/apathy on less important proposals
-    return Math.min(0.9, baseProb * this.voteActivityMultiplier);
+    // but cap to leave room for fatigue/apathy on less important proposals
+    return Math.min(this.config.maxVotingProbability, baseProb * this.config.voteActivityMultiplier);
   }
 
   step(): void {
     // Consider delegating to a professional delegate (one-time decision)
-    if (!this.hasDelegated && random() < 0.01) {
+    if (!this.hasDelegated && random() < this.config.delegationConsiderationChance) {
       this.considerDelegation();
     }
 
@@ -61,12 +96,12 @@ export class GovernanceWhale extends DAOMember {
     this.voteOnProposalsAsWhale();
 
     // Occasionally create proposals (whales have resources to propose)
-    if (this.model.dao && random() < 0.002) {
+    if (this.model.dao && random() < this.config.proposalCreationProbability) {
       submitRandomProposal(this.model.dao, this);
     }
 
     // Comment on proposals to influence discussion
-    if (random() < (this.model.dao?.commentProbability || 0.3) * 1.5) {
+    if (random() < (this.model.dao?.commentProbability || 0.3) * this.config.commentMultiplier) {
       this.leaveCommentOnRandomProposal();
     }
 
@@ -98,7 +133,7 @@ export class GovernanceWhale extends DAOMember {
   private considerDelegation(): void {
     if (!this.model.dao || this.hasDelegated) return;
 
-    if (random() > this.delegationProbability) return;
+    if (random() > this.config.delegationProbability) return;
 
     // Find potential delegates (governance experts or active delegators)
     const potentialDelegates = this.model.dao.members.filter(m =>
@@ -112,7 +147,7 @@ export class GovernanceWhale extends DAOMember {
 
     // Delegate some tokens (not all - whales keep some direct control)
     const delegate = randomChoice(potentialDelegates);
-    const delegateAmount = Math.floor(this.tokens * 0.3); // Delegate 30%
+    const delegateAmount = Math.floor(this.tokens * this.config.delegateFraction);
 
     if (delegateAmount > 0) {
       this.delegate(delegateAmount, delegate);
@@ -127,11 +162,11 @@ export class GovernanceWhale extends DAOMember {
     if (!this.model.dao) return;
 
     // Only stake occasionally and if we have unstaked tokens
-    if (random() > 0.01) return;
+    if (random() > this.config.stakingConsiderationChance) return;
     if (this.tokens <= 0) return;
 
     // Stake a portion of holdings (keep some liquid)
-    const stakeAmount = Math.floor(this.tokens * 0.1);
+    const stakeAmount = Math.floor(this.tokens * this.config.stakeFraction);
     if (stakeAmount > 0) {
       this.stakeTokens(stakeAmount);
     }

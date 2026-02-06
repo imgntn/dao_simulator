@@ -19,6 +19,8 @@ interface InvestigationRecord {
   step: number;
   finding: 'violation' | 'clean' | 'inconclusive';
   rewarded: boolean;
+  /** True if finding='violation' but there was no actual violation (false positive) */
+  wasFalsePositive: boolean;
 }
 
 interface SuspectedViolation {
@@ -211,12 +213,20 @@ export class Whistleblower extends DAOMember {
     const actualViolation = highest.suspicionLevel > 0.5 && random() < highest.suspicionLevel;
 
     let finding: 'violation' | 'clean' | 'inconclusive';
+    let wasFalsePositive = false;
 
     if (accurateDetection) {
+      // Accurate detection - finding reflects reality
       finding = actualViolation ? 'violation' : 'clean';
     } else {
       // Inaccurate - may produce false positive or miss violation
-      finding = random() < FALSE_POSITIVE_RATE ? 'violation' : 'inconclusive';
+      if (random() < FALSE_POSITIVE_RATE) {
+        finding = 'violation';
+        // This is a false positive if there's no actual violation
+        wasFalsePositive = !actualViolation;
+      } else {
+        finding = 'inconclusive';
+      }
     }
 
     const record: InvestigationRecord = {
@@ -225,6 +235,7 @@ export class Whistleblower extends DAOMember {
       step: this.model.currentStep,
       finding,
       rewarded: false,
+      wasFalsePositive,
     };
 
     this.investigations.push(record);
@@ -265,10 +276,8 @@ export class Whistleblower extends DAOMember {
       // Calculate and receive reward
       const reward = INVESTIGATION_COST * 2 * REPORT_REWARD_FRACTION;
 
-      // Check if it was a false positive
-      const wasFalsePositive = random() < FALSE_POSITIVE_RATE / this.detectionSkill;
-
-      if (wasFalsePositive) {
+      // Check if it was a false positive (determined during investigation)
+      if (record.wasFalsePositive) {
         // Penalty for false report
         this.falseReports++;
         this.reputation = Math.max(0, this.reputation - MIN_REPUTATION_LOSS_FALSE_REPORT);
