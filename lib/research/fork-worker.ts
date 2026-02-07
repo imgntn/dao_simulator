@@ -20,13 +20,13 @@ import type { WorkerTask, WorkerResult } from './simulation-worker';
 process.on('message', async (task: WorkerTask) => {
   try {
     const result = await runSimulation(task);
-    process.send!({
+    process.send?.({
       taskId: task.taskId,
       success: true,
       result,
     } as WorkerResult);
   } catch (error) {
-    process.send!({
+    process.send?.({
       taskId: task.taskId,
       success: false,
       error: error instanceof Error ? error.message : String(error),
@@ -72,7 +72,9 @@ function calculateCV(values: number[]): number {
   if (mean === 0) return 0;
 
   const squaredDiffs = values.map(v => Math.pow(v - mean, 2));
-  const variance = squaredDiffs.reduce((a, b) => a + b, 0) / values.length;
+  const variance = values.length > 1
+    ? squaredDiffs.reduce((a, b) => a + b, 0) / (values.length - 1)
+    : 0;
   const std = Math.sqrt(variance);
 
   return std / mean;
@@ -308,14 +310,17 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
 
     case 'average_turnout': {
       if (proposals.length === 0) return 0;
-      const totalSupply = getTotalVotingPower(members);
-      if (totalSupply === 0) return 0;
 
       let totalTurnout = 0;
       for (const proposal of proposals) {
-        const votes = getProposalVotes(proposal);
-        const votingPower = votes.reduce((sum, v) => sum + v.weight, 0);
-        totalTurnout += votingPower / totalSupply;
+        const totalVotes = (proposal.votesFor || 0) + (proposal.votesAgainst || 0);
+        // Use snapshot supply if available, otherwise current supply
+        const supply = (proposal.snapshotTaken && proposal.totalSupplySnapshot > 0)
+          ? proposal.totalSupplySnapshot
+          : getTotalVotingPower(members);
+        if (supply > 0) {
+          totalTurnout += totalVotes / supply;
+        }
       }
       return totalTurnout / proposals.length;
     }
@@ -355,7 +360,9 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
       // % of proposals that had enough participation to potentially pass
       if (proposals.length === 0) return 0;
       const totalSupply = getTotalVotingPower(members);
-      const quorumThreshold = 0.04; // Default 4% quorum
+      const quorumThreshold = (simulation as any).governanceRule?.quorumPercentage
+        ?? simulation.dao?.votingPowerPolicy?.capFraction
+        ?? 0.04;
 
       let quorumMet = 0;
       for (const proposal of proposals) {
@@ -407,10 +414,10 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
     }
 
     case 'proposal_abandonment_rate': {
-      // % of proposals that expired without resolution
+      // % of proposals that expired without resolution (exclude still-open proposals)
       const stats = getProposalStats(proposals);
       if (stats.total === 0) return 0;
-      return (stats.expired + stats.open) / stats.total;
+      return stats.expired / stats.total;
     }
 
     case 'proposal_rejection_rate': {
@@ -842,6 +849,9 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
       return proposalRate * avgParticipation * resolutionRate;
     }
 
+    case 'emergency_topup_total':
+      return (simulation as any).totalEmergencyTopup || 0;
+
     default:
       return 0;
   }
@@ -874,14 +884,22 @@ function collectTimeline(simulation: DAOSimulation): TimelineEntry[] {
   const history = simulation.dataCollector.history;
   const modelVars = simulation.dataCollector.modelVars;
 
-  return history.map((entry, index) => ({
-    step: entry.step,
-    memberCount: entry.memberCount,
-    proposalCount: entry.proposalCount,
-    projectCount: entry.projectCount,
-    tokenPrice: entry.tokenPrice,
-    treasuryFunds: entry.treasuryFunds,
-    gini: modelVars[index]?.gini ?? 0,
-    reputationGini: modelVars[index]?.repGini ?? 0,
-  }));
+  const modelVarsByStep = new Map<number, any>();
+  for (const mv of modelVars) {
+    modelVarsByStep.set(mv.step, mv);
+  }
+
+  return history.map((entry) => {
+    const mv = modelVarsByStep.get(entry.step);
+    return {
+      step: entry.step,
+      memberCount: entry.memberCount,
+      proposalCount: entry.proposalCount,
+      projectCount: entry.projectCount,
+      tokenPrice: entry.tokenPrice,
+      treasuryFunds: entry.treasuryFunds,
+      gini: mv?.gini ?? 0,
+      reputationGini: mv?.repGini ?? 0,
+    };
+  });
 }

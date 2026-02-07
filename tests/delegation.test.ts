@@ -412,10 +412,20 @@ describe('LiquidDelegator Integration', () => {
     proposal.uniqueId = 'test_proposal_5';
     simulation.dao.proposals.push(proposal);
 
+    // Track event emission
+    let eventEmitted = false;
+    simulation.eventBus.subscribe('representative_voted', () => {
+      eventEmitted = true;
+    });
+
     // Simulate representative vote notification
+    // Note: receiveRepresentativeVote doesn't record in delegator.votes because
+    // the representative's vote already includes delegator's power via DelegationResolver
     delegator.receiveRepresentativeVote(proposal, true, 1);
 
-    expect(delegator.votes.has(proposal.uniqueId)).toBe(true);
-    expect(delegator.votes.get(proposal.uniqueId)?.vote).toBe(true);
+    // Should emit event for tracking
+    expect(eventEmitted).toBe(true);
+    // Representative relationship should be maintained
+    expect(delegator.representative).toBe(representative);
   });
 });

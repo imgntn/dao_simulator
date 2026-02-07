@@ -65,6 +65,8 @@ export class GovernanceHouse {
   private members: Map<string, HouseMember> = new Map();
   private votes: Map<string, HouseVote[]> = new Map();  // proposalId -> votes
   private vetoCount: number = 0;
+  private delegationTargets: Map<string, string> = new Map();  // fromId -> toId
+  private delegationAmounts: Map<string, number> = new Map();  // fromId -> total amount
 
   constructor(dao: DAO, config: HouseConfig) {
     this.dao = dao;
@@ -149,14 +151,23 @@ export class GovernanceHouse {
    * Delegate voting power to another member
    */
   delegate(fromId: string, toId: string, amount: number): boolean {
+    if (fromId === toId) return false; // Self-delegation not allowed
+
     const from = this.members.get(fromId);
     const to = this.members.get(toId);
 
     if (!from || !to || !from.isActive || !to.isActive) return false;
     if (amount > from.votingPower) return false;
 
+    // Simple cycle check: ensure 'to' hasn't already delegated (directly) to 'from'
+    if (this.delegationTargets.get(toId) === fromId) return false;
+
     from.votingPower -= amount;
     to.delegatedPower += amount;
+
+    // Track delegation for undo
+    this.delegationTargets.set(fromId, toId);
+    this.delegationAmounts.set(fromId, (this.delegationAmounts.get(fromId) || 0) + amount);
 
     if (this.dao.eventBus) {
       this.dao.eventBus.publish('house_delegation', {
@@ -168,6 +179,26 @@ export class GovernanceHouse {
       });
     }
 
+    return true;
+  }
+
+  /**
+   * Undelegate voting power previously delegated
+   */
+  undelegate(fromId: string): boolean {
+    const toId = this.delegationTargets.get(fromId);
+    if (!toId) return false;
+    const amount = this.delegationAmounts.get(fromId) || 0;
+    if (amount <= 0) return false;
+
+    const from = this.members.get(fromId);
+    const to = this.members.get(toId);
+    if (!from || !to) return false;
+
+    from.votingPower += amount;
+    to.delegatedPower = Math.max(0, to.delegatedPower - amount);
+    this.delegationTargets.delete(fromId);
+    this.delegationAmounts.delete(fromId);
     return true;
   }
 

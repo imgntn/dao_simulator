@@ -534,6 +534,17 @@ export interface StatisticalSignificance {
     dfWithin: number;
     pValue: number;
     significant: boolean;
+    // Effect sizes
+    etaSquared?: number;
+    omegaSquared?: number;
+    effectSizeInterpretation?: string;
+    // Non-parametric alternative (for non-normal data)
+    kruskalWallis?: {
+      hStatistic: number;
+      pValue: number;
+      significant: boolean;
+    };
+    nonNormalWarning?: boolean;
   }[];
 
   // Overall power analysis

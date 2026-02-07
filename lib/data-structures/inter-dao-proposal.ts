@@ -35,6 +35,9 @@ export class InterDAOProposal implements InterDAOProposalData {
   resourceType?: string;
   resourceAmount?: number;
 
+  // Snapshot of eligible voters per DAO at proposal creation time
+  eligibleVotersSnapshot: Map<string, number> = new Map();
+
   private eventBus: EventBus | null;
   private votersByDao: Map<string, Set<string>> = new Map();
   private consideredByDao: Map<string, Set<string>> = new Map();
@@ -183,7 +186,9 @@ export class InterDAOProposal implements InterDAOProposalData {
   setEligibleVoters(daoId: string, count: number): void {
     const daoResult = this.votingResults[daoId];
     if (daoResult) {
-      daoResult.totalEligibleVoters = count;
+      // Prefer creation-time snapshot if available
+      const snapshotCount = this.eligibleVotersSnapshot.get(daoId);
+      daoResult.totalEligibleVoters = snapshotCount ?? count;
     }
   }
 

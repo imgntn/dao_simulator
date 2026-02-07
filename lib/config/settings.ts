@@ -30,6 +30,7 @@ export interface SimulationSettings {
   num_stakers: number;
   num_rl_traders: number;
   num_governance_experts: number;
+  num_governance_whales: number;
   num_risk_managers: number;
   num_market_makers: number;
   num_whistleblowers: number;
@@ -136,6 +137,7 @@ export const defaultSettings: SimulationSettings = {
   num_stakers: 0,
   num_rl_traders: 2,
   num_governance_experts: 2,
+  num_governance_whales: 0,
   num_risk_managers: 2,
   num_market_makers: 2,
   num_whistleblowers: 1,

@@ -110,7 +110,7 @@ export class DefaultVotingStrategy extends BaseVotingStrategy {
  */
 export class QuadraticVotingStrategy extends BaseVotingStrategy {
   private maxCost: number;
-  private pendingCost: number = 0;
+  private pendingCosts: Map<string, number> = new Map(); // memberId -> cost
 
   constructor(maxCost: number = 4) {
     super();
@@ -121,7 +121,7 @@ export class QuadraticVotingStrategy extends BaseVotingStrategy {
     const available = Math.min(member.tokens, this.maxCost);
     const maxWeight = Math.floor(Math.sqrt(available));
     const weight = Math.max(0, Math.min(maxWeight, 10)); // Cap at 10 votes
-    this.pendingCost = weight ** 2;
+    this.pendingCosts.set(member.uniqueId, weight ** 2);
     return weight;
   }
 
@@ -134,17 +134,23 @@ export class QuadraticVotingStrategy extends BaseVotingStrategy {
     const available = Math.min(effectiveWeight, this.maxCost);
     const maxWeight = Math.floor(Math.sqrt(available));
     const weight = Math.max(0, Math.min(maxWeight, 10));
-    // Only deduct from member's own tokens (not delegated)
-    this.pendingCost = member.tokens >= weight ** 2 ? weight ** 2 : 0;
+    if (member.tokens < weight ** 2) {
+      // Can't afford — use what they can afford from own tokens
+      const affordableWeight = Math.floor(Math.sqrt(Math.min(member.tokens, this.maxCost)));
+      this.pendingCosts.set(member.uniqueId, affordableWeight ** 2);
+      return affordableWeight;
+    }
+    this.pendingCosts.set(member.uniqueId, weight ** 2);
     return weight;
   }
 
   protected preVote(member: DAOMember, _proposal: Proposal, weight: number): boolean {
     if (weight <= 0) return false;
     // Deduct the cost
-    if (this.pendingCost > 0) {
-      member.tokens -= this.pendingCost;
-      this.pendingCost = 0;
+    const cost = this.pendingCosts.get(member.uniqueId) || 0;
+    if (cost > 0) {
+      member.tokens -= cost;
+      this.pendingCosts.delete(member.uniqueId);
     }
     return true;
   }

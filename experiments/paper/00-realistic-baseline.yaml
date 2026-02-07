@@ -1,18 +1,45 @@
-name: Voting Mechanism Comparison
-description: Compares majority, quadratic, and conviction voting across quorum levels (RQ3).
+name: Realistic Baseline
+description: >
+  Calibrated baseline matching empirical DAO data from DeepDAO/Messari.
+  Key differences from academic baseline:
+  - Lower quorum (2%) matching effective quorum in mature DAOs
+  - More investors/whales creating higher Gini coefficient
+  - Reduced voter apathy for committed core voters
 version: 1.0.0
 author: DAO Simulator Research Framework
 tags:
   - paper
-  - voting
-  - mechanisms
-  - rq3
+  - baseline
+  - realistic
+  - calibration
+
 baseConfig:
   template: compound
   population:
     totalMembers: 200
+    # Realistic wealth concentration using GovernanceWhales (2000 tokens)
+    # who maintain their holdings for voting power (unlike Investors who spend)
+    distribution:
+      - archetype: passive_holder     # 100 tokens each
+        percentage: 35
+      - archetype: active_voter       # 100 tokens each
+        percentage: 20
+      - archetype: delegate           # 100 tokens each
+        percentage: 15
+      - archetype: governance_whale   # 2000 tokens - hold for voting power
+        percentage: 15
+      - archetype: staker             # 500 tokens each
+        percentage: 10
+      - archetype: governance_expert  # 100 tokens each
+        percentage: 5
   overrides:
-    voting_activity: 0.25
+    governance_rule: majority
+    governance_config:
+      # Lower quorum: matches effective quorum in mature DAOs
+      # Compound effective quorum ~2-4%, Uniswap ~1-2%
+      quorumPercentage: 0.02
+    # Higher base voting activity
+    voting_activity: 0.30
     proposal_creation_probability: 0.004
     proposal_duration_min_steps: 24
     proposal_duration_max_steps: 96
@@ -23,7 +50,8 @@ baseConfig:
     treasury_buffer_fill_rate: 0.5
     treasury_emergency_topup_rate: 0.25
     treasury_max_spend_fraction: 0.15
-    participation_target_rate: 0.2
+    # Higher participation target
+    participation_target_rate: 0.15
     participation_boost_strength: 0.6
     participation_boost_decay: 0.1
     participation_boost_max: 0.25
@@ -42,85 +70,60 @@ baseConfig:
     vote_power_velocity_window: 72
     vote_power_velocity_penalty: 0.5
     delegation_lock_steps: 48
-sweep:
-  grid:
-    - parameter: governance_rule
-      values: [majority, quadratic, conviction]
-    - parameter: governance_config.quorumPercentage
-      values: [0.04, 0.08]
+
 execution:
-  runsPerConfig: 30
+  runsPerConfig: 50
   stepsPerRun: 2000
   seedStrategy: sequential
-  baseSeed: 909
+  baseSeed: 42
   workers: 4
+
 metrics:
   - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-    description: "% of resolved proposals that passed"
   - name: Average Turnout
     type: builtin
     builtin: average_turnout
-    description: Average token-weighted voter participation
-  - name: Final Gini
-    type: builtin
-    builtin: final_gini
-    description: Token distribution Gini coefficient
-  - name: Final Reputation Gini
-    type: builtin
-    builtin: final_reputation_gini
-    description: Reputation distribution Gini coefficient
-  - name: Whale Influence
-    type: builtin
-    builtin: whale_influence
-    description: "% of votes from top 10% token holders"
-  - name: Governance Capture Risk
-    type: builtin
-    builtin: governance_capture_risk
-    description: Concentration of proposal creation
-  - name: Avg Margin of Victory
-    type: builtin
-    builtin: avg_margin_of_victory
-    description: How decisive votes are (0=tied, 1=unanimous)
-  - name: Voter Participation Rate
-    type: builtin
-    builtin: voter_participation_rate
-    description: "% of members who ever voted"
-  - name: Delegate Concentration
-    type: builtin
-    builtin: delegate_concentration
-    description: "% of votes from top 10% of voters"
   - name: Quorum Reach Rate
     type: builtin
     builtin: quorum_reach_rate
-    description: "% of proposals meeting participation threshold"
-  - name: Voter Concentration Gini
+  - name: Proposal Rejection Rate
     type: builtin
-    builtin: voter_concentration_gini
-    description: Inequality of voting activity (0=equal, 1=one voter)
-  - name: Token Concentration Gini
+    builtin: proposal_rejection_rate
+  - name: Final Gini
     type: builtin
-    builtin: token_concentration_gini
-    description: Inequality of token holdings
-  - name: Single Entity Control
-    type: builtin
-    builtin: single_entity_control
-    description: Max % any one member could control
-  - name: Collusion Threshold
-    type: builtin
-    builtin: collusion_threshold
-    description: Min % of members for majority control
+    builtin: final_gini
   - name: Final Treasury
     type: builtin
     builtin: final_treasury
-    description: Treasury balance at simulation end
-  - name: Treasury Volatility
+  - name: Whale Influence
     type: builtin
-    builtin: treasury_volatility
-    description: Coefficient of variation of treasury over time
+    builtin: whale_influence
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Unique Voter Count
+    type: builtin
+    builtin: unique_voter_count
+  - name: Delegate Concentration
+    type: builtin
+    builtin: delegate_concentration
+  - name: Single Entity Control
+    type: builtin
+    builtin: single_entity_control
+  - name: Collusion Threshold
+    type: builtin
+    builtin: collusion_threshold
+  - name: Treasury Growth Rate
+    type: builtin
+    builtin: treasury_growth_rate
+
 output:
-  directory: results/paper/09-voting-mechanisms
+  directory: results/paper/00-realistic-baseline
   formats:
     - json
     - csv

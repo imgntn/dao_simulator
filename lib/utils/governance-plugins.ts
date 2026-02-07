@@ -8,6 +8,22 @@ import type { MultiStageProposal, HouseType } from '../data-structures/multi-sta
 import type { GovernanceHouse, BicameralGovernance } from '../data-structures/governance-house';
 
 /**
+ * Calculate total token supply including delegated-out tokens.
+ * When tokens are delegated, they leave member.tokens but still exist in the supply.
+ */
+function getTotalTokenSupply(dao: DAO): number {
+  return dao.members.reduce(
+    (sum, member) => {
+      let delegatedOut = 0;
+      for (const [, amount] of member.delegations) {
+        delegatedOut += amount;
+      }
+      return sum + member.tokens + member.stakedTokens + delegatedOut;
+    }, 0
+  );
+}
+
+/**
  * Base class for governance approval rules
  */
 export abstract class GovernanceRule {
@@ -96,10 +112,7 @@ export class MajorityRule extends GovernanceRule {
     if (this.quorumPercentage !== undefined && this.quorumPercentage > 0) {
       // Calculate total voting power (tokens) in the DAO
       // This matches how real DAOs like Compound calculate quorum
-      const totalTokens = dao.members.reduce(
-        (sum, member) => sum + member.tokens + member.stakedTokens,
-        0
-      );
+      const totalTokens = getTotalTokenSupply(dao);
 
       // Calculate tokens that participated in voting
       const votingTokens = proposal.votesFor + proposal.votesAgainst;
@@ -130,8 +143,8 @@ export class QuorumRule extends GovernanceRule {
 
   approve(proposal: Proposal, dao: DAO): boolean {
     const totalVotes = proposal.votesFor + proposal.votesAgainst;
-    const totalMembers = dao.members.length;
-    const participationRate = totalVotes / Math.max(totalMembers, 1);
+    const totalTokens = getTotalTokenSupply(dao);
+    const participationRate = totalVotes / Math.max(totalTokens, 1);
 
     // Must meet quorum AND have majority support
     return (
@@ -163,10 +176,7 @@ export class SupermajorityRule extends GovernanceRule {
 
     // Check quorum first if configured
     if (this.quorumPercentage !== undefined && this.quorumPercentage > 0) {
-      const totalTokens = dao.members.reduce(
-        (sum, member) => sum + member.tokens + member.stakedTokens,
-        0
-      );
+      const totalTokens = getTotalTokenSupply(dao);
       const participationRate = totalVotes / Math.max(totalTokens, 1);
 
       if (participationRate < this.quorumPercentage) {
@@ -192,11 +202,8 @@ export class TokenQuorumRule extends GovernanceRule {
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
-    // Calculate total tokens in circulation
-    const totalTokens = dao.members.reduce(
-      (sum, member) => sum + member.tokens,
-      0
-    );
+    // Calculate total tokens in circulation (including staked and delegated)
+    const totalTokens = getTotalTokenSupply(dao);
 
     // Calculate tokens that participated in voting
     const votingTokens = proposal.votesFor + proposal.votesAgainst;
@@ -237,10 +244,7 @@ export class TimeDecayRule extends GovernanceRule {
 
     // Check quorum first if configured
     if (this.quorumPercentage !== undefined && this.quorumPercentage > 0) {
-      const totalTokens = dao.members.reduce(
-        (sum, member) => sum + member.tokens + member.stakedTokens,
-        0
-      );
+      const totalTokens = getTotalTokenSupply(dao);
       const participationRate = totalVotes / Math.max(totalTokens, 1);
 
       if (participationRate < this.quorumPercentage) {
@@ -273,17 +277,23 @@ export class ReputationQuorumRule extends GovernanceRule {
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
-    // Calculate total reputation in DAO
     const totalReputation = dao.members.reduce(
-      (sum, member) => sum + member.reputation,
-      0
+      (sum, member) => sum + member.reputation, 0
     );
 
-    // For this to work, we'd need to track reputation-weighted votes
-    // This is a simplified version that uses token-weighted votes as proxy
-    const votingPower = proposal.votesFor + proposal.votesAgainst;
-    const participationRate = votingPower / Math.max(totalReputation, 1);
+    // Sum reputation of members who actually voted
+    const votesMap = (proposal as any).votes as Map<string, { vote: boolean; weight: number }>;
+    let voterReputation = 0;
+    if (votesMap) {
+      for (const [memberId] of votesMap) {
+        const member = dao.members.find(m => m.uniqueId === memberId);
+        if (member) {
+          voterReputation += member.reputation;
+        }
+      }
+    }
 
+    const participationRate = voterReputation / Math.max(totalReputation, 1);
     return (
       participationRate >= this.quorumPercentage &&
       proposal.votesFor > proposal.votesAgainst
@@ -305,6 +315,7 @@ export class ReputationQuorumRule extends GovernanceRule {
 export class ConvictionVotingRule extends GovernanceRule {
   private thresholdPercent: number;  // Percent of total tokens needed as conviction
   private halfLife: number;  // Steps for conviction to reach 50% of max
+  private convictionState: Map<string, number> = new Map(); // daoId:proposalId -> accumulated conviction
 
   constructor(config?: GovernanceRuleConfig) {
     super();
@@ -315,33 +326,31 @@ export class ConvictionVotingRule extends GovernanceRule {
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
-    const age = dao.currentStep - proposal.creationTime;
-
-    // No conviction if just created
-    if (age <= 0) {
-      return false;
-    }
-
     // Calculate decay rate per step (approaches 0.5 after halfLife steps)
     const decayRate = Math.pow(0.5, 1 / this.halfLife);
 
-    // Current support (votes for the proposal)
-    const support = proposal.votesFor;
+    const stateKey = `${dao.daoId}:${proposal.uniqueId}`;
+    const prevConviction = this.convictionState.get(stateKey) || 0;
 
-    // Calculate conviction using exponential accumulation formula
-    // c(t) = support * (1 - decay^t) / (1 - decay)
-    // This converges to support/(1-decay) as t → ∞
-    const maxConviction = support / (1 - decayRate);
-    const currentConviction = maxConviction * (1 - Math.pow(decayRate, age));
+    // Decay previous conviction and add current support
+    const currentSupport = proposal.votesFor;
+    const newConviction = prevConviction * decayRate + currentSupport;
+    this.convictionState.set(stateKey, newConviction);
 
     // Calculate threshold based on total voting power
-    const totalTokens = dao.members.reduce(
-      (sum, member) => sum + member.tokens,
-      0
-    );
-    const threshold = totalTokens * this.thresholdPercent;
+    const totalTokens = getTotalTokenSupply(dao);
+    const requestedFraction = (proposal.fundingGoal || 1) / Math.max(totalTokens, 1);
+    const threshold = totalTokens * requestedFraction / (1 - decayRate);
 
-    return currentConviction >= threshold;
+    // Clean up closed proposals
+    for (const [id] of this.convictionState) {
+      const [daoId, proposalId] = id.split(':');
+      if (daoId === dao.daoId && !dao.proposals.some(p => p.uniqueId === proposalId && p.status === 'open')) {
+        this.convictionState.delete(id);
+      }
+    }
+
+    return newConviction >= threshold;
   }
 }
 
@@ -372,17 +381,16 @@ export class QuadraticVotingRule extends GovernanceRule {
     let quadraticVotesAgainst = 0;
 
     for (const [, voteData] of votesMap) {
-      const quadraticWeight = Math.sqrt(voteData.weight);
       if (voteData.vote) {
-        quadraticVotesFor += quadraticWeight;
+        quadraticVotesFor += voteData.weight;  // already sqrt'd by voting strategy
       } else {
-        quadraticVotesAgainst += quadraticWeight;
+        quadraticVotesAgainst += voteData.weight;  // already sqrt'd by voting strategy
       }
     }
 
     // Calculate total quadratic voting power in the DAO
     const totalQuadraticPower = dao.members.reduce(
-      (sum, member) => sum + Math.sqrt(member.tokens),
+      (sum, member) => sum + Math.sqrt(member.tokens + member.stakedTokens),
       0
     );
 
@@ -425,10 +433,7 @@ export class CategoryQuorumRule extends GovernanceRule {
     const category = multiStage.proposalCategory || 'standard';
 
     // Calculate total voting power
-    const totalTokens = dao.members.reduce(
-      (sum, member) => sum + member.tokens + member.stakedTokens,
-      0
-    );
+    const totalTokens = getTotalTokenSupply(dao);
 
     // Select quorum based on category
     let requiredQuorum: number;
@@ -578,7 +583,7 @@ export class DualGovernanceRule extends GovernanceRule {
  * Proposal passes when it has most approval among competing proposals
  */
 export class ApprovalVotingRule extends GovernanceRule {
-  private competingProposals: Map<string, number> = new Map();
+  private competingProposals: Map<string, Map<string, number>> = new Map(); // daoId -> (proposalId -> votes)
 
   constructor(_config?: GovernanceRuleConfig) {
     super();
@@ -588,7 +593,9 @@ export class ApprovalVotingRule extends GovernanceRule {
    * Register a competing proposal
    */
   registerCompetingProposal(proposalId: string, approvalVotes: number): void {
-    this.competingProposals.set(proposalId, approvalVotes);
+    const defaultMap = this.competingProposals.get('default') || new Map();
+    defaultMap.set(proposalId, approvalVotes);
+    this.competingProposals.set('default', defaultMap);
   }
 
   /**
@@ -599,14 +606,27 @@ export class ApprovalVotingRule extends GovernanceRule {
   }
 
   approve(proposal: Proposal, dao: DAO): boolean {
+    const daoId = dao.daoId ?? 'default';
+    if (!this.competingProposals.has(daoId)) {
+      this.competingProposals.set(daoId, new Map());
+    }
+    const daoProposals = this.competingProposals.get(daoId)!;
+
+    // Clear stale entries for resolved proposals
+    for (const [id] of daoProposals) {
+      if (!dao.proposals.some(p => p.uniqueId === id && p.status === 'open')) {
+        daoProposals.delete(id);
+      }
+    }
+
     // Register this proposal's votes
-    this.competingProposals.set(proposal.uniqueId, proposal.votesFor);
+    daoProposals.set(proposal.uniqueId, proposal.votesFor);
 
     // Find the proposal with highest approval
     let maxVotes = 0;
     let leadingProposalId = '';
 
-    for (const [id, votes] of this.competingProposals.entries()) {
+    for (const [id, votes] of daoProposals.entries()) {
       if (votes > maxVotes) {
         maxVotes = votes;
         leadingProposalId = id;
@@ -644,21 +664,37 @@ export class SecurityCouncilRule extends GovernanceRule {
     return this.councilMembers.has(memberId);
   }
 
-  approve(proposal: Proposal, dao: DAO): boolean {
-    // For security council decisions, we count individual member votes
-    // Each council member gets 1 vote regardless of token holdings
+  get quorumFraction(): number {
+    return this.approvalThreshold;
+  }
 
-    // In a full implementation, we'd track which council members voted
-    // For now, use the votes as proxy (assume 1 vote = 1 council member)
+  approve(proposal: Proposal, dao: DAO): boolean {
+    // Count distinct council member votes, 1 per member regardless of tokens
+    const votesMap = (proposal as any).votes as Map<string, { vote: boolean; weight: number }> | undefined;
+    let councilFor = 0;
+    let councilAgainst = 0;
+    let councilTotal = 0;
+
+    if (votesMap) {
+      for (const [memberId, voteData] of votesMap) {
+        if (this.councilMembers.has(memberId)) {
+          councilTotal++;
+          if (voteData.vote) councilFor++;
+          else councilAgainst++;
+        }
+      }
+    }
+
     const councilSize = this.councilMembers.size;
     if (councilSize === 0) {
       return false;
     }
 
-    const requiredVotes = Math.ceil(councilSize * this.approvalThreshold);
+    // Check quorum: enough council members voted
+    const quorumMet = councilTotal >= Math.ceil(councilSize * this.approvalThreshold);
 
-    // votes_for represents council members voting in favor
-    return proposal.votesFor >= requiredVotes;
+    // Check approval: majority of council votes
+    return quorumMet && councilFor > councilAgainst;
   }
 }
 
@@ -709,10 +745,7 @@ export class HolographicConsensusRule extends GovernanceRule {
     // Check if proposal is "boosted" (simplified - would need staking tracking)
     const isBoosted = proposal.currentFunding >= this.stakingThreshold;
 
-    const totalTokens = dao.members.reduce(
-      (sum, member) => sum + member.tokens,
-      0
-    );
+    const totalTokens = getTotalTokenSupply(dao);
 
     const requiredQuorum = isBoosted ? this.boostedQuorum : this.normalQuorum;
     const quorumVotes = totalTokens * requiredQuorum;

@@ -144,6 +144,9 @@ export class BatchRunner {
     const remainingTasks = tasks.slice(startIndex);
     await this.runTasksWithConcurrency(remainingTasks, totalRuns);
 
+    // Sort results by runIndex for deterministic ordering
+    this.completedResults.sort((a, b) => (a.runIndex || 0) - (b.runIndex || 0));
+
     // Generate summary
     const endTime = Date.now();
     const summary = this.generateSummary(totalRuns, endTime);
@@ -203,6 +206,7 @@ export class BatchRunner {
       case 'fixed':
         return fixedSeeds?.[runIndex] ?? baseSeed;
       case 'random':
+        console.warn('[batch-runner] Warning: "random" seed strategy is non-deterministic and breaks reproducibility');
         return Math.floor(Math.random() * 2147483647);
       default:
         return baseSeed + runIndex;
@@ -263,7 +267,7 @@ export class BatchRunner {
     try {
       // Convert tasks to worker tasks
       const workerTasks: Omit<WorkerTask, 'taskId'>[] = tasks.map((task) => ({
-        config: task.daoConfig,
+        config: task.daoConfig as ResearchConfig,
         simConfig: {
           checkpointInterval: this.experimentConfig.baseConfig.simulationOverrides?.checkpointInterval,
           eventLogging: this.experimentConfig.baseConfig.simulationOverrides?.eventLogging,
@@ -346,12 +350,22 @@ export class BatchRunner {
       return runner.runSingle(task.daoConfig, task.seed, task.sweepValue, task.runIndex);
     }
 
-    return Promise.race([
-      runner.runSingle(task.daoConfig, task.seed, task.sweepValue, task.runIndex),
-      new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Run timeout')), timeoutMs)
-      ),
-    ]);
+    let timer: NodeJS.Timeout;
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error('Run timeout')), timeoutMs);
+    });
+
+    try {
+      const result = await Promise.race([
+        runner.runSingle(task.daoConfig, task.seed, task.sweepValue, task.runIndex),
+        timeoutPromise,
+      ]);
+      clearTimeout(timer!);
+      return result;
+    } catch (err) {
+      clearTimeout(timer!);
+      throw err;
+    }
   }
 
   /**

@@ -52,6 +52,10 @@ const ARCHETYPE_AGENT_MAP: Record<string, { agents: string[]; weights: number[] 
     agents: ['stakers'],
     weights: [1],
   },
+  governance_whale: {
+    agents: ['governance_whales'],
+    weights: [1],
+  },
   builder: {
     agents: ['developers', 'service_providers'],
     weights: [0.7, 0.3],
@@ -80,6 +84,7 @@ const AGENT_KEY_MAP: Record<string, keyof SimulationSettings> = {
   stakers: 'num_stakers',
   rl_traders: 'num_rl_traders',
   governance_experts: 'num_governance_experts',
+  governance_whales: 'num_governance_whales',
   risk_managers: 'num_risk_managers',
   market_makers: 'num_market_makers',
   whistleblowers: 'num_whistleblowers',
@@ -107,6 +112,7 @@ const AGENT_COUNT_FIELDS: Array<keyof SimulationSettings> = [
   'num_stakers',
   'num_rl_traders',
   'num_governance_experts',
+  'num_governance_whales',
   'num_risk_managers',
   'num_market_makers',
   'num_whistleblowers',
@@ -117,6 +123,19 @@ type AgentCountKey = (typeof AGENT_COUNT_FIELDS)[number];
 export function buildAgentCounts(population: PopulationSpec, config?: { injectDefaultAgents?: boolean }): Partial<SimulationSettings> {
   const totalMembers = population.totalMembers;
   const distribution = population.distribution;
+
+  // Validate percentages sum to ~100
+  const totalPercentage = distribution.reduce((sum, entry) => sum + entry.percentage, 0);
+  if (Math.abs(totalPercentage - 100) > 1) {
+    console.warn(`[population] Warning: agent percentages sum to ${totalPercentage}%, expected 100%`);
+  }
+
+  // Validate archetype names
+  for (const entry of distribution) {
+    if (!ARCHETYPE_AGENT_MAP[entry.archetype]) {
+      console.warn(`[population] Warning: unknown archetype "${entry.archetype}", skipping`);
+    }
+  }
 
   const counts: Record<string, number> = {};
   for (const agentType of Object.keys(AGENT_KEY_MAP)) {

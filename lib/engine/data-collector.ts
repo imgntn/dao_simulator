@@ -82,8 +82,13 @@ export class SimpleDataCollector implements DataCollectorData {
   private lastCentralityStep: number | null = null;
   private dao: DAO | null = null;
 
-  constructor(dao?: DAO, centralityInterval: number = 1) {
+  // OPTIMIZATION: Collect data only every N steps (default 10 for performance)
+  private collectionInterval: number;
+  private lastCollectionStep: number = -1;
+
+  constructor(dao?: DAO, centralityInterval: number = 1, collectionInterval: number = 10) {
     this.centralityInterval = Math.max(1, Math.floor(centralityInterval));
+    this.collectionInterval = Math.max(1, Math.floor(collectionInterval));
     this.dao = dao || null;
 
     // Initialize all circular buffers with bounded capacity
@@ -111,6 +116,7 @@ export class SimpleDataCollector implements DataCollectorData {
 
   /**
    * Collect statistics from the DAO
+   * OPTIMIZATION: Only collects every collectionInterval steps (default 10)
    */
   collect(dao: DAO): void {
     if (!this.dao) {
@@ -119,9 +125,16 @@ export class SimpleDataCollector implements DataCollectorData {
 
     const step = dao.currentStep;
 
-    // Collect token price
+    // OPTIMIZATION: Skip collection on most steps
+    if (step - this.lastCollectionStep < this.collectionInterval && this.lastCollectionStep >= 0) {
+      return;
+    }
+    this.lastCollectionStep = step;
+
+    // Collect token price (guard against NaN/Infinity)
     const price = dao.treasury.getTokenPrice('DAO_TOKEN');
-    this._priceHistory.push(price);
+    const safePrice = Number.isFinite(price) ? price : 0;
+    this._priceHistory.push(safePrice);
 
     // Get token balances (needed for multiple calculations)
     const tokenBalances = dao.members.map(m => m.tokens + m.stakedTokens);
@@ -154,9 +167,9 @@ export class SimpleDataCollector implements DataCollectorData {
       : 0;
     this._avgTokenHistory.push(avgTokens);
 
-    // Token rankings
+    // Token rankings (include staked tokens)
     const tokenRanking = dao.members
-      .map(m => [m.uniqueId, m.tokens] as [string, number])
+      .map(m => [m.uniqueId, m.tokens + m.stakedTokens] as [string, number])
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10);
     this._tokenRankingHistory.push(tokenRanking);
@@ -181,7 +194,7 @@ export class SimpleDataCollector implements DataCollectorData {
     // Store model variables
     this._modelVars.push({
       step,
-      price,
+      price: safePrice,
       gini,
       repGini,
       avgTokens,
@@ -218,7 +231,7 @@ export class SimpleDataCollector implements DataCollectorData {
       numerator += (i + 1) * sorted[i];
     }
 
-    return (2 * numerator) / (n * sum) - (n + 1) / n;
+    return Math.max(0, Math.min(1, (2 * numerator) / (n * sum) - (n + 1) / n));
   }
 
   /**

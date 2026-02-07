@@ -10,7 +10,7 @@ import { TimelockController, createTimelockController } from '../data-structures
 import { BicameralGovernance, createOptimismBicameral, createArbitrumGovernance } from '../data-structures/governance-house';
 import { GovernanceProcessor, createGovernanceProcessor } from '../governance';
 import { EventBus } from '../utils/event-bus';
-import { random, randomChoice } from '../utils/random';
+import { random, randomChoice, randomShuffle } from '../utils/random';
 import type { DAOMember } from '../agents/base';
 import { SybilAttacker, FlashLoanAttacker } from '../agents';
 import { DelegationResolver } from '../delegation/delegation-resolver';
@@ -24,23 +24,23 @@ import {
   type TwinDAOConfig,
   type DigitalTwinConfig,
 } from '../digital-twins';
-import type {
-  DAOConfig,
-  DAOCityConfig,
-  DAOCityState,
-  DAOState,
-  MemberTransferRequest,
-  MemberTransferResult,
-  InterDAOProposalData,
-  TokenRanking,
-  BridgeState,
-  DAOTowerData,
-  DAOMemberCityData,
-  InterDAOEdge,
-  DAOCityNetworkData,
-  CityAttackConfig,
-  InterDAODefenseConfig,
+import {
   DEFAULT_CITY_CONFIG,
+  type DAOConfig,
+  type DAOCityConfig,
+  type DAOCityState,
+  type DAOState,
+  type MemberTransferRequest,
+  type MemberTransferResult,
+  type InterDAOProposalData,
+  type TokenRanking,
+  type BridgeState,
+  type DAOTowerData,
+  type DAOMemberCityData,
+  type InterDAOEdge,
+  type DAOCityNetworkData,
+  type CityAttackConfig,
+  type InterDAODefenseConfig,
 } from '../types/dao-city';
 
 /**
@@ -75,6 +75,7 @@ export class DAOCity {
   private simulations: Map<string, DAOSimulation> = new Map();
   private globalMarketplace: GlobalMarketplace;
   private interDaoProposals: InterDAOProposal[] = [];
+  private archivedProposals: InterDAOProposal[] = [];
   private bridges: Map<string, Bridge> = new Map();
   private pendingTransfers: MemberTransferRequest[] = [];
 
@@ -108,46 +109,7 @@ export class DAOCity {
 
   constructor(config?: DAOCityConfig) {
     // Use default config if not provided
-    this.config = config || {
-      daos: [
-        {
-          id: 'alpha',
-          name: 'Alpha DAO',
-          tokenSymbol: 'ALPHA',
-          initialTreasuryFunding: 100000,
-          governanceRule: 'majority',
-          agentCounts: {},
-          color: '#4ADE80',
-        },
-        {
-          id: 'beta',
-          name: 'Beta DAO',
-          tokenSymbol: 'BETA',
-          initialTreasuryFunding: 80000,
-          governanceRule: 'supermajority',
-          agentCounts: {},
-          color: '#60A5FA',
-        },
-        {
-          id: 'gamma',
-          name: 'Gamma DAO',
-          tokenSymbol: 'GAMMA',
-          initialTreasuryFunding: 120000,
-          governanceRule: 'quorum',
-          agentCounts: {},
-          color: '#F472B6',
-        },
-      ],
-      globalMarketplaceConfig: {
-        initialLiquidity: 50000,
-        volatility: 0.02,
-        priceUpdateFrequency: 1,
-        baseTokenSymbol: 'STABLE',
-      },
-      bridgeFeeRate: 0.01,
-      bridgeDelay: 5,
-      enableInterDAOProposals: true,
-    };
+    this.config = config || { ...DEFAULT_CITY_CONFIG, daos: DEFAULT_CITY_CONFIG.daos.map(d => ({ ...d })) };
 
     this.bridgeFeeRate = this.config.bridgeFeeRate;
     this.bridgeDelay = this.config.bridgeDelay;
@@ -406,11 +368,11 @@ export class DAOCity {
   }
 
   private normalizeGovernanceRule(governanceRule: string): string {
-    const normalized = governanceRule.toLowerCase();
-    if (normalized === 'liquid_democracy' || normalized === 'liquid-democracy') {
+    const normalized = governanceRule.toLowerCase().replace(/[-_\s]/g, '_');
+    if (normalized === 'liquid_democracy') {
       return 'majority';
     }
-    return governanceRule;
+    return normalized;
   }
 
   /**
@@ -474,7 +436,7 @@ export class DAOCity {
     }
 
     if (this.interDAODefense.mutualVeto) {
-      const vetoThreshold = this.interDAODefense.vetoThreshold ?? 0;
+      const vetoThreshold = this.interDAODefense.vetoThreshold ?? 0.5;
       if (confidence !== undefined && confidence < vetoThreshold) {
         return;
       }
@@ -528,6 +490,7 @@ export class DAOCity {
     for (let i = 0; i < daoIds.length; i++) {
       for (let j = i + 1; j < daoIds.length; j++) {
         const key = `${daoIds[i]}|${daoIds[j]}`;
+        if (this.bridges.has(key)) continue;  // Don't overwrite existing bridges
         this.bridges.set(key, {
           fromDaoId: daoIds[i],
           toDaoId: daoIds[j],
@@ -561,6 +524,9 @@ export class DAOCity {
     if (!this.memberTransferEnabled) {
       return;
     }
+    const fromSim = this.simulations.get(data.fromDaoId);
+    const member = fromSim?.dao.members.find(m => m.uniqueId === data.memberId);
+    const memberTokens = member?.tokens ?? 0;
     const request: MemberTransferRequest = {
       requestId: `transfer_${this.currentStep}_${data.memberId}`,
       memberId: data.memberId,
@@ -568,7 +534,7 @@ export class DAOCity {
       toDaoId: data.toDaoId,
       requestStep: data.step,
       status: 'pending',
-      transferFee: this.bridgeFeeRate * 100, // Fee in tokens
+      transferFee: memberTokens * this.bridgeFeeRate, // Proportional fee
       cooldownSteps: 50,
     };
 
@@ -614,8 +580,28 @@ export class DAOCity {
         continue;
       }
 
+      // Deduct transfer fee and deposit into source DAO treasury
+      if (request.transferFee > 0) {
+        const fee = Math.min(request.transferFee, member.tokens);
+        member.tokens -= fee;
+        fromSim.dao.treasury.deposit('DAO_TOKEN', fee, this.currentStep);
+      }
+
       // Execute transfer
       member.executeTransfer(request.toDaoId, toSim);
+
+      // Remove from source DAO and scheduler
+      const memberIndex = fromSim.dao.members.indexOf(member);
+      if (memberIndex > -1) {
+        fromSim.dao.members.splice(memberIndex, 1);
+      }
+      fromSim.schedule.remove(member);
+
+      // Add to destination scheduler if not already added by executeTransfer
+      if (!toSim.schedule.has(member)) {
+        toSim.schedule.add(member);
+      }
+
       request.status = 'completed';
       processed.push(request);
 
@@ -643,10 +629,11 @@ export class DAOCity {
    * Step all DAOs forward
    */
   async step(): Promise<void> {
-    // Step each DAO simulation
-    for (const [daoId, simulation] of this.simulations) {
+    // Step each DAO simulation in randomized order to eliminate ordering bias
+    const daoIds = randomShuffle(Array.from(this.simulations.keys()));
+    for (const daoId of daoIds) {
+      const simulation = this.simulations.get(daoId)!;
       await simulation.step();
-      simulation.dao.currentStep = this.currentStep;
 
       // Governance processing already handled by simulation.step()
       // Do not call governanceProcessor.processStep() again here
@@ -734,6 +721,13 @@ export class DAOCity {
         }
       }
     }
+
+    // Archive closed proposals to save memory
+    const closed = this.interDaoProposals.filter(p => p.status !== 'open');
+    if (closed.length > 0) {
+      this.archivedProposals.push(...closed);
+      this.interDaoProposals = this.interDaoProposals.filter(p => p.status === 'open');
+    }
   }
 
   /**
@@ -748,12 +742,20 @@ export class DAOCity {
 
       bridge.pendingTransfers.forEach((transfer, index) => {
         if (this.currentStep >= transfer.initiatedStep + bridge.delay) {
-          // Execute the transfer
+          // Withdraw from source treasury, then deposit into destination
+          const fromSim = this.simulations.get(bridge.fromDaoId);
           const toSim = this.simulations.get(bridge.toDaoId);
-          if (toSim) {
+          if (fromSim && toSim) {
+            const available = fromSim.dao.treasury.getTokenBalance(transfer.token);
             const netAmount = transfer.amount * (1 - bridge.feeRate);
-            toSim.dao.treasury.deposit(transfer.token, netAmount, this.currentStep);
-            bridge.totalTransferred += netAmount;
+            const actualAmount = Math.min(netAmount, available);
+            if (actualAmount <= 0) {
+              completed.push(index);
+              return; // Source can't cover transfer
+            }
+            fromSim.dao.treasury.withdraw(transfer.token, actualAmount, this.currentStep);
+            toSim.dao.treasury.deposit(transfer.token, actualAmount, this.currentStep);
+            bridge.totalTransferred += actualAmount;
           }
           completed.push(index);
         }
@@ -892,6 +894,14 @@ export class DAOCity {
       this.eventBus
     );
 
+    // Snapshot eligible voters per DAO at creation time
+    for (const daoId of [creatorDaoId, partnerDaoId]) {
+      const sim = this.simulations.get(daoId);
+      if (sim) {
+        proposal.eligibleVotersSnapshot.set(daoId, sim.dao.members.length);
+      }
+    }
+
     if (this.interDAOProposalConfig?.requiredApprovalRatio !== undefined) {
       const ratio = this.interDAOProposalConfig.requiredApprovalRatio;
       proposal.requiredApprovalCount = Math.max(1, Math.ceil(ratio * proposal.participatingDaos.length));
@@ -992,6 +1002,14 @@ export class DAOCity {
       this.eventBus
     );
 
+    // Snapshot eligible voters per DAO at creation time
+    for (const daoId of participatingDaos) {
+      const sim = this.simulations.get(daoId);
+      if (sim) {
+        proposal.eligibleVotersSnapshot.set(daoId, sim.dao.members.length);
+      }
+    }
+
     this.interDaoProposals.push(proposal);
     return proposal;
   }
@@ -1055,9 +1073,12 @@ export class DAOCity {
       currentStep: this.currentStep,
       daos: daoStates,
       globalMarketplace: this.globalMarketplace.getState(),
-      interDaoProposals: this.interDaoProposals.map(p => p.getState()),
+      interDaoProposals: [
+        ...this.interDaoProposals.map(p => p.getState()),
+        ...this.archivedProposals.map(p => p.getState()),
+      ],
       bridges: bridgeStates,
-      recentTransfers: this.pendingTransfers.slice(-10),
+      recentTransfers: this.pendingTransfers.slice(-10).map(t => ({...t})),
     };
   }
 
@@ -1279,8 +1300,10 @@ export class DAOCity {
     const factory = new TwinAgentFactory(simulation, twinConfig.id);
     const factoryResult = factory.createAgentsForTwin(twinConfig);
 
-    // Add agents to DAO
+    // Add agents to DAO and set their daoId
+    const twinDaoId = twinConfig.id;
     for (const agent of factoryResult.agents) {
+      agent.daoId = twinDaoId;
       simulation.dao.addMember(agent);
     }
 
@@ -1421,7 +1444,7 @@ export class DAOCity {
       gitcoin: '#0FCE7C',
       maker: '#1AAB9B',
     };
-    return twinColors[twinId] || `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    return twinColors[twinId] || `#${Math.floor(random() * 16777215).toString(16).padStart(6, '0')}`;
   }
 
   /**

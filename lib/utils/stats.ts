@@ -31,7 +31,7 @@ export function gini(values: number[]): number {
     cum += (i + 1) * arr[i];
   }
 
-  return (2.0 * cum) / (n * total) - (n + 1) / n;
+  return Math.max(0, Math.min(1, (2.0 * cum) / (n * total) - (n + 1) / n));
 }
 
 /**
@@ -97,13 +97,13 @@ export function median(values: number[]): number {
  * Calculate standard deviation of an array of numbers
  */
 export function standardDeviation(values: number[]): number {
-  if (values.length === 0) return 0;
+  if (values.length <= 1) return 0;
 
   const avg = mean(values);
-  const squareDiffs = values.map((v) => Math.pow(v - avg, 2));
-  const avgSquareDiff = mean(squareDiffs);
+  const squareDiffs = values.map((v) => (v - avg) ** 2);
+  const variance = squareDiffs.reduce((sum, d) => sum + d, 0) / (values.length - 1);
 
-  return Math.sqrt(avgSquareDiff);
+  return Math.sqrt(variance);
 }
 
 /**

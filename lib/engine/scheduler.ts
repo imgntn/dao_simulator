@@ -1,6 +1,7 @@
 // Scheduler implementation - replacement for Mesa's activation schedulers
 
 import type { Agent, Scheduler } from '@/types/simulation';
+import { randomShuffle } from '../utils/random';
 
 /**
  * Base scheduler with optimized agent management using Set for O(1) lookups
@@ -42,9 +43,10 @@ abstract class BaseScheduler implements Scheduler {
  */
 export class RandomActivation extends BaseScheduler {
   step(): void {
-    // Create a copy to avoid issues if agents are added/removed during iteration
+    // Create a copy and shuffle for random activation order
     const agentsCopy = Array.from(this.agentSet);
-    for (const agent of agentsCopy) {
+    const shuffled = randomShuffle(agentsCopy);
+    for (const agent of shuffled) {
       if (agent && typeof agent.step === 'function') {
         agent.step();
       }
@@ -153,7 +155,15 @@ export class StagedActivation extends BaseScheduler {
   remove(agent: Agent): void {
     super.remove(agent);
     const agentType = agent.constructor.name;
-    this.stages.get(agentType)?.delete(agent);
+    const stageSet = this.stages.get(agentType);
+    if (stageSet) {
+      stageSet.delete(agent);
+      if (stageSet.size === 0) {
+        this.stages.delete(agentType);
+        const idx = this.stageOrder.indexOf(agentType);
+        if (idx > -1) this.stageOrder.splice(idx, 1);
+      }
+    }
   }
 
   step(): void {

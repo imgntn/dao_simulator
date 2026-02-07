@@ -85,9 +85,14 @@ export class LiquidityPool {
       return 0;
     }
 
+    // Apply 0.3% swap fee — fee stays in pool (added to inReserve)
+    const feeRate = 0.003;
+    const fee = amountIn * feeRate;
+    const amountInAfterFee = amountIn - fee;
+
     // Constant product formula: x * y = k
     const k = inReserve * outReserve;
-    const newIn = inReserve + amountIn;
+    const newIn = inReserve + amountInAfterFee;
 
     // Safety check to prevent division issues
     if (newIn <= 0) {
@@ -108,12 +113,12 @@ export class LiquidityPool {
       amountOut = outReserve - minReserve;
     }
 
-    // Update reserves
+    // Update reserves (fee stays in pool, so add full amountIn to inReserve)
     if (tokenIn === this.tokenA) {
-      this.reserveA = newIn;
+      this.reserveA = inReserve + amountIn;
       this.reserveB = Math.max(0, outReserve - amountOut);
     } else {
-      this.reserveB = newIn;
+      this.reserveB = inReserve + amountIn;
       this.reserveA = Math.max(0, outReserve - amountOut);
     }
 
@@ -171,8 +176,8 @@ export class Treasury {
     const current = this.tokens.get(token) || 0;
     this.tokens.set(token, current + amount);
 
-    const pressure = this.pricePressure.get(token) || 0;
-    this.pricePressure.set(token, pressure - amount);
+    // No price pressure from deposit — just moving existing tokens in.
+    // Only mintTokens and burnTokens should affect price pressure.
 
     if (this.eventBus) {
       this.eventBus.publish('token_deposit', { step, token, amount });
@@ -347,7 +352,15 @@ export class Treasury {
   }
 
   get funds(): number {
-    return this.tokenBalance;
+    return this.getTokenBalance('DAO_TOKEN');
+  }
+
+  get totalBalance(): number {
+    let total = 0;
+    for (const [, balance] of this.tokens) {
+      total += balance;
+    }
+    return total;
   }
 
   addRevenue(amount: number): void {
@@ -385,11 +398,17 @@ export class Treasury {
 
   addLiquidity(tokenA: string, tokenB: string, amtA: number, amtB: number, step: number = 0): number {
     const pool = this.getPool(tokenA, tokenB, true)!;
-    this.withdraw(tokenA, amtA, step);
-    this.withdraw(tokenB, amtB, step);
-    pool.addLiquidity(amtA, amtB, step);
+    const actualA = this.withdraw(tokenA, amtA, step);
+    const actualB = this.withdraw(tokenB, amtB, step);
+    if (actualA <= 0 || actualB <= 0) {
+      // Return any withdrawn tokens
+      if (actualA > 0) this.deposit(tokenA, actualA, step);
+      if (actualB > 0) this.deposit(tokenB, actualB, step);
+      return 0;
+    }
+    pool.addLiquidity(actualA, actualB, step);
     // Return LP tokens proportional to liquidity added
-    return Math.sqrt(amtA * amtB);
+    return Math.sqrt(actualA * actualB);
   }
 
   /**

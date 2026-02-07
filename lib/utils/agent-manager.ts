@@ -23,6 +23,7 @@ import {
   Speculator,
   PassiveMember,
   StakerAgent,
+  GovernanceWhale,
 } from '../agents';
 import { generateRandomLocation } from './locations';
 import * as constants from '../config/constants';
@@ -129,6 +130,10 @@ export class AgentManager {
     }],
     [PassiveMember as AgentClass, {
       tokens: constants.PASSIVE_MEMBER_TOKENS,
+      reputation: constants.DEFAULT_AGENT_REPUTATION,
+    }],
+    [GovernanceWhale as AgentClass, {
+      tokens: constants.GOVERNANCE_WHALE_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
     }],
   ]);

@@ -153,6 +153,8 @@ export class Proposal {
       if (this.snapshotTaken) {
         const snapshotPower = this.votingPowerSnapshot.get(memberId);
         if (snapshotPower !== undefined) {
+          // Member had no power at snapshot time — reject vote
+          if (snapshotPower <= 0) return false;
           // Use the MINIMUM of snapshot power and provided weight
           // This ensures votes can't exceed what member had at proposal creation
           effectiveWeight = Math.min(snapshotPower, weight);

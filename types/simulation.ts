@@ -16,6 +16,7 @@ export interface Scheduler {
   steps: number;
   add(agent: Agent): void;
   remove(agent: Agent): void;
+  has(agent: Agent): boolean;
   step(): void | Promise<void>;
 }
 

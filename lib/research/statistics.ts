@@ -300,8 +300,9 @@ export function bootstrapConfidenceInterval(
   // xorshift128+ PRNG for better statistical properties than LCG
   let random: () => number;
   if (seed !== undefined) {
-    let s0 = seed | 1;  // Ensure non-zero
-    let s1 = (seed * 6364136223846793005 + 1) | 0 || 1;
+    // Use bitwise operations to avoid float precision loss
+    let s0 = (seed ^ 0xDEADBEEF) >>> 0 || 1;
+    let s1 = (seed * 2654435761) >>> 0 || 1; // Knuth's multiplicative hash, stays in 32-bit range
     random = () => {
       let x = s0;
       const y = s1;
@@ -474,6 +475,8 @@ export interface AnovaResult {
   pValue: number;
   significant: boolean;
   alpha: number;
+  variancesHomogeneous?: boolean;
+  varianceRatio?: number;
 }
 
 export function oneWayAnova(groups: number[][], alpha: number = 0.05): AnovaResult {
@@ -522,6 +525,16 @@ export function oneWayAnova(groups: number[][], alpha: number = 0.05): AnovaResu
   // Using Fisher's approximation for large df
   const pValue = approximateFPValue(f, dfBetween, dfWithin);
 
+  // Check variance homogeneity (simplified Levene's-like check)
+  const groupVariances = groups.map(g => {
+    const m = g.reduce((s, v) => s + v, 0) / g.length;
+    return g.reduce((s, v) => s + (v - m) ** 2, 0) / (g.length - 1);
+  });
+  const maxVar = Math.max(...groupVariances);
+  const minVar = Math.min(...groupVariances.filter(v => v > 0));
+  const varianceRatio = minVar > 0 ? maxVar / minVar : Infinity;
+  const variancesHomogeneous = varianceRatio < 4; // Rule of thumb: ratio < 4 is acceptable
+
   return {
     fStatistic: f,
     dfBetween,
@@ -529,6 +542,8 @@ export function oneWayAnova(groups: number[][], alpha: number = 0.05): AnovaResu
     pValue,
     significant: pValue < alpha,
     alpha,
+    variancesHomogeneous,
+    varianceRatio,
   };
 }
 
@@ -572,7 +587,9 @@ export function powerAnalysis(
   // Estimate current power
   // power ≈ Φ(|d|*sqrt(n/2) - z_α/2)
   const currentNonCentrality = desiredEffectSize * Math.sqrt(currentN / 2);
-  const currentPower = Math.min(0.99, 0.5 * (1 + Math.tanh((currentNonCentrality - zAlpha2) / 1.5)));
+  // Approximate power using normal CDF approximation
+  const delta = currentNonCentrality - zAlpha2;
+  const currentPower = Math.min(0.999, Math.max(0.001, normalCDF(delta)));
 
   // Minimum detectable effect with current n and 80% power
   const minEffect = (zAlpha2 + zBeta) / Math.sqrt(currentN / 2);
@@ -757,4 +774,582 @@ export function benjaminiHochberg(pValues: number[]): number[] {
   }
 
   return adjusted;
+}
+
+/**
+ * Bonferroni correction for multiple comparisons.
+ * More conservative than BH but controls family-wise error rate (FWER).
+ */
+export function bonferroniCorrection(pValues: number[]): number[] {
+  const n = pValues.length;
+  return pValues.map(p => Math.min(p * n, 1));
+}
+
+// =============================================================================
+// LINEAR REGRESSION
+// =============================================================================
+
+export interface RegressionResult {
+  slope: number;
+  intercept: number;
+  rSquared: number;
+  adjustedRSquared: number;
+  standardErrorSlope: number;
+  standardErrorIntercept: number;
+  tStatisticSlope: number;
+  pValueSlope: number;
+  fStatistic: number;
+  pValueF: number;
+  residuals: number[];
+  predicted: number[];
+  n: number;
+}
+
+/**
+ * Simple linear regression: y = a + bx
+ * Returns comprehensive regression statistics including R², t-tests, and F-test
+ */
+export function linearRegression(x: number[], y: number[]): RegressionResult {
+  const n = x.length;
+
+  if (n < 3 || x.length !== y.length) {
+    return {
+      slope: 0, intercept: 0, rSquared: 0, adjustedRSquared: 0,
+      standardErrorSlope: 0, standardErrorIntercept: 0,
+      tStatisticSlope: 0, pValueSlope: 1, fStatistic: 0, pValueF: 1,
+      residuals: [], predicted: [], n: 0
+    };
+  }
+
+  const meanX = mean(x);
+  const meanY = mean(y);
+
+  // Calculate slope and intercept
+  let sumXY = 0, sumXX = 0;
+  for (let i = 0; i < n; i++) {
+    sumXY += (x[i] - meanX) * (y[i] - meanY);
+    sumXX += (x[i] - meanX) * (x[i] - meanX);
+  }
+
+  const slope = sumXX > 0 ? sumXY / sumXX : 0;
+  const intercept = meanY - slope * meanX;
+
+  // Calculate predicted values and residuals
+  const predicted = x.map(xi => intercept + slope * xi);
+  const residuals = y.map((yi, i) => yi - predicted[i]);
+
+  // Sum of squares
+  const ssTotal = y.reduce((sum, yi) => sum + (yi - meanY) ** 2, 0);
+  const ssResidual = residuals.reduce((sum, r) => sum + r ** 2, 0);
+  const ssRegression = ssTotal - ssResidual;
+
+  // R-squared and adjusted R-squared
+  const rSquared = ssTotal > 0 ? 1 - ssResidual / ssTotal : 0;
+  const adjustedRSquared = 1 - (1 - rSquared) * (n - 1) / (n - 2);
+
+  // Mean squared error
+  const mse = ssResidual / (n - 2);
+  const rmse = Math.sqrt(mse);
+
+  // Handle perfect fit (mse ≈ 0): relationship is infinitely significant
+  const isPerfectFit = mse < 1e-14 && ssRegression > 0;
+
+  // Standard errors
+  const standardErrorSlope = sumXX > 0 ? rmse / Math.sqrt(sumXX) : 0;
+  const standardErrorIntercept = sumXX > 0 ? rmse * Math.sqrt(1/n + meanX**2 / sumXX) : 0;
+
+  // t-statistic for slope
+  // For perfect fits, t-statistic is effectively infinite → p-value = 0
+  let tStatisticSlope: number;
+  let pValueSlope: number;
+  if (isPerfectFit) {
+    tStatisticSlope = Infinity;
+    pValueSlope = 0;
+  } else {
+    tStatisticSlope = standardErrorSlope > 0 ? slope / standardErrorSlope : 0;
+    pValueSlope = tTestPValue(tStatisticSlope, n - 2);
+  }
+
+  // F-statistic (for simple regression, F = t²)
+  const msRegression = ssRegression / 1;  // df_regression = 1 for simple regression
+  let fStatistic: number;
+  let pValueF: number;
+  if (isPerfectFit) {
+    fStatistic = Infinity;
+    pValueF = 0;
+  } else {
+    fStatistic = mse > 0 ? msRegression / mse : 0;
+    pValueF = fTestPValue(fStatistic, 1, n - 2);
+  }
+
+  return {
+    slope, intercept, rSquared, adjustedRSquared,
+    standardErrorSlope, standardErrorIntercept,
+    tStatisticSlope, pValueSlope,
+    fStatistic, pValueF,
+    residuals, predicted, n
+  };
+}
+
+// =============================================================================
+// EFFECT SIZES FOR ANOVA
+// =============================================================================
+
+export interface AnovaEffectSizes {
+  etaSquared: number;           // SS_between / SS_total
+  omegaSquared: number;         // Less biased estimate
+  interpretation: string;
+}
+
+/**
+ * Calculate eta-squared and omega-squared effect sizes for ANOVA
+ * η² = SS_between / SS_total (proportion of variance explained)
+ * ω² = (SS_between - df_between * MS_within) / (SS_total + MS_within)
+ */
+export function anovaEffectSizes(groups: number[][]): AnovaEffectSizes {
+  const k = groups.length;
+  const allValues = groups.flat();
+  const N = allValues.length;
+
+  if (k < 2 || N < k + 1) {
+    return { etaSquared: 0, omegaSquared: 0, interpretation: 'insufficient data' };
+  }
+
+  const grandMean = mean(allValues);
+
+  // Sum of squares between groups
+  let ssBetween = 0;
+  for (const group of groups) {
+    const groupMean = mean(group);
+    ssBetween += group.length * (groupMean - grandMean) ** 2;
+  }
+
+  // Sum of squares within groups
+  let ssWithin = 0;
+  for (const group of groups) {
+    const groupMean = mean(group);
+    for (const value of group) {
+      ssWithin += (value - groupMean) ** 2;
+    }
+  }
+
+  const ssTotal = ssBetween + ssWithin;
+  const dfBetween = k - 1;
+  const dfWithin = N - k;
+  const msWithin = ssWithin / dfWithin;
+
+  // Eta-squared
+  const etaSquared = ssTotal > 0 ? ssBetween / ssTotal : 0;
+
+  // Omega-squared (less biased)
+  const omegaSquared = ssTotal > 0
+    ? (ssBetween - dfBetween * msWithin) / (ssTotal + msWithin)
+    : 0;
+
+  // Interpretation (Cohen's conventions for eta-squared)
+  let interpretation: string;
+  if (etaSquared < 0.01) interpretation = 'negligible';
+  else if (etaSquared < 0.06) interpretation = 'small';
+  else if (etaSquared < 0.14) interpretation = 'medium';
+  else interpretation = 'large';
+
+  return { etaSquared, omegaSquared: Math.max(0, omegaSquared), interpretation };
+}
+
+// =============================================================================
+// KRUSKAL-WALLIS TEST (Non-parametric ANOVA alternative)
+// =============================================================================
+
+/**
+ * Chi-squared distribution CDF using regularized incomplete gamma
+ */
+function chiSquaredCDF(x: number, k: number): number {
+  if (x <= 0) return 0;
+  // Chi-squared is a special case of gamma distribution
+  // CDF = regularized incomplete gamma function P(k/2, x/2)
+  return regularizedIncompleteGamma(k / 2, x / 2);
+}
+
+/**
+ * Regularized incomplete gamma function P(a, x) using series expansion
+ */
+function regularizedIncompleteGamma(a: number, x: number): number {
+  if (x <= 0) return 0;
+  if (x < a + 1) {
+    // Use series expansion
+    return gammaSeriesP(a, x);
+  } else {
+    // Use continued fraction and complement
+    return 1 - gammaContinuedFractionQ(a, x);
+  }
+}
+
+function gammaSeriesP(a: number, x: number): number {
+  const maxIter = 200;
+  const eps = 1e-14;
+
+  let sum = 1 / a;
+  let term = 1 / a;
+
+  for (let n = 1; n < maxIter; n++) {
+    term *= x / (a + n);
+    sum += term;
+    if (Math.abs(term) < eps * Math.abs(sum)) break;
+  }
+
+  return sum * Math.exp(-x + a * Math.log(x) - lnGamma(a));
+}
+
+function gammaContinuedFractionQ(a: number, x: number): number {
+  const maxIter = 200;
+  const eps = 1e-14;
+
+  let b = x + 1 - a;
+  let c = 1 / 1e-30;
+  let d = 1 / b;
+  let h = d;
+
+  for (let n = 1; n < maxIter; n++) {
+    const an = -n * (n - a);
+    b += 2;
+    d = an * d + b;
+    if (Math.abs(d) < 1e-30) d = 1e-30;
+    c = b + an / c;
+    if (Math.abs(c) < 1e-30) c = 1e-30;
+    d = 1 / d;
+    const delta = d * c;
+    h *= delta;
+    if (Math.abs(delta - 1) < eps) break;
+  }
+
+  return Math.exp(-x + a * Math.log(x) - lnGamma(a)) * h;
+}
+
+export interface KruskalWallisResult {
+  hStatistic: number;
+  degreesOfFreedom: number;
+  pValue: number;
+  significant: boolean;
+  alpha: number;
+}
+
+/**
+ * Kruskal-Wallis H test (non-parametric alternative to one-way ANOVA)
+ * Tests whether samples originate from the same distribution.
+ * Does not assume normality.
+ */
+export function kruskalWallis(groups: number[][], alpha: number = 0.05): KruskalWallisResult {
+  const k = groups.length;
+  const N = groups.reduce((sum, g) => sum + g.length, 0);
+
+  if (k < 2 || N < k + 1) {
+    return {
+      hStatistic: 0,
+      degreesOfFreedom: k - 1,
+      pValue: 1,
+      significant: false,
+      alpha
+    };
+  }
+
+  // Combine all values with group labels and sort by value
+  const combined: Array<{ value: number; group: number }> = [];
+  groups.forEach((group, groupIdx) => {
+    group.forEach(value => combined.push({ value, group: groupIdx }));
+  });
+  combined.sort((a, b) => a.value - b.value);
+
+  // Assign ranks (handling ties by averaging)
+  const ranks: number[] = new Array(N);
+  let i = 0;
+  while (i < N) {
+    let j = i;
+    // Find all tied values
+    while (j < N && combined[j].value === combined[i].value) j++;
+    // Average rank for tied values
+    const avgRank = (i + j + 1) / 2;  // 1-based ranks
+    for (let k = i; k < j; k++) {
+      ranks[k] = avgRank;
+    }
+    i = j;
+  }
+
+  // Calculate sum of ranks for each group
+  const rankSums: number[] = new Array(k).fill(0);
+  const groupSizes: number[] = groups.map(g => g.length);
+
+  let rankIdx = 0;
+  for (const item of combined) {
+    rankSums[item.group] += ranks[rankIdx++];
+  }
+
+  // Calculate H statistic
+  let sumTerm = 0;
+  for (let g = 0; g < k; g++) {
+    if (groupSizes[g] > 0) {
+      sumTerm += (rankSums[g] ** 2) / groupSizes[g];
+    }
+  }
+
+  const H = (12 / (N * (N + 1))) * sumTerm - 3 * (N + 1);
+
+  // Tie correction factor
+  let tieCorrection = 1;
+  i = 0;
+  while (i < N) {
+    let j = i;
+    while (j < N && combined[j].value === combined[i].value) j++;
+    const t = j - i;  // Number of tied values
+    if (t > 1) {
+      tieCorrection -= (t ** 3 - t) / (N ** 3 - N);
+    }
+    i = j;
+  }
+
+  const correctedH = tieCorrection > 0 ? H / tieCorrection : H;
+  const df = k - 1;
+  const pValue = 1 - chiSquaredCDF(correctedH, df);
+
+  return {
+    hStatistic: correctedH,
+    degreesOfFreedom: df,
+    pValue,
+    significant: pValue < alpha,
+    alpha
+  };
+}
+
+// =============================================================================
+// TUKEY HSD POST-HOC TEST
+// =============================================================================
+
+export interface TukeyHSDResult {
+  comparisons: Array<{
+    group1: number;
+    group2: number;
+    meanDiff: number;
+    standardError: number;
+    qStatistic: number;
+    pValue: number;
+    significant: boolean;
+    ci95: { lower: number; upper: number };
+  }>;
+  alpha: number;
+}
+
+/**
+ * Tukey's Honestly Significant Difference (HSD) test for post-hoc pairwise comparisons
+ * Used after significant ANOVA to determine which groups differ
+ */
+export function tukeyHSD(groups: number[][], alpha: number = 0.05): TukeyHSDResult {
+  const k = groups.length;
+  const N = groups.reduce((sum, g) => sum + g.length, 0);
+  const dfWithin = N - k;
+
+  // Calculate MSE (mean square error within groups)
+  let ssWithin = 0;
+  for (const group of groups) {
+    const groupMean = mean(group);
+    for (const value of group) {
+      ssWithin += (value - groupMean) ** 2;
+    }
+  }
+  const mse = ssWithin / dfWithin;
+  const rmse = Math.sqrt(mse);
+
+  const groupMeans = groups.map(g => mean(g));
+  const comparisons: TukeyHSDResult['comparisons'] = [];
+
+  // All pairwise comparisons
+  for (let i = 0; i < k; i++) {
+    for (let j = i + 1; j < k; j++) {
+      const ni = groups[i].length;
+      const nj = groups[j].length;
+      const meanDiff = groupMeans[i] - groupMeans[j];
+
+      // Standard error for unequal sample sizes (Tukey-Kramer)
+      const se = rmse * Math.sqrt(0.5 * (1/ni + 1/nj));
+
+      // q statistic (studentized range)
+      const q = Math.abs(meanDiff) / se;
+
+      // Approximate p-value using the studentized range distribution
+      // For computational simplicity, we use a conservative approximation
+      // based on the relationship q ≈ √2 * t for large df
+      const approxT = q / Math.sqrt(2);
+      const pValue = tTestPValue(approxT, dfWithin) * k * (k - 1) / 2;  // Bonferroni-like adjustment
+      const adjustedP = Math.min(1, pValue);
+
+      // Critical value for 95% CI (approximate)
+      const qCrit = tCritical(dfWithin, alpha) * Math.sqrt(2);
+      const margin = qCrit * se;
+
+      comparisons.push({
+        group1: i,
+        group2: j,
+        meanDiff,
+        standardError: se,
+        qStatistic: q,
+        pValue: adjustedP,
+        significant: adjustedP < alpha,
+        ci95: { lower: meanDiff - margin, upper: meanDiff + margin }
+      });
+    }
+  }
+
+  return { comparisons, alpha };
+}
+
+/**
+ * Pairwise t-tests with multiple comparison correction
+ * Alternative to Tukey HSD, using actual t-tests with BH correction
+ */
+export function pairwiseTTests(
+  groups: number[][],
+  alpha: number = 0.05,
+  correction: 'bonferroni' | 'bh' = 'bh'
+): Array<{
+  group1: number;
+  group2: number;
+  meanDiff: number;
+  tStatistic: number;
+  df: number;
+  rawPValue: number;
+  adjustedPValue: number;
+  significant: boolean;
+  effectSize: EffectSize;
+}> {
+  const k = groups.length;
+  const results: Array<{
+    group1: number;
+    group2: number;
+    meanDiff: number;
+    tStatistic: number;
+    df: number;
+    rawPValue: number;
+    adjustedPValue: number;
+    significant: boolean;
+    effectSize: EffectSize;
+  }> = [];
+
+  // Perform all pairwise t-tests
+  const rawPValues: number[] = [];
+  const tempResults: Array<{
+    group1: number;
+    group2: number;
+    meanDiff: number;
+    tStatistic: number;
+    df: number;
+    rawPValue: number;
+    effectSize: EffectSize;
+  }> = [];
+
+  for (let i = 0; i < k; i++) {
+    for (let j = i + 1; j < k; j++) {
+      const tTest = independentTTest(groups[i], groups[j], alpha);
+      const effect = cohensD(groups[i], groups[j]);
+
+      rawPValues.push(tTest.pValue);
+      tempResults.push({
+        group1: i,
+        group2: j,
+        meanDiff: mean(groups[i]) - mean(groups[j]),
+        tStatistic: tTest.tStatistic,
+        df: tTest.degreesOfFreedom,
+        rawPValue: tTest.pValue,
+        effectSize: effect
+      });
+    }
+  }
+
+  // Apply correction
+  const adjustedPValues = correction === 'bonferroni'
+    ? bonferroniCorrection(rawPValues)
+    : benjaminiHochberg(rawPValues);
+
+  // Combine results
+  for (let i = 0; i < tempResults.length; i++) {
+    results.push({
+      ...tempResults[i],
+      adjustedPValue: adjustedPValues[i],
+      significant: adjustedPValues[i] < alpha
+    });
+  }
+
+  return results;
+}
+
+// =============================================================================
+// POWER ANALYSIS - DETAILED REPORT
+// =============================================================================
+
+export interface DetailedPowerAnalysis {
+  // Current study
+  currentN: number;
+  currentPower: number;
+  minimumDetectableEffect: number;
+
+  // Recommendations
+  recommendedN: {
+    small: number;    // d = 0.2
+    medium: number;   // d = 0.5
+    large: number;    // d = 0.8
+  };
+
+  // Power at various sample sizes
+  powerCurve: Array<{ n: number; power: number }>;
+
+  // Summary
+  adequateForSmallEffect: boolean;
+  adequateForMediumEffect: boolean;
+  adequateForLargeEffect: boolean;
+}
+
+/**
+ * Comprehensive power analysis with power curves and recommendations
+ */
+export function detailedPowerAnalysis(
+  currentN: number,
+  alpha: number = 0.05,
+  desiredPower: number = 0.80
+): DetailedPowerAnalysis {
+  const zAlpha2 = alpha === 0.05 ? 1.96 : alpha === 0.01 ? 2.576 : 1.645;
+  const zBeta = desiredPower === 0.80 ? 0.84 : desiredPower === 0.90 ? 1.28 : 0.52;
+
+  // Calculate required N for different effect sizes
+  const calcRequiredN = (d: number) => Math.ceil(2 * ((zAlpha2 + zBeta) / d) ** 2);
+
+  // Calculate power for given N and effect size
+  const calcPower = (n: number, d: number) => {
+    const ncp = d * Math.sqrt(n / 2);
+    return Math.min(0.999, Math.max(0.001, normalCDF(ncp - zAlpha2)));
+  };
+
+  // Power curve at medium effect size
+  const powerCurve: Array<{ n: number; power: number }> = [];
+  const sampleSizes = [10, 20, 30, 50, 75, 100, 150, 200, 300, 500, 1000];
+  for (const n of sampleSizes) {
+    powerCurve.push({ n, power: calcPower(n, 0.5) });
+  }
+
+  // Current power at medium effect
+  const currentPower = calcPower(currentN, 0.5);
+
+  // Minimum detectable effect at 80% power
+  const minimumDetectableEffect = (zAlpha2 + zBeta) / Math.sqrt(currentN / 2);
+
+  return {
+    currentN,
+    currentPower,
+    minimumDetectableEffect,
+    recommendedN: {
+      small: calcRequiredN(0.2),
+      medium: calcRequiredN(0.5),
+      large: calcRequiredN(0.8)
+    },
+    powerCurve,
+    adequateForSmallEffect: currentN >= calcRequiredN(0.2),
+    adequateForMediumEffect: currentN >= calcRequiredN(0.5),
+    adequateForLargeEffect: currentN >= calcRequiredN(0.8)
+  };
 }

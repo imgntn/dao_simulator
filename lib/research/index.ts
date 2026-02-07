@@ -97,25 +97,54 @@ export {
 
 // Statistics Module
 export {
+  // Basic statistics
   mean,
   median,
   variance,
   standardDeviation,
   standardError,
   percentile,
+  interquartileRange,
+  // Confidence intervals
   confidenceInterval,
   bootstrapConfidenceInterval,
+  // Effect sizes
   cohensD,
+  anovaEffectSizes,
+  // Hypothesis tests
   independentTTest,
   oneWayAnova,
+  kruskalWallis,
+  // Post-hoc tests
+  tukeyHSD,
+  pairwiseTTests,
+  // Multiple comparison corrections
+  benjaminiHochberg,
+  bonferroniCorrection,
+  // Regression
+  linearRegression,
+  // Power analysis
   powerAnalysis,
+  detailedPowerAnalysis,
+  // Comprehensive analysis
   analyzeDistribution,
   compareGroups,
+  // Distribution functions
+  normalCDF,
+  tDistributionCDF,
+  fDistributionCDF,
+  regularizedIncompleteBeta,
+  // Types
   type ConfidenceInterval,
   type EffectSize,
   type TTestResult,
   type AnovaResult,
+  type AnovaEffectSizes,
+  type KruskalWallisResult,
+  type TukeyHSDResult,
+  type RegressionResult,
   type PowerAnalysis,
+  type DetailedPowerAnalysis,
   type StatisticalAnalysis,
   type GroupComparison,
 } from './statistics';

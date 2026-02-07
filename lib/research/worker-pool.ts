@@ -102,9 +102,19 @@ export class WorkerPool {
     });
 
     child.on('exit', (code) => {
-      if (code !== 0 && !this.isShuttingDown) {
-        console.error(`Worker process exited with code ${code}, restarting...`);
-        this.replaceProcess(processState);
+      if (code !== 0) {
+        // Reject any pending task for this process
+        if (processState.currentTaskId !== undefined) {
+          const pending = this.pendingTasks.get(processState.currentTaskId);
+          if (pending) {
+            pending.reject(new Error(`Worker process exited with code ${code}`));
+            this.pendingTasks.delete(processState.currentTaskId);
+          }
+        }
+        if (!this.isShuttingDown) {
+          console.error(`Worker process exited with code ${code}, restarting...`);
+          this.replaceProcess(processState);
+        }
       }
     });
 

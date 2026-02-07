@@ -12,7 +12,8 @@ describe('SimpleDataCollector', () => {
     ] as any;
     dao.treasury.deposit('DAO_TOKEN', 500, dao.currentStep);
 
-    const collector = new SimpleDataCollector(dao);
+    // Pass collectionInterval=1 to collect every step (default is 10 for performance)
+    const collector = new SimpleDataCollector(dao, 1, 1);
     collector.collect(dao);
     dao.currentStep = 2;
     dao.members.push({ tokens: 50, reputation: 5, delegations: new Map(), uniqueId: 'member_2' } as any);

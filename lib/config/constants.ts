@@ -95,6 +95,7 @@ export const PASSIVE_MEMBER_TOKENS = 100;
 export const PLAYER_TOKENS = 100;
 export const STAKER_TOKENS = 500;
 export const STAKER_STAKE_RATIO = 0.6;
+export const GOVERNANCE_WHALE_TOKENS = 2000; // Large holders who maintain voting power
 
 // Agent Budget Configuration
 export const INVESTOR_BUDGET = 500;

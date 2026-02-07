@@ -133,7 +133,9 @@ function calculateCV(values: number[]): number {
   if (mean === 0) return 0;
 
   const squaredDiffs = values.map(v => Math.pow(v - mean, 2));
-  const variance = squaredDiffs.reduce((a, b) => a + b, 0) / values.length;
+  const variance = values.length > 1
+    ? squaredDiffs.reduce((a, b) => a + b, 0) / (values.length - 1)
+    : 0;
   const std = Math.sqrt(variance);
 
   return std / mean;
@@ -359,7 +361,7 @@ export class ExperimentRunner {
     }
 
     // Generate summary
-    const summary = this.generateSummary(results, startTime);
+    const summary = this.generateSummary(results, startTime, 0);
 
     return summary;
   }
@@ -386,7 +388,7 @@ export class ExperimentRunner {
         const seed = this.getSeed(runIndex);
 
         tasks.push({
-          config: daoConfig,
+          config: daoConfig as ResearchConfig,
           simConfig: {
             checkpointInterval: this.config.baseConfig.simulationOverrides?.checkpointInterval,
             eventLogging: this.config.baseConfig.simulationOverrides?.eventLogging,
@@ -427,14 +429,24 @@ export class ExperimentRunner {
     });
 
     // Wait for all tasks to complete
-    const allResults = await Promise.all(taskPromises);
+    const settledResults = await Promise.allSettled(taskPromises);
+    const allResults: RunResult[] = [];
+    let failedCount = 0;
+    for (const result of settledResults) {
+      if (result.status === 'fulfilled') {
+        allResults.push(result.value);
+      } else {
+        failedCount++;
+        console.error('Worker task failed:', result.reason);
+      }
+    }
     results.push(...allResults);
 
     // Shutdown the pool
     await pool.shutdown();
 
     // Generate summary
-    const summary = this.generateSummary(results, startTime);
+    const summary = this.generateSummary(results, startTime, failedCount);
 
     return summary;
   }
@@ -456,9 +468,9 @@ export class ExperimentRunner {
     // Set random seed for reproducibility
     setSeed(seed);
 
-    // Convert to simulation config
+    // Convert to simulation config (city mode already handled above)
     const simConfig = resolveSimulationConfig(
-      daoConfig,
+      daoConfig as ResearchConfig,
       seed,
       this.config.baseConfig.simulationOverrides
     );
@@ -593,8 +605,10 @@ export class ExperimentRunner {
       };
     }
 
+    // NOTE: scenario.daos wholesale replaces base config DAOs.
+    // Scenarios must fully specify all DAOs (no per-DAO merging).
     mergedScenario.daos = scenario.daos;
-    return mergedScenario;
+    return mergedScenario as DAOCityConfig;
   }
 
   private initializeCityRunContext(city: DAOCity, scenario: CityScenarioConfig): CityRunContext {
@@ -1083,7 +1097,7 @@ export class ExperimentRunner {
         if (proposals.length === 0) return 0;
         let totalAlignment = 0;
         for (const proposal of proposals) {
-          const approvals = Object.values(proposal.votingResults).map(r => r.approved ? 1 : 0);
+          const approvals = Object.values(proposal.votingResults).map(r => r.approved ? 1 as number : 0 as number);
           if (approvals.length === 0) continue;
           const approvalRate = approvals.reduce((sum, v) => sum + v, 0) / approvals.length;
           const alignment = 1 - 2 * Math.min(approvalRate, 1 - approvalRate);
@@ -1149,10 +1163,10 @@ export class ExperimentRunner {
 
       for (const combination of gridCombinations) {
         // Clone base config and apply all grid parameters
-        const sweptConfig = JSON.parse(JSON.stringify(baseConfig)) as ResearchConfig;
+        let sweptConfig = JSON.parse(JSON.stringify(baseConfig)) as ResearchConfig;
 
         for (const [param, value] of Object.entries(combination)) {
-          applySweepValue(sweptConfig, param, value);
+          sweptConfig = applySweepValue(sweptConfig, param, value);
         }
 
         // Create a composite sweep value string for identification
@@ -1172,8 +1186,7 @@ export class ExperimentRunner {
 
       for (const value of sweepValues) {
         // Clone base config and apply sweep value
-        const sweptConfig = JSON.parse(JSON.stringify(baseConfig)) as ResearchConfig;
-        applySweepValue(sweptConfig, this.config.sweep.parameter, value);
+        const sweptConfig = applySweepValue(baseConfig, this.config.sweep.parameter, value);
         configs.push({ daoConfig: sweptConfig, sweepValue: value });
       }
     }
@@ -1326,6 +1339,7 @@ export class ExperimentRunner {
         }
         return baseSeed;
       case 'random':
+        console.warn('[experiment-runner] Warning: "random" seed strategy is non-deterministic and breaks reproducibility');
         return Math.floor(Math.random() * 2147483647);
       default:
         return baseSeed + runIndex;
@@ -1495,7 +1509,7 @@ export class ExperimentRunner {
       case 'proposal_abandonment_rate': {
         const stats = getProposalStats(proposals);
         if (stats.total === 0) return 0;
-        return (stats.expired + stats.open) / stats.total;
+        return stats.expired / stats.total;
       }
 
       case 'proposal_rejection_rate': {
@@ -1958,7 +1972,7 @@ export class ExperimentRunner {
    * Generate experiment summary
    * Public for use by BatchRunner
    */
-  generateSummary(results: RunResult[], startTime: number): ExperimentSummary {
+  generateSummary(results: RunResult[], startTime: number, failedCount: number = 0): ExperimentSummary {
     const endTime = Date.now();
 
     // Group results by sweep value
@@ -1985,8 +1999,8 @@ export class ExperimentRunner {
       experimentId: `${this.config.name}-${Date.now()}`,
       experimentName: this.config.name,
       totalRuns: results.length,
-      successfulRuns: results.length, // All runs that complete are successful
-      failedRuns: 0,
+      successfulRuns: results.length,
+      failedRuns: failedCount,
       totalDurationMs: endTime - startTime,
       metricsSummary,
       statisticalSignificance,
@@ -2072,7 +2086,7 @@ export class ExperimentRunner {
       }
     }
 
-    // ANOVA for 3+ sweep values
+    // ANOVA for 3+ sweep values (with effect sizes and non-parametric alternative)
     if (sweepValues.length >= 3) {
       for (const metricName of metricNames) {
         const groups: number[][] = sweepValues.map(sv => {
@@ -2082,6 +2096,19 @@ export class ExperimentRunner {
 
         if (groups.every(g => g.length >= 2)) {
           const anova = stats.oneWayAnova(groups);
+          const effectSizes = stats.anovaEffectSizes(groups);
+
+          // Check if data is non-normal (high skewness in any group)
+          const groupSkewness = groups.map(g => {
+            const analysis = stats.analyzeDistribution(g);
+            return Math.abs(analysis.skewness);
+          });
+          const maxSkewness = Math.max(...groupSkewness);
+          const useNonParametric = maxSkewness > 1;
+
+          // Run Kruskal-Wallis if non-normal
+          const kruskalWallis = useNonParametric ? stats.kruskalWallis(groups) : undefined;
+
           anovaResults.push({
             metricName,
             fStatistic: anova.fStatistic,
@@ -2089,16 +2116,32 @@ export class ExperimentRunner {
             dfWithin: anova.dfWithin,
             pValue: anova.pValue,
             significant: anova.significant,
+            // Enhanced with effect sizes
+            etaSquared: effectSizes.etaSquared,
+            omegaSquared: effectSizes.omegaSquared,
+            effectSizeInterpretation: effectSizes.interpretation,
+            // Non-parametric alternative if needed
+            kruskalWallis: kruskalWallis ? {
+              hStatistic: kruskalWallis.hStatistic,
+              pValue: kruskalWallis.pValue,
+              significant: kruskalWallis.significant,
+            } : undefined,
+            nonNormalWarning: useNonParametric,
           });
         }
       }
     }
 
-    // Overall power analysis
+    // Overall power analysis (using detailed version)
     const avgRunsPerConfig = metricsSummary.reduce((sum, s) => sum + s.runCount, 0) / metricsSummary.length;
-    const primaryMetric = metricsSummary[0]?.metrics[0];
-    const avgStd = metricsSummary.reduce((sum, s) => sum + (s.metrics[0]?.std || 0), 0) / metricsSummary.length;
-    const power = stats.powerAnalysis(Math.round(avgRunsPerConfig), avgStd);
+    const detailedPower = stats.detailedPowerAnalysis(Math.round(avgRunsPerConfig));
+    const power = {
+      recommendedRuns: detailedPower.recommendedN.medium,
+      currentPower: detailedPower.currentPower,
+      minimumEffectDetectable: detailedPower.minimumDetectableEffect,
+      explanation: `Power for medium effect (d=0.5): ${(detailedPower.currentPower * 100).toFixed(0)}%. ` +
+        `Recommended N for small/medium/large effects: ${detailedPower.recommendedN.small}/${detailedPower.recommendedN.medium}/${detailedPower.recommendedN.large}.`,
+    };
 
     return {
       pairwiseComparisons,
@@ -2373,13 +2416,26 @@ export async function runSingleSimulation(
   const runner = new ExperimentRunner(experimentConfig);
   const summary = await runner.run();
 
-  // Return the single run result - we need to run it again to get the full result
-  // This is a bit inefficient but keeps the API clean
-  const simpleRunner = new ExperimentRunner(experimentConfig);
-  return simpleRunner.runSingle(
-    daoConfig,
-    experimentConfig.execution.baseSeed!,
-    undefined,
-    0
-  );
+  // Extract the single result from the summary
+  if (summary.metricsSummary.length > 0 && summary.metricsSummary[0].metrics.length > 0) {
+    // Reconstruct a RunResult from the summary metrics
+    const metrics: Record<string, number> = {};
+    for (const m of summary.metricsSummary[0].metrics) {
+      metrics[m.name] = m.mean;
+    }
+    return {
+      runId: `${experimentConfig.name}-run-001`,
+      experimentName: experimentConfig.name,
+      sweepValue: undefined,
+      runIndex: 0,
+      config: experimentConfig.baseConfig.inline || {},
+      seed: experimentConfig.execution.baseSeed!,
+      metrics,
+      startedAt: summary.manifest.execution.startedAt,
+      completedAt: summary.manifest.execution.completedAt,
+      durationMs: summary.totalDurationMs,
+      stepsCompleted: steps,
+    } as RunResult;
+  }
+  throw new Error('No results from simulation run');
 }
