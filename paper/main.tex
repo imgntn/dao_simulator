@@ -1,5 +1,5 @@
 % arxiv-style paper for DAO Governance Simulation Research
-% This is a LIVING DOCUMENT - sections are auto-updated from experiments
+% Sections are auto-updated from experiments
 \documentclass[11pt]{article}
 
 % ============================================================================
@@ -15,6 +15,7 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{booktabs}
+\usepackage{enumitem}
 \usepackage{multirow}
 \usepackage{caption}
 \usepackage{subcaption}
@@ -26,6 +27,7 @@
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
 \usepackage{microtype}  % Enables font expansion with scalable fonts
+\usepackage{xspace}
 
 \geometry{margin=1in}
 
@@ -34,22 +36,23 @@
 % ============================================================================
 \newcommand{\paperstatus}{DRAFT}
 \newcommand{\lastupdate}{\today}
-\newcommand{\experimentcount}{10}  % AUTO: updated by pipeline
-\newcommand{\totalruns}{21402}        % AUTO: updated by pipeline
+\newcommand{\experimentcount}{11}  % AUTO: updated by pipeline
+\newcommand{\totalruns}{8701}        % AUTO: updated by pipeline
 
 % ============================================================================
 % CUSTOM COMMANDS
 % ============================================================================
 \newcommand{\dao}{DAO}
 \newcommand{\daos}{DAOs}
-\newcommand{\ie}{\textit{i.e.}}
-\newcommand{\eg}{\textit{e.g.}}
-\newcommand{\cf}{\textit{cf.}}
+\newcommand{\ie}{\textit{i.e.}\@\xspace}
+\newcommand{\eg}{\textit{e.g.}\@\xspace}
+\newcommand{\cf}{\textit{cf.}\@\xspace}
 \newcommand{\etal}{\textit{et al.}}
 
 % Auto-generated content markers
 \newcommand{\autogen}[1]{\textcolor{blue}{[AUTO: #1]}}
 \newcommand{\placeholder}[1]{\textcolor{gray}{[PLACEHOLDER: #1]}}
+\newcommand{\pl}[1]{\textcolor{gray}{#1}}  % Short placeholder for tables
 
 % ============================================================================
 % TITLE
@@ -74,8 +77,11 @@
 % ============================================================================
 % DOCUMENT
 % ============================================================================
+
+\tolerance=1000
+\emergencystretch=0.5em
+
 \begin{document}
-\sloppy  % Relax line breaking to avoid overfull/underfull hbox warnings
 
 \maketitle
 

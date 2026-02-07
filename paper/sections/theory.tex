@@ -47,7 +47,7 @@ The outcome is determined by the aggregation function:
 \text{outcome}(p) = M\left(\sum_{a_i \in \text{voters}(p)} w(a_i) \cdot v_i(p)\right)
 \end{equation}
 
-where $w(a_i)$ is the voting weight and $v_i(p) \in \{-1, 0, 1\}$ is the vote.
+where $w(a_i)$ is the voting weight and $v_i(p) \in \{0, 1\}$ is the vote (abstention is modeled as non-participation rather than a zero vote).
 
 \subsection{Voting Mechanisms}
 
@@ -68,7 +68,7 @@ w_{\text{quad}}(a_i) = \sqrt{T(a_i) + \sum_{a_j: \delta_j = a_i} T(a_j)}
 Conviction accumulates over time:
 
 \begin{equation}
-C_i(t+1) = \alpha \cdot C_i(t) + T(a_i) \cdot v_i
+C_i(t+1) = \alpha \cdot C_i(t) + \left(T(a_i) + \sum_{a_j: \delta_j = a_i} T(a_j)\right) \cdot v_i
 \end{equation}
 
 where $\alpha \in (0, 1)$ is the decay factor.
@@ -102,6 +102,9 @@ Based on this framework, we derive several testable predictions:
     \item \textbf{Scale-Participation Decay}: Participation decreases with DAO size following $\theta(n) \propto n^{-\beta}$
     \item \textbf{Quadratic Egalitarianism}: Quadratic voting reduces Gini coefficient of voting power
     \item \textbf{Delegation Concentration}: Without intervention, delegation concentrates in power-law distributions
+    \item \textbf{Pipeline Throughput-Quality Trade-off}: Faster proposal pipelines increase throughput but may reduce decision quality as measured by proposal abandonment rate
+    \item \textbf{Treasury Buffer Stabilization}: Emergency reserves and buffer policies reduce treasury volatility at the cost of reduced capital efficiency
+    \item \textbf{Cooperation Surplus}: Inter-DAO cooperation generates positive-sum outcomes when participating DAOs have complementary resource profiles
 \end{enumerate}
 
 These predictions are tested in Section~\ref{sec:results}.

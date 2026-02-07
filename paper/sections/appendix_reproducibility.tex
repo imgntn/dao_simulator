@@ -6,34 +6,62 @@
 \begin{verbatim}
 simulator_version: 0.2.0
 node_version: 20.10.0
-git_commit: 060ad1b
+git_commit: 1814327cc7c571186284f100959f31e24a179bdc
 typescript_version: 5.3.0
 platform: win32
 \end{verbatim}
 
 \subsection{Random Seeds Used}
 
-% AUTO-GENERATED: List of all seeds
-Seeds used for reproducibility: 12345, 12346, 12347, 12348, 12349, 12350
+% Base seeds for each experiment (sequential strategy: baseSeed + runIndex)
+\begin{tabular}{@{}llr@{}}
+\toprule
+Experiment & Base Seed & Runs \\
+\midrule
+00 Baseline & 42 & 50 \\
+01 Calibration & 101 & 270 \\
+02 Ablation & 202 & 200 \\
+03 Quorum Sensitivity & 303 & 150 \\
+04 Governance Capture & 404 & 675 \\
+05 Proposal Pipeline & 505 & 270 \\
+06 Treasury Resilience & 606 & 300 \\
+07 Inter-DAO & 707 & 300 \\
+08 Scale Sweep & 808 & 150 \\
+09 Voting Mechanisms & 909 & 180 \\
+\bottomrule
+\end{tabular}
 
 \subsection{Configuration Hashes}
 
+SHA-256 hashes of experiment configuration files:
 \begin{verbatim}
-quorum-sensitivity.yaml: sha256:a1b2c3d4...
-dao-scale.yaml: sha256:e5f6g7h8...
-voting-comparison.yaml: sha256:i9j0k1l2...
+00-academic-baseline:           135f71bc...e3a1ed0
+01-calibration-participation:   f8b91445...56056f5
+02-ablation-governance:         da64ba45...e0253c8
+03-sensitivity-quorum:          0a4f2ced...82535f4
+04-governance-capture:          952ea6aa...bf71cd2
+05-proposal-pipeline:           9b82b075...a815933
+06-treasury-resilience:         f21fdef0...d1d50667
+07-inter-dao-cooperation:       762bb88c...a1046d7
+08-scale-sweep:                 81bf5716...5c42edb
+09-voting-mechanisms:           7cf656a6...81518b5
 \end{verbatim}
 
 \subsection{Results Verification}
 
 To verify results, run:
 \begin{verbatim}
-npm run experiment -- experiments/<config>.yaml --seed <seed>
+npm run experiment -- experiments/paper/<config>.yaml --seed <seed>
 \end{verbatim}
 
-Expected output hashes:
+Expected output hashes (SHA-256 of summary.json):
 \begin{verbatim}
-quorum-sensitivity-results.json: sha256:m3n4o5p6...
-dao-scale-results.json: sha256:q7r8s9t0...
-voting-comparison-results.json: sha256:u1v2w3x4...
+00-academic-baseline:           f429d539...120ee998
+01-calibration-participation:   63a5978e...276cf90c
+02-ablation-governance:         1ea1b1d0...ff4df31c
+03-sensitivity-quorum:          58bdb8dc...198af4bb
+04-governance-capture:          3118700b...b093e376
+05-proposal-pipeline:           72aadc5e...e81d671a
+06-treasury-resilience:         e4dbd931...33e5aed13
+07-inter-dao-cooperation:       ed35b3b6...0c729d7510
 \end{verbatim}

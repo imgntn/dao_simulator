@@ -19,9 +19,28 @@ Open [http://localhost:7884](http://localhost:7884) and launch the dashboard. Us
 ## Highlights
 
 - **Full DAO sandbox** - 20+ agent archetypes, governance plugins, liquidity pools, NFTs, violations/disputes, proposal lifecycle, and stochastic market shocks.
+- **Research framework** - 8,700+ simulation runs across 11 experiments investigating participation dynamics, governance capture, proposal pipelines, treasury resilience, and inter-DAO cooperation.
 - **Data pipeline** - Deterministic schedulers, seeded RNG, IndexedDB/Redis persistence, CSV/JSON exports, and a telemetry collector that now keeps a rolling history for analytics/downloads.
 - **Dashboard widgets** - 3D network (React Three Fiber), price history, heatmaps, choropleth, and a DAO report card that tracks open/approved proposal stats.
 - **APIs & automations** - `/api/simulation` endpoints with auth middleware, Socket.IO command channel for dashboards, and an example runner for scripted experiments.
+- **Academic paper** - 35-page research paper with comprehensive results, statistical analysis, and reproducibility documentation.
+
+## Research Experiments
+
+Run reproducible governance experiments with the research CLI:
+
+```bash
+npm run experiment -- experiments/paper/00-academic-baseline.yaml --runs 100
+npm run experiment -- experiments/paper/04-governance-capture-mitigations.yaml --runs 100 -c 4
+```
+
+**Key findings from 8,701 simulation runs:**
+- Vote power caps (10-20%) reduce whale influence by 40% while improving governance throughput
+- Temp-check stages are critical for proposal pipeline health
+- Larger DAOs (N>200) achieve higher pass rates but face declining participation
+- Inter-DAO proposals face 22% success rate vs 73% for intra-DAO proposals
+
+See `paper/` for the full research paper and `experiments/paper/` for all experiment configurations.
 
 ## Scripts
 
@@ -33,6 +52,7 @@ Open [http://localhost:7884](http://localhost:7884) and launch the dashboard. Us
 | `npm run test:e2e` | Playwright UI/API smoke tests (Chromium) |
 | `npm run lint` | ESLint (flat config) |
 | `npm run examples -- --scenario=<name>` | Run a TypeScript example (`basic`, `market-shock`, `governance`, or `all`) via `tsx` |
+| `npm run experiment -- <config.yaml>` | Run research experiment with specified configuration |
 
 ## Example Scenarios
 

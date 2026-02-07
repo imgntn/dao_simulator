@@ -10,7 +10,7 @@ Our agent models make several simplifying assumptions:
 \begin{itemize}
     \item \textbf{Static preferences}: Agents don't learn or adapt over time
     \item \textbf{No social dynamics}: No influence, persuasion, or social pressure
-    \item \textbf{Honest behavior}: No strategic voting or adversarial manipulation
+    \item \textbf{Limited adversarial modeling}: Attack/defense scenarios in experiment~07 only; no general strategic manipulation
     \item \textbf{Isolated system}: No external market or protocol interactions
 \end{itemize}
 
@@ -35,13 +35,38 @@ External validity is limited by:
     \item Rapidly evolving DAO landscape
 \end{itemize}
 
+\subsubsection{Calibration Uncertainty}
+
+Our calibration targets derive from observational data on existing DAOs, which introduces several sources of uncertainty:
+
+\begin{itemize}
+    \item \textbf{Selection bias}: Observable DAOs may differ systematically from failed or inactive DAOs not captured in available datasets
+    \item \textbf{Temporal variation}: DAO behavior varies with market conditions; our calibration reflects 2022--2024 averages and may not generalize to other periods
+    \item \textbf{Measurement error}: On-chain metrics may not capture off-chain coordination, informal governance discussions, or signaling votes
+    \item \textbf{Parameter sensitivity}: While we conducted sensitivity analyses, some parameter interactions may remain unexplored
+\end{itemize}
+
+Future work should incorporate Bayesian calibration methods to quantify parameter uncertainty and propagate it through simulation outputs, providing credible intervals rather than point estimates.
+
+\subsubsection{Parameter Interaction Effects}
+
+Our experiments varied parameters independently (one-at-a-time sensitivity analysis). However, governance mechanisms may interact in complex, non-linear ways:
+
+\begin{itemize}
+    \item Quorum thresholds may interact with delegation rates to produce threshold effects
+    \item Vote power caps may interact with proposal frequency to affect throughput
+    \item Treasury buffer sizes may interact with attack intensity in non-monotonic ways
+\end{itemize}
+
+Full factorial designs or response surface methodology would require prohibitively many simulation runs but represent an important direction for future research with sufficient computational resources.
+
 \subsubsection{Computational Constraints}
 
 Our analysis is bounded by:
 
 \begin{itemize}
-    \item Single-parameter sweeps (no interaction effects)
-    \item Fixed simulation length (500 steps)
+    \item Grid sweeps explore pairwise interactions; higher-order interaction effects remain unexplored
+    \item Configurable simulation length (default 2{,}000 steps)
     \item Limited agent heterogeneity configurations
 \end{itemize}
 
@@ -82,3 +107,7 @@ This work raises questions for future research:
     \item What mechanisms are robust to both apathy and adversarial behavior?
     \item How should DAOs evolve their governance as they mature?
 \end{enumerate}
+
+\subsection{Ethical Considerations}
+
+Governance simulation tools could in principle be used to identify and exploit governance vulnerabilities. We mitigate this risk by: (1) focusing on defensive analysis and mechanism robustness rather than attack optimization; (2) releasing the framework as open-source to enable community scrutiny; and (3) framing results as conditional hypotheses rather than actionable exploits. We encourage responsible use of simulation tools for governance improvement rather than manipulation.

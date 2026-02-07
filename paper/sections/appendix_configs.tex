@@ -1,30 +1,43 @@
 % APPENDIX: EXPERIMENT CONFIGURATIONS
-% AUTO-GENERATED from experiments/*.yaml
+% AUTO-GENERATED from experiments/paper/*.yaml
 
-This appendix lists all experiment configurations used in this paper.
+This appendix summarizes all experiment configurations used in this paper.
+Full YAML configs are available in the repository under \texttt{experiments/paper/}.
 
-% AUTO-GENERATED CONTENT BELOW
-\begin{lstlisting}
-# Quorum Sensitivity Study
-name: "Quorum Sensitivity Analysis"
-description: "Effect of quorum threshold on proposal pass rate"
+\begin{table}[htbp]
+\centering
+\caption{Experiment suite summary}
+\label{tab:app-configs}
+\small
+\begin{tabular}{@{}lllrr@{}}
+\toprule
+ID & Name & Swept Parameters & Configs & Runs/Config \\
+\midrule
+00 & Baseline & (none) & 1 & 50 \\
+01 & Calibration & participation targets & $3\times3=9$ & 30 \\
+02 & Ablation & governance mechanisms & $2\times2\times2=8$ & 25 \\
+03 & Quorum Sensitivity & quorumPercentage & 5 & 30 \\
+04 & Governance Capture & mitigation grid & 27 & 25 \\
+05 & Proposal Pipeline & pipeline grid & 9 & 30 \\
+06 & Treasury Resilience & treasury grid & 12 & 25 \\
+07 & Inter-DAO & scenarios & 5 & 60 \\
+08 & Scale Sweep & totalMembers & 5 & 30 \\
+09 & Voting Mechanisms & mechanism $\times$ quorum & 6 & 30 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-base_config:
-  template: "compound"
-  overrides:
-    totalMembers: 100
-    stepsToRun: 500
+\subsection{Key Parameter Ranges}
 
-sweep:
-  parameter: "quorumConfig.baseQuorumPercent"
-  values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20]
-
-runs_per_value: 30
-random_seed_strategy: "sequential"
-base_seed: 12345
-
-metrics:
-  - name: "proposal_pass_rate"
-  - name: "average_turnout"
-  - name: "quorum_failures"
-\end{lstlisting}
+\begin{description}
+    \item[00 Baseline] Default compound template, 200 members, 2000 steps.
+    \item[01 Calibration] Grid over \texttt{participation\_target\_rate} $\in \{0.1, 0.2, 0.3\}$ and \texttt{participation\_boost\_strength} $\in \{0.3, 0.6, 0.9\}$.
+    \item[02 Ablation] Grid toggling treasury stabilization, participation boost, and proposal bonds.
+    \item[03 Quorum Sensitivity] \texttt{quorumPercentage} $\in \{0.01, 0.03, 0.05, 0.08, 0.10\}$.
+    \item[04 Governance Capture] Grid over vote power cap, quadratic threshold, and velocity penalty.
+    \item[05 Proposal Pipeline] Grid over temp-check fraction, fast-track settings, and inactivity expiry.
+    \item[06 Treasury Resilience] Grid over buffer fraction, emergency topup rate, and max spend fraction.
+    \item[07 Inter-DAO] Five scenarios: homogeneous, heterogeneous, asymmetric, attack, and defense.
+    \item[08 Scale Sweep] \texttt{totalMembers} $\in \{50, 100, 200, 350, 500\}$.
+    \item[09 Voting Mechanisms] Grid: governance rule $\in \{\text{majority, quadratic, conviction}\}$ $\times$ quorum $\in \{0.04, 0.08\}$.
+\end{description}

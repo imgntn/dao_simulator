@@ -18,7 +18,7 @@ We present a multi-agent simulation framework that enables systematic, controlle
 
     \item \textbf{Experimental Infrastructure}: A research CLI enabling reproducible batch experiments with parameter sweeps, checkpoint/resume capabilities, and export to standard data analysis tools.
 
-    \item \textbf{Empirical Analyses}: A reproducible experiment suite and analysis pipeline; results are reported as runs complete ({{TOTAL_RUNS}} total runs across {{EXPERIMENT_COUNT}} experiment sets in this version).
+    \item \textbf{Empirical Analyses}: A reproducible experiment suite and analysis pipeline; results are reported as runs complete (\totalruns{} total runs across \experimentcount{} experiment sets in this version).
 
     \item \textbf{Theoretical Integration}: A framework connecting multi-agent systems, mechanism design, and computational social choice theory to DAO governance analysis.
 \end{enumerate}
@@ -27,14 +27,14 @@ We present a multi-agent simulation framework that enables systematic, controlle
 
 This paper addresses the following research questions:
 
-\begin{description}
-    \item[RQ1:] How do quorum thresholds affect proposal passage rates and governance efficiency?
-    \item[RQ2:] What is the relationship between DAO size and voter participation?
-    \item[RQ3:] How do different voting mechanisms (token, quadratic, conviction) affect wealth concentration and minority representation?
-    \item[RQ4:] Under what conditions do delegation systems improve collective decision-making?
-    \item[RQ5:] How does inter-DAO cooperation affect governance outcomes and resource efficiency?
-\end{description}
+\begin{enumerate}[label=\textbf{RQ\arabic*}:]
+    \item How do participation incentives and calibration targets affect voter turnout and retention? (Experiments~01, 03)
+    \item How effective are different mitigation strategies (vote caps, quadratic thresholds, velocity penalties) against governance capture? (Experiment~04)
+    \item How do proposal pipeline settings (temp-checks, fast-tracks, expiry windows) affect throughput and decision quality? (Experiment~05)
+    \item How do treasury management parameters (buffer fractions, emergency top-ups, spending limits) affect fiscal resilience? (Experiment~06)
+    \item How does inter-DAO cooperation affect governance outcomes and resource efficiency? (Experiment~07)
+\end{enumerate}
 
 \subsection{Paper Organization}
 
-Section~\ref{sec:background} reviews related work in multi-agent systems, mechanism design, and DAO governance. Section~\ref{sec:theory} develops our theoretical framework. Section~\ref{sec:architecture} describes the simulation architecture. Section~\ref{sec:methodology} details our experimental methodology. Section~\ref{sec:results} presents findings from {{EXPERIMENT_COUNT}} experimental configurations. Section~\ref{sec:discussion} interprets results and discusses implications. Section~\ref{sec:limitations} acknowledges limitations and outlines future work. Section~\ref{sec:conclusion} concludes.
+Section~\ref{sec:background} reviews related work in multi-agent systems, mechanism design, and DAO governance. Section~\ref{sec:theory} develops our theoretical framework. Section~\ref{sec:architecture} describes the simulation architecture. Section~\ref{sec:methodology} details our experimental methodology. Section~\ref{sec:results} presents findings from \experimentcount{} experimental configurations. Section~\ref{sec:discussion} interprets results and discusses implications. Section~\ref{sec:limitations} acknowledges limitations and outlines future work. Section~\ref{sec:conclusion} concludes.

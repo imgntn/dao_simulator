@@ -24,7 +24,7 @@ Our simulation framework consists of four main components (Figure~\ref{fig:archi
 
 Agents are implemented as autonomous decision-makers with:
 
-\begin{lstlisting}[language=Python, caption=Agent behavior model (pseudocode)]
+\begin{lstlisting}[caption=Agent behavior model (pseudocode)]
 class Agent:
     def decide_participation(self, proposal):
         if self.delegation_target:
@@ -130,4 +130,4 @@ The framework is implemented in TypeScript, chosen for:
     \item Web interface integration (Designer UI)
 \end{itemize}
 
-Total implementation: approximately 5,000 lines of code across simulation engine, research CLI, and visualization components.
+Total implementation: approximately 44,000 lines of TypeScript across simulation engine, agent models, governance mechanisms, research CLI, and visualization components.

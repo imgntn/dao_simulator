@@ -16,13 +16,36 @@ For each research question, we vary a single parameter while holding others cons
 \small
 \begin{tabular}{@{}llll@{}}
 \toprule
-Experiment & Parameter & Values & Runs \\
+Experiment & Swept Parameter & Range & Runs \\
 \midrule
-% AUTO-UPDATED: experiment list
-Quorum Sensitivity & \texttt{quorumPercent} & 1--20 & 50 \\
-DAO Scale & \texttt{totalMembers} & 25--500 & 50 \\
-Voting Systems & \texttt{votingSystem.type} & majority, quad, conviction & 50 \\
-Participation & \texttt{votingActivity} & 0.1--0.8 & 50 \\
+00 Baseline & (none) & -- & 2{,}000 \\
+01 Calibration & participation targets (grid) & $3\times3$ & 270 \\
+02 Ablation & governance mechanisms (grid) & $2\times2\times2$ & 200 \\
+03 Quorum Sensitivity & \texttt{quorumPercentage} & 0.01--0.10 & 150 \\
+04 Governance Capture & mitigation configs (grid) & 27 & 675 \\
+05 Proposal Pipeline & pipeline params (grid) & 9 & 270 \\
+06 Treasury Resilience & treasury params (grid) & 12 & 300 \\
+07 Inter-DAO & scenarios & 5 & 300 \\
+08 Scale Sweep & \texttt{totalMembers} & 50--500 & 150 \\
+09 Voting Mechanisms & mechanism $\times$ quorum (grid) & 6 & 180 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Mapping of research questions to experiments}
+\label{tab:rq-mapping}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Research Question & Experiments \\
+\midrule
+RQ1: Participation dynamics & 01 Calibration, 03 Quorum Sensitivity \\
+RQ2: Governance capture & 04 Governance Capture \\
+RQ3: Proposal pipeline & 05 Proposal Pipeline \\
+RQ4: Treasury resilience & 06 Treasury Resilience \\
+RQ5: Inter-DAO cooperation & 07 Inter-DAO \\
+Supporting & 00 Baseline, 02 Ablation, 08 Scale, 09 Voting \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -32,13 +55,13 @@ Participation & \texttt{votingActivity} & 0.1--0.8 & 50 \\
 All experiments use a common baseline derived from Compound governance:
 
 \begin{itemize}
-    \item Members: 100 (unless swept)
+    \item Members: 200 (unless swept)
     \item Token distribution: Power-law ($\alpha = 1.5$)
     \item Quorum: 4\% (unless swept)
     \item Voting period: 7 days
     \item Timelock: 2 days
     \item Proposal frequency: 0.5/day
-    \item Simulation length: 500 steps (days)
+    \item Simulation length: 2{,}000 steps (days)
 \end{itemize}
 
 \subsection{Metrics}
@@ -77,19 +100,28 @@ For each parameter value, we compute:
 
 We employ:
 \begin{itemize}
-    \item \textbf{ANOVA}: For comparing means across categorical parameters
-    \item \textbf{Regression}: For continuous parameter relationships
-    \item \textbf{Kruskal-Wallis}: For non-normal distributions
+    \item \textbf{Welch's t-test}: For pairwise comparisons (handles unequal variances via Satterthwaite approximation for degrees of freedom)
+    \item \textbf{One-way ANOVA}: For comparing means across $\geq 3$ categorical parameters
+    \item \textbf{Post-hoc comparisons}: Following significant ANOVA ($p < 0.05$), we perform pairwise Welch's t-tests with BH correction (not Tukey HSD, as BH provides better control of false discovery rate for our many-metric comparisons)
+    \item \textbf{Linear regression}: For continuous parameter relationships, reporting $R^2$, slope, and $F$-statistics
+    \item \textbf{Kruskal-Wallis $H$}: Non-parametric alternative when normality assumptions are violated (|skewness| $> 1$)
 \end{itemize}
 
-Significance level $\alpha = 0.05$ with Bonferroni correction for multiple comparisons.
+Significance level $\alpha = 0.05$. For multiple comparisons, we apply the \textbf{Benjamini-Hochberg} (BH) procedure to control the false discovery rate (FDR) at $q = 0.05$. BH is preferred over Bonferroni correction as it provides greater statistical power while controlling for the expected proportion of false discoveries~\cite{benjamini1995}.
 
 \subsubsection{Effect Size}
 
 We report Cohen's $d$ for pairwise comparisons:
 \begin{equation}
-d = \frac{\bar{x}_1 - \bar{x}_2}{s_{\text{pooled}}}
+d = \frac{\bar{x}_1 - \bar{x}_2}{s_{\text{pooled}}}, \quad s_{\text{pooled}} = \sqrt{\frac{(n_1-1)s_1^2 + (n_2-1)s_2^2}{n_1+n_2-2}}
 \end{equation}
+
+For ANOVA, we report both eta-squared ($\eta^2$) and omega-squared ($\omega^2$):
+\begin{equation}
+\eta^2 = \frac{SS_{\text{between}}}{SS_{\text{total}}}, \quad \omega^2 = \frac{SS_{\text{between}} - df_{\text{between}} \cdot MS_{\text{within}}}{SS_{\text{total}} + MS_{\text{within}}}
+\end{equation}
+
+Omega-squared provides a less biased estimate of population effect size than eta-squared, particularly for small samples~\cite{cohen1988statistical}. We interpret effect sizes using Cohen's conventions: $|d| < 0.2$ negligible, $0.2 \leq |d| < 0.5$ small, $0.5 \leq |d| < 0.8$ medium, $|d| \geq 0.8$ large. For $\eta^2$: $< 0.01$ negligible, $0.01$--$0.06$ small, $0.06$--$0.14$ medium, $\geq 0.14$ large.
 
 \subsection{Validation}
 
@@ -98,16 +130,47 @@ d = \frac{\bar{x}_1 - \bar{x}_2}{s_{\text{pooled}}}
 We ensure internal validity through:
 \begin{itemize}
     \item Deterministic seeding for reproducibility
-    \item Multiple runs per configuration (minimum 30)
+    \item Multiple runs per configuration (minimum 25; 30 for most experiments)
     \item Systematic parameter variation
 \end{itemize}
 
 \subsubsection{External Validity}
 
+We validate simulator outputs against empirical DAO data from DeepDAO, Messari governance reports, and academic literature. Table~\ref{tab:validation} compares baseline simulation results (N=2{,}000 runs) with observed values from real DAOs.
+
+\begin{table}[htbp]
+\centering
+\caption{Validation: Simulator outputs vs. empirical DAO data}
+\label{tab:validation}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Metric & Simulator & 95\% CI & Empirical Range & Source \\
+\midrule
+Proposal Pass Rate & 0.071 & [0.069, 0.072] & [0.30, 0.85] & DeepDAO \\
+Average Turnout & 0.059 & [0.058, 0.059] & [0.01, 0.15] & Messari \\
+Quorum Reach Rate & 0.227 & [0.225, 0.229] & [0.20, 0.70] & DeepDAO \\
+Voter Participation & 0.048 & [0.047, 0.048] & [0.01, 0.10] & \cite{barbereau2022dao} \\
+Token Gini & 0.467 & [0.465, 0.470] & [0.70, 0.95] & \cite{nadler2020} \\
+Whale Influence & 0.553 & [0.551, 0.554] & [0.40, 0.80] & \cite{fritsch2022} \\
+Capture Risk & 0.312 & [0.311, 0.313] & [0.15, 0.55] & \cite{barbereau2022dao} \\
+Delegate Conc. & 0.313 & [0.312, 0.314] & [0.30, 0.70] & DeepDAO \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The simulator achieves 75\% validation (6/8 metrics within empirical ranges). Two notable deviations:
+\begin{itemize}
+    \item \textbf{Proposal Pass Rate} (7.1\% vs 30-85\%): Our baseline models high quorum failure rates consistent with immature DAOs; mature DAOs achieve higher pass rates through delegate systems.
+    \item \textbf{Token Gini} (0.47 vs 0.70-0.95): Our power-law distribution ($\alpha=1.5$) produces moderate inequality; real DAOs often exhibit more extreme concentration.
+\end{itemize}
+
+These deviations are addressed in calibration experiments (Section~\ref{sec:results}).
+
 Limitations on external validity:
 \begin{itemize}
     \item Agent models are simplified representations
-    \item No adversarial behavior (MEV, governance attacks)
+    \item Limited adversarial modeling (attack/defense in experiment~07 only)
     \item Static preferences (no learning)
 \end{itemize}
 
@@ -121,5 +184,5 @@ Experiments were run on:
     \item Hardware: Consumer workstation (details in Appendix)
     \item Concurrency: 4-8 parallel simulations
     \item Total compute time: See reproducibility manifest
-    \item Total simulation runs: 6
+    \item Total simulation runs: \totalruns{}
 \end{itemize}
