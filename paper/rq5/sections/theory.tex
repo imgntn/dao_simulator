@@ -1,0 +1,151 @@
+% RQ5 Theoretical Framework: Inter-DAO Cooperation
+
+We develop formal models of multi-DAO dynamics and cooperation mechanisms.
+
+\subsection{Multi-DAO System Model}
+
+\subsubsection{DAO Network}
+
+A DAO network $\mathcal{N} = (\mathcal{D}, \mathcal{R})$ consists of:
+\begin{itemize}
+    \item $\mathcal{D} = \{d_1, ..., d_n\}$: Set of DAOs
+    \item $\mathcal{R} \subseteq \mathcal{D} \times \mathcal{D}$: Cooperation relationships
+\end{itemize}
+
+Each DAO $d_i$ has:
+\begin{itemize}
+    \item Treasury $T_i$
+    \item Membership $A_i$
+    \item Preferences $\rho_i$ over outcomes
+    \item Governance configuration $G_i$
+\end{itemize}
+
+\subsubsection{Overlapping Membership}
+
+Agents may hold tokens in multiple DAOs:
+
+\begin{equation}
+A_{\text{overlap}} = \{a : a \in A_i \cap A_j \text{ for some } i \neq j\}
+\end{equation}
+
+Overlapping membership creates natural preference alignment channels.
+
+\subsection{Joint Proposal Model}
+
+\subsubsection{Inter-DAO Proposals}
+
+An inter-DAO proposal $p^*$ requires approval from a coalition $C \subseteq \mathcal{D}$:
+
+\begin{equation}
+\text{pass}(p^*) = \bigwedge_{d \in C} \text{approve}_d(p^*)
+\end{equation}
+
+Each DAO votes according to its internal governance rules.
+
+\subsubsection{Resource Contribution}
+
+Joint proposals may require resource contributions:
+
+\begin{equation}
+\text{contribution}_d(p^*) = \alpha_d \cdot \text{cost}(p^*)
+\end{equation}
+
+where $\alpha_d$ is DAO $d$'s share (negotiated or formula-based).
+
+\subsection{Cooperation Benefit Model}
+
+\subsubsection{Surplus from Cooperation}
+
+Cooperation creates surplus when complementarities exist:
+
+\begin{equation}
+S(C) = V(C) - \sum_{d \in C} V(\{d\})
+\end{equation}
+
+where $V(C)$ is the value achievable by coalition $C$ and $V(\{d\})$ is the standalone value.
+
+Positive surplus ($S(C) > 0$) motivates cooperation.
+
+\subsubsection{Surplus Division}
+
+The Shapley value provides fair surplus division:
+
+\begin{equation}
+\phi_d(V) = \sum_{C \subseteq \mathcal{D} \setminus \{d\}} \frac{|C|!(|\mathcal{D}| - |C| - 1)!}{|\mathcal{D}|!} [V(C \cup \{d\}) - V(C)]
+\end{equation}
+
+\subsection{Cooperation Scenarios}
+
+\subsubsection{Homogeneous DAOs}
+
+Similar size, preferences, and capabilities:
+\begin{itemize}
+    \item Symmetric bargaining power
+    \item Natural equal-split norms
+    \item Lower coordination cost
+    \item But smaller surplus (less complementarity)
+\end{itemize}
+
+\subsubsection{Heterogeneous DAOs}
+
+Different sizes, diverse preferences:
+\begin{itemize}
+    \item Larger potential surplus (complementarity)
+    \item Asymmetric bargaining positions
+    \item Complex negotiation
+    \item Risk of exploitation
+\end{itemize}
+
+\subsubsection{Asymmetric Relationships}
+
+Large DAO cooperating with small DAO:
+\begin{itemize}
+    \item Small DAO vulnerable to domination
+    \item Large DAO may free-ride on small DAO effort
+    \item Requires explicit fairness mechanisms
+\end{itemize}
+
+\subsection{Cooperation Stability}
+
+\subsubsection{Individual Rationality}
+
+Cooperation is individually rational if:
+
+\begin{equation}
+\phi_d(V) \geq V(\{d\})
+\end{equation}
+
+Each participant gains at least standalone value.
+
+\subsubsection{Coalition Stability}
+
+No subset wants to deviate:
+
+\begin{equation}
+\forall S \subset C: \sum_{d \in S} \phi_d(V) \geq V(S)
+\end{equation}
+
+\subsection{Theoretical Predictions}
+
+\subsubsection{Prediction 1: Complementarity Drives Surplus}
+
+Cooperation surplus increases with complementarity:
+
+\begin{equation}
+S(C) \propto \text{diversity}(C)
+\end{equation}
+
+Homogeneous coalitions have low surplus.
+
+\subsubsection{Prediction 2: Size Asymmetry Requires Fairness}
+
+Asymmetric coalitions are unstable without explicit fairness mechanisms.
+
+\subsubsection{Prediction 3: Overlapping Membership Facilitates Cooperation}
+
+Cross-DAO token holders facilitate cooperation by:
+\begin{itemize}
+    \item Aligning incentives
+    \item Transferring information
+    \item Building trust
+\end{itemize}

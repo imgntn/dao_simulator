@@ -1,0 +1,116 @@
+% RQ3 Methodology: Pipeline Experiments
+
+\subsection{Experimental Design}
+
+We conduct a factorial experiment varying three pipeline parameters:
+
+\begin{table}[htbp]
+\centering
+\caption{RQ3 Experiment configuration (Experiment 05)}
+\label{tab:rq3-experiment}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Factor & Levels & Values & Description \\
+\midrule
+Temp-check & 3 & None, 20\%, 40\% & Threshold to advance \\
+Fast-track & 3 & None, 70\%, 85\% & Support threshold for fast-track \\
+Expiry & 3 & 30, 60, 90 days & Maximum proposal lifetime \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Total configurations: $3 \times 3 = 9$ (temp-check $\times$ fast-track, with expiry as secondary)
+
+Each configuration runs 30 times with different seeds.
+
+Total runs: 270
+
+\subsection{Parameter Selection}
+
+\subsubsection{Temp-Check Levels}
+
+\begin{itemize}
+    \item \textbf{None}: All proposals proceed directly to formal voting
+    \item \textbf{20\% threshold}: Low bar; filters only proposals with minimal support
+    \item \textbf{40\% threshold}: Higher bar; filters controversial or low-awareness proposals
+\end{itemize}
+
+\subsubsection{Fast-Track Levels}
+
+\begin{itemize}
+    \item \textbf{None}: All proposals follow standard timeline
+    \item \textbf{70\% threshold}: Proposals with supermajority early support fast-tracked
+    \item \textbf{85\% threshold}: Only near-unanimous proposals fast-tracked
+\end{itemize}
+
+\subsubsection{Expiry Levels}
+
+\begin{itemize}
+    \item \textbf{30 days}: Tight window; proposals must resolve quickly
+    \item \textbf{60 days}: Moderate window; allows extended deliberation
+    \item \textbf{90 days}: Loose window; accommodates complex multi-round processes
+\end{itemize}
+
+\subsection{Baseline Configuration}
+
+Common baseline parameters:
+
+\begin{itemize}
+    \item Members: 200 agents
+    \item Proposal frequency: 0.5/day
+    \item Voting period: 7 days
+    \item Quorum: 4\%
+    \item Simulation length: 2,000 steps
+    \item Temp-check turnout: 30\% of voting population
+    \item Temp-check to formal vote correlation: $\rho = 0.7$
+\end{itemize}
+
+\subsection{Hypotheses}
+
+\begin{itemize}
+    \item \textbf{H3.1}: Higher temp-check thresholds reduce formal voting load but increase false negative rate (good proposals filtered)
+    \item \textbf{H3.2}: Fast-tracks reduce mean time-to-decision for qualifying proposals
+    \item \textbf{H3.3}: Tighter expiry windows increase abandonment rate for complex proposals
+    \item \textbf{H3.4}: There exists an optimal temp-check threshold balancing throughput and quality
+\end{itemize}
+
+\subsection{Metrics}
+
+Primary metrics for RQ3:
+
+\begin{description}
+    \item[Throughput] Proposals resolved per time unit
+    \item[Pass Rate] Fraction of proposals that pass
+    \item[Time-to-Decision] Mean time from creation to resolution
+    \item[Abandonment Rate] Proposals abandoned before resolution
+    \item[Expiry Rate] Proposals expiring without resolution
+    \item[Quorum Rate] Fraction of formal votes achieving quorum
+\end{description}
+
+Secondary metrics:
+
+\begin{description}
+    \item[Temp-check conversion] Fraction passing temp-check
+    \item[Fast-track rate] Fraction of proposals fast-tracked
+    \item[Stage durations] Time spent at each pipeline stage
+\end{description}
+
+\subsection{Statistical Analysis}
+
+\subsubsection{Main Effects}
+
+ANOVA for each factor's effect on outcome metrics.
+
+\subsubsection{Interaction Effects}
+
+Two-way interactions between temp-check and fast-track settings.
+
+\subsubsection{Optimal Configuration}
+
+Multi-objective optimization to identify configurations on Pareto frontier of:
+\begin{itemize}
+    \item Maximize throughput
+    \item Maximize pass rate
+    \item Minimize abandonment
+    \item Minimize time-to-decision
+\end{itemize}

@@ -1,0 +1,141 @@
+% RQ4 Architecture: Treasury Simulation
+
+\subsection{System Overview}
+
+Our simulation framework models treasury dynamics with configurable management policies. The architecture supports:
+
+\begin{enumerate}
+    \item \textbf{Treasury state}: Multi-asset holdings with market value tracking
+    \item \textbf{Buffer management}: Configurable reserve policies
+    \item \textbf{Spending constraints}: Per-proposal and periodic limits
+    \item \textbf{Top-up mechanisms}: Emergency reserve restoration
+    \item \textbf{Market simulation}: Token price dynamics affecting treasury value
+\end{enumerate}
+
+\subsection{Treasury Implementation}
+
+\subsubsection{Treasury State}
+
+\begin{lstlisting}[caption=Treasury state model (pseudocode)]
+class Treasury:
+    holdings: Dict[Asset, Amount]  # Token balances
+    buffer_fraction: float  # Reserved portion
+    spending_limit: float  # Per-period cap
+    top_up_threshold: float  # Buffer restoration trigger
+
+    def available_balance(self):
+        total = sum(self.value(asset) for asset in self.holdings)
+        return (1 - self.buffer_fraction) * total
+
+    def buffer_balance(self):
+        total = sum(self.value(asset) for asset in self.holdings)
+        return self.buffer_fraction * total
+\end{lstlisting}
+
+\subsubsection{Inflow/Outflow Processing}
+
+\begin{lstlisting}[caption=Treasury flow processing (pseudocode)]
+def process_step(treasury, proposals, market):
+    # Inflows
+    revenue = market.generate_revenue()
+    treasury.deposit(revenue)
+
+    # Check spending limit
+    period_spent = 0
+
+    # Process approved proposals
+    for proposal in proposals.approved():
+        amount = proposal.funding_request
+        if period_spent + amount > treasury.spending_limit:
+            amount = treasury.spending_limit - period_spent
+
+        if amount <= treasury.available_balance():
+            treasury.withdraw(amount)
+            period_spent += amount
+
+    # Market value update
+    treasury.revalue(market.prices())
+
+    # Emergency top-up check
+    if treasury.buffer_balance() < treasury.top_up_threshold:
+        treasury.execute_top_up()
+\end{lstlisting}
+
+\subsection{Buffer Policy Implementation}
+
+\subsubsection{Static Buffer}
+
+Fixed fraction of treasury reserved:
+
+\begin{lstlisting}[caption=Static buffer policy (pseudocode)]
+def check_spending(treasury, amount):
+    available = treasury.total_value() * (1 - treasury.buffer_fraction)
+    return amount <= available
+\end{lstlisting}
+
+\subsubsection{Dynamic Buffer}
+
+Buffer adjusts based on conditions:
+
+\begin{lstlisting}[caption=Dynamic buffer policy (pseudocode)]
+def compute_dynamic_buffer(treasury, market_volatility):
+    base_buffer = treasury.base_buffer_fraction
+    volatility_adjustment = market_volatility * treasury.volatility_factor
+    return min(base_buffer + volatility_adjustment, 0.5)  # Cap at 50%
+\end{lstlisting}
+
+\subsection{Emergency Top-Up Implementation}
+
+\begin{lstlisting}[caption=Emergency top-up mechanism (pseudocode)]
+def execute_top_up(treasury):
+    deficit = treasury.top_up_threshold - treasury.buffer_balance()
+
+    if treasury.top_up_mode == 'REVENUE_DIVERT':
+        # Divert next N periods of revenue to buffer
+        treasury.divert_revenue = True
+        treasury.divert_amount = deficit
+
+    elif treasury.top_up_mode == 'SPENDING_FREEZE':
+        # Halt non-essential spending
+        treasury.spending_frozen = True
+        treasury.freeze_until_buffer = treasury.top_up_threshold
+
+    elif treasury.top_up_mode == 'EXTERNAL':
+        # Inject from external source (if available)
+        injection = min(deficit, treasury.external_source_available)
+        treasury.deposit(injection)
+\end{lstlisting}
+
+\subsection{Market Simulation}
+
+Token price dynamics:
+
+\begin{lstlisting}[caption=Market price simulation (pseudocode)]
+class Market:
+    def step(self):
+        # Geometric Brownian motion for token prices
+        for token in self.tokens:
+            drift = self.regime_drift[self.current_regime]
+            vol = self.regime_volatility[self.current_regime]
+            shock = random.normal(0, 1)
+            token.price *= exp((drift - 0.5*vol**2) + vol*shock)
+
+    def maybe_regime_change(self):
+        # Occasional regime shifts (bull -> bear -> stable)
+        if random() < self.regime_change_prob:
+            self.current_regime = random.choice(['bull', 'bear', 'stable'])
+\end{lstlisting}
+
+\subsection{Metrics Collection}
+
+Treasury-specific metrics:
+
+\begin{description}
+    \item[Treasury Value] Total value at each step
+    \item[Buffer Level] Buffer balance relative to target
+    \item[Spending Rate] Outflows per period
+    \item[Volatility] Rolling standard deviation of value
+    \item[Drawdown] Peak-to-trough decline
+    \item[Top-up Events] Frequency and magnitude of emergency top-ups
+    \item[Runway] Projected time until depletion
+\end{description}

@@ -1,0 +1,76 @@
+% RQ3 Introduction: Proposal Pipeline Effects
+
+\subsection{Motivation}
+
+Every DAO proposal follows a pipeline: a sequence of stages with gates, timers, and decision points. This pipeline mediates between the raw demand for governance decisions and the organization's capacity to process them thoughtfully.
+
+Pipeline design involves fundamental tradeoffs:
+\begin{itemize}
+    \item \textbf{Speed vs. deliberation}: Faster decisions reduce opportunity for input and analysis
+    \item \textbf{Filtering vs. inclusion}: Strict gates may exclude worthy proposals
+    \item \textbf{Flexibility vs. predictability}: Expedited paths may be abused or create precedent confusion
+\end{itemize}
+
+Real DAOs have evolved diverse pipeline approaches. Compound uses a linear flow (proposal $\rightarrow$ voting $\rightarrow$ timelock). Optimism employs multi-stage review. Many DAOs use off-chain ``temp-checks'' via Snapshot before formal on-chain governance.
+
+Despite this diversity, little systematic analysis exists of how pipeline parameters affect outcomes. Practitioners rely on intuition or copy existing patterns without understanding tradeoffs.
+
+\subsection{Research Question}
+
+This paper investigates:
+
+\begin{quote}
+\textbf{RQ3:} How do proposal pipeline settings (temp-checks, fast-tracks, expiry windows) affect throughput and decision quality?
+\end{quote}
+
+Specifically, we examine:
+\begin{enumerate}
+    \item How do temp-check thresholds affect the volume and quality of proposals reaching formal voting?
+    \item When do fast-track provisions improve governance efficiency vs. create risks?
+    \item How do expiry windows interact with deliberation time and proposal abandonment?
+    \item What pipeline configurations optimize for different DAO objectives?
+\end{enumerate}
+
+\subsection{Pipeline Mechanisms}
+
+We study three pipeline mechanisms:
+
+\subsubsection{Temp-Checks}
+
+Preliminary signal votes (often off-chain) that filter proposals before formal governance:
+\begin{equation}
+\text{advance}(p) = \mathbf{1}[\text{temp-check support}(p) > \tau_{\text{temp}}]
+\end{equation}
+
+\subsubsection{Fast-Tracks}
+
+Expedited paths for proposals meeting certain criteria:
+\begin{itemize}
+    \item High initial support (``obvious'' consensus)
+    \item Emergency/time-sensitive matters
+    \item Routine operational decisions
+\end{itemize}
+
+\subsubsection{Expiry Windows}
+
+Maximum time allowed for proposal completion:
+\begin{equation}
+\text{expired}(p) = \mathbf{1}[\text{age}(p) > \tau_{\text{expiry}}]
+\end{equation}
+
+Expired proposals fail without resolution.
+
+\subsection{Contributions}
+
+This paper contributes:
+
+\begin{enumerate}
+    \item \textbf{Systematic analysis} of pipeline mechanism effects on governance outcomes
+    \item \textbf{Throughput-quality metrics} for evaluating pipeline configurations
+    \item \textbf{Parameter guidelines} for temp-checks, fast-tracks, and expiry windows
+    \item \textbf{Configuration recommendations} for different DAO operational contexts
+\end{enumerate}
+
+\subsection{Paper Organization}
+
+Section~\ref{sec:background} reviews proposal pipeline practices in deployed DAOs. Section~\ref{sec:theory} develops formal models of pipeline dynamics. Section~\ref{sec:architecture} describes simulation implementation. Section~\ref{sec:methodology} details experimental design. Section~\ref{sec:results} presents findings. Section~\ref{sec:discussion} interprets results for practitioners. Section~\ref{sec:conclusion} concludes.

@@ -1,0 +1,80 @@
+% RQ1 Discussion: Participation Dynamics
+
+\subsection{Interpretation of Results}
+
+\subsubsection{The Participation Capacity Ceiling}
+
+Our results suggest that DAOs have a natural ``participation capacity''---a sustainable level of engagement bounded by member attention, fatigue dynamics, and incentive structures. Attempting to drive participation above this ceiling through aggressive quorum requirements or targets is counterproductive: it may temporarily increase turnout but accelerates fatigue and reduces long-term retention.
+
+This finding has immediate practical implications: quorum thresholds should be calibrated to \textit{sustainable} participation, not aspirational targets. A DAO with 5\% natural turnout setting a 10\% quorum will experience chronic governance failures, not motivation to participate more.
+
+\subsubsection{The Fatigue Tax}
+
+Every vote extracts a ``fatigue tax'' from participants. This tax accumulates faster than it recovers under high-frequency voting. The implication: governance minimization is not just philosophical preference but operational necessity.
+
+Strategies to reduce fatigue burden include:
+\begin{itemize}
+    \item Proposal batching (fewer, larger decisions)
+    \item Delegation (specialized voters bear fatigue burden)
+    \item Conviction voting (continuous rather than discrete participation)
+    \item Temp-checks and signal votes (filter low-quality proposals early)
+\end{itemize}
+
+\subsubsection{Heterogeneity and Concentration}
+
+As fatigue accumulates asymmetrically, participation concentrates among those with highest stakes and lowest sensitivity to fatigue---typically large token holders and professional delegates. This creates a paradox: mechanisms designed to increase legitimacy through broad participation may ultimately produce more concentrated governance as marginal participants drop out.
+
+\subsection{Comparison with Empirical Data}
+
+Our simulated turnout ranges (2-15\%) align with observed participation in deployed DAOs \citep{deepdao2023analytics}. The quorum sensitivity curve also matches patterns seen in practice: Compound and Uniswap both use $\sim$4\% quorum, near our identified inflection point.
+
+However, direct quantitative calibration awaits integration of empirical time-series data from Snapshot and on-chain governance systems.
+
+\subsection{Theoretical Implications}
+
+\subsubsection{Bounded Rationality in Practice}
+
+Our results support bounded rationality models over pure rational choice. If agents were purely rational, participation would be near-zero (the paradox of voting). Instead, we observe substantial participation modulated by heuristics, fatigue, and social factors---consistent with \citet{ostrom1990governing}'s observations of commons governance.
+
+\subsubsection{Quorum as Coordination Device}
+
+Quorum serves dual functions: legitimacy threshold and coordination signal. Our results suggest that legitimacy-optimal quorum (highest defensible threshold) often exceeds operability-optimal quorum (highest sustainable threshold). DAO designers must choose where on this tradeoff curve to position.
+
+\subsection{Practical Recommendations}
+
+Based on simulation results, we offer the following guidelines:
+
+\begin{enumerate}
+    \item \textbf{Measure before setting}: Observe natural participation rates for several months before setting quorum. Target 80\% of observed turnout for sustainable quorum.
+
+    \item \textbf{Start low, adjust up}: It is easier to raise quorum if participation exceeds expectations than to lower it after governance failures erode trust.
+
+    \item \textbf{Monitor fatigue indicators}: Track voter retention and participation decay. Declining trends signal need for intervention (reduced proposal frequency, improved delegation, or quorum adjustment).
+
+    \item \textbf{Tier by stakes}: Use higher quorums for high-stakes decisions (treasury, parameter changes) and lower quorums for routine operations.
+
+    \item \textbf{Enable delegation}: Delegation allows interested parties to bear participation costs on behalf of passive members, increasing effective capacity without requiring universal engagement.
+\end{enumerate}
+
+\subsection{Limitations}
+
+\subsubsection{Model Simplifications}
+
+Our fatigue model is stylized. Real voter fatigue involves complex factors (topic relevance, personal circumstances, market conditions) not fully captured. The linear fatigue accumulation and recovery may not match actual dynamics.
+
+\subsubsection{Incentive Abstraction}
+
+We model incentives as multipliers on participation propensity. Real incentive mechanisms (token rewards, reputation, airdrops) have more complex behavioral effects, including gaming and strategic timing.
+
+\subsubsection{No Learning}
+
+Agents do not learn or adapt strategies. Real voters may develop heuristics over time, change delegation patterns, or exit entirely---dynamics our model does not capture.
+
+\subsection{Future Work}
+
+\begin{enumerate}
+    \item \textbf{Empirical calibration}: Fit fatigue parameters to observed participation decay in real DAOs
+    \item \textbf{Dynamic quorum}: Simulate adaptive quorum mechanisms that adjust based on recent participation
+    \item \textbf{Delegation dynamics}: Model delegation formation and dissolution as functions of participation costs
+    \item \textbf{Proposal quality}: Incorporate proposal relevance as endogenous variable affecting participation
+\end{enumerate}

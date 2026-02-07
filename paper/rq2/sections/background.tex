@@ -1,0 +1,71 @@
+% RQ2 Background: Governance Capture
+
+\subsection{Governance Capture in DAOs}
+
+Governance capture occurs when actors gain disproportionate influence over collective decisions, steering outcomes toward private benefit rather than common good. In DAOs, capture typically manifests through:
+
+\begin{itemize}
+    \item \textbf{Token concentration}: Accumulating dominant token positions
+    \item \textbf{Delegation capture}: Becoming a major delegate without proportional stake
+    \item \textbf{Proposal manipulation}: Crafting proposals that benefit insiders
+    \item \textbf{Vote timing}: Strategic voting at moments of low participation
+\end{itemize}
+
+\subsubsection{Empirical Evidence}
+
+\citet{fritsch2022analyzing} documented extreme voting power concentration in MakerDAO, finding that a single proposal was decided by essentially one address. Similar patterns appear across protocols:
+
+\begin{itemize}
+    \item Uniswap: Top 10 addresses hold $>$40\% of voting power
+    \item Compound: Venture capital firms control substantial delegated power
+    \item Aave: Protocol treasury itself is a dominant voter
+\end{itemize}
+
+\subsection{Theoretical Foundations}
+
+\subsubsection{Plutocracy vs. Democracy}
+
+Token-weighted voting explicitly implements plutocracy: voting power proportional to wealth. Defenders argue this aligns incentives (stakeholders vote responsibly). Critics note it enables capture and discourages small holder participation.
+
+The mechanism design challenge is creating systems that:
+\begin{enumerate}
+    \item Preserve stakeholder alignment (skin in the game)
+    \item Limit maximum individual influence (anti-capture)
+    \item Resist sybil attacks (can't trivially circumvent by splitting)
+    \item Maintain operational efficiency (proposals can still pass)
+\end{enumerate}
+
+\subsubsection{The Sybil Problem}
+
+Any per-address mitigation faces sybil attacks: actors splitting holdings across multiple addresses to circumvent limits. Perfect sybil resistance is impossible without identity systems, which conflict with pseudonymity norms.
+
+Practical defenses include:
+\begin{itemize}
+    \item Making sybil attacks costly (gas fees, capital inefficiency)
+    \item Using sublinear scaling (quadratic) rather than hard caps
+    \item Temporal requirements (velocity penalties) that increase coordination cost
+\end{itemize}
+
+\subsection{Existing Mitigation Mechanisms}
+
+\subsubsection{Quadratic Voting}
+
+Introduced by \citet{weyl2018quadratic}, quadratic voting makes the marginal cost of additional votes increase linearly. Applied to DAOs, this typically means $\sqrt{\text{tokens}}$ voting power.
+
+Gitcoin Grants uses quadratic funding (related mechanism) for public goods allocation. However, pure quadratic systems remain vulnerable to sybil attacks without identity verification.
+
+\subsubsection{Vote Caps}
+
+Some protocols implement maximum voting power per address. Optimism's Token House caps delegate power. MolochDAO variants use one-member-one-vote for certain decisions.
+
+\subsubsection{Conviction Voting}
+
+\citet{emmett2019conviction} proposed conviction voting where voting power accumulates over time. This naturally penalizes recent token acquisition and rewards long-term holders.
+
+\subsubsection{Timelock and Vesting}
+
+Protocols may require tokens to be locked or vested before gaining voting power. This is effectively a velocity penalty: recently acquired tokens have zero weight.
+
+\subsection{Prior Simulation Work}
+
+Limited prior work has systematically compared capture mitigation mechanisms. Theoretical analyses exist for quadratic voting \citep{lalley2018quadratic} but controlled empirical comparison is lacking. Our simulation framework addresses this gap.

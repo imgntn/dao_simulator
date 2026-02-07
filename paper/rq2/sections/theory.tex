@@ -1,0 +1,137 @@
+% RQ2 Theoretical Framework: Governance Capture
+
+We develop formal metrics for governance capture and analyze the theoretical properties of mitigation mechanisms.
+
+\subsection{Capture Metrics}
+
+\subsubsection{Whale Influence Index}
+
+We define whale influence as the fraction of voting power held by the top $k$ addresses:
+
+\begin{equation}
+\text{WhaleInfluence}_k = \frac{\sum_{i=1}^{k} w(a_{(i)})}{\sum_{j=1}^{n} w(a_j)}
+\end{equation}
+
+where $a_{(i)}$ is the $i$-th largest holder. We typically use $k=5$ or $k=10$.
+
+\subsubsection{Nakamoto Coefficient}
+
+The minimum number of actors needed to control majority voting power:
+
+\begin{equation}
+\text{Nakamoto} = \min \left\{ k : \sum_{i=1}^{k} w(a_{(i)}) > 0.5 \cdot \sum_{j=1}^{n} w(a_j) \right\}
+\end{equation}
+
+Higher values indicate more distributed power.
+
+\subsubsection{Gini Coefficient of Voting Power}
+
+Standard inequality measure applied to voting weights:
+
+\begin{equation}
+\text{Gini} = \frac{\sum_{i=1}^{n} \sum_{j=1}^{n} |w(a_i) - w(a_j)|}{2n \sum_{i=1}^{n} w(a_i)}
+\end{equation}
+
+\subsubsection{Capture Risk Score}
+
+We define a composite capture risk:
+
+\begin{equation}
+\text{CaptureRisk} = \frac{\text{WhaleInfluence}_{10}}{\text{Nakamoto}} \cdot (1 + \text{Gini})
+\end{equation}
+
+This captures both concentration (whale influence) and fragility (low Nakamoto coefficient).
+
+\subsection{Mitigation Mechanism Analysis}
+
+\subsubsection{Vote Caps}
+
+With cap $c$, the effective voting power is:
+
+\begin{equation}
+w_c(a) = \min(T(a), c)
+\end{equation}
+
+Properties:
+\begin{itemize}
+    \item Maximum individual influence bounded by $c$
+    \item Creates ``cliff effect'' at threshold
+    \item Sybil attack cost: splitting $n$ tokens across $\lceil n/c \rceil$ addresses
+    \item Gas cost of sybil: $O(n/c)$ addresses to manage
+\end{itemize}
+
+\subsubsection{Quadratic Voting}
+
+Voting power scales as square root:
+
+\begin{equation}
+w_q(a) = \sqrt{T(a)}
+\end{equation}
+
+Properties:
+\begin{itemize}
+    \item No hard cutoffs; smooth diminishing returns
+    \item Whale with $100\times$ tokens has only $10\times$ power
+    \item Sybil resistant to first order: $\sqrt{a} + \sqrt{b} < \sqrt{a+b}$ only when $ab < 0$
+    \item However: multiple identities still beneficial under quadratic
+\end{itemize}
+
+\subsubsection{Velocity Penalties}
+
+Tokens acquired within window $\tau$ receive reduced weight:
+
+\begin{equation}
+w_v(a, t) = T_{\text{old}}(a, t) + \alpha \cdot T_{\text{new}}(a, t, \tau)
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $T_{\text{old}}(a, t) = $ tokens held before $t - \tau$
+    \item $T_{\text{new}}(a, t, \tau) = $ tokens acquired in $[t-\tau, t]$
+    \item $\alpha \in [0, 1)$ is the penalty factor (0 = full penalty, 1 = no penalty)
+\end{itemize}
+
+Properties:
+\begin{itemize}
+    \item Prevents ``flash governance'' attacks
+    \item Rewards long-term holders
+    \item Does not address existing concentration
+    \item Complexity: requires tracking acquisition times
+\end{itemize}
+
+\subsection{Theoretical Predictions}
+
+\subsubsection{Prediction 1: Cap Effectiveness}
+
+Vote caps reduce whale influence proportionally until sybil attacks become economically attractive:
+
+\begin{equation}
+\text{WhaleInfluence}(c) \approx \min\left(\text{WhaleInfluence}_0, \frac{k \cdot c}{\text{TotalSupply}}\right)
+\end{equation}
+
+\subsubsection{Prediction 2: Quadratic Compression}
+
+Quadratic voting compresses the Gini coefficient:
+
+\begin{equation}
+\text{Gini}_{\text{quad}} \approx 0.5 \cdot \text{Gini}_{\text{token}}
+\end{equation}
+
+\subsubsection{Prediction 3: Velocity Window Optimum}
+
+There exists an optimal velocity window $\tau^*$ balancing attack prevention and legitimate participation:
+\begin{itemize}
+    \item $\tau$ too short: attacks succeed with minimal delay
+    \item $\tau$ too long: legitimate new participants disadvantaged
+\end{itemize}
+
+\subsection{Throughput Tradeoff}
+
+Mitigation mechanisms may reduce governance throughput if:
+\begin{itemize}
+    \item Caps reduce total voting power below quorum requirements
+    \item Quadratic voting increases effective quorum difficulty
+    \item Velocity penalties exclude recently-onboarded active participants
+\end{itemize}
+
+We measure this via proposal pass rate and time-to-decision.

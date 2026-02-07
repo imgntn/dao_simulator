@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Which Anti-Whale Mechanisms Work in DAOs | DAO Research</title>
+<style>:root { --primary: #1a1a2e; --accent: #4f46e5; --text: #1f2937; --bg-alt: #f8fafc; --border: #e5e7eb; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Georgia, serif; font-size: 18px; line-height: 1.8; color: var(--text); background: #fff; }
+.header { position: relative; height: 50vh; min-height: 400px; overflow: hidden; }
+.header-image { width: 100%; height: 100%; object-fit: cover; }
+.header-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); padding: 60px 40px 40px; }
+.container { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+.press-badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #818cf8; background: rgba(79,70,229,0.2); padding: 8px 16px; border-radius: 4px; margin-bottom: 16px; }
+.header h1 { font-size: 32px; font-weight: 700; color: white; line-height: 1.3; max-width: 700px; }
+.key-findings { background: var(--bg-alt); padding: 50px 0; border-bottom: 1px solid var(--border); }
+.key-findings h2 { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+.findings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.finding-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--border); display: flex; gap: 14px; }
+.finding-number { font-size: 13px; font-weight: 700; color: var(--accent); background: rgba(79,70,229,0.1); width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.finding-card p { font-size: 14px; line-height: 1.5; margin: 0; }
+.content { padding: 60px 0; }
+.content h2 { font-size: 26px; font-weight: 700; color: var(--primary); margin: 40px 0 20px; }
+.content h3 { font-size: 20px; font-weight: 600; color: var(--primary); margin: 35px 0 16px; }
+.content p { margin-bottom: 20px; }
+.content strong { color: var(--primary); }
+.content ul { list-style: none; margin: 20px 0; padding: 0; }
+.content li { position: relative; padding-left: 24px; margin-bottom: 12px; }
+.content li::before { content: ""; position: absolute; left: 0; top: 10px; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+.content hr { border: none; height: 1px; background: var(--border); margin: 40px 0; }
+.footer { background: var(--primary); color: white; padding: 50px 0; }
+.footer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.footer h4 { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #818cf8; margin-bottom: 14px; }
+.footer p, .footer a { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.6; }
+.footer a { text-decoration: none; }
+.footer-note { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 13px; color: rgba(255,255,255,0.4); text-align: center; }
+@media (max-width: 640px) { .findings-grid { grid-template-columns: 1fr; } .footer-grid { grid-template-columns: 1fr; } }</style>
+</head>
+<body>
+<header class="header">
+<img src="rq2-governance-capture.png" class="header-image" alt="Which Anti-Whale Mechanisms Work in DAOs">
+<div class="header-overlay"><div class="container">
+<span class="press-badge">Research Press Release</span>
+<h1>Which Anti-Whale Mechanisms Work in DAOs</h1>
+</div></div></header>
+<section class="key-findings"><div class="container">
+<h2>Key Findings</h2>
+<div class="findings-grid"><div class="finding-card"><div class="finding-number">1</div><p>Pure token voting allows top 10 addresses to control 50%+ of governance outcomes</p></div><div class="finding-card"><div class="finding-number">2</div><p>Quadratic voting cuts voting power inequality roughly in half</p></div><div class="finding-card"><div class="finding-number">3</div><p>Vote caps work but create incentives for "sybil attacks" (splitting into multiple wallets)</p></div><div class="finding-card"><div class="finding-number">4</div><p>Combining mechanisms provides strongest defense against capture</p></div></div>
+</div></section>
+<main class="content"><div class="container">
+<h2>Study Reveals Which Anti-Whale Mechanisms Actually Work in DAOs</h2>
+<p><strong>Simulation research compares vote caps, quadratic voting, and velocity penalties—finds hybrid approaches most effective</strong></p>
+<hr>
+<h3>The Problem: Decentralization in Name Only</h3>
+<p>In MakerDAO, researchers found that fewer than 20 addresses controlled over 50% of voting power. In Uniswap, the top 10 addresses dominate governance outcomes. Across the DAO ecosystem, a pattern repeats: despite promises of distributed decision-making, a small elite effectively controls most organizations.</p>
+<p>This is governance capture—and new research provides the first systematic comparison of mechanisms designed to prevent it.</p>
+<h3>Three Defense Strategies Tested</h3>
+<p>The study evaluated three approaches to limiting whale influence:</p>
+<p><strong>1. Vote Caps</strong>
+Hard limits on how much voting power any single address can wield. Simple and direct, but whales can split holdings across multiple wallets to circumvent caps.</p>
+<p><strong>2. Quadratic Voting</strong>
+Voting power scales as the square root of tokens held. A holder with 100x more tokens gets only 10x more voting power—dramatically compressing inequality without hard cutoffs.</p>
+<p><strong>3. Velocity Penalties</strong>
+Recently-acquired tokens have reduced voting weight. This prevents "governance attacks" where actors rapidly buy tokens to influence a specific vote.</p>
+<h3>What the Simulations Revealed</h3>
+<p>Across 675 simulation runs testing 27 different configurations, clear patterns emerged:</p>
+<p><strong>Quadratic voting is the most effective single mechanism.</strong> It roughly halves the Gini coefficient (a measure of inequality) of voting power without creating cliff effects or strong sybil incentives.</p>
+<p><strong>Vote caps work but have sharp edges.</strong> A 2% cap dramatically reduces whale influence, but creates strong incentives for address splitting. Caps work better when applied to delegation (limiting how much power any delegate can accumulate) rather than direct holdings.</p>
+<p><strong>Velocity penalties address a specific threat.</strong> They're most valuable as a complement to other mechanisms, preventing rapid accumulation attacks while other defenses handle existing concentration.</p>
+<p><strong>The most robust configurations combine mechanisms.</strong> The research recommends: quadratic voting as the base layer, plus delegation caps (5-10%), plus a 30-60 day velocity penalty for new tokens.</p>
+<h3>The Tradeoff: Security vs. Efficiency</h3>
+<p>Every mitigation mechanism imposes some cost to governance efficiency. More aggressive caps mean less total voting power, potentially making quorum harder to reach. The research identifies configurations on the "Pareto frontier"—the best achievable tradeoffs between capture resistance and operational throughput.</p>
+<h3>Real-World Implications</h3>
+<p>Several major protocols have already implemented mechanisms aligned with these findings:</p>
+<li><strong>Optimism</strong> uses delegate voting power caps</li>
+<li><strong>Gitcoin</strong> combines quadratic funding with identity verification</li>
+<li><strong>Compound</strong> relies on pure token voting—and shows the concentration patterns the research predicts</li>
+<p>The research suggests that capture mitigation is not optional for DAOs serious about decentralization. "The mechanisms exist," the paper notes. "The choice is not whether to implement them, but which combination best serves the DAO's values."</p>
+<hr>
+</div></main>
+<footer class="footer"><div class="container">
+<div class="footer-grid">
+<div><h4>Contact</h4><p>James Pollack<br>Independent Researcher<br><a href="mailto:james@jamesbpollack.com">james@jamesbpollack.com</a></p></div>
+<div><h4>Source Code</h4><p><a href="https://github.com/imgntn/dao_simulator">GitHub Repository</a></p></div>
+<div><h4>Research</h4><p>DAO Governance Simulation</p></div>
+</div>
+<p class="footer-note">Research conducted independently to advance decentralized governance.</p>
+</div></footer></body></html>

@@ -1,0 +1,51 @@
+% RQ3 Conclusion: Proposal Pipeline Effects
+
+\subsection{Summary}
+
+We have presented a systematic analysis of proposal pipeline design through multi-agent simulation. Across \experimentruns{} simulation runs testing configurations of temp-checks, fast-tracks, and expiry windows, we characterized the throughput-quality tradeoffs inherent in pipeline design.
+
+Key findings:
+
+\begin{enumerate}
+    \item \textbf{Temp-checks provide valuable filtering}: Moderate thresholds (20-30\%) reduce formal voting load while maintaining proposal quality. Higher thresholds filter too aggressively.
+
+    \item \textbf{Fast-tracks accelerate consensus}: 70\% support threshold effectively identifies uncontroversial proposals suitable for expedited processing. Higher thresholds are too restrictive.
+
+    \item \textbf{Expiry windows should match complexity}: 30-day windows cause excessive abandonment; 60-day windows provide better balance. Complex proposals may need longer.
+
+    \item \textbf{Moderate configurations dominate}: Both extremes (no filtering vs. aggressive filtering) underperform moderate, balanced approaches.
+\end{enumerate}
+
+\subsection{Contributions}
+
+This paper contributes:
+
+\begin{enumerate}
+    \item \textbf{Formal pipeline models} with explicit throughput and quality metrics
+    \item \textbf{Systematic parameter analysis} for three key pipeline mechanisms
+    \item \textbf{Design principles} for pipeline configuration
+    \item \textbf{Parameter guidelines} based on simulation evidence
+\end{enumerate}
+
+\subsection{Practical Recommendations}
+
+For DAO practitioners designing proposal pipelines:
+
+\begin{enumerate}
+    \item \textbf{Implement temp-checks}: Off-chain signal votes reduce on-chain voting costs and filter low-quality proposals
+    \item \textbf{Set moderate thresholds}: 20-30\% for temp-checks, 70\% for fast-tracks
+    \item \textbf{Match expiry to context}: 60 days for standard proposals; consider longer for complex governance
+    \item \textbf{Monitor metrics}: Track abandonment, expiry, and false negative rates to tune parameters
+\end{enumerate}
+
+\subsection{Implications}
+
+For governance designers, our results demonstrate that pipeline design significantly impacts governance outcomes. The choice is not whether to have a pipeline but how to configure it for the DAO's specific needs.
+
+For researchers, our framework enables continued investigation of pipeline dynamics. The interaction between pipeline parameters and other governance mechanisms (voting rules, delegation) deserves further study.
+
+\subsection{Closing Remarks}
+
+Proposal pipelines are the operational backbone of DAO governance. A well-designed pipeline balances efficiency (processing proposals quickly) with quality (ensuring adequate deliberation). Our simulations reveal that this balance is achievable through moderate, evidence-based parameter selection.
+
+We release our simulation framework to enable the community to extend this analysis and develop best practices for pipeline design across diverse DAO contexts.

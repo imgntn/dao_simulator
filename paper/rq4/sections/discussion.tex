@@ -1,0 +1,118 @@
+% RQ4 Discussion: Treasury Resilience
+
+\subsection{Interpretation of Results}
+
+\subsubsection{The 10-20\% Buffer Sweet Spot}
+
+Our simulations identify a practical sweet spot for buffer fractions: 10-20\% provides substantial volatility reduction without excessive capital lockup. This aligns with corporate finance norms where firms typically maintain 1-3 months of operating expenses as cash reserves.
+
+Below 10\%, treasuries remain vulnerable to spending shocks and market downturns. Above 20\%, additional buffer provides diminishing protection while increasingly constraining operational flexibility.
+
+The optimal buffer depends on:
+\begin{itemize}
+    \item Revenue predictability (more volatile revenue $\rightarrow$ higher buffer)
+    \item Spending flexibility (can spending be quickly reduced if needed?)
+    \item Market regime expectations (bear market $\rightarrow$ higher buffer)
+    \item Risk tolerance (conservative organizations prefer higher buffers)
+\end{itemize}
+
+\subsubsection{Spending Limits: Sustainability vs. Agility}
+
+Spending limits present a clear tradeoff. Aggressive limits (2\% per period) prevent treasury depletion but may:
+\begin{itemize}
+    \item Block time-sensitive opportunities
+    \item Create proposal backlogs
+    \item Fragment initiatives across multiple funding cycles
+\end{itemize}
+
+Moderate limits (5\%) balance sustainability with operational flexibility. No limits invite treasury depletion during periods of high proposal activity.
+
+We recommend:
+\begin{itemize}
+    \item Base limits calibrated to sustainable burn rate
+    \item Override mechanisms for urgent/strategic initiatives
+    \item Periodic review of limit adequacy
+\end{itemize}
+
+\subsubsection{Emergency Mechanisms as Insurance}
+
+Top-up mechanisms function as insurance: they impose cost (reduced spending, diverted revenue) but protect against tail risk (severe drawdown or depletion).
+
+Revenue diversion is gentler---it preserves operational continuity while gradually restoring buffer. Spending freeze is more aggressive---it rapidly restores buffer but disrupts operations.
+
+The choice depends on:
+\begin{itemize}
+    \item Revenue stability (stable revenue enables gradual diversion)
+    \item Spending criticality (discretionary vs. essential spending)
+    \item Recovery urgency (how quickly must buffer be restored?)
+\end{itemize}
+
+\subsection{Policy Design Framework}
+
+Based on our results, we propose a treasury policy framework:
+
+\subsubsection{Tier 1: Baseline Policies}
+
+\begin{itemize}
+    \item Buffer fraction: 15-20\% of treasury
+    \item Spending limit: 5\% per period (monthly or quarterly)
+    \item Top-up trigger: When buffer falls below 50\% of target
+\end{itemize}
+
+\subsubsection{Tier 2: Market-Adaptive}
+
+\begin{itemize}
+    \item Dynamic buffer: +5\% in bear markets, -5\% in bull markets
+    \item Counter-cyclical spending: Tighter limits during drawdowns
+    \item Regime monitoring: Track market conditions for policy triggers
+\end{itemize}
+
+\subsubsection{Tier 3: Strategic Reserves}
+
+\begin{itemize}
+    \item Separate strategic reserve for multi-year initiatives
+    \item Diversification requirements (stablecoin minimums)
+    \item External backstops (protocol fee claims, insurance)
+\end{itemize}
+
+\subsection{Comparison with Real Practices}
+
+\subsubsection{MakerDAO}
+
+MakerDAO's stability buffer and surplus mechanism parallel our top-up approach. Our simulations validate the value of such mechanisms while suggesting explicit buffer targets.
+
+\subsubsection{Optimism}
+
+Optimism's structured allocations (ecosystem fund, governance fund) implement implicit spending limits by purpose. Our results support this approach while suggesting explicit per-period caps.
+
+\subsubsection{Most DAOs}
+
+Most DAOs lack formal treasury policies. Our results demonstrate the cost of this oversight: increased volatility, longer drawdowns, and higher depletion risk.
+
+\subsection{Limitations}
+
+\subsubsection{Simplified Market Model}
+
+Our market simulation uses stylized regimes. Real crypto markets exhibit:
+\begin{itemize}
+    \item Fat tails (extreme events more common than modeled)
+    \item Correlation spikes (assets correlate during crises)
+    \item Liquidity constraints (large treasury sales affect prices)
+\end{itemize}
+
+\subsubsection{Exogenous Revenue}
+
+We model revenue as exogenous. In reality, treasury policies affect protocol health, which affects revenue---a feedback loop not fully captured.
+
+\subsubsection{No Strategic Behavior}
+
+We do not model strategic proposer behavior in response to treasury policies (e.g., front-running spending limits, timing proposals to market conditions).
+
+\subsection{Future Work}
+
+\begin{enumerate}
+    \item \textbf{Diversification analysis}: Model multi-asset treasury composition and rebalancing
+    \item \textbf{Protocol revenue modeling}: Integrate treasury health with protocol usage dynamics
+    \item \textbf{Cross-DAO comparison}: Empirical validation against real treasury data
+    \item \textbf{Insurance products}: Model external insurance and hedging strategies
+\end{enumerate}

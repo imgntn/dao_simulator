@@ -1,0 +1,134 @@
+% RQ1 Methodology: Participation Dynamics Experiments
+
+\subsection{Experimental Design}
+
+We conduct two complementary experiments to investigate participation dynamics:
+
+\begin{table}[htbp]
+\centering
+\caption{RQ1 Experiment configurations}
+\label{tab:rq1-experiments}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Experiment & Focus & Swept Parameters & Runs \\
+\midrule
+01-Calibration & Participation targets & Target rate, incentive strength & 270 \\
+03-Quorum & Quorum sensitivity & Quorum percentage (0.01--0.10) & 150 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Experiment 01: Participation Calibration}
+
+\subsubsection{Objective}
+
+Determine how participation target rates affect realized turnout and long-term voter retention.
+
+\subsubsection{Parameter Grid}
+
+We sweep a $3 \times 3$ grid:
+
+\begin{itemize}
+    \item \textbf{Participation target rate}: \{0.05, 0.15, 0.30\} (5\%, 15\%, 30\%)
+    \item \textbf{Incentive multiplier}: \{0.5, 1.0, 2.0\} (low, medium, high)
+\end{itemize}
+
+Each configuration runs 30 times with different random seeds.
+
+\subsubsection{Hypotheses}
+
+\begin{itemize}
+    \item \textbf{H1.1}: Higher participation targets lead to lower quorum achievement rates
+    \item \textbf{H1.2}: Stronger incentives partially compensate for aggressive targets
+    \item \textbf{H1.3}: Voter retention decreases when targets exceed natural participation capacity
+\end{itemize}
+
+\subsection{Experiment 03: Quorum Sensitivity}
+
+\subsubsection{Objective}
+
+Map the relationship between quorum thresholds and governance outcomes.
+
+\subsubsection{Parameter Sweep}
+
+Quorum percentage varied: 1\%, 2\%, 3\%, 4\%, 5\%, 6\%, 7\%, 8\%, 9\%, 10\%
+
+Each threshold runs 15 times with different seeds.
+
+\subsubsection{Hypotheses}
+
+\begin{itemize}
+    \item \textbf{H3.1}: Quorum-pass rate relationship is non-linear (S-curve)
+    \item \textbf{H3.2}: Optimal quorum exists balancing legitimacy and operability
+    \item \textbf{H3.3}: High quorums cause fatigue accumulation as agents strain to participate
+\end{itemize}
+
+\subsection{Baseline Configuration}
+
+Both experiments use a common baseline:
+
+\begin{itemize}
+    \item Members: 200 agents
+    \item Token distribution: Power-law ($\alpha = 1.5$)
+    \item Agent mix: 5\% whales, 10\% delegates, 40\% active, 45\% passive
+    \item Simulation length: 2,000 steps (days)
+    \item Proposal frequency: 0.5/day average
+    \item Voting period: 7 days
+    \item Fatigue parameters: $\alpha=0.95$, $\beta=0.05$, $\gamma=0.01$
+\end{itemize}
+
+\subsection{Metrics}
+
+Primary metrics for RQ1:
+
+\begin{description}
+    \item[Average Turnout] Mean participation rate across all proposals
+    \item[Quorum Achievement Rate] Fraction of proposals reaching quorum
+    \item[Voter Retention] Fraction of initially-active voters still participating at simulation end
+    \item[Turnout Trend] Slope of turnout over time (decay rate)
+    \item[Fatigue Accumulation] Mean fatigue level at simulation end
+\end{description}
+
+\subsection{Statistical Analysis}
+
+\subsubsection{Summary Statistics}
+
+For each parameter configuration:
+\begin{itemize}
+    \item Mean, median, standard deviation
+    \item 95\% confidence intervals via bootstrap
+    \item Interquartile range
+\end{itemize}
+
+\subsubsection{Hypothesis Testing}
+
+\begin{itemize}
+    \item \textbf{ANOVA}: Compare means across participation target levels
+    \item \textbf{Regression}: Model turnout as function of quorum threshold
+    \item \textbf{Trend analysis}: Mann-Kendall test for turnout decay
+\end{itemize}
+
+Significance level $\alpha = 0.05$ with Bonferroni correction.
+
+\subsubsection{Effect Size}
+
+Cohen's $d$ for pairwise comparisons:
+\begin{equation}
+d = \frac{\bar{x}_1 - \bar{x}_2}{s_{\text{pooled}}}
+\end{equation}
+
+\subsection{Validation}
+
+\subsubsection{Internal Validity}
+\begin{itemize}
+    \item Deterministic seeding ensures reproducibility
+    \item Multiple runs per configuration establish distributions
+    \item Systematic parameter variation isolates effects
+\end{itemize}
+
+\subsubsection{External Validity}
+\begin{itemize}
+    \item Agent models are simplified; real voters have complex motivations
+    \item Fatigue model parameters derived from intuition, not empirical calibration
+    \item No adversarial behavior modeled in these experiments
+\end{itemize}

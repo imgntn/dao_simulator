@@ -1,0 +1,106 @@
+% RQ2 Discussion: Governance Capture Mitigation
+
+\subsection{Interpretation of Results}
+
+\subsubsection{The Limits of Vote Caps}
+
+Vote caps provide the most direct path to limiting whale influence but face fundamental challenges. Hard caps create clear sybil incentives: a whale hitting a 2\% cap with 20\% holdings is strongly motivated to split into 10 addresses.
+
+Our simulations model this sybil response and find that cap effectiveness degrades when whales are strategic. The ``headline'' whale influence reduction from caps should be discounted by expected sybil evasion.
+
+That said, sybil attacks impose real costs (gas, coordination, operational security). Caps remain useful when:
+\begin{itemize}
+    \item Combined with mechanisms that make sybil less attractive (e.g., quadratic)
+    \item Applied to delegation rather than direct holdings
+    \item Enforcement includes sybil detection heuristics
+\end{itemize}
+
+\subsubsection{Quadratic Voting in Practice}
+
+Quadratic voting provides elegant theoretical properties but faces implementation challenges:
+
+\begin{enumerate}
+    \item \textbf{Sybil vulnerability}: Multiple identities still beneficial under quadratic, though less so than under linear
+    \item \textbf{Reduced whale incentive}: With diminished returns, large holders may disengage entirely rather than participate with reduced power
+    \item \textbf{Quorum implications}: If quadratic voting reduces effective voting power, quorum thresholds may need adjustment
+\end{enumerate}
+
+Our simulations suggest quadratic voting is most effective when:
+\begin{itemize}
+    \item Combined with identity or reputation systems that limit sybil
+    \item Quorum is calibrated to quadratic power distribution
+    \item Applied to high-stakes decisions where capture risk justifies complexity
+\end{itemize}
+
+\subsubsection{Velocity Penalties: Timing Defense}
+
+Velocity penalties address a specific attack vector: rapid token accumulation before governance votes. They are less relevant to existing concentration but valuable for:
+
+\begin{itemize}
+    \item Preventing ``governance attacks'' via flash loans or rapid market purchases
+    \item Creating time for community response to hostile accumulation
+    \item Rewarding long-term alignment over short-term speculation
+\end{itemize}
+
+Optimal window length balances attack prevention against new participant inclusion. Our results suggest 30-60 days provides reasonable tradeoff.
+
+\subsection{Hybrid Recommendations}
+
+Based on simulation results, we recommend layered defense:
+
+\begin{enumerate}
+    \item \textbf{Base layer}: Quadratic voting (square root) as default mechanism
+    \item \textbf{Delegation caps}: Limit maximum delegated power (5-10\%)
+    \item \textbf{Velocity buffer}: 30-day window with 50\% penalty for new tokens
+    \item \textbf{Monitoring}: Track Nakamoto coefficient and whale influence over time
+\end{enumerate}
+
+This combination provides:
+\begin{itemize}
+    \item Smooth power compression (quadratic)
+    \item Hard limits on delegation capture (caps)
+    \item Defense against rapid accumulation (velocity)
+    \item Observable governance health (monitoring)
+\end{itemize}
+
+\subsection{Comparison with Real-World Approaches}
+
+\subsubsection{Optimism}
+
+Optimism's Token House uses delegate voting power caps, similar to our cap mechanism. Our simulations validate this approach while suggesting quadratic as complementary.
+
+\subsubsection{Gitcoin}
+
+Gitcoin Grants uses quadratic funding with identity verification (Gitcoin Passport). This addresses the sybil problem our simulations highlight as quadratic's weakness.
+
+\subsubsection{Compound}
+
+Compound relies on pure token voting with no caps. Our results suggest this is vulnerable to capture, consistent with empirical concentration observed in Compound governance.
+
+\subsection{Limitations}
+
+\subsubsection{Sybil Model Simplicity}
+
+Our sybil attack model uses simple cost-benefit analysis. Real sybil behavior involves additional factors:
+\begin{itemize}
+    \item Operational security risks of managing multiple addresses
+    \item Reputation costs if sybil detected
+    \item Coordination challenges for multi-address voting
+\end{itemize}
+
+\subsubsection{No Identity Layer}
+
+We do not model identity or reputation systems that could strengthen quadratic voting. With effective identity, quadratic mechanisms become substantially more robust.
+
+\subsubsection{Static Analysis}
+
+Our analysis focuses on steady-state capture metrics. Dynamic scenarios (hostile takeover attempts, market crashes affecting token distribution) require additional study.
+
+\subsection{Future Work}
+
+\begin{enumerate}
+    \item \textbf{Identity integration}: Model quadratic voting with varying identity assurance levels
+    \item \textbf{Dynamic attacks}: Simulate coordinated governance attacks and defender responses
+    \item \textbf{Economic modeling}: Include token price effects of governance outcomes
+    \item \textbf{Cross-DAO capture}: Model attackers targeting multiple DAOs simultaneously
+\end{enumerate}

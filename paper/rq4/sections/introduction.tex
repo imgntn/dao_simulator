@@ -1,0 +1,73 @@
+% RQ4 Introduction: Treasury Resilience
+
+\subsection{Motivation}
+
+DAO treasuries represent significant pools of capital. As of 2023, the top 100 DAOs collectively held over \$25 billion in treasury assets \citep{deepdao2023analytics}. These treasuries fund operations, grants, development, and community initiatives---they are the financial foundation of decentralized organizations.
+
+Yet treasury management in most DAOs remains primitive. Common patterns include:
+\begin{itemize}
+    \item \textbf{No reserves}: Treasury fully available for spending proposals
+    \item \textbf{Concentration risk}: Treasury dominated by native governance token
+    \item \textbf{Reactive management}: Policies developed only after crises
+    \item \textbf{Informal limits}: Spending constrained by norms rather than rules
+\end{itemize}
+
+The consequences of poor treasury management have been visible: DAOs depleting reserves during bear markets, organizations unable to fund operations when token prices crashed, and treasuries drained by successive large proposals without regard for sustainability.
+
+\subsection{Research Question}
+
+This paper investigates:
+
+\begin{quote}
+\textbf{RQ4:} How do treasury management parameters (buffer fractions, emergency top-ups, spending limits) affect fiscal resilience?
+\end{quote}
+
+Specifically, we examine:
+\begin{enumerate}
+    \item How do buffer reserves affect treasury volatility and organizational sustainability?
+    \item When should emergency top-up mechanisms activate, and how quickly should they restore reserves?
+    \item What spending limits balance operational flexibility with fiscal prudence?
+    \item How do these parameters interact under different market conditions?
+\end{enumerate}
+
+\subsection{Treasury Policy Dimensions}
+
+We study three policy dimensions:
+
+\subsubsection{Buffer Fractions}
+
+The portion of treasury held as reserve, unavailable for proposal spending:
+\begin{equation}
+\text{available} = (1 - \text{buffer\_fraction}) \cdot \text{treasury}
+\end{equation}
+
+\subsubsection{Emergency Top-Ups}
+
+Mechanisms that restore buffer when depleted below threshold:
+\begin{itemize}
+    \item Revenue diversion: Redirect incoming funds to buffer
+    \item Spending freeze: Halt non-essential spending until restored
+    \item External injection: Protocol fees or other sources
+\end{itemize}
+
+\subsubsection{Spending Limits}
+
+Caps on outflows per period or per proposal:
+\begin{equation}
+\text{spend}(p) \leq \min(\text{requested}(p), \text{limit})
+\end{equation}
+
+\subsection{Contributions}
+
+This paper contributes:
+
+\begin{enumerate}
+    \item \textbf{Resilience metrics} for treasury health assessment
+    \item \textbf{Systematic analysis} of buffer, top-up, and limit effects
+    \item \textbf{Optimal parameter ranges} for different risk profiles
+    \item \textbf{Practical guidelines} for treasury policy design
+\end{enumerate}
+
+\subsection{Paper Organization}
+
+Section~\ref{sec:background} reviews treasury management in DAOs. Section~\ref{sec:theory} develops formal models of treasury dynamics. Section~\ref{sec:architecture} describes simulation implementation. Section~\ref{sec:methodology} details experimental design. Section~\ref{sec:results} presents findings. Section~\ref{sec:discussion} interprets results for practitioners. Section~\ref{sec:conclusion} concludes.

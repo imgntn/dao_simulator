@@ -1,0 +1,112 @@
+% RQ1 Architecture: Simulation Framework
+
+\subsection{System Overview}
+
+Our simulation framework models DAO governance as a discrete-time multi-agent system. The architecture comprises four layers:
+
+\begin{enumerate}
+    \item \textbf{Configuration Layer}: YAML experiment definitions specifying parameters
+    \item \textbf{Agent Layer}: Heterogeneous agents with participation behaviors
+    \item \textbf{Governance Layer}: Proposal lifecycle and voting mechanics
+    \item \textbf{Analysis Layer}: Metric collection and statistical export
+\end{enumerate}
+
+\subsection{Agent Implementation}
+
+Agents are autonomous decision-makers implementing the participation model from Section~\ref{sec:theory}.
+
+\subsubsection{Agent Types}
+
+The framework supports heterogeneous populations:
+
+\begin{table}[htbp]
+\centering
+\caption{Agent archetypes for participation modeling}
+\label{tab:agent-types}
+\begin{tabular}{lcccc}
+\toprule
+Type & $\theta$ (propensity) & Token Share & Fatigue Sensitivity \\
+\midrule
+Whale & 0.8 & 20-30\% & Low (0.5$\times$) \\
+Delegate & 0.9 & 5-10\% & Medium (1.0$\times$) \\
+Active & 0.5 & 30-40\% & Medium (1.0$\times$) \\
+Passive & 0.1 & 20-30\% & High (2.0$\times$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Participation Decision}
+
+Each simulation step, agents evaluate active proposals:
+
+\begin{lstlisting}[caption=Agent participation logic (pseudocode)]
+def decide_participation(agent, proposal):
+    if agent.fatigue >= agent.fatigue_threshold:
+        return ABSTAIN
+
+    relevance = compute_relevance(agent, proposal)
+    effective_propensity = agent.theta * (1 - agent.fatigue)
+
+    if random() < effective_propensity * relevance:
+        agent.fatigue += FATIGUE_INCREMENT
+        return VOTE
+    return ABSTAIN
+\end{lstlisting}
+
+\subsection{Governance Mechanics}
+
+\subsubsection{Proposal Lifecycle}
+
+Proposals progress through states:
+\begin{equation}
+\text{Draft} \rightarrow \text{Active} \rightarrow \text{Voting} \rightarrow \{\text{Passed}, \text{Failed}, \text{NoQuorum}\}
+\end{equation}
+
+Quorum is evaluated at voting close. A proposal passes if:
+\begin{enumerate}
+    \item Turnout $\geq$ quorum threshold
+    \item Yes votes $>$ No votes (simple majority)
+\end{enumerate}
+
+\subsubsection{Quorum Configuration}
+
+The framework supports:
+\begin{itemize}
+    \item \textbf{Fixed quorum}: Constant percentage threshold
+    \item \textbf{Dynamic quorum}: Adjusts based on rolling participation average
+    \item \textbf{Participation targets}: Configurable target rates that influence agent behavior
+\end{itemize}
+
+\subsection{Metrics Collection}
+
+For participation analysis, we capture:
+
+\begin{description}
+    \item[Turnout] Fraction of eligible tokens that voted
+    \item[Quorum Rate] Fraction of proposals achieving quorum
+    \item[Retention] Agent participation consistency over time
+    \item[Fatigue Distribution] Population fatigue statistics per timestep
+    \item[Concentration] Gini coefficient of actual voting participation
+\end{description}
+
+\subsection{Simulation Loop}
+
+Each step represents one day:
+
+\begin{algorithmic}
+\FOR{step = 1 to max\_steps}
+    \STATE Generate proposals based on frequency parameter
+    \STATE Update agent fatigue (decay toward recovery)
+    \FOR{each active voting proposal}
+        \FOR{each agent}
+            \STATE Agent decides participation
+        \ENDFOR
+        \STATE Tally votes, check quorum
+    \ENDFOR
+    \STATE Record turnout, quorum achievement, fatigue stats
+\ENDFOR
+\end{algorithmic}
+
+\subsection{Reproducibility}
+
+All simulations use deterministic seeding. Configuration hashes identify unique experiments. Results include manifests with git commits, seeds, and verification hashes.

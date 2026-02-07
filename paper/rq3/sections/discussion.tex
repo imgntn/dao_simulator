@@ -1,0 +1,94 @@
+% RQ3 Discussion: Proposal Pipeline Effects
+
+\subsection{Interpretation of Results}
+
+\subsubsection{The Filtering Tradeoff}
+
+Temp-checks function as noisy classifiers. Perfect filtering (passing only proposals that will succeed in formal voting) is impossible given:
+\begin{itemize}
+    \item Lower temp-check participation (noisier signal)
+    \item Information revealed between temp-check and formal vote
+    \item Different populations (temp-check vs. formal vote participants)
+\end{itemize}
+
+Our results show that moderate thresholds (20-30\%) provide good filtering while avoiding excessive false negatives. Thresholds above 40\% filter substantial numbers of ultimately viable proposals.
+
+\subsubsection{Fast-Track as Acceleration}
+
+Fast-tracks are most valuable for truly uncontroversial proposals where the pipeline stages add delay without adding information. Our 70\% threshold captures this use case.
+
+However, fast-tracks create risks:
+\begin{itemize}
+    \item Capture opportunity: coordinate supporters for early vote, bypass deliberation
+    \item Legitimacy questions: was there adequate consideration?
+    \item Precedent: what counts as ``uncontroversial'' may expand over time
+\end{itemize}
+
+We recommend clear criteria for fast-track eligibility and periodic review of fast-tracked proposals' outcomes.
+
+\subsubsection{Expiry as Forcing Function}
+
+Expiry windows prevent indefinite proposal accumulation but may force premature resolution. Our results suggest:
+\begin{itemize}
+    \item 30 days is too aggressive for most governance contexts
+    \item 60 days provides reasonable balance
+    \item 90+ days may allow proposals to linger without resolution
+\end{itemize}
+
+The optimal window depends on proposal complexity. A tiered system (short expiry for simple, long for complex) may be valuable.
+
+\subsection{Pipeline Design Principles}
+
+Based on our results, we propose the following design principles:
+
+\begin{enumerate}
+    \item \textbf{Filter early, filter gently}: Use temp-checks with moderate thresholds to reduce formal voting load without excluding viable proposals
+
+    \item \textbf{Accelerate consensus, not controversy}: Fast-track only proposals with clear supermajority support; never fast-track high-stakes decisions
+
+    \item \textbf{Bound but don't compress}: Set expiry windows that prevent accumulation but allow adequate deliberation for the proposal type
+
+    \item \textbf{Make stages meaningful}: Each pipeline stage should add information value; remove stages that are purely procedural delay
+\end{enumerate}
+
+\subsection{Comparison with Real Pipelines}
+
+\subsubsection{Uniswap}
+
+Uniswap's two-stage temp-check (temperature check + consensus check) aligns with our findings supporting moderate early filtering. However, the specific thresholds (majority for temperature, 67\% for consensus) may be calibrated differently than our recommendations.
+
+\subsubsection{Compound}
+
+Compound's single-stage process (no temp-check) maximizes inclusion but may result in more failed proposals consuming voter attention.
+
+\subsubsection{Optimism}
+
+Optimism's review periods function similarly to temp-checks but without explicit support thresholds. This provides filtering through community feedback rather than vote counts.
+
+\subsection{Limitations}
+
+\subsubsection{Simplified Proposal Quality}
+
+We model proposals with fixed quality distributions. Real proposal quality is influenced by:
+\begin{itemize}
+    \item Proposer effort and expertise
+    \item Community feedback during pipeline
+    \item External events affecting relevance
+\end{itemize}
+
+\subsubsection{Homogeneous Stages}
+
+Our model uses uniform stage parameters. Real pipelines often have stage-specific requirements (different quorums, durations) that we do not fully explore.
+
+\subsubsection{No Learning}
+
+Proposers do not learn from past failures. Real proposers may improve proposals based on feedback, affecting pipeline dynamics.
+
+\subsection{Future Work}
+
+\begin{enumerate}
+    \item \textbf{Adaptive pipelines}: Simulate pipelines that adjust parameters based on proposal volume and type
+    \item \textbf{Proposal quality dynamics}: Model how feedback improves proposal quality through pipeline stages
+    \item \textbf{Proposer behavior}: Include strategic proposal timing and revision in response to pipeline incentives
+    \item \textbf{Cross-DAO comparison}: Compare pipeline configurations across DAOs with different operational contexts
+\end{enumerate}

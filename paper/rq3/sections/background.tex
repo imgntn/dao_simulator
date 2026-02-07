@@ -1,0 +1,101 @@
+% RQ3 Background: Proposal Pipelines
+
+\subsection{Proposal Pipelines in Practice}
+
+\subsubsection{Compound}
+
+Compound's Governor Bravo defines a linear pipeline:
+\begin{enumerate}
+    \item Proposal creation (requires token threshold)
+    \item Voting period (3 days)
+    \item Timelock (2 days)
+    \item Execution
+\end{enumerate}
+
+No formal temp-check or fast-track; all proposals follow the same path.
+
+\subsubsection{Uniswap}
+
+Uniswap adds informal stages:
+\begin{enumerate}
+    \item Temperature check (Snapshot, 2 days)
+    \item Consensus check (Snapshot, 5 days)
+    \item Governance proposal (on-chain)
+\end{enumerate}
+
+This multi-stage approach filters proposals before expensive on-chain voting.
+
+\subsubsection{Optimism}
+
+Optimism's Token House uses:
+\begin{enumerate}
+    \item Draft proposal (feedback period)
+    \item Review period
+    \item Voting period
+\end{enumerate}
+
+Different proposal types have different requirements and timelines.
+
+\subsubsection{Nouns DAO}
+
+Nouns uses a streamlined single-stage process but with high proposal threshold (2 Nouns), effectively filtering at submission rather than through pipeline stages.
+
+\subsection{Pipeline Design Considerations}
+
+\subsubsection{Throughput}
+
+Governance throughput measures proposals processed per unit time:
+\begin{equation}
+\text{throughput} = \frac{\text{proposals resolved}}{\text{time period}}
+\end{equation}
+
+High throughput enables responsive governance but may overwhelm participant attention.
+
+\subsubsection{Decision Quality}
+
+Quality is harder to define but includes:
+\begin{itemize}
+    \item Adequate deliberation time
+    \item Sufficient participation
+    \item Alignment with community preferences
+    \item Implementation success rate
+\end{itemize}
+
+We use abandonment rate (proposals failing without resolution) as a quality proxy: high abandonment suggests proposals entering the pipeline that should have been filtered earlier.
+
+\subsubsection{Time-to-Decision}
+
+The interval from proposal creation to resolution:
+\begin{equation}
+\text{TTD}(p) = t_{\text{resolved}}(p) - t_{\text{created}}(p)
+\end{equation}
+
+Fast TTD enables agility; slow TTD may cause missed opportunities or stale decisions.
+
+\subsection{Theoretical Foundations}
+
+\subsubsection{Queuing Theory}
+
+Proposal pipelines can be modeled as queuing systems. Arrival rate $\lambda$ (proposals per day) must be balanced against service rate $\mu$ (processing capacity):
+
+\begin{equation}
+\rho = \frac{\lambda}{\mu} < 1 \text{ for stable queue}
+\end{equation}
+
+When $\rho > 1$, proposal backlog grows unboundedly.
+
+\subsubsection{Signal Filtering}
+
+Temp-checks function as noisy classifiers, filtering proposals based on initial signal:
+\begin{itemize}
+    \item True positives: Good proposals that pass
+    \item False positives: Poor proposals that pass (waste voting resources)
+    \item True negatives: Poor proposals filtered
+    \item False negatives: Good proposals incorrectly filtered
+\end{itemize}
+
+Threshold selection trades off false positives against false negatives.
+
+\subsection{Prior Work}
+
+Limited academic literature addresses DAO proposal pipelines specifically. \citet{snapshot2021governance} provides analytics on off-chain voting patterns. Our simulation framework enables systematic study of pipeline parameter effects not available from observational data alone.

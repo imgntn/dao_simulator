@@ -1,0 +1,77 @@
+% RQ2 Introduction: Governance Capture Mitigation
+
+\subsection{Motivation}
+
+The promise of DAOs rests on distributed decision-making---governance by the many rather than the few. Yet in practice, most DAOs exhibit extreme power concentration. Studies of MakerDAO found that 20 addresses controlled over 50\% of voting power \citep{fritsch2022analyzing}. Similar patterns appear across major protocols: a handful of whales and delegates routinely determine proposal outcomes.
+
+This concentration creates multiple risks:
+\begin{itemize}
+    \item \textbf{Plutocracy}: Wealthy actors dominate governance regardless of community preference
+    \item \textbf{Capture}: Coordinated groups can manipulate outcomes for private benefit
+    \item \textbf{Legitimacy erosion}: Small token holders disengage, viewing governance as futile
+    \item \textbf{Centralization}: De facto control contradicts the decentralization thesis
+\end{itemize}
+
+Token-weighted voting---one token, one vote---directly maps economic stake to political power. While this aligns incentives (those with most to lose have most voice), it also enables capture by anyone willing to acquire sufficient tokens.
+
+\subsection{Research Question}
+
+This paper investigates:
+
+\begin{quote}
+\textbf{RQ2:} How effective are different mitigation strategies (vote caps, quadratic thresholds, velocity penalties) against governance capture?
+\end{quote}
+
+Specifically, we examine:
+\begin{enumerate}
+    \item How much do vote caps reduce whale influence, and at what cost to governance throughput?
+    \item Does quadratic voting meaningfully redistribute power, or do whales simply split holdings?
+    \item Can velocity penalties prevent rapid accumulation attacks without hindering legitimate participation?
+    \item What combinations of mechanisms provide robust capture resistance?
+\end{enumerate}
+
+\subsection{Mitigation Strategies}
+
+We evaluate three classes of capture mitigation:
+
+\subsubsection{Vote Caps}
+
+Hard limits on maximum voting power per address:
+\begin{equation}
+w_{\text{capped}}(a) = \min(w(a), c)
+\end{equation}
+
+This directly bounds individual influence but creates incentives for address splitting (sybil attacks).
+
+\subsubsection{Quadratic Voting}
+
+Diminishing returns on token power:
+\begin{equation}
+w_{\text{quad}}(a) = \sqrt{T(a)}
+\end{equation}
+
+This smoothly reduces whale influence without hard cutoffs, but the square root relationship may still permit substantial concentration.
+
+\subsubsection{Velocity Penalties}
+
+Reduced voting power for recently-acquired tokens:
+\begin{equation}
+w_{\text{velocity}}(a) = T_{\text{old}}(a) + \alpha \cdot T_{\text{new}}(a)
+\end{equation}
+
+where $\alpha < 1$ penalizes recent acquisitions. This addresses ``governance attacks'' where actors buy tokens immediately before votes.
+
+\subsection{Contributions}
+
+This paper contributes:
+
+\begin{enumerate}
+    \item \textbf{Systematic comparison} of three capture mitigation mechanisms under controlled conditions
+    \item \textbf{Quantified tradeoffs} between capture resistance and governance efficiency
+    \item \textbf{Optimal parameter ranges} for each mechanism derived from simulation
+    \item \textbf{Hybrid recommendations} combining multiple strategies for robust defense
+\end{enumerate}
+
+\subsection{Paper Organization}
+
+Section~\ref{sec:background} reviews governance capture in DAOs and existing defenses. Section~\ref{sec:theory} formalizes capture metrics and mitigation mechanisms. Section~\ref{sec:architecture} describes simulation implementation. Section~\ref{sec:methodology} details experimental design. Section~\ref{sec:results} presents findings. Section~\ref{sec:discussion} interprets results and derives practical guidance. Section~\ref{sec:conclusion} concludes.

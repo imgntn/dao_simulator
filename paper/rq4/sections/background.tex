@@ -1,0 +1,77 @@
+% RQ4 Background: Treasury Management
+
+\subsection{DAO Treasuries in Practice}
+
+\subsubsection{Treasury Composition}
+
+Typical DAO treasuries contain:
+\begin{itemize}
+    \item \textbf{Native tokens}: Governance tokens (often majority of treasury by value)
+    \item \textbf{Stablecoins}: USDC, DAI for operational stability
+    \item \textbf{Protocol revenue}: Accumulated fees, yields
+    \item \textbf{External assets}: Investments, diversification holdings
+\end{itemize}
+
+Native token concentration creates correlation risk: treasury value drops precisely when the protocol struggles.
+
+\subsubsection{Treasury Uses}
+
+DAOs spend treasury on:
+\begin{itemize}
+    \item Development grants and bounties
+    \item Operational expenses (infrastructure, services)
+    \item Marketing and growth initiatives
+    \item Liquidity provision and incentives
+    \item Strategic investments and acquisitions
+\end{itemize}
+
+\subsubsection{Historical Challenges}
+
+Notable treasury crises include:
+\begin{itemize}
+    \item Bear market depletion (2022): Multiple DAOs saw 80-90\% treasury value loss
+    \item Unsustainable spending: DAOs approving grants that exceeded sustainable burn rate
+    \item Concentration losses: Treasuries holding single assets that collapsed
+\end{itemize}
+
+\subsection{Existing Treasury Practices}
+
+\subsubsection{Compound}
+
+Compound maintains treasury primarily in COMP tokens with limited diversification. No formal buffer policy; spending governed by individual proposal votes.
+
+\subsubsection{Uniswap}
+
+Uniswap's treasury exceeds \$1B but is almost entirely UNI tokens. The Uniswap Grants Program manages a separate allocation for grants.
+
+\subsubsection{Optimism}
+
+Optimism employs structured treasury management with dedicated allocations for different purposes (ecosystem fund, governance fund, etc.) and vesting schedules.
+
+\subsubsection{MakerDAO}
+
+MakerDAO represents relatively sophisticated treasury management with stability reserves, surplus buffer, and systematic approach to capital deployment.
+
+\subsection{Theoretical Foundations}
+
+\subsubsection{Corporate Finance Parallels}
+
+Treasury management in DAOs parallels corporate cash management:
+\begin{itemize}
+    \item Cash buffer theory: Firms hold precautionary balances for uncertainty
+    \item Target cash models: Optimal cash depends on transaction costs, opportunity cost, volatility
+    \item Liquidity management: Tradeoff between idle cash and operational needs
+\end{itemize}
+
+\subsubsection{Reserve Adequacy}
+
+Central banks and insurers use reserve adequacy frameworks:
+\begin{equation}
+\text{Reserve ratio} = \frac{\text{Liquid reserves}}{\text{Expected outflows}}
+\end{equation}
+
+DAOs can adapt these frameworks for treasury policy.
+
+\subsection{Related Work}
+
+Limited academic work addresses DAO treasury management specifically. \citet{faqir2021cadcad} modeled tokenomic dynamics that affect treasury value. DeepDAO \citep{deepdao2023analytics} provides treasury analytics across DAOs. Our simulation framework enables systematic study of treasury policies.

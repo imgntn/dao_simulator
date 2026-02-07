@@ -1,0 +1,74 @@
+% RQ5 Introduction: Inter-DAO Cooperation
+
+\subsection{Motivation}
+
+DAOs do not exist in isolation. They operate within ecosystems of interdependent protocols, share user bases, and face common challenges. Public goods that benefit the entire ecosystem---infrastructure, standards, research---are under-provided when each DAO acts independently.
+
+Inter-DAO cooperation has emerged organically:
+\begin{itemize}
+    \item \textbf{Protocol collaborations}: Joint liquidity provision, shared security
+    \item \textbf{Grants coordination}: DAOs co-funding public goods projects
+    \item \textbf{Standard setting}: Multi-DAO governance over shared standards
+    \item \textbf{Crisis response}: Coordinated action during security incidents
+\end{itemize}
+
+Yet formal mechanisms for inter-DAO cooperation remain primitive. Most cross-DAO interactions rely on informal relationships, multi-sig arrangements, or bilateral negotiations. The governance of multi-DAO initiatives is often ad hoc.
+
+Understanding when and how DAOs can effectively cooperate---and what mechanisms enable coordination---is essential as the ecosystem moves toward greater interdependence.
+
+\subsection{Research Question}
+
+This paper investigates:
+
+\begin{quote}
+\textbf{RQ5:} How does inter-DAO cooperation affect governance outcomes and resource efficiency?
+\end{quote}
+
+Specifically, we examine:
+\begin{enumerate}
+    \item Under what conditions do DAOs choose to cooperate on joint initiatives?
+    \item How do different cooperation structures (symmetric, asymmetric, hub-spoke) affect outcomes?
+    \item What mechanisms enable stable cooperation despite divergent preferences?
+    \item How does cooperation affect individual DAO governance metrics (turnout, pass rate)?
+\end{enumerate}
+
+\subsection{Cooperation Mechanisms}
+
+We study several inter-DAO cooperation mechanisms:
+
+\subsubsection{Joint Proposals}
+
+Proposals requiring approval from multiple DAOs:
+\begin{equation}
+\text{pass}(p) = \bigwedge_{d \in \text{DAOs}} \text{approve}_d(p)
+\end{equation}
+
+\subsubsection{Resource Pooling}
+
+Shared treasury contributions for joint initiatives:
+\begin{equation}
+\text{pool} = \sum_{d \in \text{DAOs}} \text{contribution}_d
+\end{equation}
+
+\subsubsection{Cross-DAO Voting}
+
+Token holders with positions in multiple DAOs voting across boundaries, creating preference alignment.
+
+\subsubsection{Delegation Networks}
+
+Delegates operating across multiple DAOs, transferring information and norms.
+
+\subsection{Contributions}
+
+This paper contributes:
+
+\begin{enumerate}
+    \item \textbf{Cooperation taxonomy}: Classification of inter-DAO relationship types
+    \item \textbf{Success conditions}: Identification of factors enabling stable cooperation
+    \item \textbf{Mechanism design}: Guidelines for joint proposal structures
+    \item \textbf{Simulation framework}: Multi-DAO modeling capabilities for future research
+\end{enumerate}
+
+\subsection{Paper Organization}
+
+Section~\ref{sec:background} reviews inter-DAO cooperation in practice. Section~\ref{sec:theory} develops formal models of multi-DAO dynamics. Section~\ref{sec:architecture} describes simulation implementation. Section~\ref{sec:methodology} details experimental design. Section~\ref{sec:results} presents findings. Section~\ref{sec:discussion} interprets results and derives practical guidance. Section~\ref{sec:conclusion} concludes.

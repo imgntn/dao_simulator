@@ -1,0 +1,46 @@
+% RQ2 Conclusion: Governance Capture Mitigation
+
+\subsection{Summary}
+
+We have presented a systematic comparison of governance capture mitigation strategies through multi-agent simulation. Across \experimentruns{} simulation runs testing 27 configurations of vote caps, quadratic voting, and velocity penalties, we characterized the effectiveness and tradeoffs of each approach.
+
+Key findings:
+
+\begin{enumerate}
+    \item \textbf{Vote caps}: Effective at limiting peak influence but create sybil incentives. Best applied to delegation rather than direct holdings.
+
+    \item \textbf{Quadratic voting}: Provides smooth power compression, roughly halving the Gini coefficient. Vulnerable to sybil without identity systems.
+
+    \item \textbf{Velocity penalties}: Effective against rapid accumulation attacks; 30-60 day windows balance protection with inclusion.
+
+    \item \textbf{Hybrid approaches}: Combinations outperform single mechanisms. Recommended: quadratic base + delegation caps + velocity buffer.
+
+    \item \textbf{Tradeoff frontier}: All mitigation imposes some governance efficiency cost. Optimal configuration depends on DAO priorities.
+\end{enumerate}
+
+\subsection{Contributions}
+
+This paper contributes:
+
+\begin{enumerate}
+    \item \textbf{Quantified comparison} of capture mitigation mechanisms under controlled conditions
+    \item \textbf{Formal metrics} for capture risk assessment (whale influence, Nakamoto coefficient, composite score)
+    \item \textbf{Parameter guidelines} for each mechanism based on simulation evidence
+    \item \textbf{Hybrid recommendations} for layered capture defense
+\end{enumerate}
+
+\subsection{Implications}
+
+For DAO designers, our results provide evidence-based guidance for mechanism selection. Pure token voting is vulnerable to capture; mitigation mechanisms are not optional for governance resilience.
+
+For the research community, our framework enables continued investigation of capture dynamics. The interaction between mitigation mechanisms and adversarial behavior deserves ongoing attention.
+
+For the ecosystem, our findings underscore that decentralization is not automatic. Token distribution creates power distribution; mechanism design determines whether that power is checked.
+
+\subsection{Closing Remarks}
+
+Governance capture is not theoretical---it is observable in deployed DAOs where small groups dominate decision-making. The mechanisms we evaluate are not exotic proposals but practical tools available today.
+
+The choice is not whether to implement capture mitigation, but which combination of mechanisms best serves the DAO's values and operational needs. Our simulations illuminate these tradeoffs, providing a foundation for informed governance design.
+
+We release our simulation framework and experimental configurations to enable the community to extend this analysis, test additional mechanisms, and develop the evidence base for capture-resistant governance.

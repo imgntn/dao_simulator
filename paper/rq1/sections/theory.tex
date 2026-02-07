@@ -1,0 +1,112 @@
+% RQ1 Theoretical Framework: Participation Dynamics
+
+We develop a formal model of participation dynamics in DAO governance, focusing on the interplay between individual incentives, collective outcomes, and temporal dynamics.
+
+\subsection{Participation Model}
+
+\subsubsection{Agent Participation Decision}
+
+Each agent $a_i$ decides whether to participate in proposal $p$ based on:
+
+\begin{equation}
+\text{participate}(a_i, p) = \mathbf{1}\left[\theta_i \cdot r(p) \cdot (1 - f_i) > c_i + \epsilon\right]
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $\theta_i \in [0, 1]$ is the base participation propensity
+    \item $r(p) \in [0, 1]$ is the proposal relevance to agent $i$
+    \item $f_i \in [0, 1]$ is the current fatigue level
+    \item $c_i$ is the participation cost threshold
+    \item $\epsilon \sim \mathcal{N}(0, \sigma^2)$ is stochastic noise
+\end{itemize}
+
+\subsubsection{Fatigue Dynamics}
+
+Fatigue accumulates with participation and decays over time:
+
+\begin{equation}
+f_i(t+1) = \alpha \cdot f_i(t) + \beta \cdot \mathbf{1}[\text{voted}_i(t)] - \gamma
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $\alpha \in (0, 1)$ is the fatigue persistence factor
+    \item $\beta > 0$ is the fatigue increment per vote
+    \item $\gamma > 0$ is the natural recovery rate
+\end{itemize}
+
+Fatigue is bounded: $f_i \in [0, 1]$.
+
+\subsection{Aggregate Participation}
+
+Total turnout for proposal $p$ is:
+
+\begin{equation}
+\text{turnout}(p) = \frac{\sum_{a_i \in A} w(a_i) \cdot \mathbf{1}[\text{participate}(a_i, p)]}{\sum_{a_i \in A} w(a_i)}
+\end{equation}
+
+where $w(a_i)$ is the voting weight (tokens or delegation-adjusted tokens).
+
+\subsection{Quorum Achievement}
+
+A proposal achieves quorum if:
+
+\begin{equation}
+\text{turnout}(p) \geq q
+\end{equation}
+
+where $q$ is the quorum threshold (e.g., 0.04 for 4\%).
+
+The probability of quorum achievement depends on:
+\begin{itemize}
+    \item Agent participation propensities $\{\theta_i\}$
+    \item Current fatigue distribution $\{f_i\}$
+    \item Proposal characteristics (relevance, stakes)
+    \item Quorum threshold $q$
+\end{itemize}
+
+\subsection{Theoretical Predictions}
+
+\subsubsection{Prediction 1: Quorum-Turnout Sensitivity}
+
+There exists a critical quorum threshold $q^*$ such that:
+\begin{itemize}
+    \item For $q < q^*$: Most proposals achieve quorum; governance may be captured by active minority
+    \item For $q > q^*$: Many proposals fail quorum; governance gridlock
+    \item At $q \approx q^*$: Optimal balance of legitimacy and operability
+\end{itemize}
+
+The critical threshold depends on the participation distribution and fatigue parameters.
+
+\subsubsection{Prediction 2: Fatigue-Induced Decay}
+
+Under constant proposal frequency $\lambda$, aggregate turnout decays over time:
+
+\begin{equation}
+\text{turnout}(t) \sim \text{turnout}_0 \cdot e^{-\kappa t}
+\end{equation}
+
+where $\kappa$ depends on $\lambda$, $\beta$, and recovery rate $\gamma$.
+
+\subsubsection{Prediction 3: Heterogeneity Amplification}
+
+As fatigue accumulates asymmetrically (active voters fatigue faster), participation inequality increases:
+
+\begin{equation}
+\text{Gini}(\text{participation}, t) > \text{Gini}(\text{participation}, 0)
+\end{equation}
+
+Large token holders, who face higher stakes and thus higher $\theta_i$, maintain participation longer, increasing effective concentration.
+
+\subsection{Calibration Target Framework}
+
+We define the \textit{participation target rate} $\tau$ as the governance designer's intended turnout level. Sustainable governance requires:
+
+\begin{equation}
+\tau \leq \mathbb{E}[\text{turnout}_{\infty}]
+\end{equation}
+
+where $\text{turnout}_{\infty}$ is the steady-state turnout under fatigue dynamics.
+
+Setting $\tau$ (and thus quorum $q \approx \tau$) above steady-state capacity leads to systematic quorum failures.

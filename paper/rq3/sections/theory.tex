@@ -1,0 +1,141 @@
+% RQ3 Theoretical Framework: Proposal Pipelines
+
+We develop formal models of proposal pipeline dynamics and their effects on governance outcomes.
+
+\subsection{Pipeline State Machine}
+
+A proposal $p$ transitions through pipeline states:
+
+\begin{equation}
+p: S_0 \rightarrow S_1 \rightarrow ... \rightarrow S_{\text{terminal}}
+\end{equation}
+
+where terminal states are $\{\text{Passed}, \text{Failed}, \text{Expired}, \text{Abandoned}\}$.
+
+\subsubsection{State Transition Probabilities}
+
+At each stage, proposals may:
+\begin{itemize}
+    \item \textbf{Advance}: Pass gate, move to next stage
+    \item \textbf{Fail}: Fail gate, terminate
+    \item \textbf{Expire}: Exceed time limit, terminate
+    \item \textbf{Abandon}: Proposer withdraws
+\end{itemize}
+
+\subsection{Temp-Check Model}
+
+\subsubsection{Filtering Function}
+
+Temp-checks filter proposals based on preliminary support signal:
+
+\begin{equation}
+\text{pass}_{\text{temp}}(p) = \mathbf{1}\left[\frac{\text{support votes}}{\text{total votes}} > \tau_{\text{temp}}\right]
+\end{equation}
+
+\subsubsection{Signal Quality}
+
+Temp-check support is a noisy signal of eventual formal vote outcome:
+
+\begin{equation}
+\text{support}_{\text{temp}}(p) = \text{support}_{\text{true}}(p) + \epsilon
+\end{equation}
+
+where $\epsilon$ represents noise from:
+\begin{itemize}
+    \item Low temp-check turnout (sample variance)
+    \item Different temp-check vs. formal vote populations
+    \item Information revealed after temp-check
+\end{itemize}
+
+\subsubsection{Filtering Tradeoff}
+
+Higher $\tau_{\text{temp}}$ reduces false positives (bad proposals reaching formal vote) but increases false negatives (good proposals filtered):
+
+\begin{equation}
+\text{FPR}(\tau) \downarrow \text{ as } \tau \uparrow; \quad \text{FNR}(\tau) \uparrow \text{ as } \tau \uparrow
+\end{equation}
+
+\subsection{Fast-Track Model}
+
+\subsubsection{Qualification Criteria}
+
+Proposals qualify for fast-track based on:
+
+\begin{equation}
+\text{fast-track}(p) = \mathbf{1}\left[\text{support}_{\text{early}}(p) > \tau_{\text{fast}}\right]
+\end{equation}
+
+Fast-tracked proposals skip intermediate stages, reducing time-to-decision.
+
+\subsubsection{Fast-Track Risks}
+
+Fast-tracking may:
+\begin{itemize}
+    \item Bypass deliberation on consequential issues
+    \item Create capture opportunities (coordinate fast vote before opposition mobilizes)
+    \item Reduce perceived legitimacy if overused
+\end{itemize}
+
+\subsection{Expiry Model}
+
+\subsubsection{Expiry Dynamics}
+
+Proposals expire if not resolved within window $\tau_{\text{expiry}}$:
+
+\begin{equation}
+\text{expired}(p, t) = \mathbf{1}\left[t - t_{\text{created}}(p) > \tau_{\text{expiry}}\right]
+\end{equation}
+
+\subsubsection{Abandonment vs. Expiry}
+
+We distinguish:
+\begin{itemize}
+    \item \textbf{Expiry}: Proposal times out while still accumulating votes
+    \item \textbf{Abandonment}: Proposer withdraws or stops advocating before expiry
+\end{itemize}
+
+Both indicate pipeline inefficiency but have different causes.
+
+\subsection{Throughput-Quality Tradeoff}
+
+\subsubsection{Throughput Metrics}
+
+\begin{description}
+    \item[Pass rate] Fraction of proposals that ultimately pass: $\frac{|\{p: \text{passed}(p)\}|}{|\text{proposals}|}$
+    \item[Resolution rate] Fraction resolved (pass or fail) vs. abandoned/expired
+    \item[Time-to-decision] Average time from creation to resolution
+\end{description}
+
+\subsubsection{Quality Proxies}
+
+\begin{description}
+    \item[Abandonment rate] Proposals abandoned mid-pipeline (suggests poor filtering)
+    \item[Turnout] Participation in formal votes (higher suggests engagement)
+    \item[Quorum rate] Fraction of formal votes achieving quorum
+\end{description}
+
+\subsection{Theoretical Predictions}
+
+\subsubsection{Prediction 1: Temp-Check Filtering Curve}
+
+Pass rate through formal voting increases with temp-check threshold (better filtering) but total proposal throughput decreases:
+
+\begin{equation}
+\text{pass rate} \uparrow \text{ with } \tau_{\text{temp}}; \quad \text{throughput} \downarrow \text{ with } \tau_{\text{temp}}
+\end{equation}
+
+\subsubsection{Prediction 2: Fast-Track Acceleration}
+
+Fast-tracks reduce mean time-to-decision but increase variance (bimodal distribution):
+
+\begin{equation}
+\mathbb{E}[\text{TTD}] \downarrow; \quad \text{Var}[\text{TTD}] \uparrow
+\end{equation}
+
+\subsubsection{Prediction 3: Expiry-Abandonment Relationship}
+
+Tight expiry windows increase abandonment rate for complex proposals:
+
+\begin{equation}
+\text{abandonment} \uparrow \text{ as } \tau_{\text{expiry}} \downarrow
+\end{equation}

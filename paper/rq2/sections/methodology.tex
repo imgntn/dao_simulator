@@ -1,0 +1,128 @@
+% RQ2 Methodology: Governance Capture Experiments
+
+\subsection{Experimental Design}
+
+We conduct a factorial experiment varying three mitigation mechanisms across multiple parameter levels:
+
+\begin{table}[htbp]
+\centering
+\caption{RQ2 Experiment configuration (Experiment 04)}
+\label{tab:rq2-experiment}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Factor & Levels & Values & Description \\
+\midrule
+Vote Cap & 3 & None, 5\%, 2\% & Maximum per-address power \\
+Quadratic & 3 & None, Sqrt, Cube root & Sublinear scaling \\
+Velocity & 3 & None, 30-day, 90-day & Penalty window \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Total configurations: $3 \times 3 \times 3 = 27$
+
+Each configuration runs 25 times with different seeds.
+
+Total runs: $27 \times 25 = 675$
+
+\subsection{Parameter Selection}
+
+\subsubsection{Vote Cap Levels}
+
+\begin{itemize}
+    \item \textbf{None}: Baseline token-weighted voting
+    \item \textbf{5\% cap}: Moderate limit; whale with 20\% tokens limited to 5\%
+    \item \textbf{2\% cap}: Aggressive limit; forces significant power redistribution
+\end{itemize}
+
+\subsubsection{Quadratic Levels}
+
+\begin{itemize}
+    \item \textbf{None}: Linear (1-token-1-vote)
+    \item \textbf{Square root}: Standard quadratic voting
+    \item \textbf{Cube root}: More aggressive compression
+\end{itemize}
+
+\subsubsection{Velocity Levels}
+
+\begin{itemize}
+    \item \textbf{None}: All tokens have full weight
+    \item \textbf{30-day window}: Tokens acquired within 30 days have 50\% weight
+    \item \textbf{90-day window}: Tokens acquired within 90 days have 50\% weight
+\end{itemize}
+
+\subsection{Baseline Configuration}
+
+All experiments use common baseline:
+
+\begin{itemize}
+    \item Members: 200 agents
+    \item Token distribution: Power-law ($\alpha = 1.5$)
+    \item Whale agents: 5 (each holding 5-15\% of supply)
+    \item Quorum: 4\%
+    \item Simulation length: 2,000 steps
+    \item Proposal frequency: 0.5/day
+\end{itemize}
+
+\subsection{Whale Behavior Scenarios}
+
+We model two whale behavior modes:
+
+\begin{enumerate}
+    \item \textbf{Passive whales}: Vote according to preferences, no strategic behavior
+    \item \textbf{Active whales}: Attempt to maximize influence, may sybil attack caps
+\end{enumerate}
+
+Sybil attack cost model:
+\begin{equation}
+\text{Cost}_{\text{sybil}}(n) = n \cdot c_{\text{gas}} + n^2 \cdot c_{\text{coordination}}
+\end{equation}
+
+Whales split only if benefit exceeds cost.
+
+\subsection{Hypotheses}
+
+\begin{itemize}
+    \item \textbf{H2.1}: Vote caps reduce whale influence proportionally to cap stringency
+    \item \textbf{H2.2}: Quadratic voting compresses Gini coefficient by approximately 50\%
+    \item \textbf{H2.3}: Velocity penalties have minimal effect on static concentration but prevent accumulation attacks
+    \item \textbf{H2.4}: Combined mechanisms provide stronger capture resistance than any single mechanism
+    \item \textbf{H2.5}: Aggressive mitigation reduces governance throughput (lower pass rates)
+\end{itemize}
+
+\subsection{Metrics}
+
+Primary metrics for RQ2:
+
+\begin{description}
+    \item[Whale Influence] Top-10 share of voting power
+    \item[Nakamoto Coefficient] Minimum actors for majority control
+    \item[Voting Power Gini] Inequality in effective voting weights
+    \item[Capture Risk Score] Composite metric combining above
+    \item[Pass Rate] Governance throughput indicator
+    \item[Quorum Rate] Whether mitigation harms turnout
+\end{description}
+
+\subsection{Statistical Analysis}
+
+\subsubsection{Factorial ANOVA}
+
+We test main effects and interactions:
+\begin{equation}
+Y = \mu + \alpha_{\text{cap}} + \beta_{\text{quad}} + \gamma_{\text{vel}} + (\alpha\beta) + (\alpha\gamma) + (\beta\gamma) + (\alpha\beta\gamma) + \epsilon
+\end{equation}
+
+\subsubsection{Effect Size}
+
+Partial $\eta^2$ for each factor:
+\begin{equation}
+\eta^2_p = \frac{SS_{\text{effect}}}{SS_{\text{effect}} + SS_{\text{error}}}
+\end{equation}
+
+\subsubsection{Pareto Frontier}
+
+We identify configurations on the Pareto frontier of:
+\begin{itemize}
+    \item Capture resistance (minimize whale influence)
+    \item Governance efficiency (maximize pass rate)
+\end{itemize}

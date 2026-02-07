@@ -1,0 +1,53 @@
+% RQ1 Introduction: Participation Dynamics
+
+\subsection{Motivation}
+
+Voter participation is the lifeblood of decentralized governance. Yet across deployed DAOs, turnout rates consistently fall below 10\%, with many proposals failing to reach quorum despite broad community support \citep{deepdao2023analytics, snapshot2021governance}. This participation crisis threatens the fundamental promise of DAOs: that collective decision-making can be distributed across stakeholders rather than concentrated in a few active participants.
+
+The causes of low participation are multifaceted. Voting requires attention---a scarce resource in an ecosystem with thousands of active DAOs. The costs of participation (research time, gas fees, opportunity costs) often exceed perceived benefits, especially for small token holders whose individual votes have negligible impact on outcomes. Rational apathy becomes self-reinforcing: as turnout drops, remaining voters gain disproportionate influence, further discouraging marginal participants.
+
+DAO designers face a fundamental tension: setting quorum thresholds high enough to ensure legitimacy while keeping them achievable given realistic participation rates. Get this wrong, and governance either becomes captured by a small elite (quorum too low) or grinds to a halt (quorum too high).
+
+\subsection{Research Question}
+
+This paper addresses a central question in DAO governance design:
+
+\begin{quote}
+\textbf{RQ1:} How do participation incentives and calibration targets affect voter turnout and retention in DAO governance?
+\end{quote}
+
+Specifically, we investigate:
+\begin{enumerate}
+    \item How do different participation target rates affect realized turnout?
+    \item What is the relationship between quorum thresholds and proposal pass rates?
+    \item How does voter fatigue accumulate over time, and what factors accelerate or mitigate it?
+    \item What calibration strategies maximize long-term governance health?
+\end{enumerate}
+
+\subsection{Approach}
+
+We employ multi-agent simulation to systematically explore the parameter space of participation dynamics. Our framework models:
+
+\begin{itemize}
+    \item \textbf{Heterogeneous agents}: Participants with varying participation propensities, token holdings, and attention capacities
+    \item \textbf{Fatigue dynamics}: Cumulative voting burden that reduces participation over time
+    \item \textbf{Incentive structures}: Configurable participation targets and quorum requirements
+    \item \textbf{Realistic distributions}: Power-law token allocations matching empirical DAO data
+\end{itemize}
+
+Through Monte Carlo simulation with systematic parameter sweeps, we generate statistically robust insights into participation dynamics that would be difficult or impossible to observe in deployed systems.
+
+\subsection{Contributions}
+
+This paper makes the following contributions:
+
+\begin{enumerate}
+    \item \textbf{Empirical characterization} of the participation-quorum relationship through controlled simulation experiments
+    \item \textbf{Fatigue modeling} that captures the temporal dynamics of voter engagement and burnout
+    \item \textbf{Calibration guidelines} for setting sustainable quorum thresholds based on expected participation
+    \item \textbf{Open-source tooling} enabling practitioners to simulate their own governance configurations
+\end{enumerate}
+
+\subsection{Paper Organization}
+
+Section~\ref{sec:background} reviews related work on DAO participation and voting behavior. Section~\ref{sec:theory} develops our theoretical framework for participation dynamics. Section~\ref{sec:architecture} describes the simulation architecture. Section~\ref{sec:methodology} details experimental design. Section~\ref{sec:results} presents findings. Section~\ref{sec:discussion} interprets results and derives practical implications. Section~\ref{sec:conclusion} concludes.

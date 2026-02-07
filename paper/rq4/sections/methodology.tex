@@ -1,0 +1,126 @@
+% RQ4 Methodology: Treasury Resilience Experiments
+
+\subsection{Experimental Design}
+
+We conduct a factorial experiment varying three treasury policy parameters:
+
+\begin{table}[htbp]
+\centering
+\caption{RQ4 Experiment configuration (Experiment 06)}
+\label{tab:rq4-experiment}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Factor & Levels & Values & Description \\
+\midrule
+Buffer fraction & 4 & 0\%, 10\%, 20\%, 30\% & Reserved portion \\
+Spending limit & 3 & None, 5\%, 2\% of treasury & Per-period cap \\
+Top-up mode & 3 & None, Revenue divert, Freeze & Emergency mechanism \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Total configurations: 12 (4 buffer $\times$ 3 spending limit, with top-up as modifier)
+
+Each configuration runs 25 times with different seeds.
+
+Total runs: 300
+
+\subsection{Parameter Selection}
+
+\subsubsection{Buffer Fraction Levels}
+
+\begin{itemize}
+    \item \textbf{0\%}: No reserve; all treasury available for spending
+    \item \textbf{10\%}: Light buffer; protection against small shocks
+    \item \textbf{20\%}: Moderate buffer; standard corporate practice parallel
+    \item \textbf{30\%}: Conservative buffer; substantial protection but idle capital
+\end{itemize}
+
+\subsubsection{Spending Limit Levels}
+
+\begin{itemize}
+    \item \textbf{None}: Unlimited spending (subject to treasury availability)
+    \item \textbf{5\% of treasury per period}: Moderate limit
+    \item \textbf{2\% of treasury per period}: Conservative limit
+\end{itemize}
+
+\subsubsection{Top-Up Modes}
+
+\begin{itemize}
+    \item \textbf{None}: No emergency mechanism; buffer depletes without restoration
+    \item \textbf{Revenue divert}: Redirect incoming revenue to restore buffer
+    \item \textbf{Spending freeze}: Halt discretionary spending until buffer restored
+\end{itemize}
+
+\subsection{Market Conditions}
+
+We simulate three market regimes:
+
+\begin{table}[htbp]
+\centering
+\caption{Market regime parameters}
+\label{tab:market-regimes}
+\begin{tabular}{lcc}
+\toprule
+Regime & Drift ($\mu$) & Volatility ($\sigma$) \\
+\midrule
+Bull & +0.05\%/day & 2\%/day \\
+Bear & -0.05\%/day & 4\%/day \\
+Stable & 0\%/day & 1\%/day \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Regime changes occur stochastically (5\% probability per period).
+
+\subsection{Baseline Configuration}
+
+Common baseline:
+
+\begin{itemize}
+    \item Initial treasury: 10,000 units (normalized)
+    \item Token concentration: 70\% native token, 30\% stablecoin
+    \item Revenue rate: 0.5\% of treasury per period (average)
+    \item Proposal spending demand: 1-3\% of treasury per period
+    \item Simulation length: 2,000 steps
+\end{itemize}
+
+\subsection{Hypotheses}
+
+\begin{itemize}
+    \item \textbf{H4.1}: Higher buffer fractions reduce treasury volatility
+    \item \textbf{H4.2}: Spending limits extend runway but reduce proposal throughput
+    \item \textbf{H4.3}: Emergency top-ups reduce maximum drawdown severity
+    \item \textbf{H4.4}: Buffer effectiveness depends on market regime (more valuable in bear markets)
+\end{itemize}
+
+\subsection{Metrics}
+
+Primary metrics for RQ4:
+
+\begin{description}
+    \item[Final Treasury] Value at simulation end
+    \item[Volatility] Standard deviation of treasury value
+    \item[Max Drawdown] Largest peak-to-trough decline
+    \item[Runway] Average periods until depletion (if applicable)
+    \item[Top-up Frequency] Number of emergency top-up events
+    \item[Proposal Throughput] Proposals funded per period
+\end{description}
+
+\subsection{Statistical Analysis}
+
+\subsubsection{Regression Analysis}
+
+Model treasury outcomes as function of policy parameters:
+
+\begin{equation}
+\text{Outcome} = \beta_0 + \beta_1 \cdot \text{buffer} + \beta_2 \cdot \text{limit} + \beta_3 \cdot \text{top-up} + \epsilon
+\end{equation}
+
+\subsubsection{Regime-Conditional Analysis}
+
+Compare policy effectiveness across market regimes using interaction terms.
+
+\subsubsection{Survival Analysis}
+
+Model time-to-depletion as function of policy parameters using Cox proportional hazards.

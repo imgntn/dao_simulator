@@ -1,5 +1,5 @@
-% arxiv-style paper for DAO Governance Simulation Research
-% Sections are auto-updated from experiments
+% RQ4: Treasury Resilience in DAO Governance
+% Standalone paper derived from main research
 \documentclass[11pt]{article}
 
 % ============================================================================
@@ -7,7 +7,7 @@
 % ============================================================================
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}   % Scalable fonts required for microtype expansion
+\usepackage{lmodern}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
@@ -26,18 +26,17 @@
 \usepackage{tikz}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
-\usepackage{microtype}  % Enables font expansion with scalable fonts
+\usepackage{microtype}
 \usepackage{xspace}
 
 \geometry{margin=1in}
 
 % ============================================================================
-% METADATA - AUTO-UPDATED
+% METADATA
 % ============================================================================
 \newcommand{\paperstatus}{DRAFT}
 \newcommand{\lastupdate}{\today}
-\newcommand{\experimentcount}{20}  % AUTO: updated by pipeline
-\newcommand{\totalruns}{15257}        % AUTO: updated by pipeline
+\newcommand{\experimentruns}{300}  % Experiment 06
 
 % ============================================================================
 % CUSTOM COMMANDS
@@ -48,36 +47,30 @@
 \newcommand{\eg}{\textit{e.g.}\@\xspace}
 \newcommand{\cf}{\textit{cf.}\@\xspace}
 \newcommand{\etal}{\textit{et al.}}
-
-% Auto-generated content markers
-\newcommand{\autogen}[1]{\textcolor{blue}{[AUTO: #1]}}
-\newcommand{\placeholder}[1]{\textcolor{gray}{[PLACEHOLDER: #1]}}
-\newcommand{\pl}[1]{\textcolor{gray}{#1}}  % Short placeholder for tables
+\newcommand{\pl}[1]{\textcolor{gray}{#1}}
 
 % ============================================================================
 % TITLE
 % ============================================================================
 \title{
-    \textbf{Emergent Governance Dynamics in Decentralized Autonomous Organizations:}\\
-    \large A Multi-Agent Simulation Framework for Mechanism Design Analysis
+    \textbf{Treasury Resilience in Decentralized Autonomous Organizations:}\\
+    \large Buffer Policies, Emergency Reserves, and Fiscal Sustainability
 }
 
 \author{
     James Pollack\\
     Independent Researcher\\
-    \texttt{james@jamesbpollack.com}\\
-    \texttt{https://github.com/imgntn/dao\_simulator}
+    \texttt{james@jamesbpollack.com}
 }
 
 \date{
     Last Updated: \lastupdate\\
-    \small Status: \paperstatus{} | Experiments: \experimentcount{} | Total Runs: \totalruns{}
+    \small Status: \paperstatus{} | Simulation Runs: \experimentruns{}
 }
 
 % ============================================================================
 % DOCUMENT
 % ============================================================================
-
 \tolerance=1000
 \emergencystretch=0.5em
 
@@ -92,7 +85,7 @@
 \input{sections/abstract}
 \end{abstract}
 
-\textbf{Keywords:} Decentralized Autonomous Organizations, Multi-Agent Systems, Mechanism Design, Computational Social Choice, Agent-Based Modeling, Governance Simulation
+\textbf{Keywords:} DAO Treasury, Fiscal Resilience, Buffer Reserves, Treasury Management, Organizational Sustainability
 
 % ============================================================================
 % MAIN CONTENT
@@ -126,10 +119,6 @@
 \label{sec:discussion}
 \input{sections/discussion}
 
-\section{Limitations \& Future Work}
-\label{sec:limitations}
-\input{sections/limitations}
-
 \section{Conclusion}
 \label{sec:conclusion}
 \input{sections/conclusion}
@@ -141,26 +130,5 @@
 \begin{raggedright}
 \bibliography{references}
 \end{raggedright}
-
-% ============================================================================
-% APPENDICES
-% ============================================================================
-\appendix
-
-\section{Experiment Configurations}
-\label{app:configs}
-\input{sections/appendix_configs}
-
-\section{Statistical Analysis Details}
-\label{app:statistics}
-\input{sections/appendix_stats}
-
-\section{Reproducibility Manifest}
-\label{app:reproducibility}
-\input{sections/appendix_reproducibility}
-
-\section{RQ Checklist}
-\label{app:rq-checklist}
-\input{sections/appendix_rq_checklist}
 
 \end{document}

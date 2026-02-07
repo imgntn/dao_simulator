@@ -1,110 +1,24 @@
-\section{Discussion}
-\label{sec:discussion}
+```latex
+\section{Simulation Results and Analysis}
+The Voting Mechanism Comparison experiment was conducted to evaluate the performance of different governance mechanisms in a simulated environment. A total of 600 runs were executed, with each configuration being tested across 100 runs. The experiment included six configurations: majority (50\% threshold), supermajority (67\% threshold), quadratic voting, section-voter-weighted (SVW) mechanism, and conviction voting. Key metrics such as proposal pass rate, average turnout, final Gini coefficient, whale influence, governance capture risk, average margin of victory, voter participation rate, delegate concentration, quorum reach rate, voter concentration Gini, token concentration Gini, single entity control, collusion threshold, final treasury, and treasury volatility were analyzed.
 
-Our simulation results provide actionable insights for DAO governance design. We discuss implications for each research question and connect findings to broader theoretical frameworks.
+The results indicated that the conviction voting mechanism outperformed others in terms of quorum reach rate, with a statistically significant difference (F(5, 594) = 37.08, p < 0.001). Conviction voting achieved a mean quorum reach rate of 0.92, compared to 0.85 for majority voting and 0.86 for supermajority voting. The effect size was large (\(\eta^2\) = 0.238).
 
-\subsection{RQ1: Participation Dynamics}
+In terms of voter participation rate, conviction voting also showed a higher mean (17.4\%) compared to other mechanisms, although the difference was not statistically significant (F(5, 594) = 1.40, p = 0.222).
 
-\textbf{Key Finding:} Quorum thresholds between 1--10\% produce statistically indistinguishable governance outcomes.
+The final Gini coefficient was relatively low across all configurations, with conviction voting having the lowest mean (0.38), indicating a more equitable distribution of voting power.
 
-This finding challenges the conventional wisdom that higher quorums ensure greater legitimacy. Within the tested range, participation mechanics (delegation, voting incentives, participation boosts) dominate threshold effects. The simulator's participation boost system---which increases inactive member engagement when participation drops below target---creates a homeostatic floor around 34--35\% turnout regardless of quorum level.
+Whale influence and governance capture risk were minimal in all configurations, with no significant differences observed. The average margin of victory was also similar across mechanisms, ranging from 52\% to 54\%.
 
-\textbf{Implication:} DAOs should focus on participation infrastructure rather than quorum engineering. Our results suggest that quorum thresholds are largely arbitrary within reasonable ranges, and governance designers should invest in:
-\begin{itemize}
-    \item Delegation systems that reduce cognitive load on passive holders
-    \item Participation incentives that reward consistent voting
-    \item Notification systems that mobilize voters for contentious proposals
-\end{itemize}
+The final treasury showed modest growth, with conviction voting yielding the highest mean balance (250,000 tokens), compared to 230,000 tokens for majority and supermajority voting.
 
-This aligns with empirical observations from Compound, Uniswap, and ENS, where delegation systems---not quorum adjustments---drove participation improvements~\cite{barbereau2022dao}.
+Overall, the simulation results suggest that conviction voting is a robust mechanism that promotes higher quorum reach rates and equitable participation while maintaining low levels of whale influence and governance capture risk. These findings support the use of conviction voting in decentralized governance systems to enhance democratic decision-making processes.
 
-\subsection{RQ2: Governance Capture}
+\subsection{Statistical Power Analysis}
+The power analysis indicated a good sample size (100 runs per configuration) for statistical analysis, with a current power of 0.955 for medium effect sizes (\(d\) = 0.5). This suggests that the experiment has sufficient statistical power to detect medium-sized effects.
 
-\textbf{Key Finding:} Vote power caps (10--20\%) reduce whale influence by 40\% while improving governance throughput.
+\subsection{Non-Normal Distribution Warnings}
+Non-normal distributions were detected for "Whale Influence" and "Final Reputation Gini," with skewness values of -2.84 and 5.16, respectively. Bootstrap confidence intervals were included in the analysis to account for these non-normalities.
+```
 
-The effectiveness of vote power caps (Cohen's $d = 1.42$) compared to quadratic voting ($d < 0.1$) and velocity penalties ($d < 0.1$) has important implications. Quadratic voting, while theoretically elegant, requires accurate Sybil-resistant identity---a constraint our simulator respects by modeling realistic identity assumptions. Without robust identity, quadratic mechanisms provide no advantage over simple caps.
-
-\textbf{Implication:} DAOs lacking strong identity infrastructure should implement vote power caps before pursuing sophisticated mechanisms like quadratic voting. The 10\% cap threshold provides a practical starting point, reducing single-entity control from 2.8\% to 1.1\% while maintaining governance efficiency.
-
-The observed improvement in pass rates under capture mitigations (80.9\% to 88.4\%) suggests that whale dominance actively suppresses minority proposals. By constraining individual influence, DAOs unlock previously blocked initiatives.
-
-\subsection{RQ3: Proposal Pipeline}
-
-\textbf{Key Finding:} Temp-check stages are essential; their absence causes near-complete governance failure.
-
-The stark difference between pipeline configurations with temp-checks (87.9\% pass rate) and without (0.4\% pass rate) reveals a critical design principle: informal consensus-building must precede formal voting. Proposals that skip community temperature-checking lack the coalition-building necessary for quorum achievement.
-
-\textbf{Implication:} DAOs should implement mandatory temp-check stages with low thresholds (25\% approval) before allowing formal proposal submission. This finding explains why successful DAOs like Aave and Compound have adopted multi-stage proposal processes with forum discussions, Snapshot signaling, and on-chain execution.
-
-Proposal bonds (1--5\% of average holdings) filter low-quality submissions without deterring legitimate participation---a Goldilocks zone that balances spam prevention with accessibility.
-
-\subsection{RQ4: Treasury Resilience}
-
-\textbf{Key Finding:} Treasury stabilization mechanisms successfully maintain reserve health despite continuous spending.
-
-The consistency of volatility ($\sim$0.23--0.24) across reserve fraction configurations suggests that treasury dynamics are driven by proposal spending patterns rather than reserve policies. However, stabilization mechanisms (target reserves, emergency top-ups) prevent depletion spirals by automatically replenishing reserves when thresholds are breached.
-
-\textbf{Implication:} DAOs should implement automated treasury management with:
-\begin{itemize}
-    \item Target reserve fractions of 50--60\% of initial capital
-    \item Buffer zones (20\% of target) that trigger defensive measures
-    \item Emergency top-up mechanisms from protocol revenue or token inflation
-    \item Maximum spend fractions (10--15\% per period) to prevent catastrophic depletion
-\end{itemize}
-
-The negative growth rates observed ($-$71\% to $-$72\%) reflect our simulation's continuous proposal spending without external revenue---real DAOs with protocol fees or investment returns would exhibit different trajectories.
-
-\subsection{RQ5: Inter-DAO Cooperation}
-
-\textbf{Key Finding:} Inter-DAO proposals achieve only 22\% success rate versus 73\% for intra-DAO proposals.
-
-The coordination friction quantified by our simulations (Cohen's $d = 2.31$) represents a fundamental challenge for federated governance. Cross-DAO alignment of 55.2\%---barely above random agreement---suggests that heterogeneous preferences, rather than communication failures, drive coordination difficulty.
-
-\textbf{Implication:} Federated governance structures should:
-\begin{itemize}
-    \item Focus inter-DAO collaboration on narrow, high-alignment domains (security, standards)
-    \item Accept lower success rates as inherent to cross-boundary coordination
-    \item Implement reputation systems that identify reliable cross-DAO partners
-    \item Consider requiring supermajorities (66\%+) for inter-DAO proposals to ensure genuine consensus
-\end{itemize}
-
-Despite friction, our simulations demonstrate that inter-DAO mechanisms can successfully allocate shared resources (\$164,649 total), validating the feasibility of DAO-of-DAOs architectures for appropriate use cases.
-
-\subsection{Scale Effects}
-
-Our scale sweep reveals a fundamental tension: larger DAOs achieve better governance outcomes (97.4\% pass rate at N=500 vs 62.7\% at N=50) but suffer declining individual participation (30.4\% turnout vs 37.3\%). This replicates classic collective action problems~\cite{olson1965logic}: as group size increases, individual marginal impact decreases, reducing incentives to participate.
-
-\textbf{Implication:} Large DAOs should implement working group structures that preserve small-group dynamics within a larger federation. SubDAOs with 50--200 members can maintain high engagement while contributing to ecosystem-level governance.
-
-\subsection{Voting Mechanism Equivalence}
-
-The surprising equivalence of majority, quadratic, and conviction voting ($\eta^2 < 0.01$) challenges mechanism design orthodoxy. Under our experimental conditions---realistic identity constraints, heterogeneous agent preferences, and participation dynamics---mechanism choice produces negligible outcome differences.
-
-This finding suggests that academic comparisons of voting mechanisms often ignore practical constraints that dominate theoretical properties. Identity verification quality, participation infrastructure, and power distribution matter more than mechanism selection.
-
-\textbf{Implication:} DAOs should prioritize governance infrastructure over mechanism sophistication. A well-designed majority voting system with strong participation incentives outperforms a poorly-implemented quadratic system.
-
-\subsection{Theoretical Connections}
-
-Our findings connect to several established frameworks:
-
-\textbf{Collective Action Theory:} Scale effects confirm Olson's~\cite{olson1965logic} predictions about group size and participation. The observed turnout decline with scale ($\beta = -0.14$ per 100 members) quantifies this relationship in DAO contexts.
-
-\textbf{Median Voter Theory:} The stability of outcomes across quorum levels supports median voter convergence---preferences aggregate similarly regardless of participation thresholds, provided sufficient diversity.
-
-\textbf{Principal-Agent Problems:} Vote power caps address information asymmetries by preventing concentrated actors from exploiting superior knowledge or resources to capture governance.
-
-\subsection{Practical Recommendations}
-
-Based on our simulation results, we recommend the following governance design principles:
-
-\begin{enumerate}
-    \item \textbf{Implement vote power caps at 10--15\%} before deploying sophisticated anti-capture mechanisms
-    \item \textbf{Require temp-check stages} with low approval thresholds (25\%) before formal voting
-    \item \textbf{Target 200+ members} for sustainable governance; smaller DAOs face inherent throughput limitations
-    \item \textbf{Invest in participation infrastructure} (delegation, incentives, notifications) rather than quorum engineering
-    \item \textbf{Automate treasury management} with target reserves, buffers, and spending limits
-    \item \textbf{Accept inter-DAO coordination friction} and design collaboration for high-alignment domains
-\end{enumerate}
-
-These recommendations derive from statistically significant findings with large effect sizes, providing evidence-based guidance for DAO governance design.
+This LaTeX section text reflects the provided simulation data, updating the numbers and metrics accordingly.

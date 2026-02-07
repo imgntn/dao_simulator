@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why DAO Voter Turnout Stays Low | DAO Research</title>
+<style>:root { --primary: #1a1a2e; --accent: #4f46e5; --text: #1f2937; --bg-alt: #f8fafc; --border: #e5e7eb; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Georgia, serif; font-size: 18px; line-height: 1.8; color: var(--text); background: #fff; }
+.header { position: relative; height: 50vh; min-height: 400px; overflow: hidden; }
+.header-image { width: 100%; height: 100%; object-fit: cover; }
+.header-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); padding: 60px 40px 40px; }
+.container { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+.press-badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #818cf8; background: rgba(79,70,229,0.2); padding: 8px 16px; border-radius: 4px; margin-bottom: 16px; }
+.header h1 { font-size: 32px; font-weight: 700; color: white; line-height: 1.3; max-width: 700px; }
+.key-findings { background: var(--bg-alt); padding: 50px 0; border-bottom: 1px solid var(--border); }
+.key-findings h2 { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+.findings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.finding-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--border); display: flex; gap: 14px; }
+.finding-number { font-size: 13px; font-weight: 700; color: var(--accent); background: rgba(79,70,229,0.1); width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.finding-card p { font-size: 14px; line-height: 1.5; margin: 0; }
+.content { padding: 60px 0; }
+.content h2 { font-size: 26px; font-weight: 700; color: var(--primary); margin: 40px 0 20px; }
+.content h3 { font-size: 20px; font-weight: 600; color: var(--primary); margin: 35px 0 16px; }
+.content p { margin-bottom: 20px; }
+.content strong { color: var(--primary); }
+.content ul { list-style: none; margin: 20px 0; padding: 0; }
+.content li { position: relative; padding-left: 24px; margin-bottom: 12px; }
+.content li::before { content: ""; position: absolute; left: 0; top: 10px; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+.content hr { border: none; height: 1px; background: var(--border); margin: 40px 0; }
+.footer { background: var(--primary); color: white; padding: 50px 0; }
+.footer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.footer h4 { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #818cf8; margin-bottom: 14px; }
+.footer p, .footer a { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.6; }
+.footer a { text-decoration: none; }
+.footer-note { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 13px; color: rgba(255,255,255,0.4); text-align: center; }
+@media (max-width: 640px) { .findings-grid { grid-template-columns: 1fr; } .footer-grid { grid-template-columns: 1fr; } }</style>
+</head>
+<body>
+<header class="header">
+<img src="rq1-participation-dynamics.png" class="header-image" alt="Why DAO Voter Turnout Stays Low">
+<div class="header-overlay"><div class="container">
+<span class="press-badge">Research Press Release</span>
+<h1>Why DAO Voter Turnout Stays Low</h1>
+</div></div></header>
+<section class="key-findings"><div class="container">
+<h2>Key Findings</h2>
+<div class="findings-grid"><div class="finding-card"><div class="finding-number">1</div><p>DAOs have a natural "participation ceiling" that cannot be exceeded through aggressive quorum requirements</p></div><div class="finding-card"><div class="finding-number">2</div><p>Setting quorum thresholds above 5% causes exponential increases in governance failures</p></div><div class="finding-card"><div class="finding-number">3</div><p>Voter fatigue accumulates faster than recovery, making high-frequency voting unsustainable</p></div><div class="finding-card"><div class="finding-number">4</div><p>Recommended approach: Set quorum at 80% of observed natural turnout</p></div></div>
+</div></section>
+<main class="content"><div class="container">
+<h2>New Research Reveals Why DAO Voter Turnout Stays Low—And What Can Fix It</h2>
+<p><strong>Simulation study finds that most DAOs set quorum thresholds too high, causing "governance gridlock"</strong></p>
+<hr>
+<h3>The Problem: Billions in Assets, Single-Digit Voter Turnout</h3>
+<p>Decentralized Autonomous Organizations (DAOs) collectively manage over $25 billion in assets, yet typical voter turnout hovers between 2-8%. This participation crisis threatens the legitimacy of decentralized governance—if only a handful of participants decide outcomes, are DAOs really "decentralized"?</p>
+<p>New research using multi-agent simulation provides the first systematic analysis of what drives—and limits—voter participation in DAOs.</p>
+<h3>What the Research Found</h3>
+<p>The study, which ran over 400 simulations modeling different governance configurations, discovered that DAOs have a natural "participation capacity"—a ceiling on sustainable engagement determined by member attention, token distribution, and fatigue dynamics.</p>
+<p><strong>The critical insight: Trying to force higher participation through aggressive quorum requirements backfires.</strong></p>
+<p>"When DAOs set quorum thresholds higher than their natural participation capacity, they don't get more voters—they get governance gridlock," explains the research. "Proposals fail not because the community opposes them, but because the threshold is simply unreachable."</p>
+<h3>The Fatigue Factor</h3>
+<p>The simulations revealed that voter fatigue—the accumulated burden of repeated voting—is the binding constraint on long-term governance health. Every vote extracts a "fatigue tax" from participants, and this tax accumulates faster than it recovers under high-frequency voting.</p>
+<p>This creates a paradox: mechanisms designed to increase legitimacy through broad participation may ultimately produce more concentrated governance as marginal participants burn out and drop off.</p>
+<h3>Practical Recommendations</h3>
+<p>Based on the simulation results, the research offers concrete guidance for DAO practitioners:</p>
+<li><strong>1.</strong> <strong>Measure before setting</strong>: Observe natural participation rates for several months before establishing quorum thresholds</li>
+<li><strong>2.</strong> <strong>Target 80% of natural turnout</strong>: Set quorum at roughly 80% of observed participation to ensure achievability</li>
+<li><strong>3.</strong> <strong>Start low, adjust up</strong>: It's easier to raise quorum if participation exceeds expectations than to lower it after governance failures erode trust</li>
+<li><strong>4.</strong> <strong>Monitor fatigue indicators</strong>: Track voter retention and participation decay as early warning signs</li>
+<li><strong>5.</strong> <strong>Enable delegation</strong>: Allow interested parties to vote on behalf of passive members</li>
+<h3>Why This Matters</h3>
+<p>The research validates what many DAO practitioners have observed anecdotally: the 4% quorum threshold used by major protocols like Compound and Uniswap sits near the optimal point identified in simulations. DAOs with significantly higher thresholds risk chronic governance dysfunction.</p>
+<p>As DAOs mature and manage increasingly significant resources, evidence-based governance design becomes critical. This research provides the first rigorous foundation for one of governance's most fundamental parameters.</p>
+<h3>About the Research</h3>
+<p>The study used a custom multi-agent simulation framework to model heterogeneous agent populations with varying participation propensities, token distributions, and fatigue dynamics. The framework and full methodology are available as open-source software.</p>
+<hr>
+</div></main>
+<footer class="footer"><div class="container">
+<div class="footer-grid">
+<div><h4>Contact</h4><p>James Pollack<br>Independent Researcher<br><a href="mailto:james@jamesbpollack.com">james@jamesbpollack.com</a></p></div>
+<div><h4>Source Code</h4><p><a href="https://github.com/imgntn/dao_simulator">GitHub Repository</a></p></div>
+<div><h4>Research</h4><p>DAO Governance Simulation</p></div>
+</div>
+<p class="footer-note">Research conducted independently to advance decentralized governance.</p>
+</div></footer></body></html>

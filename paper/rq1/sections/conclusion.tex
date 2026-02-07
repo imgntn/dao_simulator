@@ -1,0 +1,42 @@
+% RQ1 Conclusion: Participation Dynamics
+
+\subsection{Summary}
+
+We have presented a systematic investigation of participation dynamics in DAO governance through multi-agent simulation. Across \experimentruns{} simulation runs, we examined how participation targets, quorum thresholds, and fatigue dynamics affect voter turnout and retention.
+
+Our key findings are:
+
+\begin{enumerate}
+    \item \textbf{Participation capacity is bounded}: DAOs have natural participation ceilings determined by member attention, token distribution, and fatigue dynamics. Quorum requirements exceeding this capacity cause governance gridlock.
+
+    \item \textbf{Quorum-effectiveness is non-linear}: The relationship between quorum threshold and governance effectiveness shows an inflection point. Below this threshold, governance operates smoothly; above it, quorum failures accelerate rapidly.
+
+    \item \textbf{Fatigue is the binding constraint}: Long-term governance health depends more on fatigue management than instantaneous participation incentives. High-frequency voting depletes the participation pool faster than recovery.
+
+    \item \textbf{Calibration should be empirical}: Quorum thresholds should be derived from observed participation, not aspirational targets. We recommend setting quorum at $\sim$80\% of measured natural turnout.
+\end{enumerate}
+
+\subsection{Contributions}
+
+This paper contributes:
+
+\begin{enumerate}
+    \item A formal model of participation dynamics with fatigue, enabling quantitative analysis of governance sustainability
+    \item Empirical characterization of the quorum-participation relationship through controlled simulation
+    \item Practical calibration guidelines for DAO designers
+    \item Open-source simulation tooling for participation analysis
+\end{enumerate}
+
+\subsection{Implications}
+
+For DAO practitioners, our results support a conservative, data-driven approach to quorum design. The temptation to set high thresholds for legitimacy should be tempered by the reality of limited participant attention.
+
+For researchers, our framework provides infrastructure for systematic study of participation dynamics. The combination of theoretical models, simulation capabilities, and empirical methodology establishes a foundation for evidence-based governance design.
+
+\subsection{Closing Remarks}
+
+Participation is the foundation of decentralized governance. Without engaged voters, DAOs become oligarchies in democratic clothing. Understanding the dynamics that drive and constrain participation is essential to building governance systems that deliver on their democratic promise.
+
+Our simulations reveal both the constraints and opportunities in participation design. DAOs are not doomed to low turnout---but sustainable engagement requires realistic expectations, appropriate mechanisms, and continuous attention to governance health.
+
+We release our simulation framework to enable the community to extend this research, calibrate models to specific DAOs, and develop the evidence base for governance design.

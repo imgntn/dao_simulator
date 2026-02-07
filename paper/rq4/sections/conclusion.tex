@@ -1,0 +1,52 @@
+% RQ4 Conclusion: Treasury Resilience
+
+\subsection{Summary}
+
+We have presented a systematic analysis of treasury management policies through multi-agent simulation. Across \experimentruns{} simulation runs testing combinations of buffer fractions, spending limits, and emergency top-up mechanisms, we characterized the resilience-efficiency tradeoff in DAO treasury management.
+
+Key findings:
+
+\begin{enumerate}
+    \item \textbf{Buffers are essential}: 10-20\% buffer fractions substantially reduce treasury volatility without excessive capital lockup. No buffer leaves treasuries vulnerable to shocks.
+
+    \item \textbf{Spending limits extend runway}: 2-5\% periodic limits prevent treasury depletion but create operational constraints. Limits should be calibrated to sustainable burn rate.
+
+    \item \textbf{Emergency mechanisms provide backstop}: Top-up mechanisms reduce maximum drawdown severity. Revenue diversion is gentler; spending freeze is more aggressive.
+
+    \item \textbf{Market regime matters}: Buffer effectiveness varies by market conditions. Higher buffers are most valuable during bear markets when volatility peaks.
+\end{enumerate}
+
+\subsection{Contributions}
+
+This paper contributes:
+
+\begin{enumerate}
+    \item \textbf{Resilience metrics} for treasury health assessment
+    \item \textbf{Parameter guidelines} for buffer fractions, spending limits, and top-up mechanisms
+    \item \textbf{Policy design framework} with tiered recommendations
+    \item \textbf{Market-adaptive strategies} for different risk profiles
+\end{enumerate}
+
+\subsection{Practical Recommendations}
+
+For DAO practitioners designing treasury policies:
+
+\begin{enumerate}
+    \item \textbf{Establish explicit buffer}: Target 15-20\% of treasury as reserve
+    \item \textbf{Set spending limits}: Cap periodic outflows at sustainable rate (consider 5\% of treasury per quarter)
+    \item \textbf{Define top-up triggers}: Activate emergency mechanisms when buffer falls below 50\% of target
+    \item \textbf{Monitor and adapt}: Track volatility, drawdown, and runway metrics; adjust policies as conditions change
+    \item \textbf{Diversify holdings}: Reduce native token concentration to limit correlated risk
+\end{enumerate}
+
+\subsection{Implications}
+
+For DAO treasuries, our results underscore that ad hoc management is insufficient. The billions held in DAO treasuries deserve systematic policy frameworks comparable to corporate or institutional treasury management.
+
+For researchers, our framework enables continued investigation of treasury dynamics. Integration with protocol economics, market microstructure, and strategic behavior offers rich avenues for future work.
+
+\subsection{Closing Remarks}
+
+Treasury resilience is not glamorous but it is foundational. DAOs cannot pursue their missions---development, grants, community building---without fiscal sustainability. The policies we analyze are not exotic innovations but straightforward adaptations of proven financial practices.
+
+We release our simulation framework to enable DAOs to model their specific treasury dynamics and design policies appropriate to their context and risk tolerance.

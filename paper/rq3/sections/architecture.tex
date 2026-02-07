@@ -1,0 +1,137 @@
+% RQ3 Architecture: Pipeline Simulation
+
+\subsection{System Overview}
+
+Our simulation framework models multi-stage proposal pipelines with configurable gates, timers, and expedited paths. The architecture supports:
+
+\begin{enumerate}
+    \item \textbf{Stage definitions}: Arbitrary number of pipeline stages
+    \item \textbf{Gate conditions}: Thresholds for advancing to next stage
+    \item \textbf{Time limits}: Per-stage and total proposal lifetime
+    \item \textbf{Fast-track paths}: Conditional stage skipping
+\end{enumerate}
+
+\subsection{Pipeline Implementation}
+
+\subsubsection{Stage Configuration}
+
+\begin{lstlisting}[caption=Pipeline stage configuration (pseudocode)]
+pipeline:
+  stages:
+    - name: "temp-check"
+      duration: 3  # days
+      threshold: 0.3  # 30% support to advance
+      required: true/false
+    - name: "formal-vote"
+      duration: 7
+      quorum: 0.04
+      threshold: 0.5
+    - name: "timelock"
+      duration: 2
+\end{lstlisting}
+
+\subsubsection{Proposal State Machine}
+
+\begin{lstlisting}[caption=Proposal state machine (pseudocode)]
+class Proposal:
+    state: DRAFT | TEMP_CHECK | VOTING | TIMELOCK |
+           PASSED | FAILED | EXPIRED | ABANDONED
+
+    def advance(self):
+        if self.age > self.expiry_window:
+            self.state = EXPIRED
+            return
+
+        if self.current_stage.complete():
+            if self.meets_threshold():
+                self.state = self.next_stage()
+            else:
+                self.state = FAILED
+\end{lstlisting}
+
+\subsection{Temp-Check Simulation}
+
+Temp-checks are modeled as preliminary votes with:
+\begin{itemize}
+    \item Lower participation (subset of full voting population)
+    \item Noisy signal (correlation $\rho$ with formal vote outcome)
+    \item Configurable threshold for advancement
+\end{itemize}
+
+\begin{lstlisting}[caption=Temp-check simulation (pseudocode)]
+def simulate_temp_check(proposal, agents, config):
+    # Only fraction of agents participate in temp-check
+    participants = sample(agents, config.temp_check_turnout)
+
+    support = 0
+    for agent in participants:
+        # Noisy version of true preference
+        signal = agent.preference(proposal) + noise()
+        if signal > 0:
+            support += agent.voting_power
+
+    support_fraction = support / sum(a.voting_power for a in participants)
+    return support_fraction > config.temp_check_threshold
+\end{lstlisting}
+
+\subsection{Fast-Track Implementation}
+
+Proposals may qualify for fast-track based on early support:
+
+\begin{lstlisting}[caption=Fast-track qualification (pseudocode)]
+def check_fast_track(proposal, config):
+    if not config.fast_track_enabled:
+        return False
+
+    early_support = proposal.get_support_at(config.fast_track_window)
+
+    if early_support > config.fast_track_threshold:
+        # Skip intermediate stages
+        proposal.stage = VOTING
+        proposal.voting_period = config.fast_track_voting_period
+        return True
+
+    return False
+\end{lstlisting}
+
+\subsection{Expiry and Abandonment}
+
+\subsubsection{Expiry Mechanics}
+
+Proposals exceeding total lifetime are marked expired:
+
+\begin{lstlisting}[caption=Expiry check (pseudocode)]
+def check_expiry(proposal, current_time, expiry_window):
+    if current_time - proposal.created_at > expiry_window:
+        proposal.state = EXPIRED
+        return True
+    return False
+\end{lstlisting}
+
+\subsubsection{Abandonment Modeling}
+
+Proposers may abandon based on momentum signals:
+
+\begin{lstlisting}[caption=Abandonment modeling (pseudocode)]
+def check_abandonment(proposal, config):
+    # Abandon if support trending down and below threshold
+    if proposal.support_trend < 0 and \
+       proposal.current_support < config.abandonment_threshold:
+        if random() < config.abandonment_probability:
+            proposal.state = ABANDONED
+            return True
+    return False
+\end{lstlisting}
+
+\subsection{Metrics Collection}
+
+Pipeline-specific metrics:
+
+\begin{description}
+    \item[Stage conversion rates] Fraction advancing at each gate
+    \item[Time in stage] Duration at each pipeline stage
+    \item[Fast-track rate] Fraction of proposals fast-tracked
+    \item[Expiry rate] Fraction expiring before resolution
+    \item[Abandonment rate] Fraction abandoned by proposer
+    \item[Total time-to-decision] Creation to resolution
+\end{description}

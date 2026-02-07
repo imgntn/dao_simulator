@@ -1,0 +1,139 @@
+% RQ5 Architecture: Multi-DAO Simulation
+
+\subsection{System Overview}
+
+Our simulation framework extends to multi-DAO scenarios with inter-organizational interactions. The architecture supports:
+
+\begin{enumerate}
+    \item \textbf{Multiple DAOs}: Independent governance systems
+    \item \textbf{Shared agents}: Members with positions in multiple DAOs
+    \item \textbf{Inter-DAO proposals}: Joint initiatives requiring multi-DAO approval
+    \item \textbf{Resource flows}: Treasury transfers between DAOs
+\end{enumerate}
+
+\subsection{Multi-DAO Implementation}
+
+\subsubsection{DAO City Model}
+
+We model a ``DAO City'' containing multiple interacting DAOs:
+
+\begin{lstlisting}[caption=DAO City model (pseudocode)]
+class DAOCity:
+    daos: List[DAO]  # Individual DAOs
+    agents: List[Agent]  # All agents (may be in multiple DAOs)
+    inter_dao_proposals: List[InterDAOProposal]
+    cooperation_graph: Graph  # Which DAOs cooperate
+
+    def step(self):
+        # Individual DAO steps
+        for dao in self.daos:
+            dao.step()
+
+        # Inter-DAO proposal processing
+        for proposal in self.inter_dao_proposals:
+            self.process_inter_dao_proposal(proposal)
+
+        # Resource flow execution
+        self.process_resource_flows()
+\end{lstlisting}
+
+\subsubsection{Agent Membership Model}
+
+Agents may participate in multiple DAOs:
+
+\begin{lstlisting}[caption=Multi-DAO agent model (pseudocode)]
+class Agent:
+    memberships: Dict[DAO, Membership]  # DAO -> tokens, delegation
+
+    def voting_power_in(self, dao):
+        if dao in self.memberships:
+            return self.memberships[dao].tokens
+        return 0
+
+    def aligned_with(self, other_agent, dao1, dao2):
+        # Shared membership creates alignment
+        return (dao1 in self.memberships and
+                dao1 in other_agent.memberships)
+\end{lstlisting}
+
+\subsection{Inter-DAO Proposal Implementation}
+
+\begin{lstlisting}[caption=Inter-DAO proposal (pseudocode)]
+class InterDAOProposal:
+    participating_daos: List[DAO]
+    contribution_shares: Dict[DAO, float]
+    approval_threshold: float  # Fraction that must approve
+
+    state: PENDING | APPROVED | FAILED
+
+    def check_approval(self):
+        approved_count = 0
+        for dao in self.participating_daos:
+            if dao.approved(self):
+                approved_count += 1
+
+        approval_rate = approved_count / len(self.participating_daos)
+        if approval_rate >= self.approval_threshold:
+            self.state = APPROVED
+            self.execute_resource_flows()
+        elif self.all_voted():
+            self.state = FAILED
+\end{lstlisting}
+
+\subsection{Cooperation Scenario Configuration}
+
+\begin{lstlisting}[caption=Cooperation scenario configuration]
+scenarios:
+  homogeneous:
+    dao_count: 3
+    dao_sizes: [200, 200, 200]  # Similar size
+    preference_alignment: 0.8  # High alignment
+    cooperation_probability: 0.5
+
+  heterogeneous:
+    dao_count: 3
+    dao_sizes: [500, 200, 100]  # Different sizes
+    preference_alignment: 0.4  # Lower alignment
+    cooperation_probability: 0.3
+
+  asymmetric:
+    dao_count: 2
+    dao_sizes: [1000, 100]  # Large/small
+    fairness_mechanism: shapley  # Explicit fairness
+    cooperation_probability: 0.4
+\end{lstlisting}
+
+\subsection{Resource Flow Implementation}
+
+\begin{lstlisting}[caption=Resource flow execution (pseudocode)]
+def execute_resource_flows(proposal):
+    total_cost = proposal.total_cost
+    shared_pool = 0
+
+    # Collect contributions
+    for dao in proposal.participating_daos:
+        share = proposal.contribution_shares[dao]
+        contribution = share * total_cost
+        if dao.treasury.available() >= contribution:
+            dao.treasury.withdraw(contribution)
+            shared_pool += contribution
+
+    # Execute joint initiative
+    if shared_pool >= total_cost * 0.9:  # 90% threshold
+        proposal.execute()
+        distribute_benefits(proposal)
+    else:
+        refund_contributions(proposal)
+\end{lstlisting}
+
+\subsection{Metrics Collection}
+
+Inter-DAO specific metrics:
+
+\begin{description}
+    \item[Cooperation Success Rate] Fraction of joint proposals that pass
+    \item[Resource Flow Volume] Total treasury transfers between DAOs
+    \item[Cross-DAO Alignment] Correlation of voting patterns across DAOs
+    \item[Coalition Stability] How long cooperation relationships persist
+    \item[Surplus Distribution] How benefits are shared among participants
+\end{description}

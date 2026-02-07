@@ -1,0 +1,133 @@
+% RQ2 Architecture: Capture Mitigation Simulation
+
+\subsection{System Overview}
+
+Our simulation framework extends the base DAO governance model with configurable capture mitigation mechanisms. The architecture comprises:
+
+\begin{enumerate}
+    \item \textbf{Token Distribution Module}: Generates realistic power-law distributions
+    \item \textbf{Mitigation Layer}: Implements vote caps, quadratic, and velocity mechanisms
+    \item \textbf{Capture Metrics}: Computes whale influence, Nakamoto coefficient, Gini
+    \item \textbf{Governance Engine}: Standard proposal lifecycle with modified vote weights
+\end{enumerate}
+
+\subsection{Mitigation Implementation}
+
+\subsubsection{Vote Cap Implementation}
+
+\begin{lstlisting}[caption=Vote cap mechanism (pseudocode)]
+def compute_voting_power_capped(agent, cap_percentage):
+    raw_power = agent.tokens + agent.delegated_tokens
+    cap_value = total_supply * cap_percentage
+    return min(raw_power, cap_value)
+\end{lstlisting}
+
+\subsubsection{Quadratic Voting Implementation}
+
+\begin{lstlisting}[caption=Quadratic voting mechanism (pseudocode)]
+def compute_voting_power_quadratic(agent):
+    raw_power = agent.tokens + agent.delegated_tokens
+    return sqrt(raw_power)
+\end{lstlisting}
+
+\subsubsection{Velocity Penalty Implementation}
+
+\begin{lstlisting}[caption=Velocity penalty mechanism (pseudocode)]
+def compute_voting_power_velocity(agent, window, penalty):
+    old_tokens = get_tokens_held_before(agent, current_time - window)
+    new_tokens = agent.tokens - old_tokens
+    return old_tokens + penalty * new_tokens
+\end{lstlisting}
+
+\subsection{Whale Modeling}
+
+To test capture resistance, we model whale behavior:
+
+\begin{table}[htbp]
+\centering
+\caption{Whale agent characteristics}
+\label{tab:whale-model}
+\begin{tabular}{lcc}
+\toprule
+Attribute & Whale & Regular \\
+\midrule
+Token share & 5-15\% each & 0.1-1\% each \\
+Participation & 90\% & 30\% \\
+Vote alignment & Self-interested & Mixed \\
+Sybil capability & Can split addresses & Single address \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Sybil Attack Modeling}
+
+Whales may respond to caps by splitting tokens:
+
+\begin{lstlisting}[caption=Sybil attack modeling (pseudocode)]
+def whale_sybil_response(whale, cap):
+    if whale.tokens > cap and whale.sybil_capable:
+        num_addresses = ceil(whale.tokens / cap)
+        # Cost: gas for N addresses, coordination overhead
+        if benefit(num_addresses) > cost(num_addresses):
+            return split_into_addresses(whale, num_addresses)
+    return [whale]  # No split
+\end{lstlisting}
+
+\subsection{Capture Metric Computation}
+
+Metrics are computed at each simulation step:
+
+\begin{lstlisting}[caption=Capture metrics computation]
+def compute_capture_metrics(agents):
+    weights = sorted([voting_power(a) for a in agents], reverse=True)
+    total = sum(weights)
+
+    # Whale influence (top 10)
+    whale_influence = sum(weights[:10]) / total
+
+    # Nakamoto coefficient
+    cumsum = 0
+    for i, w in enumerate(weights):
+        cumsum += w
+        if cumsum > total / 2:
+            nakamoto = i + 1
+            break
+
+    # Gini coefficient
+    gini = compute_gini(weights)
+
+    return {
+        'whale_influence': whale_influence,
+        'nakamoto': nakamoto,
+        'gini': gini,
+        'capture_risk': whale_influence / nakamoto * (1 + gini)
+    }
+\end{lstlisting}
+
+\subsection{Governance Throughput Metrics}
+
+We track mitigation impact on governance efficiency:
+
+\begin{description}
+    \item[Pass Rate] Fraction of proposals achieving majority
+    \item[Quorum Rate] Fraction of proposals achieving quorum
+    \item[Time to Decision] Steps from proposal to resolution
+    \item[Effective Participation] Voting power actually cast vs. available
+\end{description}
+
+\subsection{Simulation Configuration}
+
+Mitigation experiments use extended configuration:
+
+\begin{lstlisting}[caption=Mitigation configuration schema]
+mitigation:
+  vote_cap:
+    enabled: true/false
+    cap_percentage: 0.01-0.10
+  quadratic:
+    enabled: true/false
+  velocity:
+    enabled: true/false
+    window_days: 7-90
+    penalty_factor: 0.0-0.5
+\end{lstlisting}

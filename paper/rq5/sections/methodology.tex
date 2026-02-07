@@ -1,0 +1,132 @@
+% RQ5 Methodology: Inter-DAO Cooperation Experiments
+
+\subsection{Experimental Design}
+
+We simulate five cooperation scenarios varying DAO characteristics and cooperation structures:
+
+\begin{table}[htbp]
+\centering
+\caption{RQ5 Experiment configuration (Experiment 07)}
+\label{tab:rq5-experiment}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Scenario & DAOs & Structure & Key Variable \\
+\midrule
+Homogeneous & 3 $\times$ 200 members & Symmetric & Baseline cooperation \\
+Heterogeneous & 500, 200, 100 & Diverse sizes & Complementarity effects \\
+Asymmetric & 1000, 100 & Large-small pair & Fairness mechanisms \\
+Hub-spoke & 1 hub + 4 spokes & Central coordinator & Coordination efficiency \\
+Competitive & 3 $\times$ 200 & Rival DAOs & Cooperation despite competition \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Each scenario runs 60 times with different seeds.
+
+Total runs: $5 \times 60 = 300$
+
+\subsection{Scenario Details}
+
+\subsubsection{Scenario 1: Homogeneous DAOs}
+
+Three DAOs with similar characteristics:
+\begin{itemize}
+    \item 200 members each
+    \item Similar preference distributions
+    \item Equal bargaining power
+    \item 20\% membership overlap between pairs
+\end{itemize}
+
+Hypothesis: High cooperation success but modest surplus.
+
+\subsubsection{Scenario 2: Heterogeneous DAOs}
+
+Three DAOs with diverse profiles:
+\begin{itemize}
+    \item Large DAO (500 members), Medium (200), Small (100)
+    \item Different specializations (technical, community, treasury)
+    \item Complementary capabilities
+    \item 10\% membership overlap
+\end{itemize}
+
+Hypothesis: Higher potential surplus but coordination challenges.
+
+\subsubsection{Scenario 3: Asymmetric Pair}
+
+One large DAO cooperating with one small DAO:
+\begin{itemize}
+    \item Large: 1,000 members
+    \item Small: 100 members
+    \item Power imbalance
+    \item Test fairness mechanisms (equal split vs. Shapley)
+\end{itemize}
+
+Hypothesis: Explicit fairness mechanisms required for stability.
+
+\subsubsection{Scenario 4: Hub-Spoke}
+
+One central ``hub'' DAO coordinating with four ``spoke'' DAOs:
+\begin{itemize}
+    \item Hub: 500 members, coordination role
+    \item Spokes: 100 members each, specialized
+    \item Hub facilitates inter-spoke cooperation
+\end{itemize}
+
+Hypothesis: Hub improves coordination efficiency.
+
+\subsubsection{Scenario 5: Competitive Cooperation}
+
+Three DAOs that compete but may cooperate on public goods:
+\begin{itemize}
+    \item 200 members each
+    \item Competing for users/market share
+    \item Shared interest in ecosystem infrastructure
+    \item Mixed incentives
+\end{itemize}
+
+Hypothesis: Cooperation limited to clear public goods.
+
+\subsection{Cooperation Mechanisms Tested}
+
+\begin{itemize}
+    \item \textbf{Joint proposals}: Multi-DAO approval requirements
+    \item \textbf{Resource pooling}: Shared treasury contributions
+    \item \textbf{Shapley fairness}: Division proportional to marginal contribution
+    \item \textbf{Equal split}: Simple equal division regardless of size
+\end{itemize}
+
+\subsection{Hypotheses}
+
+\begin{itemize}
+    \item \textbf{H5.1}: Homogeneous DAOs achieve higher cooperation success rates
+    \item \textbf{H5.2}: Heterogeneous DAOs generate larger cooperation surplus
+    \item \textbf{H5.3}: Asymmetric relationships require explicit fairness mechanisms
+    \item \textbf{H5.4}: Hub-spoke structures improve multi-DAO coordination efficiency
+    \item \textbf{H5.5}: Overlapping membership increases cooperation probability
+\end{itemize}
+
+\subsection{Metrics}
+
+Primary metrics for RQ5:
+
+\begin{description}
+    \item[Cooperation Success Rate] Joint proposals that pass all participating DAOs
+    \item[Surplus Generated] Value created by cooperation minus standalone values
+    \item[Resource Flow Volume] Treasury transfers between DAOs
+    \item[Alignment Score] Correlation of voting patterns across DAOs
+    \item[Coalition Stability] Duration of cooperation relationships
+\end{description}
+
+\subsection{Statistical Analysis}
+
+\subsubsection{Scenario Comparison}
+
+ANOVA comparing cooperation success across scenarios.
+
+\subsubsection{Mechanism Effectiveness}
+
+Compare fairness mechanisms (Shapley vs. equal split) in asymmetric scenarios.
+
+\subsubsection{Correlation Analysis}
+
+Relationship between membership overlap and cooperation success.

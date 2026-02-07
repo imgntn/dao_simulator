@@ -1,0 +1,61 @@
+% RQ1 Background: Participation Dynamics
+
+\subsection{Participation Challenges in DAOs}
+
+Empirical studies of deployed DAOs consistently document low voter turnout. \citet{fritsch2022analyzing} found that in MakerDAO, fewer than 20 addresses controlled over 50\% of voting power, with typical proposal turnout below 5\%. DeepDAO analytics \citep{deepdao2023analytics} report median turnout rates of 2-8\% across major governance protocols.
+
+This pattern echoes classic collective action problems identified by \citet{olson1965logic}: rational individuals under-invest in public goods when they cannot be excluded from benefits. In DAO governance, the ``public good'' is effective decision-making, and the cost is voter attention.
+
+\subsection{Quorum Design in Practice}
+
+Real-world DAOs employ various quorum mechanisms:
+
+\begin{itemize}
+    \item \textbf{Compound}: 4\% of total token supply required for quorum
+    \item \textbf{Uniswap}: 4\% quorum with 2.5M UNI proposal threshold
+    \item \textbf{Aave}: Tiered quorums based on proposal risk level
+    \item \textbf{Optimism}: Token House requires 30\% of votable supply
+\end{itemize}
+
+These thresholds were often set through intuition or historical precedent rather than systematic analysis. The consequences of miscalibration are visible: Compound has experienced periods of governance stagnation when participation dropped below quorum, while some DAOs with very low quorums have seen contentious proposals pass with minimal deliberation.
+
+\subsection{Voter Fatigue}
+
+The phenomenon of ``governance fatigue'' has been documented across multiple DAOs \citep{snapshot2021governance}. Contributing factors include:
+
+\begin{itemize}
+    \item High proposal frequency overwhelming participant attention
+    \item Repetitive or low-stakes votes reducing perceived importance
+    \item Lack of meaningful impact from individual votes
+    \item Cognitive load of evaluating complex technical proposals
+\end{itemize}
+
+Mitigation strategies employed by DAOs include delegation systems (Compound, ENS), conviction voting (Giveth), and governance minimization philosophies (Uniswap).
+
+\subsection{Theoretical Foundations}
+
+Our work builds on several theoretical traditions:
+
+\subsubsection{Rational Voter Models}
+
+The calculus of voting \citep{olson1965logic} models participation decisions as:
+
+\begin{equation}
+\text{Vote if } pB - C > 0
+\end{equation}
+
+where $p$ is the probability of being pivotal, $B$ is the benefit of preferred outcome, and $C$ is the cost of voting. In large electorates, $p \approx 0$, predicting near-zero turnout---the ``paradox of voting.''
+
+In DAOs, token-weighted voting modifies this calculus: larger holders have higher $p$ and $B$, explaining their disproportionate participation.
+
+\subsubsection{Bounded Rationality}
+
+Real voters do not perform full expected utility calculations. Following \citet{ostrom1990governing}, we model agents with bounded rationality: participation depends on heuristics, habits, and social factors rather than pure calculation.
+
+\subsubsection{Multi-Agent Systems}
+
+Our simulation approach draws from agent-based computational economics \citep{tesfatsion2006handbook} and multi-agent systems \citep{wooldridge2009introduction}. These frameworks enable studying emergent macro-level patterns (aggregate turnout, quorum achievement) from micro-level agent behaviors.
+
+\subsection{Prior Simulation Work}
+
+Limited prior work has specifically addressed DAO participation through simulation. \citet{faqir2021cadcad} used cadCAD for tokenomic modeling but focused on token engineering rather than voting behavior. Our framework addresses this gap by providing dedicated support for participation dynamics modeling.

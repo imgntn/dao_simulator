@@ -1,0 +1,159 @@
+% RQ4 Theoretical Framework: Treasury Resilience
+
+We develop formal models of treasury dynamics and resilience metrics.
+
+\subsection{Treasury Dynamics Model}
+
+\subsubsection{Treasury State}
+
+Treasury state at time $t$:
+
+\begin{equation}
+T(t) = T(t-1) + I(t) - O(t) + \Delta V(t)
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $I(t)$ = inflows (revenue, contributions)
+    \item $O(t)$ = outflows (proposal spending, operations)
+    \item $\Delta V(t)$ = value change (market movements affecting token holdings)
+\end{itemize}
+
+\subsubsection{Buffer Mechanics}
+
+With buffer fraction $b$:
+
+\begin{equation}
+\text{available}(t) = (1 - b) \cdot T(t)
+\end{equation}
+
+\begin{equation}
+\text{buffer}(t) = b \cdot T(t)
+\end{equation}
+
+Spending is constrained: $O(t) \leq \text{available}(t)$
+
+\subsubsection{Emergency Top-Up}
+
+When buffer falls below threshold $\tau_{\text{buffer}}$:
+
+\begin{equation}
+\text{top-up}(t) = \mathbf{1}[\text{buffer}(t) < \tau_{\text{buffer}}] \cdot \min(\text{deficit}, \text{top-up rate})
+\end{equation}
+
+where $\text{deficit} = \tau_{\text{buffer}} - \text{buffer}(t)$
+
+Top-up sources reduce available spending or divert inflows.
+
+\subsection{Resilience Metrics}
+
+\subsubsection{Treasury Volatility}
+
+Standard deviation of treasury value over rolling window:
+
+\begin{equation}
+\sigma_T = \sqrt{\frac{1}{w} \sum_{i=t-w}^{t} (T(i) - \bar{T})^2}
+\end{equation}
+
+Lower volatility indicates more stable treasury.
+
+\subsubsection{Drawdown Risk}
+
+Maximum peak-to-trough decline:
+
+\begin{equation}
+\text{MaxDrawdown} = \max_{t} \left( \frac{\max_{s \leq t} T(s) - T(t)}{\max_{s \leq t} T(s)} \right)
+\end{equation}
+
+\subsubsection{Runway}
+
+Time until treasury depletion at current burn rate:
+
+\begin{equation}
+\text{Runway} = \frac{T(t)}{\bar{O}}
+\end{equation}
+
+where $\bar{O}$ is average outflow rate.
+
+\subsubsection{Buffer Coverage}
+
+Ratio of buffer to expected outflows:
+
+\begin{equation}
+\text{Coverage} = \frac{\text{buffer}(t)}{\mathbb{E}[O]}
+\end{equation}
+
+Higher coverage indicates better protection against outflow shocks.
+
+\subsection{Tradeoff Analysis}
+
+\subsubsection{Resilience vs. Efficiency}
+
+Buffer reserves create tradeoff:
+\begin{itemize}
+    \item \textbf{High buffer}: More resilient but idle capital
+    \item \textbf{Low buffer}: Higher efficiency but vulnerable to shocks
+\end{itemize}
+
+Optimal buffer depends on:
+\begin{itemize}
+    \item Inflow volatility
+    \item Outflow predictability
+    \item Market conditions (treasury value volatility)
+    \item Risk tolerance
+\end{itemize}
+
+\subsubsection{Spending Limits vs. Operational Flexibility}
+
+Spending limits protect treasury but may:
+\begin{itemize}
+    \item Block valuable proposals exceeding limits
+    \item Fragment large initiatives into multiple smaller proposals
+    \item Create waiting queues for spending approval
+\end{itemize}
+
+\subsection{Theoretical Predictions}
+
+\subsubsection{Prediction 1: Buffer-Volatility Relationship}
+
+Treasury volatility decreases with buffer fraction:
+
+\begin{equation}
+\sigma_T \propto (1 - b)
+\end{equation}
+
+as buffer dampens spending-driven volatility.
+
+\subsubsection{Prediction 2: Spending Limit-Runway Relationship}
+
+Tighter spending limits extend runway:
+
+\begin{equation}
+\text{Runway} \propto \frac{1}{\text{spending\_limit}}
+\end{equation}
+
+\subsubsection{Prediction 3: Top-Up Effectiveness}
+
+Emergency top-ups reduce drawdown severity when:
+\begin{itemize}
+    \item Inflow capacity exceeds top-up requirements
+    \item Top-up triggers before severe depletion
+    \item Recovery rate exceeds continued outflow rate
+\end{itemize}
+
+\subsection{Market Condition Modeling}
+
+We model treasury value volatility as:
+
+\begin{equation}
+\Delta V(t) = T_{\text{token}}(t) \cdot r(t)
+\end{equation}
+
+where $r(t) \sim \mathcal{N}(\mu, \sigma_{\text{market}}^2)$ is the token return.
+
+Different market regimes:
+\begin{itemize}
+    \item \textbf{Bull}: $\mu > 0$, moderate $\sigma$
+    \item \textbf{Bear}: $\mu < 0$, high $\sigma$
+    \item \textbf{Stable}: $\mu \approx 0$, low $\sigma$
+\end{itemize}

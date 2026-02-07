@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How DAOs Can Process Proposals Faster | DAO Research</title>
+<style>:root { --primary: #1a1a2e; --accent: #4f46e5; --text: #1f2937; --bg-alt: #f8fafc; --border: #e5e7eb; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Georgia, serif; font-size: 18px; line-height: 1.8; color: var(--text); background: #fff; }
+.header { position: relative; height: 50vh; min-height: 400px; overflow: hidden; }
+.header-image { width: 100%; height: 100%; object-fit: cover; }
+.header-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); padding: 60px 40px 40px; }
+.container { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+.press-badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #818cf8; background: rgba(79,70,229,0.2); padding: 8px 16px; border-radius: 4px; margin-bottom: 16px; }
+.header h1 { font-size: 32px; font-weight: 700; color: white; line-height: 1.3; max-width: 700px; }
+.key-findings { background: var(--bg-alt); padding: 50px 0; border-bottom: 1px solid var(--border); }
+.key-findings h2 { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+.findings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.finding-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--border); display: flex; gap: 14px; }
+.finding-number { font-size: 13px; font-weight: 700; color: var(--accent); background: rgba(79,70,229,0.1); width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.finding-card p { font-size: 14px; line-height: 1.5; margin: 0; }
+.content { padding: 60px 0; }
+.content h2 { font-size: 26px; font-weight: 700; color: var(--primary); margin: 40px 0 20px; }
+.content h3 { font-size: 20px; font-weight: 600; color: var(--primary); margin: 35px 0 16px; }
+.content p { margin-bottom: 20px; }
+.content strong { color: var(--primary); }
+.content ul { list-style: none; margin: 20px 0; padding: 0; }
+.content li { position: relative; padding-left: 24px; margin-bottom: 12px; }
+.content li::before { content: ""; position: absolute; left: 0; top: 10px; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+.content hr { border: none; height: 1px; background: var(--border); margin: 40px 0; }
+.footer { background: var(--primary); color: white; padding: 50px 0; }
+.footer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.footer h4 { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #818cf8; margin-bottom: 14px; }
+.footer p, .footer a { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.6; }
+.footer a { text-decoration: none; }
+.footer-note { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 13px; color: rgba(255,255,255,0.4); text-align: center; }
+@media (max-width: 640px) { .findings-grid { grid-template-columns: 1fr; } .footer-grid { grid-template-columns: 1fr; } }</style>
+</head>
+<body>
+<header class="header">
+<img src="rq3-proposal-pipeline.png" class="header-image" alt="How DAOs Can Process Proposals Faster">
+<div class="header-overlay"><div class="container">
+<span class="press-badge">Research Press Release</span>
+<h1>How DAOs Can Process Proposals Faster</h1>
+</div></div></header>
+<section class="key-findings"><div class="container">
+<h2>Key Findings</h2>
+<div class="findings-grid"><div class="finding-card"><div class="finding-number">1</div><p>Temp-checks with 20-30% thresholds filter bad proposals while avoiding false rejections</p></div><div class="finding-card"><div class="finding-number">2</div><p>Fast-track mechanisms work best at 70% support threshold—higher is too restrictive</p></div><div class="finding-card"><div class="finding-number">3</div><p>30-day proposal expiry windows cause excessive abandonment; 60 days is optimal</p></div><div class="finding-card"><div class="finding-number">4</div><p>Moderate pipeline settings consistently outperform both "no filtering" and "aggressive filtering"</p></div></div>
+</div></section>
+<main class="content"><div class="container">
+<h2>Research Shows How DAOs Can Process Proposals Faster Without Sacrificing Quality</h2>
+<p><strong>Simulation study identifies optimal settings for temp-checks, fast-tracks, and voting windows</strong></p>
+<hr>
+<h3>The Problem: Governance Bottlenecks</h3>
+<p>Every DAO proposal must traverse a pipeline—a series of stages from initial idea to final execution. Design this pipeline poorly, and you get either gridlock (proposals languishing indefinitely) or rubber-stamping (inadequate deliberation on important decisions).</p>
+<p>New research provides the first systematic analysis of how pipeline parameters affect governance outcomes, offering evidence-based guidance for a fundamental operational challenge.</p>
+<h3>The Pipeline Components Tested</h3>
+<p>The study examined three common pipeline mechanisms:</p>
+<p><strong>Temp-Checks:</strong> Preliminary "signal votes" (often off-chain via Snapshot) that filter proposals before formal governance. High temp-check thresholds reduce the load on formal voting but risk rejecting worthy proposals that lack initial awareness.</p>
+<p><strong>Fast-Tracks:</strong> Expedited paths for proposals with overwhelming early support. These accelerate uncontroversial decisions but may bypass deliberation on consequential issues.</p>
+<p><strong>Expiry Windows:</strong> Maximum time allowed for proposal resolution. Tight windows prevent stale proposals but may force premature decisions on complex initiatives.</p>
+<h3>What the Simulations Revealed</h3>
+<p>Across 270 simulation runs testing different pipeline configurations, the research identified clear patterns:</p>
+<p><strong>Temp-checks improve quality at acceptable cost.</strong> A 20-30% support threshold filters most low-quality proposals while passing the vast majority of ultimately viable initiatives. Thresholds above 40% filter too aggressively.</p>
+<p><strong>Fast-tracks should target clear consensus.</strong> A 70% early support threshold effectively identifies uncontroversial proposals suitable for expedited processing. At 85%, almost no proposals qualify.</p>
+<p><strong>Expiry windows need flexibility.</strong> 30-day windows cause excessive abandonment—proposers give up on complex initiatives. 60-day windows provide adequate time while preventing indefinite accumulation.</p>
+<p><strong>Moderate settings dominate extremes.</strong> Both "no filtering" and "aggressive filtering" underperform balanced approaches.</p>
+<h3>Design Principles for Practitioners</h3>
+<p>Based on the results, the research recommends:</p>
+<li><strong>1.</strong> <strong>Filter early, filter gently:</strong> Use temp-checks with moderate thresholds</li>
+<li><strong>2.</strong> <strong>Accelerate consensus, not controversy:</strong> Fast-track only proposals with clear supermajority support</li>
+<li><strong>3.</strong> <strong>Bound but don't compress:</strong> Set expiry windows that prevent accumulation but allow adequate deliberation</li>
+<li><strong>4.</strong> <strong>Make stages meaningful:</strong> Each pipeline stage should add information value</li>
+<hr>
+</div></main>
+<footer class="footer"><div class="container">
+<div class="footer-grid">
+<div><h4>Contact</h4><p>James Pollack<br>Independent Researcher<br><a href="mailto:james@jamesbpollack.com">james@jamesbpollack.com</a></p></div>
+<div><h4>Source Code</h4><p><a href="https://github.com/imgntn/dao_simulator">GitHub Repository</a></p></div>
+<div><h4>Research</h4><p>DAO Governance Simulation</p></div>
+</div>
+<p class="footer-note">Research conducted independently to advance decentralized governance.</p>
+</div></footer></body></html>
