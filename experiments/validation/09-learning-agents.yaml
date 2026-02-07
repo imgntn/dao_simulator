@@ -1,0 +1,84 @@
+name: Learning Agent Validation
+description: |
+  Verify Q-learning enabled agents work correctly:
+  - Agents run without errors with learning enabled
+  - Q-tables accumulate over steps
+  - Exploration rate decays across episodes
+  - Learning-disabled mode produces baseline comparison
+version: 1.0.0
+baseConfig:
+  template: compound
+  simulationOverrides:
+    learning_enabled: true
+  overrides:
+    voting_activity: 0.4
+    proposal_creation_probability: 0.005
+    num_developers: 2
+    num_investors: 2
+    num_traders: 2
+    num_adaptive_investors: 2
+    num_delegators: 2
+    num_proposal_creators: 2
+    num_validators: 1
+    num_service_providers: 1
+    num_auditors: 1
+    num_bounty_hunters: 1
+    num_speculators: 2
+    num_stakers: 2
+    num_rl_traders: 1
+    num_governance_experts: 1
+    num_governance_whales: 1
+    num_risk_managers: 1
+    num_market_makers: 1
+  population:
+    totalMembers: 30
+    distribution:
+      - archetype: passive_holder
+        percentage: 30
+      - archetype: active_voter
+        percentage: 25
+      - archetype: delegate
+        percentage: 15
+      - archetype: whale
+        percentage: 10
+      - archetype: governance_expert
+        percentage: 10
+      - archetype: builder
+        percentage: 10
+sweep:
+  parameter: learning_enabled
+  values:
+    - true
+    - false
+execution:
+  runsPerConfig: 20
+  stepsPerRun: 200
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 4
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Final Token Price
+    type: builtin
+    builtin: final_token_price
+  - name: Total Proposals
+    type: builtin
+    builtin: total_proposals
+output:
+  directory: results/validation/learning-agents
+  formats:
+    - json
+    - csv
+  includeRawRuns: false
+  includeManifest: true

@@ -1,0 +1,70 @@
+name: All Agents Learning Test
+description: Quick test to verify all agent types are working with Q-learning
+version: 1.0.0
+author: DAO Simulator
+tags:
+  - test
+  - learning
+  - all-agents
+baseConfig:
+  template: compound
+  simulationOverrides:
+    eventLogging: false
+    learning_enabled: true
+  overrides:
+    voting_activity: 0.5
+    proposal_creation_probability: 0.01
+    num_developers: 3
+    num_investors: 3
+    num_traders: 3
+    num_adaptive_investors: 3
+    num_delegators: 3
+    num_liquid_delegators: 2
+    num_proposal_creators: 3
+    num_validators: 2
+    num_service_providers: 2
+    num_arbitrators: 2
+    num_regulators: 2
+    num_auditors: 2
+    num_bounty_hunters: 2
+    num_external_partners: 2
+    num_passive_members: 5
+    num_artists: 2
+    num_collectors: 2
+    num_speculators: 3
+    num_stakers: 3
+    num_rl_traders: 2
+    num_governance_experts: 2
+    num_governance_whales: 2
+    num_risk_managers: 2
+    num_market_makers: 2
+    num_whistleblowers: 2
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 100
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 8
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Total Proposals
+    type: builtin
+    builtin: total_proposals
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Final Token Price
+    type: builtin
+    builtin: final_token_price
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+output:
+  directory: results/all-agents-test
+  formats:
+    - json
+    - csv
+  includeRawRuns: false
+  includeManifest: true
