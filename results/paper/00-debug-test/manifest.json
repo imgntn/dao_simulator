@@ -1,0 +1,21 @@
+{
+  "experimentId": "Realistic Baseline-1770416243908",
+  "configHash": "hash:53d86672",
+  "software": {
+    "simulatorVersion": "0.2.0",
+    "nodeVersion": "v22.19.0",
+    "platform": "win32"
+  },
+  "execution": {
+    "startedAt": "2026-02-06T22:17:23.908Z",
+    "completedAt": "2026-02-06T22:17:30.142Z",
+    "totalRuns": 3,
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "workerCount": 4
+  },
+  "resultsHash": "hash:4401065b"
+}

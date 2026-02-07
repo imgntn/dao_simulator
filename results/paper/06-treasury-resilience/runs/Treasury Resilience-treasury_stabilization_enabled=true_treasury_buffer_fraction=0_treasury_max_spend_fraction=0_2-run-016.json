@@ -25,6 +25,7 @@
     "num_stakers": 10,
     "num_rl_traders": 0,
     "num_governance_experts": 19,
+    "num_governance_whales": 0,
     "num_risk_managers": 0,
     "num_market_makers": 0,
     "num_whistleblowers": 2,
@@ -77,21 +78,21 @@
     "delegation_lock_steps": 48,
     "treasury_stabilization_enabled": true,
     "treasury_buffer_fraction": 0,
-    "seed": 646,
+    "seed": 721,
     "useIndexedDB": false
   },
-  "seed": 646,
+  "seed": 721,
   "metrics": {
-    "Treasury Volatility": 0.18655225678553494,
-    "Treasury Growth Rate": -0.7494061207235679,
-    "Final Treasury": 10029.306304063111,
-    "Treasury Trend": -0.7793742007695782,
-    "Final Token Price": 4.77061941908479,
-    "Proposal Pass Rate": 0.15458937198067632,
-    "Quorum Reach Rate": 0.4
+    "Treasury Volatility": 0.2551426816412935,
+    "Treasury Growth Rate": -0.7575958496981398,
+    "Final Treasury": 10019.755302158816,
+    "Treasury Trend": -10.40947276718817,
+    "Final Token Price": 0.9388961223569434,
+    "Proposal Pass Rate": 0.8967136150234741,
+    "Quorum Reach Rate": 1
   },
-  "startedAt": "2026-01-30T12:09:05.410Z",
-  "completedAt": "2026-01-30T12:09:09.140Z",
-  "durationMs": 3730,
+  "startedAt": "2026-02-07T02:20:04.343Z",
+  "completedAt": "2026-02-07T02:20:26.544Z",
+  "durationMs": 22201,
   "stepsCompleted": 2000
 }

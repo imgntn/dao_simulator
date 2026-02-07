@@ -1,0 +1,209 @@
+# Pairwise T-Test Comparisons
+sweep_value_1,sweep_value_2,metric,t_statistic,df,p_value,significant,cohens_d,effect_interpretation
+50,100,Proposal Pass Rate,-14.390748,179.531606,0,true,-2.035159,very_large
+50,100,Average Turnout,-0.099646,182.330763,0.920735,false,-0.014092,negligible
+50,100,Voter Participation Rate,9.486559,195.487671,0,true,1.341602,very_large
+50,100,Delegate Concentration,10.075865,197.918704,0,true,1.424942,very_large
+50,100,Whale Influence,8.614213,195.645681,0.000000,true,1.218234,very_large
+50,100,Voter Concentration Gini,6.110928,178.030742,0.000000,true,0.864216,large
+50,100,Unique Voter Count,-97.563207,162.440386,0,true,-13.797521,very_large
+50,100,Voter Retention Rate,-0.675737,193.535298,0.500014,false,-0.095564,negligible
+50,100,Quorum Reach Rate,0.988938,197.881922,0.323901,false,0.139857,negligible
+50,100,Final Member Count,0,198,1,false,0,negligible
+50,100,Total Proposals,-42.729776,174.709057,0,true,-6.042903,very_large
+50,100,Avg Votes Per Proposal,-79.826750,159.072093,0,true,-11.289207,very_large
+50,100,Participation Trend,0.361935,119.976415,0.718037,false,0.051185,negligible
+50,100,Token Concentration Gini,5.639093,196.951199,0.000000,true,0.797488,medium
+50,100,Final Gini,5.640771,196.959368,0.000000,true,0.797725,medium
+50,100,Final Treasury,-0.466245,197.093434,0.641555,false,-0.065937,negligible
+50,100,Governance Capture Risk,11.110965,194.008045,0,true,1.571328,very_large
+50,100,Single Entity Control,19.177071,157.791671,0,true,2.712047,very_large
+50,200,Proposal Pass Rate,-34.654959,122.144163,0,true,-4.900951,very_large
+50,200,Average Turnout,4.962940,167.514293,0.000002,true,0.701866,medium
+50,200,Voter Participation Rate,22.301005,161.351996,0,true,3.153838,very_large
+50,200,Delegate Concentration,12.791775,194.476138,0,true,1.809030,very_large
+50,200,Whale Influence,11.825420,182.492674,0,true,1.672367,very_large
+50,200,Voter Concentration Gini,7.823952,142.188916,0.000000,true,1.106474,large
+50,200,Unique Voter Count,-181.312604,119.239267,0,true,-25.641474,very_large
+50,200,Voter Retention Rate,3.094148,188.833633,0.002274,true,0.437579,small
+50,200,Quorum Reach Rate,0.625955,164.446970,0.532213,false,0.088523,negligible
+50,200,Final Member Count,0,198,1,false,0,negligible
+50,200,Total Proposals,-97.497870,143.589050,0,true,-13.788281,very_large
+50,200,Avg Votes Per Proposal,-184.433890,135.931446,0,true,-26.082891,very_large
+50,200,Participation Trend,0.553776,101.515240,0.580950,false,0.078316,negligible
+50,200,Token Concentration Gini,6.066397,192.654820,0.000000,true,0.857918,large
+50,200,Final Gini,6.068597,192.848012,0.000000,true,0.858229,large
+50,200,Final Treasury,-1.955857,195.129631,0.051909,false,-0.276600,small
+50,200,Governance Capture Risk,17.298889,171.626553,0,true,2.446432,very_large
+50,200,Single Entity Control,31.546384,111.813591,0,true,4.461332,very_large
+50,350,Proposal Pass Rate,-46.523510,106.192771,0,true,-6.579418,very_large
+50,350,Average Turnout,10.721441,141.947289,0,true,1.516241,very_large
+50,350,Voter Participation Rate,30.999007,152.192389,0,true,4.383922,very_large
+50,350,Delegate Concentration,16.277020,178.498237,0,true,2.301918,very_large
+50,350,Whale Influence,16.118492,165.248799,0,true,2.279499,very_large
+50,350,Voter Concentration Gini,7.240280,128.010092,0.000000,true,1.023930,large
+50,350,Unique Voter Count,-215.243203,105.460242,0,true,-30.439986,very_large
+50,350,Voter Retention Rate,3.761137,189.888425,0.000225,true,0.531905,medium
+50,350,Quorum Reach Rate,0.551793,136.929590,0.581990,false,0.078035,negligible
+50,350,Final Member Count,0,198,1,false,0,negligible
+50,350,Total Proposals,-157.993620,127.211334,0,true,-22.343672,very_large
+50,350,Avg Votes Per Proposal,-237.654385,113.924576,0,true,-33.609405,very_large
+50,350,Participation Trend,0.340811,99.423321,0.733965,false,0.048198,negligible
+50,350,Token Concentration Gini,5.455249,182.047817,0.000000,true,0.771489,medium
+50,350,Final Gini,5.458361,182.087681,0.000000,true,0.771929,medium
+50,350,Final Treasury,-4.265561,186.738757,0.000032,true,-0.603241,medium
+50,350,Governance Capture Risk,20.731532,153.394952,0,true,2.931881,very_large
+50,350,Single Entity Control,36.896287,101.876424,0,true,5.217923,very_large
+50,500,Proposal Pass Rate,-50.655756,101.600234,0,true,-7.163806,very_large
+50,500,Average Turnout,16.082349,123.120135,0,true,2.274388,very_large
+50,500,Voter Participation Rate,41.767647,135.693345,0,true,5.906837,very_large
+50,500,Delegate Concentration,18.231705,150.342161,0,true,2.578352,very_large
+50,500,Whale Influence,17.811746,136.344071,0,true,2.518961,very_large
+50,500,Voter Concentration Gini,11.202391,115.787518,0,true,1.584257,very_large
+50,500,Unique Voter Count,-234.685407,102.318519,0,true,-33.189529,very_large
+50,500,Voter Retention Rate,5.276370,186.944465,0.000000,true,0.746191,medium
+50,500,Quorum Reach Rate,0.494104,126.210465,0.622092,false,0.069877,negligible
+50,500,Final Member Count,0,198,1,false,0,negligible
+50,500,Total Proposals,-197.323558,117.530177,0,true,-27.905765,very_large
+50,500,Avg Votes Per Proposal,-291.612799,110.229109,0,true,-41.240277,very_large
+50,500,Participation Trend,0.298793,99.149290,0.765723,false,0.042256,negligible
+50,500,Token Concentration Gini,6.074662,172.502328,0.000000,true,0.859087,large
+50,500,Final Gini,6.091402,172.474922,0.000000,true,0.861454,large
+50,500,Final Treasury,-5.481466,182.168423,0.000000,true,-0.775196,medium
+50,500,Governance Capture Risk,22.614710,128.933649,0,true,3.198203,very_large
+50,500,Single Entity Control,38.818622,100.034142,0,true,5.489782,very_large
+100,200,Proposal Pass Rate,-23.811591,142.331092,0,true,-3.367468,very_large
+100,200,Average Turnout,6.160813,193.498590,0.000000,true,0.871271,large
+100,200,Voter Participation Rate,12.341612,172.560013,0,true,1.745367,very_large
+100,200,Delegate Concentration,1.926245,193.386485,0.055540,false,0.272412,small
+100,200,Whale Influence,2.711288,191.253775,0.007313,true,0.383434,small
+100,200,Voter Concentration Gini,1.401845,174.268068,0.162740,false,0.198251,negligible
+100,200,Unique Voter Count,-114.376213,151.188018,0,true,-16.175239,very_large
+100,200,Voter Retention Rate,4.137109,197.012265,0.000052,true,0.585076,medium
+100,200,Quorum Reach Rate,-0.561089,166.854773,0.575490,false,-0.079350,negligible
+100,200,Final Member Count,0,198,1,false,0,negligible
+100,200,Total Proposals,-58.141663,179.287042,0,true,-8.222473,very_large
+100,200,Avg Votes Per Proposal,-104.971743,184.364832,0,true,-14.845246,very_large
+100,200,Participation Trend,0.509654,122.150594,0.611213,false,0.072076,negligible
+100,200,Token Concentration Gini,0.194370,196.238419,0.846087,false,0.027488,negligible
+100,200,Final Gini,0.202170,196.343501,0.839993,false,0.028591,negligible
+100,200,Final Treasury,-1.533704,197.426275,0.126703,false,-0.216899,small
+100,200,Governance Capture Risk,5.547180,185.156831,0.000000,true,0.784490,medium
+100,200,Single Entity Control,16.641719,136.633921,0,true,2.353494,very_large
+100,350,Proposal Pass Rate,-39.959523,112.934082,0,true,-5.651130,very_large
+100,350,Average Turnout,13.639443,169.393081,0,true,1.928908,very_large
+100,350,Voter Participation Rate,21.585554,162.908121,0,true,3.052658,very_large
+100,350,Delegate Concentration,4.473873,176.560123,0.000014,true,0.632701,medium
+100,350,Whale Influence,6.791828,176.092498,0.000000,true,0.960509,large
+100,350,Voter Concentration Gini,0.352518,153.597772,0.724933,false,0.049854,negligible
+100,350,Unique Voter Count,-176.755379,116.696116,0,true,-24.996985,very_large
+100,350,Voter Retention Rate,4.855791,197.368326,0.000002,true,0.686713,medium
+100,350,Quorum Reach Rate,-0.724603,138.673655,0.469916,false,-0.102474,negligible
+100,350,Final Member Count,0,198,1,false,0,negligible
+100,350,Total Proposals,-122.332944,155.421937,0,true,-17.300491,very_large
+100,350,Avg Votes Per Proposal,-183.262111,141.274393,0,true,-25.917176,very_large
+100,350,Participation Trend,-0.119960,102.948887,0.904749,false,-0.016965,negligible
+100,350,Token Concentration Gini,-0.777351,188.218395,0.437928,false,-0.109934,negligible
+100,350,Final Gini,-0.775733,188.230248,0.438880,false,-0.109705,negligible
+100,350,Final Treasury,-3.920265,191.735213,0.000123,true,-0.554409,medium
+100,350,Governance Capture Risk,8.728022,167.225897,0.000000,true,1.234329,very_large
+100,350,Single Entity Control,25.682835,107.725539,0,true,3.632101,very_large
+100,500,Proposal Pass Rate,-45.822088,104.053346,0,true,-6.480222,very_large
+100,500,Average Turnout,20.974198,141.619873,0,true,2.966199,very_large
+100,500,Voter Participation Rate,33.080290,144.149095,0,true,4.678259,very_large
+100,500,Delegate Concentration,5.418241,148.582325,0.000000,true,0.766255,medium
+100,500,Whale Influence,7.920803,144.614002,0.000000,true,1.120171,large
+100,500,Voter Concentration Gini,5.486003,131.971674,0.000000,true,0.775838,medium
+100,500,Unique Voter Count,-207.412248,108.137260,0,true,-29.332521,very_large
+100,500,Voter Retention Rate,6.538231,196.236442,0.000000,true,0.924646,large
+100,500,Quorum Reach Rate,-0.817270,127.516751,0.415298,false,-0.115579,negligible
+100,500,Final Member Count,0,198,1,false,0,negligible
+100,500,Total Proposals,-166.959225,137.607491,0,true,-23.611600,very_large
+100,500,Avg Votes Per Proposal,-242.314500,131.405049,0,true,-34.268445,very_large
+100,500,Participation Trend,-0.249400,100.393108,0.803561,false,-0.035271,negligible
+100,500,Token Concentration Gini,-0.347640,179.558176,0.728518,false,-0.049164,negligible
+100,500,Final Gini,-0.333469,179.505149,0.739170,false,-0.047160,negligible
+100,500,Final Treasury,-5.185864,187.919534,0.000001,true,-0.733392,medium
+100,500,Governance Capture Risk,10.105313,138.241197,0,true,1.429107,very_large
+100,500,Single Entity Control,29.075788,102.141783,0,true,4.111937,very_large
+200,350,Proposal Pass Rate,-27.213572,154.532576,0,true,-3.848580,very_large
+200,350,Average Turnout,7.565628,184.012430,0.000000,true,1.069941,large
+200,350,Voter Participation Rate,11.538736,196.133888,0,true,1.631824,very_large
+200,350,Delegate Concentration,2.642245,190.010848,0.008922,true,0.373670,small
+200,350,Whale Influence,4.396929,192.011441,0.000018,true,0.621820,medium
+200,350,Voter Concentration Gini,-1.480886,189.608186,0.140297,false,-0.209429,small
+200,350,Unique Voter Count,-97.315998,155.910974,0,true,-13.762560,very_large
+200,350,Voter Retention Rate,0.773790,197.959570,0.439978,false,0.109430,negligible
+200,350,Quorum Reach Rate,-0.171779,180.692607,0.863803,false,-0.024293,negligible
+200,350,Final Member Count,0,198,1,false,0,negligible
+200,350,Total Proposals,-66.384076,187.122431,0,true,-9.388126,very_large
+200,350,Avg Votes Per Proposal,-102.042442,166.248660,0,true,-14.430981,very_large
+200,350,Participation Trend,-1.773800,131.401183,0.078413,false,-0.250853,small
+200,350,Token Concentration Gini,-1.040025,194.395810,0.299620,false,-0.147082,negligible
+200,350,Final Gini,-1.045594,194.253461,0.297048,false,-0.147869,negligible
+200,350,Final Treasury,-2.369551,194.803321,0.018787,true,-0.335105,small
+200,350,Governance Capture Risk,3.375571,191.330218,0.000892,true,0.477378,small
+200,350,Single Entity Control,16.341146,141.162193,0,true,2.310987,very_large
+200,500,Proposal Pass Rate,-39.508523,120.674616,0,true,-5.587349,very_large
+200,500,Average Turnout,15.409283,154.657984,0,true,2.179202,very_large
+200,500,Voter Participation Rate,26.577497,181.957033,0,true,3.758626,very_large
+200,500,Delegate Concentration,3.565431,162.979799,0.000477,true,0.504228,medium
+200,500,Whale Influence,5.519426,161.694687,0.000000,true,0.780565,medium
+200,500,Voter Concentration Gini,5.336208,163.692204,0.000000,true,0.754654,medium
+200,500,Unique Voter Count,-148.340757,130.306706,0,true,-20.978551,very_large
+200,500,Voter Retention Rate,2.445201,197.884543,0.015352,true,0.345804,small
+200,500,Quorum Reach Rate,-0.287839,163.570848,0.773834,false,-0.040707,negligible
+200,500,Final Member Count,0,198,1,false,0,negligible
+200,500,Total Proposals,-116.844335,166.880672,0,true,-16.524284,very_large
+200,500,Avg Votes Per Proposal,-167.497629,152.584874,0,true,-23.687742,very_large
+200,500,Participation Trend,-2.227114,110.708997,0.027963,true,-0.314961,small
+200,500,Token Concentration Gini,-0.596212,187.820726,0.551752,false,-0.084317,negligible
+200,500,Final Gini,-0.589566,187.545961,0.556191,false,-0.083377,negligible
+200,500,Final Treasury,-3.644559,191.789634,0.000345,true,-0.515418,medium
+200,500,Governance Capture Risk,4.637301,161.344068,0.000007,true,0.655813,medium
+200,500,Single Entity Control,24.019445,114.811014,0,true,3.396862,very_large
+350,500,Proposal Pass Rate,-16.292616,162.249183,0,true,-2.304124,very_large
+350,500,Average Turnout,8.708667,181.947723,0.000000,true,1.231591,very_large
+350,500,Voter Participation Rate,14.920565,189.989368,0,true,2.110087,very_large
+350,500,Delegate Concentration,0.754171,183.063244,0.451716,false,0.106656,negligible
+350,500,Whale Influence,0.678021,179.148532,0.498633,false,0.095887,negligible
+350,500,Voter Concentration Gini,8.056555,184.191822,0.000000,true,1.139369,large
+350,500,Unique Voter Count,-64.982392,179.437652,0,true,-9.189898,very_large
+350,500,Voter Retention Rate,1.644302,197.707973,0.101703,false,0.232539,small
+350,500,Quorum Reach Rate,-0.131609,192.181292,0.895431,false,-0.018612,negligible
+350,500,Final Member Count,0,198,1,false,0,negligible
+350,500,Total Proposals,-54.674627,189.415188,0,true,-7.732160,very_large
+350,500,Avg Votes Per Proposal,-65.187270,194.058170,0,true,-9.218872,very_large
+350,500,Participation Trend,-0.786008,161.103263,0.433017,false,-0.111158,negligible
+350,500,Token Concentration Gini,0.527679,196.047275,0.598319,false,0.074625,negligible
+350,500,Final Gini,0.542280,196.019589,0.588242,false,0.076690,negligible
+350,500,Final Treasury,-1.312240,197.443908,0.190963,false,-0.185579,negligible
+350,500,Governance Capture Risk,0.995105,179.789212,0.321023,false,0.140729,negligible
+350,500,Single Entity Control,12.497476,162.028652,0,true,1.767410,very_large
+
+# One-Way ANOVA Results
+metric,f_statistic,df_between,df_within,p_value,significant
+Proposal Pass Rate,1363.979311,4,495,0,true
+Average Turnout,122.687617,4,495,0,true
+Voter Participation Rate,616.801394,4,495,0,true
+Delegate Concentration,98.846035,4,495,0,true
+Whale Influence,107.270237,4,495,0,true
+Voter Concentration Gini,47.356035,4,495,0,true
+Unique Voter Count,27411.208708,4,495,0,true
+Voter Retention Rate,14.436483,4,495,0.000000,true
+Quorum Reach Rate,0.459990,4,495,0.765110,false
+Final Member Count,0,4,495,1,false
+Total Proposals,15289.088692,4,495,0,true
+Avg Votes Per Proposal,33926.974602,4,495,0,true
+Participation Trend,0.181698,4,495,0.947866,false
+Token Concentration Gini,15.753090,4,495,0.000000,true
+Final Gini,15.774077,4,495,0.000000,true
+Final Treasury,11.493923,4,495,0.000000,true
+Governance Capture Risk,191.775035,4,495,0,true
+Single Entity Control,906.714293,4,495,0,true
+
+# Power Analysis
+current_runs_per_config,100
+recommended_runs,63
+current_power,0.955248
+minimum_effect_detectable,0.395980

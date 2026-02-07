@@ -1,0 +1,21 @@
+✓ Good sample size (100 runs per config) for statistical analysis.
+
+High variability in "Participation Trend" (CV=27842.5%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Participation Trend" (CV=949.1%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Participation Trend" (CV=216.2%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Participation Trend" (CV=151.5%). Consider longer simulation runs or more controlled initial conditions.
+
+High variability in "Participation Trend" (CV=104.4%). Consider longer simulation runs or more controlled initial conditions.
+
+Non-normal distribution detected for "Delegate Concentration" (skewness=-1.18). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Delegate Concentration" (skewness=-1.57). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Delegate Concentration" (skewness=-2.20). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Delegate Concentration" (skewness=-2.23). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Delegate Concentration" (skewness=-1.82). Bootstrap CIs are included in stats export.

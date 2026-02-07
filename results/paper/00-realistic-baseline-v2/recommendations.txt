@@ -1,0 +1,7 @@
+✓ Good sample size (100 runs per config) for statistical analysis.
+
+High variability in "Whale Influence" (CV=81.3%). Consider longer simulation runs or more controlled initial conditions.
+
+Non-normal distribution detected for "Whale Influence" (skewness=3.38). Bootstrap CIs are included in stats export.
+
+No parameter sweep configured. Add sweep values to compare configurations.
