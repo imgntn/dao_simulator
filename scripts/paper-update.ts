@@ -3,22 +3,37 @@
  * Living Document Paper Updater
  *
  * Updates the academic paper with latest experiment results.
- * Uses Ollama for text generation and ComfyUI/matplotlib for charts.
+ * Supports both local LLM (Ollama) and Claude API for text generation.
  *
  * Usage:
- *   npm run paper:update                    # Update all sections
+ *   npm run paper:update                       # Update all sections with LLM (Ollama default)
+ *   npm run paper:update -- --provider=claude  # Use Claude API instead of Ollama
+ *   npm run paper:update -- --no-llm           # Skip LLM generation, only template vars
  *   npm run paper:update -- --section results  # Update specific section
- *   npm run paper:update -- --charts-only     # Only regenerate charts
- *   npm run paper:update -- --compile         # Compile PDF after update
+ *   npm run paper:update -- --charts-only      # Only regenerate charts
+ *   npm run paper:update -- --compile          # Compile PDF after update
+ *
+ * LLM-updated sections: results, discussion, conclusion, abstract
+ *
+ * Environment variables:
+ *   ANTHROPIC_API_KEY - Required for Claude provider
+ *   LLM_PROVIDER - Default provider (ollama|claude), defaults to ollama
  */
 
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'yaml';
+import { execSync } from 'child_process';
 
 // =============================================================================
 // CONFIGURATION
 // =============================================================================
+
+// =============================================================================
+// LLM PROVIDER TYPES
+// =============================================================================
+
+type LLMProvider = 'ollama' | 'claude';
 
 const CONFIG = {
   paperDir: path.join(process.cwd(), 'paper'),
@@ -27,10 +42,15 @@ const CONFIG = {
   generatedDir: path.join(process.cwd(), 'paper', 'generated'),
   workflowsDir: path.join(process.cwd(), 'paper', 'workflows'),
 
+  // LLM provider configuration - defaults to ollama (local)
+  llm: {
+    provider: (process.env.LLM_PROVIDER || 'ollama') as LLMProvider,
+  },
+
   ollama: {
     baseUrl: 'http://localhost:11434',
-    model: 'deepseek-r1:32b', // ultrathink
-    fallbackModel: 'deepseek-r1:8b',
+    model: 'qwen2.5:32b-instruct',
+    fallbackModel: 'deepseek-r1:32b',
     // Optimized parameters from ultrathink analysis
     parameters: {
       default: {
@@ -56,6 +76,30 @@ const CONFIG = {
         top_p: 0.8,
         top_k: 30,
         repeat_penalty: 1.2, // Highest - methodology should not repeat
+      },
+    },
+  },
+
+  claude: {
+    apiKey: process.env.ANTHROPIC_API_KEY || '',
+    model: 'claude-sonnet-4-20250514',
+    // Claude-specific parameters mapped to task types
+    parameters: {
+      default: {
+        temperature: 0.4,
+        max_tokens: 4096,
+      },
+      findings: {
+        temperature: 0.3,  // Lower for precise statistical claims
+        max_tokens: 2048,
+      },
+      discussion: {
+        temperature: 0.5,  // Higher for interpretation
+        max_tokens: 4096,
+      },
+      methodology: {
+        temperature: 0.25, // Very precise technical language
+        max_tokens: 4096,
       },
     },
   },
@@ -228,11 +272,86 @@ function parseCSV(content: string): any[] {
 }
 
 // =============================================================================
-// OLLAMA INTEGRATION
+// LLM INTEGRATION (Ollama + Claude)
 // =============================================================================
 
 type TaskType = 'default' | 'findings' | 'discussion' | 'methodology';
 
+/**
+ * Query the configured LLM provider (Ollama or Claude)
+ * Routes to the appropriate backend based on CONFIG.llm.provider
+ */
+async function queryLLM(
+  prompt: string,
+  systemPrompt?: string,
+  taskType: TaskType = 'default'
+): Promise<string> {
+  const provider = CONFIG.llm.provider;
+
+  if (provider === 'claude') {
+    return queryClaude(prompt, systemPrompt, taskType);
+  }
+
+  // Default to Ollama (local)
+  return queryOllama(prompt, systemPrompt, taskType);
+}
+
+/**
+ * Query Claude API
+ */
+async function queryClaude(
+  prompt: string,
+  systemPrompt?: string,
+  taskType: TaskType = 'default'
+): Promise<string> {
+  if (!CONFIG.claude.apiKey) {
+    console.error('ANTHROPIC_API_KEY not set. Falling back to Ollama.');
+    return queryOllama(prompt, systemPrompt, taskType);
+  }
+
+  const params = CONFIG.claude.parameters[taskType] || CONFIG.claude.parameters.default;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': CONFIG.claude.apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: CONFIG.claude.model,
+        max_tokens: params.max_tokens,
+        temperature: params.temperature,
+        system: systemPrompt || undefined,
+        messages: [
+          { role: 'user', content: prompt }
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Claude API error (${response.status}): ${errorText}`);
+      console.log('Falling back to Ollama...');
+      return queryOllama(prompt, systemPrompt, taskType);
+    }
+
+    const data = await response.json();
+    // Claude returns content as an array of content blocks
+    const textContent = data.content?.find((c: any) => c.type === 'text');
+    return textContent?.text || '';
+  } catch (error) {
+    console.error('Claude query failed:', error);
+    console.log('Falling back to Ollama...');
+    return queryOllama(prompt, systemPrompt, taskType);
+  }
+}
+
+/**
+ * Query local Ollama instance using streaming mode
+ * (streaming avoids headers timeout since headers are sent immediately)
+ */
 async function queryOllama(
   prompt: string,
   systemPrompt?: string,
@@ -247,6 +366,10 @@ async function queryOllama(
   // Get task-specific parameters
   const params = CONFIG.ollama.parameters[taskType] || CONFIG.ollama.parameters.default;
 
+  // Use AbortController with 10 minute timeout for large models
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10 * 60 * 1000);
+
   try {
     const response = await fetch(`${CONFIG.ollama.baseUrl}/api/chat`, {
       method: 'POST',
@@ -254,7 +377,7 @@ async function queryOllama(
       body: JSON.stringify({
         model: CONFIG.ollama.model,
         messages,
-        stream: false,
+        stream: true, // Use streaming to avoid headers timeout
         options: {
           temperature: params.temperature,
           top_p: params.top_p,
@@ -262,33 +385,92 @@ async function queryOllama(
           repeat_penalty: params.repeat_penalty || 1.1,
         },
       }),
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       // Try fallback model
-      const fallbackResponse = await fetch(`${CONFIG.ollama.baseUrl}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: CONFIG.ollama.fallbackModel,
-          messages,
-          stream: false,
-        }),
-      });
-
-      if (!fallbackResponse.ok) {
-        throw new Error(`Ollama error: ${fallbackResponse.status}`);
-      }
-      const data = await fallbackResponse.json();
-      return data.message?.content || '';
+      console.log(`Primary model failed, trying fallback: ${CONFIG.ollama.fallbackModel}`);
+      return queryOllamaWithModel(CONFIG.ollama.fallbackModel, messages, params);
     }
 
-    const data = await response.json();
-    return data.message?.content || '';
+    // Collect streaming response
+    return await collectStreamResponse(response);
   } catch (error) {
+    clearTimeout(timeoutId);
     console.error('Ollama query failed:', error);
-    return '[OLLAMA_UNAVAILABLE]';
+    return '[LLM_UNAVAILABLE]';
   }
+}
+
+/**
+ * Helper to query Ollama with a specific model
+ */
+async function queryOllamaWithModel(
+  model: string,
+  messages: any[],
+  params: any
+): Promise<string> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10 * 60 * 1000);
+
+  try {
+    const response = await fetch(`${CONFIG.ollama.baseUrl}/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model,
+        messages,
+        stream: true,
+        options: params,
+      }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`Ollama error: ${response.status}`);
+    }
+
+    return await collectStreamResponse(response);
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
+}
+
+/**
+ * Collect streaming response from Ollama into a single string
+ */
+async function collectStreamResponse(response: Response): Promise<string> {
+  const reader = response.body?.getReader();
+  if (!reader) return '';
+
+  const decoder = new TextDecoder();
+  let content = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    const chunk = decoder.decode(value, { stream: true });
+    // Each line is a JSON object with the streaming response
+    const lines = chunk.split('\n').filter(line => line.trim());
+
+    for (const line of lines) {
+      try {
+        const json = JSON.parse(line);
+        if (json.message?.content) {
+          content += json.message.content;
+        }
+      } catch {
+        // Ignore parse errors for partial chunks
+      }
+    }
+  }
+
+  return content;
 }
 
 async function generateFinding(data: any, context: string): Promise<string> {
@@ -310,7 +492,7 @@ Study context: ${context}
 
 Write ONE finding sentence (20-35 words) that states the key relationship and includes the primary statistic.`;
 
-  return queryOllama(prompt, systemPrompt, 'findings');
+  return queryLLM(prompt, systemPrompt, 'findings');
 }
 
 async function generateSectionText(
@@ -345,7 +527,7 @@ ${JSON.stringify(data, null, 2)}
 
 Return the updated LaTeX section text with all numbers updated.`;
 
-  return queryOllama(prompt, systemPrompt, taskType);
+  return queryLLM(prompt, systemPrompt, taskType);
 }
 
 // =============================================================================
@@ -365,7 +547,6 @@ async function generateChartWithPython(
   fs.writeFileSync(scriptPath, pythonScript);
 
   try {
-    const { execSync } = require('child_process');
     execSync(`python "${scriptPath}"`, { stdio: 'inherit' });
     return true;
   } catch (error) {
@@ -398,7 +579,6 @@ print('Placeholder chart saved to ${outputPath.replace(/\\/g, '/')}')
   fs.writeFileSync(scriptPath, pythonScript);
 
   try {
-    const { execSync } = require('child_process');
     execSync(`python "${scriptPath}"`, { stdio: 'inherit' });
     return true;
   } catch (error) {
@@ -688,25 +868,98 @@ function buildRqChecklistSection(metadata: PaperMetadata, sourcePath?: string): 
   console.log(`Generated: ${path.basename(targetPath)}`);
 }
 
+// Sections that should be updated with LLM-generated content
+const LLM_SECTIONS = ['results', 'discussion', 'conclusion', 'abstract'];
+
+// Map sections to relevant experiment data
+function getRelevantData(sectionName: string, results: ExperimentResults[]): any {
+  const name = sectionName.toLowerCase();
+
+  // Aggregate key metrics from all experiments
+  const aggregatedData: any = {
+    experiments: results.map(r => r.name),
+    totalRuns: results.reduce((sum, r) => sum + (r.summary?.totalRuns || 0), 0),
+    summaries: {},
+    keyMetrics: {},
+  };
+
+  for (const result of results) {
+    aggregatedData.summaries[result.name] = result.summary;
+
+    // Extract key metrics from stats
+    if (result.stats.length > 0) {
+      aggregatedData.keyMetrics[result.name] = result.stats.slice(0, 5); // First 5 stat rows
+    }
+  }
+
+  // Section-specific data filtering
+  if (name.includes('result')) {
+    // Results section gets all experimental data
+    return aggregatedData;
+  } else if (name.includes('discussion')) {
+    // Discussion gets summaries and key findings
+    return {
+      experiments: aggregatedData.experiments,
+      summaries: aggregatedData.summaries,
+      totalRuns: aggregatedData.totalRuns,
+    };
+  } else if (name.includes('conclusion') || name.includes('abstract')) {
+    // High-level summary only
+    return {
+      experimentCount: results.length,
+      totalRuns: aggregatedData.totalRuns,
+      experimentNames: aggregatedData.experiments,
+    };
+  }
+
+  return aggregatedData;
+}
+
 async function updateSection(
   sectionPath: string,
   results: ExperimentResults[],
-  metadata: PaperMetadata
+  metadata: PaperMetadata,
+  useLLM: boolean = false
 ): Promise<void> {
   if (!fs.existsSync(sectionPath)) {
     console.log(`Section not found: ${sectionPath}`);
     return;
   }
 
+  const sectionName = path.basename(sectionPath, '.tex');
   let content = fs.readFileSync(sectionPath, 'utf8');
 
-  // Basic variable replacement
+  // Basic variable replacement (always done)
   content = replaceTemplateVars(content, {
     TIMESTAMP: metadata.timestamp,
     EXPERIMENT_COUNT: metadata.experimentCount,
     TOTAL_RUNS: metadata.totalRuns,
-    // Add more as needed
   });
+
+  // LLM-based content generation for specific sections
+  const shouldUseLLM = useLLM && LLM_SECTIONS.some(s => sectionName.includes(s));
+
+  if (shouldUseLLM) {
+    console.log(`  Generating LLM content for ${sectionName}...`);
+    const relevantData = getRelevantData(sectionName, results);
+
+    try {
+      const updatedContent = await generateSectionText(sectionName, relevantData, content);
+
+      // Validate the response looks like LaTeX
+      if (updatedContent &&
+          updatedContent.length > 100 &&
+          !updatedContent.includes('[LLM_UNAVAILABLE]') &&
+          (updatedContent.includes('\\') || updatedContent.includes('section'))) {
+        content = updatedContent;
+        console.log(`  LLM updated: ${sectionName} (${content.length} chars)`);
+      } else {
+        console.log(`  LLM response invalid, keeping original: ${sectionName}`);
+      }
+    } catch (error) {
+      console.error(`  LLM generation failed for ${sectionName}:`, error);
+    }
+  }
 
   // Save updated content
   fs.writeFileSync(sectionPath, content);
@@ -802,6 +1055,8 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const chartsOnly = args.includes('--charts-only');
   const compile = args.includes('--compile');
+  const noLLM = args.includes('--no-llm');
+  const useLLM = !noLLM; // LLM generation is ON by default
   const sectionArg = args.find(a => a.startsWith('--section='));
   const targetSection = sectionArg?.split('=')[1];
   const paperDirArg = (() => {
@@ -826,11 +1081,39 @@ async function main(): Promise<void> {
     return '';
   })();
 
+  // Parse LLM provider argument
+  const providerArg = (() => {
+    const inline = args.find(a => a.startsWith('--provider='));
+    if (inline) return inline.split('=')[1] as LLMProvider;
+    const idx = args.findIndex(a => a === '--provider');
+    if (idx !== -1) return args[idx + 1] as LLMProvider;
+    return null;
+  })();
+
+  // Override provider if specified via CLI
+  if (providerArg && (providerArg === 'ollama' || providerArg === 'claude')) {
+    CONFIG.llm.provider = providerArg;
+  }
+
   if (paperDirArg) {
     applyPaperDirOverride(paperDirArg);
   }
 
   console.log('=== Living Document Paper Updater ===\n');
+
+  // Show LLM provider info
+  const provider = CONFIG.llm.provider;
+  if (provider === 'claude') {
+    const hasKey = !!CONFIG.claude.apiKey;
+    console.log(`LLM Provider: Claude (${CONFIG.claude.model})`);
+    if (!hasKey) {
+      console.warn('Warning: ANTHROPIC_API_KEY not set, will fall back to Ollama if needed\n');
+    }
+  } else {
+    console.log(`LLM Provider: Ollama (${CONFIG.ollama.model})`);
+    console.log(`  Fallback: ${CONFIG.ollama.fallbackModel}`);
+  }
+  console.log('');
 
   // Load results
   console.log('Loading experiment results...');
@@ -870,6 +1153,11 @@ async function main(): Promise<void> {
 
   // Update sections
   console.log('=== Updating Paper Sections ===\n');
+  if (useLLM) {
+    console.log(`LLM content generation ENABLED for: ${LLM_SECTIONS.join(', ')}\n`);
+  } else {
+    console.log('LLM content generation DISABLED (--no-llm flag)\n');
+  }
 
   const sectionsDir = path.join(CONFIG.paperDir, 'sections');
   const sections = fs.readdirSync(sectionsDir).filter(f => f.endsWith('.tex'));
@@ -878,7 +1166,7 @@ async function main(): Promise<void> {
     if (targetSection && !section.includes(targetSection)) continue;
 
     const sectionPath = path.join(sectionsDir, section);
-    await updateSection(sectionPath, results, metadata);
+    await updateSection(sectionPath, results, metadata, useLLM);
   }
 
   // Update main.tex metadata
@@ -901,7 +1189,6 @@ async function main(): Promise<void> {
   if (compile) {
     console.log('=== Compiling PDF ===\n');
     try {
-      const { execSync } = require('child_process');
       process.chdir(CONFIG.paperDir);
       execSync('pdflatex -interaction=nonstopmode main.tex', { stdio: 'inherit' });
       execSync('bibtex main', { stdio: 'inherit' });
