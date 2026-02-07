@@ -1,5 +1,6 @@
 /**
  * Sybil Attacker Agent - Creates Puppet Accounts for Vote Manipulation
+ * Upgraded with Q-learning to learn optimal attack timing and strategies
  *
  * Simulates a sybil attack where a single entity creates multiple
  * accounts to manipulate governance votes. Used for testing attack
@@ -10,6 +11,9 @@ import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
 import type { Proposal } from '../data-structures/proposal';
 import { random, randomChoice, randomBool } from '../utils/random';
+import { LearningMixin, LearningConfig, LearningState } from './learning';
+import { StateDiscretizer } from './learning';
+import { settings } from '../config/settings';
 
 // =============================================================================
 // TYPES
@@ -42,11 +46,20 @@ export interface SybilAttackStats {
   successfulManipulations: number;
 }
 
+type SybilAction = 'attack_now' | 'attack_conservative' | 'build_puppets' | 'probe_defenses' | 'wait' | 'hold';
+
 // =============================================================================
 // SYBIL ATTACKER AGENT
 // =============================================================================
 
 export class SybilAttacker extends DAOMember {
+  static readonly ACTIONS: readonly SybilAction[] = [
+    'attack_now', 'attack_conservative', 'build_puppets', 'probe_defenses', 'wait', 'hold'
+  ];
+
+  // Learning infrastructure
+  learning: LearningMixin;
+
   puppets: Map<string, PuppetAccount> = new Map();
   attackConfig: SybilAttackConfig;
   attacksInitiated: number = 0;
@@ -62,6 +75,12 @@ export class SybilAttacker extends DAOMember {
     votingSchedule: Map<string, number>;  // puppetId -> step to vote
   } | null = null;
 
+  // Learning tracking
+  lastAction: SybilAction | null = null;
+  lastState: string | null = null;
+  lastTokens: number;
+  attackHistory: Array<{ success: boolean; profit: number }> = [];
+
   constructor(
     uniqueId: string,
     model: DAOModel,
@@ -71,6 +90,7 @@ export class SybilAttacker extends DAOMember {
     config?: Partial<SybilAttackConfig>
   ) {
     super(uniqueId, model, tokens, reputation, location);
+    this.lastTokens = tokens;
 
     this.attackConfig = {
       maxPuppets: 10,
@@ -81,6 +101,217 @@ export class SybilAttacker extends DAOMember {
       targetedProposals: false,
       ...config,
     };
+
+    // Initialize learning
+    const learningConfig: Partial<LearningConfig> = {
+      learningRate: settings.learning_global_learning_rate,
+      discountFactor: settings.learning_discount_factor,
+      explorationRate: settings.learning_exploration_rate,
+      explorationDecay: settings.learning_exploration_decay,
+      minExploration: settings.learning_min_exploration,
+      qBounds: [-50, 50],
+    };
+
+    this.learning = new LearningMixin(learningConfig);
+  }
+
+  /**
+   * Get state representation for attack decisions
+   */
+  private getAttackState(): string {
+    if (!this.model.dao) return 'none|weak|ready';
+
+    // Opportunity state
+    const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+    const swingableProposals = openProposals.filter(p => {
+      const totalPuppetTokens = this.getTotalPuppetTokens();
+      const margin = Math.abs(p.votesFor - p.votesAgainst);
+      return totalPuppetTokens > margin * 1.5;
+    });
+    const opportunityState = swingableProposals.length === 0 ? 'none' :
+                             swingableProposals.length < 2 ? 'few' :
+                             swingableProposals.length < 4 ? 'good' : 'excellent';
+
+    // Puppet strength state
+    const activePuppets = Array.from(this.puppets.values()).filter(p => p.active).length;
+    const strengthRatio = activePuppets / Math.max(1, this.attackConfig.maxPuppets);
+    const strengthState = strengthRatio < 0.3 ? 'weak' :
+                          strengthRatio < 0.6 ? 'moderate' :
+                          strengthRatio < 0.9 ? 'strong' : 'max';
+
+    // Attack cooldown state
+    const cooldownState = this.currentAttack ? 'attacking' :
+                          this.attacksInitiated === 0 ? 'ready' :
+                          this.successfulManipulations / Math.max(1, this.attacksInitiated) > 0.5 ? 'hot' : 'cool';
+
+    return StateDiscretizer.combineState(opportunityState, strengthState, cooldownState);
+  }
+
+  /**
+   * Choose attack action using Q-learning
+   */
+  private chooseAttackAction(): SybilAction {
+    const state = this.getAttackState();
+
+    if (!settings.learning_enabled) {
+      return this.heuristicAttackAction();
+    }
+
+    return this.learning.selectAction(
+      state,
+      [...SybilAttacker.ACTIONS]
+    ) as SybilAction;
+  }
+
+  /**
+   * Heuristic-based attack action (fallback)
+   */
+  private heuristicAttackAction(): SybilAction {
+    if (!this.model.dao) return 'hold';
+
+    // If attacking, continue
+    if (this.currentAttack) return 'hold';
+
+    const activePuppets = Array.from(this.puppets.values()).filter(p => p.active).length;
+
+    // Build puppets if under limit
+    if (activePuppets < this.attackConfig.maxPuppets * 0.5 && this.tokens > 50) {
+      return 'build_puppets';
+    }
+
+    // Look for attack opportunities
+    const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+    if (openProposals.length > 0 && activePuppets >= 3) {
+      if (random() < 0.3) {
+        return 'attack_now';
+      }
+      return 'attack_conservative';
+    }
+
+    return 'wait';
+  }
+
+  /**
+   * Execute attack action and return reward
+   */
+  private executeAttackAction(action: SybilAction): number {
+    if (!this.model.dao) return 0;
+
+    let reward = 0;
+
+    switch (action) {
+      case 'attack_now': {
+        // Aggressive attack on best opportunity
+        const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+        if (openProposals.length > 0 && !this.currentAttack) {
+          const bestTarget = this.findBestTarget(openProposals);
+          if (bestTarget) {
+            this.initiateAttack(bestTarget);
+            reward = 0.3;
+          }
+        }
+        break;
+      }
+      case 'attack_conservative': {
+        // Only attack if very high chance of success
+        const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+        const safeTargets = openProposals.filter(p => {
+          const totalPuppetTokens = this.getTotalPuppetTokens();
+          const margin = Math.abs(p.votesFor - p.votesAgainst);
+          return totalPuppetTokens > margin * 3; // Much stronger margin requirement
+        });
+        if (safeTargets.length > 0 && !this.currentAttack) {
+          this.initiateAttack(randomChoice(safeTargets));
+          reward = 0.2;
+        }
+        break;
+      }
+      case 'build_puppets': {
+        const activePuppets = Array.from(this.puppets.values()).filter(p => p.active).length;
+        if (activePuppets < this.attackConfig.maxPuppets && this.tokens > 10) {
+          this.createPuppet();
+          reward = 0.1;
+        }
+        break;
+      }
+      case 'probe_defenses': {
+        // Cast a single vote to test detection systems
+        if (randomBool(0.5)) {
+          this.voteOnRandomProposal();
+        }
+        reward = 0.05;
+        break;
+      }
+      case 'wait':
+        reward = 0;
+        break;
+      case 'hold':
+        return 0;
+    }
+
+    return reward;
+  }
+
+  /**
+   * Find the best proposal target for attack
+   */
+  private findBestTarget(proposals: Proposal[]): Proposal | null {
+    const totalPuppetTokens = this.getTotalPuppetTokens();
+
+    let bestTarget: Proposal | null = null;
+    let bestScore = 0;
+
+    for (const proposal of proposals) {
+      if (this.votes.has(proposal.uniqueId)) continue;
+
+      const margin = Math.abs(proposal.votesFor - proposal.votesAgainst);
+      const canSwing = totalPuppetTokens > margin * 1.5;
+      if (!canSwing) continue;
+
+      // Score based on how easily we can swing it
+      const score = totalPuppetTokens / Math.max(1, margin);
+      if (score > bestScore) {
+        bestScore = score;
+        bestTarget = proposal;
+      }
+    }
+
+    return bestTarget;
+  }
+
+  /**
+   * Update Q-values based on attack outcomes
+   */
+  private updateLearning(): void {
+    if (!settings.learning_enabled || !this.lastAction || !this.lastState) return;
+
+    // Calculate reward from attack success and token changes
+    const tokenChange = this.tokens - this.lastTokens;
+    let reward = tokenChange / Math.max(100, this.lastTokens) * 5;
+
+    // Bonus for successful attacks
+    const recentAttacks = this.attackHistory.slice(-5);
+    const successRate = recentAttacks.length > 0
+      ? recentAttacks.filter(a => a.success).length / recentAttacks.length
+      : 0;
+    reward += successRate * 3;
+
+    reward = Math.max(-10, Math.min(10, reward));
+
+    const currentState = this.getAttackState();
+
+    this.learning.update(
+      this.lastState,
+      this.lastAction,
+      reward,
+      currentState,
+      [...SybilAttacker.ACTIONS]
+    );
+
+    // Limit history size
+    if (this.attackHistory.length > 20) {
+      this.attackHistory.splice(0, this.attackHistory.length - 20);
+    }
   }
 
   /**
@@ -89,15 +320,26 @@ export class SybilAttacker extends DAOMember {
   step(): void {
     if (!this.model.dao) return;
 
-    // Create puppets if under limit
-    this.managePuppets();
+    // Update learning from previous step
+    this.updateLearning();
 
-    // Check for active attack
+    // Track state before action
+    this.lastTokens = this.tokens;
+    this.lastState = this.getAttackState();
+
+    // Check for active attack first
     if (this.currentAttack) {
       this.executeAttackStep();
     } else {
-      // Look for opportunities to attack
-      this.scanForOpportunities();
+      // Choose and execute action using Q-learning
+      const action = this.chooseAttackAction();
+      this.executeAttackAction(action);
+      this.lastAction = action;
+
+      // Legacy behavior: manage puppets if not building via action
+      if (action !== 'build_puppets') {
+        this.managePuppets();
+      }
     }
 
     // Basic member behavior for cover
@@ -522,6 +764,60 @@ export class SybilAttacker extends DAOMember {
       attacksInitiated: this.attacksInitiated,
       successfulManipulations: this.successfulManipulations,
       targetProposalIds: Array.from(this.targetProposalIds),
+    };
+  }
+
+  /**
+   * Signal end of episode
+   */
+  endEpisode(): void {
+    this.learning.endEpisode();
+  }
+
+  /**
+   * Export learning state for checkpoints
+   */
+  exportLearningState(): LearningState {
+    return this.learning.exportLearningState();
+  }
+
+  /**
+   * Import learning state from checkpoint
+   */
+  importLearningState(state: LearningState): void {
+    this.learning.importLearningState(state);
+  }
+
+  /**
+   * Get learning and attack statistics
+   */
+  getLearningStats(): {
+    qTableSize: number;
+    stateCount: number;
+    episodeCount: number;
+    totalReward: number;
+    explorationRate: number;
+    attacksInitiated: number;
+    successfulManipulations: number;
+    successRate: number;
+    puppetCount: number;
+    tokensControlled: number;
+  } {
+    const successRate = this.attacksInitiated > 0
+      ? this.successfulManipulations / this.attacksInitiated
+      : 0;
+
+    return {
+      qTableSize: this.learning.getQTableSize(),
+      stateCount: this.learning.getStateCount(),
+      episodeCount: this.learning.getEpisodeCount(),
+      totalReward: this.learning.getTotalReward(),
+      explorationRate: this.learning.getExplorationRate(),
+      attacksInitiated: this.attacksInitiated,
+      successfulManipulations: this.successfulManipulations,
+      successRate,
+      puppetCount: this.puppets.size,
+      tokensControlled: this.getTotalControlledTokens(),
     };
   }
 }

@@ -1,19 +1,13 @@
 // RL Trader Agent - uses Q-learning to optimize trading strategy
-// Port from agents/rl_trader.py
+// Refactored to use LearningMixin for standardized Q-learning
 
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
-import { random, randomChoice } from '../utils/random';
+import { LearningMixin, LearningConfig, LearningState } from './learning';
+import { StateDiscretizer } from './learning';
+import { settings } from '../config/settings';
 
 type Action = 'buy' | 'sell' | 'add_lp' | 'remove_lp' | 'hold';
-type State = string; // Encoded as "price_bucket,depth_bucket,trend"
-
-// Q-learning configuration
-const DEFAULT_LEARNING_RATE = 0.1;
-const DEFAULT_DISCOUNT = 0.9;
-const DEFAULT_EPSILON = 0.1;
-const MAX_Q_VALUE = 50;
-const MIN_Q_VALUE = -50;
 
 // Trade sizing
 const TRADE_FRACTION = 0.1;  // Trade 10% of holdings
@@ -22,16 +16,14 @@ const MIN_TRADE_AMOUNT = 0.1;
 export class RLTrader extends DAOMember {
   static readonly ACTIONS: readonly Action[] = ['buy', 'sell', 'add_lp', 'remove_lp', 'hold'];
 
-  learningRate: number;
-  discount: number;
-  epsilon: number;
-  qTable: Map<string, number> = new Map(); // key: "state,action"
-  prevState: State | null = null;
-  prevAction: Action | null = null;
+  // Learning infrastructure
+  learning: LearningMixin;
+
+  // Trading state
   prevPrice: number | null = null;
   prevTokens: number;
-  totalReward: number = 0;
   tradeCount: number = 0;
+  priceHistory: number[] = [];
 
   constructor(
     uniqueId: string,
@@ -40,113 +32,57 @@ export class RLTrader extends DAOMember {
     reputation: number = 50,
     location: string = 'node_0',
     votingStrategy?: string,
-    learningRate: number = DEFAULT_LEARNING_RATE,
-    discount: number = DEFAULT_DISCOUNT,
-    epsilon: number = DEFAULT_EPSILON
+    learningRate?: number,
+    discount?: number,
+    epsilon?: number
   ) {
     super(uniqueId, model, tokens, reputation, location, votingStrategy);
-    this.learningRate = Math.max(0, Math.min(1, learningRate));
-    this.discount = Math.max(0, Math.min(1, discount));
-    this.epsilon = Math.max(0, Math.min(1, epsilon));
+
+    // Create learning config from parameters or settings
+    const config: Partial<LearningConfig> = {
+      learningRate: learningRate ?? settings.learning_global_learning_rate,
+      discountFactor: discount ?? settings.learning_discount_factor,
+      explorationRate: epsilon ?? settings.learning_exploration_rate,
+      explorationDecay: settings.learning_exploration_decay,
+      minExploration: settings.learning_min_exploration,
+      qBounds: [-50, 50],
+    };
+
+    this.learning = new LearningMixin(config);
     this.prevTokens = tokens;
   }
 
   /**
-   * Get current state representation with bucketed values
+   * Get current state representation using StateDiscretizer
    */
-  private getState(price: number): State {
-    if (!this.model.dao) return '0,0,neutral';
+  private getState(price: number): string {
+    if (!this.model.dao) return 'normal|medium|stable';
 
-    // Bucket price into categories
-    const priceBucket = price < 0.5 ? 'low' : price < 1.5 ? 'mid' : 'high';
-
-    // Get first pool's depth
+    // Get pool depth
     const pools = this.model.dao.treasury.pools;
     const firstPool = pools.values().next().value;
-    const depth = firstPool
-      ? firstPool.reserveA + firstPool.reserveB
-      : 0;
+    const reserveA = firstPool?.reserveA ?? 0;
+    const reserveB = firstPool?.reserveB ?? 0;
 
-    // Bucket depth
-    const depthBucket = depth < 100 ? 'shallow' : depth < 500 ? 'medium' : 'deep';
-
-    // Determine trend based on previous state
-    const trend = this.prevPrice !== null
-      ? price > this.prevPrice ? 'up'
-        : price < this.prevPrice ? 'down' : 'flat'
-      : 'neutral';
-
-    return `${priceBucket},${depthBucket},${trend}`;
+    // Use StateDiscretizer for consistent bucketing
+    return StateDiscretizer.createTradingState(
+      price,
+      1.0, // baseline
+      reserveA,
+      reserveB,
+      this.priceHistory
+    );
   }
 
   /**
-   * Choose action using epsilon-greedy strategy
+   * Execute trading action and return reward
    */
-  private chooseAction(state: State): Action {
-    // Epsilon-greedy exploration
-    if (random() < this.epsilon) {
-      return randomChoice([...RLTrader.ACTIONS]);
-    }
-
-    // Exploitation: choose action with highest Q-value
-    let bestAction: Action = 'hold';
-    let bestQValue = this.qTable.get(`${state},hold`) || 0;
-
-    for (const action of RLTrader.ACTIONS) {
-      const qValue = this.qTable.get(`${state},${action}`) || 0;
-      if (qValue > bestQValue) {
-        bestQValue = qValue;
-        bestAction = action;
-      }
-    }
-
-    return bestAction;
-  }
-
-  /**
-   * Update Q-value using Q-learning algorithm with bounded values
-   */
-  private updateQ(reward: number, newState: State): void {
-    if (this.prevState === null || this.prevAction === null) {
-      return;
-    }
-
-    const oldKey = `${this.prevState},${this.prevAction}`;
-    const oldQ = this.qTable.get(oldKey) || 0;
-
-    // Find max Q-value for new state
-    let maxFutureQ = -Infinity;
-    for (const action of RLTrader.ACTIONS) {
-      const q = this.qTable.get(`${newState},${action}`) || 0;
-      if (q > maxFutureQ) {
-        maxFutureQ = q;
-      }
-    }
-    if (!Number.isFinite(maxFutureQ)) maxFutureQ = 0;
-
-    // Q-learning update: Q(s,a) = Q(s,a) + α * (r + γ * max(Q(s',a')) - Q(s,a))
-    let newQ = oldQ + this.learningRate * (reward + this.discount * maxFutureQ - oldQ);
-
-    // Clamp Q-values
-    newQ = Math.max(MIN_Q_VALUE, Math.min(MAX_Q_VALUE, newQ));
-
-    this.qTable.set(oldKey, newQ);
-    this.totalReward += reward;
-  }
-
-  step(): void {
-    if (!this.model.dao) return;
-
-    // RL traders participate in governance like other token holders
-    this.voteOnRandomProposal();
-
-    const price = this.model.dao.treasury.getTokenPrice('DAO_TOKEN');
-    const state = this.getState(price);
-    const action = this.chooseAction(state);
-    let reward = 0;
+  private executeAction(action: Action): number {
+    if (!this.model.dao) return -0.05;
 
     const treasury = this.model.dao.treasury;
     const tradeAmount = Math.max(MIN_TRADE_AMOUNT, this.tokens * TRADE_FRACTION);
+    let reward = 0;
 
     try {
       switch (action) {
@@ -219,13 +155,116 @@ export class RLTrader extends DAOMember {
     }
 
     // Clamp reward
-    reward = Math.max(-1, Math.min(1, reward));
+    return Math.max(-1, Math.min(1, reward));
+  }
 
-    this.updateQ(reward, state);
-    this.prevState = state;
-    this.prevAction = action;
+  step(): void {
+    if (!this.model.dao) return;
+
+    // RL traders participate in governance like other token holders
+    this.voteOnRandomProposal();
+
+    // Check if learning is enabled
+    if (!settings.learning_enabled) {
+      // Fall back to simple hold behavior
+      this.markActive();
+      return;
+    }
+
+    const price = this.model.dao.treasury.getTokenPrice('DAO_TOKEN');
+
+    // Update price history for trend detection
+    this.priceHistory.push(price);
+    if (this.priceHistory.length > 10) {
+      this.priceHistory.shift();
+    }
+
+    const state = this.getState(price);
+
+    // Select action using learning mixin
+    const action = this.learning.selectAction(
+      state,
+      [...RLTrader.ACTIONS]
+    ) as Action;
+
+    // Execute action and get reward
+    const reward = this.executeAction(action);
+
+    // Get next state for Q-update
+    const nextPrice = this.model.dao.treasury.getTokenPrice('DAO_TOKEN');
+    const nextState = this.getState(nextPrice);
+
+    // Update Q-values
+    this.learning.update(
+      state,
+      action,
+      reward,
+      nextState,
+      [...RLTrader.ACTIONS]
+    );
+
+    // Update tracking
     this.prevPrice = price;
     this.prevTokens = this.tokens;
     this.markActive();
+  }
+
+  /**
+   * Signal end of episode (e.g., simulation reset)
+   */
+  endEpisode(): void {
+    this.learning.endEpisode();
+  }
+
+  /**
+   * Export learning state for checkpoints
+   */
+  exportLearningState(): LearningState {
+    return this.learning.exportLearningState();
+  }
+
+  /**
+   * Import learning state from checkpoint
+   */
+  importLearningState(state: LearningState): void {
+    this.learning.importLearningState(state);
+  }
+
+  /**
+   * Get learning statistics
+   */
+  getLearningStats(): {
+    qTableSize: number;
+    stateCount: number;
+    episodeCount: number;
+    totalReward: number;
+    explorationRate: number;
+    tradeCount: number;
+  } {
+    return {
+      qTableSize: this.learning.getQTableSize(),
+      stateCount: this.learning.getStateCount(),
+      episodeCount: this.learning.getEpisodeCount(),
+      totalReward: this.learning.getTotalReward(),
+      explorationRate: this.learning.getExplorationRate(),
+      tradeCount: this.tradeCount,
+    };
+  }
+
+  // Legacy compatibility getters
+  get epsilon(): number {
+    return this.learning.getExplorationRate();
+  }
+
+  get totalReward(): number {
+    return this.learning.getTotalReward();
+  }
+
+  get learningRate(): number {
+    return this.learning.getConfig().learningRate;
+  }
+
+  get discount(): number {
+    return this.learning.getConfig().discountFactor;
   }
 }

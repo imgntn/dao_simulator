@@ -3,12 +3,18 @@
  *
  * Represents foundation entities like Arbitrum Foundation and Optimism Foundation.
  * Handles operational roles, grant administration, and governance support.
+ * Upgraded with Q-learning for optimal grant administration and governance strategies.
  */
 
 import { DAOMember } from './base';
 import type { Proposal } from '../data-structures/proposal';
 import type { DAOModel } from '../engine/model';
 import { random, randomChoice, randomInt } from '../utils/random';
+import { LearningMixin, LearningConfig, LearningState } from './learning';
+import { StateDiscretizer } from './learning';
+import { settings } from '../config/settings';
+
+type FoundationActionType = 'approve_large_grant' | 'approve_small_grant' | 'support_governance' | 'publish_update' | 'sponsor_proposal' | 'hold';
 
 export type FoundationType =
   | 'arbitrum'   // Arbitrum Foundation
@@ -32,6 +38,13 @@ export interface FoundationAction {
 }
 
 export class FoundationAgent extends DAOMember {
+  static readonly ACTIONS: readonly FoundationActionType[] = [
+    'approve_large_grant', 'approve_small_grant', 'support_governance', 'publish_update', 'sponsor_proposal', 'hold'
+  ];
+
+  // Learning infrastructure
+  learning: LearningMixin;
+
   // Foundation properties
   foundationType: FoundationType;
   foundationName: string;
@@ -51,6 +64,13 @@ export class FoundationAgent extends DAOMember {
   grantsApproved: number = 0;
   proposalsSupported: number = 0;
   private sponsoredProposalIds: Set<string> = new Set();
+
+  // Learning tracking
+  lastLearningAction: FoundationActionType | null = null;
+  lastState: string | null = null;
+  largeGrantsApproved: number = 0;
+  smallGrantsApproved: number = 0;
+  updatesPublished: number = 0;
 
   constructor(
     uniqueId: string,
@@ -77,6 +97,18 @@ export class FoundationAgent extends DAOMember {
 
     // Initialize grant programs
     this.initializeGrantPrograms();
+
+    // Initialize learning
+    const config: Partial<LearningConfig> = {
+      learningRate: settings.learning_global_learning_rate,
+      discountFactor: settings.learning_discount_factor,
+      explorationRate: settings.learning_exploration_rate,
+      explorationDecay: settings.learning_exploration_decay,
+      minExploration: settings.learning_min_exploration,
+      qBounds: [-50, 50],
+    };
+
+    this.learning = new LearningMixin(config);
   }
 
   /**
@@ -145,27 +177,220 @@ export class FoundationAgent extends DAOMember {
     });
   }
 
+  /**
+   * Get state representation for foundation decisions
+   */
+  private getFoundationState(): string {
+    // Budget state
+    const remainingBudget = this.getRemainingBudget();
+    const totalBudget = this.getTotalBudget();
+    const budgetRatio = remainingBudget / Math.max(1, totalBudget);
+    const budgetState = budgetRatio < 0.2 ? 'depleted' :
+                        budgetRatio < 0.5 ? 'low' :
+                        budgetRatio < 0.8 ? 'adequate' : 'flush';
+
+    // Governance activity state
+    const openProposals = this.model.dao?.proposals.filter(p => p.status === 'open').length || 0;
+    const activityState = openProposals === 0 ? 'quiet' :
+                          openProposals < 5 ? 'normal' :
+                          openProposals < 10 ? 'active' : 'busy';
+
+    // Grant velocity state
+    const grantRate = this.grantsApproved / Math.max(1, this.model.currentStep / 50);
+    const velocityState = grantRate < 0.5 ? 'slow' :
+                          grantRate < 1.5 ? 'moderate' :
+                          grantRate < 3.0 ? 'fast' : 'rapid';
+
+    return StateDiscretizer.combineState(budgetState, activityState, velocityState);
+  }
+
+  /**
+   * Get total budget across all grant programs
+   */
+  private getTotalBudget(): number {
+    let total = 0;
+    for (const program of this.grantPrograms.values()) {
+      total += program.budget;
+    }
+    return total;
+  }
+
+  /**
+   * Choose foundation action using Q-learning
+   */
+  private chooseFoundationAction(): FoundationActionType {
+    const state = this.getFoundationState();
+
+    if (!settings.learning_enabled) {
+      return this.heuristicFoundationAction();
+    }
+
+    return this.learning.selectAction(
+      state,
+      [...FoundationAgent.ACTIONS]
+    ) as FoundationActionType;
+  }
+
+  /**
+   * Heuristic-based foundation action (fallback)
+   */
+  private heuristicFoundationAction(): FoundationActionType {
+    if (!this.model.dao) return 'hold';
+
+    const remainingBudget = this.getRemainingBudget();
+    const openProposals = this.model.dao.proposals.filter(
+      p => p.status === 'open' && !this.votes.has(p.uniqueId)
+    );
+
+    // Low budget -> small grants only
+    if (remainingBudget < 10000) {
+      return 'approve_small_grant';
+    }
+
+    // High activity -> support governance
+    if (openProposals.length > 5) {
+      return 'support_governance';
+    }
+
+    // Transparency drive
+    if (this.transparency > 0.8 && random() < 0.3) {
+      return 'publish_update';
+    }
+
+    // Default to grants
+    return random() < 0.5 ? 'approve_large_grant' : 'approve_small_grant';
+  }
+
+  /**
+   * Execute foundation action and return reward
+   */
+  private executeFoundationAction(action: FoundationActionType): number {
+    if (!this.model.dao) return 0;
+
+    let reward = 0;
+
+    switch (action) {
+      case 'approve_large_grant': {
+        const programs = Array.from(this.grantPrograms.values())
+          .filter(p => p.budget - p.allocated >= 25000);
+        if (programs.length > 0) {
+          const program = randomChoice(programs);
+          const grantSize = Math.min(
+            randomInt(25000, 75000),
+            program.budget - program.allocated
+          );
+          program.allocated += grantSize;
+          program.grantsMade++;
+          this.grantsApproved++;
+          this.largeGrantsApproved++;
+          reward = 0.6;
+
+          this.actionsLog.push({
+            type: 'grant',
+            description: `Approved large grant of ${grantSize} from ${program.name}`,
+            timestamp: this.model.currentStep,
+            value: grantSize,
+          });
+        }
+        break;
+      }
+      case 'approve_small_grant': {
+        const programs = Array.from(this.grantPrograms.values())
+          .filter(p => p.budget - p.allocated >= 5000);
+        if (programs.length > 0) {
+          const program = randomChoice(programs);
+          const grantSize = Math.min(
+            randomInt(5000, 24999),
+            program.budget - program.allocated
+          );
+          program.allocated += grantSize;
+          program.grantsMade++;
+          this.grantsApproved++;
+          this.smallGrantsApproved++;
+          reward = 0.3;
+
+          this.actionsLog.push({
+            type: 'grant',
+            description: `Approved small grant of ${grantSize} from ${program.name}`,
+            timestamp: this.model.currentStep,
+            value: grantSize,
+          });
+        }
+        break;
+      }
+      case 'support_governance':
+        this.supportGovernance();
+        reward = 0.4;
+        break;
+      case 'publish_update':
+        this.publishUpdate();
+        this.updatesPublished++;
+        reward = 0.2;
+        break;
+      case 'sponsor_proposal': {
+        const openProposals = this.model.dao.proposals.filter(
+          p => p.status === 'open' && !this.sponsoredProposalIds.has(p.uniqueId)
+        );
+        if (openProposals.length > 0) {
+          const proposal = randomChoice(openProposals);
+          this.sponsorProposal(proposal);
+          reward = 0.5;
+        }
+        break;
+      }
+      case 'hold':
+        return 0;
+    }
+
+    this.markActive();
+    return reward;
+  }
+
+  /**
+   * Update Q-values based on foundation outcomes
+   */
+  private updateLearning(): void {
+    if (!settings.learning_enabled || !this.lastLearningAction || !this.lastState) return;
+
+    // Calculate reward from foundation impact
+    const grantEfficiency = this.grantsApproved / Math.max(1, this.getTotalAllocated() / 10000);
+    const supportReward = this.proposalsSupported * 0.1;
+    const transparencyReward = this.updatesPublished * 0.05;
+
+    let reward = grantEfficiency + supportReward + transparencyReward;
+    reward = Math.max(-10, Math.min(10, reward));
+
+    const currentState = this.getFoundationState();
+
+    this.learning.update(
+      this.lastState,
+      this.lastLearningAction,
+      reward,
+      currentState,
+      [...FoundationAgent.ACTIONS]
+    );
+  }
+
   step(): void {
     super.step();
 
     if (!this.model.dao) return;
 
-    // Process grant applications
-    if (random() < this.grantsGenerosity * 0.1) {
-      this.processGrants();
+    // Update learning from previous step
+    this.updateLearning();
+
+    // Track state before action
+    this.lastState = this.getFoundationState();
+
+    // Choose and execute action using Q-learning
+    const actionProbability = this.grantsGenerosity * this.proactiveness;
+    if (random() < actionProbability) {
+      const action = this.chooseFoundationAction();
+      this.executeFoundationAction(action);
+      this.lastLearningAction = action;
     }
 
-    // Governance support activities
-    if (random() < this.proactiveness * 0.15) {
-      this.supportGovernance();
-    }
-
-    // Communication and transparency
-    if (random() < this.transparency * 0.05) {
-      this.publishUpdate();
-    }
-
-    // Operational activities
+    // Operational activities (separate from learning actions)
     if (random() < 0.1) {
       this.performOperations();
     }
@@ -364,6 +589,54 @@ export class FoundationAgent extends DAOMember {
       grantsApproved: this.grantsApproved,
       proposalsSupported: this.proposalsSupported,
       actionsCount: this.actionsLog.length,
+    };
+  }
+
+  /**
+   * Signal end of episode
+   */
+  endEpisode(): void {
+    this.learning.endEpisode();
+  }
+
+  /**
+   * Export learning state for checkpoints
+   */
+  exportLearningState(): LearningState {
+    return this.learning.exportLearningState();
+  }
+
+  /**
+   * Import learning state from checkpoint
+   */
+  importLearningState(state: LearningState): void {
+    this.learning.importLearningState(state);
+  }
+
+  /**
+   * Get learning statistics
+   */
+  getLearningStats(): {
+    qTableSize: number;
+    stateCount: number;
+    episodeCount: number;
+    totalReward: number;
+    explorationRate: number;
+    grantsApproved: number;
+    largeGrants: number;
+    smallGrants: number;
+    updatesPublished: number;
+  } {
+    return {
+      qTableSize: this.learning.getQTableSize(),
+      stateCount: this.learning.getStateCount(),
+      episodeCount: this.learning.getEpisodeCount(),
+      totalReward: this.learning.getTotalReward(),
+      explorationRate: this.learning.getExplorationRate(),
+      grantsApproved: this.grantsApproved,
+      largeGrants: this.largeGrantsApproved,
+      smallGrants: this.smallGrantsApproved,
+      updatesPublished: this.updatesPublished,
     };
   }
 }

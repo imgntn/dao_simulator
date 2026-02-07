@@ -92,9 +92,19 @@ export interface SimulationSettings {
   vote_power_velocity_window: number;
   vote_power_velocity_penalty: number;
 
-  // Learning parameters
+  // Learning parameters (legacy)
   adaptive_learning_rate: number;
   adaptive_epsilon: number;
+
+  // Q-learning configuration
+  learning_enabled: boolean;
+  learning_global_learning_rate: number;
+  learning_discount_factor: number;
+  learning_exploration_rate: number;
+  learning_exploration_decay: number;
+  learning_min_exploration: number;
+  learning_persist_q_tables: boolean;
+  learning_shared_experience: boolean;
 
   // Treasury revenue parameters
   treasuryProposalFee: number;
@@ -156,6 +166,17 @@ export const defaultSettings: SimulationSettings = {
   market_shock_frequency: 0,
   adaptive_learning_rate: 0.1,
   adaptive_epsilon: 0.1,
+
+  // Q-learning defaults
+  learning_enabled: true,
+  learning_global_learning_rate: 0.1,
+  learning_discount_factor: 0.95,
+  learning_exploration_rate: 0.3,
+  learning_exploration_decay: 0.995,
+  learning_min_exploration: 0.01,
+  learning_persist_q_tables: true,
+  learning_shared_experience: false,
+
   governance_rule: 'majority',
   token_emission_rate: DEFAULT_TOKEN_EMISSION_RATE,
   token_burn_rate: DEFAULT_TOKEN_BURN_RATE,

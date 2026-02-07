@@ -1,24 +1,22 @@
 // Adaptive Investor Agent - learns which proposal types yield better returns
-// Port from agents/adaptive_investor.py
+// Refactored to use LearningMixin for standardized Q-learning
 
 import { Investor } from './investor';
 import type { DAOModel } from '../engine/model';
 import type { Proposal } from '../data-structures/proposal';
 import { random, randomChoice } from '../utils/random';
-
-// Q-learning configuration
-const DEFAULT_LEARNING_RATE = 0.1;
-const DEFAULT_EPSILON = 0.1;
-const MAX_Q_VALUE = 100;   // Clamp Q-values to prevent explosion
-const MIN_Q_VALUE = -100;
+import { LearningMixin, LearningConfig, LearningState } from './learning';
+import { StateDiscretizer } from './learning';
+import { settings } from '../config/settings';
 
 export class AdaptiveInvestor extends Investor {
-  learningRate: number;
-  epsilon: number;
-  qTable: Map<string, number> = new Map();
+  // Learning infrastructure
+  learning: LearningMixin;
+
+  // Investment tracking
   lastPrice: number | null = null;
   investmentTypes: Map<string, string> = new Map();
-  totalReturns: number = 0;  // Track cumulative returns
+  totalReturns: number = 0;
 
   constructor(
     uniqueId: string,
@@ -28,8 +26,8 @@ export class AdaptiveInvestor extends Investor {
     location: string = 'node_0',
     votingStrategy?: string,
     investmentBudget: number = 1000,
-    learningRate: number = DEFAULT_LEARNING_RATE,
-    epsilon: number = DEFAULT_EPSILON
+    learningRate?: number,
+    epsilon?: number
   ) {
     super(
       uniqueId,
@@ -40,39 +38,95 @@ export class AdaptiveInvestor extends Investor {
       votingStrategy,
       investmentBudget
     );
-    // Validate and clamp learning parameters to [0,1]
-    const sanitizedLearningRate = Number.isFinite(learningRate) ? learningRate : DEFAULT_LEARNING_RATE;
-    const sanitizedEpsilon = Number.isFinite(epsilon) ? epsilon : DEFAULT_EPSILON;
-    this.learningRate = Math.max(0, Math.min(1, sanitizedLearningRate));
-    this.epsilon = Math.max(0, Math.min(1, sanitizedEpsilon));
+
+    // Create learning config from parameters or settings
+    const config: Partial<LearningConfig> = {
+      learningRate: learningRate ?? settings.adaptive_learning_rate,
+      discountFactor: 0.9, // Investors care about long-term returns
+      explorationRate: epsilon ?? settings.adaptive_epsilon,
+      explorationDecay: settings.learning_exploration_decay,
+      minExploration: settings.learning_min_exploration,
+      qBounds: [-100, 100],
+    };
+
+    this.learning = new LearningMixin(config);
   }
 
   /**
-   * Choose a proposal using epsilon-greedy strategy
+   * Get the current market state for learning
+   */
+  private getMarketState(): string {
+    if (!this.model.dao) return 'normal|low|adequate';
+
+    const price = this.model.dao.treasury.getTokenPrice('DAO_TOKEN');
+    const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+    const participationRate = openProposals.length > 0
+      ? openProposals.reduce((sum, p) => sum + (p.votesFor + p.votesAgainst), 0) /
+        (openProposals.length * Math.max(1, this.model.dao.members.length))
+      : 0;
+
+    return StateDiscretizer.combineState(
+      StateDiscretizer.discretizePrice(price, 1.0),
+      StateDiscretizer.discretizeParticipation(participationRate),
+      StateDiscretizer.discretizeTreasury(this.model.dao.treasury.funds)
+    );
+  }
+
+  /**
+   * Get available proposal types as actions
+   */
+  private getAvailableProposalTypes(): string[] {
+    if (!this.model.dao) return ['default'];
+
+    const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+    const types = new Set<string>();
+
+    for (const proposal of openProposals) {
+      types.add(this.getProposalType(proposal));
+    }
+
+    // Always include default as fallback
+    if (types.size === 0) {
+      types.add('default');
+    }
+
+    return Array.from(types);
+  }
+
+  /**
+   * Choose a proposal using learned preferences
    */
   chooseProposal(): Proposal | null {
     if (!this.model.dao) return null;
 
-    const openProposals = this.model.dao.proposals.filter((p: Proposal) => !p.closed);
+    const openProposals = this.model.dao.proposals.filter((p: Proposal) => p.status === 'open');
     if (openProposals.length === 0) {
       return null;
     }
 
-    // Epsilon-greedy: explore vs exploit
-    if (random() < this.epsilon) {
-      // Explore: random proposal
+    // Check if learning is enabled
+    if (!settings.learning_enabled) {
       return randomChoice(openProposals);
     }
 
-    // Exploit: choose proposal type with highest Q-value
-    return openProposals.reduce((best: Proposal, proposal: Proposal) => {
-      const proposalType = this.getProposalType(proposal);
-      const proposalQValue = this.qTable.get(proposalType) || 0;
-      const bestType = this.getProposalType(best);
-      const bestQValue = this.qTable.get(bestType) || 0;
+    // Get current state
+    const state = this.getMarketState();
+    const availableTypes = this.getAvailableProposalTypes();
 
-      return proposalQValue > bestQValue ? proposal : best;
-    });
+    // Select proposal type using learning
+    const selectedType = this.learning.selectAction(state, availableTypes);
+
+    // Find proposals matching selected type
+    const matchingProposals = openProposals.filter(
+      p => this.getProposalType(p) === selectedType
+    );
+
+    if (matchingProposals.length > 0) {
+      return randomChoice(matchingProposals);
+    }
+
+    // Fallback to random if no matches
+    return randomChoice(openProposals);
   }
 
   /**
@@ -111,7 +165,6 @@ export class AdaptiveInvestor extends Investor {
     this.investments.set(proposal.uniqueId, amount);
     this.investmentTypes.set(proposal.uniqueId, proposalType);
 
-    // Note: Reputation handled by ReputationTracker via events
     this.markActive();
 
     // Emit event
@@ -122,16 +175,16 @@ export class AdaptiveInvestor extends Investor {
         proposalId: proposal.uniqueId,
         amount,
         type: proposalType,
-        qValue: this.qTable.get(proposalType) || 0,
+        qValue: this.learning.getQValue(this.getMarketState(), proposalType),
       });
     }
   }
 
   /**
-   * Update Q-values based on token price changes (with bounded updates)
+   * Update Q-values based on token price changes
    */
   updateQValues(): void {
-    if (!this.model.dao) return;
+    if (!this.model.dao || !settings.learning_enabled) return;
 
     const price = this.model.dao.treasury.getTokenPrice('DAO_TOKEN');
 
@@ -143,6 +196,10 @@ export class AdaptiveInvestor extends Investor {
     const delta = price - this.lastPrice;
     this.lastPrice = price;
 
+    // Get current state for updates
+    const state = this.getMarketState();
+    const availableTypes = this.getAvailableProposalTypes();
+
     // Create a copy of entries to iterate safely while deleting
     const investmentEntries = Array.from(this.investments.entries());
 
@@ -152,17 +209,18 @@ export class AdaptiveInvestor extends Investor {
 
       // Scale reward by investment size but cap it
       const rawReward = delta * Math.sqrt(amount); // sqrt to reduce impact of large investments
-      const reward = Math.max(-10, Math.min(10, rawReward)); // Clamp reward
+      const reward = Math.max(-10, Math.min(10, rawReward));
 
-      const oldQValue = this.qTable.get(proposalType) || 0;
+      // Update Q-value for this proposal type
+      // Note: Using same state for simplicity (stateless per type)
+      this.learning.update(
+        state,
+        proposalType,
+        reward,
+        state, // Next state (simplified - same market conditions)
+        availableTypes
+      );
 
-      // Q-learning update: Q(s,a) = Q(s,a) + α * (reward - Q(s,a))
-      let newQValue = oldQValue + this.learningRate * (reward - oldQValue);
-
-      // Clamp Q-values to prevent explosion
-      newQValue = Math.max(MIN_Q_VALUE, Math.min(MAX_Q_VALUE, newQValue));
-
-      this.qTable.set(proposalType, newQValue);
       this.totalReturns += delta * amount;
 
       // Remove closed proposals from investments
@@ -178,50 +236,11 @@ export class AdaptiveInvestor extends Investor {
 
   /**
    * Clean up stale Q-values for proposal types with no recent activity
-   * Should be called periodically (e.g., every 100 steps)
+   * Now delegated to learning mixin's prune method
    */
   cleanupQTable(): void {
-    // Get all active proposal types
-    const activeTypes = new Set<string>();
-    for (const proposalType of this.investmentTypes.values()) {
-      activeTypes.add(proposalType);
-    }
-
-    // Also keep types from currently open proposals
-    if (this.model.dao) {
-      for (const proposal of this.model.dao.proposals) {
-        if (proposal.status === 'open') {
-          activeTypes.add(this.getProposalType(proposal));
-        }
-      }
-    }
-
-    // Remove Q-values for types with no activity, unless Q-table is small
-    // Keep at least some entries for learning diversity
-    const MAX_STALE_ENTRIES = 10;
-    const staleEntries: string[] = [];
-
-    for (const proposalType of this.qTable.keys()) {
-      if (!activeTypes.has(proposalType)) {
-        staleEntries.push(proposalType);
-      }
-    }
-
-    // Only clean up if we have too many stale entries
-    if (staleEntries.length > MAX_STALE_ENTRIES) {
-      // Keep the entries with highest absolute Q-values (most learned)
-      staleEntries.sort((a, b) => {
-        const qA = Math.abs(this.qTable.get(a) || 0);
-        const qB = Math.abs(this.qTable.get(b) || 0);
-        return qA - qB; // Ascending - remove lowest first
-      });
-
-      // Remove excess stale entries
-      const toRemove = staleEntries.slice(0, staleEntries.length - MAX_STALE_ENTRIES);
-      for (const proposalType of toRemove) {
-        this.qTable.delete(proposalType);
-      }
-    }
+    // Prune states with small Q-values
+    this.learning.prune(0.1);
   }
 
   step(): void {
@@ -233,5 +252,73 @@ export class AdaptiveInvestor extends Investor {
     }
 
     super.step();
+  }
+
+  /**
+   * Signal end of episode
+   */
+  endEpisode(): void {
+    this.learning.endEpisode();
+  }
+
+  /**
+   * Export learning state for checkpoints
+   */
+  exportLearningState(): LearningState {
+    return this.learning.exportLearningState();
+  }
+
+  /**
+   * Import learning state from checkpoint
+   */
+  importLearningState(state: LearningState): void {
+    this.learning.importLearningState(state);
+  }
+
+  /**
+   * Get learning statistics
+   */
+  getLearningStats(): {
+    qTableSize: number;
+    stateCount: number;
+    episodeCount: number;
+    totalReward: number;
+    explorationRate: number;
+    totalReturns: number;
+    activeInvestments: number;
+  } {
+    return {
+      qTableSize: this.learning.getQTableSize(),
+      stateCount: this.learning.getStateCount(),
+      episodeCount: this.learning.getEpisodeCount(),
+      totalReward: this.learning.getTotalReward(),
+      explorationRate: this.learning.getExplorationRate(),
+      totalReturns: this.totalReturns,
+      activeInvestments: this.investments.size,
+    };
+  }
+
+  // Legacy compatibility getters
+  get epsilon(): number {
+    return this.learning.getExplorationRate();
+  }
+
+  get learningRate(): number {
+    return this.learning.getConfig().learningRate;
+  }
+
+  // Legacy qTable getter for checkpoint compatibility
+  get qTable(): Map<string, number> {
+    // Convert new format to legacy format for backward compatibility
+    const legacyTable = new Map<string, number>();
+    const exportedState = this.learning.exportLearningState();
+
+    for (const [state, actions] of Object.entries(exportedState.qTable)) {
+      for (const [action, value] of Object.entries(actions)) {
+        legacyTable.set(`${state},${action}`, value);
+      }
+    }
+
+    return legacyTable;
   }
 }

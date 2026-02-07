@@ -1,31 +1,33 @@
 /**
  * Flash Loan Attacker Agent - Borrows Tokens for Same-Step Voting
- *
- * Simulates a flash loan attack where an entity borrows tokens,
- * uses them to vote, and returns them all in the same step.
- * Used for testing governance resilience and attack detection.
+ * Upgraded with Q-learning to learn optimal attack strategies
  */
 
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
 import type { Proposal } from '../data-structures/proposal';
 import { random, randomChoice, randomBool } from '../utils/random';
+import { LearningMixin, LearningConfig, LearningState } from './learning';
+import { StateDiscretizer } from './learning';
+import { settings } from '../config/settings';
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
 export type FlashLoanStrategy =
-  | 'vote_manipulation'      // Use borrowed tokens to swing votes
-  | 'price_manipulation'     // Use borrowed tokens to affect prices
-  | 'governance_takeover';   // Attempt complete governance control
+  | 'vote_manipulation'
+  | 'price_manipulation'
+  | 'governance_takeover';
+
+type AttackerAction = 'attack_aggressive' | 'attack_moderate' | 'attack_conservative' | 'probe' | 'wait' | 'hold';
 
 export interface FlashLoan {
   loanId: string;
   borrower: string;
-  lender: string;           // Pool or protocol providing the loan
+  lender: string;
   amount: number;
-  fee: number;              // Fee paid to lender
+  fee: number;
   borrowedStep: number;
   repaidStep: number | null;
   purpose: FlashLoanStrategy;
@@ -33,12 +35,12 @@ export interface FlashLoan {
 }
 
 export interface FlashLoanConfig {
-  maxBorrowAmount: number;        // Maximum tokens to borrow
-  loanFeePercent: number;         // Fee percentage (0-1)
-  minProfitThreshold: number;     // Minimum expected profit to attempt
+  maxBorrowAmount: number;
+  loanFeePercent: number;
+  minProfitThreshold: number;
   preferredStrategy: FlashLoanStrategy;
-  cooldownSteps: number;          // Steps between attacks
-  riskTolerance: number;          // 0-1, higher = more aggressive
+  cooldownSteps: number;
+  riskTolerance: number;
 }
 
 export interface FlashLoanStats {
@@ -56,15 +58,26 @@ export interface FlashLoanStats {
 // =============================================================================
 
 export class FlashLoanAttacker extends DAOMember {
+  static readonly ACTIONS: readonly AttackerAction[] = [
+    'attack_aggressive', 'attack_moderate', 'attack_conservative', 'probe', 'wait', 'hold'
+  ];
+
+  // Learning infrastructure
+  learning: LearningMixin;
+
   activeLoan: FlashLoan | null = null;
   loanHistory: FlashLoan[] = [];
   attackConfig: FlashLoanConfig;
   totalProfit: number = 0;
   lastAttackStep: number | null = null;
   private loanCounter: number = 0;
-
-  // Track borrowed tokens for proper accounting
   private borrowedFromTreasury: number = 0;
+
+  // Learning tracking
+  lastAction: AttackerAction | null = null;
+  lastState: string | null = null;
+  lastTokens: number;
+  attackOutcomes: Array<{ successful: boolean; profit: number }> = [];
 
   constructor(
     uniqueId: string,
@@ -75,23 +88,224 @@ export class FlashLoanAttacker extends DAOMember {
     config?: Partial<FlashLoanConfig>
   ) {
     super(uniqueId, model, tokens, reputation, location);
+    this.lastTokens = tokens;
 
     this.attackConfig = {
       maxBorrowAmount: 100000,
-      loanFeePercent: 0.001,      // 0.1% fee
+      loanFeePercent: 0.001,
       minProfitThreshold: 100,
       preferredStrategy: 'vote_manipulation',
       cooldownSteps: 10,
       riskTolerance: 0.5,
       ...config,
     };
+
+    // Initialize learning
+    const learningConfig: Partial<LearningConfig> = {
+      learningRate: settings.learning_global_learning_rate,
+      discountFactor: settings.learning_discount_factor,
+      explorationRate: settings.learning_exploration_rate,
+      explorationDecay: settings.learning_exploration_decay,
+      minExploration: settings.learning_min_exploration,
+      qBounds: [-50, 50],
+    };
+
+    this.learning = new LearningMixin(learningConfig);
   }
 
   /**
-   * Main step function
+   * Get state representation for attack decisions
    */
+  private getAttackState(): string {
+    if (!this.model.dao) return 'none|low|cold';
+
+    // Opportunity state
+    const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+    const vulnerableProposals = openProposals.filter(p => {
+      const margin = Math.abs(p.votesFor - p.votesAgainst);
+      return margin < this.getAvailableLiquidity() * 0.5;
+    });
+    const opportunityState = vulnerableProposals.length === 0 ? 'none' :
+                             vulnerableProposals.length < 2 ? 'few' :
+                             vulnerableProposals.length < 4 ? 'moderate' : 'many';
+
+    // Liquidity state
+    const liquidity = this.getAvailableLiquidity();
+    const liquidityState = liquidity < 1000 ? 'low' :
+                           liquidity < 10000 ? 'moderate' :
+                           liquidity < 100000 ? 'high' : 'abundant';
+
+    // Cooldown state
+    const stepsSinceAttack = this.lastAttackStep !== null
+      ? this.model.currentStep - this.lastAttackStep
+      : 999;
+    const cooldownState = stepsSinceAttack < this.attackConfig.cooldownSteps ? 'cooling' :
+                          stepsSinceAttack < this.attackConfig.cooldownSteps * 2 ? 'warm' : 'ready';
+
+    return StateDiscretizer.combineState(opportunityState, liquidityState, cooldownState);
+  }
+
+  /**
+   * Choose attack action using Q-learning
+   */
+  private chooseAttackAction(): AttackerAction {
+    const state = this.getAttackState();
+
+    if (!settings.learning_enabled) {
+      return this.heuristicAttackAction();
+    }
+
+    return this.learning.selectAction(
+      state,
+      [...FlashLoanAttacker.ACTIONS]
+    ) as AttackerAction;
+  }
+
+  /**
+   * Heuristic-based attack action (fallback)
+   */
+  private heuristicAttackAction(): AttackerAction {
+    if (!this.model.dao) return 'hold';
+
+    // Check cooldown
+    if (this.lastAttackStep !== null) {
+      const stepsSinceAttack = this.model.currentStep - this.lastAttackStep;
+      if (stepsSinceAttack < this.attackConfig.cooldownSteps) {
+        return 'wait';
+      }
+    }
+
+    const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+    if (openProposals.length === 0) return 'hold';
+
+    // Look for vulnerable proposals
+    for (const proposal of openProposals) {
+      const opportunity = this.evaluateOpportunity(proposal);
+      if (opportunity.isProfitable) {
+        if (opportunity.expectedProfit > this.attackConfig.minProfitThreshold * 2) {
+          return 'attack_aggressive';
+        }
+        return 'attack_moderate';
+      }
+    }
+
+    return random() < 0.1 ? 'probe' : 'hold';
+  }
+
+  /**
+   * Execute attack action and return reward
+   */
+  private executeAttackAction(action: AttackerAction): number {
+    if (!this.model.dao) return 0;
+
+    let reward = 0;
+
+    switch (action) {
+      case 'attack_aggressive': {
+        reward = this.executeAttack(1.0);
+        break;
+      }
+      case 'attack_moderate': {
+        reward = this.executeAttack(0.5);
+        break;
+      }
+      case 'attack_conservative': {
+        reward = this.executeAttack(0.25);
+        break;
+      }
+      case 'probe': {
+        // Scan for opportunities without attacking
+        this.scanForOpportunities();
+        reward = 0.1;
+        break;
+      }
+      case 'wait':
+        return 0;
+      case 'hold':
+        return 0;
+    }
+
+    return reward;
+  }
+
+  /**
+   * Execute an attack with given aggressiveness
+   */
+  private executeAttack(aggressiveness: number): number {
+    if (!this.model.dao) return -0.5;
+
+    const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+    if (openProposals.length === 0) return -0.1;
+
+    for (const proposal of openProposals) {
+      const opportunity = this.evaluateOpportunity(proposal);
+      if (opportunity.isProfitable) {
+        const borrowAmount = opportunity.borrowAmount * aggressiveness;
+        this.initiateFlashLoan(proposal, borrowAmount, opportunity.targetVote);
+
+        if (this.loanHistory.length > 0) {
+          const lastLoan = this.loanHistory[this.loanHistory.length - 1];
+          if (lastLoan.successful) {
+            this.attackOutcomes.push({ successful: true, profit: lastLoan.amount * 0.01 - lastLoan.fee });
+            return 5 * aggressiveness;
+          } else {
+            this.attackOutcomes.push({ successful: false, profit: -lastLoan.fee });
+            return -2;
+          }
+        }
+        break;
+      }
+    }
+
+    return -0.5;
+  }
+
+  /**
+   * Update Q-values based on attack outcomes
+   */
+  private updateLearning(): void {
+    if (!settings.learning_enabled || !this.lastAction || !this.lastState) return;
+
+    // Calculate reward from token change and attack outcomes
+    const tokenChange = this.tokens - this.lastTokens;
+
+    let reward = tokenChange / Math.max(50, this.lastTokens) * 10;
+
+    // Bonus for successful attacks
+    if (this.attackOutcomes.length > 0) {
+      const lastOutcome = this.attackOutcomes[this.attackOutcomes.length - 1];
+      if (lastOutcome.successful) {
+        reward += 5;
+      } else {
+        reward -= 2;
+      }
+    }
+    if (this.attackOutcomes.length > 20) {
+      this.attackOutcomes.splice(0, this.attackOutcomes.length - 20);
+    }
+
+    reward = Math.max(-10, Math.min(10, reward));
+
+    const currentState = this.getAttackState();
+
+    this.learning.update(
+      this.lastState,
+      this.lastAction,
+      reward,
+      currentState,
+      [...FlashLoanAttacker.ACTIONS]
+    );
+  }
+
   step(): void {
     if (!this.model.dao) return;
+
+    // Update learning from previous step
+    this.updateLearning();
+
+    // Track state before action
+    this.lastTokens = this.tokens;
+    this.lastState = this.getAttackState();
 
     // Check if we have an active loan to repay
     if (this.activeLoan) {
@@ -99,33 +313,18 @@ export class FlashLoanAttacker extends DAOMember {
       return;
     }
 
-    // Check cooldown
-    if (this.lastAttackStep !== null) {
-      const stepsSinceAttack = this.model.currentStep - this.lastAttackStep;
-      if (stepsSinceAttack < this.attackConfig.cooldownSteps) {
-        // Normal behavior during cooldown
-        if (randomBool(0.1)) {
-          this.voteOnRandomProposal();
-        }
-        return;
-      }
-    }
-
-    // Look for attack opportunities
-    this.scanForOpportunities();
+    // Choose and execute action
+    const action = this.chooseAttackAction();
+    this.executeAttackAction(action);
+    this.lastAction = action;
   }
 
-  /**
-   * Scan for flash loan attack opportunities
-   */
   private scanForOpportunities(): void {
     if (!this.model.dao) return;
 
     const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
-
     for (const proposal of openProposals) {
       const opportunity = this.evaluateOpportunity(proposal);
-
       if (opportunity.isProfitable && random() < this.attackConfig.riskTolerance) {
         this.initiateFlashLoan(proposal, opportunity.borrowAmount, opportunity.targetVote);
         break;
@@ -133,21 +332,12 @@ export class FlashLoanAttacker extends DAOMember {
     }
   }
 
-  /**
-   * Get actual available liquidity from the DAO treasury
-   * CRITICAL FIX: Flash loans must be backed by actual liquidity, not hardcoded values
-   */
   private getAvailableLiquidity(): number {
     if (!this.model.dao) return 0;
     const token = this.model.dao.tokenSymbol;
     return this.model.dao.treasury.getTokenBalance(token);
   }
 
-  /**
-   * Evaluate if a proposal presents a profitable attack opportunity
-   * NOTE: With voting power snapshots, flash loan attacks should now fail
-   * because votes are counted against snapshot balances, not current balances
-   */
   private evaluateOpportunity(proposal: Proposal): {
     isProfitable: boolean;
     borrowAmount: number;
@@ -157,11 +347,8 @@ export class FlashLoanAttacker extends DAOMember {
     const currentFor = proposal.votesFor;
     const currentAgainst = proposal.votesAgainst;
     const margin = Math.abs(currentFor - currentAgainst);
-
-    // CRITICAL FIX: Use actual treasury liquidity, not hardcoded value
     const availableLiquidity = this.getAvailableLiquidity();
 
-    // Calculate how much we'd need to borrow to flip the vote
     const borrowNeeded = margin * 1.5;
     const borrowAmount = Math.min(
       borrowNeeded,
@@ -171,12 +358,8 @@ export class FlashLoanAttacker extends DAOMember {
 
     const fee = borrowAmount * this.attackConfig.loanFeePercent;
     const canFlip = borrowAmount > margin;
-
-    // Simple profit model: if we can flip a vote with funding,
-    // assume there's value in the outcome
-    const potentialValue = proposal.fundingGoal * 0.01;  // 1% of funding goal
+    const potentialValue = proposal.fundingGoal * 0.01;
     const expectedProfit = canFlip ? potentialValue - fee : -fee;
-
     const targetVote = currentFor > currentAgainst ? false : true;
 
     return {
@@ -187,33 +370,24 @@ export class FlashLoanAttacker extends DAOMember {
     };
   }
 
-  /**
-   * Initiate a flash loan attack
-   * CRITICAL FIX: Properly borrow from treasury instead of creating tokens from nothing
-   */
   private initiateFlashLoan(
     proposal: Proposal,
     borrowAmount: number,
     targetVote: boolean
   ): void {
-    if (this.activeLoan) return;  // Already have active loan
+    if (this.activeLoan) return;
     if (!this.model.dao) return;
 
     this.loanCounter++;
     const loanId = `flashloan_${this.uniqueId}_${this.loanCounter}`;
     const fee = borrowAmount * this.attackConfig.loanFeePercent;
 
-    // Check if we can pay the fee
-    if (fee > this.tokens) {
-      return;  // Can't afford the fee
-    }
+    if (fee > this.tokens) return;
 
-    // CRITICAL FIX: Actually withdraw from treasury
     const token = this.model.dao.tokenSymbol;
     const availableLiquidity = this.model.dao.treasury.getTokenBalance(token);
 
     if (borrowAmount > availableLiquidity) {
-      // Not enough liquidity in treasury
       if (this.model.eventBus) {
         this.model.eventBus.publish('flashloan_insufficient_liquidity', {
           step: this.model.currentStep,
@@ -225,7 +399,6 @@ export class FlashLoanAttacker extends DAOMember {
       return;
     }
 
-    // "Borrow" the tokens from treasury
     this.activeLoan = {
       loanId,
       borrower: this.uniqueId,
@@ -238,14 +411,11 @@ export class FlashLoanAttacker extends DAOMember {
       successful: false,
     };
 
-    // Mark proposal as maliciously targeted for metrics
     proposal.isMalicious = true;
 
-    // CRITICAL FIX: Withdraw from treasury and track properly
     this.model.dao.treasury.withdraw(token, borrowAmount, this.model.currentStep);
     this.borrowedFromTreasury = borrowAmount;
 
-    // Temporarily add borrowed tokens to attacker's balance
     const originalTokens = this.tokens;
     this.tokens += borrowAmount;
 
@@ -261,7 +431,6 @@ export class FlashLoanAttacker extends DAOMember {
       });
     }
 
-    // Execute the attack based on strategy
     switch (this.attackConfig.preferredStrategy) {
       case 'vote_manipulation':
         this.executeVoteManipulation(proposal, targetVote, borrowAmount);
@@ -274,19 +443,14 @@ export class FlashLoanAttacker extends DAOMember {
         break;
     }
 
-    // Repay the loan (same step)
     this.repayLoan(originalTokens);
   }
 
-  /**
-   * Execute vote manipulation attack
-   */
   private executeVoteManipulation(
     proposal: Proposal,
     targetVote: boolean,
     borrowedAmount: number
   ): void {
-    // Vote with the borrowed tokens
     proposal.addVote(this.uniqueId, targetVote, this.tokens);
     this.votes.set(proposal.uniqueId, { vote: targetVote, weight: this.tokens });
     this.markActive();
@@ -303,7 +467,6 @@ export class FlashLoanAttacker extends DAOMember {
       });
     }
 
-    // Check if we flipped the vote
     const newLeading = proposal.votesFor > proposal.votesAgainst ? true : false;
     if (newLeading === targetVote) {
       if (this.activeLoan) {
@@ -312,22 +475,17 @@ export class FlashLoanAttacker extends DAOMember {
     }
   }
 
-  /**
-   * Execute price manipulation attack
-   */
   private executePriceManipulation(borrowedAmount: number): void {
     if (!this.model.dao) return;
 
-    // Attempt to manipulate prices via treasury pool
     const treasury = this.model.dao.treasury;
     const token = this.model.dao.tokenSymbol;
 
-    // Deposit/withdraw is a no-op that doesn't actually manipulate price
     treasury.deposit(token, borrowedAmount, this.model.currentStep);
     treasury.withdraw(token, borrowedAmount, this.model.currentStep);
 
     if (this.activeLoan) {
-      this.activeLoan.successful = false;  // No-op deposit/withdraw doesn't manipulate price
+      this.activeLoan.successful = false;
     }
 
     if (this.model.eventBus) {
@@ -341,11 +499,7 @@ export class FlashLoanAttacker extends DAOMember {
     }
   }
 
-  /**
-   * Execute governance takeover attempt
-   */
   private executeGovernanceTakeover(proposal: Proposal, borrowedAmount: number): void {
-    // Vote on all open proposals
     if (!this.model.dao) return;
 
     const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
@@ -353,7 +507,6 @@ export class FlashLoanAttacker extends DAOMember {
 
     for (const p of openProposals) {
       if (!this.votes.has(p.uniqueId)) {
-        // Vote yes on all proposals to maximize control
         const weight = this.tokens / openProposals.length;
         p.addVote(this.uniqueId, true, weight);
         this.votes.set(p.uniqueId, { vote: true, weight });
@@ -389,25 +542,17 @@ export class FlashLoanAttacker extends DAOMember {
     this.markActive();
   }
 
-  /**
-   * Repay the flash loan
-   * CRITICAL FIX: Return borrowed tokens to treasury
-   */
   private repayLoan(originalTokens: number): void {
     if (!this.activeLoan) return;
     if (!this.model.dao) return;
 
-    // CRITICAL FIX: Return borrowed tokens to treasury
     const token = this.model.dao.tokenSymbol;
     if (this.borrowedFromTreasury > 0) {
       this.model.dao.treasury.deposit(token, this.borrowedFromTreasury, this.model.currentStep);
     }
 
-    // Restore original tokens (remove borrowed amount)
     this.tokens = originalTokens;
     this.borrowedFromTreasury = 0;
-
-    // Pay the fee from our own tokens
     this.tokens -= this.activeLoan.fee;
     this.activeLoan.repaidStep = this.model.currentStep;
 
@@ -421,14 +566,9 @@ export class FlashLoanAttacker extends DAOMember {
       });
     }
 
-    // Track success
-    // NOTE: With voting power snapshots, flash loan attacks will now mostly fail
-    // because votes are counted against snapshot balances
     if (this.activeLoan.successful) {
-      // Assume some profit from successful manipulation
       const profit = this.activeLoan.amount * 0.01 - this.activeLoan.fee;
       this.totalProfit += profit;
-      // No economic profit in simulation — flash loan attacks affect governance only
 
       if (this.model.eventBus) {
         this.model.eventBus.publish('flashloan_attack_succeeded', {
@@ -451,26 +591,17 @@ export class FlashLoanAttacker extends DAOMember {
       }
     }
 
-    // Store in history
     this.loanHistory.push(this.activeLoan);
     this.lastAttackStep = this.model.currentStep;
     this.activeLoan = null;
   }
 
-  /**
-   * Execute loan step (if multi-step loan, not typical for flash loans)
-   */
   private executeLoanStep(): void {
-    // Flash loans are same-step, so this shouldn't normally be called
-    // But if we have a hanging loan, repay it
     if (this.activeLoan && !this.activeLoan.repaidStep) {
       this.repayLoan(this.tokens - this.activeLoan.amount);
     }
   }
 
-  /**
-   * Get attack statistics
-   */
   getAttackStats(): FlashLoanStats {
     const successfulLoans = this.loanHistory.filter(l => l.successful).length;
     const failedLoans = this.loanHistory.filter(l => !l.successful).length;
@@ -488,16 +619,10 @@ export class FlashLoanAttacker extends DAOMember {
     };
   }
 
-  /**
-   * Get recent loan
-   */
   getRecentLoan(): FlashLoan | null {
     return this.loanHistory[this.loanHistory.length - 1] || null;
   }
 
-  /**
-   * Serialize to plain object
-   */
   toDict(): unknown {
     return {
       uniqueId: this.uniqueId,
@@ -511,11 +636,56 @@ export class FlashLoanAttacker extends DAOMember {
       borrowedFromTreasury: this.borrowedFromTreasury,
     };
   }
+
+  /**
+   * Signal end of episode
+   */
+  endEpisode(): void {
+    this.learning.endEpisode();
+  }
+
+  /**
+   * Export learning state for checkpoints
+   */
+  exportLearningState(): LearningState {
+    return this.learning.exportLearningState();
+  }
+
+  /**
+   * Import learning state from checkpoint
+   */
+  importLearningState(state: LearningState): void {
+    this.learning.importLearningState(state);
+  }
+
+  /**
+   * Get learning statistics
+   */
+  getLearningStats(): {
+    qTableSize: number;
+    stateCount: number;
+    episodeCount: number;
+    totalReward: number;
+    explorationRate: number;
+    attackSuccessRate: number;
+    totalProfit: number;
+  } {
+    const successRate = this.attackOutcomes.length > 0
+      ? this.attackOutcomes.filter(o => o.successful).length / this.attackOutcomes.length
+      : 0;
+
+    return {
+      qTableSize: this.learning.getQTableSize(),
+      stateCount: this.learning.getStateCount(),
+      episodeCount: this.learning.getEpisodeCount(),
+      totalReward: this.learning.getTotalReward(),
+      explorationRate: this.learning.getExplorationRate(),
+      attackSuccessRate: successRate,
+      totalProfit: this.totalProfit,
+    };
+  }
 }
 
-/**
- * Factory function to create aggressive flash loan attacker
- */
 export function createAggressiveFlashLoanAttacker(
   uniqueId: string,
   model: DAOModel
@@ -530,9 +700,6 @@ export function createAggressiveFlashLoanAttacker(
   });
 }
 
-/**
- * Factory function to create conservative flash loan attacker
- */
 export function createConservativeFlashLoanAttacker(
   uniqueId: string,
   model: DAOModel

@@ -4,12 +4,18 @@
  * Represents stewards in DAOs like Gitcoin and ENS.
  * Responsible for reviewing proposals, managing grants, and community oversight.
  * Often serves in workstreams or sub-DAOs.
+ * Upgraded with Q-learning for optimal proposal review and grant management strategies.
  */
 
 import { DAOMember } from './base';
 import type { Proposal } from '../data-structures/proposal';
 import type { DAOModel } from '../engine/model';
 import { random, randomChoice, randomInt } from '../utils/random';
+import { LearningMixin, LearningConfig, LearningState } from './learning';
+import { StateDiscretizer } from './learning';
+import { settings } from '../config/settings';
+
+type StewardAction = 'review_diligently' | 'review_quickly' | 'engage_community' | 'gate_proposal' | 'approve_grant' | 'hold';
 
 export type WorkstreamType =
   | 'public_goods'
@@ -27,6 +33,13 @@ export interface GrantReview {
 }
 
 export class StewardAgent extends DAOMember {
+  static readonly ACTIONS: readonly StewardAction[] = [
+    'review_diligently', 'review_quickly', 'engage_community', 'gate_proposal', 'approve_grant', 'hold'
+  ];
+
+  // Learning infrastructure
+  learning: LearningMixin;
+
   // Steward-specific properties
   workstream: WorkstreamType;
   stewardTerm: { start: number; end: number };
@@ -49,6 +62,13 @@ export class StewardAgent extends DAOMember {
   grantsRejected: number = 0;
   grantReviews: GrantReview[] = [];
   private pendingStewardDecision: boolean | null = null;
+
+  // Learning tracking
+  lastAction: StewardAction | null = null;
+  lastState: string | null = null;
+  diligentReviews: number = 0;
+  quickReviews: number = 0;
+  communityEngagements: number = 0;
 
   constructor(
     uniqueId: string,
@@ -77,6 +97,18 @@ export class StewardAgent extends DAOMember {
 
     // Set initial budget authority based on workstream
     this.setBudgetAuthorityForWorkstream();
+
+    // Initialize learning
+    const config: Partial<LearningConfig> = {
+      learningRate: settings.learning_global_learning_rate,
+      discountFactor: settings.learning_discount_factor,
+      explorationRate: settings.learning_exploration_rate,
+      explorationDecay: settings.learning_exploration_decay,
+      minExploration: settings.learning_min_exploration,
+      qBounds: [-50, 50],
+    };
+
+    this.learning = new LearningMixin(config);
   }
 
   /**
@@ -104,10 +136,181 @@ export class StewardAgent extends DAOMember {
     this.budgetAuthority = budgetByWorkstream[this.workstream] || 5000;
   }
 
+  /**
+   * Get state representation for steward decisions
+   */
+  private getStewardState(): string {
+    if (!this.model.dao) return 'none|fresh|low';
+
+    // Proposal backlog state
+    const pendingProposals = this.model.dao.proposals.filter(p => p.status === 'open').length;
+    const backlogState = pendingProposals === 0 ? 'none' :
+                         pendingProposals < 5 ? 'light' :
+                         pendingProposals < 10 ? 'moderate' : 'heavy';
+
+    // Term state
+    const termProgress = (this.model.currentStep - this.stewardTerm.start) /
+                         Math.max(1, this.stewardTerm.end - this.stewardTerm.start);
+    const termState = termProgress < 0.3 ? 'fresh' :
+                      termProgress < 0.7 ? 'mid_term' :
+                      termProgress < 1.0 ? 'late_term' : 'expired';
+
+    // Workload state (reviews done)
+    const reviewRate = this.proposalsReviewed / Math.max(1, this.model.currentStep / 20);
+    const workloadState = reviewRate < 0.5 ? 'low' :
+                          reviewRate < 1.0 ? 'moderate' :
+                          reviewRate < 2.0 ? 'high' : 'overloaded';
+
+    return StateDiscretizer.combineState(backlogState, termState, workloadState);
+  }
+
+  /**
+   * Choose steward action using Q-learning
+   */
+  private chooseStewardAction(): StewardAction {
+    const state = this.getStewardState();
+
+    if (!settings.learning_enabled) {
+      return this.heuristicStewardAction();
+    }
+
+    return this.learning.selectAction(
+      state,
+      [...StewardAgent.ACTIONS]
+    ) as StewardAction;
+  }
+
+  /**
+   * Heuristic-based steward action (fallback)
+   */
+  private heuristicStewardAction(): StewardAction {
+    if (!this.model.dao) return 'hold';
+
+    // Term expired -> minimal activity
+    if (this.isTermExpired()) return 'hold';
+
+    const pendingProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+
+    // Heavy backlog -> quick reviews
+    if (pendingProposals.length > 10) {
+      return 'review_quickly';
+    }
+
+    // High community engagement -> engage
+    if (this.communityEngagement > 0.8 && random() < 0.3) {
+      return 'engage_community';
+    }
+
+    // Diligent steward -> thorough review
+    if (this.reviewDiligence > 0.8) {
+      return 'review_diligently';
+    }
+
+    return random() < 0.5 ? 'review_diligently' : 'engage_community';
+  }
+
+  /**
+   * Execute steward action and return reward
+   */
+  private executeStewardAction(action: StewardAction): number {
+    if (!this.model.dao) return 0;
+
+    let reward = 0;
+    const openProposals = this.model.dao.proposals.filter(
+      p => p.status === 'open' &&
+           !this.grantReviews.find(r => r.proposalId === p.uniqueId)
+    );
+
+    switch (action) {
+      case 'review_diligently': {
+        if (openProposals.length > 0) {
+          const proposal = randomChoice(openProposals);
+          this.reviewProposal(proposal);
+          this.diligentReviews++;
+          reward = 0.5;
+        }
+        break;
+      }
+      case 'review_quickly': {
+        // Review multiple proposals quickly
+        const toReview = Math.min(3, openProposals.length);
+        for (let i = 0; i < toReview; i++) {
+          this.reviewProposal(openProposals[i]);
+          this.quickReviews++;
+        }
+        reward = 0.3 * toReview;
+        break;
+      }
+      case 'engage_community':
+        this.engageWithCommunity();
+        this.communityEngagements++;
+        reward = 0.3;
+        break;
+      case 'gate_proposal': {
+        if (openProposals.length > 0 && this.proposalGatingPower) {
+          const proposal = openProposals.find(p => {
+            const assessment = this.assessProposal(p);
+            return assessment.recommendation === 'reject';
+          });
+          if (proposal) {
+            this.gateProposal(proposal, 'Does not meet workstream criteria');
+            reward = 0.4;
+          }
+        }
+        break;
+      }
+      case 'approve_grant': {
+        const withinBudget = openProposals.filter(p => p.fundingGoal <= this.budgetAuthority);
+        if (withinBudget.length > 0) {
+          const proposal = randomChoice(withinBudget);
+          this.reviewProposal(proposal);
+          reward = 0.45;
+        }
+        break;
+      }
+      case 'hold':
+        return 0;
+    }
+
+    this.markActive();
+    return reward;
+  }
+
+  /**
+   * Update Q-values based on steward outcomes
+   */
+  private updateLearning(): void {
+    if (!settings.learning_enabled || !this.lastAction || !this.lastState) return;
+
+    // Calculate reward from review effectiveness
+    const reviewEfficiency = this.proposalsReviewed / Math.max(1, this.model.currentStep / 10);
+    const approvalRate = this.grantsApproved / Math.max(1, this.proposalsReviewed);
+    const gatingRate = this.proposalsGated / Math.max(1, this.proposalsReviewed);
+
+    let reward = reviewEfficiency + approvalRate * 0.5 - gatingRate * 0.3;
+    reward = Math.max(-10, Math.min(10, reward));
+
+    const currentState = this.getStewardState();
+
+    this.learning.update(
+      this.lastState,
+      this.lastAction,
+      reward,
+      currentState,
+      [...StewardAgent.ACTIONS]
+    );
+  }
+
   step(): void {
     super.step();
 
     if (!this.model.dao) return;
+
+    // Update learning from previous step
+    this.updateLearning();
+
+    // Track state before action
+    this.lastState = this.getStewardState();
 
     // Check if term has expired
     if (this.isTermExpired()) {
@@ -118,17 +321,15 @@ export class StewardAgent extends DAOMember {
       return;
     }
 
-    // Active steward duties
-    if (random() < this.reviewDiligence * 0.2) {
-      this.reviewPendingProposals();
-    }
-
-    if (random() < this.communityEngagement * 0.15) {
-      this.engageWithCommunity();
-    }
-
-    // Vote on proposals relevant to workstream
+    // Choose and execute action using Q-learning
     if (random() < 0.2) {
+      const action = this.chooseStewardAction();
+      this.executeStewardAction(action);
+      this.lastAction = action;
+    }
+
+    // Vote on proposals relevant to workstream (as secondary behavior)
+    if (random() < 0.1) {
       this.voteOnRelevantProposals();
     }
   }
@@ -401,6 +602,56 @@ export class StewardAgent extends DAOMember {
       grantsRejected: this.grantsRejected,
       proposalsGated: this.proposalsGated,
       budgetAuthority: this.budgetAuthority,
+    };
+  }
+
+  /**
+   * Signal end of episode
+   */
+  endEpisode(): void {
+    this.learning.endEpisode();
+  }
+
+  /**
+   * Export learning state for checkpoints
+   */
+  exportLearningState(): LearningState {
+    return this.learning.exportLearningState();
+  }
+
+  /**
+   * Import learning state from checkpoint
+   */
+  importLearningState(state: LearningState): void {
+    this.learning.importLearningState(state);
+  }
+
+  /**
+   * Get learning statistics
+   */
+  getLearningStats(): {
+    qTableSize: number;
+    stateCount: number;
+    episodeCount: number;
+    totalReward: number;
+    explorationRate: number;
+    proposalsReviewed: number;
+    grantsApproved: number;
+    diligentReviews: number;
+    quickReviews: number;
+    communityEngagements: number;
+  } {
+    return {
+      qTableSize: this.learning.getQTableSize(),
+      stateCount: this.learning.getStateCount(),
+      episodeCount: this.learning.getEpisodeCount(),
+      totalReward: this.learning.getTotalReward(),
+      explorationRate: this.learning.getExplorationRate(),
+      proposalsReviewed: this.proposalsReviewed,
+      grantsApproved: this.grantsApproved,
+      diligentReviews: this.diligentReviews,
+      quickReviews: this.quickReviews,
+      communityEngagements: this.communityEngagements,
     };
   }
 }

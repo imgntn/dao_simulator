@@ -42,6 +42,16 @@ export interface CheckpointGuildState {
   members: number;
 }
 
+// Learning state for Q-learning agents
+export interface CheckpointLearningState {
+  qTable: { [state: string]: { [action: string]: number } };
+  episodeCount: number;
+  explorationRate: number;
+  lastState: string | null;
+  lastAction: string | null;
+  totalReward: number;
+}
+
 // Serialized agent state for checkpoints
 export interface CheckpointAgentState {
   uniqueId: string;
@@ -57,6 +67,8 @@ export interface CheckpointAgentState {
   votes: Record<string, { vote: boolean; weight: number }>;  // proposalId -> vote data
   daoId: string;
   transferCooldown: number;
+  // Learning state for Q-learning agents (optional)
+  learningState?: CheckpointLearningState;
 }
 
 // Random number generator state for deterministic replay
@@ -240,21 +252,60 @@ export class CheckpointManager {
   }
 
   private serializeAgents(simulation: DAOSimulation): CheckpointAgentState[] {
-    return simulation.dao.members.map(agent => ({
-      uniqueId: agent.uniqueId,
-      type: agent.constructor.name,
-      tokens: agent.tokens,
-      reputation: agent.reputation,
-      stakedTokens: agent.stakedTokens,
-      location: agent.location,
-      optimism: agent.optimism,
-      // Extended state for complete restore
-      stakeLocks: [...agent.stakeLocks],
-      delegations: Object.fromEntries(agent.delegations),
-      votes: Object.fromEntries(agent.votes),
-      daoId: agent.daoId,
-      transferCooldown: agent.transferCooldown,
-    }));
+    return simulation.dao.members.map(agent => {
+      const baseState: CheckpointAgentState = {
+        uniqueId: agent.uniqueId,
+        type: agent.constructor.name,
+        tokens: agent.tokens,
+        reputation: agent.reputation,
+        stakedTokens: agent.stakedTokens,
+        location: agent.location,
+        optimism: agent.optimism,
+        // Extended state for complete restore
+        stakeLocks: [...agent.stakeLocks],
+        delegations: Object.fromEntries(agent.delegations),
+        votes: Object.fromEntries(agent.votes),
+        daoId: agent.daoId,
+        transferCooldown: agent.transferCooldown,
+      };
+
+      // Check if agent has learning state (Q-learning agents)
+      const learningAgent = agent as any;
+      if (
+        learningAgent.learning &&
+        typeof learningAgent.learning.exportLearningState === 'function'
+      ) {
+        baseState.learningState = learningAgent.learning.exportLearningState();
+      } else if (
+        learningAgent.qTable &&
+        (learningAgent.qTable instanceof Map || typeof learningAgent.qTable === 'object')
+      ) {
+        // Legacy RLTrader/AdaptiveInvestor format
+        const qTable: { [key: string]: { [action: string]: number } } = {};
+        if (learningAgent.qTable instanceof Map) {
+          // RLTrader uses Map<string, number> with "state,action" keys
+          for (const [key, value] of learningAgent.qTable) {
+            const parts = key.split(',');
+            if (parts.length >= 2) {
+              const state = parts.slice(0, -1).join(',');
+              const action = parts[parts.length - 1];
+              if (!qTable[state]) qTable[state] = {};
+              qTable[state][action] = value;
+            }
+          }
+        }
+        baseState.learningState = {
+          qTable,
+          episodeCount: learningAgent.episodeCount || 0,
+          explorationRate: learningAgent.epsilon || 0.1,
+          lastState: learningAgent.prevState || null,
+          lastAction: learningAgent.prevAction || null,
+          totalReward: learningAgent.totalReward || 0,
+        };
+      }
+
+      return baseState;
+    });
   }
 
   // ==================== IndexedDB ====================

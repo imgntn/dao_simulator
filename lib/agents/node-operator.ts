@@ -3,12 +3,18 @@
  *
  * Represents validator operators in Lido's node operator set.
  * Subject to DAO oversight, manages validators, and earns fees.
+ * Upgraded with Q-learning for optimal validator management strategies.
  */
 
 import { DAOMember } from './base';
 import type { Proposal } from '../data-structures/proposal';
 import type { DAOModel } from '../engine/model';
 import { random, randomInt } from '../utils/random';
+import { LearningMixin, LearningConfig, LearningState } from './learning';
+import { StateDiscretizer } from './learning';
+import { settings } from '../config/settings';
+
+type OperatorAction = 'expand_validators' | 'maintain_performance' | 'optimize_fees' | 'request_limit_increase' | 'conservative' | 'hold';
 
 export interface ValidatorStats {
   active: number;
@@ -26,6 +32,13 @@ export interface OperatorPerformance {
 }
 
 export class NodeOperator extends DAOMember {
+  static readonly ACTIONS: readonly OperatorAction[] = [
+    'expand_validators', 'maintain_performance', 'optimize_fees', 'request_limit_increase', 'conservative', 'hold'
+  ];
+
+  // Learning infrastructure
+  learning: LearningMixin;
+
   // Operator properties
   operatorName: string;
   maxValidators: number;
@@ -46,6 +59,13 @@ export class NodeOperator extends DAOMember {
   // Status
   isApproved: boolean = true;
   isCapped: boolean = false;  // Reached max validators
+
+  // Learning tracking
+  lastAction: OperatorAction | null = null;
+  lastState: string | null = null;
+  expansionRequests: number = 0;
+  performanceOptimizations: number = 0;
+  limitIncreaseRequests: number = 0;
 
   // Transient state for decideVote override
   private pendingOperatorAssessment: boolean | null = null;
@@ -88,6 +108,18 @@ export class NodeOperator extends DAOMember {
     // Behavioral traits
     this.reliability = 0.8 + random() * 0.2;  // 0.8-1.0
     this.expansionWillingness = 0.3 + random() * 0.5;  // 0.3-0.8
+
+    // Initialize learning
+    const config: Partial<LearningConfig> = {
+      learningRate: settings.learning_global_learning_rate,
+      discountFactor: settings.learning_discount_factor,
+      explorationRate: settings.learning_exploration_rate,
+      explorationDecay: settings.learning_exploration_decay,
+      minExploration: settings.learning_min_exploration,
+      qBounds: [-50, 50],
+    };
+
+    this.learning = new LearningMixin(config);
   }
 
   /**
@@ -100,16 +132,173 @@ export class NodeOperator extends DAOMember {
     return super.decideVote(topic);
   }
 
+  /**
+   * Get state representation for operator decisions
+   */
+  private getOperatorState(): string {
+    // Capacity state
+    const capacityRatio = this.currentValidators.active / Math.max(1, this.maxValidators);
+    const capacityState = capacityRatio < 0.5 ? 'underutilized' :
+                          capacityRatio < 0.8 ? 'moderate' :
+                          capacityRatio < 0.95 ? 'near_cap' : 'capped';
+
+    // Performance state
+    const perfScore = this.getPerformanceScore();
+    const performanceState = perfScore < 0.9 ? 'poor' :
+                             perfScore < 0.95 ? 'adequate' :
+                             perfScore < 0.98 ? 'good' : 'excellent';
+
+    // Slashing risk state
+    const slashRisk = this.performance.slashings > 0 ? 'risky' :
+                      this.reliability < 0.9 ? 'moderate' : 'low';
+
+    return StateDiscretizer.combineState(capacityState, performanceState, slashRisk);
+  }
+
+  /**
+   * Choose operator action using Q-learning
+   */
+  private chooseOperatorAction(): OperatorAction {
+    const state = this.getOperatorState();
+
+    if (!settings.learning_enabled) {
+      return this.heuristicOperatorAction();
+    }
+
+    return this.learning.selectAction(
+      state,
+      [...NodeOperator.ACTIONS]
+    ) as OperatorAction;
+  }
+
+  /**
+   * Heuristic-based operator action (fallback)
+   */
+  private heuristicOperatorAction(): OperatorAction {
+    const capacityRatio = this.currentValidators.active / Math.max(1, this.maxValidators);
+
+    // Capped -> request limit increase
+    if (this.isCapped && this.expansionWillingness > 0.6) {
+      return 'request_limit_increase';
+    }
+
+    // Poor performance -> maintain
+    if (this.getPerformanceScore() < 0.95) {
+      return 'maintain_performance';
+    }
+
+    // Room to grow -> expand
+    if (capacityRatio < 0.8 && this.expansionWillingness > 0.5) {
+      return 'expand_validators';
+    }
+
+    // Default to conservative
+    return 'conservative';
+  }
+
+  /**
+   * Execute operator action and return reward
+   */
+  private executeOperatorAction(action: OperatorAction): number {
+    let reward = 0;
+
+    switch (action) {
+      case 'expand_validators': {
+        if (!this.isCapped && this.currentValidators.active < this.maxValidators) {
+          const toAdd = Math.min(
+            randomInt(1, 5),
+            this.maxValidators - this.currentValidators.active - this.currentValidators.pending
+          );
+          if (toAdd > 0) {
+            this.currentValidators.pending += toAdd;
+            this.expansionRequests++;
+            reward = 0.4;
+          }
+        }
+        break;
+      }
+      case 'maintain_performance': {
+        // Boost performance slightly
+        this.performance.uptime = Math.min(1, this.performance.uptime + 0.01);
+        this.performance.attestationRate = Math.min(1, this.performance.attestationRate + 0.01);
+        this.performanceOptimizations++;
+        reward = 0.3;
+        break;
+      }
+      case 'optimize_fees': {
+        // Small fee adjustment based on market
+        const adjustment = (random() - 0.5) * 0.5;
+        this.operatorFeePercent = Math.max(5, Math.min(10, this.operatorFeePercent + adjustment));
+        reward = 0.2;
+        break;
+      }
+      case 'request_limit_increase': {
+        if (this.isCapped) {
+          this.requestLimitIncrease(randomInt(10, 50));
+          this.limitIncreaseRequests++;
+          reward = 0.35;
+        }
+        break;
+      }
+      case 'conservative':
+        reward = 0.1;  // Small reward for prudent management
+        break;
+      case 'hold':
+        return 0;
+    }
+
+    this.markActive();
+    return reward;
+  }
+
+  /**
+   * Update Q-values based on operator outcomes
+   */
+  private updateLearning(): void {
+    if (!settings.learning_enabled || !this.lastAction || !this.lastState) return;
+
+    // Calculate reward from fees and performance
+    const feeReward = this.totalFeesEarned * 0.01;
+    const performanceReward = this.getPerformanceScore() * 2;
+    const slashingPenalty = this.performance.slashings * -5;
+
+    let reward = feeReward + performanceReward + slashingPenalty;
+    reward = Math.max(-10, Math.min(10, reward));
+
+    const currentState = this.getOperatorState();
+
+    this.learning.update(
+      this.lastState,
+      this.lastAction,
+      reward,
+      currentState,
+      [...NodeOperator.ACTIONS]
+    );
+  }
+
   step(): void {
     super.step();
 
     if (!this.model.dao) return;
 
+    // Update learning from previous step
+    this.updateLearning();
+
+    // Track state before action
+    this.lastState = this.getOperatorState();
+
     // Update performance metrics
     this.updatePerformance();
 
-    // Process validator operations
-    if (random() < 0.1) {
+    // Choose and execute action using Q-learning
+    if (random() < 0.15) {
+      const action = this.chooseOperatorAction();
+      this.executeOperatorAction(action);
+      this.lastAction = action;
+    }
+
+    // Process validator operations (as secondary behavior)
+    if (random() < 0.05) {
       this.manageValidators();
     }
 
@@ -350,6 +539,54 @@ export class NodeOperator extends DAOMember {
       totalFeesEarned: this.totalFeesEarned,
       isApproved: this.isApproved,
       isCapped: this.isCapped,
+    };
+  }
+
+  /**
+   * Signal end of episode
+   */
+  endEpisode(): void {
+    this.learning.endEpisode();
+  }
+
+  /**
+   * Export learning state for checkpoints
+   */
+  exportLearningState(): LearningState {
+    return this.learning.exportLearningState();
+  }
+
+  /**
+   * Import learning state from checkpoint
+   */
+  importLearningState(state: LearningState): void {
+    this.learning.importLearningState(state);
+  }
+
+  /**
+   * Get learning statistics
+   */
+  getLearningStats(): {
+    qTableSize: number;
+    stateCount: number;
+    episodeCount: number;
+    totalReward: number;
+    explorationRate: number;
+    activeValidators: number;
+    performanceScore: number;
+    expansionRequests: number;
+    limitIncreaseRequests: number;
+  } {
+    return {
+      qTableSize: this.learning.getQTableSize(),
+      stateCount: this.learning.getStateCount(),
+      episodeCount: this.learning.getEpisodeCount(),
+      totalReward: this.learning.getTotalReward(),
+      explorationRate: this.learning.getExplorationRate(),
+      activeValidators: this.currentValidators.active,
+      performanceScore: this.getPerformanceScore(),
+      expansionRequests: this.expansionRequests,
+      limitIncreaseRequests: this.limitIncreaseRequests,
     };
   }
 }
