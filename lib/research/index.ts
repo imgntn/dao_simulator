@@ -91,7 +91,7 @@ export {
   loadBaseline,
   formatRegressionReport,
   type BaselineMetrics,
-  type RegressionResult,
+  type RegressionResult as RegressionTestResult,
   type RegressionReport,
 } from './regression-tester';
 

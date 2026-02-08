@@ -13,6 +13,15 @@ import { EventEngine } from '../utils/event-engine';
 import { EventLogger, IndexedDBEventLogger } from '../utils/event-logger';
 import { AgentManager } from '../utils/agent-manager';
 import { settings, SimulationSettings } from '../config/settings';
+import type { LearningState } from '../agents/learning/learning-mixin';
+import { createRewardAggregator, RewardAggregator } from '../agents/learning/reward-aggregator';
+import {
+  RewardShaper,
+  PotentialContext,
+  createGovernanceShaper,
+  createFinancialShaper,
+  createCommunityShaper,
+} from '../agents/learning/reward-shaper';
 import * as constants from '../config/constants';
 import { getRule, GovernanceRuleConfig, QuadraticVotingRule } from '../utils/governance-plugins';
 import { setSeed, resetGlobalRandom, getRandomState, setRandomState, random } from '../utils/random';
@@ -164,6 +173,10 @@ export class DAOSimulation extends Model {
   eventEngine?: EventEngine;
   currentShock: number = 0;
   governanceProcessor: GovernanceProcessor | null = null;
+  /** RewardAggregators for learning agents, keyed by agent uniqueId */
+  rewardAggregators: Map<string, RewardAggregator> = new Map();
+  /** RewardShapers for learning agents with delayed rewards, keyed by agent uniqueId */
+  rewardShapers: Map<string, RewardShaper> = new Map();
 
   constructor(config: DAOSimulationConfig = {}) {
     super();
@@ -391,6 +404,11 @@ export class DAOSimulation extends Model {
     // Create agents
     this.initializeAgents();
 
+    // Wire RewardAggregators for all learning-enabled agents
+    if (settings.learning_enabled) {
+      this.wireRewardAggregators();
+    }
+
     // Initialize governance processor for multi-stage proposals, timelocks, etc.
     this.governanceProcessor = createGovernanceProcessor(
       this.dao,
@@ -451,6 +469,128 @@ export class DAOSimulation extends Model {
         );
         this.dao.addMember(agent);
         this.schedule.add(agent);
+      }
+    }
+  }
+
+  /**
+   * Build a PotentialContext for a given agent at the current simulation state.
+   */
+  private buildPotentialContext(member: DAOMember): PotentialContext {
+    const openProposalCount = this.dao.proposals.filter(p => p.status === 'open').length;
+    const totalProposals = this.dao.proposals.length;
+    // Participation rate: fraction of proposals this agent voted on
+    const votedCount = (member as any).votes?.size ?? 0;
+    const participationRate = totalProposals > 0 ? votedCount / totalProposals : 0;
+
+    return {
+      tokens: member.tokens,
+      stakedTokens: member.stakedTokens,
+      reputation: member.reputation,
+      treasuryFunds: this.dao.treasury.funds,
+      treasuryTarget: this.dao.treasuryPolicy.targetReserve,
+      tokenPrice: this.dao.treasury.getTokenPrice('DAO_TOKEN'),
+      memberCount: this.dao.members.length,
+      openProposalCount,
+      participationRate,
+      step: this.currentStep,
+    };
+  }
+
+  /**
+   * Distribute aggregated rewards and shaping rewards to learning agents.
+   * This supplements each agent's inline reward computation with:
+   * 1. Event-driven signals (RewardAggregator)
+   * 2. Potential-based reward shaping (RewardShaper) for denser feedback
+   */
+  private distributeAggregatedRewards(): void {
+    for (const member of this.dao.members) {
+      const agent = member as any;
+      if (!agent.learning || typeof agent.learning.recordReward !== 'function') continue;
+
+      // Collect event-based reward
+      const aggregator = this.rewardAggregators.get(member.uniqueId);
+      let eventReward = 0;
+      if (aggregator) {
+        eventReward = aggregator.collectAndClear(member.uniqueId, this.currentStep);
+      }
+
+      // Compute shaping reward
+      const shaper = this.rewardShapers.get(member.uniqueId);
+      let shapingReward = 0;
+      if (shaper) {
+        const ctx = this.buildPotentialContext(member);
+        shapingReward = shaper.step(ctx);
+      }
+
+      // Combine: event rewards (0.3 weight) + shaping rewards (0.2 weight)
+      const totalSupplementalReward = eventReward * 0.3 + shapingReward * 0.2;
+      if (totalSupplementalReward === 0) continue;
+
+      // If the agent has a current state tracked, apply the reward
+      if (agent.learning.lastState !== null && agent.learning.lastAction !== null) {
+        const actions = agent.constructor.ACTIONS
+          ? [...agent.constructor.ACTIONS]
+          : [];
+
+        if (actions.length > 0) {
+          agent.learning.recordReward(
+            totalSupplementalReward,
+            agent.learning.lastState,
+            actions
+          );
+        }
+      }
+    }
+  }
+
+  /**
+   * Wire RewardAggregators and RewardShapers for all learning-enabled agents.
+   * Each agent gets its own aggregator that subscribes to relevant events
+   * on the DAO event bus and collects reward signals.
+   * Agents with delayed rewards also get a RewardShaper for potential-based guidance.
+   */
+  private wireRewardAggregators(): void {
+    // Agent type categories for reward shaper assignment
+    const governanceTypes = new Set([
+      'GovernanceExpert', 'Delegator', 'LiquidDelegator', 'Regulator',
+      'GovernanceWhale', 'ProposalCreator', 'Arbitrator',
+    ]);
+    const financialTypes = new Set([
+      'RLTrader', 'MarketMaker', 'Speculator', 'Trader', 'Investor',
+      'AdaptiveInvestor', 'RiskManager', 'StakerAgent',
+    ]);
+    const communityTypes = new Set([
+      'Developer', 'ServiceProvider', 'BountyHunter', 'Artist',
+      'Collector', 'Whistleblower', 'Auditor', 'Validator',
+    ]);
+
+    for (const member of this.dao.members) {
+      const agent = member as any;
+      // Only wire for agents with a learning mixin
+      if (!agent.learning || typeof agent.learning.update !== 'function') continue;
+
+      const typeName = member.constructor.name;
+
+      // Wire reward aggregator
+      const aggregator = createRewardAggregator(typeName);
+      aggregator.subscribeToEvents(this.eventBus, member.uniqueId);
+      this.rewardAggregators.set(member.uniqueId, aggregator);
+
+      // Wire reward shaper based on agent category
+      const gamma = agent.learning.getConfig?.()?.discountFactor ?? 0.95;
+      let shaper: RewardShaper | null = null;
+
+      if (governanceTypes.has(typeName)) {
+        shaper = createGovernanceShaper(gamma);
+      } else if (financialTypes.has(typeName)) {
+        shaper = createFinancialShaper(gamma);
+      } else if (communityTypes.has(typeName)) {
+        shaper = createCommunityShaper(gamma);
+      }
+
+      if (shaper) {
+        this.rewardShapers.set(member.uniqueId, shaper);
       }
     }
   }
@@ -1035,6 +1175,11 @@ export class DAOSimulation extends Model {
       this.schedule.remove(member);
     }
 
+    // Distribute aggregated rewards from event bus to learning agents
+    if (settings.learning_enabled && this.rewardAggregators.size > 0) {
+      this.distributeAggregatedRewards();
+    }
+
     // Collect data
     this.dataCollector.collect(this.dao);
 
@@ -1153,6 +1298,115 @@ export class DAOSimulation extends Model {
       return this.eventLogger.toCSV();
     }
     return '';
+  }
+
+  // =========================================================================
+  // LEARNING LIFECYCLE MANAGEMENT
+  // =========================================================================
+
+  /**
+   * Signal end of episode to all learning agents.
+   * This decays exploration rates, increments episode counts,
+   * and resets reward shapers for the next episode.
+   */
+  endLearningEpisode(): void {
+    for (const member of this.dao.members) {
+      const agent = member as any;
+      if (typeof agent.endEpisode === 'function') {
+        agent.endEpisode();
+      }
+    }
+
+    // Reset reward shapers (clear stored potential context)
+    for (const shaper of this.rewardShapers.values()) {
+      shaper.reset();
+    }
+  }
+
+  /**
+   * Export Q-tables from all learning agents, grouped by agent type.
+   * Returns a map of agentType -> array of serialized learning states.
+   */
+  exportLearningStates(): Map<string, LearningState[]> {
+    const statesByType = new Map<string, LearningState[]>();
+
+    for (const member of this.dao.members) {
+      const agent = member as any;
+      if (typeof agent.exportLearningState !== 'function') continue;
+
+      const typeName = member.constructor.name;
+      if (!statesByType.has(typeName)) {
+        statesByType.set(typeName, []);
+      }
+      statesByType.get(typeName)!.push(agent.exportLearningState());
+    }
+
+    return statesByType;
+  }
+
+  /**
+   * Import Q-tables into learning agents from a prior run's exported states.
+   * Each agent of a given type imports the corresponding state by index,
+   * cycling if there are more agents than saved states.
+   */
+  importLearningStates(statesByType: Map<string, LearningState[]>): void {
+    // Build per-type agent lists
+    const agentsByType = new Map<string, any[]>();
+    for (const member of this.dao.members) {
+      const agent = member as any;
+      if (typeof agent.importLearningState !== 'function') continue;
+
+      const typeName = member.constructor.name;
+      if (!agentsByType.has(typeName)) {
+        agentsByType.set(typeName, []);
+      }
+      agentsByType.get(typeName)!.push(agent);
+    }
+
+    // Import states
+    for (const [typeName, agents] of agentsByType) {
+      const states = statesByType.get(typeName);
+      if (!states || states.length === 0) continue;
+
+      for (let i = 0; i < agents.length; i++) {
+        // Cycle through available states if more agents than states
+        const stateIndex = i % states.length;
+        agents[i].importLearningState(states[stateIndex]);
+      }
+    }
+  }
+
+  /**
+   * Merge Q-tables across same-type agents for shared experience learning.
+   * Each agent of the same type merges knowledge from all other agents of that type.
+   */
+  mergeSharedExperience(): void {
+    // Group learning agents by type
+    const agentsByType = new Map<string, any[]>();
+    for (const member of this.dao.members) {
+      const agent = member as any;
+      if (!agent.learning || typeof agent.learning.mergeFrom !== 'function') continue;
+
+      const typeName = member.constructor.name;
+      if (!agentsByType.has(typeName)) {
+        agentsByType.set(typeName, []);
+      }
+      agentsByType.get(typeName)!.push(agent);
+    }
+
+    // For each type with multiple agents, merge Q-tables
+    for (const [, agents] of agentsByType) {
+      if (agents.length < 2) continue;
+
+      // Use federated averaging: each agent merges from all others with weight 1/N
+      const mergeWeight = 1 / agents.length;
+      for (let i = 0; i < agents.length; i++) {
+        for (let j = 0; j < agents.length; j++) {
+          if (i === j) continue;
+          agents[i].learning.mergeFrom(agents[j].learning, mergeWeight);
+        }
+      }
+    }
   }
 
   /**

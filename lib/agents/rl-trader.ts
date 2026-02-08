@@ -54,9 +54,10 @@ export class RLTrader extends DAOMember {
 
   /**
    * Get current state representation using StateDiscretizer
+   * 4-dimensional: price bucket, pool depth, trend, volatility
    */
   private getState(price: number): string {
-    if (!this.model.dao) return 'normal|medium|stable';
+    if (!this.model.dao) return 'normal|medium|stable|normal';
 
     // Get pool depth
     const pools = this.model.dao.treasury.pools;
@@ -64,13 +65,12 @@ export class RLTrader extends DAOMember {
     const reserveA = firstPool?.reserveA ?? 0;
     const reserveB = firstPool?.reserveB ?? 0;
 
-    // Use StateDiscretizer for consistent bucketing
-    return StateDiscretizer.createTradingState(
-      price,
-      1.0, // baseline
-      reserveA,
-      reserveB,
-      this.priceHistory
+    // Use StateDiscretizer for consistent bucketing (3 base dimensions + volatility)
+    return StateDiscretizer.combineState(
+      StateDiscretizer.discretizePrice(price, 1.0),
+      StateDiscretizer.discretizePoolDepth(reserveA, reserveB),
+      StateDiscretizer.discretizeTrend(this.priceHistory),
+      StateDiscretizer.discretizeVolatility(this.priceHistory)
     );
   }
 

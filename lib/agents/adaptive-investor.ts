@@ -284,15 +284,15 @@ export class AdaptiveInvestor extends Investor {
     episodeCount: number;
     totalReward: number;
     explorationRate: number;
+    investmentCount: number;
+    avgInvestment: number;
+    budgetRatio: number;
     totalReturns: number;
     activeInvestments: number;
   } {
+    const parentStats = super.getLearningStats();
     return {
-      qTableSize: this.learning.getQTableSize(),
-      stateCount: this.learning.getStateCount(),
-      episodeCount: this.learning.getEpisodeCount(),
-      totalReward: this.learning.getTotalReward(),
-      explorationRate: this.learning.getExplorationRate(),
+      ...parentStats,
       totalReturns: this.totalReturns,
       activeInvestments: this.investments.size,
     };

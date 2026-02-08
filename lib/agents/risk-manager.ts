@@ -320,7 +320,32 @@ export class RiskManager extends DAOMember {
   }
 
   private calculateConcentrationRisk(): number {
-    return 1.0;
+    if (!this.model.dao) return 0.5;
+
+    const members = this.model.dao.members;
+    if (members.length === 0) return 0;
+
+    // HHI-inspired: calculate this agent's share of total supply
+    const totalSupply = members.reduce(
+      (sum, m) => sum + m.tokens + m.stakedTokens, 0
+    );
+    if (totalSupply <= 0) return 0;
+
+    const myHoldings = this.tokens + this.stakedTokens;
+    const myShare = myHoldings / totalSupply;
+
+    // Also factor in overall concentration (top-heavy distribution)
+    // Sum of squared shares across all members (HHI)
+    let hhi = 0;
+    for (const m of members) {
+      const share = (m.tokens + m.stakedTokens) / totalSupply;
+      hhi += share * share;
+    }
+
+    // Blend personal concentration with market concentration
+    // myShare near 0 = low risk, myShare near 1 = very high risk
+    // hhi near 1/N = equal distribution (low risk), hhi near 1 = monopoly (high risk)
+    return Math.min(1, myShare * 3 + hhi * 2);
   }
 
   private calculateVolatilityExposure(): number {

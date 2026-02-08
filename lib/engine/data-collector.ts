@@ -27,6 +27,32 @@ export interface ModelVarEntry {
   numMembers: number;
 }
 
+/**
+ * Aggregated learning metrics across all learning-enabled agents
+ */
+export interface LearningMetricsEntry {
+  step: number;
+  /** Number of agents with Q-learning enabled */
+  learningAgentCount: number;
+  /** Average Q-table size (state-action pairs) across all learning agents */
+  avgQTableSize: number;
+  /** Average exploration rate (epsilon) across all learning agents */
+  avgExplorationRate: number;
+  /** Average total reward accumulated across all learning agents */
+  avgTotalReward: number;
+  /** Total unique states across all Q-tables */
+  totalStateCount: number;
+  /** Average episode count across all learning agents */
+  avgEpisodeCount: number;
+  /** Per-type breakdown: type -> { count, avgReward, avgExploration, avgQTableSize } */
+  byType: Record<string, {
+    count: number;
+    avgReward: number;
+    avgExploration: number;
+    avgQTableSize: number;
+  }>;
+}
+
 
 export class SimpleDataCollector implements DataCollectorData {
   private _modelVars: CircularBuffer<ModelVarEntry>;
@@ -41,6 +67,7 @@ export class SimpleDataCollector implements DataCollectorData {
   private _campaignHistory: CircularBuffer<any>;
   achievements: Map<string, string> = new Map();
   private _history: CircularBuffer<HistoryEntry>;
+  private _learningMetrics: CircularBuffer<LearningMetricsEntry>;
 
   // Gini calculation cache - cleared when token distribution changes
   // Provides 1.5-2x speedup by avoiding redundant O(n log n) sorts
@@ -77,6 +104,9 @@ export class SimpleDataCollector implements DataCollectorData {
   get history(): HistoryEntry[] {
     return this._history.toArray();
   }
+  get learningMetrics(): LearningMetricsEntry[] {
+    return this._learningMetrics.toArray();
+  }
 
   private centralityInterval: number;
   private lastCentralityStep: number | null = null;
@@ -102,6 +132,7 @@ export class SimpleDataCollector implements DataCollectorData {
     this._influenceRankingHistory = new CircularBuffer<Array<[string, number]>>(MAX_HISTORY_SIZE);
     this._campaignHistory = new CircularBuffer<any>(MAX_HISTORY_SIZE);
     this._history = new CircularBuffer<HistoryEntry>(MAX_HISTORY_SIZE);
+    this._learningMetrics = new CircularBuffer<LearningMetricsEntry>(MAX_HISTORY_SIZE);
 
     if (dao && dao.eventBus) {
       dao.eventBus.subscribe('*', this.handleEvent.bind(this));
@@ -212,6 +243,77 @@ export class SimpleDataCollector implements DataCollectorData {
       tokenPrice: price,
       treasuryFunds: dao.treasury.funds,
     });
+
+    // Collect learning metrics from Q-learning agents
+    this.collectLearningMetrics(dao, step);
+  }
+
+  /**
+   * Collect aggregated learning metrics from all Q-learning enabled agents
+   */
+  private collectLearningMetrics(dao: DAO, step: number): void {
+    const byType: Record<string, {
+      count: number;
+      totalReward: number;
+      totalExploration: number;
+      totalQTableSize: number;
+    }> = {};
+
+    let learningAgentCount = 0;
+    let totalQTableSize = 0;
+    let totalExplorationRate = 0;
+    let totalReward = 0;
+    let totalStateCount = 0;
+    let totalEpisodeCount = 0;
+
+    for (const member of dao.members) {
+      // Duck-type check for learning agents
+      const agent = member as any;
+      if (typeof agent.getLearningStats !== 'function') continue;
+
+      learningAgentCount++;
+      const stats = agent.getLearningStats();
+
+      totalQTableSize += stats.qTableSize ?? 0;
+      totalExplorationRate += stats.explorationRate ?? 0;
+      totalReward += stats.totalReward ?? 0;
+      totalStateCount += stats.stateCount ?? 0;
+      totalEpisodeCount += stats.episodeCount ?? 0;
+
+      // Aggregate by agent type (constructor name)
+      const typeName = member.constructor.name;
+      if (!byType[typeName]) {
+        byType[typeName] = { count: 0, totalReward: 0, totalExploration: 0, totalQTableSize: 0 };
+      }
+      byType[typeName].count++;
+      byType[typeName].totalReward += stats.totalReward ?? 0;
+      byType[typeName].totalExploration += stats.explorationRate ?? 0;
+      byType[typeName].totalQTableSize += stats.qTableSize ?? 0;
+    }
+
+    if (learningAgentCount === 0) return;
+
+    // Build per-type averages
+    const byTypeAvg: LearningMetricsEntry['byType'] = {};
+    for (const [typeName, data] of Object.entries(byType)) {
+      byTypeAvg[typeName] = {
+        count: data.count,
+        avgReward: data.totalReward / data.count,
+        avgExploration: data.totalExploration / data.count,
+        avgQTableSize: data.totalQTableSize / data.count,
+      };
+    }
+
+    this._learningMetrics.push({
+      step,
+      learningAgentCount,
+      avgQTableSize: totalQTableSize / learningAgentCount,
+      avgExplorationRate: totalExplorationRate / learningAgentCount,
+      avgTotalReward: totalReward / learningAgentCount,
+      totalStateCount,
+      avgEpisodeCount: totalEpisodeCount / learningAgentCount,
+      byType: byTypeAvg,
+    });
   }
 
   /**
@@ -279,8 +381,16 @@ export class SimpleDataCollector implements DataCollectorData {
     this._campaignHistory.clear();
     this.achievements.clear();
     this._history.clear();
+    this._learningMetrics.clear();
     this.lastCentralityStep = null;
     this.giniCache = null;
+  }
+
+  /**
+   * Get the latest learning metrics snapshot
+   */
+  getLatestLearningMetrics(): LearningMetricsEntry | null {
+    return this._learningMetrics.latest() || null;
   }
 
   /**

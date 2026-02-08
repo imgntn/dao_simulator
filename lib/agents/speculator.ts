@@ -209,7 +209,7 @@ export class Speculator extends DAOMember {
       for (const prediction of resolved) {
         const bet = this.bets.get(prediction.question);
         if (bet) {
-          const won = bet.choice === prediction.resolution;
+          const won = bet.choice === prediction.outcome;
           this.betHistory.push({ won, amount: bet.amount });
           if (won) {
             this.totalWinnings += bet.amount;

@@ -46,6 +46,7 @@ export class Delegator extends DAOMember {
     amount: number;
     proposalId: string;
     delegatedAt: number;
+    stateAtDelegation: string;
   }> = new Map();
   lastDelegationReturns: number = 0;
 
@@ -183,12 +184,13 @@ export class Delegator extends DAOMember {
     if (amount > 0) {
       this.delegateSupportToProposal(proposal, amount);
 
-      // Track for learning
+      // Track for learning (store state at delegation time for proper temporal Q-update)
       this.delegationOutcomes.set(proposal.uniqueId, {
         action,
         amount,
         proposalId: proposal.uniqueId,
         delegatedAt: this.model.currentStep,
+        stateAtDelegation: this.getDelegationState(proposal),
       });
     }
 
@@ -236,7 +238,9 @@ export class Delegator extends DAOMember {
       const outcome = this.delegationOutcomes.get(proposal.uniqueId);
       if (!outcome) continue;
 
-      const state = this.getDelegationState(proposal);
+      // Use state captured at delegation time (S_t) and current state as next state (S_{t+1})
+      const stateAtDelegation = outcome.stateAtDelegation;
+      const nextState = this.getDelegationState(proposal);
       let reward = 0;
 
       // Calculate reward based on proposal outcome
@@ -261,12 +265,12 @@ export class Delegator extends DAOMember {
         }
       }
 
-      // Update Q-value
+      // Update Q-value with proper temporal states
       this.learning.update(
-        state,
+        stateAtDelegation,
         outcome.action,
         reward,
-        state,
+        nextState,
         [...Delegator.ACTIONS]
       );
 

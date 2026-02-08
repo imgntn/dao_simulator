@@ -5,6 +5,7 @@ import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
 import type { VotingStrategy } from '../utils/voting-strategies';
 import { Dispute } from '../data-structures/dispute';
+import type { Project } from '../data-structures/project';
 import { random } from '../utils/random';
 import { LearningMixin, LearningConfig, LearningState } from './learning';
 import { StateDiscretizer } from './learning';
@@ -278,7 +279,7 @@ export class Auditor extends DAOMember {
   /**
    * Flag a proposal as suspicious
    */
-  private flagProposal(proposal: { uniqueId: string; title: string; creator?: string; project?: string | null }): void {
+  private flagProposal(proposal: { uniqueId: string; title: string; creator?: string; project?: Project | null }): void {
     if (!this.model.dao || this.flaggedProposals.has(proposal.uniqueId)) return;
 
     this.flaggedProposals.add(proposal.uniqueId);

@@ -139,12 +139,25 @@ export class GovernanceHouse {
   }
 
   /**
-   * Get a member's voting power in this house
+   * Get a member's voting power in this house.
+   * For one_person_one_vote, every active member has weight 1.
+   * For quadratic, weight is sqrt(tokens + delegated).
+   * For token/reputation, weight is tokens + delegated power.
    */
   getMemberVotingPower(memberId: string): number {
     const member = this.members.get(memberId);
     if (!member || !member.isActive) return 0;
-    return member.votingPower + member.delegatedPower;
+
+    const rawPower = member.votingPower + member.delegatedPower;
+
+    switch (this.config.voteWeightModel) {
+      case 'one_person_one_vote':
+        return rawPower > 0 ? 1 : 0;
+      case 'quadratic':
+        return Math.sqrt(rawPower);
+      default: // 'token' | 'reputation'
+        return rawPower;
+    }
   }
 
   /**
@@ -350,13 +363,14 @@ export class GovernanceHouse {
   // ---------------------------------------------------------------------------
 
   /**
-   * Get total voting power in the house
+   * Get total voting power in the house.
+   * Respects the voteWeightModel setting.
    */
   getTotalVotingPower(): number {
     let total = 0;
     for (const member of this.members.values()) {
       if (member.isActive) {
-        total += member.votingPower + member.delegatedPower;
+        total += this.getMemberVotingPower(member.memberId);
       }
     }
     return total;

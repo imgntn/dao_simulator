@@ -13,6 +13,8 @@ import { resolveSimulationConfig, type ResearchConfig } from './config-resolver'
 import { mergePopulation, type PopulationSpec } from './population';
 import { applySweepValue } from './sweep-mapper';
 import { setSeed } from '../utils/random';
+import { settings } from '../config/settings';
+import type { LearningState } from '../agents/learning/learning-mixin';
 import type {
   ExperimentConfig,
   CityBaseConfig,
@@ -306,6 +308,9 @@ export class ExperimentRunner {
   private config: ExperimentConfig;
   private progressCallback?: ProgressCallback;
 
+  /** Persisted Q-tables from previous runs (type -> states) */
+  private persistedLearningStates: Map<string, LearningState[]> | null = null;
+
   constructor(config: ExperimentConfig, progressCallback?: ProgressCallback) {
     this.config = config;
     this.progressCallback = progressCallback;
@@ -479,7 +484,25 @@ export class ExperimentRunner {
     const simulation = new DAOSimulation(simConfig);
     const stepsToRun = this.config.execution.stepsPerRun;
 
+    // Import persisted Q-tables from previous runs if available
+    if (settings.learning_persist_q_tables && this.persistedLearningStates) {
+      simulation.importLearningStates(this.persistedLearningStates);
+    }
+
     await simulation.run(stepsToRun);
+
+    // Signal end of learning episode (decays exploration, increments episode counts)
+    simulation.endLearningEpisode();
+
+    // Merge shared experience across same-type agents if enabled
+    if (settings.learning_shared_experience) {
+      simulation.mergeSharedExperience();
+    }
+
+    // Persist Q-tables for next run if enabled
+    if (settings.learning_persist_q_tables) {
+      this.persistedLearningStates = simulation.exportLearningStates();
+    }
 
     // Collect metrics
     const metrics = this.collectMetrics(simulation);

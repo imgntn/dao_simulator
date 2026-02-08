@@ -195,7 +195,7 @@ export class Developer extends DAOMember {
         // Work on project with most workers
         if (projects.length > 0) {
           project = projects.reduce((best, p) =>
-            p.contributors.size > best.contributors.size ? p : best
+            p.workDone.size > best.workDone.size ? p : best
           , projects[0]);
           reward = 0.05;
         }

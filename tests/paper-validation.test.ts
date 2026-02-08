@@ -110,13 +110,10 @@ describe('Token-Weighted Voting', () => {
 });
 
 describe('One-Person-One-Vote', () => {
-  it.skip('gives equal weight regardless of tokens (not yet implemented)', () => {
-    // NOTE: The voteWeightModel='one_person_one_vote' is not fully implemented.
-    // Currently votes are still weighted by tokens. This test documents the
-    // expected behavior for when OPOV is properly implemented.
+  it('gives equal weight regardless of tokens', () => {
     const dao = new DAO('Test DAO');
     const config: HouseConfig = {
-      houseType: 'citizen_house',
+      houseType: 'citizens_house',
       name: 'Citizen House',
       description: 'Test house',
       quorumPercent: 1,

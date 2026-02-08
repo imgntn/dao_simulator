@@ -226,6 +226,9 @@ async function runSimulation(task: WorkerTask): Promise<RunResult> {
   const simulation = new DAOSimulation(simConfig);
   await simulation.run(task.stepsPerRun);
 
+  // Signal end of learning episode (decays exploration, increments episode counts)
+  simulation.endLearningEpisode();
+
   // Collect metrics
   const metrics = collectMetrics(simulation, task.metrics);
 

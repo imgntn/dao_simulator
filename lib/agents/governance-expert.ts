@@ -36,7 +36,7 @@ export class GovernanceExpert extends DAOMember {
   advisorInfluence: number;
 
   // Learning tracking
-  voteOutcomes: Map<string, { vote: VoteAction; proposalId: string }> = new Map();
+  voteOutcomes: Map<string, { vote: VoteAction; proposalId: string; stateAtVote: string }> = new Map();
   lastVoteStep: number = 0;
 
   constructor(
@@ -81,8 +81,7 @@ export class GovernanceExpert extends DAOMember {
     return StateDiscretizer.createGovernanceState(
       proposal,
       participationRate,
-      this.model.dao.treasury.funds,
-      this.model.dao.treasury.targetReserve
+      this.model.dao.treasury.funds
     );
   }
 
@@ -195,10 +194,11 @@ export class GovernanceExpert extends DAOMember {
 
       this.analyses.set(proposal.uniqueId, analysis);
 
-      // Track for reward calculation
+      // Track for reward calculation (store state at vote time for proper temporal Q-update)
       this.voteOutcomes.set(proposal.uniqueId, {
         vote: recommendation,
         proposalId: proposal.uniqueId,
+        stateAtVote: this.getProposalState(proposal),
       });
 
       // Emit analysis event
@@ -228,7 +228,9 @@ export class GovernanceExpert extends DAOMember {
       const outcome = this.voteOutcomes.get(proposal.uniqueId);
       if (!outcome) continue;
 
-      const state = this.getProposalState(proposal);
+      // Use state captured at vote time (S_t) and current state as next state (S_{t+1})
+      const stateAtVote = outcome.stateAtVote;
+      const nextState = this.getProposalState(proposal);
       let reward = 0;
 
       // Calculate reward based on outcome
@@ -262,12 +264,12 @@ export class GovernanceExpert extends DAOMember {
         }
       }
 
-      // Update Q-value
+      // Update Q-value with proper temporal states
       this.learning.update(
-        state,
+        stateAtVote,
         outcome.vote,
         reward,
-        state, // Next state (simplified)
+        nextState,
         [...GovernanceExpert.ACTIONS]
       );
 
