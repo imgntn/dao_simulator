@@ -121,6 +121,30 @@
       "tally": null,
       "needs_verify": true,
       "notes": "No verified Snapshot space found; Maker uses its own governance portal."
+    },
+    {
+      "id": "curve",
+      "coingecko_id": "curve-dao-token",
+      "cryptocompare_symbol": "CRV",
+      "coincap_id": "curve-dao-token",
+      "defillama": { "type": "protocol", "slug": "curve-finance" },
+      "snapshot_spaces": ["curve.eth"],
+      "discourse_base_url": "https://gov.curve.finance",
+      "tally": null,
+      "needs_verify": false,
+      "notes": "Curve uses Aragon for on-chain governance (not Governor/Tally). Snapshot space used for signaling votes."
+    },
+    {
+      "id": "nouns",
+      "coingecko_id": null,
+      "cryptocompare_symbol": null,
+      "coincap_id": null,
+      "defillama": null,
+      "snapshot_spaces": ["nouns.eth"],
+      "discourse_base_url": null,
+      "tally": { "organization_slug": "nounsdao" },
+      "needs_verify": false,
+      "notes": "NFT-based DAO (ERC-721, no fungible token). Each Noun = 1 vote. No standard price feeds. discourse.nouns.wtf is offline (no DNS as of 2026-02)."
     }
   ]
 }

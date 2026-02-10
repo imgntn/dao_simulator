@@ -25,8 +25,24 @@ CRYPTOCOMPARE_BASE_URL = "https://min-api.cryptocompare.com/data"
 COINCAP_BASE_URL = "https://api.coincap.io/v2"
 
 
+_log_file = None
+
+
+def _init_log_file() -> None:
+    global _log_file
+    if _log_file is None:
+        log_path = os.path.join(DEFAULT_OUTPUT_DIR, "scraper.log")
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
+        _log_file = open(log_path, "a", encoding="utf-8")
+
+
 def log(message: str) -> None:
-    print(message, flush=True)
+    ts = dt.datetime.now(dt.timezone.utc).strftime("%H:%M:%S")
+    line = f"[{ts}] {message}"
+    print(line, flush=True)
+    _init_log_file()
+    _log_file.write(line + "\n")
+    _log_file.flush()
 
 
 def parse_date(value: Optional[str]) -> Optional[int]:
@@ -509,6 +525,14 @@ def snapshot_fetch_votes(client: HttpClient, proposal_id: str) -> List[Dict[str,
     return votes
 
 
+def tally_resolve_org_id(client: HttpClient, api_key: str, org_slug: str) -> Optional[str]:
+    """Resolve a Tally organization slug to its numeric ID."""
+    query = '{ organizationSlugToId(slug: "%s") }' % org_slug
+    headers = {"Api-Key": api_key}
+    data = client.post_json(TALLY_GRAPHQL_URL, {"query": query}, headers=headers)
+    return data.get("data", {}).get("organizationSlugToId")
+
+
 def tally_fetch_proposals(
     client: HttpClient,
     api_key: str,
@@ -516,47 +540,49 @@ def tally_fetch_proposals(
     start_ts: Optional[int],
     end_ts: Optional[int],
 ) -> List[Dict[str, Any]]:
+    org_id = tally_resolve_org_id(client, api_key, org_slug)
+    if not org_id:
+        log(f"  Tally: could not resolve org slug '{org_slug}' to ID")
+        return []
     query = """
     query Proposals($input: ProposalsInput!) {
       proposals(input: $input) {
         nodes {
-          id
-          title
-          description
-          status
-          createdAt
-          startTime
-          endTime
-          organization {
+          ... on Proposal {
             id
-            slug
-            name
+            onchainId
+            status
+            metadata { title description }
+            block { timestamp }
+            start { ... on Block { timestamp } ... on BlocklessTimestamp { timestamp } }
+            end { ... on Block { timestamp } ... on BlocklessTimestamp { timestamp } }
+            governor { id name organization { slug name } }
           }
         }
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
+        pageInfo { firstCursor lastCursor count }
       }
     }
     """
     proposals: List[Dict[str, Any]] = []
     cursor = None
     while True:
-        input_obj = {
-            "organizationSlug": org_slug,
-            "sort": {"field": "CREATED_AT", "order": "DESC"},
-            "pagination": {"limit": 50},
+        input_obj: Dict[str, Any] = {
+            "filters": {"organizationId": org_id},
+            "page": {"limit": 20},
+            "sort": {"isDescending": True, "sortBy": "id"},
         }
         if cursor:
-            input_obj["pagination"]["cursor"] = cursor
+            input_obj["page"]["afterCursor"] = cursor
         payload = {"query": query, "variables": {"input": input_obj}}
         headers = {"Api-Key": api_key}
         data = client.post_json(TALLY_GRAPHQL_URL, payload, headers=headers)
         result = data.get("data", {}).get("proposals", {})
         nodes = result.get("nodes", [])
+        if not nodes:
+            break
         for item in nodes:
-            created = item.get("createdAt")
+            block = item.get("block") or {}
+            created = block.get("timestamp")
             if created:
                 created_ts = int(dt.datetime.fromisoformat(created.replace("Z", "+00:00")).timestamp())
                 if start_ts and created_ts < start_ts:
@@ -564,52 +590,72 @@ def tally_fetch_proposals(
                 if end_ts and created_ts > end_ts:
                     continue
                 item["created_ts"] = created_ts
+            # Flatten metadata for downstream compatibility
+            meta = item.get("metadata") or {}
+            item["title"] = meta.get("title")
+            item["description"] = meta.get("description")
+            item["createdAt"] = created
+            start_block = item.get("start") or {}
+            end_block = item.get("end") or {}
+            item["startTime"] = start_block.get("timestamp")
+            item["endTime"] = end_block.get("timestamp")
+            org = (item.get("governor") or {}).get("organization") or {}
+            item["organization"] = org
             proposals.append(item)
-        page = result.get("pageInfo", {})
-        if not page.get("hasNextPage"):
-            break
-        cursor = page.get("endCursor")
-        if not cursor:
+        page_info = result.get("pageInfo", {})
+        cursor = page_info.get("lastCursor")
+        if not cursor or len(nodes) < 20:
             break
     return proposals
 
 
 def tally_fetch_votes(client: HttpClient, api_key: str, proposal_id: str) -> List[Dict[str, Any]]:
     query = """
-    query ProposalVotes($input: ProposalVotesInput!) {
-      proposalVotes(input: $input) {
+    query Votes($input: VotesInput!) {
+      votes(input: $input) {
         nodes {
-          id
-          voter
-          weight
-          support
-          reason
-          createdAt
+          ... on OnchainVote {
+            id
+            amount
+            reason
+            type
+            block { timestamp }
+            voter { address name }
+            proposal { id }
+          }
         }
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
+        pageInfo { firstCursor lastCursor count }
       }
     }
     """
     votes: List[Dict[str, Any]] = []
     cursor = None
     while True:
-        input_obj = {"proposalId": proposal_id, "pagination": {"limit": 100}}
+        input_obj: Dict[str, Any] = {
+            "filters": {"proposalId": proposal_id},
+            "page": {"limit": 20},
+        }
         if cursor:
-            input_obj["pagination"]["cursor"] = cursor
+            input_obj["page"]["afterCursor"] = cursor
         payload = {"query": query, "variables": {"input": input_obj}}
         headers = {"Api-Key": api_key}
         data = client.post_json(TALLY_GRAPHQL_URL, payload, headers=headers)
-        result = data.get("data", {}).get("proposalVotes", {})
+        result = data.get("data", {}).get("votes", {})
         nodes = result.get("nodes", [])
-        votes.extend(nodes)
-        page = result.get("pageInfo", {})
-        if not page.get("hasNextPage"):
+        if not nodes:
             break
-        cursor = page.get("endCursor")
-        if not cursor:
+        for item in nodes:
+            # Flatten for downstream compatibility
+            voter_obj = item.get("voter") or {}
+            item["voter"] = voter_obj.get("address")
+            item["weight"] = item.pop("amount", None)
+            item["support"] = item.pop("type", None)
+            block = item.pop("block", None) or {}
+            item["createdAt"] = block.get("timestamp")
+        votes.extend(nodes)
+        page_info = result.get("pageInfo", {})
+        cursor = page_info.get("lastCursor")
+        if not cursor or len(nodes) < 20:
             break
     return votes
 
@@ -1214,10 +1260,12 @@ def main() -> None:
                             proposals_for_votes = proposals[start_index:end_index]
                         vote_rows = []
                         failed_votes: List[str] = []
-                        for item in proposals_for_votes:
+                        total_proposals = len(proposals_for_votes)
+                        for pidx, item in enumerate(proposals_for_votes):
                             proposal_id = item.get("id")
                             if not proposal_id:
                                 continue
+                            log(f"    Snapshot votes {pidx+1}/{total_proposals} for {dao_id} proposal {proposal_id[:16]}...")
                             try:
                                 votes = snapshot_fetch_votes(snapshot_client, proposal_id)
                             except Exception as exc:
@@ -1264,6 +1312,7 @@ def main() -> None:
                             ],
                             vote_rows,
                     )
+                        log(f"  Snapshot votes done for {dao_id}: {len(vote_rows)} votes from {total_proposals} proposals")
                         if failed_votes:
                             log(f"  Snapshot votes skipped {len(failed_votes)} proposals due to errors")
             else:
@@ -1273,79 +1322,84 @@ def main() -> None:
             if tally and tally_api_key:
                 org_slug = tally.get("organization_slug")
                 if org_slug:
-                    proposals = tally_fetch_proposals(tally_client, tally_api_key, org_slug, start_ts, end_ts)
-                    proposal_rows = []
-                    for item in proposals:
-                        proposal_rows.append(
-                            {
-                                "dao_id": dao_id,
-                                "dao_name": dao.get("name"),
-                                "organization_slug": item.get("organization", {}).get("slug"),
-                                "proposal_id": item.get("id"),
-                                "title": item.get("title"),
-                                "status": item.get("status"),
-                                "created_at": item.get("createdAt"),
-                                "created_ts": item.get("created_ts"),
-                                "start_at": item.get("startTime"),
-                                "end_at": item.get("endTime"),
-                                "source": "tally",
-                            }
-                        )
-                    write_csv_run(
-                        tally_proposals_path,
-                        [
-                            "dao_id",
-                            "dao_name",
-                            "organization_slug",
-                            "proposal_id",
-                            "title",
-                            "status",
-                            "created_at",
-                            "created_ts",
-                            "start_at",
-                            "end_at",
-                            "source",
-                        ],
-                        proposal_rows,
-                    )
-                    if not args.skip_votes:
-                        vote_rows = []
+                    try:
+                        proposals = tally_fetch_proposals(tally_client, tally_api_key, org_slug, start_ts, end_ts)
+                        proposal_rows = []
                         for item in proposals:
-                            proposal_id = item.get("id")
-                            if not proposal_id:
-                                continue
-                            votes = tally_fetch_votes(tally_client, tally_api_key, proposal_id)
-                            for vote in votes:
-                                vote_rows.append(
-                                    {
-                                        "dao_id": dao_id,
-                                        "dao_name": dao.get("name"),
-                                        "proposal_id": proposal_id,
-                                        "vote_id": vote.get("id"),
-                                        "voter": vote.get("voter"),
-                                        "weight": vote.get("weight"),
-                                        "support": vote.get("support"),
-                                        "reason": vote.get("reason"),
-                                        "created_at": vote.get("createdAt"),
-                                        "source": "tally",
-                                    }
-                                )
+                            proposal_rows.append(
+                                {
+                                    "dao_id": dao_id,
+                                    "dao_name": dao.get("name"),
+                                    "organization_slug": item.get("organization", {}).get("slug"),
+                                    "proposal_id": item.get("id"),
+                                    "title": item.get("title"),
+                                    "status": item.get("status"),
+                                    "created_at": item.get("createdAt"),
+                                    "created_ts": item.get("created_ts"),
+                                    "start_at": item.get("startTime"),
+                                    "end_at": item.get("endTime"),
+                                    "source": "tally",
+                                }
+                            )
                         write_csv_run(
-                            tally_votes_path,
+                            tally_proposals_path,
                             [
                                 "dao_id",
                                 "dao_name",
+                                "organization_slug",
                                 "proposal_id",
-                                "vote_id",
-                                "voter",
-                                "weight",
-                                "support",
-                                "reason",
+                                "title",
+                                "status",
                                 "created_at",
+                                "created_ts",
+                                "start_at",
+                                "end_at",
                                 "source",
                             ],
-                            vote_rows,
-                    )
+                            proposal_rows,
+                        )
+                        if not args.skip_votes:
+                            vote_rows = []
+                            total_tally = len(proposals)
+                            for tidx, item in enumerate(proposals):
+                                proposal_id = item.get("id")
+                                if not proposal_id:
+                                    continue
+                                log(f"    Tally votes {tidx+1}/{total_tally} for {dao_id} proposal {proposal_id[:16]}...")
+                                votes = tally_fetch_votes(tally_client, tally_api_key, proposal_id)
+                                for vote in votes:
+                                    vote_rows.append(
+                                        {
+                                            "dao_id": dao_id,
+                                            "dao_name": dao.get("name"),
+                                            "proposal_id": proposal_id,
+                                            "vote_id": vote.get("id"),
+                                            "voter": vote.get("voter"),
+                                            "weight": vote.get("weight"),
+                                            "support": vote.get("support"),
+                                            "reason": vote.get("reason"),
+                                            "created_at": vote.get("createdAt"),
+                                            "source": "tally",
+                                        }
+                                    )
+                            write_csv_run(
+                                tally_votes_path,
+                                [
+                                    "dao_id",
+                                    "dao_name",
+                                    "proposal_id",
+                                    "vote_id",
+                                    "voter",
+                                    "weight",
+                                    "support",
+                                    "reason",
+                                    "created_at",
+                                    "source",
+                                ],
+                                vote_rows,
+                            )
+                    except Exception as exc:
+                        log(f"  Tally failed for {dao_id}: {exc}")
                 else:
                     log(f"  Tally: missing organization_slug for {dao_id}")
             else:
@@ -1424,7 +1478,7 @@ def main() -> None:
                                     "author": post.get("username"),
                                     "reply_to_post_number": post.get("reply_to_post_number"),
                                     "like_count": post.get("like_count"),
-                                    "raw": post.get("raw"),
+                                    "raw": post.get("raw") or re.sub(r"<[^>]+>", "", post.get("cooked") or ""),
                                     "source": "discourse",
                                 }
                             )
