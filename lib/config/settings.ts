@@ -120,6 +120,18 @@ export interface SimulationSettings {
 
   // Governance
   governance_rule: string;
+
+  // Oracle configuration
+  oracle_type: 'random_walk' | 'gbm' | 'calibrated_gbm' | 'historical_replay' | 'fixed';
+  oracle_calibration_dao_id?: string;
+
+  // Forum simulation
+  forum_enabled: boolean;
+  forum_influence_weight: number;
+
+  // Calibration
+  calibration_dao_id?: string;
+  calibration_strict_replay?: boolean;
 }
 
 /**
@@ -222,6 +234,18 @@ export const defaultSettings: SimulationSettings = {
   treasuryEmergencyTopupEnabled: true,
 
   voteHerdingFactor: 0.2,
+
+  // Oracle defaults
+  oracle_type: 'random_walk' as const,
+  oracle_calibration_dao_id: undefined,
+
+  // Forum defaults
+  forum_enabled: false,
+  forum_influence_weight: 0.3,
+
+  // Calibration defaults
+  calibration_dao_id: undefined,
+  calibration_strict_replay: false,
 };
 
 /**

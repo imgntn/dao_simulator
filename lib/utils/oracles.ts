@@ -89,6 +89,125 @@ export class FixedPriceOracle extends BasePriceOracle {
 }
 
 /**
+ * Calibrated GBM Oracle - uses drift/volatility from historical CalibrationProfile
+ * Optionally injects drawdown events from historical data.
+ */
+export class CalibratedGBMOracle extends GeometricBrownianOracle {
+  private drawdownEvents: Array<{ startStep: number; endStep: number; magnitude: number }>;
+  private initialPrice: number;
+
+  constructor(calibration: {
+    drift: number;
+    volatility: number;
+    initialPrice: number;
+    drawdownEvents?: Array<{ startStep: number; endStep: number; magnitude: number }>;
+  }) {
+    super(calibration.drift, calibration.volatility);
+    this.initialPrice = calibration.initialPrice;
+    this.drawdownEvents = calibration.drawdownEvents || [];
+  }
+
+  updatePrice(token: string, step?: number, volatilityOverride?: number): void {
+    // Set initial price on first call
+    if (!this.prices.has(token)) {
+      this.setPrice(token, this.initialPrice);
+    }
+
+    // Normal GBM update
+    super.updatePrice(token, step, volatilityOverride);
+
+    // Apply drawdown effect if in a drawdown window
+    if (step !== undefined) {
+      for (const dd of this.drawdownEvents) {
+        if (step >= dd.startStep && step <= dd.endStep) {
+          const progress = (step - dd.startStep) / Math.max(dd.endStep - dd.startStep, 1);
+          // Peak drawdown at midpoint, recover toward end
+          const drawdownFactor = progress < 0.5
+            ? 1 - dd.magnitude * (progress * 2)
+            : 1 - dd.magnitude * (2 - progress * 2);
+          const currentPrice = this.getPrice(token);
+          this.setPrice(token, Math.max(0.01, currentPrice * Math.max(0.5, drawdownFactor)));
+          break;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Historical Replay Oracle - replays actual price data from a time series.
+ * After the series ends, falls back to CalibratedGBM with learned parameters.
+ */
+export class HistoricalReplayOracle extends BasePriceOracle {
+  private timeSeries: Array<{ step: number; price: number }>;
+  private fallbackOracle: CalibratedGBMOracle | null = null;
+  private maxStep: number;
+
+  constructor(
+    timeSeries: Array<{ step: number; price: number }>,
+    fallbackParams?: { drift: number; volatility: number }
+  ) {
+    super();
+    this.timeSeries = timeSeries.sort((a, b) => a.step - b.step);
+    this.maxStep = this.timeSeries.length > 0
+      ? this.timeSeries[this.timeSeries.length - 1].step
+      : 0;
+
+    if (fallbackParams && this.timeSeries.length > 0) {
+      this.fallbackOracle = new CalibratedGBMOracle({
+        drift: fallbackParams.drift,
+        volatility: fallbackParams.volatility,
+        initialPrice: this.timeSeries[this.timeSeries.length - 1].price,
+      });
+    }
+  }
+
+  updatePrice(token: string, step?: number, volatilityOverride?: number): void {
+    if (step === undefined) {
+      step = 0;
+    }
+
+    if (step <= this.maxStep && this.timeSeries.length > 0) {
+      // Interpolate between nearest data points
+      const price = this.interpolatePrice(step);
+      this.setPrice(token, price);
+    } else if (this.fallbackOracle) {
+      // After series ends, use calibrated GBM
+      this.fallbackOracle.updatePrice(token, step, volatilityOverride);
+      this.setPrice(token, this.fallbackOracle.getPrice(token));
+    }
+    // If no fallback, price stays at last known value
+  }
+
+  private interpolatePrice(step: number): number {
+    if (this.timeSeries.length === 0) return 100;
+    if (this.timeSeries.length === 1) return this.timeSeries[0].price;
+
+    // Binary search for nearest data points
+    let lo = 0;
+    let hi = this.timeSeries.length - 1;
+
+    if (step <= this.timeSeries[lo].step) return this.timeSeries[lo].price;
+    if (step >= this.timeSeries[hi].step) return this.timeSeries[hi].price;
+
+    while (hi - lo > 1) {
+      const mid = Math.floor((lo + hi) / 2);
+      if (this.timeSeries[mid].step <= step) {
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    }
+
+    // Linear interpolation
+    const loEntry = this.timeSeries[lo];
+    const hiEntry = this.timeSeries[hi];
+    const t = (step - loEntry.step) / Math.max(hiEntry.step - loEntry.step, 1);
+    return loEntry.price + t * (hiEntry.price - loEntry.price);
+  }
+}
+
+/**
  * Market Shock Oracle - applies sudden price shocks
  */
 export class MarketShockOracle extends BasePriceOracle {

@@ -2,6 +2,7 @@
 
 import type { DataCollectorData, EventData } from '@/types/simulation';
 import type { DAO } from '../data-structures/dao';
+import type { ForumState } from '../data-structures/forum';
 import { CircularBuffer } from '../utils/circular-buffer';
 
 // Maximum history entries to keep (prevents unbounded memory growth)
@@ -25,6 +26,10 @@ export interface ModelVarEntry {
   numProposals: number;
   numProjects: number;
   numMembers: number;
+  // Forum metrics (optional, present when forum is enabled)
+  forumTopics?: number;
+  forumPosts?: number;
+  forumAvgSentiment?: number;
 }
 
 /**
@@ -145,6 +150,16 @@ export class SimpleDataCollector implements DataCollectorData {
 
   }
 
+  /** Optional forum state reference for forum metrics collection */
+  private forumStateRef: ForumState | null = null;
+
+  /**
+   * Set forum state reference for metrics collection
+   */
+  setForumState(forumState: ForumState): void {
+    this.forumStateRef = forumState;
+  }
+
   /**
    * Collect statistics from the DAO
    * OPTIMIZATION: Only collects every collectionInterval steps (default 10)
@@ -222,6 +237,17 @@ export class SimpleDataCollector implements DataCollectorData {
       this.lastCentralityStep = step;
     }
 
+    // Collect forum metrics if available
+    let forumMetrics: { forumTopics?: number; forumPosts?: number; forumAvgSentiment?: number } = {};
+    if (this.forumStateRef) {
+      const fStats = this.forumStateRef.getStats();
+      forumMetrics = {
+        forumTopics: fStats.topicCount,
+        forumPosts: fStats.postCount,
+        forumAvgSentiment: fStats.avgSentiment,
+      };
+    }
+
     // Store model variables
     this._modelVars.push({
       step,
@@ -232,6 +258,7 @@ export class SimpleDataCollector implements DataCollectorData {
       numProposals: dao.proposals.length,
       numProjects: dao.projects.length,
       numMembers: dao.members.length,
+      ...forumMetrics,
     });
 
     // Store history entry (CircularBuffer handles automatic eviction)

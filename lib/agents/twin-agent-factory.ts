@@ -29,6 +29,7 @@ import { NodeOperator } from './node-operator';
 import { FoundationAgent, FoundationType } from './foundation-agent';
 
 import { random, randomInt, randomChoice } from '../utils/random';
+import type { CalibrationProfile, VoterCluster } from '../digital-twins/calibration-loader';
 
 // =============================================================================
 // TYPES
@@ -129,10 +130,18 @@ export class TwinAgentFactory {
   private model: DAOModel;
   private agentCounter: number = 0;
   private daoId: string;
+  private calibration: CalibrationProfile | null = null;
 
   constructor(model: DAOModel, daoId: string = 'default') {
     this.model = model;
     this.daoId = daoId;
+  }
+
+  /**
+   * Set calibration profile for historically-calibrated agent distributions
+   */
+  setCalibration(profile: CalibrationProfile | null): void {
+    this.calibration = profile;
   }
 
   /**
@@ -143,7 +152,7 @@ export class TwinAgentFactory {
     const byArchetype: Record<string, number> = {};
     let totalTokens = 0;
 
-    // Get member distribution from twin config
+    // Get member distribution from twin config (calibration-aware)
     const memberDistribution = this.getMemberDistribution(twinConfig);
 
     for (const config of memberDistribution) {
@@ -292,32 +301,98 @@ export class TwinAgentFactory {
   }
 
   /**
-   * Get member distribution from twin config
+   * Get member distribution from twin config.
+   * If a CalibrationProfile is set, uses voter clusters for proportional distribution.
    */
   private getMemberDistribution(twinConfig: TwinDAOConfig): AgentCreationConfig[] {
+    if (this.calibration?.voter_clusters && this.calibration.voter_clusters.length > 0) {
+      return this.getCalibratedDistribution(twinConfig, this.calibration);
+    }
+    return this.getDefaultDistribution(twinConfig);
+  }
+
+  /**
+   * Build agent distribution from historical voter cluster data.
+   * Maps voter clusters to agent archetypes proportionally.
+   */
+  private getCalibratedDistribution(
+    twinConfig: TwinDAOConfig,
+    calibration: CalibrationProfile
+  ): AgentCreationConfig[] {
     const distribution: AgentCreationConfig[] = [];
+    const totalAgents = 100; // Target total agent count
+    const clusters = calibration.voter_clusters;
 
-    // Base distribution (always include)
-    distribution.push({
-      archetype: 'token_holder',
-      count: 50,
-      tokenDistribution: { min: 100, max: 10000 },
-      reputationDistribution: { min: 10, max: 100 },
-    });
+    // Map each voter cluster to an archetype
+    for (const cluster of clusters) {
+      const count = Math.max(1, Math.round(cluster.share * totalAgents));
+      const mapping = this.mapClusterToArchetype(cluster);
 
-    distribution.push({
-      archetype: 'delegate',
-      count: 15,
-      tokenDistribution: { min: 5000, max: 100000 },
-      reputationDistribution: { min: 50, max: 200 },
-    });
+      distribution.push({
+        archetype: mapping.archetype,
+        count,
+        tokenDistribution: mapping.tokenDistribution,
+        reputationDistribution: mapping.reputationDistribution,
+        options: mapping.options,
+      });
+    }
 
+    // Always add DAO-specific governance roles on top of cluster-based distribution
+    this.addGovernanceRoles(distribution, twinConfig);
+
+    return distribution;
+  }
+
+  /**
+   * Map a voter cluster to an agent archetype with appropriate parameters
+   */
+  private mapClusterToArchetype(cluster: VoterCluster): {
+    archetype: string;
+    tokenDistribution: { min: number; max: number };
+    reputationDistribution: { min: number; max: number };
+    options?: Record<string, unknown>;
+  } {
+    const baseVP = cluster.avg_voting_power;
+
+    switch (cluster.label) {
+      case 'whale':
+        return {
+          archetype: 'investor',
+          tokenDistribution: { min: Math.max(10000, baseVP * 0.5), max: Math.max(50000, baseVP * 2) },
+          reputationDistribution: { min: 100, max: 300 },
+        };
+      case 'active_delegate':
+        return {
+          archetype: 'delegate',
+          tokenDistribution: { min: Math.max(5000, baseVP * 0.3), max: Math.max(30000, baseVP * 1.5) },
+          reputationDistribution: { min: 80, max: 250 },
+        };
+      case 'regular_voter':
+        return {
+          archetype: 'token_holder',
+          tokenDistribution: { min: Math.max(100, baseVP * 0.2), max: Math.max(5000, baseVP * 1.2) },
+          reputationDistribution: { min: 20, max: 100 },
+        };
+      case 'passive_holder':
+      default:
+        return {
+          archetype: 'token_holder',
+          tokenDistribution: { min: 50, max: Math.max(1000, baseVP * 0.8) },
+          reputationDistribution: { min: 5, max: 50 },
+        };
+    }
+  }
+
+  /**
+   * Add DAO-specific governance roles (security council, citizens, stewards, etc.)
+   */
+  private addGovernanceRoles(distribution: AgentCreationConfig[], twinConfig: TwinDAOConfig): void {
     // Bicameral-specific agents
     if (twinConfig.isBicameral) {
       distribution.push({
         archetype: 'citizen',
         count: 20,
-        tokenDistribution: { min: 0, max: 1000 },  // Citizens may have few tokens
+        tokenDistribution: { min: 0, max: 1000 },
         reputationDistribution: { min: 100, max: 300 },
       });
     }
@@ -326,7 +401,7 @@ export class TwinAgentFactory {
     if (twinConfig.hasSecurityCouncil) {
       distribution.push({
         archetype: 'security_council',
-        count: 12,  // Typical council size
+        count: 12,
         tokenDistribution: { min: 1000, max: 50000 },
         reputationDistribution: { min: 200, max: 500 },
       });
@@ -342,7 +417,7 @@ export class TwinAgentFactory {
       });
     }
 
-    // Stewards (common in grant-focused DAOs)
+    // Stewards
     if (twinConfig.name.toLowerCase().includes('gitcoin') ||
         twinConfig.name.toLowerCase().includes('ens')) {
       distribution.push({
@@ -353,7 +428,7 @@ export class TwinAgentFactory {
       });
     }
 
-    // Developer Advisory Board (Optimism)
+    // DAB (Optimism)
     if (twinConfig.name.toLowerCase().includes('optimism')) {
       distribution.push({
         archetype: 'dab',
@@ -373,7 +448,7 @@ export class TwinAgentFactory {
       });
     }
 
-    // Foundation agents (most DAOs have foundations)
+    // Foundation agents
     if (twinConfig.name.toLowerCase().includes('arbitrum') ||
         twinConfig.name.toLowerCase().includes('optimism') ||
         twinConfig.name.toLowerCase().includes('ens')) {
@@ -389,6 +464,31 @@ export class TwinAgentFactory {
         },
       });
     }
+  }
+
+  /**
+   * Default member distribution (original hardcoded distribution)
+   */
+  private getDefaultDistribution(twinConfig: TwinDAOConfig): AgentCreationConfig[] {
+    const distribution: AgentCreationConfig[] = [];
+
+    // Base distribution (always include)
+    distribution.push({
+      archetype: 'token_holder',
+      count: 50,
+      tokenDistribution: { min: 100, max: 10000 },
+      reputationDistribution: { min: 10, max: 100 },
+    });
+
+    distribution.push({
+      archetype: 'delegate',
+      count: 15,
+      tokenDistribution: { min: 5000, max: 100000 },
+      reputationDistribution: { min: 50, max: 200 },
+    });
+
+    // Add governance roles
+    this.addGovernanceRoles(distribution, twinConfig);
 
     return distribution;
   }

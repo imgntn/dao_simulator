@@ -23,6 +23,8 @@ import type {
   ProposalStageType,
 } from './types';
 import { STEPS_PER_DAY, CATEGORY_COLORS, MEMBER_TYPE_TO_AGENTS } from './types';
+import { CalibrationLoader } from './calibration-loader';
+import type { CalibrationProfile } from './calibration-loader';
 
 // Type helpers to convert Zod inferred types to our interface types
 function zodToDigitalTwinIndex(zod: ZodDigitalTwinIndex): DigitalTwinIndex {
@@ -568,6 +570,19 @@ export class DigitalTwinLoader {
     }
 
     return archetypes;
+  }
+
+  /**
+   * Transform with calibration: loads both the twin config and its calibration profile.
+   * Returns the TwinDAOConfig along with the CalibrationProfile if available.
+   */
+  transformWithCalibration(twin: DigitalTwinConfig): {
+    config: TwinDAOConfig;
+    calibration: CalibrationProfile | null;
+  } {
+    const config = this.transformToDAOConfig(twin);
+    const calibration = CalibrationLoader.load(twin.dao.id);
+    return { config, calibration };
   }
 
   /**

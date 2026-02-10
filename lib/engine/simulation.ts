@@ -28,6 +28,17 @@ import { setSeed, resetGlobalRandom, getRandomState, setRandomState, random } fr
 import { GovernanceProcessor, createGovernanceProcessor } from '../governance';
 import { DelegationResolver } from '../delegation/delegation-resolver';
 import {
+  RandomWalkOracle,
+  GeometricBrownianOracle,
+  FixedPriceOracle,
+  CalibratedGBMOracle,
+  HistoricalReplayOracle,
+} from '../utils/oracles';
+import { ForumState } from '../data-structures/forum';
+import { ForumSimulation } from './forum-simulation';
+import { CalibrationLoader } from '../digital-twins/calibration-loader';
+import type { CalibrationProfile } from '../digital-twins/calibration-loader';
+import {
   Developer,
   Investor,
   Trader,
@@ -89,6 +100,13 @@ export interface DAOSimulationConfig extends Partial<SimulationSettings> {
   useSharedRandom?: boolean;
   // Governance rule configuration (quorum percentage, thresholds, etc.)
   governance_config?: GovernanceRuleConfig;
+  // Calibration and forum (also available via SimulationSettings)
+  oracle_type?: 'random_walk' | 'gbm' | 'calibrated_gbm' | 'historical_replay' | 'fixed';
+  oracle_calibration_dao_id?: string;
+  forum_enabled?: boolean;
+  forum_influence_weight?: number;
+  calibration_dao_id?: string;
+  calibration_strict_replay?: boolean;
 }
 
 export class DAOSimulation extends Model {
@@ -177,6 +195,11 @@ export class DAOSimulation extends Model {
   rewardAggregators: Map<string, RewardAggregator> = new Map();
   /** RewardShapers for learning agents with delayed rewards, keyed by agent uniqueId */
   rewardShapers: Map<string, RewardShaper> = new Map();
+  /** Forum simulation module */
+  forumSimulation: ForumSimulation | null = null;
+  forumState: ForumState | null = null;
+  /** Calibration profile for this simulation */
+  calibrationProfile: CalibrationProfile | null = null;
 
   constructor(config: DAOSimulationConfig = {}) {
     super();
@@ -355,10 +378,42 @@ export class DAOSimulation extends Model {
     this.marketplace = new NFTMarketplace(this.eventBus);
     this.dao.marketplace = this.marketplace;
 
+    // Load calibration profile if configured
+    const calibrationDaoId = config.calibration_dao_id ?? settings.calibration_dao_id;
+    if (calibrationDaoId) {
+      this.calibrationProfile = CalibrationLoader.load(calibrationDaoId);
+      if (this.calibrationProfile) {
+        // Apply calibrated settings
+        const calibratedSettings = CalibrationLoader.toSettings(this.calibrationProfile);
+        Object.assign(this, {
+          priceVolatility: calibratedSettings.price_volatility ?? this.priceVolatility,
+          commentProbability: calibratedSettings.comment_probability ?? this.commentProbability,
+          proposalCreationProbability: calibratedSettings.proposal_creation_probability ?? this.proposalCreationProbability,
+        });
+        if (calibratedSettings.voting_activity !== undefined) {
+          this.dao.votingActivity = calibratedSettings.voting_activity;
+        }
+      }
+    }
+
+    // Initialize oracle based on configuration
+    const oracleType = config.oracle_type ?? settings.oracle_type;
+    this.initializeOracle(oracleType, calibrationDaoId);
+
     // Initialize treasury with funding
     const initialFunding = constants.INITIAL_TREASURY_FUNDING;
     this.dao.treasury.deposit('DAO_TOKEN', initialFunding, this.currentStep);
 
+    // Initialize forum simulation if enabled
+    const forumEnabled = config.forum_enabled ?? settings.forum_enabled;
+    if (forumEnabled) {
+      this.forumState = new ForumState();
+      this.forumSimulation = new ForumSimulation(
+        this.forumState,
+        this.calibrationProfile,
+        config.forum_influence_weight ?? settings.forum_influence_weight
+      );
+    }
 
     // Initialize reputation tracker
     this.reputationTracker = new ReputationTracker(this.dao, this.reputationDecayRate);
@@ -377,6 +432,9 @@ export class DAOSimulation extends Model {
       this.dao,
       config.centralityInterval ?? 1
     );
+    if (this.forumState) {
+      this.dataCollector.setForumState(this.forumState);
+    }
 
     // Initialize agent manager
     this.agentManager = new AgentManager(this);
@@ -426,6 +484,60 @@ export class DAOSimulation extends Model {
       this.eventBus,
       daoType
     );
+  }
+
+  /**
+   * Initialize the price oracle based on configuration
+   */
+  private initializeOracle(oracleType: string, calibrationDaoId?: string): void {
+    const profile = this.calibrationProfile;
+
+    switch (oracleType) {
+      case 'gbm':
+        this.dao.treasury.oracle = new GeometricBrownianOracle(0.01, 0.2);
+        break;
+
+      case 'calibrated_gbm':
+        if (profile?.market) {
+          this.dao.treasury.oracle = new CalibratedGBMOracle({
+            drift: profile.market.avg_daily_return / 24, // per-step drift
+            volatility: profile.market.daily_volatility / Math.sqrt(24),
+            initialPrice: profile.market.avg_price_usd,
+            drawdownEvents: profile.market.drawdown_events?.map(dd => ({
+              startStep: dd.start_idx * 24, // Convert day index to step
+              endStep: dd.end_idx * 24,
+              magnitude: dd.magnitude,
+            })),
+          });
+          this.dao.treasury.oracle.setPrice('DAO_TOKEN', profile.market.avg_price_usd);
+          this.dao.treasury.updateTokenPrice('DAO_TOKEN', profile.market.avg_price_usd);
+        } else {
+          this.dao.treasury.oracle = new GeometricBrownianOracle(0.01, 0.2);
+        }
+        break;
+
+      case 'historical_replay':
+        // Would need actual price time series data - use calibrated GBM as fallback
+        if (profile?.market) {
+          this.dao.treasury.oracle = new CalibratedGBMOracle({
+            drift: profile.market.avg_daily_return / 24,
+            volatility: profile.market.daily_volatility / Math.sqrt(24),
+            initialPrice: profile.market.avg_price_usd,
+          });
+          this.dao.treasury.oracle.setPrice('DAO_TOKEN', profile.market.avg_price_usd);
+          this.dao.treasury.updateTokenPrice('DAO_TOKEN', profile.market.avg_price_usd);
+        }
+        break;
+
+      case 'fixed':
+        this.dao.treasury.oracle = new FixedPriceOracle();
+        break;
+
+      case 'random_walk':
+      default:
+        // Keep default RandomWalkOracle from Treasury constructor
+        break;
+    }
   }
 
   /**
@@ -1136,6 +1248,15 @@ export class DAOSimulation extends Model {
 
     // Apply treasury stabilization policy before agent actions
     this.applyTreasuryPolicy();
+
+    // Forum simulation step (before agent actions so sentiment is available)
+    if (this.forumSimulation) {
+      const agentIds = this.dao.members.map(m => m.uniqueId);
+      const openProposalIds = this.dao.proposals
+        .filter(p => p.status === 'open')
+        .map(p => p.uniqueId);
+      this.forumSimulation.step(agentIds, this.currentStep, openProposalIds);
+    }
 
     // Step agents - await to handle async schedulers
     const result = this.schedule.step();
