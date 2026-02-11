@@ -41,6 +41,7 @@ export {
 } from './stats';
 export * from './path-utils';
 export * from './oracles';
+export { logger, Logger, type LogLevel } from './logger';
 
 // Attack Detection
 export {

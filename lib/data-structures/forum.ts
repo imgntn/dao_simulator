@@ -41,6 +41,7 @@ export class ForumState {
   private topicCounter: number = 0;
   private postCounter: number = 0;
   private topicIndex: Map<string, ForumTopic> = new Map();
+  private sentimentCache: Map<string, number> = new Map();
 
   /**
    * Create a new forum topic
@@ -93,7 +94,8 @@ export class ForumState {
     };
 
     topic.posts.push(post);
-    topic.views += 1 + Math.floor(Math.random() * 5); // Simulate view increase
+    topic.views += 3; // Fixed view increment per post for reproducibility
+    this.sentimentCache.delete(topicId); // Invalidate cached sentiment
     return post;
   }
 
@@ -110,14 +112,20 @@ export class ForumState {
   }
 
   /**
-   * Get the average sentiment of posts in a topic
+   * Get the average sentiment of posts in a topic.
+   * Results are cached and invalidated when new posts are added.
    */
   getTopicSentiment(topicId: string): number {
+    const cached = this.sentimentCache.get(topicId);
+    if (cached !== undefined) return cached;
+
     const topic = this.topicIndex.get(topicId);
     if (!topic || topic.posts.length === 0) return 0;
 
     const totalSentiment = topic.posts.reduce((sum, p) => sum + p.sentiment, 0);
-    return totalSentiment / topic.posts.length;
+    const sentiment = totalSentiment / topic.posts.length;
+    this.sentimentCache.set(topicId, sentiment);
+    return sentiment;
   }
 
   /**
@@ -150,6 +158,7 @@ export class ForumState {
   reset(): void {
     this.topics = [];
     this.topicIndex.clear();
+    this.sentimentCache.clear();
     this.topicCounter = 0;
     this.postCounter = 0;
   }

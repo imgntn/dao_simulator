@@ -27,6 +27,7 @@ function getTotalTokenSupply(dao: DAO): number {
  * Base class for governance approval rules
  */
 export abstract class GovernanceRule {
+
   /**
    * Return true to approve the proposal
    */

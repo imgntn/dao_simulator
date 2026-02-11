@@ -121,16 +121,19 @@ export interface SimulationSettings {
   // Governance
   governance_rule: string;
 
-  // Oracle configuration
+  /** Price oracle type: 'random_walk' (default), 'gbm', 'calibrated_gbm' (uses CalibrationProfile), 'historical_replay' (replays CSV data), 'fixed' */
   oracle_type: 'random_walk' | 'gbm' | 'calibrated_gbm' | 'historical_replay' | 'fixed';
+  /** DAO ID whose market data to use for calibrated oracles (e.g. 'uniswap') */
   oracle_calibration_dao_id?: string;
 
-  // Forum simulation
+  /** Enable forum discussion simulation (topics, posts, sentiment tracking) */
   forum_enabled: boolean;
+  /** Weight [0-1] controlling how much forum sentiment influences voting decisions */
   forum_influence_weight: number;
 
-  // Calibration
+  /** DAO ID to load CalibrationProfile for (enables all calibration features: tuned governance, agent distribution, oracle) */
   calibration_dao_id?: string;
+  /** When true, replay exact historical event sequence; when false (default), use statistical matching (same distributions, randomized timing) */
   calibration_strict_replay?: boolean;
 }
 

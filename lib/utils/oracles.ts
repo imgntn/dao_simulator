@@ -95,16 +95,22 @@ export class FixedPriceOracle extends BasePriceOracle {
 export class CalibratedGBMOracle extends GeometricBrownianOracle {
   private drawdownEvents: Array<{ startStep: number; endStep: number; magnitude: number }>;
   private initialPrice: number;
+  private meanReversionSpeed: number;
 
   constructor(calibration: {
     drift: number;
     volatility: number;
     initialPrice: number;
     drawdownEvents?: Array<{ startStep: number; endStep: number; magnitude: number }>;
+    meanReversionSpeed?: number;
   }) {
     super(calibration.drift, calibration.volatility);
     this.initialPrice = calibration.initialPrice;
     this.drawdownEvents = calibration.drawdownEvents || [];
+    // Mean-reversion toward the initial (historical average) price.
+    // Counteracts systematic drift from treasury selling pressure and GBM noise.
+    // 0.01 = 1% pull-back per step → half-life of ~69 steps (~3 days)
+    this.meanReversionSpeed = calibration.meanReversionSpeed ?? 0.01;
   }
 
   updatePrice(token: string, step?: number, volatilityOverride?: number): void {
@@ -115,6 +121,15 @@ export class CalibratedGBMOracle extends GeometricBrownianOracle {
 
     // Normal GBM update
     super.updatePrice(token, step, volatilityOverride);
+
+    // Mean-reversion: pull price back toward the historical average (Ornstein-Uhlenbeck style).
+    // Without this, treasury selling pressure causes ~40% systematic downward bias.
+    if (this.meanReversionSpeed > 0) {
+      const currentPrice = this.getPrice(token);
+      const logRatio = Math.log(currentPrice / this.initialPrice);
+      const revertedPrice = currentPrice * Math.exp(-this.meanReversionSpeed * logRatio);
+      this.setPrice(token, Math.max(0.01, revertedPrice));
+    }
 
     // Apply drawdown effect if in a drawdown window
     if (step !== undefined) {

@@ -156,3 +156,18 @@ export {
   getRecommendedWorkerCount,
   type WorkerPoolConfig,
 } from './worker-pool';
+
+// Accuracy Metrics (Calibration Validation)
+export {
+  compareToHistorical,
+  extractSimulationMetrics,
+  type AccuracyReport,
+  type SimulationMetrics,
+} from './accuracy-metrics';
+
+// Backtest Runner (Historical Validation)
+export {
+  BacktestRunner,
+  type BacktestConfig,
+  type BacktestResult,
+} from './backtest-runner';

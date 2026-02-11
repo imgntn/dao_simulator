@@ -391,3 +391,20 @@ export class BountyProposal extends Proposal {
     this.type = 'bounty';
   }
 }
+
+// =============================================================================
+// MULTI-STAGE TYPE GUARD
+// =============================================================================
+
+/** Structural interface for proposals with multi-stage pipeline support */
+export interface MultiStageFields {
+  stageConfigs: unknown[];
+  currentStageIndex: number;
+  currentStageState?: { startStep: number; endStep: number };
+  isInVotingStage: boolean;
+}
+
+/** Type guard: returns true if a proposal has multi-stage pipeline fields */
+export function isMultiStageProposal(p: Proposal): p is Proposal & MultiStageFields {
+  return Array.isArray((p as Proposal & Partial<MultiStageFields>).stageConfigs);
+}

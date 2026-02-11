@@ -3,6 +3,7 @@
 
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
+import { logger } from '../utils/logger';
 import { random, randomBool } from '../utils/random';
 import { LearningMixin, LearningConfig, LearningState } from './learning';
 import { StateDiscretizer } from './learning';
@@ -282,7 +283,8 @@ export class MarketMaker extends DAOMember {
         this.markActive();
         return 0.2; // Small reward for successful removal
       }
-    } catch {
+    } catch (error) {
+      logger.debug('MarketMaker: removeLiquidity failed', error);
       return -0.1;
     }
 
@@ -438,8 +440,8 @@ export class MarketMaker extends DAOMember {
           }
         }
         this.markActive();
-      } catch {
-        // Trade failed
+      } catch (error) {
+        logger.debug('MarketMaker: arbitrage trade failed', error);
       }
     }
   }

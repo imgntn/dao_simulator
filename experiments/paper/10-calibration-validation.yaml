@@ -1,0 +1,111 @@
+name: Calibration Validation
+description: >
+  Validates that calibrated digital twins reproduce historical DAO dynamics.
+  Runs backtests for representative DAOs comparing simulated metrics
+  (proposal frequency, pass rate, participation, price trajectory)
+  against historical calibration profiles.
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - paper
+  - calibration
+  - validation
+  - digital-twins
+
+# This experiment uses the BacktestRunner directly rather than the standard
+# experiment runner, since it compares against historical calibration profiles.
+# Run with: npx tsx scripts/run-calibration-validation.ts
+#
+# For quick validation (3 episodes, 360 steps):
+#   npx tsx scripts/run-calibration-validation.ts --quick
+#
+# For single DAO:
+#   npx tsx scripts/run-calibration-validation.ts --dao aave --episodes 10
+
+# Calibrated DAOs (11 total, all with profiles in results/historical/calibration/):
+# DeFi/Lending: aave, compound
+# DEX: uniswap, curve
+# Layer 2: arbitrum, optimism
+# Staking: lido
+# Identity: ens
+# Grants: gitcoin
+# Stablecoin: maker_sky
+# NFT Governance: nouns
+
+baseConfig:
+  # Each DAO uses its own calibration profile which sets:
+  # - voting_activity from avg_participation_rate
+  # - proposal_creation_probability from avg_proposals_per_month
+  # - price_volatility from daily_volatility
+  # - voteHerdingFactor from voter_concentration
+  # - oracle: calibrated_gbm with historical drift/volatility
+  # - forum: calibrated topic/reply rates from historical forum data
+  # - governance: quorum/approval derived from historical voting patterns
+  # - agent distribution: from voter cluster analysis (whale/delegate/regular/passive)
+  template: compound
+  overrides:
+    forum_enabled: true
+    forum_influence_weight: 0.3
+    oracle_type: calibrated_gbm
+    learning_enabled: false
+
+execution:
+  runsPerConfig: 5
+  stepsPerRun: 720
+  seedStrategy: sequential
+  baseSeed: 42
+
+sweep:
+  parameter: calibration_dao_id
+  values:
+    - aave
+    - uniswap
+    - compound
+    - arbitrum
+    - optimism
+    - ens
+    - lido
+    - gitcoin
+    - maker_sky
+    - curve
+    - nouns
+
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+  - name: Final Token Price
+    type: builtin
+    builtin: final_token_price
+  - name: Total Proposals
+    type: builtin
+    builtin: total_proposals
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+  - name: Voter Concentration Gini
+    type: builtin
+    builtin: voter_concentration_gini
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Proposal Rate
+    type: builtin
+    builtin: proposal_rate
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Token Concentration Gini
+    type: builtin
+    builtin: token_concentration_gini
+
+output:
+  directory: results/paper/10-calibration-validation
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeManifest: true

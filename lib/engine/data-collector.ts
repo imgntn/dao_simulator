@@ -26,6 +26,11 @@ export interface ModelVarEntry {
   numProposals: number;
   numProjects: number;
   numMembers: number;
+  // Proposal outcome tracking
+  proposalsApproved?: number;
+  proposalsRejected?: number;
+  proposalsExpired?: number;
+  avgParticipationRate?: number;
   // Forum metrics (optional, present when forum is enabled)
   forumTopics?: number;
   forumPosts?: number;
@@ -248,6 +253,27 @@ export class SimpleDataCollector implements DataCollectorData {
       };
     }
 
+    // Collect proposal outcome metrics
+    const proposals = dao.proposals;
+    const proposalsApproved = proposals.filter(p => p.status === 'approved').length;
+    const proposalsRejected = proposals.filter(p => p.status === 'rejected').length;
+    const proposalsExpired = proposals.filter(p => p.status === 'expired').length;
+
+    // Average participation rate across resolved proposals with votes
+    let avgParticipationRate: number | undefined;
+    const memberCount = dao.members.length;
+    if (memberCount > 0) {
+      const voterCounts: number[] = [];
+      for (const proposal of proposals) {
+        if (proposal.votes && proposal.votes.size > 0) {
+          voterCounts.push(proposal.votes.size / memberCount);
+        }
+      }
+      if (voterCounts.length > 0) {
+        avgParticipationRate = voterCounts.reduce((a, b) => a + b, 0) / voterCounts.length;
+      }
+    }
+
     // Store model variables
     this._modelVars.push({
       step,
@@ -258,6 +284,10 @@ export class SimpleDataCollector implements DataCollectorData {
       numProposals: dao.proposals.length,
       numProjects: dao.projects.length,
       numMembers: dao.members.length,
+      proposalsApproved,
+      proposalsRejected,
+      proposalsExpired,
+      avgParticipationRate,
       ...forumMetrics,
     });
 

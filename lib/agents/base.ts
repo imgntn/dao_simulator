@@ -45,7 +45,7 @@
 // ============================================================================
 
 import type { Agent } from '@/types/simulation';
-import type { Proposal } from '../data-structures/proposal';
+import { type Proposal, isMultiStageProposal } from '../data-structures/proposal';
 import type { Guild } from '../data-structures/guild';
 import type { VotingStrategy } from '../utils/voting-strategies';
 import { getStrategy, DefaultVotingStrategy } from '../utils/voting-strategies';
@@ -98,6 +98,10 @@ export class DAOMember implements Agent {
   static readonly REMINDER_WINDOW_FRACTION = 0.2; // Last 20% of voting window
   static readonly REMINDER_BOOST = 0.1;           // Small boost for last-chance voting
   static readonly INACTIVITY_BOOST_THRESHOLD = 24; // Steps without voting before boost applies
+
+  // Per-agent voting probability override (set from voter cluster calibration data)
+  // When set, bypasses the generic apathy/salience/boost calculation
+  calibratedVotingProbability?: number;
 
   // Voting power velocity tracking (time-weighted voting)
   recentTokenInflow: number = 0;
@@ -328,6 +332,13 @@ export class DAOMember implements Agent {
    * Models realistic DAO participation where many members don't vote
    */
   getEffectiveVotingProbability(): number {
+    // Per-agent calibrated probability bypasses generic apathy/salience/boost logic.
+    // This is set from voter cluster data for historically calibrated simulations.
+    if (this.calibratedVotingProbability !== undefined) {
+      // Still apply fatigue so agents who vote heavily slow down
+      return Math.min(1, Math.max(0, this.calibratedVotingProbability * (1 - this.voterFatigue)));
+    }
+
     const baseActivity = this.model.dao?.votingActivity ?? 0.3;
     const boost = this.model.dao?.participationBoost ?? 0;
     // First apply base apathy (many members simply don't engage)
@@ -360,6 +371,11 @@ export class DAOMember implements Agent {
 
   private getProposalVotingProbability(proposal: Proposal, isReminder: boolean): number {
     const base = this.getEffectiveVotingProbability();
+    // Calibrated agents: single chance per proposal (no reminder, no salience scaling).
+    // Their probability already reflects real-world voting behavior including late voting.
+    if (this.calibratedVotingProbability !== undefined) {
+      return isReminder ? 0 : Math.min(1, base);
+    }
     const salience = this.getProposalSalience(proposal);
     const probability = base * salience;
     if (!isReminder) {
@@ -394,7 +410,9 @@ export class DAOMember implements Agent {
       const activeIds = new Set(openProposals.map(p => p.uniqueId));
       if (this.proposalsConsidered.size > 0) {
         for (const id of this.proposalsConsidered) {
-          if (!activeIds.has(id)) {
+          // Stage-aware keys use format "proposalId_stageN" — extract base ID
+          const baseId = id.includes('_stage') ? id.substring(0, id.lastIndexOf('_stage')) : id;
+          if (!activeIds.has(baseId)) {
             this.proposalsConsidered.delete(id);
             this.proposalsReminded.delete(id);
           }
@@ -416,10 +434,8 @@ export class DAOMember implements Agent {
     // Without this, 45% chance per step over 5 steps = 95% eventual participation
     // For multi-stage proposals, we track consideration per stage so members can vote in each stage
     const openProps = openProposals.filter(p => {
-      const isMultiStage = Array.isArray((p as any).stageConfigs);
-      if (isMultiStage) {
-        const multiStage = p as any;
-        if (!multiStage.isInVotingStage || multiStage.isCurrentStageExpired) {
+      if (isMultiStageProposal(p)) {
+        if (!p.isInVotingStage) {
           return false;
         }
       }
@@ -428,33 +444,32 @@ export class DAOMember implements Agent {
         this.model.currentStep <= p.creationTime + p.votingPeriod;
       // For multi-stage proposals, track consideration per stage
       // This allows members to vote in each stage (temp_check, then on_chain)
-      const considerationKey = isMultiStage
-        ? `${p.uniqueId}_stage${(p as any).currentStageIndex}`
+      const considerationKey = isMultiStageProposal(p)
+        ? `${p.uniqueId}_stage${p.currentStageIndex}`
         : p.uniqueId;
       const notYetConsidered = !this.proposalsConsidered.has(considerationKey);
       return inVotingPeriod && notYetConsidered;
     });
 
     const reminderProps = openProposals.filter(p => {
-      const isMultiStage = Array.isArray((p as any).stageConfigs);
+      const ms = isMultiStageProposal(p);
       // Use stage-aware keys for multi-stage proposals
-      const considerationKey = isMultiStage
-        ? `${p.uniqueId}_stage${(p as any).currentStageIndex}`
+      const considerationKey = ms
+        ? `${p.uniqueId}_stage${p.currentStageIndex}`
         : p.uniqueId;
       if (!this.proposalsConsidered.has(considerationKey)) return false;
       if (this.proposalsReminded.has(considerationKey)) return false;
       if (this.votes.has(p.uniqueId)) return false;
-      if (isMultiStage) {
-        const multiStage = p as any;
-        if (!multiStage.isInVotingStage || !multiStage.currentStageState) {
+      if (ms) {
+        if (!p.isInVotingStage || !p.currentStageState) {
           return false;
         }
       }
-      const stageDuration = isMultiStage && (p as any).currentStageState
-        ? (p as any).currentStageState.endStep - (p as any).currentStageState.startStep
+      const stageDuration = ms && p.currentStageState
+        ? p.currentStageState.endStep - p.currentStageState.startStep
         : p.votingPeriod;
-      const votingEnd = isMultiStage
-        ? (p as any).currentStageState.endStep
+      const votingEnd = ms && p.currentStageState
+        ? p.currentStageState.endStep
         : p.creationTime + p.votingPeriod;
       const remaining = votingEnd - this.model.currentStep;
       const reminderWindow = Math.max(
@@ -471,9 +486,9 @@ export class DAOMember implements Agent {
     let votedCount = 0;
 
     for (const proposal of openProps) {
-      const isMultiStage = Array.isArray((proposal as any).stageConfigs);
-      const considerationKey = isMultiStage
-        ? `${proposal.uniqueId}_stage${(proposal as any).currentStageIndex}`
+      const ms = isMultiStageProposal(proposal);
+      const considerationKey = ms
+        ? `${proposal.uniqueId}_stage${proposal.currentStageIndex}`
         : proposal.uniqueId;
       // Mark as considered regardless of vote decision (prevents re-rolling)
       this.proposalsConsidered.add(considerationKey);
@@ -487,9 +502,9 @@ export class DAOMember implements Agent {
 
     // Reminder pass near the end of the voting window
     for (const proposal of reminderProps) {
-      const isMultiStage = Array.isArray((proposal as any).stageConfigs);
-      const reminderKey = isMultiStage
-        ? `${proposal.uniqueId}_stage${(proposal as any).currentStageIndex}`
+      const ms = isMultiStageProposal(proposal);
+      const reminderKey = ms
+        ? `${proposal.uniqueId}_stage${proposal.currentStageIndex}`
         : proposal.uniqueId;
       this.proposalsReminded.add(reminderKey);
       if (random() < this.getProposalVotingProbability(proposal, true)) {
@@ -579,8 +594,16 @@ export class DAOMember implements Agent {
         belief += supportRatio * settings.voteHerdingFactor;
       }
 
-      // Add personal optimism noise
-      belief += (this.optimism - 0.5) * 0.1;
+      // Factor in forum discussion sentiment (if forum is enabled)
+      if (this.model.forumSimulation) {
+        belief += this.model.forumSimulation.getVotingBias(proposal.uniqueId);
+      }
+
+      // Add personal optimism bias. Calibrated agents use a stronger factor
+      // to match the historical approval rate (e.g. 97% for Aave).
+      // Without calibration, optimism adds only mild noise (±5%).
+      const optimismFactor = this.calibratedVotingProbability !== undefined ? 1.0 : 0.1;
+      belief += (this.optimism - 0.5) * optimismFactor;
 
       belief = clamp(belief);
 

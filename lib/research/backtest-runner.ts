@@ -12,7 +12,6 @@ import {
   compareToHistorical,
   extractSimulationMetrics,
   type AccuracyReport,
-  type SimulationMetrics,
 } from './accuracy-metrics';
 
 // =============================================================================
@@ -62,6 +61,7 @@ export class BacktestRunner {
         oracle_type: config.oracleType ?? 'calibrated_gbm',
         forum_enabled: config.forumEnabled ?? true,
         forum_influence_weight: 0.3,
+        learning_enabled: false,  // Disable Q-learning for calibration validation
       };
 
       // Apply calibrated settings
@@ -71,14 +71,13 @@ export class BacktestRunner {
       const sim = new DAOSimulation(simConfig);
       await sim.run(config.stepsPerEpisode);
 
-      // Extract metrics from simulation
+      // Extract metrics from simulation with actual proposal/voting data
       const metrics = extractSimulationMetrics(
         sim.dataCollector,
-        config.stepsPerEpisode
+        config.stepsPerEpisode,
+        sim.dao.proposals,
+        sim.dao.members.length
       );
-
-      // Enhance metrics with actual simulation data
-      this.enrichMetrics(metrics, sim);
 
       // Compare to historical
       const report = compareToHistorical(metrics, profile);
@@ -130,30 +129,6 @@ export class BacktestRunner {
     }
 
     return results;
-  }
-
-  /**
-   * Enrich simulation metrics with data from the actual simulation
-   */
-  private enrichMetrics(metrics: SimulationMetrics, sim: DAOSimulation): void {
-    // Calculate actual pass rate
-    const proposals = sim.dao.proposals;
-    if (proposals.length > 0) {
-      const approved = proposals.filter(p => p.status === 'approved').length;
-      metrics.passRate = approved / proposals.length;
-    }
-
-    // Calculate actual participation rate from voting data
-    const voterCounts: number[] = [];
-    const memberCount = sim.dao.members.length;
-    for (const proposal of proposals) {
-      if (proposal.votes) {
-        voterCounts.push(proposal.votes.size / Math.max(memberCount, 1));
-      }
-    }
-    if (voterCounts.length > 0) {
-      metrics.participationRate = voterCounts.reduce((a, b) => a + b, 0) / voterCounts.length;
-    }
   }
 
   /**

@@ -5,3 +5,4 @@ export { RandomActivation, ParallelActivation, AsyncActivation } from './schedul
 export type { Scheduler } from '@/types/simulation';
 export { SimpleDataCollector } from './data-collector';
 export { DAOSimulation, type DAOSimulationConfig } from './simulation';
+export { ForumSimulation } from './forum-simulation';

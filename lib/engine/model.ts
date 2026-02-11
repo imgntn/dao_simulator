@@ -37,4 +37,5 @@ export abstract class Model implements IModel {
 export interface DAOModel extends IModel {
   dao: DAO;
   eventBus: import('../utils/event-bus').EventBus;
+  forumSimulation?: { getVotingBias(proposalId: string): number } | null;
 }

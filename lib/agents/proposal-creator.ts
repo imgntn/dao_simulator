@@ -98,14 +98,31 @@ export class ProposalCreator extends DAOMember {
   private chooseCreationAction(): CreatorAction {
     const state = this.getCreationState();
 
+    // Probability gate: check calibrated creation rate FIRST
+    // This prevents Q-learning exploration from creating too many proposals
+    // Divide by number of creators so total DAO rate matches calibration
+    const baseProbability = (this.model as any).proposalCreationProbability ?? 0.005;
+    const numCreators = this.model.dao?.members.filter(m => m.constructor.name === 'ProposalCreator').length || 1;
+    const creationProbability = baseProbability / numCreators;
+    if (random() > creationProbability) {
+      return 'hold';  // Skip this step — no proposal allowed
+    }
+
+    // Check open proposal cap even with Q-learning
+    if (this.model.dao) {
+      const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+      if (openProposals.length >= 5) {
+        return 'wait';
+      }
+    }
+
     if (!settings.learning_enabled) {
       return this.heuristicCreationAction();
     }
 
-    return this.learning.selectAction(
-      state,
-      [...ProposalCreator.ACTIONS]
-    ) as CreatorAction;
+    // Gate passed — Q-learning only selects among creation types (not whether to create)
+    const createActions: CreatorAction[] = ['create_funding', 'create_governance', 'create_development', 'create_community'];
+    return this.learning.selectAction(state, createActions) as CreatorAction;
   }
 
   /**
@@ -114,17 +131,7 @@ export class ProposalCreator extends DAOMember {
   private heuristicCreationAction(): CreatorAction {
     if (!this.model.dao) return 'hold';
 
-    const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
-
-    // Don't create if too many proposals are open
-    if (openProposals.length >= 5) {
-      return 'wait';
-    }
-
-    const creationProbability = (this.model as any).proposalCreationProbability ?? 0.005;
-    if (random() > creationProbability) {
-      return 'hold';
-    }
+    // Probability gate and open-proposal cap already checked in chooseCreationAction()
 
     // Choose topic based on past success
     const topics = ['Funding', 'Governance', 'Development', 'Community'];

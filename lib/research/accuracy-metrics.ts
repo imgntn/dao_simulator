@@ -184,13 +184,20 @@ export function compareToHistorical(
 }
 
 /**
- * Extract SimulationMetrics from a completed simulation's data collector
+ * Extract SimulationMetrics from a completed simulation's data collector.
+ * Accepts an optional proposals array to compute actual pass rate and participation.
  */
 export function extractSimulationMetrics(
   dataCollector: {
-    modelVars: Array<{ step: number; price: number; numProposals: number; numMembers: number; gini: number; forumTopics?: number }>;
+    modelVars: Array<{
+      step: number; price: number; numProposals: number; numMembers: number; gini: number;
+      forumTopics?: number; proposalsApproved?: number; proposalsRejected?: number;
+      proposalsExpired?: number; avgParticipationRate?: number;
+    }>;
   },
-  totalSteps: number
+  totalSteps: number,
+  proposals?: Array<{ status: string; votes?: Map<string, unknown> }>,
+  memberCount?: number
 ): SimulationMetrics {
   const modelVars = dataCollector.modelVars;
 
@@ -216,10 +223,51 @@ export function extractSimulationMetrics(
     ? ginis.reduce((a, b) => a + b, 0) / ginis.length
     : 0.5;
 
+  // Compute actual pass rate — approved / (approved + rejected), excluding expired.
+  // Real DAOs compute pass rate only among proposals that went to a vote.
+  // Expired/abandoned proposals (0 voters, quorum not met) are a separate engagement metric.
+  let passRate = 0.5;
+  if (proposals && proposals.length > 0) {
+    const voted = proposals.filter(p =>
+      p.status === 'approved' || p.status === 'rejected'
+    );
+    if (voted.length > 0) {
+      const approved = voted.filter(p => p.status === 'approved').length;
+      passRate = approved / voted.length;
+    }
+  } else if (modelVars.length > 0) {
+    const last = modelVars[modelVars.length - 1];
+    if (last.proposalsApproved !== undefined) {
+      const total = (last.proposalsApproved ?? 0) + (last.proposalsRejected ?? 0);
+      if (total > 0) {
+        passRate = last.proposalsApproved! / total;
+      }
+    }
+  }
+
+  // Compute actual participation rate — prefer proposals array, fall back to DataCollector fields.
+  // Include ALL resolved proposals (even those with 0 voters) to match how historical
+  // participation rates are computed (unconditional average across all proposals).
+  let participationRate = 0.1;
+  if (proposals && proposals.length > 0 && memberCount && memberCount > 0) {
+    const resolved = proposals.filter(p =>
+      p.status === 'approved' || p.status === 'rejected' || p.status === 'expired'
+    );
+    if (resolved.length > 0) {
+      const voterCounts = resolved.map(p => (p.votes ? p.votes.size : 0) / memberCount);
+      participationRate = voterCounts.reduce((a, b) => a + b, 0) / voterCounts.length;
+    }
+  } else if (modelVars.length > 0) {
+    const last = modelVars[modelVars.length - 1];
+    if (last.avgParticipationRate !== undefined) {
+      participationRate = last.avgParticipationRate;
+    }
+  }
+
   return {
     proposalsPerMonth,
-    passRate: 0.7, // Would need to track pass/fail counts
-    participationRate: 0.3, // Would need to track voting participation
+    passRate,
+    participationRate,
     priceHistory,
     voterConcentration,
     forumTopicsPerMonth,

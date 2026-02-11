@@ -39,6 +39,23 @@ export function createRandomProposal(
   }
 
   const tempFraction = dao.proposalPolicy?.tempCheckFraction ?? 0.25;
+
+  // When tempCheckFraction is 0, create a simple single-stage Proposal.
+  // This is used by calibration backtests where resolveBasicProposals() handles
+  // proposals with calibrated quorum settings.
+  if (tempFraction <= 0) {
+    const proposal = new Proposal(
+      dao,
+      creator?.uniqueId || '',
+      title,
+      description,
+      fundingRequired,
+      duration,
+      topic
+    );
+    return proposal;
+  }
+
   const tempDuration = Math.max(1, Math.round(duration * tempFraction));
   const onChainDuration = Math.max(1, duration - tempDuration);
 

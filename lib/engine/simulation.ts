@@ -37,7 +37,8 @@ import {
 import { ForumState } from '../data-structures/forum';
 import { ForumSimulation } from './forum-simulation';
 import { CalibrationLoader } from '../digital-twins/calibration-loader';
-import type { CalibrationProfile } from '../digital-twins/calibration-loader';
+import type { CalibrationProfile, VoterCluster } from '../digital-twins/calibration-loader';
+import { logger } from '../utils/logger';
 import {
   Developer,
   Investor,
@@ -67,7 +68,7 @@ import {
 } from '../agents';
 import { DAOMember } from '../agents/base';
 import type { DAOModel } from './model';
-import type { Proposal } from '../data-structures/proposal';
+import { type Proposal, isMultiStageProposal, type MultiStageFields } from '../data-structures/proposal';
 
 // Type for agent constructor classes - uses DAOModel since that's what agents accept
 type AgentClass = new (
@@ -75,6 +76,36 @@ type AgentClass = new (
   model: DAOModel,
   ...args: unknown[]
 ) => DAOMember;
+
+/** Structural interface for agents with learning mixin capabilities */
+interface LearningCapable {
+  learning?: {
+    recordReward: (reward: number, state: string, actions: string[]) => void;
+    update: (state: string, action: string, reward: number, nextState: string, availableActions: string[]) => void;
+    lastState: string | null;
+    lastAction: string | null;
+    mergeFrom: (other: unknown, weight: number) => void;
+    getConfig?: () => { discountFactor?: number };
+    getExplorationRate: () => number;
+  };
+  endEpisode?: () => void;
+  exportLearningState?: () => LearningState;
+  importLearningState?: (state: LearningState) => void;
+  constructor: { name: string; ACTIONS?: string[] };
+}
+
+/** Structural interface for agents with delegation budget */
+interface DelegationBudgetCapable {
+  delegationBudget: number;
+  maxDelegationBudget: number;
+}
+
+/** Structural interface for governance rules that expose quorum/threshold config */
+interface GovernanceRuleQuorumConfig {
+  quorumPercentage?: number;
+  threshold?: number;
+  approvalThreshold?: number;
+}
 
 interface AgentConfigEntry {
   class: AgentClass;
@@ -97,6 +128,8 @@ export interface DAOSimulationConfig extends Partial<SimulationSettings> {
   reportFile?: string;
   seed?: number;
   centralityInterval?: number;
+  /** Data collection interval in steps (default 10). Set to 1 for per-step collection (slower). */
+  collectionInterval?: number;
   useSharedRandom?: boolean;
   // Governance rule configuration (quorum percentage, thresholds, etc.)
   governance_config?: GovernanceRuleConfig;
@@ -393,6 +426,35 @@ export class DAOSimulation extends Model {
         if (calibratedSettings.voting_activity !== undefined) {
           this.dao.votingActivity = calibratedSettings.voting_activity;
         }
+
+        // Apply calibration-aware governance tuning (unless user explicitly set governance_config)
+        if (!config.governance_config) {
+          this.applyCalibrationGovernanceTuning(this.calibrationProfile);
+        }
+
+        // Calibrate participation policy to match historical activity level
+        // Without this, the default targetRate (25%) overwhelms low votingActivity values (3%)
+        // via the participation boost mechanism
+        if (calibratedSettings.voting_activity !== undefined) {
+          this.dao.participationPolicy.targetRate = calibratedSettings.voting_activity;
+          // Scale boost max proportionally — prevent boost from exceeding calibrated rate
+          this.dao.participationPolicy.boostMax = Math.min(
+            calibratedSettings.voting_activity * 0.5,
+            this.dao.participationPolicy.boostMax
+          );
+        }
+
+        // Calibrate proposal duration from historical voting period
+        if (this.calibrationProfile.proposals.avg_voting_period_days > 0) {
+          const calibratedDuration = Math.round(
+            this.calibrationProfile.proposals.avg_voting_period_days * 24
+          );
+          this.proposalDurationSteps = calibratedDuration;
+          this.proposalDurationMinSteps = Math.max(24, Math.round(calibratedDuration * 0.5));
+          this.proposalDurationMaxSteps = Math.round(calibratedDuration * 2);
+          this.dao.proposalPolicy.durationMinSteps = this.proposalDurationMinSteps;
+          this.dao.proposalPolicy.durationMaxSteps = this.proposalDurationMaxSteps;
+        }
       }
     }
 
@@ -430,7 +492,8 @@ export class DAOSimulation extends Model {
     // Initialize data collector
     this.dataCollector = new SimpleDataCollector(
       this.dao,
-      config.centralityInterval ?? 1
+      config.centralityInterval ?? 1,
+      config.collectionInterval ?? 10
     );
     if (this.forumState) {
       this.dataCollector.setForumState(this.forumState);
@@ -462,6 +525,16 @@ export class DAOSimulation extends Model {
     // Create agents
     this.initializeAgents();
 
+    // Apply calibration-based agent adjustments (must happen AFTER agents are created)
+    if (this.calibrationProfile) {
+      this.applyCalibrationAgentTuning(this.calibrationProfile);
+    }
+
+    // Override global learning_enabled if config explicitly sets it
+    if (config.learning_enabled !== undefined) {
+      settings.learning_enabled = config.learning_enabled;
+    }
+
     // Wire RewardAggregators for all learning-enabled agents
     if (settings.learning_enabled) {
       this.wireRewardAggregators();
@@ -487,9 +560,235 @@ export class DAOSimulation extends Model {
   }
 
   /**
-   * Initialize the price oracle based on configuration
+   * Apply governance parameter tuning from calibration profile.
+   * Uses historical quorum hit rate and participation to derive realistic thresholds.
+   *
+   * Derives quorum from `voting.avg_participation_rate` (expected range 0-1) and
+   * approval threshold from `voting.avg_for_percentage` (expected range 0-1).
+   * Values outside expected ranges are clamped with a warning.
+   */
+  private applyCalibrationGovernanceTuning(profile: CalibrationProfile): void {
+    const voting = profile.voting;
+    const rule = this.governanceRule as unknown as GovernanceRuleQuorumConfig;
+
+    // Validate input ranges
+    if (voting.avg_participation_rate > 1) {
+      logger.warn(`Calibration: avg_participation_rate=${voting.avg_participation_rate} exceeds expected range [0,1], clamping`);
+    }
+    if (voting.avg_for_percentage > 1) {
+      logger.warn(`Calibration: avg_for_percentage=${voting.avg_for_percentage} exceeds expected range [0,1], clamping`);
+    }
+
+    // Disable quorum for calibrated sims. Real DAOs compute quorum over thousands of
+    // token holders; with only ~74 agents and compressed token distribution (alpha=0.8),
+    // a single non-whale voter may hold < 0.1% of supply, making any token-weighted
+    // quorum unrealistic. The MajorityRule just checks votesFor > votesAgainst.
+    // Pass/fail rate is then governed by the calibrated voting probabilities and
+    // optimism bias, not by an artificial quorum threshold.
+    rule.quorumPercentage = 0;
+
+    // Disable inactivity timeout. With calibrated voting probabilities, all agents
+    // consider each proposal in the first few steps. After that, the proposal has
+    // no new activity for ~70 steps — and the 72-step inactivity timeout would expire
+    // proposals WITH valid votes before the voting period ends. Setting to 0 lets
+    // proposals run their full voting period.
+    this.dao.proposalPolicy.inactivitySteps = 0;
+
+    // Calibrate approval threshold from historical for_percentage
+    // If avg_for_percentage is very high (>90%), proposals tend to pass easily
+    const forPct = Math.min(voting.avg_for_percentage, 1);
+    if (forPct > 0) {
+      if (rule.threshold !== undefined) {
+        // For supermajority rules: set threshold at 80% of historical for-percentage
+        rule.threshold = Math.max(0.5, Math.min(0.9, forPct * 0.8));
+      }
+      if (rule.approvalThreshold !== undefined) {
+        rule.approvalThreshold = Math.max(0.5, Math.min(0.9, forPct * 0.8));
+      }
+    }
+  }
+
+  /**
+   * Apply agent-level calibration tuning from the calibration profile.
+   * Must be called AFTER agents are created (initializeAgents).
+   *
+   * - Biases agent optimism toward historical approval rates
+   * - Applies voter-cluster token distribution for realistic Gini
+   */
+  private applyCalibrationAgentTuning(profile: CalibrationProfile): void {
+    const voting = profile.voting;
+
+    // Bias agent voting toward historical approval rate.
+    // For calibrated agents, belief ≈ optimism (optimismFactor = 1.0 in decideVote),
+    // so we set optimism directly to avg_for_percentage with ±5% spread for realism.
+    if (voting.avg_for_percentage > 0.5) {
+      const target = Math.min(voting.avg_for_percentage, 1);
+      for (const member of this.dao.members) {
+        const spread = (member.optimism - 0.5) * 0.1; // ±5% noise
+        member.optimism = Math.max(0, Math.min(1, target + spread));
+      }
+    }
+
+    // Disable inactivity boost for calibrated sims — it inflates participation
+    // above the historically calibrated voting_activity level
+    this.dao.participationPolicy.inactivityBoost = 0;
+
+    // Adjust proposal creation probability to account for non-ProposalCreator agents.
+    // Investor (0.001/step each) and GovernanceWhale (0.002/step each) also create proposals.
+    // Without this, total proposals/month = calibrated_rate + investor_rate + whale_rate, overshooting.
+    const investorContribution = this.numInvestors * 0.001;
+    const whaleContribution = this.numGovernanceWhales * 0.002;
+    const nonCreatorRate = investorContribution + whaleContribution;
+    if (nonCreatorRate > 0 && this.proposalCreationProbability > nonCreatorRate) {
+      this.proposalCreationProbability = this.proposalCreationProbability - nonCreatorRate;
+    }
+
+    // Apply voter-cluster token distribution for realistic concentration
+    if (profile.voter_clusters && profile.voter_clusters.length > 0) {
+      this.applyCalibrationTokenDistribution(profile.voter_clusters);
+      this.applyCalibrationVotingProbabilities(profile.voter_clusters, voting.avg_participation_rate);
+    }
+  }
+
+  /**
+   * Assign per-agent voting probabilities from voter cluster participation rates.
+   *
+   * Real DAOs have heterogeneous voting: whales/delegates vote on most proposals
+   * (~50-60% participation), while passive holders rarely vote (~1-2%).
+   * This ensures most proposals reach quorum (whale votes) while keeping
+   * overall head-count participation low.
+   *
+   * The cluster rates are scaled so the overall expected voters per proposal
+   * matches the historical avg_participation_rate * totalMembers, with a floor
+   * of lambda=2.0 to ensure reliable quorum.
+   */
+  // Agent types that never call voteOnRandomProposal() in their step() method
+  private static readonly NON_VOTING_TYPES = new Set(['ExternalPartner', 'AdaptiveInvestor']);
+
+  private applyCalibrationVotingProbabilities(
+    clusters: VoterCluster[],
+    avgParticipationRate: number
+  ): void {
+    if (clusters.length === 0 || avgParticipationRate <= 0) return;
+
+    const totalMembers = this.dao.members.length;
+    if (totalMembers === 0) return;
+
+    // Count agents that actually call voteOnRandomProposal()
+    const votingAgentCount = this.dao.members.filter(
+      m => !DAOSimulation.NON_VOTING_TYPES.has(m.constructor.name)
+    ).length;
+
+    // Sort clusters by avg_voting_power descending (same order as token distribution)
+    const sorted = [...clusters].sort((a, b) => b.avg_voting_power - a.avg_voting_power);
+
+    // Compute the unscaled expected voters per proposal from cluster rates
+    let unscaledLambda = 0;
+    let memberIdx = 0;
+    const clusterRates: number[] = [];
+    for (let ci = 0; ci < sorted.length; ci++) {
+      const cluster = sorted[ci];
+      const clusterSize = Math.max(1, Math.round(cluster.share * totalMembers));
+      for (let i = 0; i < clusterSize && memberIdx < totalMembers; i++, memberIdx++) {
+        clusterRates.push(cluster.participation_rate);
+        unscaledLambda += cluster.participation_rate;
+      }
+    }
+    // Fill remaining agents with the last cluster's rate
+    while (clusterRates.length < totalMembers) {
+      const lastRate = sorted[sorted.length - 1].participation_rate;
+      clusterRates.push(lastRate);
+      unscaledLambda += lastRate;
+    }
+
+    // Target lambda = avgParticipationRate * totalMembers (expected votes per proposal)
+    // Scale up by totalMembers/votingAgentCount since non-voting agents waste their probability
+    // Floor of 1.0 prevents division-by-zero; low-participation DAOs (compound: 1.75%)
+    // genuinely have many proposals with 0 voters, matching their quorum_hit_rate < 100%
+    const rawLambda = avgParticipationRate * totalMembers;
+    const votingRatio = votingAgentCount > 0 ? totalMembers / votingAgentCount : 1;
+    const targetLambda = Math.max(1.0, rawLambda * votingRatio);
+    const scaleFactor = unscaledLambda > 0 ? targetLambda / unscaledLambda : 1;
+
+    // Apply scaled probabilities to agents
+    for (let i = 0; i < totalMembers; i++) {
+      const scaledProb = Math.min(0.95, clusterRates[i] * scaleFactor);
+      this.dao.members[i].calibratedVotingProbability = scaledProb;
+    }
+  }
+
+  /**
+   * Distribute tokens across agents based on voter cluster data from calibration.
+   * Uses power-law compression (ratio^alpha) to produce a high Gini coefficient
+   * while keeping the max single-agent share ≤ ~30% of supply.
+   *
+   * Raw voting power spans 5+ orders of magnitude (e.g. 1e25 whale vs 1e20 regular).
+   * With alpha=0.3, a 90,000x raw ratio becomes ~30x, giving Gini ~0.4
+   * and the top agent ~25-30% of supply (enough for quorum to still function).
+   */
+  private applyCalibrationTokenDistribution(clusters: VoterCluster[]): void {
+    if (clusters.length === 0) return;
+
+    // Sort clusters by avg_voting_power descending (whales first)
+    const sorted = [...clusters].sort((a, b) => b.avg_voting_power - a.avg_voting_power);
+
+    const totalMembers = this.dao.members.length;
+    const totalCurrentTokens = this.dao.members.reduce((s, m) => s + m.tokens, 0);
+    if (totalCurrentTokens <= 0) return;
+
+    // Use power-law compression: ratio^alpha
+    // Higher alpha preserves more inequality for realistic Gini (target ~0.99).
+    // alpha=0.9 produces Gini ~0.93 (vs ~0.85 with alpha=0.8).
+    // With 72 agents, max achievable Gini is ~0.986 (1 - 1/n).
+    const ALPHA = 0.9;
+    const minPower = Math.max(1e-30, Math.min(...sorted.map(c => c.avg_voting_power)));
+    const compressedWeights = sorted.map(c => {
+      const ratio = Math.max(1, c.avg_voting_power / minPower);
+      return Math.pow(ratio, ALPHA);
+    });
+
+    // Build per-agent token assignments based on cluster sizes
+    const assignments: number[] = [];
+    for (let ci = 0; ci < sorted.length; ci++) {
+      const cluster = sorted[ci];
+      const clusterSize = Math.max(1, Math.round(cluster.share * totalMembers));
+      for (let i = 0; i < clusterSize && assignments.length < totalMembers; i++) {
+        assignments.push(compressedWeights[ci]);
+      }
+    }
+    // Fill remaining with lowest cluster weight
+    while (assignments.length < totalMembers) {
+      assignments.push(compressedWeights[compressedWeights.length - 1]);
+    }
+
+    // Normalize to preserve total token supply
+    const totalWeight = assignments.reduce((s, w) => s + w, 0);
+    if (totalWeight <= 0) return;
+
+    for (let i = 0; i < totalMembers; i++) {
+      this.dao.members[i].tokens = (assignments[i] / totalWeight) * totalCurrentTokens;
+    }
+  }
+
+  /**
+   * Initialize the price oracle based on configuration.
+   *
+   * Supported oracle types:
+   * - `'random_walk'` (default) — simple random walk from Treasury constructor
+   * - `'gbm'` — Geometric Brownian Motion with fixed drift=0.01, vol=0.2
+   * - `'calibrated_gbm'` — GBM calibrated from CalibrationProfile market data (drift, volatility, drawdown events)
+   * - `'historical_replay'` — replays price CSV data, falls back to calibrated GBM when data ends
+   * - `'fixed'` — price never changes
+   *
+   * Invalid types log a warning and fall back to `'random_walk'`.
    */
   private initializeOracle(oracleType: string, calibrationDaoId?: string): void {
+    const validTypes = ['random_walk', 'gbm', 'calibrated_gbm', 'historical_replay', 'fixed'];
+    if (!validTypes.includes(oracleType)) {
+      logger.warn(`Unknown oracle_type "${oracleType}", falling back to "random_walk". Valid types: ${validTypes.join(', ')}`);
+      oracleType = 'random_walk';
+    }
+
     const profile = this.calibrationProfile;
 
     switch (oracleType) {
@@ -508,6 +807,9 @@ export class DAOSimulation extends Model {
               endStep: dd.end_idx * 24,
               magnitude: dd.magnitude,
             })),
+            // Stronger mean-reversion to counteract treasury selling pressure.
+            // Default 0.01 gives ~24% equilibrium deviation; 0.03 reduces it to ~8%.
+            meanReversionSpeed: 0.03,
           });
           this.dao.treasury.oracle.setPrice('DAO_TOKEN', profile.market.avg_price_usd);
           this.dao.treasury.updateTokenPrice('DAO_TOKEN', profile.market.avg_price_usd);
@@ -516,9 +818,20 @@ export class DAOSimulation extends Model {
         }
         break;
 
-      case 'historical_replay':
-        // Would need actual price time series data - use calibrated GBM as fallback
-        if (profile?.market) {
+      case 'historical_replay': {
+        const timeSeries = this.loadMarketTimeSeries(calibrationDaoId);
+        if (timeSeries.length > 0 && profile?.market) {
+          this.dao.treasury.oracle = new HistoricalReplayOracle(
+            timeSeries,
+            {
+              drift: profile.market.avg_daily_return / 24,
+              volatility: profile.market.daily_volatility / Math.sqrt(24),
+            }
+          );
+          this.dao.treasury.oracle.setPrice('DAO_TOKEN', timeSeries[0].price);
+          this.dao.treasury.updateTokenPrice('DAO_TOKEN', timeSeries[0].price);
+        } else if (profile?.market) {
+          // Fallback to calibrated GBM if no CSV data
           this.dao.treasury.oracle = new CalibratedGBMOracle({
             drift: profile.market.avg_daily_return / 24,
             volatility: profile.market.daily_volatility / Math.sqrt(24),
@@ -528,6 +841,7 @@ export class DAOSimulation extends Model {
           this.dao.treasury.updateTokenPrice('DAO_TOKEN', profile.market.avg_price_usd);
         }
         break;
+      }
 
       case 'fixed':
         this.dao.treasury.oracle = new FixedPriceOracle();
@@ -537,6 +851,58 @@ export class DAOSimulation extends Model {
       default:
         // Keep default RandomWalkOracle from Treasury constructor
         break;
+    }
+  }
+
+  /**
+   * Load market price time series from CSV for a given DAO.
+   * Returns array of {step, price} entries. Each day maps to 24 steps.
+   */
+  private loadMarketTimeSeries(daoId?: string): Array<{ step: number; price: number }> {
+    if (!daoId) return [];
+
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const csvPath = path.resolve(__dirname, '../../results/historical/market/market_daily.csv');
+      if (!fs.existsSync(csvPath)) return [];
+
+      const content: string = fs.readFileSync(csvPath, 'utf-8');
+      const lines = content.split('\n');
+      if (lines.length < 2) return [];
+
+      // Parse header to find column indices
+      const header = lines[0].split(',').map((h: string) => h.trim());
+      const daoIdIdx = header.indexOf('dao_id');
+      const priceIdx = header.indexOf('price_usd');
+      const timestampIdx = header.indexOf('timestamp_utc');
+
+      if (daoIdIdx < 0 || priceIdx < 0) return [];
+
+      // Filter rows for this DAO, sort by timestamp
+      const rows: Array<{ timestamp: number; price: number }> = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(',');
+        if (cols.length <= Math.max(daoIdIdx, priceIdx)) continue;
+        if (cols[daoIdIdx].trim() !== daoId) continue;
+
+        const price = parseFloat(cols[priceIdx].trim());
+        const timestamp = timestampIdx >= 0 ? parseInt(cols[timestampIdx].trim()) : i;
+        if (!isFinite(price) || price <= 0) continue;
+
+        rows.push({ timestamp, price });
+      }
+
+      rows.sort((a, b) => a.timestamp - b.timestamp);
+
+      // Convert daily entries to step-indexed: each day = 24 steps
+      return rows.map((row, dayIndex) => ({
+        step: dayIndex * 24,
+        price: row.price,
+      }));
+    } catch (error) {
+      logger.warn(`Failed to load market time series for "${daoId}"`, error);
+      return [];
     }
   }
 
@@ -592,7 +958,7 @@ export class DAOSimulation extends Model {
     const openProposalCount = this.dao.proposals.filter(p => p.status === 'open').length;
     const totalProposals = this.dao.proposals.length;
     // Participation rate: fraction of proposals this agent voted on
-    const votedCount = (member as any).votes?.size ?? 0;
+    const votedCount = member.votes?.size ?? 0;
     const participationRate = totalProposals > 0 ? votedCount / totalProposals : 0;
 
     return {
@@ -617,7 +983,7 @@ export class DAOSimulation extends Model {
    */
   private distributeAggregatedRewards(): void {
     for (const member of this.dao.members) {
-      const agent = member as any;
+      const agent = member as unknown as LearningCapable;
       if (!agent.learning || typeof agent.learning.recordReward !== 'function') continue;
 
       // Collect event-based reward
@@ -678,7 +1044,7 @@ export class DAOSimulation extends Model {
     ]);
 
     for (const member of this.dao.members) {
-      const agent = member as any;
+      const agent = member as unknown as LearningCapable;
       // Only wire for agents with a learning mixin
       if (!agent.learning || typeof agent.learning.update !== 'function') continue;
 
@@ -716,7 +1082,7 @@ export class DAOSimulation extends Model {
 
     this.dao.treasury.updateTokenPrice('DAO_TOKEN', newPrice);
     this.currentShock = severity;
-    (this.dao as any).currentShock = severity;
+    this.dao.currentShock = severity;
 
     this.eventBus.publish('market_shock', {
       step: this.currentStep,
@@ -771,8 +1137,8 @@ export class DAOSimulation extends Model {
     const inactivitySteps = this.dao.proposalPolicy.inactivitySteps;
 
     for (const proposal of openProposals) {
-      const isMultiStage = this.isMultiStageProposal(proposal);
-      const inVotingStage = !isMultiStage || (proposal as any).isInVotingStage;
+      const isMultiStage = isMultiStageProposal(proposal);
+      const inVotingStage = !isMultiStage || proposal.isInVotingStage;
 
       // Auto-expire inactive proposals (no votes/comments/delegations)
       if (
@@ -790,7 +1156,7 @@ export class DAOSimulation extends Model {
           votesFor: proposal.votesFor,
           votesAgainst: proposal.votesAgainst,
           participationRate: 0,
-          requiredQuorum: (this.governanceRule as any).quorumPercentage ?? 0,
+          requiredQuorum: (this.governanceRule as unknown as GovernanceRuleQuorumConfig).quorumPercentage ?? 0,
           reason: 'inactivity',
         });
         this.settleProposalBond(proposal, false, 'inactivity');
@@ -802,9 +1168,10 @@ export class DAOSimulation extends Model {
               if (member) {
                 member.tokens += amount;
                 if ('delegationBudget' in member && 'maxDelegationBudget' in member) {
-                  (member as any).delegationBudget = Math.min(
-                    (member as any).delegationBudget + amount,
-                    (member as any).maxDelegationBudget
+                  const delegator = member as unknown as DelegationBudgetCapable;
+                  delegator.delegationBudget = Math.min(
+                    delegator.delegationBudget + amount,
+                    delegator.maxDelegationBudget
                   );
                 }
               }
@@ -834,7 +1201,7 @@ export class DAOSimulation extends Model {
       // This ensures proposals that fail quorum are marked as 'expired', not 'rejected'
       // Skip pre-check for QuadraticVotingRule — it uses sqrt'd weights and handles its own quorum
       const isQuadraticRule = this.governanceRule instanceof QuadraticVotingRule;
-      const quorumConfig = (this.governanceRule as any).quorumPercentage;
+      const quorumConfig = (this.governanceRule as unknown as GovernanceRuleQuorumConfig).quorumPercentage;
       if (!isQuadraticRule && quorumConfig !== undefined && quorumConfig > 0) {
         // Use snapshot total supply if available for consistency with snapshot-based voting weights.
         // Falls back to live supply for proposals without snapshots (backwards compatibility).
@@ -870,9 +1237,10 @@ export class DAOSimulation extends Model {
                 if (member) {
                   member.tokens += amount;
                   if ('delegationBudget' in member && 'maxDelegationBudget' in member) {
-                    (member as any).delegationBudget = Math.min(
-                      (member as any).delegationBudget + amount,
-                      (member as any).maxDelegationBudget
+                    const delegator = member as unknown as DelegationBudgetCapable;
+                    delegator.delegationBudget = Math.min(
+                      delegator.delegationBudget + amount,
+                      delegator.maxDelegationBudget
                     );
                   }
                 }
@@ -887,6 +1255,25 @@ export class DAOSimulation extends Model {
         proposal.quorumMet = true;
       } else {
         proposal.quorumMet = true;
+      }
+
+      // Proposals with 0 voters expire — nobody actively voted, so it's abandoned, not rejected.
+      // This is universally correct: real DAOs treat unvoted proposals as expired/abandoned.
+      if (proposal.votesFor + proposal.votesAgainst === 0) {
+        proposal.status = 'expired';
+        proposal.quorumMet = false;
+        this.eventBus.publish('proposal_expired', {
+          step: this.currentStep,
+          proposalId: proposal.uniqueId,
+          title: proposal.title,
+          votesFor: 0,
+          votesAgainst: 0,
+          participationRate: 0,
+          requiredQuorum: 0,
+          reason: 'no_votes',
+        });
+        this.settleProposalBond(proposal, false, 'no_votes');
+        continue;
       }
 
       // Apply governance rule to determine outcome (quorum already met if we get here)
@@ -923,9 +1310,10 @@ export class DAOSimulation extends Model {
               member.tokens += amount;
               // Restore delegation budget if member is a Delegator
               if ('delegationBudget' in member && 'maxDelegationBudget' in member) {
-                (member as any).delegationBudget = Math.min(
-                  (member as any).delegationBudget + amount,
-                  (member as any).maxDelegationBudget
+                const delegator = member as unknown as DelegationBudgetCapable;
+                delegator.delegationBudget = Math.min(
+                  delegator.delegationBudget + amount,
+                  delegator.maxDelegationBudget
                 );
               }
             }
@@ -937,10 +1325,6 @@ export class DAOSimulation extends Model {
       // Update reputation based on voting outcomes
       this.updateReputationFromVoting(proposal, approved);
     }
-  }
-
-  private isMultiStageProposal(proposal: Proposal): boolean {
-    return Array.isArray((proposal as any).stageConfigs);
   }
 
   private shouldFastTrackProposal(proposal: Proposal): boolean {
@@ -1432,7 +1816,7 @@ export class DAOSimulation extends Model {
    */
   endLearningEpisode(): void {
     for (const member of this.dao.members) {
-      const agent = member as any;
+      const agent = member as unknown as LearningCapable;
       if (typeof agent.endEpisode === 'function') {
         agent.endEpisode();
       }
@@ -1452,7 +1836,7 @@ export class DAOSimulation extends Model {
     const statesByType = new Map<string, LearningState[]>();
 
     for (const member of this.dao.members) {
-      const agent = member as any;
+      const agent = member as unknown as LearningCapable;
       if (typeof agent.exportLearningState !== 'function') continue;
 
       const typeName = member.constructor.name;
@@ -1472,9 +1856,9 @@ export class DAOSimulation extends Model {
    */
   importLearningStates(statesByType: Map<string, LearningState[]>): void {
     // Build per-type agent lists
-    const agentsByType = new Map<string, any[]>();
+    const agentsByType = new Map<string, LearningCapable[]>();
     for (const member of this.dao.members) {
-      const agent = member as any;
+      const agent = member as unknown as LearningCapable;
       if (typeof agent.importLearningState !== 'function') continue;
 
       const typeName = member.constructor.name;
@@ -1492,7 +1876,7 @@ export class DAOSimulation extends Model {
       for (let i = 0; i < agents.length; i++) {
         // Cycle through available states if more agents than states
         const stateIndex = i % states.length;
-        agents[i].importLearningState(states[stateIndex]);
+        agents[i].importLearningState!(states[stateIndex]);
       }
     }
   }
@@ -1503,9 +1887,9 @@ export class DAOSimulation extends Model {
    */
   mergeSharedExperience(): void {
     // Group learning agents by type
-    const agentsByType = new Map<string, any[]>();
+    const agentsByType = new Map<string, LearningCapable[]>();
     for (const member of this.dao.members) {
-      const agent = member as any;
+      const agent = member as unknown as LearningCapable;
       if (!agent.learning || typeof agent.learning.mergeFrom !== 'function') continue;
 
       const typeName = member.constructor.name;
@@ -1524,7 +1908,7 @@ export class DAOSimulation extends Model {
       for (let i = 0; i < agents.length; i++) {
         for (let j = 0; j < agents.length; j++) {
           if (i === j) continue;
-          agents[i].learning.mergeFrom(agents[j].learning, mergeWeight);
+          agents[i].learning!.mergeFrom(agents[j].learning!, mergeWeight);
         }
       }
     }

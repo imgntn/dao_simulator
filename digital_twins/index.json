@@ -1,7 +1,7 @@
 {
   "schema_version": "dao_digital_twin_v0.2",
-  "generated_utc": "2026-01-12",
-  "count": 9,
+  "generated_utc": "2026-02-11T09:47:46Z",
+  "count": 11,
   "daos": [
     {
       "id": "uniswap",
@@ -86,6 +86,22 @@
         "Protocol governance"
       ],
       "file": "maker_sky.json"
+    },
+    {
+      "id": "curve",
+      "name": "Curve DAO",
+      "category": [
+        "DeFi"
+      ],
+      "file": "curve.json"
+    },
+    {
+      "id": "nouns",
+      "name": "Nouns DAO",
+      "category": [
+        "DeFi"
+      ],
+      "file": "nouns.json"
     }
   ]
 }

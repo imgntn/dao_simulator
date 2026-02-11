@@ -8,6 +8,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import type { SimulationSettings } from '../config/settings';
+import { logger } from '../utils/logger';
 
 // =============================================================================
 // CALIBRATION PROFILE TYPES
@@ -128,7 +129,8 @@ export class CalibrationLoader {
 
       CalibrationLoader.cache.set(daoId, profile);
       return profile;
-    } catch {
+    } catch (error) {
+      logger.warn(`Failed to load calibration profile for "${daoId}"`, error);
       return null;
     }
   }
@@ -154,8 +156,8 @@ export class CalibrationLoader {
           }
         }
       }
-    } catch {
-      // Directory doesn't exist or isn't readable
+    } catch (error) {
+      logger.warn('Failed to read calibration directory', error);
     }
 
     return profiles;
@@ -183,7 +185,8 @@ export class CalibrationLoader {
       return fs.readdirSync(CalibrationLoader.calibrationDir)
         .filter(f => f.endsWith('_profile.json'))
         .map(f => f.replace('_profile.json', ''));
-    } catch {
+    } catch (error) {
+      logger.warn('Failed to list calibration profiles', error);
       return [];
     }
   }
@@ -191,13 +194,22 @@ export class CalibrationLoader {
   /**
    * Convert a CalibrationProfile into Partial<SimulationSettings>
    * to calibrate simulation behavior parameters from historical data.
+   *
+   * Derived settings and their clamped ranges:
+   * - `voting_activity` ← `avg_participation_rate`, clamped to [0.005, 0.95]
+   * - `proposal_creation_probability` ← `avg_proposals_per_month / 720`, clamped to [0.001, 0.05]
+   * - `comment_probability` ← `forum.reply_rate`, clamped to [0.1, 0.9]
+   * - `price_volatility` ← `daily_volatility / sqrt(24)`, clamped to [0.001, 0.1]
+   * - `voteHerdingFactor` ← `voter_concentration * 0.4`, clamped to [0.05, 0.5]
    */
   static toSettings(profile: CalibrationProfile): Partial<SimulationSettings> {
     const settings: Partial<SimulationSettings> = {};
 
     // Voting behavior
+    // Set votingActivity to the raw historical rate. Per-agent voting probabilities
+    // are fine-tuned from voter cluster data in simulation.ts applyCalibrationVotingProbabilities().
     if (profile.voting) {
-      settings.voting_activity = Math.max(0.05, Math.min(0.95, profile.voting.avg_participation_rate));
+      settings.voting_activity = Math.max(0.005, Math.min(0.95, profile.voting.avg_participation_rate));
     }
 
     // Proposal creation rate
@@ -226,6 +238,11 @@ export class CalibrationLoader {
       // Higher voter concentration → higher herding factor
       settings.voteHerdingFactor = Math.max(0.05, Math.min(0.5, profile.voting.voter_concentration * 0.4));
     }
+
+    // Disable multi-stage proposals for calibrated simulations.
+    // With only ~2-3 voters per proposal, multi-stage temp_check adds noise
+    // and bypasses the calibrated quorum in resolveBasicProposals().
+    settings.proposal_temp_check_fraction = 0;
 
     return settings;
   }

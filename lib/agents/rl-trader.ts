@@ -3,6 +3,7 @@
 
 import { DAOMember } from './base';
 import type { DAOModel } from '../engine/model';
+import { logger } from '../utils/logger';
 import { LearningMixin, LearningConfig, LearningState } from './learning';
 import { StateDiscretizer } from './learning';
 import { settings } from '../config/settings';
@@ -136,7 +137,8 @@ export class RLTrader extends DAOMember {
               this.tokens += claimed;
             }
             reward = -0.01; // Small negative reward for removing liquidity
-          } catch {
+          } catch (error) {
+            logger.debug('RLTrader: remove_lp failed', error);
             reward = -0.02; // Penalty for failed action
           }
           break;
@@ -149,7 +151,8 @@ export class RLTrader extends DAOMember {
           break;
         }
       }
-    } catch {
+    } catch (error) {
+      logger.debug('RLTrader: executeAction failed', error);
       // Action failed, give small negative reward
       reward = -0.05;
     }

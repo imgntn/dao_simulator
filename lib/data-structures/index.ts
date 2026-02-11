@@ -64,3 +64,11 @@ export {
   type SubDAOConfig,
   type SubDAOStats,
 } from './sub-dao';
+
+// Forum
+export {
+  ForumState,
+  type ForumTopic,
+  type ForumPost,
+  type ForumPostType,
+} from './forum';

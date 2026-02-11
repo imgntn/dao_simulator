@@ -11,6 +11,7 @@ Usage:
 
 import argparse
 import json
+import logging
 import math
 import os
 import sys
@@ -24,6 +25,8 @@ import numpy as np
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 HISTORICAL_DIR = PROJECT_ROOT / "results" / "historical"
 DEFAULT_OUTPUT_DIR = HISTORICAL_DIR / "calibration"
+
+logger = logging.getLogger(__name__)
 
 
 # =============================================================================
@@ -378,10 +381,12 @@ def compile_market_profile(dao_id, data):
     """Compile market dynamics from daily price data."""
     df = data["market_daily"]
     if df.empty or "dao_id" not in df.columns:
+        logger.warning("Skipping market profile for %s: no market_daily data available", dao_id)
         return None
 
     dao_data = df[df["dao_id"] == dao_id].copy()
     if dao_data.empty:
+        logger.warning("Skipping market profile for %s: no rows match dao_id", dao_id)
         return None
 
     dao_data["price_usd"] = pd.to_numeric(dao_data["price_usd"], errors="coerce")
@@ -424,12 +429,14 @@ def compile_forum_profile(dao_id, data):
     posts = data["forum_posts"]
 
     if topics.empty or "dao_id" not in topics.columns:
+        logger.warning("Skipping forum profile for %s: no forum_topics data available", dao_id)
         return None
 
     dao_topics = topics[topics["dao_id"] == dao_id]
     dao_posts = posts[posts["dao_id"] == dao_id] if not posts.empty and "dao_id" in posts.columns else pd.DataFrame()
 
     if dao_topics.empty:
+        logger.warning("Skipping forum profile for %s: no forum topics match dao_id", dao_id)
         return None
 
     # Topics per month
@@ -668,6 +675,11 @@ def compile_profile(dao_id, data):
         "protocol": protocol,
     }
 
+    # Log which sections are missing
+    missing = [k for k in ("voting", "proposals", "market", "forum", "protocol") if profile[k] is None]
+    if missing:
+        logger.info("Profile for %s is missing sections: %s", dao_id, ", ".join(missing))
+
     return profile
 
 
@@ -686,7 +698,13 @@ def main():
     parser.add_argument("--output-dir", type=str, default=str(DEFAULT_OUTPUT_DIR),
                         help="Output directory for JSON profiles")
     parser.add_argument("--list", action="store_true", help="List available DAO IDs and exit")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose logging")
     args = parser.parse_args()
+
+    logging.basicConfig(
+        level=logging.DEBUG if args.verbose else logging.WARNING,
+        format="%(levelname)s: %(message)s",
+    )
 
     print("Loading historical data...")
     data = load_all_data()
