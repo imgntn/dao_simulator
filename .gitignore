@@ -58,6 +58,9 @@ playwright-*.err
 
 # temp files
 tmpclaude-*
+debug-*.ts
+output.txt
+nul
 
 # LaTeX tools
 tools/
@@ -77,6 +80,10 @@ paper/generated/
 
 # Simulation checkpoints
 .checkpoints/
+
+# Python cache
+__pycache__/
+*.pyc
 
 # Claude local settings
 .claude/settings.local.json

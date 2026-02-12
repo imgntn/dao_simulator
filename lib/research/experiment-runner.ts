@@ -681,13 +681,13 @@ export class ExperimentRunner {
     // Track city-level events
     const eventBus = city.getEventBus();
     eventBus.subscribe('member_transfer_queued', (data) => {
-      const request = (data as any).request as { fromDaoId: string; toDaoId: string } | undefined;
+      const request = data.request as { fromDaoId: string; toDaoId: string } | undefined;
       if (!request) return;
       context.transferRequests.set(request.fromDaoId, (context.transferRequests.get(request.fromDaoId) || 0) + 1);
     });
 
     eventBus.subscribe('member_transfer_completed', (data) => {
-      const result = (data as any).result as { fromDaoId: string; toDaoId: string } | undefined;
+      const result = data.result as { fromDaoId: string; toDaoId: string } | undefined;
       if (!result) return;
 
       context.transferCompletions.set(result.fromDaoId, (context.transferCompletions.get(result.fromDaoId) || 0) + 1);
@@ -701,7 +701,7 @@ export class ExperimentRunner {
     });
 
     eventBus.subscribe('cross_dao_alert', (data) => {
-      const alertId = (data as any).alertId as string | undefined;
+      const alertId = data.alertId as string | undefined;
       if (alertId) {
         context.ecosystemAlertIds.add(alertId);
       } else {
@@ -720,7 +720,7 @@ export class ExperimentRunner {
 
       sim.eventBus.subscribe('sybil_attack_started', (data) => {
         context.attackAttempts.set(daoId, (context.attackAttempts.get(daoId) || 0) + 1);
-        const proposalId = (data as any).proposalId as string | undefined;
+        const proposalId = data.proposalId as string | undefined;
         if (!proposalId) return;
         const malicious = context.maliciousProposals.get(daoId) || new Set<string>();
         malicious.add(proposalId);
@@ -737,7 +737,7 @@ export class ExperimentRunner {
         context.attackAttempts.set(daoId, (context.attackAttempts.get(daoId) || 0) + 1);
       });
       sim.eventBus.subscribe('flashloan_borrowed', (data) => {
-        const proposalId = (data as any).proposalId as string | undefined;
+        const proposalId = data.proposalId as string | undefined;
         if (!proposalId) return;
         const malicious = context.maliciousProposals.get(daoId) || new Set<string>();
         malicious.add(proposalId);
@@ -1483,7 +1483,7 @@ export class ExperimentRunner {
       case 'quorum_reach_rate': {
         if (proposals.length === 0) return 0;
         const totalSupply = getTotalVotingPower(members);
-        const quorumThreshold = (simulation as any).governanceRule?.quorumPercentage ?? 0.04;
+        const quorumThreshold = (simulation.governanceRule as { quorumPercentage?: number } | undefined)?.quorumPercentage ?? 0.04;
 
         let quorumMet = 0;
         for (const proposal of proposals) {

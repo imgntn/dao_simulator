@@ -101,7 +101,7 @@ export class ProposalCreator extends DAOMember {
     // Probability gate: check calibrated creation rate FIRST
     // This prevents Q-learning exploration from creating too many proposals
     // Divide by number of creators so total DAO rate matches calibration
-    const baseProbability = (this.model as any).proposalCreationProbability ?? 0.005;
+    const baseProbability = (this.model as unknown as { proposalCreationProbability?: number }).proposalCreationProbability ?? 0.005;
     const numCreators = this.model.dao?.members.filter(m => m.constructor.name === 'ProposalCreator').length || 1;
     const creationProbability = baseProbability / numCreators;
     if (random() > creationProbability) {
@@ -215,9 +215,10 @@ export class ProposalCreator extends DAOMember {
     const selected = topicConfig.find(t => t.topic === topic) || topicConfig[0];
 
     const titlePrefix = `${topic} Proposal`;
-    const fixedDuration = (this.model as any).proposalDurationSteps ?? 0;
-    const minDuration = (this.model as any).proposalDurationMinSteps ?? 10;
-    const maxDuration = (this.model as any).proposalDurationMaxSteps ?? 30;
+    const durationConfig = this.model as unknown as { proposalDurationSteps?: number; proposalDurationMinSteps?: number; proposalDurationMaxSteps?: number };
+    const fixedDuration = durationConfig.proposalDurationSteps ?? 0;
+    const minDuration = durationConfig.proposalDurationMinSteps ?? 10;
+    const maxDuration = durationConfig.proposalDurationMaxSteps ?? 30;
 
     const duration =
       fixedDuration && fixedDuration > 0
@@ -340,9 +341,10 @@ export class ProposalCreator extends DAOMember {
     const topic = selected.topic;
 
     const titlePrefix = `${topic} Proposal`;
-    const fixedDuration = (this.model as any).proposalDurationSteps ?? 0;
-    const minDuration = (this.model as any).proposalDurationMinSteps ?? 10;
-    const maxDuration = (this.model as any).proposalDurationMaxSteps ?? 30;
+    const durationConfig = this.model as unknown as { proposalDurationSteps?: number; proposalDurationMinSteps?: number; proposalDurationMaxSteps?: number };
+    const fixedDuration = durationConfig.proposalDurationSteps ?? 0;
+    const minDuration = durationConfig.proposalDurationMinSteps ?? 10;
+    const maxDuration = durationConfig.proposalDurationMaxSteps ?? 30;
 
     const duration =
       fixedDuration && fixedDuration > 0

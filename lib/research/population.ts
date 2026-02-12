@@ -169,7 +169,7 @@ export function buildAgentCounts(population: PopulationSpec, config?: { injectDe
   for (const [agentType, count] of Object.entries(counts)) {
     const key = AGENT_KEY_MAP[agentType];
     if (key) {
-      (result as any)[key] = count;
+      result[key as AgentCountKey] = count;
     }
   }
 

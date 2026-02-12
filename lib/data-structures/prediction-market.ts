@@ -49,7 +49,7 @@ export class PredictionMarket {
 
     if (this.eventBus) {
       this.eventBus.publish('prediction_created', {
-        step: (this.dao as any).currentStep || 0,
+        step: this.dao.currentStep || 0,
         question,
         resolveStep,
       });
@@ -75,14 +75,14 @@ export class PredictionMarket {
     member.tokens -= amount;
 
     // Deposit into treasury
-    this.treasury.deposit('DAO_TOKEN', amount, (this.dao as any).currentStep || 0);
+    this.treasury.deposit('DAO_TOKEN', amount, this.dao.currentStep || 0);
 
     // Record bet
     prediction.bets.push([member, choice, amount]);
 
     if (this.eventBus) {
       this.eventBus.publish('bet_placed', {
-        step: (this.dao as any).currentStep || 0,
+        step: this.dao.currentStep || 0,
         member: member.uniqueId,
         question: prediction.question,
         choice,

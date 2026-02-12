@@ -169,31 +169,20 @@ function checkVoteTotals(dao: DAO, step: number): InvariantViolation[] {
 
   for (const proposal of dao.proposals) {
     // Skip proposals without votes
-    const votes = (proposal as any).votes;
-    if (!votes) continue;
+    const votes = proposal.votes;
+    if (!votes || votes.size === 0) continue;
 
     let yesVotes = 0;
     let noVotes = 0;
-    let totalVoters = 0;
+    const totalVoters = votes.size;
 
-    if (votes instanceof Map) {
-      totalVoters = votes.size;
-      for (const [, voteData] of votes) {
-        if (voteData.vote === true) {
-          yesVotes += voteData.weight || 1;
-        } else {
-          noVotes += voteData.weight || 1;
-        }
+    for (const [, voteData] of votes) {
+      if (voteData.vote === true) {
+        yesVotes += voteData.weight || 1;
+      } else if (voteData.vote === false) {
+        noVotes += voteData.weight || 1;
       }
-    } else if (Array.isArray(votes)) {
-      totalVoters = votes.length;
-      for (const voteData of votes) {
-        if (voteData.vote === true) {
-          yesVotes += voteData.weight || 1;
-        } else {
-          noVotes += voteData.weight || 1;
-        }
-      }
+      // abstain votes are intentionally skipped
     }
 
     // Check that yes + no weights are reasonable (no negative weights)
@@ -206,8 +195,8 @@ function checkVoteTotals(dao: DAO, step: number): InvariantViolation[] {
     }
 
     // Check that reported totals match calculated totals (if available)
-    const reportedYes = (proposal as any).votesFor ?? (proposal as any).yesVotes;
-    const reportedNo = (proposal as any).votesAgainst ?? (proposal as any).noVotes;
+    const reportedYes = proposal.votesFor;
+    const reportedNo = proposal.votesAgainst;
 
     if (reportedYes !== undefined && Math.abs(reportedYes - yesVotes) > 0.01) {
       violations.push({

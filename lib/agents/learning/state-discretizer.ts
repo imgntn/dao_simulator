@@ -1,7 +1,7 @@
 // StateDiscretizer - Utility for converting continuous state values to discrete buckets
 // Provides consistent state representations for Q-learning agents
 
-import type { Proposal } from '../../data-structures/proposal';
+import { type Proposal, isMultiStageProposal } from '../../data-structures/proposal';
 
 /**
  * Price bucket categories
@@ -178,9 +178,8 @@ export class StateDiscretizer {
     if (!proposal) return 'expired';
 
     // Check for multi-stage proposal
-    const multiStage = proposal as any;
-    if (Array.isArray(multiStage.stageConfigs)) {
-      const stageName = multiStage.currentStageName?.toLowerCase() || '';
+    if (isMultiStageProposal(proposal)) {
+      const stageName = ((proposal as unknown as { currentStageName?: string }).currentStageName ?? '').toLowerCase();
       if (stageName.includes('temp') || stageName.includes('check')) {
         return 'temp_check';
       }

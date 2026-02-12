@@ -474,8 +474,9 @@ export class Treasury {
     for (const [key, poolData] of Object.entries(data.pools || {})) {
       const tokens = key.split('|');
       const pool = new LiquidityPool(tokens[0], tokens[1], eventBus);
-      pool.reserveA = (poolData as any).reserveA || 0;
-      pool.reserveB = (poolData as any).reserveB || 0;
+      const poolRecord = poolData as { reserveA?: number; reserveB?: number };
+      pool.reserveA = poolRecord.reserveA || 0;
+      pool.reserveB = poolRecord.reserveB || 0;
       treasury.pools.set(key, pool);
     }
 

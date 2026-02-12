@@ -155,8 +155,9 @@ export function compareToHistorical(
     details['hist_forum_topics_per_month'] = historicalProfile.forum.avg_topics_per_month;
   }
 
-  // Calculate overall score (weighted average of 1 - error, clamped to [0, 1])
-  const weights = {
+  // Calculate overall score (weighted average of 1 - error, clamped to [0, 1]).
+  // If historical data is missing for a metric (value = 0), skip it and redistribute weight.
+  const baseWeights: Record<string, number> = {
     proposal_frequency: 0.25,
     pass_rate: 0.20,
     participation_rate: 0.20,
@@ -165,14 +166,37 @@ export function compareToHistorical(
     forum_activity: 0.10,
   };
 
-  const overall_score = Math.max(0, Math.min(1,
-    weights.proposal_frequency * (1 - Math.min(metrics.proposal_frequency_error, 1)) +
-    weights.pass_rate * (1 - Math.min(metrics.pass_rate_error, 1)) +
-    weights.participation_rate * (1 - Math.min(metrics.participation_rate_error, 1)) +
-    weights.price_trajectory * (1 - Math.min(metrics.price_trajectory_rmse, 1)) +
-    weights.voter_concentration * (1 - Math.min(metrics.voter_concentration_error, 1)) +
-    weights.forum_activity * (1 - Math.min(metrics.forum_activity_error, 1))
-  ));
+  const metricScores: Record<string, number> = {
+    proposal_frequency: 1 - Math.min(metrics.proposal_frequency_error, 1),
+    pass_rate: 1 - Math.min(metrics.pass_rate_error, 1),
+    participation_rate: 1 - Math.min(metrics.participation_rate_error, 1),
+    price_trajectory: 1 - Math.min(metrics.price_trajectory_rmse, 1),
+    voter_concentration: 1 - Math.min(metrics.voter_concentration_error, 1),
+    forum_activity: 1 - Math.min(metrics.forum_activity_error, 1),
+  };
+
+  // Skip metrics where historical data is missing/zero (indicates no data, not 0%)
+  const skipMetrics = new Set<string>();
+  if (historicalProfile.proposals.pass_rate === 0) skipMetrics.add('pass_rate');
+  if (!historicalProfile.market) skipMetrics.add('price_trajectory');
+  if (!historicalProfile.forum) skipMetrics.add('forum_activity');
+  if (historicalProfile.voting.voter_concentration === 0) skipMetrics.add('voter_concentration');
+
+  // Compute active weight sum and redistribute
+  let activeWeightSum = 0;
+  for (const [key, weight] of Object.entries(baseWeights)) {
+    if (!skipMetrics.has(key)) activeWeightSum += weight;
+  }
+
+  let overall_score = 0;
+  if (activeWeightSum > 0) {
+    for (const [key, weight] of Object.entries(baseWeights)) {
+      if (!skipMetrics.has(key)) {
+        overall_score += (weight / activeWeightSum) * metricScores[key];
+      }
+    }
+  }
+  overall_score = Math.max(0, Math.min(1, overall_score));
 
   return {
     dao_id: historicalProfile.dao_id,

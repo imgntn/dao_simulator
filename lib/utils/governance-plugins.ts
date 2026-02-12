@@ -283,7 +283,7 @@ export class ReputationQuorumRule extends GovernanceRule {
     );
 
     // Sum reputation of members who actually voted
-    const votesMap = (proposal as any).votes as Map<string, { vote: boolean; weight: number }>;
+    const votesMap = proposal.votes;
     let voterReputation = 0;
     if (votesMap) {
       for (const [memberId] of votesMap) {
@@ -371,7 +371,7 @@ export class QuadraticVotingRule extends GovernanceRule {
 
   approve(proposal: Proposal, dao: DAO): boolean {
     // Access the votes map to calculate quadratic voting power
-    const votesMap = (proposal as any).votes as Map<string, { vote: boolean; weight: number }>;
+    const votesMap = proposal.votes;
 
     if (!votesMap || votesMap.size === 0) {
       return false;
@@ -671,7 +671,7 @@ export class SecurityCouncilRule extends GovernanceRule {
 
   approve(proposal: Proposal, dao: DAO): boolean {
     // Count distinct council member votes, 1 per member regardless of tokens
-    const votesMap = (proposal as any).votes as Map<string, { vote: boolean; weight: number }> | undefined;
+    const votesMap = proposal.votes;
     let councilFor = 0;
     let councilAgainst = 0;
     let councilTotal = 0;

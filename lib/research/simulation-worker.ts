@@ -371,7 +371,7 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
     case 'quorum_reach_rate': {
       if (proposals.length === 0) return 0;
       const totalSupply = getTotalVotingPower(members);
-      const quorumThreshold = (simulation as any).governanceRule?.quorumPercentage
+      const quorumThreshold = (simulation.governanceRule as { quorumPercentage?: number } | undefined)?.quorumPercentage
         ?? simulation.dao?.votingPowerPolicy?.capFraction
         ?? 0.04;
 
@@ -818,7 +818,7 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
     }
 
     case 'emergency_topup_total':
-      return (simulation as any).totalEmergencyTopup || 0;
+      return simulation.totalEmergencyTopup || 0;
 
     default:
       return 0;

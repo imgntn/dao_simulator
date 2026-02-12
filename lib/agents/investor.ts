@@ -243,7 +243,7 @@ export class Investor extends DAOMember {
     // Participate in governance
     this.voteOnRandomProposal();
 
-    if (this.model.dao && random() < 0.001) {
+    if (this.model.dao && !this.model.dao.calibratedProposals && random() < 0.001) {
       submitRandomProposal(this.model.dao, this);
     }
 

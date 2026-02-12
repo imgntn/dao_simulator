@@ -77,6 +77,7 @@ export class DAO {
   marketplace: NFTMarketplace | null = null;
   commentProbability: number;
   votingActivity: number;  // 0-1 probability that agents vote when given the chance
+  calibratedProposals: boolean = false; // When true, only ProposalCreator creates proposals
   externalPartnerInteractProbability: number;
   violationProbability: number;
   reputationPenalty: number;

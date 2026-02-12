@@ -618,11 +618,28 @@ export class DAOSimulation extends Model {
   private applyCalibrationAgentTuning(profile: CalibrationProfile): void {
     const voting = profile.voting;
 
-    // Bias agent voting toward historical approval rate.
-    // For calibrated agents, belief ≈ optimism (optimismFactor = 1.0 in decideVote),
-    // so we set optimism directly to avg_for_percentage with ±5% spread for realism.
-    if (voting.avg_for_percentage > 0.5) {
-      const target = Math.min(voting.avg_for_percentage, 1);
+    // Bias agent voting toward historical pass rate.
+    // With MajorityRule, P(proposal passes) depends on P(YES vote) per agent.
+    // For high pass rates (>0.8), set optimism = avg_for_percentage (most votes YES).
+    // For moderate/low pass rates, blend toward 0.5 (contested, more proposals fail).
+    // This handles DAOs like Nouns (pass_rate=0.45, for_pct=0.70) where quorum/mechanics
+    // cause failures not captured by simple for_percentage targeting.
+    const passRate = profile.proposals.pass_rate;
+    const forPct = voting.avg_for_percentage;
+    if (forPct > 0.5) {
+      let target: number;
+      if (passRate >= 0.8) {
+        // High pass rate: use for_percentage directly (aave, lido, maker)
+        target = Math.min(forPct, 1);
+      } else if (passRate >= 0.5) {
+        // Moderate pass rate: blend for_percentage toward 0.5
+        // e.g. passRate=0.7 → blend 60% of forPct, 40% of 0.5
+        const blend = (passRate - 0.5) / 0.3; // 0 at passRate=0.5, 1 at passRate=0.8
+        target = 0.5 + blend * (forPct - 0.5);
+      } else {
+        // Low pass rate (<0.5): target slightly below 0.5 so more proposals fail
+        target = 0.48 + passRate * 0.04; // range [0.48, 0.50]
+      }
       for (const member of this.dao.members) {
         const spread = (member.optimism - 0.5) * 0.1; // ±5% noise
         member.optimism = Math.max(0, Math.min(1, target + spread));
@@ -633,15 +650,11 @@ export class DAOSimulation extends Model {
     // above the historically calibrated voting_activity level
     this.dao.participationPolicy.inactivityBoost = 0;
 
-    // Adjust proposal creation probability to account for non-ProposalCreator agents.
-    // Investor (0.001/step each) and GovernanceWhale (0.002/step each) also create proposals.
-    // Without this, total proposals/month = calibrated_rate + investor_rate + whale_rate, overshooting.
-    const investorContribution = this.numInvestors * 0.001;
-    const whaleContribution = this.numGovernanceWhales * 0.002;
-    const nonCreatorRate = investorContribution + whaleContribution;
-    if (nonCreatorRate > 0 && this.proposalCreationProbability > nonCreatorRate) {
-      this.proposalCreationProbability = this.proposalCreationProbability - nonCreatorRate;
-    }
+    // In calibrated mode, only ProposalCreator agents create proposals.
+    // Investor (0.001/step) and GovernanceWhale (0.002/step) are suppressed to prevent
+    // overshooting — with 5 Investors, their combined 0.005/step = 3.6 proposals/month,
+    // which already exceeds targets for low-activity DAOs (ENS: 2.15/mo, Curve: 3.5/mo).
+    this.dao.calibratedProposals = true;
 
     // Apply voter-cluster token distribution for realistic concentration
     if (profile.voter_clusters && profile.voter_clusters.length > 0) {

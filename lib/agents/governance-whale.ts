@@ -154,8 +154,8 @@ export class GovernanceWhale extends DAOMember {
       return 'stake_tokens';
     }
 
-    // Create proposals occasionally
-    if (random() < this.config.proposalCreationProbability) {
+    // Create proposals occasionally (suppressed in calibrated mode)
+    if (!this.model.dao?.calibratedProposals && random() < this.config.proposalCreationProbability) {
       return 'create_proposal';
     }
 

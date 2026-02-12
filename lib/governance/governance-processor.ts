@@ -308,69 +308,64 @@ export class GovernanceProcessor {
 
     // Record standard votes
     this.eventBus.subscribe('proposal_voted', (data) => {
-      const voteData = data as any;
-      if (!voteData?.proposalId || !voteData?.agentId) return;
+      if (!data?.proposalId || !data?.agentId) return;
       detector.recordVote({
-        voterId: String(voteData.agentId),
-        proposalId: String(voteData.proposalId),
-        vote: String(voteData.vote || '').toLowerCase() === 'yes',
-        weight: Number(voteData.weight ?? 1),
-        step: Number(voteData.step ?? 0),
+        voterId: String(data.agentId),
+        proposalId: String(data.proposalId),
+        vote: String(data.vote || '').toLowerCase() === 'yes',
+        weight: Number(data.weight ?? 1),
+        step: Number(data.step ?? 0),
       });
     });
 
     // Record sybil puppet votes
     this.eventBus.subscribe('sybil_vote_coordinated', (data) => {
-      const voteData = data as any;
-      if (!voteData?.proposalId || !voteData?.puppetId) return;
+      if (!data?.proposalId || !data?.puppetId) return;
       detector.recordVote({
-        voterId: String(voteData.puppetId),
-        proposalId: String(voteData.proposalId),
-        vote: Boolean(voteData.vote),
-        weight: Number(voteData.weight ?? 1),
-        step: Number(voteData.step ?? 0),
+        voterId: String(data.puppetId),
+        proposalId: String(data.proposalId),
+        vote: Boolean(data.vote),
+        weight: Number(data.weight ?? 1),
+        step: Number(data.step ?? 0),
       });
     });
 
     // Record flashloan votes
     this.eventBus.subscribe('flashloan_vote_cast', (data) => {
-      const voteData = data as any;
-      if (!voteData?.proposalId || !voteData?.borrower) return;
+      if (!data?.proposalId || !data?.borrower) return;
       detector.recordVote({
-        voterId: String(voteData.borrower),
-        proposalId: String(voteData.proposalId),
-        vote: Boolean(voteData.vote),
-        weight: Number(voteData.voteWeight ?? 1),
-        step: Number(voteData.step ?? 0),
+        voterId: String(data.borrower),
+        proposalId: String(data.proposalId),
+        vote: Boolean(data.vote),
+        weight: Number(data.voteWeight ?? 1),
+        step: Number(data.step ?? 0),
       });
     });
 
     // Track flashloan token flows (borrow + repay)
     this.eventBus.subscribe('flashloan_borrowed', (data) => {
-      const transfer = data as any;
-      if (!transfer?.borrower || !transfer?.amount) return;
+      if (!data?.borrower || !data?.amount) return;
       detector.recordTransfer({
         from: 'treasury',
-        to: String(transfer.borrower),
-        amount: Number(transfer.amount),
-        step: Number(transfer.step ?? 0),
+        to: String(data.borrower),
+        amount: Number(data.amount),
+        step: Number(data.step ?? 0),
       });
     });
 
     this.eventBus.subscribe('flashloan_repaid', (data) => {
-      const transfer = data as any;
-      if (!transfer?.borrower || !transfer?.amount) return;
+      if (!data?.borrower || !data?.amount) return;
       detector.recordTransfer({
-        from: String(transfer.borrower),
+        from: String(data.borrower),
         to: 'treasury',
-        amount: Number(transfer.amount),
-        step: Number(transfer.step ?? 0),
+        amount: Number(data.amount),
+        step: Number(data.step ?? 0),
       });
     });
 
     // Simple defense response on detection
     this.eventBus.subscribe('attack_detected', (data) => {
-      const alert = data as any;
+      const alert = data;
       const severity = String(alert?.severity || 'low').toLowerCase();
       const step = Number(alert?.step ?? this.dao.currentStep);
       const probability = this.getMitigationProbability(severity);

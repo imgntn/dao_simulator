@@ -27,6 +27,24 @@ export interface BacktestConfig {
   forumEnabled?: boolean;
 }
 
+export interface ConfidenceInterval {
+  mean: number;
+  stdDev: number;
+  ci95Lower: number;
+  ci95Upper: number;
+  standardError: number;
+}
+
+export interface MetricConfidenceIntervals {
+  overall_score: ConfidenceInterval;
+  proposal_frequency_error: ConfidenceInterval;
+  pass_rate_error: ConfidenceInterval;
+  participation_rate_error: ConfidenceInterval;
+  price_trajectory_rmse: ConfidenceInterval;
+  voter_concentration_error: ConfidenceInterval;
+  forum_activity_error: ConfidenceInterval;
+}
+
 export interface BacktestResult {
   daoId: string;
   episodes: number;
@@ -36,6 +54,7 @@ export interface BacktestResult {
   bestScore: number;
   worstScore: number;
   stdDevScore: number;
+  confidenceIntervals: MetricConfidenceIntervals;
 }
 
 // =============================================================================
@@ -92,6 +111,8 @@ export class BacktestRunner {
     const averageReport = this.averageReports(reports, profile.dao_id);
     const scores = reports.map(r => r.overall_score);
 
+    const confidenceIntervals = this.computeConfidenceIntervals(reports, scores);
+
     return {
       daoId: config.daoId,
       episodes: config.episodes,
@@ -101,6 +122,7 @@ export class BacktestRunner {
       bestScore: Math.max(...scores),
       worstScore: Math.min(...scores),
       stdDevScore: this.stdDev(scores),
+      confidenceIntervals,
     };
   }
 
@@ -187,6 +209,36 @@ export class BacktestRunner {
       },
       overall_score: avgScore / n,
       details: {},
+    };
+  }
+
+  private computeConfidenceIntervals(
+    reports: AccuracyReport[],
+    scores: number[]
+  ): MetricConfidenceIntervals {
+    return {
+      overall_score: this.computeCI(scores),
+      proposal_frequency_error: this.computeCI(reports.map(r => r.metrics.proposal_frequency_error)),
+      pass_rate_error: this.computeCI(reports.map(r => r.metrics.pass_rate_error)),
+      participation_rate_error: this.computeCI(reports.map(r => r.metrics.participation_rate_error)),
+      price_trajectory_rmse: this.computeCI(reports.map(r => r.metrics.price_trajectory_rmse)),
+      voter_concentration_error: this.computeCI(reports.map(r => r.metrics.voter_concentration_error)),
+      forum_activity_error: this.computeCI(reports.map(r => r.metrics.forum_activity_error)),
+    };
+  }
+
+  private computeCI(values: number[]): ConfidenceInterval {
+    const n = values.length;
+    const mean = n > 0 ? values.reduce((a, b) => a + b, 0) / n : 0;
+    const sd = this.stdDev(values);
+    const se = n > 0 ? sd / Math.sqrt(n) : 0;
+    // z=1.96 for 95% CI
+    return {
+      mean,
+      stdDev: sd,
+      ci95Lower: mean - 1.96 * se,
+      ci95Upper: mean + 1.96 * se,
+      standardError: se,
     };
   }
 

@@ -31,7 +31,7 @@ function parseArgs(): ValidationConfig {
   const args = process.argv.slice(2);
   const config: ValidationConfig = {
     daoIds: [],
-    episodes: 5,
+    episodes: 30,
     stepsPerEpisode: 720, // 30 days
     seed: 42,
     outputDir: path.join(process.cwd(), 'results', 'calibration'),
@@ -96,10 +96,13 @@ async function main() {
   const summary: Array<{
     dao_id: string;
     overall_score: number;
+    ci95: string;
     proposal_freq_error: number;
     pass_rate_error: number;
     participation_error: number;
     price_rmse: number;
+    voter_conc_error: number;
+    forum_error: number;
     best: number;
     worst: number;
     std: number;
@@ -122,13 +125,17 @@ async function main() {
       results[daoId] = result;
 
       const avg = result.averageReport;
+      const ci = result.confidenceIntervals.overall_score;
       summary.push({
         dao_id: daoId,
         overall_score: avg.overall_score,
+        ci95: `${ci.ci95Lower.toFixed(3)}-${ci.ci95Upper.toFixed(3)}`,
         proposal_freq_error: avg.metrics.proposal_frequency_error,
         pass_rate_error: avg.metrics.pass_rate_error,
         participation_error: avg.metrics.participation_rate_error,
         price_rmse: avg.metrics.price_trajectory_rmse,
+        voter_conc_error: avg.metrics.voter_concentration_error,
+        forum_error: avg.metrics.forum_activity_error,
         best: result.bestScore,
         worst: result.worstScore,
         std: result.stdDevScore,
@@ -137,7 +144,8 @@ async function main() {
       const elapsed = ((Date.now() - start) / 1000).toFixed(1);
       console.log(
         `[${daoId}] Score: ${avg.overall_score.toFixed(3)} ` +
-        `(best=${result.bestScore.toFixed(3)}, worst=${result.worstScore.toFixed(3)}) ` +
+        `(95% CI: ${ci.ci95Lower.toFixed(3)}-${ci.ci95Upper.toFixed(3)}, ` +
+        `best=${result.bestScore.toFixed(3)}, worst=${result.worstScore.toFixed(3)}) ` +
         `[${elapsed}s]`
       );
 
@@ -158,36 +166,40 @@ async function main() {
 
   // Table header
   console.log(
-    'DAO'.padEnd(15) +
-    'Score'.padEnd(8) +
-    'PropFreq'.padEnd(10) +
-    'PassRate'.padEnd(10) +
-    'Particip'.padEnd(10) +
-    'PriceRMS'.padEnd(10) +
+    'DAO'.padEnd(13) +
+    'Score'.padEnd(7) +
+    '95% CI'.padEnd(14) +
+    'PropFrq'.padEnd(8) +
+    'PassRt'.padEnd(8) +
+    'Partic'.padEnd(8) +
+    'Price'.padEnd(8) +
+    'VotCnc'.padEnd(8) +
+    'Forum'.padEnd(8) +
     'Best'.padEnd(7) +
-    'Worst'.padEnd(7) +
-    'StdDev'
+    'Worst'
   );
-  console.log('-'.repeat(77));
+  console.log('-'.repeat(97));
 
   for (const row of summary.sort((a, b) => b.overall_score - a.overall_score)) {
     console.log(
-      row.dao_id.padEnd(15) +
-      row.overall_score.toFixed(3).padEnd(8) +
-      row.proposal_freq_error.toFixed(3).padEnd(10) +
-      row.pass_rate_error.toFixed(3).padEnd(10) +
-      row.participation_error.toFixed(3).padEnd(10) +
-      row.price_rmse.toFixed(3).padEnd(10) +
+      row.dao_id.padEnd(13) +
+      row.overall_score.toFixed(3).padEnd(7) +
+      row.ci95.padEnd(14) +
+      row.proposal_freq_error.toFixed(3).padEnd(8) +
+      row.pass_rate_error.toFixed(3).padEnd(8) +
+      row.participation_error.toFixed(3).padEnd(8) +
+      row.price_rmse.toFixed(3).padEnd(8) +
+      row.voter_conc_error.toFixed(3).padEnd(8) +
+      row.forum_error.toFixed(3).padEnd(8) +
       row.best.toFixed(3).padEnd(7) +
-      row.worst.toFixed(3).padEnd(7) +
-      row.std.toFixed(3)
+      row.worst.toFixed(3)
     );
   }
 
   const avgScore = summary.length > 0
     ? summary.reduce((s, r) => s + r.overall_score, 0) / summary.length
     : 0;
-  console.log('-'.repeat(77));
+  console.log('-'.repeat(97));
   console.log(`Average score across ${summary.length} DAOs: ${avgScore.toFixed(3)}`);
   console.log();
 
@@ -208,9 +220,9 @@ async function main() {
 
   // Write CSV for paper table
   const csvPath = path.join(config.outputDir, 'validation_summary.csv');
-  const csvHeader = 'dao_id,overall_score,proposal_freq_error,pass_rate_error,participation_error,price_rmse,best,worst,std\n';
+  const csvHeader = 'dao_id,overall_score,ci95,proposal_freq_error,pass_rate_error,participation_error,price_rmse,voter_conc_error,forum_error,best,worst,std\n';
   const csvRows = summary.map(r =>
-    `${r.dao_id},${r.overall_score},${r.proposal_freq_error},${r.pass_rate_error},${r.participation_error},${r.price_rmse},${r.best},${r.worst},${r.std}`
+    `${r.dao_id},${r.overall_score},${r.ci95},${r.proposal_freq_error},${r.pass_rate_error},${r.participation_error},${r.price_rmse},${r.voter_conc_error},${r.forum_error},${r.best},${r.worst},${r.std}`
   ).join('\n');
   fs.writeFileSync(csvPath, csvHeader + csvRows + '\n');
   console.log(`CSV written to: ${csvPath}`);
