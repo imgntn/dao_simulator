@@ -78,6 +78,7 @@ export class DAO {
   commentProbability: number;
   votingActivity: number;  // 0-1 probability that agents vote when given the chance
   calibratedProposals: boolean = false; // When true, only ProposalCreator creates proposals
+  governanceRuleName: string = 'majority'; // Active governance rule (set by simulation)
   externalPartnerInteractProbability: number;
   violationProbability: number;
   reputationPenalty: number;

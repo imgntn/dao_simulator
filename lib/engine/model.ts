@@ -38,4 +38,5 @@ export interface DAOModel extends IModel {
   dao: DAO;
   eventBus: import('../utils/event-bus').EventBus;
   forumSimulation?: { getVotingBias(proposalId: string): number } | null;
+  governanceRuleName?: string;
 }

@@ -38,6 +38,7 @@ import { ForumState } from '../data-structures/forum';
 import { ForumSimulation } from './forum-simulation';
 import { CalibrationLoader } from '../digital-twins/calibration-loader';
 import type { CalibrationProfile, VoterCluster } from '../digital-twins/calibration-loader';
+import { getGovernanceMapping } from '../digital-twins/governance-mapping';
 import { logger } from '../utils/logger';
 import {
   Developer,
@@ -105,6 +106,8 @@ interface GovernanceRuleQuorumConfig {
   quorumPercentage?: number;
   threshold?: number;
   approvalThreshold?: number;
+  constitutionalQuorum?: number;
+  nonConstitutionalQuorum?: number;
 }
 
 interface AgentConfigEntry {
@@ -233,6 +236,8 @@ export class DAOSimulation extends Model {
   forumState: ForumState | null = null;
   /** Calibration profile for this simulation */
   calibrationProfile: CalibrationProfile | null = null;
+  /** Whether to use real governance rules for calibrated simulations */
+  useRealGovernance: boolean = false;
 
   constructor(config: DAOSimulationConfig = {}) {
     super();
@@ -308,6 +313,8 @@ export class DAOSimulation extends Model {
       throw new Error(`Unknown governance rule: ${this.governanceRuleName}`);
     }
     this.governanceRule = rule;
+    this.dao.governanceRuleName = this.governanceRuleName;
+    this.useRealGovernance = config.calibration_use_real_governance ?? settings.calibration_use_real_governance;
     this.totalEmergencyTopup = 0;
 
     // Agent counts
@@ -425,6 +432,20 @@ export class DAOSimulation extends Model {
         });
         if (calibratedSettings.voting_activity !== undefined) {
           this.dao.votingActivity = calibratedSettings.voting_activity;
+        }
+
+        // When using real governance, re-initialize the governance rule from the mapping
+        // (unless user explicitly set a rule via governance_rule or governance_config)
+        if (this.useRealGovernance && !config.governance_rule && !config.governance_config) {
+          const mapping = getGovernanceMapping(calibrationDaoId);
+          if (mapping) {
+            const realRule = getRule(mapping.ruleName, mapping.ruleConfig);
+            if (realRule) {
+              this.governanceRuleName = mapping.ruleName;
+              this.governanceRule = realRule;
+              this.dao.governanceRuleName = mapping.ruleName;
+            }
+          }
         }
 
         // Apply calibration-aware governance tuning (unless user explicitly set governance_config)
@@ -568,6 +589,14 @@ export class DAOSimulation extends Model {
    * Values outside expected ranges are clamped with a warning.
    */
   private applyCalibrationGovernanceTuning(profile: CalibrationProfile): void {
+    if (this.useRealGovernance) {
+      // Real governance: rule already set by constructor via CalibrationLoader.toSettings()
+      // Tune parameters from the calibration profile data
+      this.tuneGovernanceFromProfile(profile);
+      return;
+    }
+
+    // Legacy path: quorum=0, optimism-hacked pass rate
     const voting = profile.voting;
     const rule = this.governanceRule as unknown as GovernanceRuleQuorumConfig;
 
@@ -609,6 +638,74 @@ export class DAOSimulation extends Model {
   }
 
   /**
+   * Tune governance rule parameters from historical calibration data.
+   * Used when calibration_use_real_governance is true.
+   *
+   * Instead of forcing quorum=0 and hacking optimism, this configures
+   * the real governance rule's parameters to produce emergent pass rates.
+   */
+  private tuneGovernanceFromProfile(profile: CalibrationProfile): void {
+    const mapping = getGovernanceMapping(profile.dao_id);
+    if (!mapping) return;
+
+    const rule = this.governanceRule as unknown as GovernanceRuleQuorumConfig;
+    const voting = profile.voting;
+
+    // Disable inactivity timeout (same as legacy — voting happens in first few steps)
+    this.dao.proposalPolicy.inactivitySteps = 0;
+
+    // Set quorum based on historical data.
+    // If quorum is always hit (>95%), set slightly below observed participation
+    // so proposals still pass. If sometimes missed, set at participation level.
+    const historicalQuorum = voting.quorum_hit_rate;
+    const effectiveQuorum = historicalQuorum >= 0.95
+      ? Math.max(0.005, voting.avg_participation_rate * 0.8)
+      : voting.avg_participation_rate;
+
+    // Apply rule-specific tuning
+    switch (mapping.ruleName) {
+      case 'categoryquorum':
+        // Arbitrum-style dual quorums
+        if (rule.constitutionalQuorum !== undefined) {
+          rule.constitutionalQuorum = effectiveQuorum * 1.5;
+        }
+        if (rule.nonConstitutionalQuorum !== undefined) {
+          rule.nonConstitutionalQuorum = effectiveQuorum;
+        }
+        break;
+      case 'bicameral':
+        // Optimism-style: configure citizen house veto threshold
+        if (rule.quorumPercentage !== undefined) {
+          rule.quorumPercentage = effectiveQuorum;
+        }
+        break;
+      case 'dualgovernance':
+        // Lido-style: tune veto/rage-quit thresholds
+        if (rule.quorumPercentage !== undefined) {
+          rule.quorumPercentage = effectiveQuorum;
+        }
+        break;
+      default:
+        // Standard quorum + threshold tuning
+        if (rule.quorumPercentage !== undefined) {
+          rule.quorumPercentage = effectiveQuorum;
+        }
+        break;
+    }
+
+    // Set approval threshold from historical for_percentage
+    const forPct = Math.min(voting.avg_for_percentage, 1);
+    if (forPct > 0) {
+      if (rule.threshold !== undefined) {
+        rule.threshold = Math.max(0.5, Math.min(0.9, forPct * 0.8));
+      }
+      if (rule.approvalThreshold !== undefined) {
+        rule.approvalThreshold = Math.max(0.5, Math.min(0.9, forPct * 0.8));
+      }
+    }
+  }
+
+  /**
    * Apply agent-level calibration tuning from the calibration profile.
    * Must be called AFTER agents are created (initializeAgents).
    *
@@ -618,31 +715,40 @@ export class DAOSimulation extends Model {
   private applyCalibrationAgentTuning(profile: CalibrationProfile): void {
     const voting = profile.voting;
 
-    // Bias agent voting toward historical pass rate.
-    // With MajorityRule, P(proposal passes) depends on P(YES vote) per agent.
-    // For high pass rates (>0.8), set optimism = avg_for_percentage (most votes YES).
-    // For moderate/low pass rates, blend toward 0.5 (contested, more proposals fail).
-    // This handles DAOs like Nouns (pass_rate=0.45, for_pct=0.70) where quorum/mechanics
-    // cause failures not captured by simple for_percentage targeting.
-    const passRate = profile.proposals.pass_rate;
-    const forPct = voting.avg_for_percentage;
-    if (forPct > 0.5) {
-      let target: number;
-      if (passRate >= 0.8) {
-        // High pass rate: use for_percentage directly (aave, lido, maker)
-        target = Math.min(forPct, 1);
-      } else if (passRate >= 0.5) {
-        // Moderate pass rate: blend for_percentage toward 0.5
-        // e.g. passRate=0.7 → blend 60% of forPct, 40% of 0.5
-        const blend = (passRate - 0.5) / 0.3; // 0 at passRate=0.5, 1 at passRate=0.8
-        target = 0.5 + blend * (forPct - 0.5);
-      } else {
-        // Low pass rate (<0.5): target slightly below 0.5 so more proposals fail
-        target = 0.48 + passRate * 0.04; // range [0.48, 0.50]
-      }
+    if (this.useRealGovernance) {
+      // With real governance, let agents vote based on natural behavior.
+      // Apply a mild optimism nudge from for_percentage but don't force it.
+      const forPct = Math.min(voting.avg_for_percentage, 1);
       for (const member of this.dao.members) {
-        const spread = (member.optimism - 0.5) * 0.1; // ±5% noise
-        member.optimism = Math.max(0, Math.min(1, target + spread));
+        member.optimism = 0.5 + (forPct - 0.5) * 0.3;
+      }
+    } else {
+      // Legacy: Bias agent voting toward historical pass rate.
+      // With MajorityRule, P(proposal passes) depends on P(YES vote) per agent.
+      // For high pass rates (>0.8), set optimism = avg_for_percentage (most votes YES).
+      // For moderate/low pass rates, blend toward 0.5 (contested, more proposals fail).
+      // This handles DAOs like Nouns (pass_rate=0.45, for_pct=0.70) where quorum/mechanics
+      // cause failures not captured by simple for_percentage targeting.
+      const passRate = profile.proposals.pass_rate;
+      const forPct = voting.avg_for_percentage;
+      if (forPct > 0.5) {
+        let target: number;
+        if (passRate >= 0.8) {
+          // High pass rate: use for_percentage directly (aave, lido, maker)
+          target = Math.min(forPct, 1);
+        } else if (passRate >= 0.5) {
+          // Moderate pass rate: blend for_percentage toward 0.5
+          // e.g. passRate=0.7 → blend 60% of forPct, 40% of 0.5
+          const blend = (passRate - 0.5) / 0.3; // 0 at passRate=0.5, 1 at passRate=0.8
+          target = 0.5 + blend * (forPct - 0.5);
+        } else {
+          // Low pass rate (<0.5): target slightly below 0.5 so more proposals fail
+          target = 0.48 + passRate * 0.04; // range [0.48, 0.50]
+        }
+        for (const member of this.dao.members) {
+          const spread = (member.optimism - 0.5) * 0.1; // ±5% noise
+          member.optimism = Math.max(0, Math.min(1, target + spread));
+        }
       }
     }
 

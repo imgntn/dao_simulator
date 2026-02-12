@@ -81,7 +81,9 @@ export class GovernanceExpert extends DAOMember {
     return StateDiscretizer.createGovernanceState(
       proposal,
       participationRate,
-      this.model.dao.treasury.funds
+      this.model.dao.treasury.funds,
+      undefined,
+      this.model.dao.governanceRuleName
     );
   }
 

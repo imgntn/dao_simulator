@@ -96,6 +96,10 @@ export type { LoadResult } from './loader';
 
 // Calibration
 export { CalibrationLoader } from './calibration-loader';
+
+// Governance Mapping
+export { getGovernanceMapping, getMappedDaoIds, GOVERNANCE_MAPPING } from './governance-mapping';
+export type { GovernanceMappingEntry } from './governance-mapping';
 export type {
   CalibrationProfile,
   VotingProfile,

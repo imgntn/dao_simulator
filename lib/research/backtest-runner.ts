@@ -25,6 +25,12 @@ export interface BacktestConfig {
   seed?: number;
   oracleType?: 'random_walk' | 'gbm' | 'calibrated_gbm';
   forumEnabled?: boolean;
+  /** Override governance rule (e.g. for counterfactual experiments) */
+  governanceRule?: string;
+  /** Override governance rule config */
+  governanceConfig?: import('../utils/governance-plugins').GovernanceRuleConfig;
+  /** Use real governance rules from governance-mapping.ts */
+  useRealGovernance?: boolean;
 }
 
 export interface ConfidenceInterval {
@@ -82,6 +88,17 @@ export class BacktestRunner {
         forum_influence_weight: 0.3,
         learning_enabled: false,  // Disable Q-learning for calibration validation
       };
+
+      // Pass governance overrides if specified
+      if (config.governanceRule) {
+        simConfig.governance_rule = config.governanceRule;
+      }
+      if (config.governanceConfig) {
+        simConfig.governance_config = config.governanceConfig;
+      }
+      if (config.useRealGovernance !== undefined) {
+        simConfig.calibration_use_real_governance = config.useRealGovernance;
+      }
 
       // Apply calibrated settings
       const calibratedSettings = CalibrationLoader.toSettings(profile);

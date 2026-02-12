@@ -265,7 +265,7 @@ describe('StateDiscretizer', () => {
     it('should create governance state without proposal', () => {
       // 3000/10000 = 0.3 = low, 5000/10000 = 0.5 = adequate
       const state = StateDiscretizer.createGovernanceState(null, 0.3, 3000, 10000);
-      expect(state).toBe('none|medium|low');
+      expect(state).toBe('none|medium|low|default');
     });
 
     it('should create governance state with proposal', () => {

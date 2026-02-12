@@ -171,3 +171,13 @@ export {
   type BacktestConfig,
   type BacktestResult,
 } from './backtest-runner';
+
+// Counterfactual Runner (Governance Experiments)
+export {
+  CounterfactualRunner,
+  extractEmergentMetrics,
+  type CounterfactualConfig,
+  type CounterfactualResult,
+  type EmergentMetrics,
+  type CounterfactualArm,
+} from './counterfactual-runner';

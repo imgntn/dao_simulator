@@ -383,20 +383,51 @@ export class StateDiscretizer {
 
   /**
    * Create a state key for governance agents
-   * Combines proposal phase, participation, and treasury health
+   * Combines proposal phase, participation, treasury health, and governance rule category
    */
   static createGovernanceState(
     proposal: Proposal | null,
     participationRate: number,
     treasuryBalance: number,
-    targetReserve?: number
+    targetReserve?: number,
+    governanceRuleName?: string
   ): string {
     const phase = proposal ? this.discretizeProposalPhase(proposal) : 'none';
+    const ruleCategory = governanceRuleName
+      ? this.discretizeGovernanceRule(governanceRuleName)
+      : 'default';
     return this.combineState(
       phase,
       this.discretizeParticipation(participationRate),
-      this.discretizeTreasury(treasuryBalance, undefined, targetReserve)
+      this.discretizeTreasury(treasuryBalance, undefined, targetReserve),
+      ruleCategory
     );
+  }
+
+  /**
+   * Bucket 15 governance rules into ~5 behavioral categories.
+   * This keeps the Q-table manageable while still distinguishing
+   * meaningfully different governance mechanics.
+   */
+  static discretizeGovernanceRule(ruleName: string): string {
+    const categories: Record<string, string> = {
+      majority: 'simple',
+      quorum: 'simple',
+      supermajority: 'simple',
+      tokenquorum: 'weighted',
+      reputationquorum: 'weighted',
+      quadratic: 'egalitarian',
+      conviction: 'egalitarian',
+      bicameral: 'multi_body',
+      dualgovernance: 'multi_body',
+      securitycouncil: 'multi_body',
+      categoryquorum: 'category',
+      approvalvoting: 'approval',
+      timedecay: 'temporal',
+      optimistic: 'temporal',
+      holographic: 'boosted',
+    };
+    return categories[ruleName] || 'unknown';
   }
 
   /**

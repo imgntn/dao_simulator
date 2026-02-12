@@ -599,6 +599,25 @@ export class DAOMember implements Agent {
         belief += this.model.forumSimulation.getVotingBias(proposal.uniqueId);
       }
 
+      // Governance-rule-aware belief adjustments
+      const ruleName = this.model?.dao?.governanceRuleName || 'majority';
+      switch (ruleName) {
+        case 'quadratic':
+          // Under quadratic voting, small holders have more relative power
+          // Increases willingness to vote when belief is moderate
+          belief += 0.05;
+          break;
+        case 'conviction':
+          // Conviction voting rewards sustained support — slight yes bias
+          belief += 0.03;
+          break;
+        case 'optimistic':
+          // Optimistic governance: proposals pass unless vetoed — yes bias
+          belief += 0.1;
+          break;
+        // bicameral, dualgovernance, etc.: no special base adjustment
+      }
+
       // Add personal optimism bias. Calibrated agents use a stronger factor
       // to match the historical approval rate (e.g. 97% for Aave).
       // Without calibration, optimism adds only mild noise (±5%).

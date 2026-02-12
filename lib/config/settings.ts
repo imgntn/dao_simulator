@@ -135,6 +135,8 @@ export interface SimulationSettings {
   calibration_dao_id?: string;
   /** When true, replay exact historical event sequence; when false (default), use statistical matching (same distributions, randomized timing) */
   calibration_strict_replay?: boolean;
+  /** When true, use DAO's real governance rule (from governance-mapping.ts) instead of majority+optimism hack */
+  calibration_use_real_governance: boolean;
 }
 
 /**
@@ -249,6 +251,7 @@ export const defaultSettings: SimulationSettings = {
   // Calibration defaults
   calibration_dao_id: undefined,
   calibration_strict_replay: false,
+  calibration_use_real_governance: false,
 };
 
 /**

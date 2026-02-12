@@ -111,7 +111,10 @@ export class GovernanceWhale extends DAOMember {
     const stakeState = stakeRatio < 0.2 ? 'low' :
                        stakeRatio < 0.5 ? 'moderate' : 'high';
 
-    return StateDiscretizer.combineState(powerState, opportunityState, stakeState);
+    const ruleCategory = this.model.dao
+      ? StateDiscretizer.discretizeGovernanceRule(this.model.dao.governanceRuleName)
+      : 'default';
+    return StateDiscretizer.combineState(powerState, opportunityState, stakeState, ruleCategory);
   }
 
   /**

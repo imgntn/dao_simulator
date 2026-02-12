@@ -14,6 +14,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { BacktestRunner, type BacktestResult } from '../lib/research/backtest-runner';
 import { CalibrationLoader } from '../lib/digital-twins/calibration-loader';
+import { getGovernanceMapping } from '../lib/digital-twins/governance-mapping';
 
 // =============================================================================
 // CONFIG
@@ -95,6 +96,7 @@ async function main() {
   const results: Record<string, BacktestResult> = {};
   const summary: Array<{
     dao_id: string;
+    governance_rule: string;
     overall_score: number;
     ci95: string;
     proposal_freq_error: number;
@@ -126,8 +128,10 @@ async function main() {
 
       const avg = result.averageReport;
       const ci = result.confidenceIntervals.overall_score;
+      const mapping = getGovernanceMapping(daoId);
       summary.push({
         dao_id: daoId,
+        governance_rule: mapping?.ruleName || 'majority',
         overall_score: avg.overall_score,
         ci95: `${ci.ci95Lower.toFixed(3)}-${ci.ci95Upper.toFixed(3)}`,
         proposal_freq_error: avg.metrics.proposal_frequency_error,
@@ -176,6 +180,7 @@ async function main() {
   // Table header
   console.log(
     'DAO'.padEnd(13) +
+    'Rule'.padEnd(16) +
     'Score'.padEnd(7) +
     '95% CI'.padEnd(14) +
     'PropFrq'.padEnd(8) +
@@ -187,11 +192,12 @@ async function main() {
     'Best'.padEnd(7) +
     'Worst'
   );
-  console.log('-'.repeat(97));
+  console.log('-'.repeat(113));
 
   for (const row of summary.sort((a, b) => b.overall_score - a.overall_score)) {
     console.log(
       row.dao_id.padEnd(13) +
+      row.governance_rule.padEnd(16) +
       row.overall_score.toFixed(3).padEnd(7) +
       row.ci95.padEnd(14) +
       row.proposal_freq_error.toFixed(3).padEnd(8) +

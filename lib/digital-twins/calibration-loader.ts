@@ -9,6 +9,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type { SimulationSettings } from '../config/settings';
 import { logger } from '../utils/logger';
+import { getGovernanceMapping } from './governance-mapping';
 
 // =============================================================================
 // CALIBRATION PROFILE TYPES
@@ -243,6 +244,12 @@ export class CalibrationLoader {
     // With only ~2-3 voters per proposal, multi-stage temp_check adds noise
     // and bypasses the calibrated quorum in resolveBasicProposals().
     settings.proposal_temp_check_fraction = 0;
+
+    // Include governance rule mapping if available
+    const mapping = getGovernanceMapping(profile.dao_id);
+    if (mapping) {
+      settings.governance_rule = mapping.ruleName;
+    }
 
     return settings;
   }

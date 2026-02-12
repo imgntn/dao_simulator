@@ -1,0 +1,18 @@
+# Counterfactual Governance Experiment: Optimism
+#
+# Compares Optimism's bicameral governance (Token House + Citizens' House)
+# against alternative governance mechanisms.
+#
+# Usage:
+#   npx tsx scripts/run-counterfactual.ts --config experiments/counterfactual/optimism-governance.yaml
+
+name: "Optimism Governance Rule Comparison"
+dao_id: optimism
+episodes: 30
+steps_per_episode: 720
+seed: 42
+alternatives:
+  - quadratic
+  - conviction
+  - majority
+  - tokenquorum
