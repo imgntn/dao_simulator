@@ -1,0 +1,88 @@
+{
+  "dao_id": "nouns",
+  "voting": {
+    "avg_participation_rate": 0.0132,
+    "participation_distribution": [
+      0.9956,
+      0.0,
+      0.0,
+      0.0015,
+      0.0,
+      0.0,
+      0.0015,
+      0.0,
+      0.0,
+      0.0015
+    ],
+    "avg_votes_per_proposal": 37.81,
+    "voter_concentration": 0.9796,
+    "approval_rate": 0.7262,
+    "avg_for_percentage": 0.6993,
+    "quorum_hit_rate": 0.7988,
+    "delegation_rate": 0.0
+  },
+  "proposals": {
+    "avg_proposals_per_month": 18.4,
+    "proposal_types": {
+      "governance": 0.8516,
+      "onboarding": 0.0596,
+      "funding": 0.0596,
+      "parameter_change": 0.0291
+    },
+    "avg_voting_period_days": 4.32,
+    "avg_choices_per_proposal": 3.5,
+    "pass_rate": 0.4538,
+    "monthly_cadence": [
+      14,
+      20,
+      13,
+      19,
+      17,
+      10,
+      20,
+      17,
+      7,
+      9,
+      23,
+      6
+    ]
+  },
+  "market": null,
+  "forum": null,
+  "voter_clusters": [
+    {
+      "label": "whale",
+      "share": 0.0063,
+      "avg_voting_power": 3138.1429,
+      "participation_rate": 0.3061,
+      "alignment_with_majority": 0.7
+    },
+    {
+      "label": "active_delegate",
+      "share": 0.0015,
+      "avg_voting_power": 535.4,
+      "participation_rate": 0.5623,
+      "alignment_with_majority": 0.7
+    },
+    {
+      "label": "regular_voter",
+      "share": 0.0252,
+      "avg_voting_power": 257.381,
+      "participation_rate": 0.2162,
+      "alignment_with_majority": 0.7
+    },
+    {
+      "label": "passive_holder",
+      "share": 0.967,
+      "avg_voting_power": 3.9966,
+      "participation_rate": 0.0043,
+      "alignment_with_majority": 0.7
+    }
+  ],
+  "protocol": {
+    "avg_tvl": 0,
+    "tvl_trend": "stable",
+    "avg_daily_fees": 0,
+    "avg_daily_revenue": 0
+  }
+}

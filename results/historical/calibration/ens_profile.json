@@ -1,0 +1,158 @@
+{
+  "dao_id": "ens",
+  "voting": {
+    "avg_participation_rate": 0.124,
+    "participation_distribution": [
+      0.6154,
+      0.1346,
+      0.1154,
+      0.0769,
+      0.0577,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "avg_votes_per_proposal": 326.71,
+    "voter_concentration": 0.9919,
+    "approval_rate": 0.9292,
+    "avg_for_percentage": 0.65,
+    "quorum_hit_rate": 1.0,
+    "delegation_rate": 0.0
+  },
+  "proposals": {
+    "avg_proposals_per_month": 2.15,
+    "proposal_types": {
+      "governance": 0.5842,
+      "funding": 0.3168,
+      "temperature_check": 0.0099,
+      "parameter_change": 0.0792,
+      "onboarding": 0.0099
+    },
+    "avg_voting_period_days": 5.68,
+    "avg_choices_per_proposal": 4.81,
+    "pass_rate": 0.9307,
+    "monthly_cadence": [
+      3,
+      2,
+      3,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      1,
+      3,
+      1
+    ]
+  },
+  "market": {
+    "avg_daily_return": -0.000567,
+    "daily_volatility": 0.053614,
+    "avg_price_usd": 17.3351,
+    "price_range": [
+      5.432,
+      47.62
+    ],
+    "avg_market_cap": 1733511707.75,
+    "avg_daily_volume": 2170436.59,
+    "correlation_to_eth": 0.5,
+    "drawdown_events": [
+      {
+        "start_idx": 50,
+        "end_idx": 374,
+        "magnitude": 0.6189
+      },
+      {
+        "start_idx": 375,
+        "end_idx": 429,
+        "magnitude": 0.3187
+      },
+      {
+        "start_idx": 434,
+        "end_idx": 517,
+        "magnitude": 0.5182
+      },
+      {
+        "start_idx": 517,
+        "end_idx": 546,
+        "magnitude": 0.3176
+      },
+      {
+        "start_idx": 547,
+        "end_idx": 696,
+        "magnitude": 0.532
+      },
+      {
+        "start_idx": 714,
+        "end_idx": 1135,
+        "magnitude": 0.8859
+      }
+    ]
+  },
+  "forum": {
+    "avg_topics_per_month": 3.11,
+    "avg_posts_per_topic": 9.61,
+    "avg_views_per_topic": 334.43,
+    "top_categories": {
+      "general": 0.6429,
+      "proposal_discussion": 0.1071,
+      "funding": 0.1071,
+      "technical": 0.0714,
+      "governance": 0.0714
+    },
+    "avg_post_length_chars": 1653,
+    "reply_rate": 0.4222,
+    "sentiment_keywords": {
+      "support": 118,
+      "agree": 28,
+      "great": 14,
+      "approve": 31,
+      "yes": 13,
+      "oppose": 1,
+      "disagree": 4,
+      "concern": 10,
+      "risk": 37,
+      "against": 8,
+      "no": 427
+    }
+  },
+  "voter_clusters": [
+    {
+      "label": "whale",
+      "share": 0.0076,
+      "avg_voting_power": 3508671.8902,
+      "participation_rate": 0.7627,
+      "alignment_with_majority": 0.7
+    },
+    {
+      "label": "active_delegate",
+      "share": 0.0216,
+      "avg_voting_power": 43180.4361,
+      "participation_rate": 0.7031,
+      "alignment_with_majority": 0.7
+    },
+    {
+      "label": "regular_voter",
+      "share": 0.3193,
+      "avg_voting_power": 6961.152,
+      "participation_rate": 0.2255,
+      "alignment_with_majority": 0.7
+    },
+    {
+      "label": "passive_holder",
+      "share": 0.6515,
+      "avg_voting_power": 1622.314,
+      "participation_rate": 0.0514,
+      "alignment_with_majority": 0.7
+    }
+  ],
+  "protocol": {
+    "avg_tvl": 0,
+    "tvl_trend": "stable",
+    "avg_daily_fees": 0,
+    "avg_daily_revenue": 0
+  }
+}

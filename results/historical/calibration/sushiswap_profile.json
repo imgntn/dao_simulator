@@ -1,0 +1,116 @@
+{
+  "dao_id": "sushiswap",
+  "voting": {
+    "avg_participation_rate": 0.0181,
+    "participation_distribution": [
+      0.9911,
+      0.0089,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "avg_votes_per_proposal": 212.74,
+    "voter_concentration": 0.9953,
+    "approval_rate": 1.0,
+    "avg_for_percentage": 0.9079,
+    "quorum_hit_rate": 1.0,
+    "delegation_rate": 0.0
+  },
+  "proposals": {
+    "avg_proposals_per_month": 6.79,
+    "proposal_types": {
+      "onboarding": 0.0909,
+      "governance": 0.8182,
+      "parameter_change": 0.0087,
+      "funding": 0.0823
+    },
+    "avg_voting_period_days": 4.17,
+    "avg_choices_per_proposal": 2.87,
+    "pass_rate": 1.0,
+    "monthly_cadence": [
+      2,
+      2,
+      1,
+      2,
+      1,
+      1,
+      2,
+      5,
+      1,
+      2,
+      2,
+      2
+    ]
+  },
+  "market": {
+    "avg_daily_return": -0.001891,
+    "daily_volatility": 0.073488,
+    "avg_price_usd": 0.2998,
+    "price_range": [
+      0.0,
+      22.83
+    ],
+    "avg_market_cap": 86232603.21,
+    "avg_daily_volume": 952657.93,
+    "correlation_to_eth": 0.5,
+    "drawdown_events": [
+      {
+        "start_idx": 18505,
+        "end_idx": 18655,
+        "magnitude": 0.9435
+      },
+      {
+        "start_idx": 18677,
+        "end_idx": 18686,
+        "magnitude": 0.2188
+      },
+      {
+        "start_idx": 18698,
+        "end_idx": 20495,
+        "magnitude": 0.9917
+      }
+    ]
+  },
+  "forum": null,
+  "voter_clusters": [
+    {
+      "label": "whale",
+      "share": 0.0019,
+      "avg_voting_power": 25584711.919,
+      "participation_rate": 0.1585,
+      "alignment_with_majority": 0.7
+    },
+    {
+      "label": "active_delegate",
+      "share": 0.0057,
+      "avg_voting_power": 80371.738,
+      "participation_rate": 0.5976,
+      "alignment_with_majority": 0.7
+    },
+    {
+      "label": "regular_voter",
+      "share": 0.153,
+      "avg_voting_power": 14537.7987,
+      "participation_rate": 0.1853,
+      "alignment_with_majority": 0.7
+    },
+    {
+      "label": "passive_holder",
+      "share": 0.8394,
+      "avg_voting_power": 14401.2039,
+      "participation_rate": 0.0289,
+      "alignment_with_majority": 0.7
+    }
+  ],
+  "protocol": {
+    "avg_tvl": 1214640508.07,
+    "tvl_trend": "declining",
+    "avg_daily_fees": 0,
+    "avg_daily_revenue": 0
+  }
+}

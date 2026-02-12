@@ -1,0 +1,135 @@
+{
+  "dao_id": "lido",
+  "voting": {
+    "avg_participation_rate": 0.0398,
+    "participation_distribution": [
+      0.9108,
+      0.0446,
+      0.0074,
+      0.0372,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "avg_votes_per_proposal": 186.76,
+    "voter_concentration": 0.9953,
+    "approval_rate": 0.5,
+    "avg_for_percentage": 0.65,
+    "quorum_hit_rate": 0.55,
+    "delegation_rate": 0.0
+  },
+  "proposals": {
+    "avg_proposals_per_month": 7.74,
+    "proposal_types": {
+      "parameter_change": 0.048,
+      "governance": 0.9004,
+      "funding": 0.0406,
+      "onboarding": 0.0111
+    },
+    "avg_voting_period_days": 7.76,
+    "avg_choices_per_proposal": 2.18,
+    "pass_rate": 0.9963,
+    "monthly_cadence": [
+      5,
+      7,
+      4,
+      3,
+      3,
+      2,
+      4,
+      4,
+      2,
+      4,
+      2,
+      1
+    ]
+  },
+  "market": {
+    "avg_daily_return": -0.001013,
+    "daily_volatility": 0.058769,
+    "avg_price_usd": 1.6684,
+    "price_range": [
+      0.3225,
+      3.789
+    ],
+    "avg_market_cap": 1668440404.93,
+    "avg_daily_volume": 5365516.39,
+    "correlation_to_eth": 0.5,
+    "drawdown_events": [
+      {
+        "start_idx": 57,
+        "end_idx": 369,
+        "magnitude": 0.556
+      },
+      {
+        "start_idx": 374,
+        "end_idx": 1135,
+        "magnitude": 0.9149
+      }
+    ]
+  },
+  "forum": {
+    "avg_topics_per_month": 3.62,
+    "avg_posts_per_topic": 13.17,
+    "avg_views_per_topic": 486.45,
+    "top_categories": {
+      "general": 0.8276,
+      "funding": 0.1034,
+      "governance": 0.069
+    },
+    "avg_post_length_chars": 1475,
+    "reply_rate": 0.301,
+    "sentiment_keywords": {
+      "support": 115,
+      "agree": 24,
+      "great": 32,
+      "excellent": 3,
+      "approve": 8,
+      "yes": 6,
+      "disagree": 3,
+      "concern": 13,
+      "risk": 99,
+      "against": 4,
+      "no": 717
+    }
+  },
+  "voter_clusters": [
+    {
+      "label": "whale",
+      "share": 0.0043,
+      "avg_voting_power": 293231527.8317,
+      "participation_rate": 0.4485,
+      "alignment_with_majority": 0.7
+    },
+    {
+      "label": "active_delegate",
+      "share": 0.0089,
+      "avg_voting_power": 3509248.4059,
+      "participation_rate": 0.6203,
+      "alignment_with_majority": 0.7
+    },
+    {
+      "label": "regular_voter",
+      "share": 0.224,
+      "avg_voting_power": 649948.3803,
+      "participation_rate": 0.2051,
+      "alignment_with_majority": 0.7
+    },
+    {
+      "label": "passive_holder",
+      "share": 0.7628,
+      "avg_voting_power": 91142.1428,
+      "participation_rate": 0.0347,
+      "alignment_with_majority": 0.7
+    }
+  ],
+  "protocol": {
+    "avg_tvl": 23562836152.11,
+    "tvl_trend": "growing",
+    "avg_daily_fees": 0,
+    "avg_daily_revenue": 0
+  }
+}

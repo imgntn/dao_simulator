@@ -1,0 +1,71 @@
+{
+  "dao_id": "curve",
+  "voting": {
+    "avg_participation_rate": 0.08,
+    "participation_distribution": [
+      0.80, 0.10, 0.05, 0.03, 0.01, 0.005, 0.003, 0.001, 0.001, 0.0
+    ],
+    "avg_votes_per_proposal": 150,
+    "voter_concentration": 0.975,
+    "approval_rate": 0.85,
+    "avg_for_percentage": 0.82,
+    "quorum_hit_rate": 0.70,
+    "delegation_rate": 0.0
+  },
+  "proposals": {
+    "avg_proposals_per_month": 3.5,
+    "proposal_types": {
+      "governance": 0.40,
+      "parameter_change": 0.35,
+      "funding": 0.15,
+      "technical": 0.10
+    },
+    "avg_voting_period_days": 7.0,
+    "avg_choices_per_proposal": 3.0,
+    "pass_rate": 0.85,
+    "monthly_cadence": [4, 3, 5, 3, 4, 2, 3, 4, 3, 5, 3, 3]
+  },
+  "market": {
+    "avg_daily_return": -0.000656,
+    "daily_volatility": 0.05401,
+    "avg_price_usd": 0.6012,
+    "price_range": [0.2091, 1.267],
+    "avg_market_cap": 1413387907.7,
+    "avg_daily_volume": 6743786.21,
+    "correlation_to_eth": 0.5,
+    "drawdown_events": [
+      { "start_idx": 50, "end_idx": 1135, "magnitude": 0.835 }
+    ]
+  },
+  "forum": {
+    "avg_topics_per_month": 12.71,
+    "avg_posts_per_topic": 2.55,
+    "avg_views_per_topic": 354.17,
+    "top_categories": {
+      "general": 0.927,
+      "funding": 0.0337,
+      "proposal_discussion": 0.0225,
+      "governance": 0.0112,
+      "technical": 0.0056
+    },
+    "avg_post_length_chars": 2257,
+    "reply_rate": 0.1487,
+    "sentiment_keywords": {
+      "support": 279, "agree": 39, "great": 46, "excellent": 2,
+      "approve": 33, "yes": 23, "oppose": 7, "disagree": 1,
+      "concern": 26, "risk": 315, "against": 81, "no": 1267
+    }
+  },
+  "voter_clusters": [
+    { "label": "whale", "share": 0.005, "avg_voting_power": 1e24, "participation_rate": 0.60, "alignment_with_majority": 0.75 },
+    { "label": "active_delegate", "share": 0.02, "avg_voting_power": 1e22, "participation_rate": 0.50, "alignment_with_majority": 0.70 },
+    { "label": "regular_voter", "share": 0.15, "avg_voting_power": 1e20, "participation_rate": 0.20, "alignment_with_majority": 0.65 },
+    { "label": "passive_holder", "share": 0.825, "avg_voting_power": 1e18, "participation_rate": 0.015, "alignment_with_majority": 0.60 }
+  ],
+  "protocol": {
+    "avg_tvl": 2558854063.22,
+    "tvl_trend": "declining",
+    "avg_daily_fees": 0,
+    "avg_daily_revenue": 0
+  }
+}

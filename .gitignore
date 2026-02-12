@@ -39,6 +39,9 @@ next-env.d.ts
 
 # experiment results
 /results/
+!/results/historical/
+/results/historical/*
+!/results/historical/calibration/
 
 # playwright
 /test-results/
