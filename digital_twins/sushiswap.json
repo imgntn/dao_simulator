@@ -1,0 +1,110 @@
+{
+  "schema_version": "0.2",
+  "last_verified_utc": "2026-02-12T08:35:39Z",
+  "dao": {
+    "id": "sushiswap",
+    "name": "Sushiswap",
+    "category": [
+      "DEX"
+    ],
+    "primary_chain": "Ethereum",
+    "governance_token": {
+      "symbol": "SUSHI",
+      "type": "ERC-20",
+      "voting_power_model": "token_weighted"
+    },
+    "governance_stack": {
+      "discussion_forum": "https://forum.sushiswap.org",
+      "offchain_voting": {
+        "platform": "Snapshot",
+        "typical_poll_duration_days": 4
+      },
+      "onchain_voting": {
+        "framework": "Governor",
+        "voting_period_days": 4
+      },
+      "execution": {
+        "timelock": {
+          "min_delay_days": 2
+        }
+      }
+    },
+    "treasury": {
+      "treasury_controller": "Governor + Timelock",
+      "spending_mechanism": "proposal_based",
+      "initial_tvl_usd": 1214640508.07
+    },
+    "membership": {
+      "member_types": [
+        {
+          "type": "token_holder",
+          "who": "Token holders",
+          "rights": [
+            "vote",
+            "propose",
+            "delegate"
+          ]
+        },
+        {
+          "type": "delegate",
+          "who": "Active delegates",
+          "rights": [
+            "vote",
+            "propose",
+            "delegate"
+          ]
+        }
+      ]
+    },
+    "proposal_process": {
+      "stages": [
+        {
+          "stage": "RFC / Forum Discussion",
+          "platform": "Forum",
+          "min_duration_days": 5
+        },
+        {
+          "stage": "Temperature Check (Snapshot)",
+          "platform": "Snapshot",
+          "duration_days": 4
+        },
+        {
+          "stage": "On-chain Voting",
+          "platform": "Governor",
+          "voting_period_days": 4
+        },
+        {
+          "stage": "Timelock + Execution",
+          "timelock_days": 2
+        }
+      ]
+    },
+    "proposal_activity": {
+      "activity_level": "medium",
+      "cadence_pattern": "continuous"
+    },
+    "security_controls": {
+      "timelock": true,
+      "timelock_delay_days": 2
+    },
+    "simulation_parameters": {
+      "governance": {
+        "vote_weight": "token_weighted",
+        "voting_period_days": 4,
+        "timelock_delay_days": 2,
+        "quorum_pct_votable": 4
+      },
+      "market": {
+        "initial_price": 0.2998,
+        "daily_volatility": 0.073488,
+        "avg_daily_return": -0.001891
+      }
+    },
+    "sources": [
+      {
+        "title": "Auto-generated from historical data",
+        "url": "https://github.com/sushiswap"
+      }
+    ]
+  }
+}

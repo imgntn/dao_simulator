@@ -1,7 +1,7 @@
 {
   "schema_version": "dao_digital_twin_v0.2",
-  "generated_utc": "2026-02-11T09:47:46Z",
-  "count": 11,
+  "generated_utc": "2026-02-12T08:35:39Z",
+  "count": 14,
   "daos": [
     {
       "id": "uniswap",
@@ -102,6 +102,30 @@
         "DeFi"
       ],
       "file": "nouns.json"
+    },
+    {
+      "id": "balancer",
+      "name": "Balancer",
+      "category": [
+        "DeFi"
+      ],
+      "file": "balancer.json"
+    },
+    {
+      "id": "dydx",
+      "name": "Dydx",
+      "category": [
+        "DeFi"
+      ],
+      "file": "dydx.json"
+    },
+    {
+      "id": "sushiswap",
+      "name": "Sushiswap",
+      "category": [
+        "DEX"
+      ],
+      "file": "sushiswap.json"
     }
   ]
 }

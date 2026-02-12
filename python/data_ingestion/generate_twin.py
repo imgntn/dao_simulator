@@ -130,7 +130,7 @@ def generate_twin_config(dao_id, dao_name, token_symbol, profile, chain="Ethereu
 
     config = {
         "schema_version": "0.2",
-        "last_verified_utc": datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "last_verified_utc": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "dao": {
             "id": dao_id,
             "name": dao_name,
@@ -240,7 +240,7 @@ def update_index(dao_id, dao_name, categories, filename):
     else:
         index = {
             "schema_version": "0.2",
-            "generated_utc": datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "generated_utc": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "count": 0,
             "daos": []
         }
@@ -262,7 +262,7 @@ def update_index(dao_id, dao_name, categories, filename):
         })
 
     index["count"] = len(index["daos"])
-    index["generated_utc"] = datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    index["generated_utc"] = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     with open(index_path, "w") as f:
         json.dump(index, f, indent=2)

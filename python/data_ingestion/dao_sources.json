@@ -145,6 +145,42 @@
       "tally": { "organization_slug": "nounsdao" },
       "needs_verify": false,
       "notes": "NFT-based DAO (ERC-721, no fungible token). Each Noun = 1 vote. No standard price feeds. discourse.nouns.wtf is offline (no DNS as of 2026-02)."
+    },
+    {
+      "id": "balancer",
+      "coingecko_id": "balancer",
+      "cryptocompare_symbol": "BAL",
+      "coincap_id": "balancer",
+      "defillama": { "type": "protocol", "slug": "balancer" },
+      "snapshot_spaces": ["balancer.eth"],
+      "discourse_base_url": "https://forum.balancer.fi",
+      "tally": null,
+      "needs_verify": false,
+      "notes": "Uses Snapshot for off-chain governance (no on-chain Governor/Tally). veBAL gauge voting for liquidity incentives."
+    },
+    {
+      "id": "dydx",
+      "coingecko_id": "dydx-chain",
+      "cryptocompare_symbol": "DYDX",
+      "coincap_id": "dydx",
+      "defillama": { "type": "protocol", "slug": "dydx-v4" },
+      "snapshot_spaces": ["dydxgov.eth"],
+      "discourse_base_url": "https://dydx.forum",
+      "tally": null,
+      "needs_verify": false,
+      "notes": "Migrated from Ethereum to Cosmos appchain (dYdX Chain) in 2023. Snapshot used for off-chain DRC votes; on-chain governance is native Cosmos. Tally v3 Governor was sunset Oct 2024."
+    },
+    {
+      "id": "sushiswap",
+      "coingecko_id": "sushi",
+      "cryptocompare_symbol": "SUSHI",
+      "coincap_id": "sushi",
+      "defillama": { "type": "protocol", "slug": "sushiswap" },
+      "snapshot_spaces": ["sushigov.eth"],
+      "discourse_base_url": "https://forum.sushi.com",
+      "tally": null,
+      "needs_verify": false,
+      "notes": "Snapshot governance executed via multisig. Fork of Uniswap with different governance dynamics. Interesting comparison pair."
     }
   ]
 }
