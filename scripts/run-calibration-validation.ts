@@ -149,6 +149,15 @@ async function main() {
         `[${elapsed}s]`
       );
 
+      // Log sim vs hist details from the last episode for diagnostics
+      const lastReport = result.reports[result.reports.length - 1];
+      if (lastReport?.details && Object.keys(lastReport.details).length > 0) {
+        console.log(`[${daoId}] Diagnostics (last episode):`);
+        for (const [key, val] of Object.entries(lastReport.details)) {
+          console.log(`  ${key}: ${typeof val === 'number' ? val.toFixed(4) : val}`);
+        }
+      }
+
       // Write per-DAO result
       const daoOutputPath = path.join(config.outputDir, `${daoId}_backtest.json`);
       fs.writeFileSync(daoOutputPath, JSON.stringify(result, null, 2));

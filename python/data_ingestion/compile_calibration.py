@@ -240,12 +240,46 @@ def compile_voting_profile(dao_id, data):
         else:
             approval_rate = tally_approval_rate
 
-    # Avg for percentage from tally votes
+    # Avg for percentage from tally votes (on-chain) or snapshot votes (off-chain)
     avg_for_pct = 0.65
     if not tally_votes.empty and "support" in tally_votes.columns:
         for_votes = tally_votes[tally_votes["support"] == "for"]
         if len(tally_votes) > 0:
             avg_for_pct = len(for_votes) / len(tally_votes)
+    elif not snap_votes.empty and "choice" in snap_votes.columns:
+        # For Snapshot-only DAOs, choice=1 is the first option (typically For/Yes).
+        # Only count binary proposals (2 choices) for clean for/against semantics.
+        if not snap_props.empty and "choices" in snap_props.columns:
+            binary_proposal_ids = snap_props[
+                snap_props["choices"].apply(
+                    lambda x: isinstance(x, str) and x.count('",') == 1
+                )
+            ]["proposal_id"]
+            binary_votes = snap_votes[snap_votes["proposal_id"].isin(binary_proposal_ids)]
+            if len(binary_votes) > 0:
+                # Choice column is string: either numeric '1','2' or JSON '{"1": 100}'.
+                # Convert to numeric first (handles '1','2'); for JSON, extract primary key.
+                numeric_choices = pd.to_numeric(binary_votes["choice"], errors="coerce")
+                is_for = numeric_choices == 1
+                # Handle JSON-formatted weighted choices (e.g. '{"1": 100, "2": 0}')
+                json_mask = numeric_choices.isna()
+                if json_mask.any():
+                    def _primary_choice(val):
+                        try:
+                            d = json.loads(str(val))
+                            if isinstance(d, dict) and d:
+                                return int(max(d.keys(), key=lambda k: float(d[k])))
+                        except Exception:
+                            pass
+                        return 0
+                    json_primary = binary_votes.loc[json_mask, "choice"].apply(_primary_choice)
+                    is_for = is_for.copy()
+                    is_for.loc[json_mask] = json_primary == 1
+                avg_for_pct = is_for.sum() / len(binary_votes)
+                logger.info(
+                    "%s: Computed avg_for_pct=%.3f from %d binary Snapshot votes (%d proposals)",
+                    dao_id, avg_for_pct, len(binary_votes), len(binary_proposal_ids),
+                )
 
     # Participation rate estimation
     # We approximate using unique voters / total unique voters across all proposals

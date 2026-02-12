@@ -47,8 +47,8 @@ export class RandomWalkOracle extends BasePriceOracle {
  * Geometric Brownian Motion Oracle - more realistic price model
  */
 export class GeometricBrownianOracle extends BasePriceOracle {
-  private drift: number;
-  private volatility: number;
+  protected drift: number;
+  protected volatility: number;
 
   constructor(drift: number = 0.01, volatility: number = 0.2) {
     super();
@@ -119,8 +119,18 @@ export class CalibratedGBMOracle extends GeometricBrownianOracle {
       this.setPrice(token, this.initialPrice);
     }
 
-    // Normal GBM update
-    super.updatePrice(token, step, volatilityOverride);
+    // Inline GBM update (avoids parent's Math.max(1,...) floor which breaks sub-$1 tokens)
+    const currentPrice = this.getPrice(token);
+    const dt = 1;
+    const vol = Number.isFinite(volatilityOverride) ? volatilityOverride! : this.volatility;
+    const u1 = random();
+    const u2 = random();
+    const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    const driftTerm = this.drift * dt;
+    const diffusionTerm = vol * Math.sqrt(dt) * z;
+    const priceFloor = Math.max(0.0001, this.initialPrice * 0.01);
+    const gbmPrice = Math.max(priceFloor, currentPrice * Math.exp(driftTerm + diffusionTerm));
+    this.setPrice(token, gbmPrice);
 
     // Mean-reversion: pull price back toward the historical average (Ornstein-Uhlenbeck style).
     // Without this, treasury selling pressure causes ~40% systematic downward bias.
