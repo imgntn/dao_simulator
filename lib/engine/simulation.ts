@@ -659,7 +659,7 @@ export class DAOSimulation extends Model {
     // so proposals still pass. If sometimes missed, set at participation level.
     const historicalQuorum = voting.quorum_hit_rate;
     const effectiveQuorum = historicalQuorum >= 0.95
-      ? Math.max(0.005, voting.avg_participation_rate * 0.8)
+      ? Math.max(0.005, voting.avg_participation_rate * 0.6)
       : voting.avg_participation_rate;
 
     // Apply rule-specific tuning
@@ -716,11 +716,25 @@ export class DAOSimulation extends Model {
     const voting = profile.voting;
 
     if (this.useRealGovernance) {
-      // With real governance, let agents vote based on natural behavior.
-      // Apply a mild optimism nudge from for_percentage but don't force it.
+      // With real governance, use pass_rate-aware optimism blending
+      // (mirrors legacy approach but preserves inter-agent spread)
       const forPct = Math.min(voting.avg_for_percentage, 1);
+      const passRate = profile.proposals.pass_rate;
+      let target: number;
+      if (passRate >= 0.8) {
+        // High pass rate DAOs: strong optimism push
+        target = 0.5 + (forPct - 0.5) * 0.85;
+      } else if (passRate >= 0.5) {
+        // Medium pass rate: blend toward neutral
+        const blend = Math.min(1.0, (passRate - 0.5) / 0.3);
+        target = 0.5 + (forPct - 0.5) * blend * 0.85;
+      } else {
+        // Low pass rate: slightly pessimistic
+        target = 0.48 + passRate * 0.04;
+      }
       for (const member of this.dao.members) {
-        member.optimism = 0.5 + (forPct - 0.5) * 0.3;
+        const spread = (member.optimism - 0.5) * 0.1;
+        member.optimism = Math.max(0, Math.min(1, target + spread));
       }
     } else {
       // Legacy: Bias agent voting toward historical pass rate.
