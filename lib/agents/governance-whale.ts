@@ -92,15 +92,15 @@ export class GovernanceWhale extends DAOMember {
   private getGovernanceState(): string {
     if (!this.model.dao) return 'low|few|low';
 
-    // Voting power state
-    const totalTokens = this.model.dao.members.reduce((sum, m) => sum + m.tokens, 0);
+    // Voting power state (use cached total to avoid O(n) reduce per whale per step)
+    const totalTokens = this.model.dao.getTotalTokens();
     const votingPowerRatio = totalTokens > 0 ? this.tokens / totalTokens : 0;
     const powerState = votingPowerRatio < 0.05 ? 'low' :
                        votingPowerRatio < 0.15 ? 'moderate' :
                        votingPowerRatio < 0.3 ? 'high' : 'dominant';
 
     // Proposal opportunity state
-    const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+    const openProposals = this.model.dao.getOpenProposals();
     const opportunityState = openProposals.length === 0 ? 'none' :
                              openProposals.length < 3 ? 'few' :
                              openProposals.length < 6 ? 'normal' : 'many';
@@ -139,7 +139,7 @@ export class GovernanceWhale extends DAOMember {
   private heuristicGovernanceAction(): WhaleAction {
     if (!this.model.dao) return 'hold';
 
-    const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+    const openProposals = this.model.dao.getOpenProposals();
 
     // Prioritize voting on important proposals
     const highStakes = openProposals.filter(p => (p.fundingGoal || 0) > 1000);
@@ -180,7 +180,7 @@ export class GovernanceWhale extends DAOMember {
     switch (action) {
       case 'vote_heavy': {
         // Vote on all open proposals with full weight
-        const openProposals = this.model.dao.proposals.filter(p => p.status === 'open');
+        const openProposals = this.model.dao.getOpenProposals();
         for (const proposal of openProposals) {
           if (!this.votes.has(proposal.uniqueId)) {
             this.voteOnRandomProposal();
@@ -212,9 +212,15 @@ export class GovernanceWhale extends DAOMember {
         break;
       }
       case 'create_proposal': {
-        if (this.model.dao) {
+        // Respect open proposal cap and calibrated mode to prevent proposal runaway
+        const canCreate = this.model.dao &&
+          !this.model.dao.calibratedProposals &&
+          this.model.dao.getOpenProposals().length < 5;
+        if (canCreate) {
           submitRandomProposal(this.model.dao, this);
           reward = 0.4;
+        } else {
+          reward = -0.1; // Discourage Q-learning from picking this when blocked
         }
         break;
       }

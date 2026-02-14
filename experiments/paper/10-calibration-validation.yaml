@@ -50,8 +50,8 @@ baseConfig:
     learning_enabled: false
 
 execution:
-  runsPerConfig: 5
-  stepsPerRun: 720
+  runsPerConfig: 1000
+  stepsPerRun: 1440
   seedStrategy: sequential
   baseSeed: 42
 
@@ -69,6 +69,9 @@ sweep:
     - maker_sky
     - curve
     - nouns
+    - balancer
+    - dydx
+    - sushiswap
 
 metrics:
   - name: Proposal Pass Rate

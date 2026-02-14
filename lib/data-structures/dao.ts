@@ -96,6 +96,10 @@ export class DAO {
   private _cachedOpenProposals: Proposal[] = [];
   private _cachedOpenProposalsStep: number = -1;
 
+  // OPTIMIZATION: Cache total tokens per step to avoid repeated reduce
+  private _cachedTotalTokens: number = 0;
+  private _cachedTotalTokensStep: number = -1;
+
   treasuryPolicy: TreasuryPolicyConfig = {
     enabled: false,
     targetReserve: 0,
@@ -220,6 +224,19 @@ export class DAO {
     this._cachedOpenProposals = this.proposals.filter(p => p.status === 'open');
     this._cachedOpenProposalsStep = this.currentStep;
     return this._cachedOpenProposals;
+  }
+
+  /**
+   * OPTIMIZATION: Get total tokens with per-step caching
+   * Avoids O(n) reduce on every GovernanceWhale's getGovernanceState call
+   */
+  getTotalTokens(): number {
+    if (this._cachedTotalTokensStep === this.currentStep) {
+      return this._cachedTotalTokens;
+    }
+    this._cachedTotalTokens = this.members.reduce((sum, m) => sum + m.tokens, 0);
+    this._cachedTotalTokensStep = this.currentStep;
+    return this._cachedTotalTokens;
   }
 
   /**

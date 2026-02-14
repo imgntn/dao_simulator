@@ -11,8 +11,8 @@ import { getGovernanceMapping } from '../lib/digital-twins/governance-mapping';
 async function main() {
   const runner = new BacktestRunner();
   const availableIds = CalibrationLoader.getAvailableIds();
-  const episodes = 3;
-  const stepsPerEpisode = 720;
+  const episodes = 10;
+  const stepsPerEpisode = 1440;
   const seed = 42;
 
   console.log('='.repeat(80));

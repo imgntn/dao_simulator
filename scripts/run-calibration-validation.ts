@@ -33,7 +33,7 @@ function parseArgs(): ValidationConfig {
   const config: ValidationConfig = {
     daoIds: [],
     episodes: 30,
-    stepsPerEpisode: 720, // 30 days
+    stepsPerEpisode: 1440, // 60 days
     seed: 42,
     outputDir: path.join(process.cwd(), 'results', 'calibration'),
   };
