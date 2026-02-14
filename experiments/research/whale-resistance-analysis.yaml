@@ -29,7 +29,7 @@ baseConfig:
         percentage: 10
       - archetype: developer
         percentage: 10
-      - archetype: whale
+      - archetype: investor
         percentage: 5
 sweep:
   grid:
@@ -44,7 +44,7 @@ sweep:
             percentage: 10
           - archetype: developer
             percentage: 10
-          - archetype: whale
+          - archetype: investor
             percentage: 10
         - - archetype: passive_holder
             percentage: 45
@@ -54,7 +54,7 @@ sweep:
             percentage: 10
           - archetype: developer
             percentage: 10
-          - archetype: whale
+          - archetype: investor
             percentage: 20
         - - archetype: passive_holder
             percentage: 32
@@ -64,7 +64,7 @@ sweep:
             percentage: 10
           - archetype: developer
             percentage: 10
-          - archetype: whale
+          - archetype: investor
             percentage: 33
         - - archetype: passive_holder
             percentage: 15
@@ -74,7 +74,7 @@ sweep:
             percentage: 10
           - archetype: developer
             percentage: 10
-          - archetype: whale
+          - archetype: investor
             percentage: 50
         - - archetype: passive_holder
             percentage: 3
@@ -84,7 +84,7 @@ sweep:
             percentage: 10
           - archetype: developer
             percentage: 10
-          - archetype: whale
+          - archetype: investor
             percentage: 67
     - parameter: governance_rule
       label: votingType

@@ -17,7 +17,7 @@ baseConfig:
         percentage: 20
       - archetype: delegate
         percentage: 20
-      - archetype: whale
+      - archetype: investor
         percentage: 10
 sweep:
   parameter: governance_rule

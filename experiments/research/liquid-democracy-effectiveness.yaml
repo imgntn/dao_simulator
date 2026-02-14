@@ -22,7 +22,7 @@ baseConfig:
         percentage: 20
       - archetype: governance_expert
         percentage: 15
-      - archetype: whale
+      - archetype: investor
         percentage: 5
 sweep:
   parameter: governance_rule

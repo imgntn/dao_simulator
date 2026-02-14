@@ -20,7 +20,7 @@ baseConfig:
         percentage: 10
       - archetype: developer
         percentage: 10
-      - archetype: whale
+      - archetype: investor
         percentage: 10
   overrides:
     governance_rule: majority

@@ -18,7 +18,7 @@ baseConfig:
     distribution:
       - archetype: active_voter
         percentage: 50
-      - archetype: whale
+      - archetype: investor
         percentage: 20
       - archetype: delegate
         percentage: 15

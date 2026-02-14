@@ -28,7 +28,7 @@ baseConfig:
         percentage: 20
       - archetype: governance_expert
         percentage: 12
-      - archetype: whale
+      - archetype: investor
         percentage: 8
       - archetype: developer
         percentage: 5

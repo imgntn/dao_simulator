@@ -43,7 +43,7 @@ profileRun('Academic Baseline', {
     { archetype: 'active_voter', percentage: 25 },
     { archetype: 'delegate', percentage: 20 },
     { archetype: 'staker', percentage: 5 },
-    { archetype: 'whale', percentage: 5 },
+    { archetype: 'investor', percentage: 5 },
     { archetype: 'governance_expert', percentage: 5 },
   ]
 }, {

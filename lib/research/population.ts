@@ -28,6 +28,11 @@ const ARCHETYPE_AGENT_MAP: Record<string, { agents: string[]; weights: number[] 
     agents: ['delegators', 'liquid_delegators', 'governance_experts'],
     weights: [0.4, 0.3, 0.3],
   },
+  investor: {
+    agents: ['investors', 'adaptive_investors'],
+    weights: [0.6, 0.4],
+  },
+  // Backwards-compatible alias (renamed to 'investor' for clarity)
   whale: {
     agents: ['investors', 'adaptive_investors'],
     weights: [0.6, 0.4],
