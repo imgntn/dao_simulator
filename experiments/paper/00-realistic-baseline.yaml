@@ -1,82 +1,49 @@
 name: Realistic Baseline
 description: >
-  Calibrated baseline matching empirical DAO data from DeepDAO/Messari.
-  Key differences from academic baseline:
-  - Lower quorum (2%) matching effective quorum in mature DAOs
-  - More investors/whales creating higher Gini coefficient
-  - Reduced voter apathy for committed core voters
-version: 1.0.0
+  Calibrated Compound digital twin baseline grounded in empirical on-chain
+  and forum data. Uses the calibration pipeline to derive voting activity,
+  proposal frequency, participation rates, oracle pricing, forum dynamics,
+  and governance tuning from the Compound calibration profile
+  (results/historical/calibration/compound_profile.json).
+version: 2.0.0
 author: DAO Simulator Research Framework
 tags:
   - paper
   - baseline
   - realistic
   - calibration
+  - digital-twin
+  - compound
 
 baseConfig:
   template: compound
   population:
     totalMembers: 200
-    # Realistic wealth concentration using GovernanceWhales (2000 tokens)
-    # who maintain their holdings for voting power (unlike Investors who spend)
     distribution:
-      - archetype: passive_holder     # 100 tokens each
+      - archetype: passive_holder
         percentage: 35
-      - archetype: active_voter       # 100 tokens each
+      - archetype: active_voter
         percentage: 20
-      - archetype: delegate           # 100 tokens each
+      - archetype: delegate
         percentage: 15
-      - archetype: governance_whale   # 2000 tokens - hold for voting power
+      - archetype: governance_whale
         percentage: 15
-      - archetype: staker             # 500 tokens each
+      - archetype: staker
         percentage: 10
-      - archetype: governance_expert  # 100 tokens each
+      - archetype: governance_expert
         percentage: 5
   overrides:
-    governance_rule: majority
-    governance_config:
-      # Lower quorum: matches effective quorum in mature DAOs
-      # Compound effective quorum ~2-4%, Uniswap ~1-2%
-      quorumPercentage: 0.02
-    # Higher base voting activity
-    voting_activity: 0.30
-    proposal_creation_probability: 0.004
-    proposal_duration_min_steps: 24
-    proposal_duration_max_steps: 96
-    treasury_stabilization_enabled: true
-    treasury_target_reserve: 10000
-    treasury_target_reserve_fraction: 0.6
-    treasury_buffer_fraction: 0.2
-    treasury_buffer_fill_rate: 0.5
-    treasury_emergency_topup_rate: 0.25
-    treasury_max_spend_fraction: 0.15
-    # Higher participation target
-    participation_target_rate: 0.15
-    participation_boost_strength: 0.6
-    participation_boost_decay: 0.1
-    participation_boost_max: 0.25
-    participation_inactivity_boost: 0.15
-    participation_reward_per_vote: 0.0
-    proposal_bond_fraction: 0.01
-    proposal_bond_min: 10
-    proposal_bond_max: 1000
-    proposal_inactivity_steps: 72
-    proposal_temp_check_fraction: 0.25
-    proposal_fast_track_min_steps: 6
-    proposal_fast_track_approval: 0.6
-    proposal_fast_track_quorum: 0.2
-    vote_power_cap_fraction: 0.15
-    vote_power_quadratic_threshold: 250
-    vote_power_velocity_window: 72
-    vote_power_velocity_penalty: 0.5
-    delegation_lock_steps: 48
+    calibration_dao_id: compound
+    oracle_type: calibrated_gbm
+    forum_enabled: true
+    learning_enabled: false
 
 execution:
-  runsPerConfig: 50
+  runsPerConfig: 1000
   stepsPerRun: 2000
   seedStrategy: sequential
   baseSeed: 42
-  workers: 4
+  workers: 8
 
 metrics:
   - name: Proposal Pass Rate

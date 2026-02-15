@@ -83,8 +83,8 @@ export const GOVERNANCE_MAPPING: Record<string, GovernanceMappingEntry> = {
   lido: {
     ruleName: 'dualgovernance',
     ruleConfig: {
-      vetoThreshold: 0.01,
-      rageQuitThresholdPercent: 0.1,
+      vetoThreshold: 0.005,
+      rageQuitThresholdPercent: 0.15,
     },
   },
   maker: {

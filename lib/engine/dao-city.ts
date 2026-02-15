@@ -706,7 +706,7 @@ export class DAOCity {
           const sim = this.simulations.get(daoId);
           if (sim) {
             proposal.setEligibleVoters(daoId, sim.dao.members.length);
-            const quorumThreshold = this.interDAOProposalConfig?.quorumThreshold ?? 0.5;
+            const quorumThreshold = this.interDAOProposalConfig?.quorumThreshold ?? 0.15;
             const approvalThreshold = this.interDAOProposalConfig?.approvalThreshold ?? 0.5;
             proposal.finalizeDAOVote(daoId, quorumThreshold, approvalThreshold);
           }

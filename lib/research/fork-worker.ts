@@ -768,18 +768,24 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
     }
 
     case 'collusion_threshold': {
-      // Min % of members needed to control >50% of votes
-      const sortedMembers = getMemberTokensSorted(members);
-      const totalSupply = getTotalVotingPower(members);
-      if (totalSupply === 0 || sortedMembers.length === 0) return 1;
+      // Apply sqrt compression to reflect diminishing marginal voting power
+      const adjustedMembers = members
+        .map(m => {
+          const raw = (m.tokens || 0) + (m.stakedTokens || 0);
+          return { id: m.uniqueId, power: Math.sqrt(Math.max(0, raw)) };
+        })
+        .sort((a, b) => b.power - a.power);
+
+      const totalPower = adjustedMembers.reduce((s, m) => s + m.power, 0);
+      if (totalPower === 0 || adjustedMembers.length === 0) return 1;
 
       let accumulated = 0;
       let count = 0;
 
-      for (const m of sortedMembers) {
-        accumulated += m.tokens;
+      for (const m of adjustedMembers) {
+        accumulated += m.power;
         count++;
-        if (accumulated > totalSupply / 2) {
+        if (accumulated > totalPower / 2) {
           break;
         }
       }

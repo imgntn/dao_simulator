@@ -629,8 +629,11 @@ export class DAOMember implements Agent {
       return random() < belief ? 'yes' : 'no';
     }
 
-    // Default: random decision
-    return random() < 0.5 ? 'yes' : 'no';
+    // String-based fallback (used for inter-DAO proposals): apply optimism bias
+    // instead of pure random 50/50. This ensures agent personality influences
+    // inter-DAO cooperation decisions rather than producing uniform ~22% success.
+    const optimismBias = 0.5 + (this.optimism - 0.5) * 0.6;
+    return random() < clamp(optimismBias) ? 'yes' : 'no';
   }
 
   // Cache for member lookup to avoid O(n) searches

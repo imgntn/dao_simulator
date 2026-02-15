@@ -44,7 +44,7 @@ baseConfig:
 sweep:
   grid:
     - parameter: proposal_temp_check_fraction
-      values: [0.0, 0.25, 0.5]
+      values: [0.05, 0.25, 0.5]
     - parameter: proposal_fast_track_min_steps
       values: [0, 6, 12]
 execution:

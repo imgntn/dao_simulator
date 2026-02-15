@@ -133,8 +133,8 @@ export class DAO {
   votingPowerPolicy: VotingPowerPolicyConfig = {
     capFraction: 0,
     quadraticThreshold: 0,
-    velocityWindow: 0,
-    velocityPenalty: 0,
+    velocityWindow: 72,
+    velocityPenalty: 0.5,
   };
   participationBoost: number = 0;
   treasuryBuffer: number = 0;

@@ -433,6 +433,11 @@ export class DAOSimulation extends Model {
         if (calibratedSettings.voting_activity !== undefined) {
           this.dao.votingActivity = calibratedSettings.voting_activity;
         }
+        // Apply temp_check_fraction from calibration (0 for calibrated sims — with
+        // only ~2-3 voters per proposal, multi-stage temp_check adds noise)
+        if (calibratedSettings.proposal_temp_check_fraction !== undefined) {
+          this.dao.proposalPolicy.tempCheckFraction = calibratedSettings.proposal_temp_check_fraction;
+        }
 
         // When using real governance, re-initialize the governance rule from the mapping
         // (unless user explicitly set a rule via governance_rule or governance_config)
@@ -448,10 +453,11 @@ export class DAOSimulation extends Model {
           }
         }
 
-        // Apply calibration-aware governance tuning (unless user explicitly set governance_config)
-        if (!config.governance_config) {
-          this.applyCalibrationGovernanceTuning(this.calibrationProfile);
-        }
+        // Apply calibration-aware governance tuning.
+        // Always apply when calibration_dao_id is set — the calibration pipeline
+        // overrides governance parameters (quorum=0, optimism bias) to match
+        // historical DAO behavior at simulation scale.
+        this.applyCalibrationGovernanceTuning(this.calibrationProfile);
 
         // Calibrate participation policy to match historical activity level
         // Without this, the default targetRate (25%) overwhelms low votingActivity values (3%)
@@ -598,7 +604,6 @@ export class DAOSimulation extends Model {
 
     // Legacy path: quorum=0, optimism-hacked pass rate
     const voting = profile.voting;
-    const rule = this.governanceRule as unknown as GovernanceRuleQuorumConfig;
 
     // Validate input ranges
     if (voting.avg_participation_rate > 1) {
@@ -614,27 +619,21 @@ export class DAOSimulation extends Model {
     // quorum unrealistic. The MajorityRule just checks votesFor > votesAgainst.
     // Pass/fail rate is then governed by the calibrated voting probabilities and
     // optimism bias, not by an artificial quorum threshold.
-    rule.quorumPercentage = 0;
+    //
+    // NOTE: We must reconstruct the governance rule here — GovernanceRule subclasses
+    // store quorumPercentage as a private field, so setting it via type cast only
+    // creates a new public property that the class never reads.
+    const zeroQuorumRule = getRule(this.governanceRuleName, { quorumPercentage: 0, threshold: 0 });
+    if (zeroQuorumRule) {
+      this.governanceRule = zeroQuorumRule;
+    }
 
-    // Disable inactivity timeout. With calibrated voting probabilities, all agents
-    // consider each proposal in the first few steps. After that, the proposal has
-    // no new activity for ~70 steps — and the 72-step inactivity timeout would expire
-    // proposals WITH valid votes before the voting period ends. Setting to 0 lets
-    // proposals run their full voting period.
+    // Disable inactivity timeout for calibrated sims. With calibrated voting
+    // probabilities, all votes land in the first few steps. After that, the
+    // proposal has no new activity — and any positive inactivity timeout would
+    // expire proposals WITH valid votes before the voting period ends.
     this.dao.proposalPolicy.inactivitySteps = 0;
 
-    // Calibrate approval threshold from historical for_percentage
-    // If avg_for_percentage is very high (>90%), proposals tend to pass easily
-    const forPct = Math.min(voting.avg_for_percentage, 1);
-    if (forPct > 0) {
-      if (rule.threshold !== undefined) {
-        // For supermajority rules: set threshold at 80% of historical for-percentage
-        rule.threshold = Math.max(0.5, Math.min(0.9, forPct * 0.8));
-      }
-      if (rule.approvalThreshold !== undefined) {
-        rule.approvalThreshold = Math.max(0.5, Math.min(0.9, forPct * 0.8));
-      }
-    }
   }
 
   /**
@@ -648,60 +647,39 @@ export class DAOSimulation extends Model {
     const mapping = getGovernanceMapping(profile.dao_id);
     if (!mapping) return;
 
-    const rule = this.governanceRule as unknown as GovernanceRuleQuorumConfig;
     const voting = profile.voting;
 
-    // Disable inactivity timeout (same as legacy — voting happens in first few steps)
+    // Disable inactivity timeout for calibrated sims (same as legacy path).
     this.dao.proposalPolicy.inactivitySteps = 0;
 
-    // Set quorum based on historical data.
-    // If quorum is always hit (>95%), set slightly below observed participation
-    // so proposals still pass. If sometimes missed, set at participation level.
-    const historicalQuorum = voting.quorum_hit_rate;
-    const effectiveQuorum = historicalQuorum >= 0.95
-      ? Math.max(0.005, voting.avg_participation_rate * 0.6)
-      : voting.avg_participation_rate;
-
-    // Apply rule-specific tuning
-    switch (mapping.ruleName) {
-      case 'categoryquorum':
-        // Arbitrum-style dual quorums
-        if (rule.constitutionalQuorum !== undefined) {
-          rule.constitutionalQuorum = effectiveQuorum * 1.5;
-        }
-        if (rule.nonConstitutionalQuorum !== undefined) {
-          rule.nonConstitutionalQuorum = effectiveQuorum;
-        }
-        break;
-      case 'bicameral':
-        // Optimism-style: configure citizen house veto threshold
-        if (rule.quorumPercentage !== undefined) {
-          rule.quorumPercentage = effectiveQuorum;
-        }
-        break;
-      case 'dualgovernance':
-        // Lido-style: tune veto/rage-quit thresholds
-        if (rule.quorumPercentage !== undefined) {
-          rule.quorumPercentage = effectiveQuorum;
-        }
-        break;
-      default:
-        // Standard quorum + threshold tuning
-        if (rule.quorumPercentage !== undefined) {
-          rule.quorumPercentage = effectiveQuorum;
-        }
-        break;
-    }
-
-    // Set approval threshold from historical for_percentage
+    // Set quorum=0 for all calibrated simulations. Token-weighted quorum is
+    // fundamentally unrealistic at simulation scale (~200 agents vs thousands
+    // of real token holders). Real DAOs' quorum hit rates depend on a handful
+    // of mega-whales whose voting power concentration can't be faithfully
+    // reproduced at small population sizes. Instead, pass/fail is governed by
+    // calibrated voting probabilities and optimism bias, which are tuned to
+    // match historical pass rates. The quorum check becomes non-binding.
+    //
+    // NOTE: We must reconstruct the governance rule — all GovernanceRule subclasses
+    // store fields as private, so setting them via type cast only creates shadow
+    // public properties that the class methods never read.
     const forPct = Math.min(voting.avg_for_percentage, 1);
-    if (forPct > 0) {
-      if (rule.threshold !== undefined) {
-        rule.threshold = Math.max(0.5, Math.min(0.9, forPct * 0.8));
-      }
-      if (rule.approvalThreshold !== undefined) {
-        rule.approvalThreshold = Math.max(0.5, Math.min(0.9, forPct * 0.8));
-      }
+    const derivedThreshold = forPct > 0 ? Math.max(0.5, Math.min(0.9, forPct * 0.8)) : 0.5;
+
+    // Reconstruct the CURRENT rule (not the mapping's rule) with zero-quorum config.
+    // This respects explicit user overrides (e.g. governance_rule: 'quadratic')
+    // while still disabling quorum for calibration.
+    const ruleConfig: GovernanceRuleConfig = {
+      quorumPercentage: 0,
+      constitutionalQuorum: 0,
+      nonConstitutionalQuorum: 0,
+      threshold: derivedThreshold,
+      approvalThreshold: derivedThreshold,
+    };
+
+    const newRule = getRule(this.governanceRuleName, ruleConfig);
+    if (newRule) {
+      this.governanceRule = newRule;
     }
   }
 
@@ -1731,7 +1709,9 @@ export class DAOSimulation extends Model {
 
     // Treasury revenue mechanisms - sustainable DAO economics
     // Real DAOs generate revenue from: protocol fees, staking, grants, services
-    // Target: treasury should be stable or slightly growing over time
+    // Revenue is proportional to treasury size (like protocol TVL yield) plus
+    // fixed operational fees. This balances proposal spending (~2-3% per approval)
+    // to produce realistic treasury trajectories instead of monotonic depletion.
 
     // 1. Protocol activity fees: Fee per active proposal (governance participation cost)
     const activeProposals = this.dao.proposals.filter(p => p.status === 'open').length;
@@ -1747,7 +1727,13 @@ export class DAOSimulation extends Model {
     // 4. Transaction fees: Revenue from token transfers and trades
     const transactionFees = this.dao.members.length * settings.treasuryTransactionFee;
 
-    const totalRevenue = proposalFees + treasuryStakingYield + memberActivityFee + transactionFees;
+    // 5. Protocol yield on treasury (TVL-proportional): Real DeFi protocols earn
+    // yield on their treasury assets (lending, LP positions, etc.)
+    // ~0.05% per step ≈ ~18% annualized at 360 steps/year, realistic for DeFi
+    const treasuryFunds = this.dao.treasury.funds;
+    const protocolYield = treasuryFunds * 0.0005;
+
+    const totalRevenue = proposalFees + treasuryStakingYield + memberActivityFee + transactionFees + protocolYield;
     if (totalRevenue > 0) {
       this.dao.treasury.mintTokens('DAO_TOKEN', totalRevenue, this.currentStep);
 

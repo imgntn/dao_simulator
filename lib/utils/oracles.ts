@@ -72,7 +72,9 @@ export class GeometricBrownianOracle extends BasePriceOracle {
     // Geometric Brownian Motion formula
     const drift_term = this.drift * dt;
     const diffusion_term = volatility * Math.sqrt(dt) * z;
-    const newPrice = Math.max(1, currentPrice * Math.exp(drift_term + diffusion_term));
+    // Clamp the exponent to prevent explosive price swings (±50% per step max)
+    const exponent = Math.max(-0.5, Math.min(0.5, drift_term + diffusion_term));
+    const newPrice = Math.max(1, currentPrice * Math.exp(exponent));
 
     this.setPrice(token, newPrice);
   }
@@ -109,8 +111,9 @@ export class CalibratedGBMOracle extends GeometricBrownianOracle {
     this.drawdownEvents = calibration.drawdownEvents || [];
     // Mean-reversion toward the initial (historical average) price.
     // Counteracts systematic drift from treasury selling pressure and GBM noise.
-    // 0.01 = 1% pull-back per step → half-life of ~69 steps (~3 days)
-    this.meanReversionSpeed = calibration.meanReversionSpeed ?? 0.01;
+    // 0.03 = 3% pull-back per step → half-life of ~23 steps (~1 day).
+    // Stronger reversion prevents price divergence seen in Optimism (-37% under).
+    this.meanReversionSpeed = calibration.meanReversionSpeed ?? 0.03;
   }
 
   updatePrice(token: string, step?: number, volatilityOverride?: number): void {
@@ -128,8 +131,10 @@ export class CalibratedGBMOracle extends GeometricBrownianOracle {
     const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
     const driftTerm = this.drift * dt;
     const diffusionTerm = vol * Math.sqrt(dt) * z;
+    // Clamp the exponent to prevent explosive price swings (±50% per step max)
+    const exponent = Math.max(-0.5, Math.min(0.5, driftTerm + diffusionTerm));
     const priceFloor = Math.max(0.0001, this.initialPrice * 0.01);
-    const gbmPrice = Math.max(priceFloor, currentPrice * Math.exp(driftTerm + diffusionTerm));
+    const gbmPrice = Math.max(priceFloor, currentPrice * Math.exp(exponent));
     this.setPrice(token, gbmPrice);
 
     // Mean-reversion: pull price back toward the historical average (Ornstein-Uhlenbeck style).

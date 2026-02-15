@@ -18,6 +18,8 @@ export class ReputationTracker {
       dao.eventBus.subscribe('project_worked', this.handleEvent.bind(this));
       dao.eventBus.subscribe('service_offered', this.handleEvent.bind(this));
       dao.eventBus.subscribe('proposal_invested', this.handleEvent.bind(this));
+      dao.eventBus.subscribe('vote_cast', this.handleEvent.bind(this));
+      dao.eventBus.subscribe('proposal_created', this.handleEvent.bind(this));
     }
   }
 
@@ -66,6 +68,30 @@ export class ReputationTracker {
         if (member) {
           const amount = (data.amount as number) || 0;
           member.reputation += amount / 100;
+          this.lastActivity.set(member.uniqueId, currentStep);
+        }
+        break;
+      }
+
+      case 'vote_cast': {
+        // Voting is the most common governance action — reward participation
+        const voterId = (data.memberId || data.voter || data.agentId) as string | undefined;
+        if (!voterId) break;
+        const member = this.getMember(voterId);
+        if (member) {
+          member.reputation += 0.5;
+          this.lastActivity.set(member.uniqueId, currentStep);
+        }
+        break;
+      }
+
+      case 'proposal_created': {
+        // Creating proposals is high-effort governance participation
+        const creatorId = (data.creator || data.proposerId) as string | undefined;
+        if (!creatorId) break;
+        const member = this.getMember(creatorId);
+        if (member) {
+          member.reputation += 2.0;
           this.lastActivity.set(member.uniqueId, currentStep);
         }
         break;

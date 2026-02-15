@@ -274,8 +274,10 @@ export class AgentManager {
         `${agentClass.name}_${this.simulation.currentStep}`
       );
 
-      // Add only if reputation is above threshold
-      if (newAgent.reputation > 25) {
+      // Add any agent with non-negative reputation (lowered from 25 to enable
+      // realistic population dynamics — previously almost all agents were rejected
+      // since DEFAULT_AGENT_REPUTATION = 0)
+      if (newAgent.reputation >= 0) {
         this.simulation.dao.addMember(newAgent);
         this.simulation.schedule.add(newAgent);
         this.invalidateCache();
