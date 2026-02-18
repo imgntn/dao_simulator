@@ -256,7 +256,7 @@ scenarios:
           num_governance_experts: 3
 
 execution:
-  runsPerConfig: 60
+  runsPerConfig: 30
   stepsPerRun: 500
   seedStrategy: sequential
   baseSeed: 707

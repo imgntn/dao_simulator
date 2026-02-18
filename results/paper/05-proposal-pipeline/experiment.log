@@ -320,3 +320,539 @@
 [2026-01-30T09:58:36.178Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Total Proposals: 203.6000 (std: 13.7153)
 {"timestamp":"2026-01-30T09:58:36.178Z","level":"info","message":"Experiment state changed to: completed"}
 [2026-01-30T09:58:36.178Z] [INFO    ] Experiment state changed to: completed
+{"timestamp":"2026-02-18T03:12:38.816Z","level":"info","message":"Starting experiment: Proposal Pipeline Effects"}
+[2026-02-18T03:12:38.816Z] [INFO    ] Starting experiment: Proposal Pipeline Effects
+{"timestamp":"2026-02-18T03:12:38.816Z","level":"info","message":"Description: Vary temp-check duration and fast-track rules to assess pipeline impact."}
+[2026-02-18T03:12:38.816Z] [INFO    ] Description: Vary temp-check duration and fast-track rules to assess pipeline impact.
+{"timestamp":"2026-02-18T03:12:38.816Z","level":"info","message":"Total runs: 18 (2 per config)"}
+[2026-02-18T03:12:38.816Z] [INFO    ] Total runs: 18 (2 per config)
+{"timestamp":"2026-02-18T03:12:38.816Z","level":"info","message":"Workers: 4"}
+[2026-02-18T03:12:38.816Z] [INFO    ] Workers: 4
+{"timestamp":"2026-02-18T03:12:38.816Z","level":"info","message":"Output: results/paper/05-proposal-pipeline"}
+[2026-02-18T03:12:38.816Z] [INFO    ] Output: results/paper/05-proposal-pipeline
+{"timestamp":"2026-02-18T03:12:38.816Z","level":"info","message":"Sweep parameter: undefined"}
+[2026-02-18T03:12:38.816Z] [INFO    ] Sweep parameter: undefined
+{"timestamp":"2026-02-18T03:12:38.817Z","level":"info","message":"Experiment state changed to: running"}
+[2026-02-18T03:12:38.817Z] [INFO    ] Experiment state changed to: running
+{"timestamp":"2026-02-18T03:12:49.931Z","level":"progress","message":"Progress: 5% (1/18)","data":{"runsPerSecond":"0.09","eta":"3m 9s"}}
+[2026-02-18T03:12:49.931Z] [PROGRESS] Progress: 5% (1/18) {"runsPerSecond":"0.09","eta":"3m 9s"}
+{"timestamp":"2026-02-18T03:13:16.873Z","level":"progress","message":"Progress: 50% (9/18)","data":{"runsPerSecond":"0.24","eta":"38.1s"}}
+[2026-02-18T03:13:16.873Z] [PROGRESS] Progress: 50% (9/18) {"runsPerSecond":"0.24","eta":"38.1s"}
+{"timestamp":"2026-02-18T03:13:20.324Z","level":"progress","message":"Progress: 55% (10/18)","data":{"runsPerSecond":"0.24","eta":"33.2s"}}
+[2026-02-18T03:13:20.324Z] [PROGRESS] Progress: 55% (10/18) {"runsPerSecond":"0.24","eta":"33.2s"}
+{"timestamp":"2026-02-18T03:13:43.408Z","level":"progress","message":"Progress: 100% (18/18)","data":{"runsPerSecond":"0.28","eta":"unknown"}}
+[2026-02-18T03:13:43.408Z] [PROGRESS] Progress: 100% (18/18) {"runsPerSecond":"0.28","eta":"unknown"}
+{"timestamp":"2026-02-18T03:13:43.477Z","level":"info","message":"Exporting results..."}
+[2026-02-18T03:13:43.477Z] [INFO    ] Exporting results...
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"info","message":"Experiment completed in 1m 5s"}
+[2026-02-18T03:13:43.501Z] [INFO    ] Experiment completed in 1m 5s
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"info","message":"Total runs: 18"}
+[2026-02-18T03:13:43.501Z] [INFO    ] Total runs: 18
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"info","message":"Successful: 18"}
+[2026-02-18T03:13:43.501Z] [INFO    ] Successful: 18
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"info","message":"Failed: 0"}
+[2026-02-18T03:13:43.501Z] [INFO    ] Failed: 0
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Pass Rate: 0.9896 (std: 0.0147)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Pass Rate: 0.9896 (std: 0.0147)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Avg Time to Decision: 1050.1188 (std: 120.2877)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Avg Time to Decision: 1050.1188 (std: 120.2877)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Rejection Rate: 0.0104 (std: 0.0147)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Rejection Rate: 0.0104 (std: 0.0147)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Governance Overhead: 70.5917 (std: 5.2915)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Governance Overhead: 70.5917 (std: 5.2915)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Average Turnout: 0.2319 (std: 0.0014)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Average Turnout: 0.2319 (std: 0.0014)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Avg Margin of Victory: 0.4629 (std: 0.0047)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Avg Margin of Victory: 0.4629 (std: 0.0047)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Rate: 2.2500 (std: 0.3536)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Rate: 2.2500 (std: 0.3536)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Total Proposals: 45.0000 (std: 7.0711)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Total Proposals: 45.0000 (std: 7.0711)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Pass Rate: 0.9545 (std: 0.0366)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Pass Rate: 0.9545 (std: 0.0366)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Avg Time to Decision: 992.2549 (std: 30.0590)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Avg Time to Decision: 992.2549 (std: 30.0590)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Rejection Rate: 0.0455 (std: 0.0366)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Rejection Rate: 0.0455 (std: 0.0366)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Governance Overhead: 80.2964 (std: 0.3637)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Governance Overhead: 80.2964 (std: 0.3637)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Average Turnout: 0.2604 (std: 0.0218)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Average Turnout: 0.2604 (std: 0.0218)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Avg Margin of Victory: 0.4241 (std: 0.0792)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Avg Margin of Victory: 0.4241 (std: 0.0792)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Rate: 2.8000 (std: 0.2828)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Rate: 2.8000 (std: 0.2828)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Total Proposals: 56.0000 (std: 5.6569)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Total Proposals: 56.0000 (std: 5.6569)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Pass Rate: 0.9750 (std: 0.0354)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Pass Rate: 0.9750 (std: 0.0354)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Avg Time to Decision: 922.4328 (std: 22.5811)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Avg Time to Decision: 922.4328 (std: 22.5811)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Rejection Rate: 0.0250 (std: 0.0354)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Rejection Rate: 0.0250 (std: 0.0354)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Governance Overhead: 79.3651 (std: 2.5316)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Governance Overhead: 79.3651 (std: 2.5316)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Average Turnout: 0.2492 (std: 0.0012)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Average Turnout: 0.2492 (std: 0.0012)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Avg Margin of Victory: 0.5622 (std: 0.0902)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Avg Margin of Victory: 0.5622 (std: 0.0902)
+{"timestamp":"2026-02-18T03:13:43.501Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Rate: 2.5000 (std: 0.7071)"}
+[2026-02-18T03:13:43.501Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Rate: 2.5000 (std: 0.7071)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Total Proposals: 50.0000 (std: 14.1421)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Total Proposals: 50.0000 (std: 14.1421)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Pass Rate: 0.9775 (std: 0.0011)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Pass Rate: 0.9775 (std: 0.0011)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Avg Time to Decision: 878.1469 (std: 74.5154)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Avg Time to Decision: 878.1469 (std: 74.5154)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Rejection Rate: 0.0225 (std: 0.0011)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Rejection Rate: 0.0225 (std: 0.0011)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Governance Overhead: 77.2952 (std: 0.6020)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Governance Overhead: 77.2952 (std: 0.6020)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Average Turnout: 0.2304 (std: 0.0044)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Average Turnout: 0.2304 (std: 0.0044)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Avg Margin of Victory: 0.5044 (std: 0.0281)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Avg Margin of Victory: 0.5044 (std: 0.0281)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Rate: 2.3250 (std: 0.1061)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Rate: 2.3250 (std: 0.1061)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Total Proposals: 46.5000 (std: 2.1213)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Total Proposals: 46.5000 (std: 2.1213)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Pass Rate: 0.9556 (std: 0.0629)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Pass Rate: 0.9556 (std: 0.0629)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Avg Time to Decision: 997.2933 (std: 77.8508)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Avg Time to Decision: 997.2933 (std: 77.8508)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Rejection Rate: 0.0444 (std: 0.0629)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Rejection Rate: 0.0444 (std: 0.0629)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Governance Overhead: 70.7810 (std: 3.6724)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Governance Overhead: 70.7810 (std: 3.6724)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Average Turnout: 0.2249 (std: 0.0003)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Average Turnout: 0.2249 (std: 0.0003)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Avg Margin of Victory: 0.5157 (std: 0.0499)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Avg Margin of Victory: 0.5157 (std: 0.0499)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Rate: 2.1250 (std: 0.2475)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Rate: 2.1250 (std: 0.2475)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Total Proposals: 42.5000 (std: 4.9497)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Total Proposals: 42.5000 (std: 4.9497)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Pass Rate: 0.9651 (std: 0.0180)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Pass Rate: 0.9651 (std: 0.0180)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Avg Time to Decision: 760.6921 (std: 20.2120)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Avg Time to Decision: 760.6921 (std: 20.2120)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Rejection Rate: 0.0349 (std: 0.0180)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Rejection Rate: 0.0349 (std: 0.0180)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Governance Overhead: 79.9381 (std: 1.1246)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Governance Overhead: 79.9381 (std: 1.1246)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Average Turnout: 0.2151 (std: 0.0066)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Average Turnout: 0.2151 (std: 0.0066)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Avg Margin of Victory: 0.5236 (std: 0.0676)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Avg Margin of Victory: 0.5236 (std: 0.0676)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Rate: 2.7750 (std: 0.6718)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Rate: 2.7750 (std: 0.6718)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Total Proposals: 55.5000 (std: 13.4350)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Total Proposals: 55.5000 (std: 13.4350)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Pass Rate: 0.9878 (std: 0.0172)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Pass Rate: 0.9878 (std: 0.0172)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Avg Time to Decision: 860.2508 (std: 23.7214)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Avg Time to Decision: 860.2508 (std: 23.7214)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Rejection Rate: 0.0122 (std: 0.0172)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Rejection Rate: 0.0122 (std: 0.0172)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Governance Overhead: 90.0748 (std: 2.6583)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Governance Overhead: 90.0748 (std: 2.6583)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Average Turnout: 0.2394 (std: 0.0002)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Average Turnout: 0.2394 (std: 0.0002)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Avg Margin of Victory: 0.5467 (std: 0.0912)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Avg Margin of Victory: 0.5467 (std: 0.0912)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Rate: 2.3250 (std: 0.1061)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Rate: 2.3250 (std: 0.1061)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Total Proposals: 46.5000 (std: 2.1213)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Total Proposals: 46.5000 (std: 2.1213)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Pass Rate: 0.9720 (std: 0.0075)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Pass Rate: 0.9720 (std: 0.0075)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Avg Time to Decision: 928.9674 (std: 117.5222)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Avg Time to Decision: 928.9674 (std: 117.5222)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Rejection Rate: 0.0280 (std: 0.0075)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Rejection Rate: 0.0280 (std: 0.0075)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Governance Overhead: 71.3485 (std: 0.7285)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Governance Overhead: 71.3485 (std: 0.7285)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Average Turnout: 0.2410 (std: 0.0011)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Average Turnout: 0.2410 (std: 0.0011)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Avg Margin of Victory: 0.5655 (std: 0.0923)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Avg Margin of Victory: 0.5655 (std: 0.0923)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Rate: 1.8750 (std: 0.5303)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Rate: 1.8750 (std: 0.5303)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Total Proposals: 37.5000 (std: 10.6066)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Total Proposals: 37.5000 (std: 10.6066)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Pass Rate: 0.9914 (std: 0.0122)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Pass Rate: 0.9914 (std: 0.0122)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Avg Time to Decision: 864.4184 (std: 40.3117)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Avg Time to Decision: 864.4184 (std: 40.3117)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Rejection Rate: 0.0086 (std: 0.0122)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Rejection Rate: 0.0086 (std: 0.0122)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Governance Overhead: 74.2072 (std: 0.6588)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Governance Overhead: 74.2072 (std: 0.6588)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Average Turnout: 0.2245 (std: 0.0109)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Average Turnout: 0.2245 (std: 0.0109)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Avg Margin of Victory: 0.6708 (std: 0.1073)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Avg Margin of Victory: 0.6708 (std: 0.1073)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Rate: 2.8250 (std: 0.1768)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Rate: 2.8250 (std: 0.1768)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Total Proposals: 56.5000 (std: 3.5355)"}
+[2026-02-18T03:13:43.502Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Total Proposals: 56.5000 (std: 3.5355)
+{"timestamp":"2026-02-18T03:13:43.502Z","level":"info","message":"Experiment state changed to: completed"}
+[2026-02-18T03:13:43.502Z] [INFO    ] Experiment state changed to: completed
+{"timestamp":"2026-02-18T04:51:03.585Z","level":"info","message":"Starting experiment: Proposal Pipeline Effects"}
+[2026-02-18T04:51:03.585Z] [INFO    ] Starting experiment: Proposal Pipeline Effects
+{"timestamp":"2026-02-18T04:51:03.586Z","level":"info","message":"Description: Vary temp-check duration and fast-track rules to assess pipeline impact."}
+[2026-02-18T04:51:03.586Z] [INFO    ] Description: Vary temp-check duration and fast-track rules to assess pipeline impact.
+{"timestamp":"2026-02-18T04:51:03.586Z","level":"info","message":"Total runs: 270 (30 per config)"}
+[2026-02-18T04:51:03.586Z] [INFO    ] Total runs: 270 (30 per config)
+{"timestamp":"2026-02-18T04:51:03.586Z","level":"info","message":"Workers: 4"}
+[2026-02-18T04:51:03.586Z] [INFO    ] Workers: 4
+{"timestamp":"2026-02-18T04:51:03.586Z","level":"info","message":"Output: results/paper/05-proposal-pipeline"}
+[2026-02-18T04:51:03.586Z] [INFO    ] Output: results/paper/05-proposal-pipeline
+{"timestamp":"2026-02-18T04:51:03.586Z","level":"info","message":"Sweep parameter: undefined"}
+[2026-02-18T04:51:03.586Z] [INFO    ] Sweep parameter: undefined
+{"timestamp":"2026-02-18T04:51:03.601Z","level":"info","message":"Experiment state changed to: running"}
+[2026-02-18T04:51:03.601Z] [INFO    ] Experiment state changed to: running
+{"timestamp":"2026-02-18T04:52:08.405Z","level":"progress","message":"Progress: 5% (14/270)","data":{"runsPerSecond":"0.22","eta":"19m 45s"}}
+[2026-02-18T04:52:08.405Z] [PROGRESS] Progress: 5% (14/270) {"runsPerSecond":"0.22","eta":"19m 45s"}
+{"timestamp":"2026-02-18T04:52:10.605Z","level":"progress","message":"Progress: 5% (15/270)","data":{"runsPerSecond":"0.22","eta":"18m 59s"}}
+[2026-02-18T04:52:10.605Z] [PROGRESS] Progress: 5% (15/270) {"runsPerSecond":"0.22","eta":"18m 59s"}
+{"timestamp":"2026-02-18T04:52:11.470Z","level":"progress","message":"Progress: 5% (16/270)","data":{"runsPerSecond":"0.24","eta":"17m 57s"}}
+[2026-02-18T04:52:11.470Z] [PROGRESS] Progress: 5% (16/270) {"runsPerSecond":"0.24","eta":"17m 57s"}
+{"timestamp":"2026-02-18T04:53:01.356Z","level":"progress","message":"Progress: 10% (27/270)","data":{"runsPerSecond":"0.23","eta":"17m 40s"}}
+[2026-02-18T04:53:01.356Z] [PROGRESS] Progress: 10% (27/270) {"runsPerSecond":"0.23","eta":"17m 40s"}
+{"timestamp":"2026-02-18T04:53:01.365Z","level":"progress","message":"Progress: 10% (28/270)","data":{"runsPerSecond":"0.24","eta":"16m 58s"}}
+[2026-02-18T04:53:01.365Z] [PROGRESS] Progress: 10% (28/270) {"runsPerSecond":"0.24","eta":"16m 58s"}
+{"timestamp":"2026-02-18T04:53:11.049Z","level":"progress","message":"Progress: 10% (29/270)","data":{"runsPerSecond":"0.23","eta":"17m 39s"}}
+[2026-02-18T04:53:11.049Z] [PROGRESS] Progress: 10% (29/270) {"runsPerSecond":"0.23","eta":"17m 39s"}
+{"timestamp":"2026-02-18T04:53:49.665Z","level":"progress","message":"Progress: 15% (41/270)","data":{"runsPerSecond":"0.25","eta":"15m 28s"}}
+[2026-02-18T04:53:49.665Z] [PROGRESS] Progress: 15% (41/270) {"runsPerSecond":"0.25","eta":"15m 28s"}
+{"timestamp":"2026-02-18T04:53:52.830Z","level":"progress","message":"Progress: 15% (42/270)","data":{"runsPerSecond":"0.25","eta":"15m 19s"}}
+[2026-02-18T04:53:52.830Z] [PROGRESS] Progress: 15% (42/270) {"runsPerSecond":"0.25","eta":"15m 19s"}
+{"timestamp":"2026-02-18T04:53:53.644Z","level":"progress","message":"Progress: 15% (43/270)","data":{"runsPerSecond":"0.25","eta":"14m 58s"}}
+[2026-02-18T04:53:53.644Z] [PROGRESS] Progress: 15% (43/270) {"runsPerSecond":"0.25","eta":"14m 58s"}
+{"timestamp":"2026-02-18T04:54:26.440Z","level":"progress","message":"Progress: 20% (54/270)","data":{"runsPerSecond":"0.27","eta":"13m 31s"}}
+[2026-02-18T04:54:26.440Z] [PROGRESS] Progress: 20% (54/270) {"runsPerSecond":"0.27","eta":"13m 31s"}
+{"timestamp":"2026-02-18T04:54:26.899Z","level":"progress","message":"Progress: 20% (55/270)","data":{"runsPerSecond":"0.27","eta":"13m 15s"}}
+[2026-02-18T04:54:26.899Z] [PROGRESS] Progress: 20% (55/270) {"runsPerSecond":"0.27","eta":"13m 15s"}
+{"timestamp":"2026-02-18T04:54:34.315Z","level":"progress","message":"Progress: 20% (56/270)","data":{"runsPerSecond":"0.27","eta":"13m 25s"}}
+[2026-02-18T04:54:34.315Z] [PROGRESS] Progress: 20% (56/270) {"runsPerSecond":"0.27","eta":"13m 25s"}
+{"timestamp":"2026-02-18T04:55:11.010Z","level":"progress","message":"Progress: 25% (68/270)","data":{"runsPerSecond":"0.27","eta":"12m 15s"}}
+[2026-02-18T04:55:11.010Z] [PROGRESS] Progress: 25% (68/270) {"runsPerSecond":"0.27","eta":"12m 15s"}
+{"timestamp":"2026-02-18T04:55:14.294Z","level":"progress","message":"Progress: 25% (69/270)","data":{"runsPerSecond":"0.28","eta":"12m 10s"}}
+[2026-02-18T04:55:14.294Z] [PROGRESS] Progress: 25% (69/270) {"runsPerSecond":"0.28","eta":"12m 10s"}
+{"timestamp":"2026-02-18T04:55:14.359Z","level":"progress","message":"Progress: 25% (70/270)","data":{"runsPerSecond":"0.28","eta":"11m 56s"}}
+[2026-02-18T04:55:14.359Z] [PROGRESS] Progress: 25% (70/270) {"runsPerSecond":"0.28","eta":"11m 56s"}
+{"timestamp":"2026-02-18T04:55:47.073Z","level":"progress","message":"Progress: 30% (81/270)","data":{"runsPerSecond":"0.29","eta":"11m 1s"}}
+[2026-02-18T04:55:47.073Z] [PROGRESS] Progress: 30% (81/270) {"runsPerSecond":"0.29","eta":"11m 1s"}
+{"timestamp":"2026-02-18T04:55:51.291Z","level":"progress","message":"Progress: 30% (82/270)","data":{"runsPerSecond":"0.29","eta":"10m 60s"}}
+[2026-02-18T04:55:51.291Z] [PROGRESS] Progress: 30% (82/270) {"runsPerSecond":"0.29","eta":"10m 60s"}
+{"timestamp":"2026-02-18T04:55:52.930Z","level":"progress","message":"Progress: 30% (83/270)","data":{"runsPerSecond":"0.29","eta":"10m 52s"}}
+[2026-02-18T04:55:52.930Z] [PROGRESS] Progress: 30% (83/270) {"runsPerSecond":"0.29","eta":"10m 52s"}
+{"timestamp":"2026-02-18T04:56:32.825Z","level":"progress","message":"Progress: 35% (95/270)","data":{"runsPerSecond":"0.29","eta":"10m 6s"}}
+[2026-02-18T04:56:32.825Z] [PROGRESS] Progress: 35% (95/270) {"runsPerSecond":"0.29","eta":"10m 6s"}
+{"timestamp":"2026-02-18T04:56:37.300Z","level":"progress","message":"Progress: 35% (96/270)","data":{"runsPerSecond":"0.29","eta":"10m 5s"}}
+[2026-02-18T04:56:37.300Z] [PROGRESS] Progress: 35% (96/270) {"runsPerSecond":"0.29","eta":"10m 5s"}
+{"timestamp":"2026-02-18T04:56:37.726Z","level":"progress","message":"Progress: 35% (97/270)","data":{"runsPerSecond":"0.29","eta":"9m 56s"}}
+[2026-02-18T04:56:37.726Z] [PROGRESS] Progress: 35% (97/270) {"runsPerSecond":"0.29","eta":"9m 56s"}
+{"timestamp":"2026-02-18T04:57:18.102Z","level":"progress","message":"Progress: 40% (108/270)","data":{"runsPerSecond":"0.29","eta":"9m 22s"}}
+[2026-02-18T04:57:18.102Z] [PROGRESS] Progress: 40% (108/270) {"runsPerSecond":"0.29","eta":"9m 22s"}
+{"timestamp":"2026-02-18T04:57:18.504Z","level":"progress","message":"Progress: 40% (109/270)","data":{"runsPerSecond":"0.29","eta":"9m 14s"}}
+[2026-02-18T04:57:18.504Z] [PROGRESS] Progress: 40% (109/270) {"runsPerSecond":"0.29","eta":"9m 14s"}
+{"timestamp":"2026-02-18T04:57:21.774Z","level":"progress","message":"Progress: 40% (110/270)","data":{"runsPerSecond":"0.29","eta":"9m 10s"}}
+[2026-02-18T04:57:21.774Z] [PROGRESS] Progress: 40% (110/270) {"runsPerSecond":"0.29","eta":"9m 10s"}
+{"timestamp":"2026-02-18T04:57:55.125Z","level":"progress","message":"Progress: 45% (122/270)","data":{"runsPerSecond":"0.30","eta":"8m 19s"}}
+[2026-02-18T04:57:55.125Z] [PROGRESS] Progress: 45% (122/270) {"runsPerSecond":"0.30","eta":"8m 19s"}
+{"timestamp":"2026-02-18T04:58:06.151Z","level":"progress","message":"Progress: 45% (123/270)","data":{"runsPerSecond":"0.29","eta":"8m 25s"}}
+[2026-02-18T04:58:06.151Z] [PROGRESS] Progress: 45% (123/270) {"runsPerSecond":"0.29","eta":"8m 25s"}
+{"timestamp":"2026-02-18T04:58:06.296Z","level":"progress","message":"Progress: 45% (124/270)","data":{"runsPerSecond":"0.29","eta":"8m 18s"}}
+[2026-02-18T04:58:06.296Z] [PROGRESS] Progress: 45% (124/270) {"runsPerSecond":"0.29","eta":"8m 18s"}
+{"timestamp":"2026-02-18T04:58:44.895Z","level":"progress","message":"Progress: 50% (135/270)","data":{"runsPerSecond":"0.29","eta":"7m 41s"}}
+[2026-02-18T04:58:44.895Z] [PROGRESS] Progress: 50% (135/270) {"runsPerSecond":"0.29","eta":"7m 41s"}
+{"timestamp":"2026-02-18T04:58:45.076Z","level":"progress","message":"Progress: 50% (136/270)","data":{"runsPerSecond":"0.29","eta":"7m 35s"}}
+[2026-02-18T04:58:45.076Z] [PROGRESS] Progress: 50% (136/270) {"runsPerSecond":"0.29","eta":"7m 35s"}
+{"timestamp":"2026-02-18T04:58:45.562Z","level":"progress","message":"Progress: 50% (137/270)","data":{"runsPerSecond":"0.30","eta":"7m 28s"}}
+[2026-02-18T04:58:45.562Z] [PROGRESS] Progress: 50% (137/270) {"runsPerSecond":"0.30","eta":"7m 28s"}
+{"timestamp":"2026-02-18T04:59:27.965Z","level":"progress","message":"Progress: 55% (149/270)","data":{"runsPerSecond":"0.30","eta":"6m 50s"}}
+[2026-02-18T04:59:27.965Z] [PROGRESS] Progress: 55% (149/270) {"runsPerSecond":"0.30","eta":"6m 50s"}
+{"timestamp":"2026-02-18T04:59:28.584Z","level":"progress","message":"Progress: 55% (150/270)","data":{"runsPerSecond":"0.30","eta":"6m 44s"}}
+[2026-02-18T04:59:28.584Z] [PROGRESS] Progress: 55% (150/270) {"runsPerSecond":"0.30","eta":"6m 44s"}
+{"timestamp":"2026-02-18T04:59:39.714Z","level":"progress","message":"Progress: 55% (151/270)","data":{"runsPerSecond":"0.29","eta":"6m 47s"}}
+[2026-02-18T04:59:39.714Z] [PROGRESS] Progress: 55% (151/270) {"runsPerSecond":"0.29","eta":"6m 47s"}
+{"timestamp":"2026-02-18T05:00:12.068Z","level":"progress","message":"Progress: 60% (162/270)","data":{"runsPerSecond":"0.30","eta":"6m 6s"}}
+[2026-02-18T05:00:12.068Z] [PROGRESS] Progress: 60% (162/270) {"runsPerSecond":"0.30","eta":"6m 6s"}
+{"timestamp":"2026-02-18T05:00:18.968Z","level":"progress","message":"Progress: 60% (163/270)","data":{"runsPerSecond":"0.29","eta":"6m 5s"}}
+[2026-02-18T05:00:18.968Z] [PROGRESS] Progress: 60% (163/270) {"runsPerSecond":"0.29","eta":"6m 5s"}
+{"timestamp":"2026-02-18T05:00:22.018Z","level":"progress","message":"Progress: 60% (164/270)","data":{"runsPerSecond":"0.29","eta":"6m 1s"}}
+[2026-02-18T05:00:22.018Z] [PROGRESS] Progress: 60% (164/270) {"runsPerSecond":"0.29","eta":"6m 1s"}
+{"timestamp":"2026-02-18T05:01:07.600Z","level":"progress","message":"Progress: 65% (176/270)","data":{"runsPerSecond":"0.29","eta":"5m 23s"}}
+[2026-02-18T05:01:07.600Z] [PROGRESS] Progress: 65% (176/270) {"runsPerSecond":"0.29","eta":"5m 23s"}
+{"timestamp":"2026-02-18T05:01:09.939Z","level":"progress","message":"Progress: 65% (177/270)","data":{"runsPerSecond":"0.29","eta":"5m 19s"}}
+[2026-02-18T05:01:09.939Z] [PROGRESS] Progress: 65% (177/270) {"runsPerSecond":"0.29","eta":"5m 19s"}
+{"timestamp":"2026-02-18T05:01:11.245Z","level":"progress","message":"Progress: 65% (178/270)","data":{"runsPerSecond":"0.29","eta":"5m 14s"}}
+[2026-02-18T05:01:11.245Z] [PROGRESS] Progress: 65% (178/270) {"runsPerSecond":"0.29","eta":"5m 14s"}
+{"timestamp":"2026-02-18T05:01:51.563Z","level":"progress","message":"Progress: 70% (189/270)","data":{"runsPerSecond":"0.29","eta":"4m 38s"}}
+[2026-02-18T05:01:51.563Z] [PROGRESS] Progress: 70% (189/270) {"runsPerSecond":"0.29","eta":"4m 38s"}
+{"timestamp":"2026-02-18T05:01:52.412Z","level":"progress","message":"Progress: 70% (190/270)","data":{"runsPerSecond":"0.29","eta":"4m 33s"}}
+[2026-02-18T05:01:52.412Z] [PROGRESS] Progress: 70% (190/270) {"runsPerSecond":"0.29","eta":"4m 33s"}
+{"timestamp":"2026-02-18T05:01:55.629Z","level":"progress","message":"Progress: 70% (191/270)","data":{"runsPerSecond":"0.29","eta":"4m 30s"}}
+[2026-02-18T05:01:55.629Z] [PROGRESS] Progress: 70% (191/270) {"runsPerSecond":"0.29","eta":"4m 30s"}
+{"timestamp":"2026-02-18T05:02:37.661Z","level":"progress","message":"Progress: 75% (203/270)","data":{"runsPerSecond":"0.29","eta":"3m 49s"}}
+[2026-02-18T05:02:37.661Z] [PROGRESS] Progress: 75% (203/270) {"runsPerSecond":"0.29","eta":"3m 49s"}
+{"timestamp":"2026-02-18T05:02:45.900Z","level":"progress","message":"Progress: 75% (204/270)","data":{"runsPerSecond":"0.29","eta":"3m 47s"}}
+[2026-02-18T05:02:45.900Z] [PROGRESS] Progress: 75% (204/270) {"runsPerSecond":"0.29","eta":"3m 47s"}
+{"timestamp":"2026-02-18T05:02:48.099Z","level":"progress","message":"Progress: 75% (205/270)","data":{"runsPerSecond":"0.29","eta":"3m 43s"}}
+[2026-02-18T05:02:48.099Z] [PROGRESS] Progress: 75% (205/270) {"runsPerSecond":"0.29","eta":"3m 43s"}
+{"timestamp":"2026-02-18T05:03:27.959Z","level":"progress","message":"Progress: 80% (216/270)","data":{"runsPerSecond":"0.29","eta":"3m 6s"}}
+[2026-02-18T05:03:27.959Z] [PROGRESS] Progress: 80% (216/270) {"runsPerSecond":"0.29","eta":"3m 6s"}
+{"timestamp":"2026-02-18T05:03:27.968Z","level":"progress","message":"Progress: 80% (217/270)","data":{"runsPerSecond":"0.29","eta":"3m 2s"}}
+[2026-02-18T05:03:27.968Z] [PROGRESS] Progress: 80% (217/270) {"runsPerSecond":"0.29","eta":"3m 2s"}
+{"timestamp":"2026-02-18T05:03:34.381Z","level":"progress","message":"Progress: 80% (218/270)","data":{"runsPerSecond":"0.29","eta":"2m 59s"}}
+[2026-02-18T05:03:34.381Z] [PROGRESS] Progress: 80% (218/270) {"runsPerSecond":"0.29","eta":"2m 59s"}
+{"timestamp":"2026-02-18T05:04:17.593Z","level":"progress","message":"Progress: 85% (230/270)","data":{"runsPerSecond":"0.29","eta":"2m 18s"}}
+[2026-02-18T05:04:17.593Z] [PROGRESS] Progress: 85% (230/270) {"runsPerSecond":"0.29","eta":"2m 18s"}
+{"timestamp":"2026-02-18T05:04:23.562Z","level":"progress","message":"Progress: 85% (231/270)","data":{"runsPerSecond":"0.29","eta":"2m 15s"}}
+[2026-02-18T05:04:23.562Z] [PROGRESS] Progress: 85% (231/270) {"runsPerSecond":"0.29","eta":"2m 15s"}
+{"timestamp":"2026-02-18T05:04:23.767Z","level":"progress","message":"Progress: 85% (232/270)","data":{"runsPerSecond":"0.29","eta":"2m 11s"}}
+[2026-02-18T05:04:23.767Z] [PROGRESS] Progress: 85% (232/270) {"runsPerSecond":"0.29","eta":"2m 11s"}
+{"timestamp":"2026-02-18T05:05:01.349Z","level":"progress","message":"Progress: 90% (243/270)","data":{"runsPerSecond":"0.29","eta":"1m 33s"}}
+[2026-02-18T05:05:01.349Z] [PROGRESS] Progress: 90% (243/270) {"runsPerSecond":"0.29","eta":"1m 33s"}
+{"timestamp":"2026-02-18T05:05:02.317Z","level":"progress","message":"Progress: 90% (244/270)","data":{"runsPerSecond":"0.29","eta":"1m 29s"}}
+[2026-02-18T05:05:02.317Z] [PROGRESS] Progress: 90% (244/270) {"runsPerSecond":"0.29","eta":"1m 29s"}
+{"timestamp":"2026-02-18T05:05:02.365Z","level":"progress","message":"Progress: 90% (245/270)","data":{"runsPerSecond":"0.29","eta":"1m 26s"}}
+[2026-02-18T05:05:02.365Z] [PROGRESS] Progress: 90% (245/270) {"runsPerSecond":"0.29","eta":"1m 26s"}
+{"timestamp":"2026-02-18T05:05:39.897Z","level":"progress","message":"Progress: 95% (257/270)","data":{"runsPerSecond":"0.29","eta":"44.3s"}}
+[2026-02-18T05:05:39.897Z] [PROGRESS] Progress: 95% (257/270) {"runsPerSecond":"0.29","eta":"44.3s"}
+{"timestamp":"2026-02-18T05:05:41.511Z","level":"progress","message":"Progress: 95% (258/270)","data":{"runsPerSecond":"0.29","eta":"40.8s"}}
+[2026-02-18T05:05:41.511Z] [PROGRESS] Progress: 95% (258/270) {"runsPerSecond":"0.29","eta":"40.8s"}
+{"timestamp":"2026-02-18T05:05:49.336Z","level":"progress","message":"Progress: 95% (259/270)","data":{"runsPerSecond":"0.29","eta":"37.6s"}}
+[2026-02-18T05:05:49.336Z] [PROGRESS] Progress: 95% (259/270) {"runsPerSecond":"0.29","eta":"37.6s"}
+{"timestamp":"2026-02-18T05:06:19.983Z","level":"progress","message":"Progress: 100% (270/270)","data":{"runsPerSecond":"0.29","eta":"unknown"}}
+[2026-02-18T05:06:19.983Z] [PROGRESS] Progress: 100% (270/270) {"runsPerSecond":"0.29","eta":"unknown"}
+{"timestamp":"2026-02-18T05:06:20.073Z","level":"info","message":"Exporting results..."}
+[2026-02-18T05:06:20.073Z] [INFO    ] Exporting results...
+{"timestamp":"2026-02-18T05:06:20.304Z","level":"info","message":"Experiment completed in 15m 17s"}
+[2026-02-18T05:06:20.304Z] [INFO    ] Experiment completed in 15m 17s
+{"timestamp":"2026-02-18T05:06:20.304Z","level":"info","message":"Total runs: 270"}
+[2026-02-18T05:06:20.304Z] [INFO    ] Total runs: 270
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"info","message":"Successful: 270"}
+[2026-02-18T05:06:20.305Z] [INFO    ] Successful: 270
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"info","message":"Failed: 0"}
+[2026-02-18T05:06:20.305Z] [INFO    ] Failed: 0
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Pass Rate: 0.9595 (std: 0.0290)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Pass Rate: 0.9595 (std: 0.0290)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Quorum Reach Rate: 0.9971 (std: 0.0077)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Quorum Reach Rate: 0.9971 (std: 0.0077)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Avg Time to Decision: 919.4457 (std: 83.9937)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Avg Time to Decision: 919.4457 (std: 83.9937)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Rejection Rate: 0.0405 (std: 0.0290)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Rejection Rate: 0.0405 (std: 0.0290)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Governance Overhead: 84.3223 (std: 3.5201)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Governance Overhead: 84.3223 (std: 3.5201)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Average Turnout: 0.2547 (std: 0.0160)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Average Turnout: 0.2547 (std: 0.0160)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Avg Margin of Victory: 0.4607 (std: 0.0431)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Avg Margin of Victory: 0.4607 (std: 0.0431)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Rate: 2.3933 (std: 0.3967)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Proposal Rate: 2.3933 (std: 0.3967)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Total Proposals: 47.8667 (std: 7.9339)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0] Total Proposals: 47.8667 (std: 7.9339)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Pass Rate: 0.9606 (std: 0.0362)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Pass Rate: 0.9606 (std: 0.0362)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Quorum Reach Rate: 0.9988 (std: 0.0046)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Quorum Reach Rate: 0.9988 (std: 0.0046)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Avg Time to Decision: 918.0351 (std: 100.4969)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Avg Time to Decision: 918.0351 (std: 100.4969)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Rejection Rate: 0.0394 (std: 0.0362)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Rejection Rate: 0.0394 (std: 0.0362)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Governance Overhead: 75.1272 (std: 4.7464)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Governance Overhead: 75.1272 (std: 4.7464)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Average Turnout: 0.2284 (std: 0.0094)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Average Turnout: 0.2284 (std: 0.0094)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Avg Margin of Victory: 0.4765 (std: 0.0561)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Avg Margin of Victory: 0.4765 (std: 0.0561)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Rate: 2.3250 (std: 0.4106)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Proposal Rate: 2.3250 (std: 0.4106)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Total Proposals: 46.5000 (std: 8.2116)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6] Total Proposals: 46.5000 (std: 8.2116)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Pass Rate: 0.9711 (std: 0.0233)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Pass Rate: 0.9711 (std: 0.0233)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Quorum Reach Rate: 0.9993 (std: 0.0039)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Quorum Reach Rate: 0.9993 (std: 0.0039)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Avg Time to Decision: 871.5713 (std: 78.1369)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Avg Time to Decision: 871.5713 (std: 78.1369)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Rejection Rate: 0.0289 (std: 0.0233)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Rejection Rate: 0.0289 (std: 0.0233)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Governance Overhead: 75.8005 (std: 4.4238)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Governance Overhead: 75.8005 (std: 4.4238)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Average Turnout: 0.2264 (std: 0.0084)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Average Turnout: 0.2264 (std: 0.0084)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Avg Margin of Victory: 0.4791 (std: 0.0436)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Avg Margin of Victory: 0.4791 (std: 0.0436)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Rate: 2.5617 (std: 0.3923)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Proposal Rate: 2.5617 (std: 0.3923)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Total Proposals: 51.2333 (std: 7.8463)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12] Total Proposals: 51.2333 (std: 7.8463)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Pass Rate: 0.9819 (std: 0.0195)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Pass Rate: 0.9819 (std: 0.0195)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Quorum Reach Rate: 0.9990 (std: 0.0039)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Quorum Reach Rate: 0.9990 (std: 0.0039)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Avg Time to Decision: 898.6643 (std: 81.2306)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Avg Time to Decision: 898.6643 (std: 81.2306)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Rejection Rate: 0.0181 (std: 0.0195)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Rejection Rate: 0.0181 (std: 0.0195)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Governance Overhead: 82.6546 (std: 3.1224)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Governance Overhead: 82.6546 (std: 3.1224)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Average Turnout: 0.2520 (std: 0.0179)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Average Turnout: 0.2520 (std: 0.0179)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Avg Margin of Victory: 0.5361 (std: 0.0601)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Avg Margin of Victory: 0.5361 (std: 0.0601)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Rate: 2.5700 (std: 0.4961)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Proposal Rate: 2.5700 (std: 0.4961)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Total Proposals: 51.4000 (std: 9.9225)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0] Total Proposals: 51.4000 (std: 9.9225)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Pass Rate: 0.9735 (std: 0.0208)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Pass Rate: 0.9735 (std: 0.0208)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Avg Time to Decision: 869.9974 (std: 95.2291)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Avg Time to Decision: 869.9974 (std: 95.2291)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Rejection Rate: 0.0265 (std: 0.0208)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Rejection Rate: 0.0265 (std: 0.0208)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Governance Overhead: 76.0898 (std: 5.3399)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Governance Overhead: 76.0898 (std: 5.3399)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Average Turnout: 0.2284 (std: 0.0087)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Average Turnout: 0.2284 (std: 0.0087)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Avg Margin of Victory: 0.5315 (std: 0.0539)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Avg Margin of Victory: 0.5315 (std: 0.0539)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Rate: 2.3900 (std: 0.3747)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Proposal Rate: 2.3900 (std: 0.3747)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Total Proposals: 47.8000 (std: 7.4944)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6] Total Proposals: 47.8000 (std: 7.4944)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Pass Rate: 0.9854 (std: 0.0253)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Pass Rate: 0.9854 (std: 0.0253)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Avg Time to Decision: 885.4719 (std: 101.6608)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Avg Time to Decision: 885.4719 (std: 101.6608)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Rejection Rate: 0.0146 (std: 0.0253)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Rejection Rate: 0.0146 (std: 0.0253)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Governance Overhead: 74.3770 (std: 5.1035)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Governance Overhead: 74.3770 (std: 5.1035)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Average Turnout: 0.2258 (std: 0.0119)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Average Turnout: 0.2258 (std: 0.0119)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Avg Margin of Victory: 0.5613 (std: 0.0634)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Avg Margin of Victory: 0.5613 (std: 0.0634)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Rate: 2.4017 (std: 0.5147)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Proposal Rate: 2.4017 (std: 0.5147)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Total Proposals: 48.0333 (std: 10.2939)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12] Total Proposals: 48.0333 (std: 10.2939)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Pass Rate: 0.9849 (std: 0.0163)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Pass Rate: 0.9849 (std: 0.0163)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Quorum Reach Rate: 0.9995 (std: 0.0029)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Quorum Reach Rate: 0.9995 (std: 0.0029)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Avg Time to Decision: 914.6973 (std: 96.4164)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Avg Time to Decision: 914.6973 (std: 96.4164)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Rejection Rate: 0.0151 (std: 0.0163)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Rejection Rate: 0.0151 (std: 0.0163)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Governance Overhead: 80.7785 (std: 4.0824)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Governance Overhead: 80.7785 (std: 4.0824)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Average Turnout: 0.2511 (std: 0.0176)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Average Turnout: 0.2511 (std: 0.0176)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Avg Margin of Victory: 0.5911 (std: 0.0720)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Avg Margin of Victory: 0.5911 (std: 0.0720)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Rate: 2.4317 (std: 0.3743)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Proposal Rate: 2.4317 (std: 0.3743)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Total Proposals: 48.6333 (std: 7.4855)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0] Total Proposals: 48.6333 (std: 7.4855)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Pass Rate: 0.9817 (std: 0.0248)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Pass Rate: 0.9817 (std: 0.0248)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Quorum Reach Rate: 0.9994 (std: 0.0033)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Quorum Reach Rate: 0.9994 (std: 0.0033)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Avg Time to Decision: 886.2030 (std: 75.8165)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Avg Time to Decision: 886.2030 (std: 75.8165)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Rejection Rate: 0.0183 (std: 0.0248)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Rejection Rate: 0.0183 (std: 0.0248)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Governance Overhead: 75.0678 (std: 4.3210)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Governance Overhead: 75.0678 (std: 4.3210)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Average Turnout: 0.2229 (std: 0.0109)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Average Turnout: 0.2229 (std: 0.0109)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Avg Margin of Victory: 0.6083 (std: 0.0730)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Avg Margin of Victory: 0.6083 (std: 0.0730)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Rate: 2.5833 (std: 0.3779)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Proposal Rate: 2.5833 (std: 0.3779)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Total Proposals: 51.6667 (std: 7.5582)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6] Total Proposals: 51.6667 (std: 7.5582)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Pass Rate: 0.9843 (std: 0.0191)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Pass Rate: 0.9843 (std: 0.0191)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Quorum Reach Rate: 0.9992 (std: 0.0041)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Quorum Reach Rate: 0.9992 (std: 0.0041)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Avg Time to Decision: 901.0028 (std: 92.2973)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Avg Time to Decision: 901.0028 (std: 92.2973)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Rejection Rate: 0.0157 (std: 0.0191)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Rejection Rate: 0.0157 (std: 0.0191)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Governance Overhead: 76.2406 (std: 4.0861)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Governance Overhead: 76.2406 (std: 4.0861)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Average Turnout: 0.2260 (std: 0.0096)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Average Turnout: 0.2260 (std: 0.0096)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Avg Margin of Victory: 0.6026 (std: 0.0605)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Avg Margin of Victory: 0.6026 (std: 0.0605)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Rate: 2.3100 (std: 0.3231)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Proposal Rate: 2.3100 (std: 0.3231)
+{"timestamp":"2026-02-18T05:06:20.305Z","level":"metric","message":"[proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Total Proposals: 46.2000 (std: 6.4616)"}
+[2026-02-18T05:06:20.305Z] [METRIC  ] [proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12] Total Proposals: 46.2000 (std: 6.4616)
+{"timestamp":"2026-02-18T05:06:20.306Z","level":"info","message":"Experiment state changed to: completed"}
+[2026-02-18T05:06:20.306Z] [INFO    ] Experiment state changed to: completed

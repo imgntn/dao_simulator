@@ -1,21 +1,11 @@
-✓ Good sample size (100 runs per config) for statistical analysis.
+✓ Good sample size (30 runs per config) for statistical analysis.
 
-High variability in "Participation Trend" (CV=27842.5%). Consider longer simulation runs or more controlled initial conditions.
+Non-normal distribution detected for "Quorum Reach Rate" (skewness=-2.01). Bootstrap CIs are included in stats export.
 
-High variability in "Participation Trend" (CV=949.1%). Consider longer simulation runs or more controlled initial conditions.
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-1.72). Bootstrap CIs are included in stats export.
 
-High variability in "Participation Trend" (CV=216.2%). Consider longer simulation runs or more controlled initial conditions.
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-1.47). Bootstrap CIs are included in stats export.
 
-High variability in "Participation Trend" (CV=151.5%). Consider longer simulation runs or more controlled initial conditions.
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-1.99). Bootstrap CIs are included in stats export.
 
-High variability in "Participation Trend" (CV=104.4%). Consider longer simulation runs or more controlled initial conditions.
-
-Non-normal distribution detected for "Delegate Concentration" (skewness=-1.18). Bootstrap CIs are included in stats export.
-
-Non-normal distribution detected for "Delegate Concentration" (skewness=-1.57). Bootstrap CIs are included in stats export.
-
-Non-normal distribution detected for "Delegate Concentration" (skewness=-2.20). Bootstrap CIs are included in stats export.
-
-Non-normal distribution detected for "Delegate Concentration" (skewness=-2.23). Bootstrap CIs are included in stats export.
-
-Non-normal distribution detected for "Delegate Concentration" (skewness=-1.82). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-3.35). Bootstrap CIs are included in stats export.

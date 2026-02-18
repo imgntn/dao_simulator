@@ -1,25 +1,35 @@
-✓ Good sample size (100 runs per config) for statistical analysis.
+✓ Good sample size (30 runs per config) for statistical analysis.
 
-High variability in "Proposal Pass Rate" (CV=102.9%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Proposal Rejection Rate" (CV=71.6%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "Proposal Pass Rate" (CV=115.0%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Proposal Rejection Rate" (CV=91.9%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "Proposal Pass Rate" (CV=124.3%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Proposal Rejection Rate" (CV=80.7%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Quorum Reach Rate" (skewness=1.15). Bootstrap CIs are included in stats export.
+High variability in "Proposal Rejection Rate" (CV=107.3%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Proposal Pass Rate" (skewness=1.69). Bootstrap CIs are included in stats export.
+High variability in "Proposal Rejection Rate" (CV=78.3%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Proposal Pass Rate" (skewness=1.16). Bootstrap CIs are included in stats export.
+High variability in "Proposal Rejection Rate" (CV=173.5%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Quorum Reach Rate" (skewness=-2.34). Bootstrap CIs are included in stats export.
+High variability in "Proposal Rejection Rate" (CV=108.4%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Quorum Reach Rate" (skewness=-2.97). Bootstrap CIs are included in stats export.
+High variability in "Proposal Rejection Rate" (CV=135.8%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Quorum Reach Rate" (skewness=-1.53). Bootstrap CIs are included in stats export.
+High variability in "Proposal Rejection Rate" (CV=122.0%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Quorum Reach Rate" (skewness=-1.90). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "Quorum Reach Rate" (skewness=-2.36). Bootstrap CIs are included in stats export.
 
-Non-normal distribution detected for "Quorum Reach Rate" (skewness=-3.33). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-1.60). Bootstrap CIs are included in stats export.
 
-Non-normal distribution detected for "Quorum Reach Rate" (skewness=-1.54). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "Quorum Reach Rate" (skewness=-5.48). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Quorum Reach Rate" (skewness=-3.80). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-2.10). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Quorum Reach Rate" (skewness=-5.48). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-1.86). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-1.15). Bootstrap CIs are included in stats export.

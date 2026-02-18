@@ -462,3 +462,1547 @@
 [2026-01-30T09:49:54.400Z] [METRIC  ] [0.1] Final Reputation Gini: 0.9765 (std: 0.0045)
 {"timestamp":"2026-01-30T09:49:54.400Z","level":"info","message":"Experiment state changed to: completed"}
 [2026-01-30T09:49:54.400Z] [INFO    ] Experiment state changed to: completed
+{"timestamp":"2026-02-18T03:08:10.175Z","level":"info","message":"Starting experiment: Sensitivity - Quorum Threshold"}
+[2026-02-18T03:08:10.175Z] [INFO    ] Starting experiment: Sensitivity - Quorum Threshold
+{"timestamp":"2026-02-18T03:08:10.175Z","level":"info","message":"Description: Quorum sweep to characterize decision legitimacy vs throughput."}
+[2026-02-18T03:08:10.175Z] [INFO    ] Description: Quorum sweep to characterize decision legitimacy vs throughput.
+{"timestamp":"2026-02-18T03:08:10.175Z","level":"info","message":"Total runs: 18 (2 per config)"}
+[2026-02-18T03:08:10.175Z] [INFO    ] Total runs: 18 (2 per config)
+{"timestamp":"2026-02-18T03:08:10.175Z","level":"info","message":"Workers: 4"}
+[2026-02-18T03:08:10.175Z] [INFO    ] Workers: 4
+{"timestamp":"2026-02-18T03:08:10.175Z","level":"info","message":"Output: results/paper/03-sensitivity-quorum"}
+[2026-02-18T03:08:10.175Z] [INFO    ] Output: results/paper/03-sensitivity-quorum
+{"timestamp":"2026-02-18T03:08:10.175Z","level":"info","message":"Sweep parameter: governance_config.quorumPercentage"}
+[2026-02-18T03:08:10.175Z] [INFO    ] Sweep parameter: governance_config.quorumPercentage
+{"timestamp":"2026-02-18T03:08:10.189Z","level":"info","message":"Experiment state changed to: running"}
+[2026-02-18T03:08:10.189Z] [INFO    ] Experiment state changed to: running
+{"timestamp":"2026-02-18T03:08:21.075Z","level":"progress","message":"Progress: 5% (1/18)","data":{"runsPerSecond":"0.09","eta":"3m 5s"}}
+[2026-02-18T03:08:21.075Z] [PROGRESS] Progress: 5% (1/18) {"runsPerSecond":"0.09","eta":"3m 5s"}
+{"timestamp":"2026-02-18T03:08:47.851Z","level":"progress","message":"Progress: 50% (9/18)","data":{"runsPerSecond":"0.24","eta":"37.7s"}}
+[2026-02-18T03:08:47.851Z] [PROGRESS] Progress: 50% (9/18) {"runsPerSecond":"0.24","eta":"37.7s"}
+{"timestamp":"2026-02-18T03:08:49.902Z","level":"progress","message":"Progress: 55% (10/18)","data":{"runsPerSecond":"0.25","eta":"31.8s"}}
+[2026-02-18T03:08:49.902Z] [PROGRESS] Progress: 55% (10/18) {"runsPerSecond":"0.25","eta":"31.8s"}
+{"timestamp":"2026-02-18T03:09:12.186Z","level":"progress","message":"Progress: 100% (18/18)","data":{"runsPerSecond":"0.29","eta":"unknown"}}
+[2026-02-18T03:09:12.186Z] [PROGRESS] Progress: 100% (18/18) {"runsPerSecond":"0.29","eta":"unknown"}
+{"timestamp":"2026-02-18T03:09:12.373Z","level":"info","message":"Exporting results..."}
+[2026-02-18T03:09:12.373Z] [INFO    ] Exporting results...
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"info","message":"Experiment completed in 1m 2s"}
+[2026-02-18T03:09:12.405Z] [INFO    ] Experiment completed in 1m 2s
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"info","message":"Total runs: 18"}
+[2026-02-18T03:09:12.405Z] [INFO    ] Total runs: 18
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"info","message":"Successful: 18"}
+[2026-02-18T03:09:12.405Z] [INFO    ] Successful: 18
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"info","message":"Failed: 0"}
+[2026-02-18T03:09:12.405Z] [INFO    ] Failed: 0
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Proposal Pass Rate: 0.9819 (std: 0.0027)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Proposal Pass Rate: 0.9819 (std: 0.0027)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Average Turnout: 0.2369 (std: 0.0021)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Average Turnout: 0.2369 (std: 0.0021)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Final Treasury: 11426.4551 (std: 168.2551)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Final Treasury: 11426.4551 (std: 168.2551)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Final Token Price: 1.5848 (std: 0.7378)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Final Token Price: 1.5848 (std: 0.7378)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Total Proposals: 57.5000 (std: 10.6066)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Total Proposals: 57.5000 (std: 10.6066)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Avg Margin of Victory: 0.5299 (std: 0.0091)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Avg Margin of Victory: 0.5299 (std: 0.0091)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Avg Time to Decision: 895.0023 (std: 63.0205)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Avg Time to Decision: 895.0023 (std: 63.0205)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Proposal Rejection Rate: 0.0181 (std: 0.0027)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Proposal Rejection Rate: 0.0181 (std: 0.0027)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Governance Overhead: 73.3652 (std: 3.6414)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Governance Overhead: 73.3652 (std: 3.6414)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Unique Voter Count: 328.5000 (std: 7.7782)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Unique Voter Count: 328.5000 (std: 7.7782)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Voter Participation Rate: 0.2296 (std: 0.0155)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Voter Participation Rate: 0.2296 (std: 0.0155)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Voter Concentration Gini: 0.4072 (std: 0.0015)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Voter Concentration Gini: 0.4072 (std: 0.0015)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Delegate Concentration: 0.2603 (std: 0.0039)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Delegate Concentration: 0.2603 (std: 0.0039)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Avg Votes Per Proposal: 71.7315 (std: 5.9517)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Avg Votes Per Proposal: 71.7315 (std: 5.9517)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Voter Retention Rate: 0.9320 (std: 0.0139)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Voter Retention Rate: 0.9320 (std: 0.0139)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Voting Power Utilization: 0.1781 (std: 0.0041)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Voting Power Utilization: 0.1781 (std: 0.0041)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Treasury Volatility: 0.2645 (std: 0.0237)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Treasury Volatility: 0.2645 (std: 0.0237)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Treasury Growth Rate: -0.7213 (std: 0.0307)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Treasury Growth Rate: -0.7213 (std: 0.0307)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Staking Participation: 0.0944 (std: 0.0019)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Staking Participation: 0.0944 (std: 0.0019)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Token Concentration Gini: 0.4184 (std: 0.0320)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Token Concentration Gini: 0.4184 (std: 0.0320)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Avg Member Wealth: 119.1090 (std: 9.4133)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Avg Member Wealth: 119.1090 (std: 9.4133)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Wealth Mobility: 0.5816 (std: 0.0320)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Wealth Mobility: 0.5816 (std: 0.0320)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Whale Influence: 0.2615 (std: 0.0192)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Whale Influence: 0.2615 (std: 0.0192)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Whale Proposal Rate: 0.7362 (std: 0.0620)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Whale Proposal Rate: 0.7362 (std: 0.0620)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Governance Capture Risk: 0.2563 (std: 0.0045)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Governance Capture Risk: 0.2563 (std: 0.0045)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Vote Buying Vulnerability: 86.0388 (std: 121.6773)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Vote Buying Vulnerability: 86.0388 (std: 121.6773)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Single Entity Control: 0.0202 (std: 0.0015)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Single Entity Control: 0.0202 (std: 0.0015)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Collusion Threshold: 0.3494 (std: 0.0087)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Collusion Threshold: 0.3494 (std: 0.0087)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Participation Trend: 0.0021 (std: 0.0005)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Participation Trend: 0.0021 (std: 0.0005)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Treasury Trend: -13.5443 (std: 4.3747)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Treasury Trend: -13.5443 (std: 4.3747)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Proposal Rate: 2.8750 (std: 0.5303)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Proposal Rate: 2.8750 (std: 0.5303)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Governance Activity Index: 0.0050 (std: 0.0006)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Governance Activity Index: 0.0050 (std: 0.0006)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Final Gini: 0.4181 (std: 0.0322)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Final Gini: 0.4181 (std: 0.0322)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.05] Final Reputation Gini: 0.9798 (std: 0.0002)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.05] Final Reputation Gini: 0.9798 (std: 0.0002)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Proposal Pass Rate: 0.9900 (std: 0.0141)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Proposal Pass Rate: 0.9900 (std: 0.0141)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Average Turnout: 0.2330 (std: 0.0082)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Average Turnout: 0.2330 (std: 0.0082)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Final Treasury: 11560.6635 (std: 692.0288)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Final Treasury: 11560.6635 (std: 692.0288)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Final Token Price: 1.4013 (std: 0.2423)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Final Token Price: 1.4013 (std: 0.2423)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Total Proposals: 50.0000 (std: 1.4142)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Total Proposals: 50.0000 (std: 1.4142)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Avg Margin of Victory: 0.5722 (std: 0.0011)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Avg Margin of Victory: 0.5722 (std: 0.0011)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Avg Time to Decision: 892.7657 (std: 57.3807)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Avg Time to Decision: 892.7657 (std: 57.3807)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Proposal Rejection Rate: 0.0100 (std: 0.0141)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Proposal Rejection Rate: 0.0100 (std: 0.0141)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Governance Overhead: 74.8702 (std: 0.6650)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Governance Overhead: 74.8702 (std: 0.6650)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Unique Voter Count: 329.0000 (std: 1.4142)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Unique Voter Count: 329.0000 (std: 1.4142)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Voter Participation Rate: 0.2361 (std: 0.0050)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Voter Participation Rate: 0.2361 (std: 0.0050)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Voter Concentration Gini: 0.3940 (std: 0.0011)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Voter Concentration Gini: 0.3940 (std: 0.0011)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Delegate Concentration: 0.2494 (std: 0.0078)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Delegate Concentration: 0.2494 (std: 0.0078)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Avg Votes Per Proposal: 72.6032 (std: 0.4779)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Avg Votes Per Proposal: 72.6032 (std: 0.4779)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Voter Retention Rate: 0.9176 (std: 0.0013)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Voter Retention Rate: 0.9176 (std: 0.0013)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Voting Power Utilization: 0.1786 (std: 0.0097)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Voting Power Utilization: 0.1786 (std: 0.0097)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Treasury Volatility: 0.2403 (std: 0.0296)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Treasury Volatility: 0.2403 (std: 0.0296)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Treasury Growth Rate: -0.7045 (std: 0.0220)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Treasury Growth Rate: -0.7045 (std: 0.0220)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Staking Participation: 0.0861 (std: 0.0078)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Staking Participation: 0.0861 (std: 0.0078)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Token Concentration Gini: 0.4233 (std: 0.0098)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Token Concentration Gini: 0.4233 (std: 0.0098)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Avg Member Wealth: 118.9888 (std: 7.0423)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Avg Member Wealth: 118.9888 (std: 7.0423)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Wealth Mobility: 0.5767 (std: 0.0098)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Wealth Mobility: 0.5767 (std: 0.0098)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Whale Influence: 0.2603 (std: 0.0092)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Whale Influence: 0.2603 (std: 0.0092)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Whale Proposal Rate: 0.7595 (std: 0.0351)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Whale Proposal Rate: 0.7595 (std: 0.0351)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Governance Capture Risk: 0.2530 (std: 0.0077)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Governance Capture Risk: 0.2530 (std: 0.0077)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Vote Buying Vulnerability: 99.5318 (std: 140.7592)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Vote Buying Vulnerability: 99.5318 (std: 140.7592)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Single Entity Control: 0.0195 (std: 0.0022)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Single Entity Control: 0.0195 (std: 0.0022)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Collusion Threshold: 0.3481 (std: 0.0035)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Collusion Threshold: 0.3481 (std: 0.0035)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Participation Trend: 0.0020 (std: 0.0001)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Participation Trend: 0.0020 (std: 0.0001)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Treasury Trend: -11.3212 (std: 0.4366)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Treasury Trend: -11.3212 (std: 0.4366)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Proposal Rate: 2.5000 (std: 0.0707)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Proposal Rate: 2.5000 (std: 0.0707)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Governance Activity Index: 0.0043 (std: 0.0000)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Governance Activity Index: 0.0043 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Final Gini: 0.4231 (std: 0.0099)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Final Gini: 0.4231 (std: 0.0099)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.01] Final Reputation Gini: 0.9770 (std: 0.0032)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.01] Final Reputation Gini: 0.9770 (std: 0.0032)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Proposal Pass Rate: 0.9517 (std: 0.0260)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Proposal Pass Rate: 0.9517 (std: 0.0260)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Average Turnout: 0.2384 (std: 0.0011)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Average Turnout: 0.2384 (std: 0.0011)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Final Treasury: 12015.0485 (std: 47.8058)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Final Treasury: 12015.0485 (std: 47.8058)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Final Token Price: 32.5492 (std: 36.8576)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Final Token Price: 32.5492 (std: 36.8576)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Total Proposals: 56.5000 (std: 14.8492)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Total Proposals: 56.5000 (std: 14.8492)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Quorum Reach Rate: 0.6694 (std: 0.0243)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Quorum Reach Rate: 0.6694 (std: 0.0243)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Avg Margin of Victory: 0.4705 (std: 0.0446)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Avg Margin of Victory: 0.4705 (std: 0.0446)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Avg Time to Decision: 993.5683 (std: 19.9695)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Avg Time to Decision: 993.5683 (std: 19.9695)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Proposal Rejection Rate: 0.0483 (std: 0.0260)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Proposal Rejection Rate: 0.0483 (std: 0.0260)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Governance Overhead: 70.7970 (std: 2.2670)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Governance Overhead: 70.7970 (std: 2.2670)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Unique Voter Count: 323.5000 (std: 4.9497)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Unique Voter Count: 323.5000 (std: 4.9497)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Voter Participation Rate: 0.2316 (std: 0.0045)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Voter Participation Rate: 0.2316 (std: 0.0045)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Voter Concentration Gini: 0.4256 (std: 0.0032)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Voter Concentration Gini: 0.4256 (std: 0.0032)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Delegate Concentration: 0.2692 (std: 0.0061)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Delegate Concentration: 0.2692 (std: 0.0061)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Avg Votes Per Proposal: 70.0101 (std: 1.1540)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Avg Votes Per Proposal: 70.0101 (std: 1.1540)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Voter Retention Rate: 0.9111 (std: 0.0186)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Voter Retention Rate: 0.9111 (std: 0.0186)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Voting Power Utilization: 0.1741 (std: 0.0013)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Voting Power Utilization: 0.1741 (std: 0.0013)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Treasury Volatility: 0.2315 (std: 0.0076)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Treasury Volatility: 0.2315 (std: 0.0076)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Treasury Growth Rate: -0.7109 (std: 0.0310)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Treasury Growth Rate: -0.7109 (std: 0.0310)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Staking Participation: 0.0842 (std: 0.0104)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Staking Participation: 0.0842 (std: 0.0104)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Token Concentration Gini: 0.4533 (std: 0.0212)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Token Concentration Gini: 0.4533 (std: 0.0212)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Avg Member Wealth: 119.2354 (std: 2.7299)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Avg Member Wealth: 119.2354 (std: 2.7299)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Wealth Mobility: 0.5467 (std: 0.0212)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Wealth Mobility: 0.5467 (std: 0.0212)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Whale Influence: 0.2750 (std: 0.0055)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Whale Influence: 0.2750 (std: 0.0055)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Whale Proposal Rate: 0.7881 (std: 0.1308)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Whale Proposal Rate: 0.7881 (std: 0.1308)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Governance Capture Risk: 0.2713 (std: 0.0062)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Governance Capture Risk: 0.2713 (std: 0.0062)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Vote Buying Vulnerability: 151.8741 (std: 131.9215)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Vote Buying Vulnerability: 151.8741 (std: 131.9215)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Single Entity Control: 0.0196 (std: 0.0011)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Single Entity Control: 0.0196 (std: 0.0011)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Collusion Threshold: 0.3321 (std: 0.0157)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Collusion Threshold: 0.3321 (std: 0.0157)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Participation Trend: 0.0021 (std: 0.0006)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Participation Trend: 0.0021 (std: 0.0006)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Treasury Trend: -8.5035 (std: 4.1192)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Treasury Trend: -8.5035 (std: 4.1192)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Proposal Rate: 2.8250 (std: 0.7425)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Proposal Rate: 2.8250 (std: 0.7425)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Governance Activity Index: 0.0049 (std: 0.0013)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Governance Activity Index: 0.0049 (std: 0.0013)
+{"timestamp":"2026-02-18T03:09:12.405Z","level":"metric","message":"[0.15] Final Gini: 0.4536 (std: 0.0209)"}
+[2026-02-18T03:09:12.405Z] [METRIC  ] [0.15] Final Gini: 0.4536 (std: 0.0209)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.15] Final Reputation Gini: 0.9818 (std: 0.0065)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.15] Final Reputation Gini: 0.9818 (std: 0.0065)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Proposal Pass Rate: 0.9800 (std: 0.0283)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Proposal Pass Rate: 0.9800 (std: 0.0283)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Average Turnout: 0.2292 (std: 0.0093)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Average Turnout: 0.2292 (std: 0.0093)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Final Treasury: 11970.1064 (std: 112.2047)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Final Treasury: 11970.1064 (std: 112.2047)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Final Token Price: 2.0771 (std: 0.5207)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Final Token Price: 2.0771 (std: 0.5207)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Total Proposals: 44.0000 (std: 9.8995)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Total Proposals: 44.0000 (std: 9.8995)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Quorum Reach Rate: 0.9730 (std: 0.0382)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Quorum Reach Rate: 0.9730 (std: 0.0382)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Avg Margin of Victory: 0.5681 (std: 0.0634)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Avg Margin of Victory: 0.5681 (std: 0.0634)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Avg Time to Decision: 968.0650 (std: 82.4699)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Avg Time to Decision: 968.0650 (std: 82.4699)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Proposal Rejection Rate: 0.0200 (std: 0.0283)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Proposal Rejection Rate: 0.0200 (std: 0.0283)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Governance Overhead: 72.1822 (std: 0.3708)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Governance Overhead: 72.1822 (std: 0.3708)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Unique Voter Count: 321.0000 (std: 1.4142)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Unique Voter Count: 321.0000 (std: 1.4142)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Voter Participation Rate: 0.2322 (std: 0.0056)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Voter Participation Rate: 0.2322 (std: 0.0056)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Voter Concentration Gini: 0.4230 (std: 0.0039)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Voter Concentration Gini: 0.4230 (std: 0.0039)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Delegate Concentration: 0.2727 (std: 0.0052)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Delegate Concentration: 0.2727 (std: 0.0052)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Avg Votes Per Proposal: 70.4981 (std: 0.0165)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Avg Votes Per Proposal: 70.4981 (std: 0.0165)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Voter Retention Rate: 0.9089 (std: 0.0081)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Voter Retention Rate: 0.9089 (std: 0.0081)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Voting Power Utilization: 0.1749 (std: 0.0064)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Voting Power Utilization: 0.1749 (std: 0.0064)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Treasury Volatility: 0.2198 (std: 0.0108)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Treasury Volatility: 0.2198 (std: 0.0108)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Treasury Growth Rate: -0.6903 (std: 0.0018)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Treasury Growth Rate: -0.6903 (std: 0.0018)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Staking Participation: 0.0951 (std: 0.0110)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Staking Participation: 0.0951 (std: 0.0110)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Token Concentration Gini: 0.4503 (std: 0.0158)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Token Concentration Gini: 0.4503 (std: 0.0158)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Avg Member Wealth: 120.9602 (std: 1.0976)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Avg Member Wealth: 120.9602 (std: 1.0976)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Wealth Mobility: 0.5497 (std: 0.0158)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Wealth Mobility: 0.5497 (std: 0.0158)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Whale Influence: 0.2789 (std: 0.0013)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Whale Influence: 0.2789 (std: 0.0013)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Whale Proposal Rate: 0.7459 (std: 0.1375)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Whale Proposal Rate: 0.7459 (std: 0.1375)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Governance Capture Risk: 0.2772 (std: 0.0111)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Governance Capture Risk: 0.2772 (std: 0.0111)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Vote Buying Vulnerability: 122.0264 (std: 172.5714)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Vote Buying Vulnerability: 122.0264 (std: 172.5714)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Single Entity Control: 0.0197 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Single Entity Control: 0.0197 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Collusion Threshold: 0.3370 (std: 0.0052)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Collusion Threshold: 0.3370 (std: 0.0052)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Participation Trend: 0.0025 (std: 0.0008)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Participation Trend: 0.0025 (std: 0.0008)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Treasury Trend: -10.1786 (std: 1.0977)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Treasury Trend: -10.1786 (std: 1.0977)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Proposal Rate: 2.2000 (std: 0.4950)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Proposal Rate: 2.2000 (std: 0.4950)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Governance Activity Index: 0.0038 (std: 0.0010)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Governance Activity Index: 0.0038 (std: 0.0010)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Final Gini: 0.4499 (std: 0.0153)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Final Gini: 0.4499 (std: 0.0153)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.1] Final Reputation Gini: 0.9825 (std: 0.0046)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.1] Final Reputation Gini: 0.9825 (std: 0.0046)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Proposal Pass Rate: 0.9517 (std: 0.0117)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Proposal Pass Rate: 0.9517 (std: 0.0117)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Average Turnout: 0.2190 (std: 0.0016)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Average Turnout: 0.2190 (std: 0.0016)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Final Treasury: 11263.1113 (std: 203.0423)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Final Treasury: 11263.1113 (std: 203.0423)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Final Token Price: 1.2648 (std: 0.3699)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Final Token Price: 1.2648 (std: 0.3699)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Total Proposals: 52.5000 (std: 2.1213)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Total Proposals: 52.5000 (std: 2.1213)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Quorum Reach Rate: 0.2277 (std: 0.0447)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Quorum Reach Rate: 0.2277 (std: 0.0447)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Avg Margin of Victory: 0.4794 (std: 0.0204)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Avg Margin of Victory: 0.4794 (std: 0.0204)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Avg Time to Decision: 826.7751 (std: 60.7333)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Avg Time to Decision: 826.7751 (std: 60.7333)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Proposal Rejection Rate: 0.0483 (std: 0.0117)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Proposal Rejection Rate: 0.0483 (std: 0.0117)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Governance Overhead: 79.2040 (std: 0.9390)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Governance Overhead: 79.2040 (std: 0.9390)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Unique Voter Count: 323.0000 (std: 9.8995)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Unique Voter Count: 323.0000 (std: 9.8995)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Voter Participation Rate: 0.2508 (std: 0.0074)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Voter Participation Rate: 0.2508 (std: 0.0074)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Voter Concentration Gini: 0.4010 (std: 0.0148)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Voter Concentration Gini: 0.4010 (std: 0.0148)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Delegate Concentration: 0.2707 (std: 0.0108)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Delegate Concentration: 0.2707 (std: 0.0108)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Avg Votes Per Proposal: 77.6944 (std: 0.9821)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Avg Votes Per Proposal: 77.6944 (std: 0.9821)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Voter Retention Rate: 0.9191 (std: 0.0201)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Voter Retention Rate: 0.9191 (std: 0.0201)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Voting Power Utilization: 0.1750 (std: 0.0057)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Voting Power Utilization: 0.1750 (std: 0.0057)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Treasury Volatility: 0.2242 (std: 0.0208)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Treasury Volatility: 0.2242 (std: 0.0208)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Treasury Growth Rate: -0.7221 (std: 0.0376)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Treasury Growth Rate: -0.7221 (std: 0.0376)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Staking Participation: 0.0753 (std: 0.0028)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Staking Participation: 0.0753 (std: 0.0028)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Token Concentration Gini: 0.4801 (std: 0.0017)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Token Concentration Gini: 0.4801 (std: 0.0017)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Avg Member Wealth: 133.0855 (std: 3.9733)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Avg Member Wealth: 133.0855 (std: 3.9733)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Wealth Mobility: 0.5199 (std: 0.0017)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Wealth Mobility: 0.5199 (std: 0.0017)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Whale Influence: 0.2710 (std: 0.0088)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Whale Influence: 0.2710 (std: 0.0088)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Whale Proposal Rate: 0.8186 (std: 0.0208)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Whale Proposal Rate: 0.8186 (std: 0.0208)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Governance Capture Risk: 0.2737 (std: 0.0016)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Governance Capture Risk: 0.2737 (std: 0.0016)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Vote Buying Vulnerability: 432.0143 (std: 97.6441)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Vote Buying Vulnerability: 432.0143 (std: 97.6441)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Single Entity Control: 0.0175 (std: 0.0007)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Single Entity Control: 0.0175 (std: 0.0007)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Collusion Threshold: 0.3296 (std: 0.0052)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Collusion Threshold: 0.3296 (std: 0.0052)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Participation Trend: 0.0016 (std: 0.0002)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Participation Trend: 0.0016 (std: 0.0002)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Treasury Trend: -10.8442 (std: 1.2912)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Treasury Trend: -10.8442 (std: 1.2912)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Proposal Rate: 2.6250 (std: 0.1061)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Proposal Rate: 2.6250 (std: 0.1061)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Governance Activity Index: 0.0045 (std: 0.0003)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Governance Activity Index: 0.0045 (std: 0.0003)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Final Gini: 0.4799 (std: 0.0018)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Final Gini: 0.4799 (std: 0.0018)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.2] Final Reputation Gini: 0.9832 (std: 0.0037)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.2] Final Reputation Gini: 0.9832 (std: 0.0037)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Proposal Pass Rate: 0.9746 (std: 0.0097)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Proposal Pass Rate: 0.9746 (std: 0.0097)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Average Turnout: 0.2170 (std: 0.0007)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Average Turnout: 0.2170 (std: 0.0007)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Final Treasury: 12052.5795 (std: 2.7556)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Final Treasury: 12052.5795 (std: 2.7556)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Final Token Price: 3.0953 (std: 1.2474)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Final Token Price: 3.0953 (std: 1.2474)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Total Proposals: 44.5000 (std: 16.2635)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Total Proposals: 44.5000 (std: 16.2635)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Quorum Reach Rate: 0.0089 (std: 0.0126)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Quorum Reach Rate: 0.0089 (std: 0.0126)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Avg Margin of Victory: 0.5744 (std: 0.1052)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Avg Margin of Victory: 0.5744 (std: 0.1052)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Avg Time to Decision: 837.0155 (std: 150.9322)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Avg Time to Decision: 837.0155 (std: 150.9322)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Proposal Rejection Rate: 0.0254 (std: 0.0097)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Proposal Rejection Rate: 0.0254 (std: 0.0097)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Governance Overhead: 80.4567 (std: 3.1862)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Governance Overhead: 80.4567 (std: 3.1862)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Unique Voter Count: 334.5000 (std: 7.7782)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Unique Voter Count: 334.5000 (std: 7.7782)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Voter Participation Rate: 0.2431 (std: 0.0038)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Voter Participation Rate: 0.2431 (std: 0.0038)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Voter Concentration Gini: 0.4002 (std: 0.0081)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Voter Concentration Gini: 0.4002 (std: 0.0081)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Delegate Concentration: 0.2601 (std: 0.0074)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Delegate Concentration: 0.2601 (std: 0.0074)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Avg Votes Per Proposal: 76.5538 (std: 1.6166)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Avg Votes Per Proposal: 76.5538 (std: 1.6166)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Voter Retention Rate: 0.8988 (std: 0.0122)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Voter Retention Rate: 0.8988 (std: 0.0122)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Voting Power Utilization: 0.1724 (std: 0.0024)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Voting Power Utilization: 0.1724 (std: 0.0024)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Treasury Volatility: 0.2267 (std: 0.0165)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Treasury Volatility: 0.2267 (std: 0.0165)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Treasury Growth Rate: -0.7044 (std: 0.0221)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Treasury Growth Rate: -0.7044 (std: 0.0221)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Staking Participation: 0.0882 (std: 0.0107)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Staking Participation: 0.0882 (std: 0.0107)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Token Concentration Gini: 0.4782 (std: 0.0056)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Token Concentration Gini: 0.4782 (std: 0.0056)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Avg Member Wealth: 130.9236 (std: 0.6511)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Avg Member Wealth: 130.9236 (std: 0.6511)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Wealth Mobility: 0.5218 (std: 0.0056)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Wealth Mobility: 0.5218 (std: 0.0056)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Whale Influence: 0.2666 (std: 0.0031)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Whale Influence: 0.2666 (std: 0.0031)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Whale Proposal Rate: 0.8555 (std: 0.0528)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Whale Proposal Rate: 0.8555 (std: 0.0528)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Governance Capture Risk: 0.2658 (std: 0.0054)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Governance Capture Risk: 0.2658 (std: 0.0054)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Vote Buying Vulnerability: 157.4086 (std: 222.6093)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Vote Buying Vulnerability: 157.4086 (std: 222.6093)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Single Entity Control: 0.0188 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Single Entity Control: 0.0188 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Collusion Threshold: 0.3321 (std: 0.0017)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Collusion Threshold: 0.3321 (std: 0.0017)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Participation Trend: 0.0025 (std: 0.0009)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Participation Trend: 0.0025 (std: 0.0009)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Treasury Trend: -9.0419 (std: 2.4344)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Treasury Trend: -9.0419 (std: 2.4344)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Proposal Rate: 2.2250 (std: 0.8132)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Proposal Rate: 2.2250 (std: 0.8132)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Governance Activity Index: 0.0037 (std: 0.0014)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Governance Activity Index: 0.0037 (std: 0.0014)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Final Gini: 0.4782 (std: 0.0059)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Final Gini: 0.4782 (std: 0.0059)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.25] Final Reputation Gini: 0.9788 (std: 0.0010)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.25] Final Reputation Gini: 0.9788 (std: 0.0010)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Proposal Pass Rate: 0.9741 (std: 0.0366)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Proposal Pass Rate: 0.9741 (std: 0.0366)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Average Turnout: 0.2259 (std: 0.0031)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Average Turnout: 0.2259 (std: 0.0031)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Final Treasury: 11655.7991 (std: 556.6826)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Final Treasury: 11655.7991 (std: 556.6826)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Final Token Price: 119.2493 (std: 163.7430)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Final Token Price: 119.2493 (std: 163.7430)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Total Proposals: 53.0000 (std: 7.0711)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Total Proposals: 53.0000 (std: 7.0711)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Quorum Reach Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Quorum Reach Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Avg Margin of Victory: 0.5216 (std: 0.0580)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Avg Margin of Victory: 0.5216 (std: 0.0580)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Avg Time to Decision: 877.5645 (std: 37.3240)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Avg Time to Decision: 877.5645 (std: 37.3240)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Proposal Rejection Rate: 0.0259 (std: 0.0366)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Proposal Rejection Rate: 0.0259 (std: 0.0366)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Governance Overhead: 75.5960 (std: 1.1810)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Governance Overhead: 75.5960 (std: 1.1810)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Unique Voter Count: 324.5000 (std: 4.9497)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Unique Voter Count: 324.5000 (std: 4.9497)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Voter Participation Rate: 0.2418 (std: 0.0050)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Voter Participation Rate: 0.2418 (std: 0.0050)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Voter Concentration Gini: 0.4136 (std: 0.0118)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Voter Concentration Gini: 0.4136 (std: 0.0118)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Delegate Concentration: 0.2781 (std: 0.0108)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Delegate Concentration: 0.2781 (std: 0.0108)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Avg Votes Per Proposal: 74.0384 (std: 3.3836)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Avg Votes Per Proposal: 74.0384 (std: 3.3836)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Voter Retention Rate: 0.9277 (std: 0.0111)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Voter Retention Rate: 0.9277 (std: 0.0111)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Voting Power Utilization: 0.1771 (std: 0.0024)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Voting Power Utilization: 0.1771 (std: 0.0024)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Treasury Volatility: 0.2196 (std: 0.0082)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Treasury Volatility: 0.2196 (std: 0.0082)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Treasury Growth Rate: -0.7030 (std: 0.0198)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Treasury Growth Rate: -0.7030 (std: 0.0198)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Staking Participation: 0.0907 (std: 0.0091)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Staking Participation: 0.0907 (std: 0.0091)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Token Concentration Gini: 0.4434 (std: 0.0313)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Token Concentration Gini: 0.4434 (std: 0.0313)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Avg Member Wealth: 123.6020 (std: 7.1237)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Avg Member Wealth: 123.6020 (std: 7.1237)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Wealth Mobility: 0.5566 (std: 0.0313)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Wealth Mobility: 0.5566 (std: 0.0313)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Whale Influence: 0.2798 (std: 0.0243)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Whale Influence: 0.2798 (std: 0.0243)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Whale Proposal Rate: 0.8908 (std: 0.0813)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Whale Proposal Rate: 0.8908 (std: 0.0813)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Governance Capture Risk: 0.2863 (std: 0.0184)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Governance Capture Risk: 0.2863 (std: 0.0184)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Vote Buying Vulnerability: 89.8983 (std: 127.1355)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Vote Buying Vulnerability: 89.8983 (std: 127.1355)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Single Entity Control: 0.0170 (std: 0.0023)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Single Entity Control: 0.0170 (std: 0.0023)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Collusion Threshold: 0.3407 (std: 0.0140)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Collusion Threshold: 0.3407 (std: 0.0140)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Participation Trend: 0.0016 (std: 0.0002)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Participation Trend: 0.0016 (std: 0.0002)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Treasury Trend: -11.0509 (std: 4.0583)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Treasury Trend: -11.0509 (std: 4.0583)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Proposal Rate: 2.6500 (std: 0.3536)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Proposal Rate: 2.6500 (std: 0.3536)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Governance Activity Index: 0.0046 (std: 0.0008)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Governance Activity Index: 0.0046 (std: 0.0008)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Final Gini: 0.4434 (std: 0.0312)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Final Gini: 0.4434 (std: 0.0312)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.3] Final Reputation Gini: 0.9834 (std: 0.0024)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.3] Final Reputation Gini: 0.9834 (std: 0.0024)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Proposal Pass Rate: 0.9909 (std: 0.0129)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Proposal Pass Rate: 0.9909 (std: 0.0129)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Average Turnout: 0.2204 (std: 0.0101)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Average Turnout: 0.2204 (std: 0.0101)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Final Treasury: 11492.5961 (std: 201.1104)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Final Treasury: 11492.5961 (std: 201.1104)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Final Token Price: 1.0336 (std: 0.1205)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Final Token Price: 1.0336 (std: 0.1205)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Total Proposals: 57.0000 (std: 1.4142)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Total Proposals: 57.0000 (std: 1.4142)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Quorum Reach Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Quorum Reach Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Avg Margin of Victory: 0.5499 (std: 0.0320)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Avg Margin of Victory: 0.5499 (std: 0.0320)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Avg Time to Decision: 844.5182 (std: 34.0825)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Avg Time to Decision: 844.5182 (std: 34.0825)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Proposal Rejection Rate: 0.0091 (std: 0.0129)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Proposal Rejection Rate: 0.0091 (std: 0.0129)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Governance Overhead: 79.5455 (std: 1.1571)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Governance Overhead: 79.5455 (std: 1.1571)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Unique Voter Count: 336.0000 (std: 7.0711)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Unique Voter Count: 336.0000 (std: 7.0711)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Voter Participation Rate: 0.2447 (std: 0.0065)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Voter Participation Rate: 0.2447 (std: 0.0065)
+{"timestamp":"2026-02-18T03:09:12.406Z","level":"metric","message":"[0.4] Voter Concentration Gini: 0.3880 (std: 0.0121)"}
+[2026-02-18T03:09:12.406Z] [METRIC  ] [0.4] Voter Concentration Gini: 0.3880 (std: 0.0121)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Delegate Concentration: 0.2700 (std: 0.0101)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Delegate Concentration: 0.2700 (std: 0.0101)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Avg Votes Per Proposal: 76.7919 (std: 3.0217)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Avg Votes Per Proposal: 76.7919 (std: 3.0217)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Voter Retention Rate: 0.9041 (std: 0.0089)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Voter Retention Rate: 0.9041 (std: 0.0089)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Voting Power Utilization: 0.1735 (std: 0.0092)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Voting Power Utilization: 0.1735 (std: 0.0092)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Treasury Volatility: 0.2296 (std: 0.0354)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Treasury Volatility: 0.2296 (std: 0.0354)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Treasury Growth Rate: -0.6962 (std: 0.0103)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Treasury Growth Rate: -0.6962 (std: 0.0103)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Staking Participation: 0.0636 (std: 0.0025)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Staking Participation: 0.0636 (std: 0.0025)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Token Concentration Gini: 0.4764 (std: 0.0040)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Token Concentration Gini: 0.4764 (std: 0.0040)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Avg Member Wealth: 129.5665 (std: 0.5742)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Avg Member Wealth: 129.5665 (std: 0.5742)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Wealth Mobility: 0.5236 (std: 0.0040)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Wealth Mobility: 0.5236 (std: 0.0040)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Whale Influence: 0.2628 (std: 0.0185)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Whale Influence: 0.2628 (std: 0.0185)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Whale Proposal Rate: 0.8073 (std: 0.0200)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Whale Proposal Rate: 0.8073 (std: 0.0200)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Governance Capture Risk: 0.2690 (std: 0.0071)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Governance Capture Risk: 0.2690 (std: 0.0071)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Vote Buying Vulnerability: 74.8058 (std: 105.7914)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Vote Buying Vulnerability: 74.8058 (std: 105.7914)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Single Entity Control: 0.0185 (std: 0.0004)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Single Entity Control: 0.0185 (std: 0.0004)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Collusion Threshold: 0.3296 (std: 0.0052)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Collusion Threshold: 0.3296 (std: 0.0052)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Participation Trend: 0.0015 (std: 0.0001)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Participation Trend: 0.0015 (std: 0.0001)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Treasury Trend: -8.1895 (std: 2.0358)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Treasury Trend: -8.1895 (std: 2.0358)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Proposal Rate: 2.8500 (std: 0.0707)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Proposal Rate: 2.8500 (std: 0.0707)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Governance Activity Index: 0.0048 (std: 0.0003)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Governance Activity Index: 0.0048 (std: 0.0003)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Final Gini: 0.4763 (std: 0.0041)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Final Gini: 0.4763 (std: 0.0041)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.4] Final Reputation Gini: 0.9788 (std: 0.0028)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.4] Final Reputation Gini: 0.9788 (std: 0.0028)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Proposal Pass Rate: 0.9804 (std: 0.0277)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Proposal Pass Rate: 0.9804 (std: 0.0277)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Average Turnout: 0.2394 (std: 0.0033)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Average Turnout: 0.2394 (std: 0.0033)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Final Treasury: 11508.8803 (std: 762.1489)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Final Treasury: 11508.8803 (std: 762.1489)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Final Token Price: 5.6863 (std: 6.6501)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Final Token Price: 5.6863 (std: 6.6501)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Total Proposals: 53.5000 (std: 2.1213)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Total Proposals: 53.5000 (std: 2.1213)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Quorum Reach Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Quorum Reach Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Avg Margin of Victory: 0.5553 (std: 0.0207)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Avg Margin of Victory: 0.5553 (std: 0.0207)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Avg Time to Decision: 901.0453 (std: 17.9603)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Avg Time to Decision: 901.0453 (std: 17.9603)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Proposal Rejection Rate: 0.0196 (std: 0.0277)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Proposal Rejection Rate: 0.0196 (std: 0.0277)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Governance Overhead: 66.1870 (std: 0.2902)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Governance Overhead: 66.1870 (std: 0.2902)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Unique Voter Count: 317.5000 (std: 0.7071)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Unique Voter Count: 317.5000 (std: 0.7071)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Voter Participation Rate: 0.2093 (std: 0.0012)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Voter Participation Rate: 0.2093 (std: 0.0012)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Voter Concentration Gini: 0.4192 (std: 0.0021)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Voter Concentration Gini: 0.4192 (std: 0.0021)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Delegate Concentration: 0.2451 (std: 0.0086)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Delegate Concentration: 0.2451 (std: 0.0086)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Avg Votes Per Proposal: 65.5486 (std: 0.6127)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Avg Votes Per Proposal: 65.5486 (std: 0.6127)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Voter Retention Rate: 0.9130 (std: 0.0273)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Voter Retention Rate: 0.9130 (std: 0.0273)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Voting Power Utilization: 0.1754 (std: 0.0019)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Voting Power Utilization: 0.1754 (std: 0.0019)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Treasury Volatility: 0.2319 (std: 0.0211)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Treasury Volatility: 0.2319 (std: 0.0211)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Treasury Growth Rate: -0.7043 (std: 0.0217)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Treasury Growth Rate: -0.7043 (std: 0.0217)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Staking Participation: 0.0832 (std: 0.0034)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Staking Participation: 0.0832 (std: 0.0034)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Token Concentration Gini: 0.4208 (std: 0.0022)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Token Concentration Gini: 0.4208 (std: 0.0022)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Avg Member Wealth: 105.1601 (std: 0.5631)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Avg Member Wealth: 105.1601 (std: 0.5631)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Wealth Mobility: 0.5792 (std: 0.0022)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Wealth Mobility: 0.5792 (std: 0.0022)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Whale Influence: 0.2605 (std: 0.0053)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Whale Influence: 0.2605 (std: 0.0053)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Whale Proposal Rate: 0.4976 (std: 0.1122)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Whale Proposal Rate: 0.4976 (std: 0.1122)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Governance Capture Risk: 0.2512 (std: 0.0145)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Governance Capture Risk: 0.2512 (std: 0.0145)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Vote Buying Vulnerability: 91.4184 (std: 129.2852)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Vote Buying Vulnerability: 91.4184 (std: 129.2852)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Single Entity Control: 0.0195 (std: 0.0027)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Single Entity Control: 0.0195 (std: 0.0027)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Collusion Threshold: 0.3420 (std: 0.0017)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Collusion Threshold: 0.3420 (std: 0.0017)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Participation Trend: 0.0025 (std: 0.0003)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Participation Trend: 0.0025 (std: 0.0003)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Treasury Trend: -12.5885 (std: 3.9496)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Treasury Trend: -12.5885 (std: 3.9496)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Proposal Rate: 2.6750 (std: 0.1061)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Proposal Rate: 2.6750 (std: 0.1061)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Governance Activity Index: 0.0046 (std: 0.0002)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Governance Activity Index: 0.0046 (std: 0.0002)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Final Gini: 0.4207 (std: 0.0021)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Final Gini: 0.4207 (std: 0.0021)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"metric","message":"[0.5] Final Reputation Gini: 0.9775 (std: 0.0037)"}
+[2026-02-18T03:09:12.407Z] [METRIC  ] [0.5] Final Reputation Gini: 0.9775 (std: 0.0037)
+{"timestamp":"2026-02-18T03:09:12.407Z","level":"info","message":"Experiment state changed to: completed"}
+[2026-02-18T03:09:12.407Z] [INFO    ] Experiment state changed to: completed
+{"timestamp":"2026-02-18T03:54:38.327Z","level":"info","message":"Starting experiment: Sensitivity - Quorum Threshold"}
+[2026-02-18T03:54:38.327Z] [INFO    ] Starting experiment: Sensitivity - Quorum Threshold
+{"timestamp":"2026-02-18T03:54:38.327Z","level":"info","message":"Description: Quorum sweep to characterize decision legitimacy vs throughput."}
+[2026-02-18T03:54:38.327Z] [INFO    ] Description: Quorum sweep to characterize decision legitimacy vs throughput.
+{"timestamp":"2026-02-18T03:54:38.327Z","level":"info","message":"Total runs: 270 (30 per config)"}
+[2026-02-18T03:54:38.327Z] [INFO    ] Total runs: 270 (30 per config)
+{"timestamp":"2026-02-18T03:54:38.327Z","level":"info","message":"Workers: 4"}
+[2026-02-18T03:54:38.327Z] [INFO    ] Workers: 4
+{"timestamp":"2026-02-18T03:54:38.327Z","level":"info","message":"Output: results/paper/03-sensitivity-quorum"}
+[2026-02-18T03:54:38.327Z] [INFO    ] Output: results/paper/03-sensitivity-quorum
+{"timestamp":"2026-02-18T03:54:38.327Z","level":"info","message":"Sweep parameter: governance_config.quorumPercentage"}
+[2026-02-18T03:54:38.327Z] [INFO    ] Sweep parameter: governance_config.quorumPercentage
+{"timestamp":"2026-02-18T03:54:38.344Z","level":"info","message":"Experiment state changed to: running"}
+[2026-02-18T03:54:38.344Z] [INFO    ] Experiment state changed to: running
+{"timestamp":"2026-02-18T03:55:44.179Z","level":"progress","message":"Progress: 5% (14/270)","data":{"runsPerSecond":"0.21","eta":"20m 4s"}}
+[2026-02-18T03:55:44.179Z] [PROGRESS] Progress: 5% (14/270) {"runsPerSecond":"0.21","eta":"20m 4s"}
+{"timestamp":"2026-02-18T03:55:44.832Z","level":"progress","message":"Progress: 5% (15/270)","data":{"runsPerSecond":"0.23","eta":"18m 50s"}}
+[2026-02-18T03:55:44.832Z] [PROGRESS] Progress: 5% (15/270) {"runsPerSecond":"0.23","eta":"18m 50s"}
+{"timestamp":"2026-02-18T03:55:46.958Z","level":"progress","message":"Progress: 5% (16/270)","data":{"runsPerSecond":"0.23","eta":"18m 9s"}}
+[2026-02-18T03:55:46.958Z] [PROGRESS] Progress: 5% (16/270) {"runsPerSecond":"0.23","eta":"18m 9s"}
+{"timestamp":"2026-02-18T03:56:26.852Z","level":"progress","message":"Progress: 10% (27/270)","data":{"runsPerSecond":"0.25","eta":"16m 17s"}}
+[2026-02-18T03:56:26.852Z] [PROGRESS] Progress: 10% (27/270) {"runsPerSecond":"0.25","eta":"16m 17s"}
+{"timestamp":"2026-02-18T03:56:28.637Z","level":"progress","message":"Progress: 10% (28/270)","data":{"runsPerSecond":"0.25","eta":"15m 53s"}}
+[2026-02-18T03:56:28.637Z] [PROGRESS] Progress: 10% (28/270) {"runsPerSecond":"0.25","eta":"15m 53s"}
+{"timestamp":"2026-02-18T03:56:33.640Z","level":"progress","message":"Progress: 10% (29/270)","data":{"runsPerSecond":"0.25","eta":"15m 58s"}}
+[2026-02-18T03:56:33.640Z] [PROGRESS] Progress: 10% (29/270) {"runsPerSecond":"0.25","eta":"15m 58s"}
+{"timestamp":"2026-02-18T03:57:05.193Z","level":"progress","message":"Progress: 15% (41/270)","data":{"runsPerSecond":"0.28","eta":"13m 40s"}}
+[2026-02-18T03:57:05.193Z] [PROGRESS] Progress: 15% (41/270) {"runsPerSecond":"0.28","eta":"13m 40s"}
+{"timestamp":"2026-02-18T03:57:06.361Z","level":"progress","message":"Progress: 15% (42/270)","data":{"runsPerSecond":"0.28","eta":"13m 24s"}}
+[2026-02-18T03:57:06.361Z] [PROGRESS] Progress: 15% (42/270) {"runsPerSecond":"0.28","eta":"13m 24s"}
+{"timestamp":"2026-02-18T03:57:09.918Z","level":"progress","message":"Progress: 15% (43/270)","data":{"runsPerSecond":"0.28","eta":"13m 20s"}}
+[2026-02-18T03:57:09.918Z] [PROGRESS] Progress: 15% (43/270) {"runsPerSecond":"0.28","eta":"13m 20s"}
+{"timestamp":"2026-02-18T03:57:38.877Z","level":"progress","message":"Progress: 20% (54/270)","data":{"runsPerSecond":"0.30","eta":"12m 2s"}}
+[2026-02-18T03:57:38.877Z] [PROGRESS] Progress: 20% (54/270) {"runsPerSecond":"0.30","eta":"12m 2s"}
+{"timestamp":"2026-02-18T03:57:44.284Z","level":"progress","message":"Progress: 20% (55/270)","data":{"runsPerSecond":"0.30","eta":"12m 7s"}}
+[2026-02-18T03:57:44.284Z] [PROGRESS] Progress: 20% (55/270) {"runsPerSecond":"0.30","eta":"12m 7s"}
+{"timestamp":"2026-02-18T03:57:44.363Z","level":"progress","message":"Progress: 20% (56/270)","data":{"runsPerSecond":"0.30","eta":"11m 51s"}}
+[2026-02-18T03:57:44.363Z] [PROGRESS] Progress: 20% (56/270) {"runsPerSecond":"0.30","eta":"11m 51s"}
+{"timestamp":"2026-02-18T03:58:25.278Z","level":"progress","message":"Progress: 25% (68/270)","data":{"runsPerSecond":"0.30","eta":"11m 14s"}}
+[2026-02-18T03:58:25.278Z] [PROGRESS] Progress: 25% (68/270) {"runsPerSecond":"0.30","eta":"11m 14s"}
+{"timestamp":"2026-02-18T03:58:25.816Z","level":"progress","message":"Progress: 25% (69/270)","data":{"runsPerSecond":"0.30","eta":"11m 3s"}}
+[2026-02-18T03:58:25.816Z] [PROGRESS] Progress: 25% (69/270) {"runsPerSecond":"0.30","eta":"11m 3s"}
+{"timestamp":"2026-02-18T03:58:26.771Z","level":"progress","message":"Progress: 25% (70/270)","data":{"runsPerSecond":"0.31","eta":"10m 53s"}}
+[2026-02-18T03:58:26.771Z] [PROGRESS] Progress: 25% (70/270) {"runsPerSecond":"0.31","eta":"10m 53s"}
+{"timestamp":"2026-02-18T03:58:58.643Z","level":"progress","message":"Progress: 30% (81/270)","data":{"runsPerSecond":"0.31","eta":"10m 7s"}}
+[2026-02-18T03:58:58.643Z] [PROGRESS] Progress: 30% (81/270) {"runsPerSecond":"0.31","eta":"10m 7s"}
+{"timestamp":"2026-02-18T03:59:00.185Z","level":"progress","message":"Progress: 30% (82/270)","data":{"runsPerSecond":"0.31","eta":"10m 0s"}}
+[2026-02-18T03:59:00.185Z] [PROGRESS] Progress: 30% (82/270) {"runsPerSecond":"0.31","eta":"10m 0s"}
+{"timestamp":"2026-02-18T03:59:05.077Z","level":"progress","message":"Progress: 30% (83/270)","data":{"runsPerSecond":"0.31","eta":"10m 1s"}}
+[2026-02-18T03:59:05.077Z] [PROGRESS] Progress: 30% (83/270) {"runsPerSecond":"0.31","eta":"10m 1s"}
+{"timestamp":"2026-02-18T03:59:37.271Z","level":"progress","message":"Progress: 35% (95/270)","data":{"runsPerSecond":"0.32","eta":"9m 11s"}}
+[2026-02-18T03:59:37.271Z] [PROGRESS] Progress: 35% (95/270) {"runsPerSecond":"0.32","eta":"9m 11s"}
+{"timestamp":"2026-02-18T03:59:42.136Z","level":"progress","message":"Progress: 35% (96/270)","data":{"runsPerSecond":"0.32","eta":"9m 11s"}}
+[2026-02-18T03:59:42.136Z] [PROGRESS] Progress: 35% (96/270) {"runsPerSecond":"0.32","eta":"9m 11s"}
+{"timestamp":"2026-02-18T03:59:45.144Z","level":"progress","message":"Progress: 35% (97/270)","data":{"runsPerSecond":"0.32","eta":"9m 7s"}}
+[2026-02-18T03:59:45.144Z] [PROGRESS] Progress: 35% (97/270) {"runsPerSecond":"0.32","eta":"9m 7s"}
+{"timestamp":"2026-02-18T04:00:12.564Z","level":"progress","message":"Progress: 40% (108/270)","data":{"runsPerSecond":"0.32","eta":"8m 21s"}}
+[2026-02-18T04:00:12.564Z] [PROGRESS] Progress: 40% (108/270) {"runsPerSecond":"0.32","eta":"8m 21s"}
+{"timestamp":"2026-02-18T04:00:17.514Z","level":"progress","message":"Progress: 40% (109/270)","data":{"runsPerSecond":"0.32","eta":"8m 21s"}}
+[2026-02-18T04:00:17.514Z] [PROGRESS] Progress: 40% (109/270) {"runsPerSecond":"0.32","eta":"8m 21s"}
+{"timestamp":"2026-02-18T04:00:20.176Z","level":"progress","message":"Progress: 40% (110/270)","data":{"runsPerSecond":"0.32","eta":"8m 17s"}}
+[2026-02-18T04:00:20.176Z] [PROGRESS] Progress: 40% (110/270) {"runsPerSecond":"0.32","eta":"8m 17s"}
+{"timestamp":"2026-02-18T04:00:51.574Z","level":"progress","message":"Progress: 45% (122/270)","data":{"runsPerSecond":"0.33","eta":"7m 33s"}}
+[2026-02-18T04:00:51.574Z] [PROGRESS] Progress: 45% (122/270) {"runsPerSecond":"0.33","eta":"7m 33s"}
+{"timestamp":"2026-02-18T04:00:51.921Z","level":"progress","message":"Progress: 45% (123/270)","data":{"runsPerSecond":"0.33","eta":"7m 26s"}}
+[2026-02-18T04:00:51.921Z] [PROGRESS] Progress: 45% (123/270) {"runsPerSecond":"0.33","eta":"7m 26s"}
+{"timestamp":"2026-02-18T04:00:59.960Z","level":"progress","message":"Progress: 45% (124/270)","data":{"runsPerSecond":"0.32","eta":"7m 29s"}}
+[2026-02-18T04:00:59.960Z] [PROGRESS] Progress: 45% (124/270) {"runsPerSecond":"0.32","eta":"7m 29s"}
+{"timestamp":"2026-02-18T04:01:24.745Z","level":"progress","message":"Progress: 50% (135/270)","data":{"runsPerSecond":"0.33","eta":"6m 46s"}}
+[2026-02-18T04:01:24.745Z] [PROGRESS] Progress: 50% (135/270) {"runsPerSecond":"0.33","eta":"6m 46s"}
+{"timestamp":"2026-02-18T04:01:32.542Z","level":"progress","message":"Progress: 50% (136/270)","data":{"runsPerSecond":"0.33","eta":"6m 48s"}}
+[2026-02-18T04:01:32.542Z] [PROGRESS] Progress: 50% (136/270) {"runsPerSecond":"0.33","eta":"6m 48s"}
+{"timestamp":"2026-02-18T04:01:35.675Z","level":"progress","message":"Progress: 50% (137/270)","data":{"runsPerSecond":"0.33","eta":"6m 45s"}}
+[2026-02-18T04:01:35.675Z] [PROGRESS] Progress: 50% (137/270) {"runsPerSecond":"0.33","eta":"6m 45s"}
+{"timestamp":"2026-02-18T04:02:08.319Z","level":"progress","message":"Progress: 55% (149/270)","data":{"runsPerSecond":"0.33","eta":"6m 5s"}}
+[2026-02-18T04:02:08.319Z] [PROGRESS] Progress: 55% (149/270) {"runsPerSecond":"0.33","eta":"6m 5s"}
+{"timestamp":"2026-02-18T04:02:08.796Z","level":"progress","message":"Progress: 55% (150/270)","data":{"runsPerSecond":"0.33","eta":"6m 0s"}}
+[2026-02-18T04:02:08.796Z] [PROGRESS] Progress: 55% (150/270) {"runsPerSecond":"0.33","eta":"6m 0s"}
+{"timestamp":"2026-02-18T04:02:09.300Z","level":"progress","message":"Progress: 55% (151/270)","data":{"runsPerSecond":"0.33","eta":"5m 55s"}}
+[2026-02-18T04:02:09.300Z] [PROGRESS] Progress: 55% (151/270) {"runsPerSecond":"0.33","eta":"5m 55s"}
+{"timestamp":"2026-02-18T04:02:41.319Z","level":"progress","message":"Progress: 60% (162/270)","data":{"runsPerSecond":"0.34","eta":"5m 22s"}}
+[2026-02-18T04:02:41.319Z] [PROGRESS] Progress: 60% (162/270) {"runsPerSecond":"0.34","eta":"5m 22s"}
+{"timestamp":"2026-02-18T04:02:42.263Z","level":"progress","message":"Progress: 60% (163/270)","data":{"runsPerSecond":"0.34","eta":"5m 18s"}}
+[2026-02-18T04:02:42.263Z] [PROGRESS] Progress: 60% (163/270) {"runsPerSecond":"0.34","eta":"5m 18s"}
+{"timestamp":"2026-02-18T04:02:48.568Z","level":"progress","message":"Progress: 60% (164/270)","data":{"runsPerSecond":"0.33","eta":"5m 17s"}}
+[2026-02-18T04:02:48.568Z] [PROGRESS] Progress: 60% (164/270) {"runsPerSecond":"0.33","eta":"5m 17s"}
+{"timestamp":"2026-02-18T04:03:35.993Z","level":"progress","message":"Progress: 65% (176/270)","data":{"runsPerSecond":"0.33","eta":"4m 47s"}}
+[2026-02-18T04:03:35.993Z] [PROGRESS] Progress: 65% (176/270) {"runsPerSecond":"0.33","eta":"4m 47s"}
+{"timestamp":"2026-02-18T04:03:36.601Z","level":"progress","message":"Progress: 65% (177/270)","data":{"runsPerSecond":"0.33","eta":"4m 43s"}}
+[2026-02-18T04:03:36.601Z] [PROGRESS] Progress: 65% (177/270) {"runsPerSecond":"0.33","eta":"4m 43s"}
+{"timestamp":"2026-02-18T04:03:45.011Z","level":"progress","message":"Progress: 65% (178/270)","data":{"runsPerSecond":"0.33","eta":"4m 43s"}}
+[2026-02-18T04:03:45.011Z] [PROGRESS] Progress: 65% (178/270) {"runsPerSecond":"0.33","eta":"4m 43s"}
+{"timestamp":"2026-02-18T04:04:23.715Z","level":"progress","message":"Progress: 70% (189/270)","data":{"runsPerSecond":"0.32","eta":"4m 11s"}}
+[2026-02-18T04:04:23.715Z] [PROGRESS] Progress: 70% (189/270) {"runsPerSecond":"0.32","eta":"4m 11s"}
+{"timestamp":"2026-02-18T04:04:29.601Z","level":"progress","message":"Progress: 70% (190/270)","data":{"runsPerSecond":"0.32","eta":"4m 9s"}}
+[2026-02-18T04:04:29.601Z] [PROGRESS] Progress: 70% (190/270) {"runsPerSecond":"0.32","eta":"4m 9s"}
+{"timestamp":"2026-02-18T04:04:30.659Z","level":"progress","message":"Progress: 70% (191/270)","data":{"runsPerSecond":"0.32","eta":"4m 5s"}}
+[2026-02-18T04:04:30.659Z] [PROGRESS] Progress: 70% (191/270) {"runsPerSecond":"0.32","eta":"4m 5s"}
+{"timestamp":"2026-02-18T04:05:05.668Z","level":"progress","message":"Progress: 75% (203/270)","data":{"runsPerSecond":"0.32","eta":"3m 27s"}}
+[2026-02-18T04:05:05.668Z] [PROGRESS] Progress: 75% (203/270) {"runsPerSecond":"0.32","eta":"3m 27s"}
+{"timestamp":"2026-02-18T04:05:07.808Z","level":"progress","message":"Progress: 75% (204/270)","data":{"runsPerSecond":"0.32","eta":"3m 24s"}}
+[2026-02-18T04:05:07.808Z] [PROGRESS] Progress: 75% (204/270) {"runsPerSecond":"0.32","eta":"3m 24s"}
+{"timestamp":"2026-02-18T04:05:10.854Z","level":"progress","message":"Progress: 75% (205/270)","data":{"runsPerSecond":"0.32","eta":"3m 21s"}}
+[2026-02-18T04:05:10.854Z] [PROGRESS] Progress: 75% (205/270) {"runsPerSecond":"0.32","eta":"3m 21s"}
+{"timestamp":"2026-02-18T04:05:50.854Z","level":"progress","message":"Progress: 80% (216/270)","data":{"runsPerSecond":"0.32","eta":"2m 48s"}}
+[2026-02-18T04:05:50.854Z] [PROGRESS] Progress: 80% (216/270) {"runsPerSecond":"0.32","eta":"2m 48s"}
+{"timestamp":"2026-02-18T04:05:52.499Z","level":"progress","message":"Progress: 80% (217/270)","data":{"runsPerSecond":"0.32","eta":"2m 45s"}}
+[2026-02-18T04:05:52.499Z] [PROGRESS] Progress: 80% (217/270) {"runsPerSecond":"0.32","eta":"2m 45s"}
+{"timestamp":"2026-02-18T04:05:54.938Z","level":"progress","message":"Progress: 80% (218/270)","data":{"runsPerSecond":"0.32","eta":"2m 41s"}}
+[2026-02-18T04:05:54.938Z] [PROGRESS] Progress: 80% (218/270) {"runsPerSecond":"0.32","eta":"2m 41s"}
+{"timestamp":"2026-02-18T04:06:28.687Z","level":"progress","message":"Progress: 85% (230/270)","data":{"runsPerSecond":"0.32","eta":"2m 4s"}}
+[2026-02-18T04:06:28.687Z] [PROGRESS] Progress: 85% (230/270) {"runsPerSecond":"0.32","eta":"2m 4s"}
+{"timestamp":"2026-02-18T04:06:36.970Z","level":"progress","message":"Progress: 85% (231/270)","data":{"runsPerSecond":"0.32","eta":"2m 1s"}}
+[2026-02-18T04:06:36.970Z] [PROGRESS] Progress: 85% (231/270) {"runsPerSecond":"0.32","eta":"2m 1s"}
+{"timestamp":"2026-02-18T04:06:39.950Z","level":"progress","message":"Progress: 85% (232/270)","data":{"runsPerSecond":"0.32","eta":"1m 58s"}}
+[2026-02-18T04:06:39.950Z] [PROGRESS] Progress: 85% (232/270) {"runsPerSecond":"0.32","eta":"1m 58s"}
+{"timestamp":"2026-02-18T04:07:19.863Z","level":"progress","message":"Progress: 90% (243/270)","data":{"runsPerSecond":"0.32","eta":"1m 25s"}}
+[2026-02-18T04:07:19.863Z] [PROGRESS] Progress: 90% (243/270) {"runsPerSecond":"0.32","eta":"1m 25s"}
+{"timestamp":"2026-02-18T04:07:22.839Z","level":"progress","message":"Progress: 90% (244/270)","data":{"runsPerSecond":"0.32","eta":"1m 21s"}}
+[2026-02-18T04:07:22.839Z] [PROGRESS] Progress: 90% (244/270) {"runsPerSecond":"0.32","eta":"1m 21s"}
+{"timestamp":"2026-02-18T04:07:24.084Z","level":"progress","message":"Progress: 90% (245/270)","data":{"runsPerSecond":"0.32","eta":"1m 18s"}}
+[2026-02-18T04:07:24.084Z] [PROGRESS] Progress: 90% (245/270) {"runsPerSecond":"0.32","eta":"1m 18s"}
+{"timestamp":"2026-02-18T04:08:04.553Z","level":"progress","message":"Progress: 95% (257/270)","data":{"runsPerSecond":"0.32","eta":"40.8s"}}
+[2026-02-18T04:08:04.553Z] [PROGRESS] Progress: 95% (257/270) {"runsPerSecond":"0.32","eta":"40.8s"}
+{"timestamp":"2026-02-18T04:08:07.653Z","level":"progress","message":"Progress: 95% (258/270)","data":{"runsPerSecond":"0.32","eta":"37.6s"}}
+[2026-02-18T04:08:07.653Z] [PROGRESS] Progress: 95% (258/270) {"runsPerSecond":"0.32","eta":"37.6s"}
+{"timestamp":"2026-02-18T04:08:08.592Z","level":"progress","message":"Progress: 95% (259/270)","data":{"runsPerSecond":"0.32","eta":"34.4s"}}
+[2026-02-18T04:08:08.592Z] [PROGRESS] Progress: 95% (259/270) {"runsPerSecond":"0.32","eta":"34.4s"}
+{"timestamp":"2026-02-18T04:08:41.131Z","level":"progress","message":"Progress: 100% (270/270)","data":{"runsPerSecond":"0.32","eta":"unknown"}}
+[2026-02-18T04:08:41.131Z] [PROGRESS] Progress: 100% (270/270) {"runsPerSecond":"0.32","eta":"unknown"}
+{"timestamp":"2026-02-18T04:08:41.309Z","level":"info","message":"Exporting results..."}
+[2026-02-18T04:08:41.309Z] [INFO    ] Exporting results...
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"info","message":"Experiment completed in 14m 3s"}
+[2026-02-18T04:08:41.492Z] [INFO    ] Experiment completed in 14m 3s
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"info","message":"Total runs: 270"}
+[2026-02-18T04:08:41.492Z] [INFO    ] Total runs: 270
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"info","message":"Successful: 270"}
+[2026-02-18T04:08:41.492Z] [INFO    ] Successful: 270
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"info","message":"Failed: 0"}
+[2026-02-18T04:08:41.492Z] [INFO    ] Failed: 0
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Proposal Pass Rate: 0.9784 (std: 0.0191)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Proposal Pass Rate: 0.9784 (std: 0.0191)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Average Turnout: 0.2276 (std: 0.0094)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Average Turnout: 0.2276 (std: 0.0094)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Final Treasury: 11677.8318 (std: 384.6050)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Final Treasury: 11677.8318 (std: 384.6050)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Final Token Price: 11.9538 (std: 43.4119)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Final Token Price: 11.9538 (std: 43.4119)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Total Proposals: 50.6000 (std: 9.7966)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Total Proposals: 50.6000 (std: 9.7966)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Quorum Reach Rate: 0.9985 (std: 0.0058)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Quorum Reach Rate: 0.9985 (std: 0.0058)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Avg Margin of Victory: 0.5260 (std: 0.0531)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Avg Margin of Victory: 0.5260 (std: 0.0531)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Avg Time to Decision: 888.2611 (std: 80.2329)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Avg Time to Decision: 888.2611 (std: 80.2329)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Proposal Rejection Rate: 0.0216 (std: 0.0191)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Proposal Rejection Rate: 0.0216 (std: 0.0191)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Governance Overhead: 75.6357 (std: 4.3645)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Governance Overhead: 75.6357 (std: 4.3645)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Unique Voter Count: 325.5667 (std: 7.5278)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Unique Voter Count: 325.5667 (std: 7.5278)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Voter Participation Rate: 0.2348 (std: 0.0104)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Voter Participation Rate: 0.2348 (std: 0.0104)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Voter Concentration Gini: 0.4081 (std: 0.0121)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Voter Concentration Gini: 0.4081 (std: 0.0121)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Delegate Concentration: 0.2661 (std: 0.0133)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Delegate Concentration: 0.2661 (std: 0.0133)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Avg Votes Per Proposal: 72.8555 (std: 3.6984)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Avg Votes Per Proposal: 72.8555 (std: 3.6984)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Voter Retention Rate: 0.9187 (std: 0.0190)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Voter Retention Rate: 0.9187 (std: 0.0190)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Voting Power Utilization: 0.1756 (std: 0.0060)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Voting Power Utilization: 0.1756 (std: 0.0060)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Treasury Volatility: 0.2337 (std: 0.0231)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Treasury Volatility: 0.2337 (std: 0.0231)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Treasury Growth Rate: -0.7076 (std: 0.0214)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Treasury Growth Rate: -0.7076 (std: 0.0214)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Staking Participation: 0.0832 (std: 0.0126)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Staking Participation: 0.0832 (std: 0.0126)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Token Concentration Gini: 0.4496 (std: 0.0262)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Token Concentration Gini: 0.4496 (std: 0.0262)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Avg Member Wealth: 122.4696 (std: 7.9436)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Avg Member Wealth: 122.4696 (std: 7.9436)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Wealth Mobility: 0.5504 (std: 0.0262)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Wealth Mobility: 0.5504 (std: 0.0262)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Whale Influence: 0.2693 (std: 0.0133)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Whale Influence: 0.2693 (std: 0.0133)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Whale Proposal Rate: 0.7636 (std: 0.1158)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Whale Proposal Rate: 0.7636 (std: 0.1158)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Governance Capture Risk: 0.2688 (std: 0.0139)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Governance Capture Risk: 0.2688 (std: 0.0139)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Vote Buying Vulnerability: 172.9714 (std: 141.5421)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Vote Buying Vulnerability: 172.9714 (std: 141.5421)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Single Entity Control: 0.0188 (std: 0.0015)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Single Entity Control: 0.0188 (std: 0.0015)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Collusion Threshold: 0.3381 (std: 0.0097)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Collusion Threshold: 0.3381 (std: 0.0097)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Participation Trend: 0.0020 (std: 0.0006)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Participation Trend: 0.0020 (std: 0.0006)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Treasury Trend: -10.7097 (std: 2.8597)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Treasury Trend: -10.7097 (std: 2.8597)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Proposal Rate: 2.5300 (std: 0.4898)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Proposal Rate: 2.5300 (std: 0.4898)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Governance Activity Index: 0.0043 (std: 0.0008)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Governance Activity Index: 0.0043 (std: 0.0008)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Final Gini: 0.4495 (std: 0.0262)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Final Gini: 0.4495 (std: 0.0262)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.01] Final Reputation Gini: 0.9811 (std: 0.0045)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.01] Final Reputation Gini: 0.9811 (std: 0.0045)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Proposal Pass Rate: 0.9906 (std: 0.0132)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Proposal Pass Rate: 0.9906 (std: 0.0132)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Average Turnout: 0.2271 (std: 0.0082)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Average Turnout: 0.2271 (std: 0.0082)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Final Treasury: 11805.3661 (std: 482.1364)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Final Treasury: 11805.3661 (std: 482.1364)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Final Token Price: 3.9368 (std: 5.3265)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Final Token Price: 3.9368 (std: 5.3265)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Total Proposals: 46.2333 (std: 8.2908)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Total Proposals: 46.2333 (std: 8.2908)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Avg Margin of Victory: 0.5577 (std: 0.0465)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Avg Margin of Victory: 0.5577 (std: 0.0465)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Avg Time to Decision: 907.9410 (std: 93.2326)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Avg Time to Decision: 907.9410 (std: 93.2326)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Proposal Rejection Rate: 0.0094 (std: 0.0132)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Proposal Rejection Rate: 0.0094 (std: 0.0132)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Governance Overhead: 75.5354 (std: 3.6637)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Governance Overhead: 75.5354 (std: 3.6637)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Unique Voter Count: 328.8333 (std: 7.7106)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Unique Voter Count: 328.8333 (std: 7.7106)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Voter Participation Rate: 0.2357 (std: 0.0095)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Voter Participation Rate: 0.2357 (std: 0.0095)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Voter Concentration Gini: 0.4037 (std: 0.0179)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Voter Concentration Gini: 0.4037 (std: 0.0179)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Delegate Concentration: 0.2659 (std: 0.0127)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Delegate Concentration: 0.2659 (std: 0.0127)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Avg Votes Per Proposal: 72.8238 (std: 3.5234)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Avg Votes Per Proposal: 72.8238 (std: 3.5234)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Voter Retention Rate: 0.9069 (std: 0.0147)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Voter Retention Rate: 0.9069 (std: 0.0147)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Voting Power Utilization: 0.1731 (std: 0.0071)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Voting Power Utilization: 0.1731 (std: 0.0071)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Treasury Volatility: 0.2319 (std: 0.0189)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Treasury Volatility: 0.2319 (std: 0.0189)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Treasury Growth Rate: -0.7119 (std: 0.0198)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Treasury Growth Rate: -0.7119 (std: 0.0198)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Staking Participation: 0.0819 (std: 0.0104)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Staking Participation: 0.0819 (std: 0.0104)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Token Concentration Gini: 0.4534 (std: 0.0310)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Token Concentration Gini: 0.4534 (std: 0.0310)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Avg Member Wealth: 124.1419 (std: 8.7422)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Avg Member Wealth: 124.1419 (std: 8.7422)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Wealth Mobility: 0.5466 (std: 0.0310)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Wealth Mobility: 0.5466 (std: 0.0310)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Whale Influence: 0.2705 (std: 0.0127)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Whale Influence: 0.2705 (std: 0.0127)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Whale Proposal Rate: 0.7509 (std: 0.1140)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Whale Proposal Rate: 0.7509 (std: 0.1140)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Governance Capture Risk: 0.2685 (std: 0.0133)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Governance Capture Risk: 0.2685 (std: 0.0133)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Vote Buying Vulnerability: 135.4889 (std: 172.3037)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Vote Buying Vulnerability: 135.4889 (std: 172.3037)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Single Entity Control: 0.0187 (std: 0.0013)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Single Entity Control: 0.0187 (std: 0.0013)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Collusion Threshold: 0.3365 (std: 0.0119)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Collusion Threshold: 0.3365 (std: 0.0119)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Participation Trend: 0.0024 (std: 0.0008)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Participation Trend: 0.0024 (std: 0.0008)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Treasury Trend: -11.3394 (std: 2.7691)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Treasury Trend: -11.3394 (std: 2.7691)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Proposal Rate: 2.3117 (std: 0.4145)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Proposal Rate: 2.3117 (std: 0.4145)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Governance Activity Index: 0.0039 (std: 0.0008)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Governance Activity Index: 0.0039 (std: 0.0008)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Final Gini: 0.4534 (std: 0.0310)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Final Gini: 0.4534 (std: 0.0310)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.05] Final Reputation Gini: 0.9813 (std: 0.0036)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.05] Final Reputation Gini: 0.9813 (std: 0.0036)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Proposal Pass Rate: 0.9865 (std: 0.0171)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Proposal Pass Rate: 0.9865 (std: 0.0171)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Average Turnout: 0.2234 (std: 0.0090)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Average Turnout: 0.2234 (std: 0.0090)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Final Treasury: 11745.6815 (std: 432.7481)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Final Treasury: 11745.6815 (std: 432.7481)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Final Token Price: 2.6283 (std: 2.6954)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Final Token Price: 2.6283 (std: 2.6954)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Total Proposals: 48.2333 (std: 7.1712)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Total Proposals: 48.2333 (std: 7.1712)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Quorum Reach Rate: 0.9778 (std: 0.0239)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Quorum Reach Rate: 0.9778 (std: 0.0239)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Avg Margin of Victory: 0.5403 (std: 0.0561)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Avg Margin of Victory: 0.5403 (std: 0.0561)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Avg Time to Decision: 870.6142 (std: 87.3428)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Avg Time to Decision: 870.6142 (std: 87.3428)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Proposal Rejection Rate: 0.0135 (std: 0.0171)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Proposal Rejection Rate: 0.0135 (std: 0.0171)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Governance Overhead: 75.8143 (std: 4.0494)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Governance Overhead: 75.8143 (std: 4.0494)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Unique Voter Count: 325.9333 (std: 8.1788)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Unique Voter Count: 325.9333 (std: 8.1788)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Voter Participation Rate: 0.2343 (std: 0.0099)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Voter Participation Rate: 0.2343 (std: 0.0099)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Voter Concentration Gini: 0.4023 (std: 0.0152)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Voter Concentration Gini: 0.4023 (std: 0.0152)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Delegate Concentration: 0.2671 (std: 0.0126)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Delegate Concentration: 0.2671 (std: 0.0126)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Avg Votes Per Proposal: 73.1646 (std: 3.7437)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Avg Votes Per Proposal: 73.1646 (std: 3.7437)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Voter Retention Rate: 0.9157 (std: 0.0174)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Voter Retention Rate: 0.9157 (std: 0.0174)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Voting Power Utilization: 0.1739 (std: 0.0079)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Voting Power Utilization: 0.1739 (std: 0.0079)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Treasury Volatility: 0.2236 (std: 0.0197)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Treasury Volatility: 0.2236 (std: 0.0197)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Treasury Growth Rate: -0.7075 (std: 0.0222)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Treasury Growth Rate: -0.7075 (std: 0.0222)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Staking Participation: 0.0831 (std: 0.0157)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Staking Participation: 0.0831 (std: 0.0157)
+{"timestamp":"2026-02-18T04:08:41.492Z","level":"metric","message":"[0.1] Token Concentration Gini: 0.4550 (std: 0.0256)"}
+[2026-02-18T04:08:41.492Z] [METRIC  ] [0.1] Token Concentration Gini: 0.4550 (std: 0.0256)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Avg Member Wealth: 124.3222 (std: 7.7506)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Avg Member Wealth: 124.3222 (std: 7.7506)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Wealth Mobility: 0.5450 (std: 0.0256)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Wealth Mobility: 0.5450 (std: 0.0256)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Whale Influence: 0.2705 (std: 0.0119)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Whale Influence: 0.2705 (std: 0.0119)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Whale Proposal Rate: 0.7631 (std: 0.1205)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Whale Proposal Rate: 0.7631 (std: 0.1205)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Governance Capture Risk: 0.2670 (std: 0.0121)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Governance Capture Risk: 0.2670 (std: 0.0121)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Vote Buying Vulnerability: 181.4714 (std: 168.0768)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Vote Buying Vulnerability: 181.4714 (std: 168.0768)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Single Entity Control: 0.0182 (std: 0.0013)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Single Entity Control: 0.0182 (std: 0.0013)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Collusion Threshold: 0.3370 (std: 0.0084)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Collusion Threshold: 0.3370 (std: 0.0084)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Participation Trend: 0.0022 (std: 0.0005)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Participation Trend: 0.0022 (std: 0.0005)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Treasury Trend: -10.6597 (std: 2.6772)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Treasury Trend: -10.6597 (std: 2.6772)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Proposal Rate: 2.4117 (std: 0.3586)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Proposal Rate: 2.4117 (std: 0.3586)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Governance Activity Index: 0.0040 (std: 0.0006)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Governance Activity Index: 0.0040 (std: 0.0006)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Final Gini: 0.4549 (std: 0.0256)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Final Gini: 0.4549 (std: 0.0256)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.1] Final Reputation Gini: 0.9827 (std: 0.0039)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.1] Final Reputation Gini: 0.9827 (std: 0.0039)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Proposal Pass Rate: 0.9856 (std: 0.0182)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Proposal Pass Rate: 0.9856 (std: 0.0182)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Average Turnout: 0.2299 (std: 0.0104)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Average Turnout: 0.2299 (std: 0.0104)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Final Treasury: 11608.8403 (std: 493.7915)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Final Treasury: 11608.8403 (std: 493.7915)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Final Token Price: 2.0710 (std: 1.5914)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Final Token Price: 2.0710 (std: 1.5914)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Total Proposals: 50.5667 (std: 6.6886)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Total Proposals: 50.5667 (std: 6.6886)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Quorum Reach Rate: 0.7166 (std: 0.0697)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Quorum Reach Rate: 0.7166 (std: 0.0697)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Avg Margin of Victory: 0.5409 (std: 0.0580)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Avg Margin of Victory: 0.5409 (std: 0.0580)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Avg Time to Decision: 885.9760 (std: 94.2444)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Avg Time to Decision: 885.9760 (std: 94.2444)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Proposal Rejection Rate: 0.0144 (std: 0.0182)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Proposal Rejection Rate: 0.0144 (std: 0.0182)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Governance Overhead: 74.0482 (std: 6.3155)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Governance Overhead: 74.0482 (std: 6.3155)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Unique Voter Count: 325.1333 (std: 8.7720)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Unique Voter Count: 325.1333 (std: 8.7720)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Voter Participation Rate: 0.2293 (std: 0.0124)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Voter Participation Rate: 0.2293 (std: 0.0124)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Voter Concentration Gini: 0.4080 (std: 0.0199)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Voter Concentration Gini: 0.4080 (std: 0.0199)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Delegate Concentration: 0.2640 (std: 0.0156)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Delegate Concentration: 0.2640 (std: 0.0156)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Avg Votes Per Proposal: 71.2087 (std: 4.5123)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Avg Votes Per Proposal: 71.2087 (std: 4.5123)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Voter Retention Rate: 0.9144 (std: 0.0170)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Voter Retention Rate: 0.9144 (std: 0.0170)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Voting Power Utilization: 0.1754 (std: 0.0084)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Voting Power Utilization: 0.1754 (std: 0.0084)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Treasury Volatility: 0.2325 (std: 0.0216)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Treasury Volatility: 0.2325 (std: 0.0216)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Treasury Growth Rate: -0.7101 (std: 0.0225)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Treasury Growth Rate: -0.7101 (std: 0.0225)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Staking Participation: 0.0872 (std: 0.0138)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Staking Participation: 0.0872 (std: 0.0138)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Token Concentration Gini: 0.4393 (std: 0.0353)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Token Concentration Gini: 0.4393 (std: 0.0353)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Avg Member Wealth: 118.5141 (std: 10.2427)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Avg Member Wealth: 118.5141 (std: 10.2427)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Wealth Mobility: 0.5607 (std: 0.0353)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Wealth Mobility: 0.5607 (std: 0.0353)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Whale Influence: 0.2686 (std: 0.0154)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Whale Influence: 0.2686 (std: 0.0154)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Whale Proposal Rate: 0.7214 (std: 0.1892)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Whale Proposal Rate: 0.7214 (std: 0.1892)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Governance Capture Risk: 0.2658 (std: 0.0174)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Governance Capture Risk: 0.2658 (std: 0.0174)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Vote Buying Vulnerability: 180.7366 (std: 146.0766)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Vote Buying Vulnerability: 180.7366 (std: 146.0766)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Single Entity Control: 0.0192 (std: 0.0017)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Single Entity Control: 0.0192 (std: 0.0017)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Collusion Threshold: 0.3402 (std: 0.0121)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Collusion Threshold: 0.3402 (std: 0.0121)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Participation Trend: 0.0021 (std: 0.0005)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Participation Trend: 0.0021 (std: 0.0005)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Treasury Trend: -11.9823 (std: 2.2282)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Treasury Trend: -11.9823 (std: 2.2282)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Proposal Rate: 2.5283 (std: 0.3344)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Proposal Rate: 2.5283 (std: 0.3344)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Governance Activity Index: 0.0043 (std: 0.0006)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Governance Activity Index: 0.0043 (std: 0.0006)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Final Gini: 0.4392 (std: 0.0353)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Final Gini: 0.4392 (std: 0.0353)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.15] Final Reputation Gini: 0.9815 (std: 0.0048)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.15] Final Reputation Gini: 0.9815 (std: 0.0048)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Proposal Pass Rate: 0.9779 (std: 0.0236)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Proposal Pass Rate: 0.9779 (std: 0.0236)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Average Turnout: 0.2277 (std: 0.0106)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Average Turnout: 0.2277 (std: 0.0106)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Final Treasury: 11638.2426 (std: 447.2459)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Final Treasury: 11638.2426 (std: 447.2459)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Final Token Price: 4.0748 (std: 7.8602)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Final Token Price: 4.0748 (std: 7.8602)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Total Proposals: 50.1000 (std: 8.1382)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Total Proposals: 50.1000 (std: 8.1382)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Quorum Reach Rate: 0.2392 (std: 0.0751)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Quorum Reach Rate: 0.2392 (std: 0.0751)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Avg Margin of Victory: 0.5504 (std: 0.0627)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Avg Margin of Victory: 0.5504 (std: 0.0627)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Avg Time to Decision: 896.2385 (std: 70.7149)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Avg Time to Decision: 896.2385 (std: 70.7149)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Proposal Rejection Rate: 0.0221 (std: 0.0236)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Proposal Rejection Rate: 0.0221 (std: 0.0236)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Governance Overhead: 74.0071 (std: 4.1318)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Governance Overhead: 74.0071 (std: 4.1318)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Unique Voter Count: 324.7333 (std: 7.1724)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Unique Voter Count: 324.7333 (std: 7.1724)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Voter Participation Rate: 0.2320 (std: 0.0113)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Voter Participation Rate: 0.2320 (std: 0.0113)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Voter Concentration Gini: 0.4046 (std: 0.0147)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Voter Concentration Gini: 0.4046 (std: 0.0147)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Delegate Concentration: 0.2654 (std: 0.0110)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Delegate Concentration: 0.2654 (std: 0.0110)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Avg Votes Per Proposal: 71.5636 (std: 3.8242)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Avg Votes Per Proposal: 71.5636 (std: 3.8242)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Voter Retention Rate: 0.9123 (std: 0.0213)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Voter Retention Rate: 0.9123 (std: 0.0213)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Voting Power Utilization: 0.1727 (std: 0.0077)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Voting Power Utilization: 0.1727 (std: 0.0077)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Treasury Volatility: 0.2332 (std: 0.0186)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Treasury Volatility: 0.2332 (std: 0.0186)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Treasury Growth Rate: -0.7130 (std: 0.0196)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Treasury Growth Rate: -0.7130 (std: 0.0196)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Staking Participation: 0.0840 (std: 0.0177)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Staking Participation: 0.0840 (std: 0.0177)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Token Concentration Gini: 0.4487 (std: 0.0374)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Token Concentration Gini: 0.4487 (std: 0.0374)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Avg Member Wealth: 121.8568 (std: 9.4250)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Avg Member Wealth: 121.8568 (std: 9.4250)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Wealth Mobility: 0.5513 (std: 0.0374)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Wealth Mobility: 0.5513 (std: 0.0374)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Whale Influence: 0.2716 (std: 0.0128)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Whale Influence: 0.2716 (std: 0.0128)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Whale Proposal Rate: 0.7239 (std: 0.1585)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Whale Proposal Rate: 0.7239 (std: 0.1585)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Governance Capture Risk: 0.2652 (std: 0.0102)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Governance Capture Risk: 0.2652 (std: 0.0102)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Vote Buying Vulnerability: 148.9165 (std: 119.6332)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Vote Buying Vulnerability: 148.9165 (std: 119.6332)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Single Entity Control: 0.0184 (std: 0.0020)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Single Entity Control: 0.0184 (std: 0.0020)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Collusion Threshold: 0.3369 (std: 0.0139)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Collusion Threshold: 0.3369 (std: 0.0139)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Participation Trend: 0.0021 (std: 0.0005)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Participation Trend: 0.0021 (std: 0.0005)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Treasury Trend: -11.2849 (std: 2.2059)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Treasury Trend: -11.2849 (std: 2.2059)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Proposal Rate: 2.5050 (std: 0.4069)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Proposal Rate: 2.5050 (std: 0.4069)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Governance Activity Index: 0.0042 (std: 0.0007)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Governance Activity Index: 0.0042 (std: 0.0007)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Final Gini: 0.4487 (std: 0.0373)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Final Gini: 0.4487 (std: 0.0373)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.2] Final Reputation Gini: 0.9818 (std: 0.0038)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.2] Final Reputation Gini: 0.9818 (std: 0.0038)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Proposal Pass Rate: 0.9833 (std: 0.0247)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Proposal Pass Rate: 0.9833 (std: 0.0247)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Average Turnout: 0.2260 (std: 0.0099)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Average Turnout: 0.2260 (std: 0.0099)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Final Treasury: 11851.5287 (std: 365.0052)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Final Treasury: 11851.5287 (std: 365.0052)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Final Token Price: 4.6635 (std: 7.9771)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Final Token Price: 4.6635 (std: 7.9771)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Total Proposals: 46.1333 (std: 7.5555)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Total Proposals: 46.1333 (std: 7.5555)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Quorum Reach Rate: 0.0346 (std: 0.0380)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Quorum Reach Rate: 0.0346 (std: 0.0380)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Avg Margin of Victory: 0.5483 (std: 0.0559)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Avg Margin of Victory: 0.5483 (std: 0.0559)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Avg Time to Decision: 873.1775 (std: 85.1725)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Avg Time to Decision: 873.1775 (std: 85.1725)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Proposal Rejection Rate: 0.0167 (std: 0.0247)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Proposal Rejection Rate: 0.0167 (std: 0.0247)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Governance Overhead: 74.7664 (std: 4.3105)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Governance Overhead: 74.7664 (std: 4.3105)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Unique Voter Count: 323.0667 (std: 7.6471)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Unique Voter Count: 323.0667 (std: 7.6471)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Voter Participation Rate: 0.2343 (std: 0.0119)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Voter Participation Rate: 0.2343 (std: 0.0119)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Voter Concentration Gini: 0.4072 (std: 0.0170)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Voter Concentration Gini: 0.4072 (std: 0.0170)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Delegate Concentration: 0.2646 (std: 0.0132)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Delegate Concentration: 0.2646 (std: 0.0132)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Avg Votes Per Proposal: 72.6431 (std: 4.1215)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Avg Votes Per Proposal: 72.6431 (std: 4.1215)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Voter Retention Rate: 0.9129 (std: 0.0169)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Voter Retention Rate: 0.9129 (std: 0.0169)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Voting Power Utilization: 0.1733 (std: 0.0081)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Voting Power Utilization: 0.1733 (std: 0.0081)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Treasury Volatility: 0.2352 (std: 0.0176)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Treasury Volatility: 0.2352 (std: 0.0176)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Treasury Growth Rate: -0.7111 (std: 0.0189)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Treasury Growth Rate: -0.7111 (std: 0.0189)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Staking Participation: 0.0876 (std: 0.0178)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Staking Participation: 0.0876 (std: 0.0178)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Token Concentration Gini: 0.4549 (std: 0.0298)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Token Concentration Gini: 0.4549 (std: 0.0298)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Avg Member Wealth: 122.7331 (std: 9.4144)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Avg Member Wealth: 122.7331 (std: 9.4144)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Wealth Mobility: 0.5451 (std: 0.0298)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Wealth Mobility: 0.5451 (std: 0.0298)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Whale Influence: 0.2680 (std: 0.0132)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Whale Influence: 0.2680 (std: 0.0132)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Whale Proposal Rate: 0.7172 (std: 0.1651)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Whale Proposal Rate: 0.7172 (std: 0.1651)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Governance Capture Risk: 0.2661 (std: 0.0135)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Governance Capture Risk: 0.2661 (std: 0.0135)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Vote Buying Vulnerability: 108.9669 (std: 131.0259)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Vote Buying Vulnerability: 108.9669 (std: 131.0259)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Single Entity Control: 0.0195 (std: 0.0018)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Single Entity Control: 0.0195 (std: 0.0018)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Collusion Threshold: 0.3359 (std: 0.0109)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Collusion Threshold: 0.3359 (std: 0.0109)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Participation Trend: 0.0023 (std: 0.0009)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Participation Trend: 0.0023 (std: 0.0009)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Treasury Trend: -11.5712 (std: 2.4405)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Treasury Trend: -11.5712 (std: 2.4405)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Proposal Rate: 2.3067 (std: 0.3778)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Proposal Rate: 2.3067 (std: 0.3778)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Governance Activity Index: 0.0039 (std: 0.0007)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Governance Activity Index: 0.0039 (std: 0.0007)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Final Gini: 0.4548 (std: 0.0298)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Final Gini: 0.4548 (std: 0.0298)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.25] Final Reputation Gini: 0.9819 (std: 0.0042)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.25] Final Reputation Gini: 0.9819 (std: 0.0042)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Proposal Pass Rate: 0.9809 (std: 0.0216)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Proposal Pass Rate: 0.9809 (std: 0.0216)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Average Turnout: 0.2251 (std: 0.0108)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Average Turnout: 0.2251 (std: 0.0108)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Final Treasury: 11525.7346 (std: 594.7551)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Final Treasury: 11525.7346 (std: 594.7551)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Final Token Price: 3.2237 (std: 4.6545)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Final Token Price: 3.2237 (std: 4.6545)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Total Proposals: 49.9667 (std: 7.3084)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Total Proposals: 49.9667 (std: 7.3084)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Quorum Reach Rate: 0.0039 (std: 0.0108)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Quorum Reach Rate: 0.0039 (std: 0.0108)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Avg Margin of Victory: 0.5555 (std: 0.0473)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Avg Margin of Victory: 0.5555 (std: 0.0473)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Avg Time to Decision: 879.0552 (std: 85.3517)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Avg Time to Decision: 879.0552 (std: 85.3517)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Proposal Rejection Rate: 0.0191 (std: 0.0216)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Proposal Rejection Rate: 0.0191 (std: 0.0216)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Governance Overhead: 74.1450 (std: 5.0764)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Governance Overhead: 74.1450 (std: 5.0764)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Unique Voter Count: 323.5667 (std: 10.7885)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Unique Voter Count: 323.5667 (std: 10.7885)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Voter Participation Rate: 0.2309 (std: 0.0102)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Voter Participation Rate: 0.2309 (std: 0.0102)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Voter Concentration Gini: 0.4004 (std: 0.0168)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Voter Concentration Gini: 0.4004 (std: 0.0168)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Delegate Concentration: 0.2646 (std: 0.0145)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Delegate Concentration: 0.2646 (std: 0.0145)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Avg Votes Per Proposal: 71.7925 (std: 4.0358)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Avg Votes Per Proposal: 71.7925 (std: 4.0358)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Voter Retention Rate: 0.9219 (std: 0.0227)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Voter Retention Rate: 0.9219 (std: 0.0227)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Voting Power Utilization: 0.1725 (std: 0.0071)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Voting Power Utilization: 0.1725 (std: 0.0071)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Treasury Volatility: 0.2359 (std: 0.0207)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Treasury Volatility: 0.2359 (std: 0.0207)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Treasury Growth Rate: -0.7135 (std: 0.0197)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Treasury Growth Rate: -0.7135 (std: 0.0197)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Staking Participation: 0.0799 (std: 0.0093)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Staking Participation: 0.0799 (std: 0.0093)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Token Concentration Gini: 0.4563 (std: 0.0285)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Token Concentration Gini: 0.4563 (std: 0.0285)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Avg Member Wealth: 122.5855 (std: 9.3832)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Avg Member Wealth: 122.5855 (std: 9.3832)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Wealth Mobility: 0.5437 (std: 0.0285)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Wealth Mobility: 0.5437 (std: 0.0285)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Whale Influence: 0.2707 (std: 0.0108)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Whale Influence: 0.2707 (std: 0.0108)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Whale Proposal Rate: 0.7106 (std: 0.1448)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Whale Proposal Rate: 0.7106 (std: 0.1448)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Governance Capture Risk: 0.2672 (std: 0.0149)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Governance Capture Risk: 0.2672 (std: 0.0149)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Vote Buying Vulnerability: 137.7648 (std: 118.0139)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Vote Buying Vulnerability: 137.7648 (std: 118.0139)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Single Entity Control: 0.0193 (std: 0.0021)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Single Entity Control: 0.0193 (std: 0.0021)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Collusion Threshold: 0.3349 (std: 0.0107)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Collusion Threshold: 0.3349 (std: 0.0107)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Participation Trend: 0.0022 (std: 0.0007)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Participation Trend: 0.0022 (std: 0.0007)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Treasury Trend: -12.1014 (std: 2.1195)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Treasury Trend: -12.1014 (std: 2.1195)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Proposal Rate: 2.4983 (std: 0.3654)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Proposal Rate: 2.4983 (std: 0.3654)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Governance Activity Index: 0.0042 (std: 0.0006)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Governance Activity Index: 0.0042 (std: 0.0006)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Final Gini: 0.4563 (std: 0.0285)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Final Gini: 0.4563 (std: 0.0285)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.3] Final Reputation Gini: 0.9812 (std: 0.0047)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.3] Final Reputation Gini: 0.9812 (std: 0.0047)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Proposal Pass Rate: 0.9779 (std: 0.0235)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Proposal Pass Rate: 0.9779 (std: 0.0235)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Average Turnout: 0.2252 (std: 0.0111)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Average Turnout: 0.2252 (std: 0.0111)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Final Treasury: 11561.5942 (std: 569.5345)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Final Treasury: 11561.5942 (std: 569.5345)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Final Token Price: 2.1505 (std: 1.5035)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Final Token Price: 2.1505 (std: 1.5035)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Total Proposals: 47.2000 (std: 8.8489)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Total Proposals: 47.2000 (std: 8.8489)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Quorum Reach Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Quorum Reach Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Avg Margin of Victory: 0.5377 (std: 0.0596)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Avg Margin of Victory: 0.5377 (std: 0.0596)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Avg Time to Decision: 890.1474 (std: 86.7322)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Avg Time to Decision: 890.1474 (std: 86.7322)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Proposal Rejection Rate: 0.0221 (std: 0.0235)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Proposal Rejection Rate: 0.0221 (std: 0.0235)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Governance Overhead: 75.8109 (std: 4.5477)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Governance Overhead: 75.8109 (std: 4.5477)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Unique Voter Count: 323.8667 (std: 10.5233)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Unique Voter Count: 323.8667 (std: 10.5233)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Voter Participation Rate: 0.2364 (std: 0.0101)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Voter Participation Rate: 0.2364 (std: 0.0101)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Voter Concentration Gini: 0.4079 (std: 0.0219)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Voter Concentration Gini: 0.4079 (std: 0.0219)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Delegate Concentration: 0.2647 (std: 0.0103)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Delegate Concentration: 0.2647 (std: 0.0103)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Avg Votes Per Proposal: 73.0107 (std: 3.8020)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Avg Votes Per Proposal: 73.0107 (std: 3.8020)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Voter Retention Rate: 0.9148 (std: 0.0135)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Voter Retention Rate: 0.9148 (std: 0.0135)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Voting Power Utilization: 0.1720 (std: 0.0066)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Voting Power Utilization: 0.1720 (std: 0.0066)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Treasury Volatility: 0.2312 (std: 0.0140)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Treasury Volatility: 0.2312 (std: 0.0140)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Treasury Growth Rate: -0.7117 (std: 0.0231)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Treasury Growth Rate: -0.7117 (std: 0.0231)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Staking Participation: 0.0841 (std: 0.0117)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Staking Participation: 0.0841 (std: 0.0117)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Token Concentration Gini: 0.4615 (std: 0.0307)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Token Concentration Gini: 0.4615 (std: 0.0307)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Avg Member Wealth: 124.7316 (std: 10.2616)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Avg Member Wealth: 124.7316 (std: 10.2616)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Wealth Mobility: 0.5385 (std: 0.0307)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Wealth Mobility: 0.5385 (std: 0.0307)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Whale Influence: 0.2666 (std: 0.0090)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Whale Influence: 0.2666 (std: 0.0090)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Whale Proposal Rate: 0.7746 (std: 0.1175)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Whale Proposal Rate: 0.7746 (std: 0.1175)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Governance Capture Risk: 0.2657 (std: 0.0139)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Governance Capture Risk: 0.2657 (std: 0.0139)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Vote Buying Vulnerability: 156.1838 (std: 137.1462)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Vote Buying Vulnerability: 156.1838 (std: 137.1462)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Single Entity Control: 0.0192 (std: 0.0027)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Single Entity Control: 0.0192 (std: 0.0027)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Collusion Threshold: 0.3342 (std: 0.0099)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Collusion Threshold: 0.3342 (std: 0.0099)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Participation Trend: 0.0021 (std: 0.0006)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Participation Trend: 0.0021 (std: 0.0006)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Treasury Trend: -11.0814 (std: 2.2229)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Treasury Trend: -11.0814 (std: 2.2229)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Proposal Rate: 2.3600 (std: 0.4424)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Proposal Rate: 2.3600 (std: 0.4424)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Governance Activity Index: 0.0039 (std: 0.0008)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Governance Activity Index: 0.0039 (std: 0.0008)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Final Gini: 0.4615 (std: 0.0307)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Final Gini: 0.4615 (std: 0.0307)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.4] Final Reputation Gini: 0.9817 (std: 0.0035)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.4] Final Reputation Gini: 0.9817 (std: 0.0035)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.5] Proposal Pass Rate: 0.9806 (std: 0.0205)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.5] Proposal Pass Rate: 0.9806 (std: 0.0205)
+{"timestamp":"2026-02-18T04:08:41.493Z","level":"metric","message":"[0.5] Average Turnout: 0.2256 (std: 0.0106)"}
+[2026-02-18T04:08:41.493Z] [METRIC  ] [0.5] Average Turnout: 0.2256 (std: 0.0106)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Final Treasury: 11760.8409 (std: 415.1914)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Final Treasury: 11760.8409 (std: 415.1914)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Final Token Price: 4.5184 (std: 7.0666)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Final Token Price: 4.5184 (std: 7.0666)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Final Member Count: 405.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Final Member Count: 405.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Total Proposals: 50.0000 (std: 8.7926)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Total Proposals: 50.0000 (std: 8.7926)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Quorum Reach Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Quorum Reach Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Avg Margin of Victory: 0.5430 (std: 0.0464)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Avg Margin of Victory: 0.5430 (std: 0.0464)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Avg Time to Decision: 877.8025 (std: 76.0961)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Avg Time to Decision: 877.8025 (std: 76.0961)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Proposal Abandonment Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Proposal Abandonment Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Proposal Rejection Rate: 0.0194 (std: 0.0205)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Proposal Rejection Rate: 0.0194 (std: 0.0205)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Governance Overhead: 74.8645 (std: 3.9091)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Governance Overhead: 74.8645 (std: 3.9091)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Unique Voter Count: 324.8333 (std: 8.7694)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Unique Voter Count: 324.8333 (std: 8.7694)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Voter Participation Rate: 0.2342 (std: 0.0108)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Voter Participation Rate: 0.2342 (std: 0.0108)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Voter Concentration Gini: 0.4024 (std: 0.0128)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Voter Concentration Gini: 0.4024 (std: 0.0128)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Delegate Concentration: 0.2626 (std: 0.0124)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Delegate Concentration: 0.2626 (std: 0.0124)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Avg Votes Per Proposal: 72.6440 (std: 3.6438)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Avg Votes Per Proposal: 72.6440 (std: 3.6438)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Voter Retention Rate: 0.9191 (std: 0.0132)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Voter Retention Rate: 0.9191 (std: 0.0132)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Voting Power Utilization: 0.1735 (std: 0.0077)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Voting Power Utilization: 0.1735 (std: 0.0077)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Treasury Volatility: 0.2313 (std: 0.0210)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Treasury Volatility: 0.2313 (std: 0.0210)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Treasury Growth Rate: -0.7124 (std: 0.0206)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Treasury Growth Rate: -0.7124 (std: 0.0206)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Staking Participation: 0.0809 (std: 0.0111)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Staking Participation: 0.0809 (std: 0.0111)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Token Concentration Gini: 0.4487 (std: 0.0304)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Token Concentration Gini: 0.4487 (std: 0.0304)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Avg Member Wealth: 122.9172 (std: 9.3030)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Avg Member Wealth: 122.9172 (std: 9.3030)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Wealth Mobility: 0.5513 (std: 0.0304)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Wealth Mobility: 0.5513 (std: 0.0304)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Whale Influence: 0.2656 (std: 0.0130)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Whale Influence: 0.2656 (std: 0.0130)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Whale Proposal Rate: 0.7870 (std: 0.1181)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Whale Proposal Rate: 0.7870 (std: 0.1181)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Governance Capture Risk: 0.2655 (std: 0.0129)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Governance Capture Risk: 0.2655 (std: 0.0129)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Vote Buying Vulnerability: 166.2376 (std: 126.6520)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Vote Buying Vulnerability: 166.2376 (std: 126.6520)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Single Entity Control: 0.0184 (std: 0.0016)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Single Entity Control: 0.0184 (std: 0.0016)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Collusion Threshold: 0.3382 (std: 0.0103)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Collusion Threshold: 0.3382 (std: 0.0103)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Participation Trend: 0.0021 (std: 0.0005)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Participation Trend: 0.0021 (std: 0.0005)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Treasury Trend: -10.8960 (std: 2.4791)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Treasury Trend: -10.8960 (std: 2.4791)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Member Growth Rate: 0.9286 (std: 0.0000)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Member Growth Rate: 0.9286 (std: 0.0000)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Proposal Rate: 2.5000 (std: 0.4396)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Proposal Rate: 2.5000 (std: 0.4396)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Governance Activity Index: 0.0042 (std: 0.0007)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Governance Activity Index: 0.0042 (std: 0.0007)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Final Gini: 0.4488 (std: 0.0304)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Final Gini: 0.4488 (std: 0.0304)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"metric","message":"[0.5] Final Reputation Gini: 0.9821 (std: 0.0047)"}
+[2026-02-18T04:08:41.494Z] [METRIC  ] [0.5] Final Reputation Gini: 0.9821 (std: 0.0047)
+{"timestamp":"2026-02-18T04:08:41.494Z","level":"info","message":"Experiment state changed to: completed"}
+[2026-02-18T04:08:41.494Z] [INFO    ] Experiment state changed to: completed

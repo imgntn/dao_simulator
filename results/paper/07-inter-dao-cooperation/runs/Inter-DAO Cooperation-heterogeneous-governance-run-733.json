@@ -1,0 +1,109 @@
+{
+  "runId": "Inter-DAO Cooperation-heterogeneous-governance-run-733",
+  "experimentName": "Inter-DAO Cooperation",
+  "sweepValue": "heterogeneous-governance",
+  "runIndex": 732,
+  "config": {
+    "daos": [
+      {
+        "id": "dao-majority",
+        "name": "Majority DAO",
+        "tokenSymbol": "MAJ",
+        "initialTreasuryFunding": 100000,
+        "governanceRule": "majority",
+        "quorumPercent": 10,
+        "agentCounts": {
+          "num_developers": 10,
+          "num_investors": 5,
+          "num_delegators": 5,
+          "num_proposal_creators": 5,
+          "num_passive_members": 20,
+          "num_governance_experts": 2
+        }
+      },
+      {
+        "id": "dao-supermajority",
+        "name": "Supermajority DAO",
+        "tokenSymbol": "SUP",
+        "initialTreasuryFunding": 100000,
+        "governanceRule": "supermajority",
+        "quorumPercent": 15,
+        "passingThreshold": 0.67,
+        "agentCounts": {
+          "num_developers": 10,
+          "num_investors": 5,
+          "num_delegators": 5,
+          "num_proposal_creators": 5,
+          "num_passive_members": 20,
+          "num_governance_experts": 2
+        }
+      },
+      {
+        "id": "dao-quadratic",
+        "name": "Quadratic DAO",
+        "tokenSymbol": "QUAD",
+        "initialTreasuryFunding": 100000,
+        "governanceRule": "quadratic",
+        "quorumPercent": 20,
+        "agentCounts": {
+          "num_developers": 10,
+          "num_investors": 5,
+          "num_delegators": 5,
+          "num_proposal_creators": 5,
+          "num_passive_members": 20,
+          "num_governance_experts": 2
+        }
+      }
+    ],
+    "globalMarketplaceConfig": {
+      "initialLiquidity": 100000,
+      "volatility": 0.02,
+      "priceUpdateFrequency": 1,
+      "baseTokenSymbol": "STABLE"
+    },
+    "bridgeFeeRate": 0.01,
+    "bridgeDelay": 5,
+    "enableInterDAOProposals": true,
+    "interDAOProposalConfig": {
+      "votingPeriod": 50,
+      "requiredApprovalRatio": 1,
+      "proposalTypes": [
+        "collaboration",
+        "treaty",
+        "resource_sharing",
+        "joint_venture"
+      ]
+    },
+    "interDAOProposalRate": 0.1
+  },
+  "seed": 2439,
+  "metrics": {
+    "ecosystem.Inter-DAO Proposal Count": 62,
+    "ecosystem.Inter-DAO Proposal Success Rate": 0.16129032258064516,
+    "ecosystem.Collaboration Proposal Rate": 0.27419354838709675,
+    "ecosystem.Treaty Proposal Rate": 0.25806451612903225,
+    "ecosystem.Resource Sharing Rate": 0.25806451612903225,
+    "ecosystem.Joint Venture Rate": 0.20967741935483872,
+    "ecosystem.Inter-DAO Voting Participation": 103.51896280855603,
+    "ecosystem.Cross-DAO Approval Alignment": 0.5161290322580645,
+    "ecosystem.Total Shared Budget": 104939.20585140586,
+    "ecosystem.Resource Flow Volume": 25186.53488950804,
+    "ecosystem.Ecosystem Treasury Total": 23492.392229226083,
+    "dao-majority.Proposal Pass Rate": 0.7142857142857143,
+    "dao-supermajority.Proposal Pass Rate": 0.25,
+    "dao-quadratic.Proposal Pass Rate": 0.75,
+    "dao-majority.Voter Participation Rate": 0.2925170068027211,
+    "dao-supermajority.Voter Participation Rate": 0.2976190476190476,
+    "dao-quadratic.Voter Participation Rate": 0.25376506024096385,
+    "dao-majority.Final Treasury": 11950.704750000008,
+    "dao-supermajority.Final Treasury": 9999.981207365016,
+    "dao-quadratic.Final Treasury": 1541.706271861063,
+    "dao-majority.Treasury Growth Rate": 1.0415334184275065,
+    "dao-supermajority.Treasury Growth Rate": 1.0419523475459969,
+    "dao-quadratic.Treasury Growth Rate": 1.0889053940785667
+  },
+  "startedAt": "2026-02-14T10:34:41.047Z",
+  "completedAt": "2026-02-14T10:34:42.648Z",
+  "durationMs": 1601,
+  "stepsCompleted": 500
+}

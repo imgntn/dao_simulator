@@ -50,7 +50,7 @@ sweep:
     - parameter: proposal_bond_fraction
       values: [0.0, 0.01]
 execution:
-  runsPerConfig: 25
+  runsPerConfig: 30
   stepsPerRun: 2000
   seedStrategy: sequential
   baseSeed: 202

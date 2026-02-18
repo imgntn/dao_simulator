@@ -80,20 +80,20 @@
   },
   "seed": 430,
   "metrics": {
-    "Whale Influence": 0.4900344882545666,
-    "Whale Proposal Rate": 0.4946236559139785,
-    "Governance Capture Risk": 0.48316151900364335,
-    "Single Entity Control": 0.02543567699251977,
-    "Collusion Threshold": 0.16842105263157894,
-    "Delegate Concentration": 0.4588037545064477,
-    "Voter Concentration Gini": 0.2189273868041402,
-    "Voting Power Utilization": 0.44793915357598735,
-    "Proposal Pass Rate": 0.7912087912087912,
+    "Whale Influence": 0.42972145570971354,
+    "Whale Proposal Rate": 0.7971014492753623,
+    "Governance Capture Risk": 0.41972689109098044,
+    "Single Entity Control": 0.01674121915109355,
+    "Collusion Threshold": 0.35324675324675325,
+    "Delegate Concentration": 0.42334174832234217,
+    "Voter Concentration Gini": 0.3641834692104738,
+    "Voting Power Utilization": 0.2011825502892088,
+    "Proposal Pass Rate": 0.9393939393939394,
     "Quorum Reach Rate": 1,
-    "Avg Time to Decision": 1010.054945054945
+    "Avg Time to Decision": 957.7424242424242
   },
-  "startedAt": "2026-02-07T02:09:55.368Z",
-  "completedAt": "2026-02-07T02:10:08.839Z",
-  "durationMs": 13471,
+  "startedAt": "2026-02-18T04:10:08.452Z",
+  "completedAt": "2026-02-18T04:10:23.824Z",
+  "durationMs": 15372,
   "stepsCompleted": 2000
 }

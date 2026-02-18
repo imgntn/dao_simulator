@@ -368,3 +368,589 @@
 [2026-01-30T10:04:31.415Z] [METRIC  ] [isolated-daos] iso-3.Treasury Growth Rate: -0.1498 (std: 0.0020)
 {"timestamp":"2026-01-30T10:04:31.415Z","level":"info","message":"Experiment state changed to: completed"}
 [2026-01-30T10:04:31.415Z] [INFO    ] Experiment state changed to: completed
+{"timestamp":"2026-02-18T03:15:02.876Z","level":"info","message":"Starting experiment: Inter-DAO Cooperation"}
+[2026-02-18T03:15:02.876Z] [INFO    ] Starting experiment: Inter-DAO Cooperation
+{"timestamp":"2026-02-18T03:15:02.877Z","level":"info","message":"Description: Study inter-DAO proposal success under governance and treasury asymmetries."}
+[2026-02-18T03:15:02.877Z] [INFO    ] Description: Study inter-DAO proposal success under governance and treasury asymmetries.
+{"timestamp":"2026-02-18T03:15:02.877Z","level":"info","message":"Total runs: 2 (2 per config)"}
+[2026-02-18T03:15:02.877Z] [INFO    ] Total runs: 2 (2 per config)
+{"timestamp":"2026-02-18T03:15:02.877Z","level":"info","message":"Workers: 8"}
+[2026-02-18T03:15:02.877Z] [INFO    ] Workers: 8
+{"timestamp":"2026-02-18T03:15:02.877Z","level":"info","message":"Output: results/paper/07-inter-dao-cooperation"}
+[2026-02-18T03:15:02.877Z] [INFO    ] Output: results/paper/07-inter-dao-cooperation
+{"timestamp":"2026-02-18T03:15:02.884Z","level":"info","message":"Experiment state changed to: running"}
+[2026-02-18T03:15:02.884Z] [INFO    ] Experiment state changed to: running
+{"timestamp":"2026-02-18T03:15:04.990Z","level":"progress","message":"Progress: 10% (1/10)","data":{"runsPerSecond":"0.48","eta":"18.9s"}}
+[2026-02-18T03:15:04.990Z] [PROGRESS] Progress: 10% (1/10) {"runsPerSecond":"0.48","eta":"18.9s"}
+{"timestamp":"2026-02-18T03:15:06.656Z","level":"progress","message":"Progress: 20% (2/10)","data":{"runsPerSecond":"0.53","eta":"15.1s"}}
+[2026-02-18T03:15:06.656Z] [PROGRESS] Progress: 20% (2/10) {"runsPerSecond":"0.53","eta":"15.1s"}
+{"timestamp":"2026-02-18T03:15:08.063Z","level":"progress","message":"Progress: 30% (3/10)","data":{"runsPerSecond":"0.58","eta":"12.1s"}}
+[2026-02-18T03:15:08.063Z] [PROGRESS] Progress: 30% (3/10) {"runsPerSecond":"0.58","eta":"12.1s"}
+{"timestamp":"2026-02-18T03:15:09.493Z","level":"progress","message":"Progress: 40% (4/10)","data":{"runsPerSecond":"0.61","eta":"9.9s"}}
+[2026-02-18T03:15:09.493Z] [PROGRESS] Progress: 40% (4/10) {"runsPerSecond":"0.61","eta":"9.9s"}
+{"timestamp":"2026-02-18T03:15:11.038Z","level":"progress","message":"Progress: 50% (5/10)","data":{"runsPerSecond":"0.61","eta":"8.1s"}}
+[2026-02-18T03:15:11.038Z] [PROGRESS] Progress: 50% (5/10) {"runsPerSecond":"0.61","eta":"8.1s"}
+{"timestamp":"2026-02-18T03:15:12.725Z","level":"progress","message":"Progress: 60% (6/10)","data":{"runsPerSecond":"0.61","eta":"6.6s"}}
+[2026-02-18T03:15:12.725Z] [PROGRESS] Progress: 60% (6/10) {"runsPerSecond":"0.61","eta":"6.6s"}
+{"timestamp":"2026-02-18T03:15:14.125Z","level":"progress","message":"Progress: 70% (7/10)","data":{"runsPerSecond":"0.62","eta":"4.8s"}}
+[2026-02-18T03:15:14.125Z] [PROGRESS] Progress: 70% (7/10) {"runsPerSecond":"0.62","eta":"4.8s"}
+{"timestamp":"2026-02-18T03:15:15.959Z","level":"progress","message":"Progress: 80% (8/10)","data":{"runsPerSecond":"0.61","eta":"3.3s"}}
+[2026-02-18T03:15:15.959Z] [PROGRESS] Progress: 80% (8/10) {"runsPerSecond":"0.61","eta":"3.3s"}
+{"timestamp":"2026-02-18T03:15:17.388Z","level":"progress","message":"Progress: 90% (9/10)","data":{"runsPerSecond":"0.62","eta":"1.6s"}}
+[2026-02-18T03:15:17.388Z] [PROGRESS] Progress: 90% (9/10) {"runsPerSecond":"0.62","eta":"1.6s"}
+{"timestamp":"2026-02-18T03:15:18.658Z","level":"progress","message":"Progress: 100% (10/10)","data":{"runsPerSecond":"0.63","eta":"unknown"}}
+[2026-02-18T03:15:18.658Z] [PROGRESS] Progress: 100% (10/10) {"runsPerSecond":"0.63","eta":"unknown"}
+{"timestamp":"2026-02-18T03:15:18.728Z","level":"info","message":"Exporting results..."}
+[2026-02-18T03:15:18.728Z] [INFO    ] Exporting results...
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"info","message":"Experiment completed in 15.9s"}
+[2026-02-18T03:15:18.744Z] [INFO    ] Experiment completed in 15.9s
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"info","message":"Total runs: 10"}
+[2026-02-18T03:15:18.744Z] [INFO    ] Total runs: 10
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"info","message":"Successful: 10"}
+[2026-02-18T03:15:18.744Z] [INFO    ] Successful: 10
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"info","message":"Failed: 0"}
+[2026-02-18T03:15:18.744Z] [INFO    ] Failed: 0
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] ecosystem.Inter-DAO Proposal Count: 49.0000 (std: 7.0711)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] ecosystem.Inter-DAO Proposal Count: 49.0000 (std: 7.0711)
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] ecosystem.Inter-DAO Proposal Success Rate: 0.1444 (std: 0.0208)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] ecosystem.Inter-DAO Proposal Success Rate: 0.1444 (std: 0.0208)
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] ecosystem.Collaboration Proposal Rate: 0.2824 (std: 0.0458)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] ecosystem.Collaboration Proposal Rate: 0.2824 (std: 0.0458)
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] ecosystem.Treaty Proposal Rate: 0.2205 (std: 0.0548)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] ecosystem.Treaty Proposal Rate: 0.2205 (std: 0.0548)
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] ecosystem.Resource Sharing Rate: 0.2403 (std: 0.0780)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] ecosystem.Resource Sharing Rate: 0.2403 (std: 0.0780)
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] ecosystem.Joint Venture Rate: 0.2567 (std: 0.0226)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] ecosystem.Joint Venture Rate: 0.2567 (std: 0.0226)
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] ecosystem.Inter-DAO Voting Participation: 115.6371 (std: 1.0805)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] ecosystem.Inter-DAO Voting Participation: 115.6371 (std: 1.0805)
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] ecosystem.Cross-DAO Approval Alignment: 0.5185 (std: 0.0262)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] ecosystem.Cross-DAO Approval Alignment: 0.5185 (std: 0.0262)
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] ecosystem.Total Shared Budget: 145467.7830 (std: 41774.0514)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] ecosystem.Total Shared Budget: 145467.7830 (std: 41774.0514)
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] ecosystem.Resource Flow Volume: 24591.8654 (std: 15889.6152)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] ecosystem.Resource Flow Volume: 24591.8654 (std: 15889.6152)
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] ecosystem.Ecosystem Treasury Total: 23837.6487 (std: 26.0092)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] ecosystem.Ecosystem Treasury Total: 23837.6487 (std: 26.0092)
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] dao-1.Proposal Pass Rate: 0.9000 (std: 0.1414)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] dao-1.Proposal Pass Rate: 0.9000 (std: 0.1414)
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] dao-2.Proposal Pass Rate: 0.6932 (std: 0.0804)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] dao-2.Proposal Pass Rate: 0.6932 (std: 0.0804)
+{"timestamp":"2026-02-18T03:15:18.744Z","level":"metric","message":"[homogeneous-governance] dao-3.Proposal Pass Rate: 0.9286 (std: 0.1010)"}
+[2026-02-18T03:15:18.744Z] [METRIC  ] [homogeneous-governance] dao-3.Proposal Pass Rate: 0.9286 (std: 0.1010)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[homogeneous-governance] dao-1.Voter Participation Rate: 0.2941 (std: 0.0508)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [homogeneous-governance] dao-1.Voter Participation Rate: 0.2941 (std: 0.0508)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[homogeneous-governance] dao-2.Voter Participation Rate: 0.3024 (std: 0.0218)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [homogeneous-governance] dao-2.Voter Participation Rate: 0.3024 (std: 0.0218)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[homogeneous-governance] dao-3.Voter Participation Rate: 0.2934 (std: 0.0009)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [homogeneous-governance] dao-3.Voter Participation Rate: 0.2934 (std: 0.0009)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[homogeneous-governance] dao-1.Final Treasury: 11931.2457 (std: 42.8588)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [homogeneous-governance] dao-1.Final Treasury: 11931.2457 (std: 42.8588)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[homogeneous-governance] dao-2.Final Treasury: 5947.2443 (std: 8410.6735)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [homogeneous-governance] dao-2.Final Treasury: 5947.2443 (std: 8410.6735)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[homogeneous-governance] dao-3.Final Treasury: 5959.1587 (std: 8427.5231)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [homogeneous-governance] dao-3.Final Treasury: 5959.1587 (std: 8427.5231)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[homogeneous-governance] dao-1.Treasury Growth Rate: 1.4001 (std: 0.0030)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [homogeneous-governance] dao-1.Treasury Growth Rate: 1.4001 (std: 0.0030)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[homogeneous-governance] dao-2.Treasury Growth Rate: 1.4097 (std: 0.0118)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [homogeneous-governance] dao-2.Treasury Growth Rate: 1.4097 (std: 0.0118)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[homogeneous-governance] dao-3.Treasury Growth Rate: 1.4236 (std: 0.0361)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [homogeneous-governance] dao-3.Treasury Growth Rate: 1.4236 (std: 0.0361)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Inter-DAO Proposal Count: 44.0000 (std: 8.4853)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] ecosystem.Inter-DAO Proposal Count: 44.0000 (std: 8.4853)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Inter-DAO Proposal Success Rate: 0.1653 (std: 0.0640)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] ecosystem.Inter-DAO Proposal Success Rate: 0.1653 (std: 0.0640)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Collaboration Proposal Rate: 0.2753 (std: 0.0916)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] ecosystem.Collaboration Proposal Rate: 0.2753 (std: 0.0916)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Treaty Proposal Rate: 0.2616 (std: 0.0022)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] ecosystem.Treaty Proposal Rate: 0.2616 (std: 0.0022)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Resource Sharing Rate: 0.2384 (std: 0.0022)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] ecosystem.Resource Sharing Rate: 0.2384 (std: 0.0022)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Joint Venture Rate: 0.2247 (std: 0.0916)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] ecosystem.Joint Venture Rate: 0.2247 (std: 0.0916)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Inter-DAO Voting Participation: 113.5870 (std: 0.0659)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] ecosystem.Inter-DAO Voting Participation: 113.5870 (std: 0.0659)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Cross-DAO Approval Alignment: 0.5989 (std: 0.0834)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] ecosystem.Cross-DAO Approval Alignment: 0.5989 (std: 0.0834)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Total Shared Budget: 158597.5667 (std: 27361.6001)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] ecosystem.Total Shared Budget: 158597.5667 (std: 27361.6001)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Resource Flow Volume: 16883.3276 (std: 785.2854)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] ecosystem.Resource Flow Volume: 16883.3276 (std: 785.2854)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Ecosystem Treasury Total: 20935.4950 (std: 1403.0253)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] ecosystem.Ecosystem Treasury Total: 20935.4950 (std: 1403.0253)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] dao-majority.Proposal Pass Rate: 0.6905 (std: 0.0337)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] dao-majority.Proposal Pass Rate: 0.6905 (std: 0.0337)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] dao-supermajority.Proposal Pass Rate: 0.6222 (std: 0.2514)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] dao-supermajority.Proposal Pass Rate: 0.6222 (std: 0.2514)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] dao-quadratic.Proposal Pass Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] dao-quadratic.Proposal Pass Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] dao-majority.Voter Participation Rate: 0.2723 (std: 0.0015)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] dao-majority.Voter Participation Rate: 0.2723 (std: 0.0015)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] dao-supermajority.Voter Participation Rate: 0.3042 (std: 0.0375)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] dao-supermajority.Voter Participation Rate: 0.3042 (std: 0.0375)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] dao-quadratic.Voter Participation Rate: 0.2948 (std: 0.0150)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] dao-quadratic.Voter Participation Rate: 0.2948 (std: 0.0150)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] dao-majority.Final Treasury: 4999.8917 (std: 7070.9146)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] dao-majority.Final Treasury: 4999.8917 (std: 7070.9146)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] dao-supermajority.Final Treasury: 9971.8114 (std: 39.8646)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] dao-supermajority.Final Treasury: 9971.8114 (std: 39.8646)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] dao-quadratic.Final Treasury: 5963.7919 (std: 8434.0753)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] dao-quadratic.Final Treasury: 5963.7919 (std: 8434.0753)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] dao-majority.Treasury Growth Rate: 1.4545 (std: 0.0811)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] dao-majority.Treasury Growth Rate: 1.4545 (std: 0.0811)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] dao-supermajority.Treasury Growth Rate: 1.4082 (std: 0.0058)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] dao-supermajority.Treasury Growth Rate: 1.4082 (std: 0.0058)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[heterogeneous-governance] dao-quadratic.Treasury Growth Rate: 1.4088 (std: 0.0251)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [heterogeneous-governance] dao-quadratic.Treasury Growth Rate: 1.4088 (std: 0.0251)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Inter-DAO Proposal Count: 53.0000 (std: 0.0000)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] ecosystem.Inter-DAO Proposal Count: 53.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Inter-DAO Proposal Success Rate: 0.2830 (std: 0.1334)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] ecosystem.Inter-DAO Proposal Success Rate: 0.2830 (std: 0.1334)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Collaboration Proposal Rate: 0.2264 (std: 0.0267)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] ecosystem.Collaboration Proposal Rate: 0.2264 (std: 0.0267)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Treaty Proposal Rate: 0.3585 (std: 0.0267)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] ecosystem.Treaty Proposal Rate: 0.3585 (std: 0.0267)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Resource Sharing Rate: 0.2264 (std: 0.0534)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] ecosystem.Resource Sharing Rate: 0.2264 (std: 0.0534)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Joint Venture Rate: 0.1887 (std: 0.0534)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] ecosystem.Joint Venture Rate: 0.1887 (std: 0.0534)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Inter-DAO Voting Participation: 114.6955 (std: 10.1519)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] ecosystem.Inter-DAO Voting Participation: 114.6955 (std: 10.1519)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Cross-DAO Approval Alignment: 0.5755 (std: 0.0400)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] ecosystem.Cross-DAO Approval Alignment: 0.5755 (std: 0.0400)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Total Shared Budget: 196474.9468 (std: 94938.5882)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] ecosystem.Total Shared Budget: 196474.9468 (std: 94938.5882)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Resource Flow Volume: 31290.0789 (std: 19570.9863)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] ecosystem.Resource Flow Volume: 31290.0789 (std: 19570.9863)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Ecosystem Treasury Total: 25979.5152 (std: 5684.7748)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] ecosystem.Ecosystem Treasury Total: 25979.5152 (std: 5684.7748)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] dao-wealthy.Proposal Pass Rate: 0.6214 (std: 0.0303)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] dao-wealthy.Proposal Pass Rate: 0.6214 (std: 0.0303)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] dao-medium.Proposal Pass Rate: 0.4667 (std: 0.1886)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] dao-medium.Proposal Pass Rate: 0.4667 (std: 0.1886)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] dao-small.Proposal Pass Rate: 0.6458 (std: 0.0295)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] dao-small.Proposal Pass Rate: 0.6458 (std: 0.0295)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] dao-wealthy.Voter Participation Rate: 0.3063 (std: 0.0014)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] dao-wealthy.Voter Participation Rate: 0.3063 (std: 0.0014)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] dao-medium.Voter Participation Rate: 0.3048 (std: 0.0116)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] dao-medium.Voter Participation Rate: 0.3048 (std: 0.0116)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] dao-small.Voter Participation Rate: 0.3029 (std: 0.0292)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] dao-small.Voter Participation Rate: 0.3029 (std: 0.0292)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] dao-wealthy.Final Treasury: 10017.5926 (std: 25.6348)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] dao-wealthy.Final Treasury: 10017.5926 (std: 25.6348)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] dao-medium.Final Treasury: 10962.0266 (std: 1360.5111)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] dao-medium.Final Treasury: 10962.0266 (std: 1360.5111)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] dao-small.Final Treasury: 4999.8960 (std: 7070.9207)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] dao-small.Final Treasury: 4999.8960 (std: 7070.9207)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] dao-wealthy.Treasury Growth Rate: 1.4541 (std: 0.0771)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] dao-wealthy.Treasury Growth Rate: 1.4541 (std: 0.0771)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] dao-medium.Treasury Growth Rate: 1.4164 (std: 0.0553)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] dao-medium.Treasury Growth Rate: 1.4164 (std: 0.0553)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[asymmetric-treasury] dao-small.Treasury Growth Rate: 1.3812 (std: 0.0042)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [asymmetric-treasury] dao-small.Treasury Growth Rate: 1.3812 (std: 0.0042)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] ecosystem.Inter-DAO Proposal Count: 70.5000 (std: 0.7071)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] ecosystem.Inter-DAO Proposal Count: 70.5000 (std: 0.7071)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] ecosystem.Inter-DAO Proposal Success Rate: 0.1986 (std: 0.0020)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] ecosystem.Inter-DAO Proposal Success Rate: 0.1986 (std: 0.0020)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] ecosystem.Collaboration Proposal Rate: 0.2340 (std: 0.0077)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] ecosystem.Collaboration Proposal Rate: 0.2340 (std: 0.0077)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] ecosystem.Treaty Proposal Rate: 0.2339 (std: 0.0277)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] ecosystem.Treaty Proposal Rate: 0.2339 (std: 0.0277)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] ecosystem.Resource Sharing Rate: 0.2836 (std: 0.0172)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] ecosystem.Resource Sharing Rate: 0.2836 (std: 0.0172)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] ecosystem.Joint Venture Rate: 0.2485 (std: 0.0526)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] ecosystem.Joint Venture Rate: 0.2485 (std: 0.0526)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] ecosystem.Inter-DAO Voting Participation: 132.9744 (std: 1.0510)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] ecosystem.Inter-DAO Voting Participation: 132.9744 (std: 1.0510)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] ecosystem.Cross-DAO Approval Alignment: 0.5459 (std: 0.0447)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] ecosystem.Cross-DAO Approval Alignment: 0.5459 (std: 0.0447)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] ecosystem.Total Shared Budget: 208192.3884 (std: 22109.7915)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] ecosystem.Total Shared Budget: 208192.3884 (std: 22109.7915)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] ecosystem.Resource Flow Volume: 77931.2880 (std: 16758.0461)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] ecosystem.Resource Flow Volume: 77931.2880 (std: 16758.0461)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] ecosystem.Ecosystem Treasury Total: 20968.7952 (std: 15504.4407)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] ecosystem.Ecosystem Treasury Total: 20968.7952 (std: 15504.4407)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] dao-dev.Proposal Pass Rate: 0.8571 (std: 0.2020)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] dao-dev.Proposal Pass Rate: 0.8571 (std: 0.2020)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] dao-invest.Proposal Pass Rate: 0.5417 (std: 0.0589)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] dao-invest.Proposal Pass Rate: 0.5417 (std: 0.0589)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] dao-community.Proposal Pass Rate: 0.9000 (std: 0.1414)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] dao-community.Proposal Pass Rate: 0.9000 (std: 0.1414)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] dao-dev.Voter Participation Rate: 0.2923 (std: 0.0260)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] dao-dev.Voter Participation Rate: 0.2923 (std: 0.0260)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] dao-invest.Voter Participation Rate: 0.3208 (std: 0.0152)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] dao-invest.Voter Participation Rate: 0.3208 (std: 0.0152)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] dao-community.Voter Participation Rate: 0.2468 (std: 0.0223)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] dao-community.Voter Participation Rate: 0.2468 (std: 0.0223)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] dao-dev.Final Treasury: 5007.6933 (std: 7081.9478)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] dao-dev.Final Treasury: 5007.6933 (std: 7081.9478)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] dao-invest.Final Treasury: 10949.2857 (std: 1334.7145)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] dao-invest.Final Treasury: 10949.2857 (std: 1334.7145)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] dao-community.Final Treasury: 5011.8162 (std: 7087.7784)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] dao-community.Final Treasury: 5011.8162 (std: 7087.7784)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] dao-dev.Treasury Growth Rate: 1.4108 (std: 0.0192)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] dao-dev.Treasury Growth Rate: 1.4108 (std: 0.0192)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] dao-invest.Treasury Growth Rate: 1.4158 (std: 0.0271)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] dao-invest.Treasury Growth Rate: 1.4158 (std: 0.0271)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[specialized-daos] dao-community.Treasury Growth Rate: 1.3909 (std: 0.0021)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [specialized-daos] dao-community.Treasury Growth Rate: 1.3909 (std: 0.0021)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] ecosystem.Inter-DAO Proposal Count: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] ecosystem.Inter-DAO Proposal Count: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] ecosystem.Inter-DAO Proposal Success Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] ecosystem.Inter-DAO Proposal Success Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] ecosystem.Collaboration Proposal Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] ecosystem.Collaboration Proposal Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] ecosystem.Treaty Proposal Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] ecosystem.Treaty Proposal Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] ecosystem.Resource Sharing Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] ecosystem.Resource Sharing Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] ecosystem.Joint Venture Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] ecosystem.Joint Venture Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] ecosystem.Inter-DAO Voting Participation: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] ecosystem.Inter-DAO Voting Participation: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] ecosystem.Cross-DAO Approval Alignment: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] ecosystem.Cross-DAO Approval Alignment: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] ecosystem.Total Shared Budget: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] ecosystem.Total Shared Budget: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] ecosystem.Resource Flow Volume: 0.0000 (std: 0.0000)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] ecosystem.Resource Flow Volume: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] ecosystem.Ecosystem Treasury Total: 35820.7956 (std: 17.4256)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] ecosystem.Ecosystem Treasury Total: 35820.7956 (std: 17.4256)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] iso-1.Proposal Pass Rate: 0.9000 (std: 0.1414)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] iso-1.Proposal Pass Rate: 0.9000 (std: 0.1414)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] iso-2.Proposal Pass Rate: 0.5125 (std: 0.1591)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] iso-2.Proposal Pass Rate: 0.5125 (std: 0.1591)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] iso-3.Proposal Pass Rate: 0.8667 (std: 0.0471)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] iso-3.Proposal Pass Rate: 0.8667 (std: 0.0471)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] iso-1.Voter Participation Rate: 0.2892 (std: 0.0137)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] iso-1.Voter Participation Rate: 0.2892 (std: 0.0137)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] iso-2.Voter Participation Rate: 0.2879 (std: 0.0192)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] iso-2.Voter Participation Rate: 0.2879 (std: 0.0192)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] iso-3.Voter Participation Rate: 0.2986 (std: 0.0303)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] iso-3.Voter Participation Rate: 0.2986 (std: 0.0303)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] iso-1.Final Treasury: 11941.8968 (std: 20.1993)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] iso-1.Final Treasury: 11941.8968 (std: 20.1993)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] iso-2.Final Treasury: 11933.8942 (std: 7.4392)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] iso-2.Final Treasury: 11933.8942 (std: 7.4392)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] iso-3.Final Treasury: 11945.0047 (std: 10.2129)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] iso-3.Final Treasury: 11945.0047 (std: 10.2129)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] iso-1.Treasury Growth Rate: 1.4313 (std: 0.0374)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] iso-1.Treasury Growth Rate: 1.4313 (std: 0.0374)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] iso-2.Treasury Growth Rate: 1.3962 (std: 0.0116)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] iso-2.Treasury Growth Rate: 1.3962 (std: 0.0116)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"metric","message":"[isolated-daos] iso-3.Treasury Growth Rate: 1.4004 (std: 0.0334)"}
+[2026-02-18T03:15:18.745Z] [METRIC  ] [isolated-daos] iso-3.Treasury Growth Rate: 1.4004 (std: 0.0334)
+{"timestamp":"2026-02-18T03:15:18.745Z","level":"info","message":"Experiment state changed to: completed"}
+[2026-02-18T03:15:18.745Z] [INFO    ] Experiment state changed to: completed
+{"timestamp":"2026-02-18T05:25:48.433Z","level":"info","message":"Starting experiment: Inter-DAO Cooperation"}
+[2026-02-18T05:25:48.433Z] [INFO    ] Starting experiment: Inter-DAO Cooperation
+{"timestamp":"2026-02-18T05:25:48.433Z","level":"info","message":"Description: Study inter-DAO proposal success under governance and treasury asymmetries."}
+[2026-02-18T05:25:48.433Z] [INFO    ] Description: Study inter-DAO proposal success under governance and treasury asymmetries.
+{"timestamp":"2026-02-18T05:25:48.433Z","level":"info","message":"Total runs: 30 (30 per config)"}
+[2026-02-18T05:25:48.433Z] [INFO    ] Total runs: 30 (30 per config)
+{"timestamp":"2026-02-18T05:25:48.433Z","level":"info","message":"Workers: 8"}
+[2026-02-18T05:25:48.433Z] [INFO    ] Workers: 8
+{"timestamp":"2026-02-18T05:25:48.433Z","level":"info","message":"Output: results/paper/07-inter-dao-cooperation"}
+[2026-02-18T05:25:48.433Z] [INFO    ] Output: results/paper/07-inter-dao-cooperation
+{"timestamp":"2026-02-18T05:25:48.434Z","level":"info","message":"Experiment state changed to: running"}
+[2026-02-18T05:25:48.434Z] [INFO    ] Experiment state changed to: running
+{"timestamp":"2026-02-18T05:25:58.928Z","level":"progress","message":"Progress: 5% (8/150)","data":{"runsPerSecond":"0.76","eta":"3m 6s"}}
+[2026-02-18T05:25:58.928Z] [PROGRESS] Progress: 5% (8/150) {"runsPerSecond":"0.76","eta":"3m 6s"}
+{"timestamp":"2026-02-18T05:26:09.105Z","level":"progress","message":"Progress: 10% (15/150)","data":{"runsPerSecond":"0.73","eta":"3m 6s"}}
+[2026-02-18T05:26:09.105Z] [PROGRESS] Progress: 10% (15/150) {"runsPerSecond":"0.73","eta":"3m 6s"}
+{"timestamp":"2026-02-18T05:26:10.457Z","level":"progress","message":"Progress: 10% (16/150)","data":{"runsPerSecond":"0.73","eta":"3m 4s"}}
+[2026-02-18T05:26:10.457Z] [PROGRESS] Progress: 10% (16/150) {"runsPerSecond":"0.73","eta":"3m 4s"}
+{"timestamp":"2026-02-18T05:26:20.872Z","level":"progress","message":"Progress: 15% (23/150)","data":{"runsPerSecond":"0.71","eta":"2m 59s"}}
+[2026-02-18T05:26:20.872Z] [PROGRESS] Progress: 15% (23/150) {"runsPerSecond":"0.71","eta":"2m 59s"}
+{"timestamp":"2026-02-18T05:26:29.504Z","level":"progress","message":"Progress: 20% (30/150)","data":{"runsPerSecond":"0.73","eta":"2m 44s"}}
+[2026-02-18T05:26:29.504Z] [PROGRESS] Progress: 20% (30/150) {"runsPerSecond":"0.73","eta":"2m 44s"}
+{"timestamp":"2026-02-18T05:26:30.884Z","level":"progress","message":"Progress: 20% (31/150)","data":{"runsPerSecond":"0.73","eta":"2m 43s"}}
+[2026-02-18T05:26:30.884Z] [PROGRESS] Progress: 20% (31/150) {"runsPerSecond":"0.73","eta":"2m 43s"}
+{"timestamp":"2026-02-18T05:26:39.695Z","level":"progress","message":"Progress: 25% (38/150)","data":{"runsPerSecond":"0.74","eta":"2m 31s"}}
+[2026-02-18T05:26:39.695Z] [PROGRESS] Progress: 25% (38/150) {"runsPerSecond":"0.74","eta":"2m 31s"}
+{"timestamp":"2026-02-18T05:26:47.936Z","level":"progress","message":"Progress: 30% (45/150)","data":{"runsPerSecond":"0.76","eta":"2m 19s"}}
+[2026-02-18T05:26:47.936Z] [PROGRESS] Progress: 30% (45/150) {"runsPerSecond":"0.76","eta":"2m 19s"}
+{"timestamp":"2026-02-18T05:26:49.159Z","level":"progress","message":"Progress: 30% (46/150)","data":{"runsPerSecond":"0.76","eta":"2m 17s"}}
+[2026-02-18T05:26:49.159Z] [PROGRESS] Progress: 30% (46/150) {"runsPerSecond":"0.76","eta":"2m 17s"}
+{"timestamp":"2026-02-18T05:26:57.395Z","level":"progress","message":"Progress: 35% (53/150)","data":{"runsPerSecond":"0.77","eta":"2m 6s"}}
+[2026-02-18T05:26:57.395Z] [PROGRESS] Progress: 35% (53/150) {"runsPerSecond":"0.77","eta":"2m 6s"}
+{"timestamp":"2026-02-18T05:27:05.435Z","level":"progress","message":"Progress: 40% (60/150)","data":{"runsPerSecond":"0.78","eta":"1m 56s"}}
+[2026-02-18T05:27:05.435Z] [PROGRESS] Progress: 40% (60/150) {"runsPerSecond":"0.78","eta":"1m 56s"}
+{"timestamp":"2026-02-18T05:27:06.481Z","level":"progress","message":"Progress: 40% (61/150)","data":{"runsPerSecond":"0.78","eta":"1m 54s"}}
+[2026-02-18T05:27:06.481Z] [PROGRESS] Progress: 40% (61/150) {"runsPerSecond":"0.78","eta":"1m 54s"}
+{"timestamp":"2026-02-18T05:27:14.462Z","level":"progress","message":"Progress: 45% (68/150)","data":{"runsPerSecond":"0.79","eta":"1m 44s"}}
+[2026-02-18T05:27:14.462Z] [PROGRESS] Progress: 45% (68/150) {"runsPerSecond":"0.79","eta":"1m 44s"}
+{"timestamp":"2026-02-18T05:27:23.736Z","level":"progress","message":"Progress: 50% (75/150)","data":{"runsPerSecond":"0.79","eta":"1m 35s"}}
+[2026-02-18T05:27:23.736Z] [PROGRESS] Progress: 50% (75/150) {"runsPerSecond":"0.79","eta":"1m 35s"}
+{"timestamp":"2026-02-18T05:27:25.199Z","level":"progress","message":"Progress: 50% (76/150)","data":{"runsPerSecond":"0.79","eta":"1m 34s"}}
+[2026-02-18T05:27:25.199Z] [PROGRESS] Progress: 50% (76/150) {"runsPerSecond":"0.79","eta":"1m 34s"}
+{"timestamp":"2026-02-18T05:27:34.436Z","level":"progress","message":"Progress: 55% (83/150)","data":{"runsPerSecond":"0.78","eta":"1m 26s"}}
+[2026-02-18T05:27:34.436Z] [PROGRESS] Progress: 55% (83/150) {"runsPerSecond":"0.78","eta":"1m 26s"}
+{"timestamp":"2026-02-18T05:27:44.777Z","level":"progress","message":"Progress: 60% (90/150)","data":{"runsPerSecond":"0.77","eta":"1m 18s"}}
+[2026-02-18T05:27:44.777Z] [PROGRESS] Progress: 60% (90/150) {"runsPerSecond":"0.77","eta":"1m 18s"}
+{"timestamp":"2026-02-18T05:27:46.320Z","level":"progress","message":"Progress: 60% (91/150)","data":{"runsPerSecond":"0.77","eta":"1m 16s"}}
+[2026-02-18T05:27:46.320Z] [PROGRESS] Progress: 60% (91/150) {"runsPerSecond":"0.77","eta":"1m 16s"}
+{"timestamp":"2026-02-18T05:27:57.411Z","level":"progress","message":"Progress: 65% (98/150)","data":{"runsPerSecond":"0.76","eta":"1m 8s"}}
+[2026-02-18T05:27:57.411Z] [PROGRESS] Progress: 65% (98/150) {"runsPerSecond":"0.76","eta":"1m 8s"}
+{"timestamp":"2026-02-18T05:28:07.519Z","level":"progress","message":"Progress: 70% (105/150)","data":{"runsPerSecond":"0.75","eta":"59.6s"}}
+[2026-02-18T05:28:07.519Z] [PROGRESS] Progress: 70% (105/150) {"runsPerSecond":"0.75","eta":"59.6s"}
+{"timestamp":"2026-02-18T05:28:09.106Z","level":"progress","message":"Progress: 70% (106/150)","data":{"runsPerSecond":"0.75","eta":"58.4s"}}
+[2026-02-18T05:28:09.106Z] [PROGRESS] Progress: 70% (106/150) {"runsPerSecond":"0.75","eta":"58.4s"}
+{"timestamp":"2026-02-18T05:28:18.682Z","level":"progress","message":"Progress: 75% (113/150)","data":{"runsPerSecond":"0.75","eta":"49.2s"}}
+[2026-02-18T05:28:18.682Z] [PROGRESS] Progress: 75% (113/150) {"runsPerSecond":"0.75","eta":"49.2s"}
+{"timestamp":"2026-02-18T05:28:27.884Z","level":"progress","message":"Progress: 80% (120/150)","data":{"runsPerSecond":"0.75","eta":"39.9s"}}
+[2026-02-18T05:28:27.884Z] [PROGRESS] Progress: 80% (120/150) {"runsPerSecond":"0.75","eta":"39.9s"}
+{"timestamp":"2026-02-18T05:28:29.423Z","level":"progress","message":"Progress: 80% (121/150)","data":{"runsPerSecond":"0.75","eta":"38.6s"}}
+[2026-02-18T05:28:29.423Z] [PROGRESS] Progress: 80% (121/150) {"runsPerSecond":"0.75","eta":"38.6s"}
+{"timestamp":"2026-02-18T05:28:37.635Z","level":"progress","message":"Progress: 85% (128/150)","data":{"runsPerSecond":"0.76","eta":"29.1s"}}
+[2026-02-18T05:28:37.635Z] [PROGRESS] Progress: 85% (128/150) {"runsPerSecond":"0.76","eta":"29.1s"}
+{"timestamp":"2026-02-18T05:28:47.208Z","level":"progress","message":"Progress: 90% (135/150)","data":{"runsPerSecond":"0.76","eta":"19.9s"}}
+[2026-02-18T05:28:47.208Z] [PROGRESS] Progress: 90% (135/150) {"runsPerSecond":"0.76","eta":"19.9s"}
+{"timestamp":"2026-02-18T05:28:48.817Z","level":"progress","message":"Progress: 90% (136/150)","data":{"runsPerSecond":"0.75","eta":"18.6s"}}
+[2026-02-18T05:28:48.817Z] [PROGRESS] Progress: 90% (136/150) {"runsPerSecond":"0.75","eta":"18.6s"}
+{"timestamp":"2026-02-18T05:28:58.919Z","level":"progress","message":"Progress: 95% (143/150)","data":{"runsPerSecond":"0.75","eta":"9.3s"}}
+[2026-02-18T05:28:58.919Z] [PROGRESS] Progress: 95% (143/150) {"runsPerSecond":"0.75","eta":"9.3s"}
+{"timestamp":"2026-02-18T05:29:08.068Z","level":"progress","message":"Progress: 100% (150/150)","data":{"runsPerSecond":"0.75","eta":"unknown"}}
+[2026-02-18T05:29:08.068Z] [PROGRESS] Progress: 100% (150/150) {"runsPerSecond":"0.75","eta":"unknown"}
+{"timestamp":"2026-02-18T05:29:08.135Z","level":"info","message":"Exporting results..."}
+[2026-02-18T05:29:08.135Z] [INFO    ] Exporting results...
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"info","message":"Experiment completed in 3m 20s"}
+[2026-02-18T05:29:08.257Z] [INFO    ] Experiment completed in 3m 20s
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"info","message":"Total runs: 150"}
+[2026-02-18T05:29:08.257Z] [INFO    ] Total runs: 150
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"info","message":"Successful: 150"}
+[2026-02-18T05:29:08.257Z] [INFO    ] Successful: 150
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"info","message":"Failed: 0"}
+[2026-02-18T05:29:08.257Z] [INFO    ] Failed: 0
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] ecosystem.Inter-DAO Proposal Count: 47.6333 (std: 6.1053)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] ecosystem.Inter-DAO Proposal Count: 47.6333 (std: 6.1053)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] ecosystem.Inter-DAO Proposal Success Rate: 0.2284 (std: 0.1009)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] ecosystem.Inter-DAO Proposal Success Rate: 0.2284 (std: 0.1009)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] ecosystem.Collaboration Proposal Rate: 0.2373 (std: 0.0486)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] ecosystem.Collaboration Proposal Rate: 0.2373 (std: 0.0486)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] ecosystem.Treaty Proposal Rate: 0.2486 (std: 0.0527)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] ecosystem.Treaty Proposal Rate: 0.2486 (std: 0.0527)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] ecosystem.Resource Sharing Rate: 0.2567 (std: 0.0421)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] ecosystem.Resource Sharing Rate: 0.2567 (std: 0.0421)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] ecosystem.Joint Venture Rate: 0.2575 (std: 0.0631)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] ecosystem.Joint Venture Rate: 0.2575 (std: 0.0631)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] ecosystem.Inter-DAO Voting Participation: 112.7920 (std: 6.0395)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] ecosystem.Inter-DAO Voting Participation: 112.7920 (std: 6.0395)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] ecosystem.Cross-DAO Approval Alignment: 0.5606 (std: 0.0714)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] ecosystem.Cross-DAO Approval Alignment: 0.5606 (std: 0.0714)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] ecosystem.Total Shared Budget: 167043.9176 (std: 91053.9114)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] ecosystem.Total Shared Budget: 167043.9176 (std: 91053.9114)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] ecosystem.Resource Flow Volume: 31151.3399 (std: 19781.7243)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] ecosystem.Resource Flow Volume: 31151.3399 (std: 19781.7243)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] ecosystem.Ecosystem Treasury Total: 24120.9283 (std: 5617.9773)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] ecosystem.Ecosystem Treasury Total: 24120.9283 (std: 5617.9773)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] dao-1.Proposal Pass Rate: 0.7051 (std: 0.1686)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] dao-1.Proposal Pass Rate: 0.7051 (std: 0.1686)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] dao-2.Proposal Pass Rate: 0.7159 (std: 0.2348)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] dao-2.Proposal Pass Rate: 0.7159 (std: 0.2348)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] dao-3.Proposal Pass Rate: 0.7652 (std: 0.1525)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] dao-3.Proposal Pass Rate: 0.7652 (std: 0.1525)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] dao-1.Voter Participation Rate: 0.2877 (std: 0.0241)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] dao-1.Voter Participation Rate: 0.2877 (std: 0.0241)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] dao-2.Voter Participation Rate: 0.2927 (std: 0.0395)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] dao-2.Voter Participation Rate: 0.2927 (std: 0.0395)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] dao-3.Voter Participation Rate: 0.2887 (std: 0.0270)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] dao-3.Voter Participation Rate: 0.2887 (std: 0.0270)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] dao-1.Final Treasury: 7766.8153 (std: 5615.5776)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] dao-1.Final Treasury: 7766.8153 (std: 5615.5776)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] dao-2.Final Treasury: 7781.7679 (std: 5244.0455)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] dao-2.Final Treasury: 7781.7679 (std: 5244.0455)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] dao-3.Final Treasury: 8572.3452 (std: 4882.5453)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] dao-3.Final Treasury: 8572.3452 (std: 4882.5453)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] dao-1.Treasury Growth Rate: 1.4108 (std: 0.0332)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] dao-1.Treasury Growth Rate: 1.4108 (std: 0.0332)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] dao-2.Treasury Growth Rate: 1.4083 (std: 0.0369)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] dao-2.Treasury Growth Rate: 1.4083 (std: 0.0369)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[homogeneous-governance] dao-3.Treasury Growth Rate: 1.4109 (std: 0.0302)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [homogeneous-governance] dao-3.Treasury Growth Rate: 1.4109 (std: 0.0302)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Inter-DAO Proposal Count: 50.8000 (std: 6.7945)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] ecosystem.Inter-DAO Proposal Count: 50.8000 (std: 6.7945)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Inter-DAO Proposal Success Rate: 0.2307 (std: 0.0718)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] ecosystem.Inter-DAO Proposal Success Rate: 0.2307 (std: 0.0718)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Collaboration Proposal Rate: 0.2628 (std: 0.0656)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] ecosystem.Collaboration Proposal Rate: 0.2628 (std: 0.0656)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Treaty Proposal Rate: 0.2495 (std: 0.0520)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] ecosystem.Treaty Proposal Rate: 0.2495 (std: 0.0520)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Resource Sharing Rate: 0.2405 (std: 0.0716)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] ecosystem.Resource Sharing Rate: 0.2405 (std: 0.0716)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Joint Venture Rate: 0.2473 (std: 0.0731)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] ecosystem.Joint Venture Rate: 0.2473 (std: 0.0731)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Inter-DAO Voting Participation: 109.5558 (std: 5.4798)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] ecosystem.Inter-DAO Voting Participation: 109.5558 (std: 5.4798)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Cross-DAO Approval Alignment: 0.5491 (std: 0.0590)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] ecosystem.Cross-DAO Approval Alignment: 0.5491 (std: 0.0590)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Total Shared Budget: 171647.4359 (std: 72236.6286)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] ecosystem.Total Shared Budget: 171647.4359 (std: 72236.6286)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Resource Flow Volume: 37151.6752 (std: 22622.4588)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] ecosystem.Resource Flow Volume: 37151.6752 (std: 22622.4588)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] ecosystem.Ecosystem Treasury Total: 24598.5653 (std: 6309.7924)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] ecosystem.Ecosystem Treasury Total: 24598.5653 (std: 6309.7924)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] dao-majority.Proposal Pass Rate: 0.7461 (std: 0.1209)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] dao-majority.Proposal Pass Rate: 0.7461 (std: 0.1209)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] dao-supermajority.Proposal Pass Rate: 0.7467 (std: 0.1591)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] dao-supermajority.Proposal Pass Rate: 0.7467 (std: 0.1591)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] dao-quadratic.Proposal Pass Rate: 0.8755 (std: 0.1370)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] dao-quadratic.Proposal Pass Rate: 0.8755 (std: 0.1370)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] dao-majority.Voter Participation Rate: 0.2912 (std: 0.0252)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] dao-majority.Voter Participation Rate: 0.2912 (std: 0.0252)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] dao-supermajority.Voter Participation Rate: 0.2937 (std: 0.0286)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] dao-supermajority.Voter Participation Rate: 0.2937 (std: 0.0286)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] dao-quadratic.Voter Participation Rate: 0.2869 (std: 0.0212)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] dao-quadratic.Voter Participation Rate: 0.2869 (std: 0.0212)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] dao-majority.Final Treasury: 7713.1998 (std: 5200.5072)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] dao-majority.Final Treasury: 7713.1998 (std: 5200.5072)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] dao-supermajority.Final Treasury: 8488.2279 (std: 5244.4525)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] dao-supermajority.Final Treasury: 8488.2279 (std: 5244.4525)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] dao-quadratic.Final Treasury: 8397.1376 (std: 5126.0409)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] dao-quadratic.Final Treasury: 8397.1376 (std: 5126.0409)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] dao-majority.Treasury Growth Rate: 1.4087 (std: 0.0297)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] dao-majority.Treasury Growth Rate: 1.4087 (std: 0.0297)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] dao-supermajority.Treasury Growth Rate: 1.4118 (std: 0.0258)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] dao-supermajority.Treasury Growth Rate: 1.4118 (std: 0.0258)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[heterogeneous-governance] dao-quadratic.Treasury Growth Rate: 1.4183 (std: 0.0377)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [heterogeneous-governance] dao-quadratic.Treasury Growth Rate: 1.4183 (std: 0.0377)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Inter-DAO Proposal Count: 49.2333 (std: 7.4310)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [asymmetric-treasury] ecosystem.Inter-DAO Proposal Count: 49.2333 (std: 7.4310)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Inter-DAO Proposal Success Rate: 0.2338 (std: 0.0759)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [asymmetric-treasury] ecosystem.Inter-DAO Proposal Success Rate: 0.2338 (std: 0.0759)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Collaboration Proposal Rate: 0.2484 (std: 0.0644)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [asymmetric-treasury] ecosystem.Collaboration Proposal Rate: 0.2484 (std: 0.0644)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Treaty Proposal Rate: 0.2609 (std: 0.0708)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [asymmetric-treasury] ecosystem.Treaty Proposal Rate: 0.2609 (std: 0.0708)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Resource Sharing Rate: 0.2711 (std: 0.0639)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [asymmetric-treasury] ecosystem.Resource Sharing Rate: 0.2711 (std: 0.0639)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Joint Venture Rate: 0.2196 (std: 0.0516)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [asymmetric-treasury] ecosystem.Joint Venture Rate: 0.2196 (std: 0.0516)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Inter-DAO Voting Participation: 116.5362 (std: 4.7077)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [asymmetric-treasury] ecosystem.Inter-DAO Voting Participation: 116.5362 (std: 4.7077)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Cross-DAO Approval Alignment: 0.5643 (std: 0.0638)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [asymmetric-treasury] ecosystem.Cross-DAO Approval Alignment: 0.5643 (std: 0.0638)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Total Shared Budget: 163256.6010 (std: 44389.8539)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [asymmetric-treasury] ecosystem.Total Shared Budget: 163256.6010 (std: 44389.8539)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Resource Flow Volume: 42532.6325 (std: 23735.2475)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [asymmetric-treasury] ecosystem.Resource Flow Volume: 42532.6325 (std: 23735.2475)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[asymmetric-treasury] ecosystem.Ecosystem Treasury Total: 25119.6151 (std: 6349.7063)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [asymmetric-treasury] ecosystem.Ecosystem Treasury Total: 25119.6151 (std: 6349.7063)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[asymmetric-treasury] dao-wealthy.Proposal Pass Rate: 0.7398 (std: 0.1415)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [asymmetric-treasury] dao-wealthy.Proposal Pass Rate: 0.7398 (std: 0.1415)
+{"timestamp":"2026-02-18T05:29:08.257Z","level":"metric","message":"[asymmetric-treasury] dao-medium.Proposal Pass Rate: 0.6802 (std: 0.2357)"}
+[2026-02-18T05:29:08.257Z] [METRIC  ] [asymmetric-treasury] dao-medium.Proposal Pass Rate: 0.6802 (std: 0.2357)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[asymmetric-treasury] dao-small.Proposal Pass Rate: 0.6228 (std: 0.2921)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [asymmetric-treasury] dao-small.Proposal Pass Rate: 0.6228 (std: 0.2921)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[asymmetric-treasury] dao-wealthy.Voter Participation Rate: 0.2912 (std: 0.0304)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [asymmetric-treasury] dao-wealthy.Voter Participation Rate: 0.2912 (std: 0.0304)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[asymmetric-treasury] dao-medium.Voter Participation Rate: 0.2865 (std: 0.0226)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [asymmetric-treasury] dao-medium.Voter Participation Rate: 0.2865 (std: 0.0226)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[asymmetric-treasury] dao-small.Voter Participation Rate: 0.2887 (std: 0.0643)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [asymmetric-treasury] dao-small.Voter Participation Rate: 0.2887 (std: 0.0643)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[asymmetric-treasury] dao-wealthy.Final Treasury: 11661.4464 (std: 666.9361)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [asymmetric-treasury] dao-wealthy.Final Treasury: 11661.4464 (std: 666.9361)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[asymmetric-treasury] dao-medium.Final Treasury: 8926.3438 (std: 4779.5066)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [asymmetric-treasury] dao-medium.Final Treasury: 8926.3438 (std: 4779.5066)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[asymmetric-treasury] dao-small.Final Treasury: 4531.8249 (std: 5299.3709)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [asymmetric-treasury] dao-small.Final Treasury: 4531.8249 (std: 5299.3709)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[asymmetric-treasury] dao-wealthy.Treasury Growth Rate: 1.4276 (std: 0.0571)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [asymmetric-treasury] dao-wealthy.Treasury Growth Rate: 1.4276 (std: 0.0571)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[asymmetric-treasury] dao-medium.Treasury Growth Rate: 1.4029 (std: 0.0227)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [asymmetric-treasury] dao-medium.Treasury Growth Rate: 1.4029 (std: 0.0227)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[asymmetric-treasury] dao-small.Treasury Growth Rate: 1.3820 (std: 0.0181)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [asymmetric-treasury] dao-small.Treasury Growth Rate: 1.3820 (std: 0.0181)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] ecosystem.Inter-DAO Proposal Count: 74.3000 (std: 8.2007)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] ecosystem.Inter-DAO Proposal Count: 74.3000 (std: 8.2007)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] ecosystem.Inter-DAO Proposal Success Rate: 0.2210 (std: 0.0505)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] ecosystem.Inter-DAO Proposal Success Rate: 0.2210 (std: 0.0505)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] ecosystem.Collaboration Proposal Rate: 0.2401 (std: 0.0473)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] ecosystem.Collaboration Proposal Rate: 0.2401 (std: 0.0473)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] ecosystem.Treaty Proposal Rate: 0.2429 (std: 0.0388)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] ecosystem.Treaty Proposal Rate: 0.2429 (std: 0.0388)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] ecosystem.Resource Sharing Rate: 0.2512 (std: 0.0500)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] ecosystem.Resource Sharing Rate: 0.2512 (std: 0.0500)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] ecosystem.Joint Venture Rate: 0.2659 (std: 0.0522)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] ecosystem.Joint Venture Rate: 0.2659 (std: 0.0522)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] ecosystem.Inter-DAO Voting Participation: 125.9492 (std: 9.5162)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] ecosystem.Inter-DAO Voting Participation: 125.9492 (std: 9.5162)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] ecosystem.Cross-DAO Approval Alignment: 0.5514 (std: 0.0662)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] ecosystem.Cross-DAO Approval Alignment: 0.5514 (std: 0.0662)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] ecosystem.Total Shared Budget: 248612.7348 (std: 88780.5884)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] ecosystem.Total Shared Budget: 248612.7348 (std: 88780.5884)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] ecosystem.Resource Flow Volume: 55546.4418 (std: 29363.8869)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] ecosystem.Resource Flow Volume: 55546.4418 (std: 29363.8869)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] ecosystem.Ecosystem Treasury Total: 27712.0766 (std: 7554.2880)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] ecosystem.Ecosystem Treasury Total: 27712.0766 (std: 7554.2880)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] dao-dev.Proposal Pass Rate: 0.7547 (std: 0.1755)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] dao-dev.Proposal Pass Rate: 0.7547 (std: 0.1755)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] dao-invest.Proposal Pass Rate: 0.6776 (std: 0.1046)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] dao-invest.Proposal Pass Rate: 0.6776 (std: 0.1046)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] dao-community.Proposal Pass Rate: 0.6559 (std: 0.2575)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] dao-community.Proposal Pass Rate: 0.6559 (std: 0.2575)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] dao-dev.Voter Participation Rate: 0.2961 (std: 0.0334)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] dao-dev.Voter Participation Rate: 0.2961 (std: 0.0334)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] dao-invest.Voter Participation Rate: 0.2941 (std: 0.0169)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] dao-invest.Voter Participation Rate: 0.2941 (std: 0.0169)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] dao-community.Voter Participation Rate: 0.2595 (std: 0.0248)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] dao-community.Voter Participation Rate: 0.2595 (std: 0.0248)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] dao-dev.Final Treasury: 9110.2904 (std: 4238.6218)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] dao-dev.Final Treasury: 9110.2904 (std: 4238.6218)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] dao-invest.Final Treasury: 9486.5775 (std: 4385.6830)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] dao-invest.Final Treasury: 9486.5775 (std: 4385.6830)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] dao-community.Final Treasury: 9115.2087 (std: 4241.3720)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] dao-community.Final Treasury: 9115.2087 (std: 4241.3720)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] dao-dev.Treasury Growth Rate: 1.4056 (std: 0.0220)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] dao-dev.Treasury Growth Rate: 1.4056 (std: 0.0220)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] dao-invest.Treasury Growth Rate: 1.4924 (std: 0.1057)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] dao-invest.Treasury Growth Rate: 1.4924 (std: 0.1057)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[specialized-daos] dao-community.Treasury Growth Rate: 1.3962 (std: 0.0160)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [specialized-daos] dao-community.Treasury Growth Rate: 1.3962 (std: 0.0160)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] ecosystem.Inter-DAO Proposal Count: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] ecosystem.Inter-DAO Proposal Count: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] ecosystem.Inter-DAO Proposal Success Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] ecosystem.Inter-DAO Proposal Success Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] ecosystem.Collaboration Proposal Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] ecosystem.Collaboration Proposal Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] ecosystem.Treaty Proposal Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] ecosystem.Treaty Proposal Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] ecosystem.Resource Sharing Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] ecosystem.Resource Sharing Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] ecosystem.Joint Venture Rate: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] ecosystem.Joint Venture Rate: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] ecosystem.Inter-DAO Voting Participation: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] ecosystem.Inter-DAO Voting Participation: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] ecosystem.Cross-DAO Approval Alignment: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] ecosystem.Cross-DAO Approval Alignment: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] ecosystem.Total Shared Budget: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] ecosystem.Total Shared Budget: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] ecosystem.Resource Flow Volume: 0.0000 (std: 0.0000)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] ecosystem.Resource Flow Volume: 0.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] ecosystem.Ecosystem Treasury Total: 35745.5239 (std: 364.2859)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] ecosystem.Ecosystem Treasury Total: 35745.5239 (std: 364.2859)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] iso-1.Proposal Pass Rate: 0.7377 (std: 0.1665)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] iso-1.Proposal Pass Rate: 0.7377 (std: 0.1665)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] iso-2.Proposal Pass Rate: 0.7530 (std: 0.2096)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] iso-2.Proposal Pass Rate: 0.7530 (std: 0.2096)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] iso-3.Proposal Pass Rate: 0.6976 (std: 0.2076)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] iso-3.Proposal Pass Rate: 0.6976 (std: 0.2076)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] iso-1.Voter Participation Rate: 0.2931 (std: 0.0230)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] iso-1.Voter Participation Rate: 0.2931 (std: 0.0230)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] iso-2.Voter Participation Rate: 0.3043 (std: 0.0286)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] iso-2.Voter Participation Rate: 0.3043 (std: 0.0286)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] iso-3.Voter Participation Rate: 0.2943 (std: 0.0275)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] iso-3.Voter Participation Rate: 0.2943 (std: 0.0275)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] iso-1.Final Treasury: 11925.5803 (std: 78.3105)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] iso-1.Final Treasury: 11925.5803 (std: 78.3105)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] iso-2.Final Treasury: 11942.4515 (std: 24.0912)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] iso-2.Final Treasury: 11942.4515 (std: 24.0912)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] iso-3.Final Treasury: 11877.4921 (std: 355.7769)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] iso-3.Final Treasury: 11877.4921 (std: 355.7769)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] iso-1.Treasury Growth Rate: 1.4158 (std: 0.0379)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] iso-1.Treasury Growth Rate: 1.4158 (std: 0.0379)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] iso-2.Treasury Growth Rate: 1.4086 (std: 0.0335)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] iso-2.Treasury Growth Rate: 1.4086 (std: 0.0335)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"metric","message":"[isolated-daos] iso-3.Treasury Growth Rate: 1.4105 (std: 0.0392)"}
+[2026-02-18T05:29:08.258Z] [METRIC  ] [isolated-daos] iso-3.Treasury Growth Rate: 1.4105 (std: 0.0392)
+{"timestamp":"2026-02-18T05:29:08.258Z","level":"info","message":"Experiment state changed to: completed"}
+[2026-02-18T05:29:08.258Z] [INFO    ] Experiment state changed to: completed

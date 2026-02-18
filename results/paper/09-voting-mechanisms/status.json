@@ -1,0 +1,16 @@
+{
+  "name": "Voting Mechanism Comparison",
+  "state": "completed",
+  "lastUpdate": "2026-02-18T05:50:07.754Z",
+  "progress": {
+    "completedRuns": 180,
+    "totalRuns": 180,
+    "failedRuns": 0,
+    "percentComplete": 100,
+    "runsPerSecond": 0.3779472007760516,
+    "estimatedRemainingMs": 0
+  },
+  "outputDirectory": "results/paper/09-voting-mechanisms",
+  "logFile": "results\\paper\\09-voting-mechanisms\\experiment.log",
+  "startTime": "2026-02-18T05:42:11.335Z"
+}

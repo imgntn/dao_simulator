@@ -1,16 +1,16 @@
 {
   "name": "Academic Baseline",
   "state": "completed",
-  "lastUpdate": "2026-01-30T09:42:20.940Z",
+  "lastUpdate": "2026-02-18T03:30:08.213Z",
   "progress": {
-    "completedRuns": 50,
-    "totalRuns": 50,
+    "completedRuns": 30,
+    "totalRuns": 30,
     "failedRuns": 0,
     "percentComplete": 100,
-    "runsPerSecond": 1.0560331171985553,
+    "runsPerSecond": 0.34762053742135085,
     "estimatedRemainingMs": 0
   },
   "outputDirectory": "results/paper/00-academic-baseline",
   "logFile": "results\\paper\\00-academic-baseline\\experiment.log",
-  "startTime": "2026-01-30T09:41:33.502Z"
+  "startTime": "2026-02-18T03:28:41.854Z"
 }

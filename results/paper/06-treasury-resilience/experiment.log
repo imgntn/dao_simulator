@@ -308,3 +308,561 @@
 [2026-01-30T10:02:25.514Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 0.3434 (std: 0.0406)
 {"timestamp":"2026-01-30T10:02:25.514Z","level":"info","message":"Experiment state changed to: completed"}
 [2026-01-30T10:02:25.514Z] [INFO    ] Experiment state changed to: completed
+{"timestamp":"2026-02-18T03:13:44.303Z","level":"info","message":"Starting experiment: Treasury Resilience"}
+[2026-02-18T03:13:44.303Z] [INFO    ] Starting experiment: Treasury Resilience
+{"timestamp":"2026-02-18T03:13:44.303Z","level":"info","message":"Description: Evaluate treasury stabilization policies under identical governance loads."}
+[2026-02-18T03:13:44.303Z] [INFO    ] Description: Evaluate treasury stabilization policies under identical governance loads.
+{"timestamp":"2026-02-18T03:13:44.303Z","level":"info","message":"Total runs: 24 (2 per config)"}
+[2026-02-18T03:13:44.303Z] [INFO    ] Total runs: 24 (2 per config)
+{"timestamp":"2026-02-18T03:13:44.303Z","level":"info","message":"Workers: 4"}
+[2026-02-18T03:13:44.303Z] [INFO    ] Workers: 4
+{"timestamp":"2026-02-18T03:13:44.303Z","level":"info","message":"Output: results/paper/06-treasury-resilience"}
+[2026-02-18T03:13:44.303Z] [INFO    ] Output: results/paper/06-treasury-resilience
+{"timestamp":"2026-02-18T03:13:44.303Z","level":"info","message":"Sweep parameter: undefined"}
+[2026-02-18T03:13:44.303Z] [INFO    ] Sweep parameter: undefined
+{"timestamp":"2026-02-18T03:13:44.316Z","level":"info","message":"Experiment state changed to: running"}
+[2026-02-18T03:13:44.316Z] [INFO    ] Experiment state changed to: running
+{"timestamp":"2026-02-18T03:14:04.696Z","level":"progress","message":"Progress: 20% (5/24)","data":{"runsPerSecond":"0.25","eta":"1m 17s"}}
+[2026-02-18T03:14:04.696Z] [PROGRESS] Progress: 20% (5/24) {"runsPerSecond":"0.25","eta":"1m 17s"}
+{"timestamp":"2026-02-18T03:14:06.742Z","level":"progress","message":"Progress: 25% (6/24)","data":{"runsPerSecond":"0.27","eta":"1m 7s"}}
+[2026-02-18T03:14:06.742Z] [PROGRESS] Progress: 25% (6/24) {"runsPerSecond":"0.27","eta":"1m 7s"}
+{"timestamp":"2026-02-18T03:14:21.536Z","level":"progress","message":"Progress: 45% (11/24)","data":{"runsPerSecond":"0.30","eta":"44.0s"}}
+[2026-02-18T03:14:21.536Z] [PROGRESS] Progress: 45% (11/24) {"runsPerSecond":"0.30","eta":"44.0s"}
+{"timestamp":"2026-02-18T03:14:22.121Z","level":"progress","message":"Progress: 50% (12/24)","data":{"runsPerSecond":"0.32","eta":"37.8s"}}
+[2026-02-18T03:14:22.121Z] [PROGRESS] Progress: 50% (12/24) {"runsPerSecond":"0.32","eta":"37.8s"}
+{"timestamp":"2026-02-18T03:14:40.485Z","level":"progress","message":"Progress: 70% (17/24)","data":{"runsPerSecond":"0.30","eta":"23.1s"}}
+[2026-02-18T03:14:40.485Z] [PROGRESS] Progress: 70% (17/24) {"runsPerSecond":"0.30","eta":"23.1s"}
+{"timestamp":"2026-02-18T03:14:44.557Z","level":"progress","message":"Progress: 75% (18/24)","data":{"runsPerSecond":"0.30","eta":"20.1s"}}
+[2026-02-18T03:14:44.557Z] [PROGRESS] Progress: 75% (18/24) {"runsPerSecond":"0.30","eta":"20.1s"}
+{"timestamp":"2026-02-18T03:14:59.255Z","level":"progress","message":"Progress: 95% (23/24)","data":{"runsPerSecond":"0.31","eta":"3.3s"}}
+[2026-02-18T03:14:59.255Z] [PROGRESS] Progress: 95% (23/24) {"runsPerSecond":"0.31","eta":"3.3s"}
+{"timestamp":"2026-02-18T03:15:01.929Z","level":"progress","message":"Progress: 100% (24/24)","data":{"runsPerSecond":"0.31","eta":"unknown"}}
+[2026-02-18T03:15:01.929Z] [PROGRESS] Progress: 100% (24/24) {"runsPerSecond":"0.31","eta":"unknown"}
+{"timestamp":"2026-02-18T03:15:01.994Z","level":"info","message":"Exporting results..."}
+[2026-02-18T03:15:01.994Z] [INFO    ] Exporting results...
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"info","message":"Experiment completed in 1m 18s"}
+[2026-02-18T03:15:02.035Z] [INFO    ] Experiment completed in 1m 18s
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"info","message":"Total runs: 24"}
+[2026-02-18T03:15:02.035Z] [INFO    ] Total runs: 24
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"info","message":"Successful: 24"}
+[2026-02-18T03:15:02.035Z] [INFO    ] Successful: 24
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"info","message":"Failed: 0"}
+[2026-02-18T03:15:02.035Z] [INFO    ] Failed: 0
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.2410 (std: 0.0116)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.2410 (std: 0.0116)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7390 (std: 0.0145)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7390 (std: 0.0145)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Treasury: 10047.9055 (std: 0.4110)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Treasury: 10047.9055 (std: 0.4110)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Trend: -9.8517 (std: 0.3027)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Trend: -9.8517 (std: 0.3027)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Token Price: 1.7598 (std: 0.0415)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Token Price: 1.7598 (std: 0.0415)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.2316 (std: 0.0011)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.2316 (std: 0.0011)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7212 (std: 0.0001)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7212 (std: 0.0001)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Treasury: 10051.2700 (std: 0.2164)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Treasury: 10051.2700 (std: 0.2164)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Trend: -9.7848 (std: 0.2336)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Trend: -9.7848 (std: 0.2336)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Token Price: 1.1466 (std: 0.1882)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Token Price: 1.1466 (std: 0.1882)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9646 (std: 0.0206)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9646 (std: 0.0206)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.2430 (std: 0.0299)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.2430 (std: 0.0299)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7085 (std: 0.0166)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7085 (std: 0.0166)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Treasury: 11752.9352 (std: 417.8598)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Treasury: 11752.9352 (std: 417.8598)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Trend: -13.4840 (std: 1.5960)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Trend: -13.4840 (std: 1.5960)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Token Price: 1.2833 (std: 0.2876)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Token Price: 1.2833 (std: 0.2876)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.2569 (std: 0.0151)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.2569 (std: 0.0151)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7231 (std: 0.0042)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7231 (std: 0.0042)
+{"timestamp":"2026-02-18T03:15:02.035Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Treasury: 11723.3560 (std: 465.3600)"}
+[2026-02-18T03:15:02.035Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Treasury: 11723.3560 (std: 465.3600)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Trend: -13.4562 (std: 4.7893)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Trend: -13.4562 (std: 4.7893)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Token Price: 1.0598 (std: 0.0021)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Token Price: 1.0598 (std: 0.0021)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.2718 (std: 0.0019)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.2718 (std: 0.0019)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7065 (std: 0.0045)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7065 (std: 0.0045)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Treasury: 12239.3721 (std: 750.0509)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Treasury: 12239.3721 (std: 750.0509)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Trend: -15.8457 (std: 7.3236)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Trend: -15.8457 (std: 7.3236)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Token Price: 1.4031 (std: 0.4702)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Token Price: 1.4031 (std: 0.4702)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9848 (std: 0.0214)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9848 (std: 0.0214)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9925 (std: 0.0106)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9925 (std: 0.0106)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.2168 (std: 0.0180)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.2168 (std: 0.0180)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.6911 (std: 0.0426)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.6911 (std: 0.0426)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Treasury: 13020.5612 (std: 1458.1192)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Treasury: 13020.5612 (std: 1458.1192)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Trend: -11.2464 (std: 6.4996)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Trend: -11.2464 (std: 6.4996)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Token Price: 2.1631 (std: 0.7860)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Token Price: 2.1631 (std: 0.7860)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.5570 (std: 0.1060)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.5570 (std: 0.1060)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.6863 (std: 0.0361)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.6863 (std: 0.0361)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Treasury: 14675.5554 (std: 1745.5736)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Treasury: 14675.5554 (std: 1745.5736)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Trend: -59.3770 (std: 65.3672)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Trend: -59.3770 (std: 65.3672)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Token Price: 4.8581 (std: 1.6035)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Token Price: 4.8581 (std: 1.6035)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9606 (std: 0.0326)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9606 (std: 0.0326)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9822 (std: 0.0031)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9822 (std: 0.0031)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.5475 (std: 0.1428)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.5475 (std: 0.1428)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.6717 (std: 0.1942)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.6717 (std: 0.1942)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Treasury: 16883.3416 (std: 9772.8420)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Treasury: 16883.3416 (std: 9772.8420)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Trend: -47.8098 (std: 17.7122)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Trend: -47.8098 (std: 17.7122)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Token Price: 2.5671 (std: 1.9849)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Token Price: 2.5671 (std: 1.9849)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9923 (std: 0.0109)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9923 (std: 0.0109)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.3020 (std: 0.0053)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.3020 (std: 0.0053)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7580 (std: 0.0190)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7580 (std: 0.0190)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Treasury: 10809.9800 (std: 1601.3057)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Treasury: 10809.9800 (std: 1601.3057)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Trend: -5.8032 (std: 0.5982)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Trend: -5.8032 (std: 0.5982)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Token Price: 2.7325 (std: 2.4849)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Token Price: 2.7325 (std: 2.4849)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9463 (std: 0.0183)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9463 (std: 0.0183)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.5009 (std: 0.0521)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.5009 (std: 0.0521)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.2430 (std: 0.0897)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.2430 (std: 0.0897)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Treasury: 36390.7605 (std: 1580.4346)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Treasury: 36390.7605 (std: 1580.4346)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Trend: 47.6220 (std: 16.5885)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Trend: 47.6220 (std: 16.5885)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Token Price: 7.4433 (std: 0.7961)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Token Price: 7.4433 (std: 0.7961)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9700 (std: 0.0071)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9700 (std: 0.0071)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 0.9881 (std: 0.0168)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 0.9881 (std: 0.0168)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.3522 (std: 0.0204)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.3522 (std: 0.0204)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.6687 (std: 0.1005)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.6687 (std: 0.1005)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Treasury: 15381.8788 (std: 4550.3927)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Treasury: 15381.8788 (std: 4550.3927)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Trend: -21.1920 (std: 6.1007)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Trend: -21.1920 (std: 6.1007)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Token Price: 1.7223 (std: 0.4922)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Token Price: 1.7223 (std: 0.4922)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.4080 (std: 0.0000)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.4080 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7928 (std: 0.0270)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7928 (std: 0.0270)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Treasury: 10254.9651 (std: 553.1913)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Treasury: 10254.9651 (std: 553.1913)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Trend: -15.9024 (std: 21.4023)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Trend: -15.9024 (std: 21.4023)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Token Price: 1.9446 (std: 0.9179)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Token Price: 1.9446 (std: 0.9179)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9898 (std: 0.0144)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9898 (std: 0.0144)
+{"timestamp":"2026-02-18T03:15:02.036Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T03:15:02.036Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T03:15:02.037Z","level":"info","message":"Experiment state changed to: completed"}
+[2026-02-18T03:15:02.037Z] [INFO    ] Experiment state changed to: completed
+{"timestamp":"2026-02-18T05:06:21.219Z","level":"info","message":"Starting experiment: Treasury Resilience"}
+[2026-02-18T05:06:21.219Z] [INFO    ] Starting experiment: Treasury Resilience
+{"timestamp":"2026-02-18T05:06:21.219Z","level":"info","message":"Description: Evaluate treasury stabilization policies under identical governance loads."}
+[2026-02-18T05:06:21.219Z] [INFO    ] Description: Evaluate treasury stabilization policies under identical governance loads.
+{"timestamp":"2026-02-18T05:06:21.219Z","level":"info","message":"Total runs: 360 (30 per config)"}
+[2026-02-18T05:06:21.219Z] [INFO    ] Total runs: 360 (30 per config)
+{"timestamp":"2026-02-18T05:06:21.219Z","level":"info","message":"Workers: 4"}
+[2026-02-18T05:06:21.219Z] [INFO    ] Workers: 4
+{"timestamp":"2026-02-18T05:06:21.219Z","level":"info","message":"Output: results/paper/06-treasury-resilience"}
+[2026-02-18T05:06:21.219Z] [INFO    ] Output: results/paper/06-treasury-resilience
+{"timestamp":"2026-02-18T05:06:21.219Z","level":"info","message":"Sweep parameter: undefined"}
+[2026-02-18T05:06:21.219Z] [INFO    ] Sweep parameter: undefined
+{"timestamp":"2026-02-18T05:06:21.228Z","level":"info","message":"Experiment state changed to: running"}
+[2026-02-18T05:06:21.228Z] [INFO    ] Experiment state changed to: running
+{"timestamp":"2026-02-18T05:07:27.149Z","level":"progress","message":"Progress: 5% (18/360)","data":{"runsPerSecond":"0.27","eta":"20m 52s"}}
+[2026-02-18T05:07:27.149Z] [PROGRESS] Progress: 5% (18/360) {"runsPerSecond":"0.27","eta":"20m 52s"}
+{"timestamp":"2026-02-18T05:07:30.290Z","level":"progress","message":"Progress: 5% (19/360)","data":{"runsPerSecond":"0.28","eta":"20m 39s"}}
+[2026-02-18T05:07:30.290Z] [PROGRESS] Progress: 5% (19/360) {"runsPerSecond":"0.28","eta":"20m 39s"}
+{"timestamp":"2026-02-18T05:07:32.463Z","level":"progress","message":"Progress: 5% (20/360)","data":{"runsPerSecond":"0.28","eta":"20m 11s"}}
+[2026-02-18T05:07:32.463Z] [PROGRESS] Progress: 5% (20/360) {"runsPerSecond":"0.28","eta":"20m 11s"}
+{"timestamp":"2026-02-18T05:07:41.657Z","level":"progress","message":"Progress: 5% (21/360)","data":{"runsPerSecond":"0.26","eta":"21m 38s"}}
+[2026-02-18T05:07:41.657Z] [PROGRESS] Progress: 5% (21/360) {"runsPerSecond":"0.26","eta":"21m 38s"}
+{"timestamp":"2026-02-18T05:08:23.153Z","level":"progress","message":"Progress: 10% (36/360)","data":{"runsPerSecond":"0.30","eta":"18m 17s"}}
+[2026-02-18T05:08:23.153Z] [PROGRESS] Progress: 10% (36/360) {"runsPerSecond":"0.30","eta":"18m 17s"}
+{"timestamp":"2026-02-18T05:08:26.014Z","level":"progress","message":"Progress: 10% (37/360)","data":{"runsPerSecond":"0.30","eta":"18m 9s"}}
+[2026-02-18T05:08:26.014Z] [PROGRESS] Progress: 10% (37/360) {"runsPerSecond":"0.30","eta":"18m 9s"}
+{"timestamp":"2026-02-18T05:08:26.221Z","level":"progress","message":"Progress: 10% (38/360)","data":{"runsPerSecond":"0.30","eta":"17m 39s"}}
+[2026-02-18T05:08:26.221Z] [PROGRESS] Progress: 10% (38/360) {"runsPerSecond":"0.30","eta":"17m 39s"}
+{"timestamp":"2026-02-18T05:08:32.148Z","level":"progress","message":"Progress: 10% (39/360)","data":{"runsPerSecond":"0.30","eta":"17m 58s"}}
+[2026-02-18T05:08:32.148Z] [PROGRESS] Progress: 10% (39/360) {"runsPerSecond":"0.30","eta":"17m 58s"}
+{"timestamp":"2026-02-18T05:09:11.066Z","level":"progress","message":"Progress: 15% (54/360)","data":{"runsPerSecond":"0.32","eta":"16m 2s"}}
+[2026-02-18T05:09:11.066Z] [PROGRESS] Progress: 15% (54/360) {"runsPerSecond":"0.32","eta":"16m 2s"}
+{"timestamp":"2026-02-18T05:09:15.933Z","level":"progress","message":"Progress: 15% (55/360)","data":{"runsPerSecond":"0.31","eta":"16m 9s"}}
+[2026-02-18T05:09:15.933Z] [PROGRESS] Progress: 15% (55/360) {"runsPerSecond":"0.31","eta":"16m 9s"}
+{"timestamp":"2026-02-18T05:09:20.487Z","level":"progress","message":"Progress: 15% (56/360)","data":{"runsPerSecond":"0.31","eta":"16m 13s"}}
+[2026-02-18T05:09:20.487Z] [PROGRESS] Progress: 15% (56/360) {"runsPerSecond":"0.31","eta":"16m 13s"}
+{"timestamp":"2026-02-18T05:09:22.340Z","level":"progress","message":"Progress: 15% (57/360)","data":{"runsPerSecond":"0.31","eta":"16m 3s"}}
+[2026-02-18T05:09:22.340Z] [PROGRESS] Progress: 15% (57/360) {"runsPerSecond":"0.31","eta":"16m 3s"}
+{"timestamp":"2026-02-18T05:10:08.420Z","level":"progress","message":"Progress: 20% (72/360)","data":{"runsPerSecond":"0.32","eta":"15m 9s"}}
+[2026-02-18T05:10:08.420Z] [PROGRESS] Progress: 20% (72/360) {"runsPerSecond":"0.32","eta":"15m 9s"}
+{"timestamp":"2026-02-18T05:10:08.739Z","level":"progress","message":"Progress: 20% (73/360)","data":{"runsPerSecond":"0.32","eta":"14m 54s"}}
+[2026-02-18T05:10:08.739Z] [PROGRESS] Progress: 20% (73/360) {"runsPerSecond":"0.32","eta":"14m 54s"}
+{"timestamp":"2026-02-18T05:10:15.731Z","level":"progress","message":"Progress: 20% (74/360)","data":{"runsPerSecond":"0.32","eta":"15m 6s"}}
+[2026-02-18T05:10:15.731Z] [PROGRESS] Progress: 20% (74/360) {"runsPerSecond":"0.32","eta":"15m 6s"}
+{"timestamp":"2026-02-18T05:10:16.179Z","level":"progress","message":"Progress: 20% (75/360)","data":{"runsPerSecond":"0.32","eta":"14m 53s"}}
+[2026-02-18T05:10:16.179Z] [PROGRESS] Progress: 20% (75/360) {"runsPerSecond":"0.32","eta":"14m 53s"}
+{"timestamp":"2026-02-18T05:11:05.581Z","level":"progress","message":"Progress: 25% (90/360)","data":{"runsPerSecond":"0.32","eta":"14m 13s"}}
+[2026-02-18T05:11:05.581Z] [PROGRESS] Progress: 25% (90/360) {"runsPerSecond":"0.32","eta":"14m 13s"}
+{"timestamp":"2026-02-18T05:11:08.538Z","level":"progress","message":"Progress: 25% (91/360)","data":{"runsPerSecond":"0.32","eta":"14m 9s"}}
+[2026-02-18T05:11:08.538Z] [PROGRESS] Progress: 25% (91/360) {"runsPerSecond":"0.32","eta":"14m 9s"}
+{"timestamp":"2026-02-18T05:11:08.574Z","level":"progress","message":"Progress: 25% (92/360)","data":{"runsPerSecond":"0.32","eta":"13m 57s"}}
+[2026-02-18T05:11:08.574Z] [PROGRESS] Progress: 25% (92/360) {"runsPerSecond":"0.32","eta":"13m 57s"}
+{"timestamp":"2026-02-18T05:11:10.645Z","level":"progress","message":"Progress: 25% (93/360)","data":{"runsPerSecond":"0.32","eta":"13m 51s"}}
+[2026-02-18T05:11:10.645Z] [PROGRESS] Progress: 25% (93/360) {"runsPerSecond":"0.32","eta":"13m 51s"}
+{"timestamp":"2026-02-18T05:11:56.229Z","level":"progress","message":"Progress: 30% (108/360)","data":{"runsPerSecond":"0.32","eta":"13m 2s"}}
+[2026-02-18T05:11:56.229Z] [PROGRESS] Progress: 30% (108/360) {"runsPerSecond":"0.32","eta":"13m 2s"}
+{"timestamp":"2026-02-18T05:11:59.080Z","level":"progress","message":"Progress: 30% (109/360)","data":{"runsPerSecond":"0.32","eta":"12m 58s"}}
+[2026-02-18T05:11:59.080Z] [PROGRESS] Progress: 30% (109/360) {"runsPerSecond":"0.32","eta":"12m 58s"}
+{"timestamp":"2026-02-18T05:12:04.361Z","level":"progress","message":"Progress: 30% (110/360)","data":{"runsPerSecond":"0.32","eta":"12m 60s"}}
+[2026-02-18T05:12:04.361Z] [PROGRESS] Progress: 30% (110/360) {"runsPerSecond":"0.32","eta":"12m 60s"}
+{"timestamp":"2026-02-18T05:12:08.480Z","level":"progress","message":"Progress: 30% (111/360)","data":{"runsPerSecond":"0.32","eta":"12m 59s"}}
+[2026-02-18T05:12:08.480Z] [PROGRESS] Progress: 30% (111/360) {"runsPerSecond":"0.32","eta":"12m 59s"}
+{"timestamp":"2026-02-18T05:13:06.665Z","level":"progress","message":"Progress: 35% (126/360)","data":{"runsPerSecond":"0.31","eta":"12m 33s"}}
+[2026-02-18T05:13:06.665Z] [PROGRESS] Progress: 35% (126/360) {"runsPerSecond":"0.31","eta":"12m 33s"}
+{"timestamp":"2026-02-18T05:13:09.758Z","level":"progress","message":"Progress: 35% (127/360)","data":{"runsPerSecond":"0.31","eta":"12m 30s"}}
+[2026-02-18T05:13:09.758Z] [PROGRESS] Progress: 35% (127/360) {"runsPerSecond":"0.31","eta":"12m 30s"}
+{"timestamp":"2026-02-18T05:13:13.348Z","level":"progress","message":"Progress: 35% (128/360)","data":{"runsPerSecond":"0.31","eta":"12m 27s"}}
+[2026-02-18T05:13:13.348Z] [PROGRESS] Progress: 35% (128/360) {"runsPerSecond":"0.31","eta":"12m 27s"}
+{"timestamp":"2026-02-18T05:13:14.886Z","level":"progress","message":"Progress: 35% (129/360)","data":{"runsPerSecond":"0.31","eta":"12m 21s"}}
+[2026-02-18T05:13:14.886Z] [PROGRESS] Progress: 35% (129/360) {"runsPerSecond":"0.31","eta":"12m 21s"}
+{"timestamp":"2026-02-18T05:14:01.429Z","level":"progress","message":"Progress: 40% (144/360)","data":{"runsPerSecond":"0.31","eta":"11m 30s"}}
+[2026-02-18T05:14:01.429Z] [PROGRESS] Progress: 40% (144/360) {"runsPerSecond":"0.31","eta":"11m 30s"}
+{"timestamp":"2026-02-18T05:14:02.649Z","level":"progress","message":"Progress: 40% (145/360)","data":{"runsPerSecond":"0.31","eta":"11m 24s"}}
+[2026-02-18T05:14:02.649Z] [PROGRESS] Progress: 40% (145/360) {"runsPerSecond":"0.31","eta":"11m 24s"}
+{"timestamp":"2026-02-18T05:14:03.650Z","level":"progress","message":"Progress: 40% (146/360)","data":{"runsPerSecond":"0.32","eta":"11m 18s"}}
+[2026-02-18T05:14:03.650Z] [PROGRESS] Progress: 40% (146/360) {"runsPerSecond":"0.32","eta":"11m 18s"}
+{"timestamp":"2026-02-18T05:14:08.223Z","level":"progress","message":"Progress: 40% (147/360)","data":{"runsPerSecond":"0.31","eta":"11m 17s"}}
+[2026-02-18T05:14:08.223Z] [PROGRESS] Progress: 40% (147/360) {"runsPerSecond":"0.31","eta":"11m 17s"}
+{"timestamp":"2026-02-18T05:14:50.535Z","level":"progress","message":"Progress: 45% (162/360)","data":{"runsPerSecond":"0.32","eta":"10m 22s"}}
+[2026-02-18T05:14:50.535Z] [PROGRESS] Progress: 45% (162/360) {"runsPerSecond":"0.32","eta":"10m 22s"}
+{"timestamp":"2026-02-18T05:14:56.931Z","level":"progress","message":"Progress: 45% (163/360)","data":{"runsPerSecond":"0.32","eta":"10m 23s"}}
+[2026-02-18T05:14:56.931Z] [PROGRESS] Progress: 45% (163/360) {"runsPerSecond":"0.32","eta":"10m 23s"}
+{"timestamp":"2026-02-18T05:14:59.864Z","level":"progress","message":"Progress: 45% (164/360)","data":{"runsPerSecond":"0.32","eta":"10m 20s"}}
+[2026-02-18T05:14:59.864Z] [PROGRESS] Progress: 45% (164/360) {"runsPerSecond":"0.32","eta":"10m 20s"}
+{"timestamp":"2026-02-18T05:15:01.521Z","level":"progress","message":"Progress: 45% (165/360)","data":{"runsPerSecond":"0.32","eta":"10m 15s"}}
+[2026-02-18T05:15:01.521Z] [PROGRESS] Progress: 45% (165/360) {"runsPerSecond":"0.32","eta":"10m 15s"}
+{"timestamp":"2026-02-18T05:15:50.706Z","level":"progress","message":"Progress: 50% (180/360)","data":{"runsPerSecond":"0.32","eta":"9m 29s"}}
+[2026-02-18T05:15:50.706Z] [PROGRESS] Progress: 50% (180/360) {"runsPerSecond":"0.32","eta":"9m 29s"}
+{"timestamp":"2026-02-18T05:15:52.280Z","level":"progress","message":"Progress: 50% (181/360)","data":{"runsPerSecond":"0.32","eta":"9m 25s"}}
+[2026-02-18T05:15:52.280Z] [PROGRESS] Progress: 50% (181/360) {"runsPerSecond":"0.32","eta":"9m 25s"}
+{"timestamp":"2026-02-18T05:15:52.635Z","level":"progress","message":"Progress: 50% (182/360)","data":{"runsPerSecond":"0.32","eta":"9m 19s"}}
+[2026-02-18T05:15:52.635Z] [PROGRESS] Progress: 50% (182/360) {"runsPerSecond":"0.32","eta":"9m 19s"}
+{"timestamp":"2026-02-18T05:15:56.618Z","level":"progress","message":"Progress: 50% (183/360)","data":{"runsPerSecond":"0.32","eta":"9m 17s"}}
+[2026-02-18T05:15:56.618Z] [PROGRESS] Progress: 50% (183/360) {"runsPerSecond":"0.32","eta":"9m 17s"}
+{"timestamp":"2026-02-18T05:16:50.456Z","level":"progress","message":"Progress: 55% (198/360)","data":{"runsPerSecond":"0.31","eta":"8m 35s"}}
+[2026-02-18T05:16:50.456Z] [PROGRESS] Progress: 55% (198/360) {"runsPerSecond":"0.31","eta":"8m 35s"}
+{"timestamp":"2026-02-18T05:16:51.616Z","level":"progress","message":"Progress: 55% (199/360)","data":{"runsPerSecond":"0.32","eta":"8m 30s"}}
+[2026-02-18T05:16:51.616Z] [PROGRESS] Progress: 55% (199/360) {"runsPerSecond":"0.32","eta":"8m 30s"}
+{"timestamp":"2026-02-18T05:16:55.086Z","level":"progress","message":"Progress: 55% (200/360)","data":{"runsPerSecond":"0.32","eta":"8m 27s"}}
+[2026-02-18T05:16:55.086Z] [PROGRESS] Progress: 55% (200/360) {"runsPerSecond":"0.32","eta":"8m 27s"}
+{"timestamp":"2026-02-18T05:17:02.945Z","level":"progress","message":"Progress: 55% (201/360)","data":{"runsPerSecond":"0.31","eta":"8m 28s"}}
+[2026-02-18T05:17:02.945Z] [PROGRESS] Progress: 55% (201/360) {"runsPerSecond":"0.31","eta":"8m 28s"}
+{"timestamp":"2026-02-18T05:17:53.264Z","level":"progress","message":"Progress: 60% (216/360)","data":{"runsPerSecond":"0.31","eta":"7m 41s"}}
+[2026-02-18T05:17:53.264Z] [PROGRESS] Progress: 60% (216/360) {"runsPerSecond":"0.31","eta":"7m 41s"}
+{"timestamp":"2026-02-18T05:17:55.863Z","level":"progress","message":"Progress: 60% (217/360)","data":{"runsPerSecond":"0.31","eta":"7m 38s"}}
+[2026-02-18T05:17:55.863Z] [PROGRESS] Progress: 60% (217/360) {"runsPerSecond":"0.31","eta":"7m 38s"}
+{"timestamp":"2026-02-18T05:18:01.989Z","level":"progress","message":"Progress: 60% (218/360)","data":{"runsPerSecond":"0.31","eta":"7m 36s"}}
+[2026-02-18T05:18:01.989Z] [PROGRESS] Progress: 60% (218/360) {"runsPerSecond":"0.31","eta":"7m 36s"}
+{"timestamp":"2026-02-18T05:18:02.794Z","level":"progress","message":"Progress: 60% (219/360)","data":{"runsPerSecond":"0.31","eta":"7m 32s"}}
+[2026-02-18T05:18:02.794Z] [PROGRESS] Progress: 60% (219/360) {"runsPerSecond":"0.31","eta":"7m 32s"}
+{"timestamp":"2026-02-18T05:18:49.115Z","level":"progress","message":"Progress: 65% (234/360)","data":{"runsPerSecond":"0.31","eta":"6m 43s"}}
+[2026-02-18T05:18:49.115Z] [PROGRESS] Progress: 65% (234/360) {"runsPerSecond":"0.31","eta":"6m 43s"}
+{"timestamp":"2026-02-18T05:18:49.695Z","level":"progress","message":"Progress: 65% (235/360)","data":{"runsPerSecond":"0.31","eta":"6m 38s"}}
+[2026-02-18T05:18:49.695Z] [PROGRESS] Progress: 65% (235/360) {"runsPerSecond":"0.31","eta":"6m 38s"}
+{"timestamp":"2026-02-18T05:18:52.068Z","level":"progress","message":"Progress: 65% (236/360)","data":{"runsPerSecond":"0.31","eta":"6m 35s"}}
+[2026-02-18T05:18:52.068Z] [PROGRESS] Progress: 65% (236/360) {"runsPerSecond":"0.31","eta":"6m 35s"}
+{"timestamp":"2026-02-18T05:18:53.600Z","level":"progress","message":"Progress: 65% (237/360)","data":{"runsPerSecond":"0.32","eta":"6m 30s"}}
+[2026-02-18T05:18:53.600Z] [PROGRESS] Progress: 65% (237/360) {"runsPerSecond":"0.32","eta":"6m 30s"}
+{"timestamp":"2026-02-18T05:19:38.338Z","level":"progress","message":"Progress: 70% (252/360)","data":{"runsPerSecond":"0.32","eta":"5m 42s"}}
+[2026-02-18T05:19:38.338Z] [PROGRESS] Progress: 70% (252/360) {"runsPerSecond":"0.32","eta":"5m 42s"}
+{"timestamp":"2026-02-18T05:19:42.536Z","level":"progress","message":"Progress: 70% (253/360)","data":{"runsPerSecond":"0.32","eta":"5m 39s"}}
+[2026-02-18T05:19:42.536Z] [PROGRESS] Progress: 70% (253/360) {"runsPerSecond":"0.32","eta":"5m 39s"}
+{"timestamp":"2026-02-18T05:19:46.913Z","level":"progress","message":"Progress: 70% (254/360)","data":{"runsPerSecond":"0.32","eta":"5m 36s"}}
+[2026-02-18T05:19:46.913Z] [PROGRESS] Progress: 70% (254/360) {"runsPerSecond":"0.32","eta":"5m 36s"}
+{"timestamp":"2026-02-18T05:19:49.005Z","level":"progress","message":"Progress: 70% (255/360)","data":{"runsPerSecond":"0.32","eta":"5m 33s"}}
+[2026-02-18T05:19:49.005Z] [PROGRESS] Progress: 70% (255/360) {"runsPerSecond":"0.32","eta":"5m 33s"}
+{"timestamp":"2026-02-18T05:20:42.258Z","level":"progress","message":"Progress: 75% (270/360)","data":{"runsPerSecond":"0.31","eta":"4m 47s"}}
+[2026-02-18T05:20:42.258Z] [PROGRESS] Progress: 75% (270/360) {"runsPerSecond":"0.31","eta":"4m 47s"}
+{"timestamp":"2026-02-18T05:20:46.567Z","level":"progress","message":"Progress: 75% (271/360)","data":{"runsPerSecond":"0.31","eta":"4m 44s"}}
+[2026-02-18T05:20:46.567Z] [PROGRESS] Progress: 75% (271/360) {"runsPerSecond":"0.31","eta":"4m 44s"}
+{"timestamp":"2026-02-18T05:20:47.687Z","level":"progress","message":"Progress: 75% (272/360)","data":{"runsPerSecond":"0.31","eta":"4m 40s"}}
+[2026-02-18T05:20:47.687Z] [PROGRESS] Progress: 75% (272/360) {"runsPerSecond":"0.31","eta":"4m 40s"}
+{"timestamp":"2026-02-18T05:20:49.033Z","level":"progress","message":"Progress: 75% (273/360)","data":{"runsPerSecond":"0.31","eta":"4m 37s"}}
+[2026-02-18T05:20:49.033Z] [PROGRESS] Progress: 75% (273/360) {"runsPerSecond":"0.31","eta":"4m 37s"}
+{"timestamp":"2026-02-18T05:21:34.027Z","level":"progress","message":"Progress: 80% (288/360)","data":{"runsPerSecond":"0.32","eta":"3m 48s"}}
+[2026-02-18T05:21:34.027Z] [PROGRESS] Progress: 80% (288/360) {"runsPerSecond":"0.32","eta":"3m 48s"}
+{"timestamp":"2026-02-18T05:21:39.928Z","level":"progress","message":"Progress: 80% (289/360)","data":{"runsPerSecond":"0.31","eta":"3m 46s"}}
+[2026-02-18T05:21:39.928Z] [PROGRESS] Progress: 80% (289/360) {"runsPerSecond":"0.31","eta":"3m 46s"}
+{"timestamp":"2026-02-18T05:21:41.141Z","level":"progress","message":"Progress: 80% (290/360)","data":{"runsPerSecond":"0.32","eta":"3m 42s"}}
+[2026-02-18T05:21:41.141Z] [PROGRESS] Progress: 80% (290/360) {"runsPerSecond":"0.32","eta":"3m 42s"}
+{"timestamp":"2026-02-18T05:21:46.331Z","level":"progress","message":"Progress: 80% (291/360)","data":{"runsPerSecond":"0.31","eta":"3m 39s"}}
+[2026-02-18T05:21:46.331Z] [PROGRESS] Progress: 80% (291/360) {"runsPerSecond":"0.31","eta":"3m 39s"}
+{"timestamp":"2026-02-18T05:22:46.571Z","level":"progress","message":"Progress: 85% (306/360)","data":{"runsPerSecond":"0.31","eta":"2m 54s"}}
+[2026-02-18T05:22:46.571Z] [PROGRESS] Progress: 85% (306/360) {"runsPerSecond":"0.31","eta":"2m 54s"}
+{"timestamp":"2026-02-18T05:22:50.374Z","level":"progress","message":"Progress: 85% (307/360)","data":{"runsPerSecond":"0.31","eta":"2m 51s"}}
+[2026-02-18T05:22:50.374Z] [PROGRESS] Progress: 85% (307/360) {"runsPerSecond":"0.31","eta":"2m 51s"}
+{"timestamp":"2026-02-18T05:22:54.380Z","level":"progress","message":"Progress: 85% (308/360)","data":{"runsPerSecond":"0.31","eta":"2m 48s"}}
+[2026-02-18T05:22:54.380Z] [PROGRESS] Progress: 85% (308/360) {"runsPerSecond":"0.31","eta":"2m 48s"}
+{"timestamp":"2026-02-18T05:22:58.521Z","level":"progress","message":"Progress: 85% (309/360)","data":{"runsPerSecond":"0.31","eta":"2m 45s"}}
+[2026-02-18T05:22:58.521Z] [PROGRESS] Progress: 85% (309/360) {"runsPerSecond":"0.31","eta":"2m 45s"}
+{"timestamp":"2026-02-18T05:23:52.057Z","level":"progress","message":"Progress: 90% (324/360)","data":{"runsPerSecond":"0.31","eta":"1m 57s"}}
+[2026-02-18T05:23:52.057Z] [PROGRESS] Progress: 90% (324/360) {"runsPerSecond":"0.31","eta":"1m 57s"}
+{"timestamp":"2026-02-18T05:23:54.584Z","level":"progress","message":"Progress: 90% (325/360)","data":{"runsPerSecond":"0.31","eta":"1m 53s"}}
+[2026-02-18T05:23:54.584Z] [PROGRESS] Progress: 90% (325/360) {"runsPerSecond":"0.31","eta":"1m 53s"}
+{"timestamp":"2026-02-18T05:23:58.330Z","level":"progress","message":"Progress: 90% (326/360)","data":{"runsPerSecond":"0.31","eta":"1m 50s"}}
+[2026-02-18T05:23:58.330Z] [PROGRESS] Progress: 90% (326/360) {"runsPerSecond":"0.31","eta":"1m 50s"}
+{"timestamp":"2026-02-18T05:24:04.402Z","level":"progress","message":"Progress: 90% (327/360)","data":{"runsPerSecond":"0.31","eta":"1m 47s"}}
+[2026-02-18T05:24:04.402Z] [PROGRESS] Progress: 90% (327/360) {"runsPerSecond":"0.31","eta":"1m 47s"}
+{"timestamp":"2026-02-18T05:24:50.284Z","level":"progress","message":"Progress: 95% (342/360)","data":{"runsPerSecond":"0.31","eta":"58.4s"}}
+[2026-02-18T05:24:50.284Z] [PROGRESS] Progress: 95% (342/360) {"runsPerSecond":"0.31","eta":"58.4s"}
+{"timestamp":"2026-02-18T05:25:01.226Z","level":"progress","message":"Progress: 95% (343/360)","data":{"runsPerSecond":"0.31","eta":"55.5s"}}
+[2026-02-18T05:25:01.226Z] [PROGRESS] Progress: 95% (343/360) {"runsPerSecond":"0.31","eta":"55.5s"}
+{"timestamp":"2026-02-18T05:25:02.339Z","level":"progress","message":"Progress: 95% (344/360)","data":{"runsPerSecond":"0.31","eta":"52.1s"}}
+[2026-02-18T05:25:02.339Z] [PROGRESS] Progress: 95% (344/360) {"runsPerSecond":"0.31","eta":"52.1s"}
+{"timestamp":"2026-02-18T05:25:04.143Z","level":"progress","message":"Progress: 95% (345/360)","data":{"runsPerSecond":"0.31","eta":"48.8s"}}
+[2026-02-18T05:25:04.143Z] [PROGRESS] Progress: 95% (345/360) {"runsPerSecond":"0.31","eta":"48.8s"}
+{"timestamp":"2026-02-18T05:25:47.121Z","level":"progress","message":"Progress: 100% (360/360)","data":{"runsPerSecond":"0.31","eta":"unknown"}}
+[2026-02-18T05:25:47.121Z] [PROGRESS] Progress: 100% (360/360) {"runsPerSecond":"0.31","eta":"unknown"}
+{"timestamp":"2026-02-18T05:25:47.235Z","level":"info","message":"Exporting results..."}
+[2026-02-18T05:25:47.235Z] [INFO    ] Exporting results...
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"info","message":"Experiment completed in 19m 26s"}
+[2026-02-18T05:25:47.530Z] [INFO    ] Experiment completed in 19m 26s
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"info","message":"Total runs: 360"}
+[2026-02-18T05:25:47.530Z] [INFO    ] Total runs: 360
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"info","message":"Successful: 360"}
+[2026-02-18T05:25:47.530Z] [INFO    ] Successful: 360
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"info","message":"Failed: 0"}
+[2026-02-18T05:25:47.530Z] [INFO    ] Failed: 0
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.2384 (std: 0.0095)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.2384 (std: 0.0095)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7362 (std: 0.0100)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7362 (std: 0.0100)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Treasury: 10047.2599 (std: 3.7138)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Treasury: 10047.2599 (std: 3.7138)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Trend: -9.7308 (std: 0.4180)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Trend: -9.7308 (std: 0.4180)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Token Price: 6.5446 (std: 21.8321)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Token Price: 6.5446 (std: 21.8321)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9844 (std: 0.0221)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9844 (std: 0.0221)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9994 (std: 0.0034)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9994 (std: 0.0034)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.2373 (std: 0.0118)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.2373 (std: 0.0118)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7369 (std: 0.0137)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7369 (std: 0.0137)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Treasury: 10048.3696 (std: 7.5271)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Treasury: 10048.3696 (std: 7.5271)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Trend: -9.5783 (std: 0.4996)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Trend: -9.5783 (std: 0.4996)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Token Price: 2.4579 (std: 1.7038)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Token Price: 2.4579 (std: 1.7038)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9859 (std: 0.0208)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9859 (std: 0.0208)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 0.9993 (std: 0.0040)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 0.9993 (std: 0.0040)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.2382 (std: 0.0172)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.2382 (std: 0.0172)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7170 (std: 0.0124)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7170 (std: 0.0124)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Treasury: 11804.3915 (std: 361.1341)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Treasury: 11804.3915 (std: 361.1341)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Trend: -12.5442 (std: 2.6809)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Trend: -12.5442 (std: 2.6809)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Token Price: 2.8160 (std: 5.6588)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Token Price: 2.8160 (std: 5.6588)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9798 (std: 0.0197)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9798 (std: 0.0197)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9965 (std: 0.0082)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9965 (std: 0.0082)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.2405 (std: 0.0246)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.2405 (std: 0.0246)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7153 (std: 0.0196)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7153 (std: 0.0196)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Treasury: 11575.0962 (std: 612.2812)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Treasury: 11575.0962 (std: 612.2812)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Trend: -11.8197 (std: 3.0318)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Trend: -11.8197 (std: 3.0318)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Token Price: 2.8426 (std: 2.5028)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Token Price: 2.8426 (std: 2.5028)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9805 (std: 0.0225)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9805 (std: 0.0225)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 0.9978 (std: 0.0067)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 0.9978 (std: 0.0067)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.2638 (std: 0.0331)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.2638 (std: 0.0331)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.6979 (std: 0.0219)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.6979 (std: 0.0219)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Treasury: 13332.8258 (std: 863.6910)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Treasury: 13332.8258 (std: 863.6910)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Trend: -15.9938 (std: 6.6154)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Trend: -15.9938 (std: 6.6154)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Token Price: 3.3360 (std: 3.4884)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Token Price: 3.3360 (std: 3.4884)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9832 (std: 0.0181)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9832 (std: 0.0181)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9973 (std: 0.0070)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9973 (std: 0.0070)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.2737 (std: 0.0418)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.2737 (std: 0.0418)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7055 (std: 0.0335)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7055 (std: 0.0335)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Treasury: 12501.4678 (std: 1420.3399)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Treasury: 12501.4678 (std: 1420.3399)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Trend: -14.8071 (std: 9.0111)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Trend: -14.8071 (std: 9.0111)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Token Price: 11.8023 (std: 54.0622)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Token Price: 11.8023 (std: 54.0622)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9829 (std: 0.0193)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9829 (std: 0.0193)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 1.0000 (std: 0.0000)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=true_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 1.0000 (std: 0.0000)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.4767 (std: 0.1099)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.4767 (std: 0.1099)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.6874 (std: 0.1600)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.6874 (std: 0.1600)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Treasury: 15047.3106 (std: 8000.7713)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Treasury: 15047.3106 (std: 8000.7713)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Trend: -13.4474 (std: 53.9463)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Treasury Trend: -13.4474 (std: 53.9463)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Token Price: 3.0170 (std: 3.9437)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Final Token Price: 3.0170 (std: 3.9437)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9777 (std: 0.0209)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9777 (std: 0.0209)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9992 (std: 0.0045)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9992 (std: 0.0045)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.4578 (std: 0.1312)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.4578 (std: 0.1312)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.6962 (std: 0.1801)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.6962 (std: 0.1801)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Treasury: 13695.5079 (std: 7711.7477)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Treasury: 13695.5079 (std: 7711.7477)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Trend: -21.9960 (std: 62.1851)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Treasury Trend: -21.9960 (std: 62.1851)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Token Price: 3.0397 (std: 4.6770)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Final Token Price: 3.0397 (std: 4.6770)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9720 (std: 0.0204)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9720 (std: 0.0204)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 0.9987 (std: 0.0049)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 0.9987 (std: 0.0049)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.4930 (std: 0.1379)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.4930 (std: 0.1379)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.6907 (std: 0.2052)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.6907 (std: 0.2052)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Treasury: 15487.3561 (std: 10453.3860)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Treasury: 15487.3561 (std: 10453.3860)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Trend: -39.0765 (std: 90.5266)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Treasury Trend: -39.0765 (std: 90.5266)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Token Price: 3.1729 (std: 2.5987)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Final Token Price: 3.1729 (std: 2.5987)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9837 (std: 0.0188)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9837 (std: 0.0188)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9979 (std: 0.0064)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9979 (std: 0.0064)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.4797 (std: 0.1562)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.4797 (std: 0.1562)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.6799 (std: 0.2354)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.6799 (std: 0.2354)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Treasury: 14913.0726 (std: 10969.0179)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Treasury: 14913.0726 (std: 10969.0179)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Trend: -31.5862 (std: 79.9094)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Treasury Trend: -31.5862 (std: 79.9094)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Token Price: 12.1399 (std: 46.6728)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Final Token Price: 12.1399 (std: 46.6728)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9770 (std: 0.0256)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9770 (std: 0.0256)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 0.9994 (std: 0.0034)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.2_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 0.9994 (std: 0.0034)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.4736 (std: 0.1371)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Volatility: 0.4736 (std: 0.1371)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7184 (std: 0.1008)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Growth Rate: -0.7184 (std: 0.1008)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Treasury: 13245.1046 (std: 5029.5152)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Treasury: 13245.1046 (std: 5029.5152)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Trend: -36.9794 (std: 62.0704)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Treasury Trend: -36.9794 (std: 62.0704)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Token Price: 3.0624 (std: 3.7430)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Final Token Price: 3.0624 (std: 3.7430)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9789 (std: 0.0206)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Proposal Pass Rate: 0.9789 (std: 0.0206)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9987 (std: 0.0050)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.1] Quorum Reach Rate: 0.9987 (std: 0.0050)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.4644 (std: 0.1223)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Volatility: 0.4644 (std: 0.1223)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7255 (std: 0.1117)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Growth Rate: -0.7255 (std: 0.1117)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Treasury: 13179.5501 (std: 5263.7245)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Treasury: 13179.5501 (std: 5263.7245)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Trend: -44.8567 (std: 74.3262)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Treasury Trend: -44.8567 (std: 74.3262)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Token Price: 2.6245 (std: 2.8221)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Final Token Price: 2.6245 (std: 2.8221)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9820 (std: 0.0197)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Proposal Pass Rate: 0.9820 (std: 0.0197)
+{"timestamp":"2026-02-18T05:25:47.530Z","level":"metric","message":"[treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 0.9990 (std: 0.0052)"}
+[2026-02-18T05:25:47.530Z] [METRIC  ] [treasury_stabilization_enabled=false_treasury_buffer_fraction=0.4_treasury_max_spend_fraction=0.2] Quorum Reach Rate: 0.9990 (std: 0.0052)
+{"timestamp":"2026-02-18T05:25:47.531Z","level":"info","message":"Experiment state changed to: completed"}
+[2026-02-18T05:25:47.531Z] [INFO    ] Experiment state changed to: completed

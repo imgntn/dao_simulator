@@ -1,21 +1,37 @@
-✓ Good sample size (100 runs per config) for statistical analysis.
+✓ Good sample size (30 runs per config) for statistical analysis.
 
-High variability in "Final Token Price" (CV=485.3%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Final Token Price" (CV=363.2%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "Final Token Price" (CV=338.1%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Final Token Price" (CV=135.3%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "Final Token Price" (CV=151.6%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Final Token Price" (CV=102.6%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "Final Token Price" (CV=328.3%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Final Token Price" (CV=76.8%). Consider longer simulation runs or more controlled initial conditions.
 
-High variability in "Final Token Price" (CV=228.7%). Consider longer simulation runs or more controlled initial conditions.
+High variability in "Final Token Price" (CV=192.9%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Final Token Price" (skewness=9.27). Bootstrap CIs are included in stats export.
+High variability in "Final Token Price" (CV=171.1%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Final Token Price" (skewness=6.20). Bootstrap CIs are included in stats export.
+High variability in "Final Token Price" (CV=144.4%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Final Token Price" (skewness=4.82). Bootstrap CIs are included in stats export.
+High variability in "Final Token Price" (CV=69.9%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Final Token Price" (skewness=7.10). Bootstrap CIs are included in stats export.
+High variability in "Final Token Price" (CV=156.4%). Consider longer simulation runs or more controlled initial conditions.
 
-Non-normal distribution detected for "Final Token Price" (skewness=5.29). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "Final Token Price" (skewness=5.05). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Treasury" (skewness=-2.03). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-1.05). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-1.38). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-2.05). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-2.31). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Final Token Price" (skewness=4.03). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-1.31). Bootstrap CIs are included in stats export.
+
+Non-normal distribution detected for "Proposal Pass Rate" (skewness=-2.01). Bootstrap CIs are included in stats export.
