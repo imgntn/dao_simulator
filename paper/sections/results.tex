@@ -1,33 +1,24 @@
-Here is the updated LaTeX section text with all relevant numbers replaced by their new values:
+Here is the updated LaTeX section with all numbers replaced based on your provided data:
 
 ```latex
 \section{Simulation Results}
 The simulation results for different governance rules and quorum percentages are summarized below.
 
-For a majority rule with a 4\% quorum, we observe:
-\begin{itemize}
-    \item The average proposal pass rate is $0.87517$.
-    \item Average turnout is $34.92$\%, with a standard deviation of $2.23$\%.
-    \item Final Gini coefficient for token distribution is $0.40896$, indicating moderate inequality.
-\end{itemize}
+For a majority rule with a 4\% quorum, we observed an average proposal pass rate of $0.9763 \pm 0.0194$ (min: $0.9434$, max: $1$), an average turnout of $22.73\% \pm 0.90\%$ (min: $20.80\%$, max: $24.70\%$), and a final Gini coefficient for token distribution of $0.4444 \pm 0.0341$. The average whale influence was found to be $0.2699 \pm 0.0131$, with the governance capture risk at $0.2667 \pm 0.0140$.
 
-For quadratic voting with an 8\% quorum, the results are:
-\begin{itemize}
-    \item The average proposal pass rate drops to $0.87446$.
-    \item Average turnout is slightly higher at $35.07$\%, with a standard deviation of $2.46$\%.
-    \item Final Gini coefficient for token distribution increases to $0.40339$, indicating similar levels of inequality as the majority rule but with more variability.
-\end{itemize}
+For a quadratic voting rule with an 8\% quorum, we observed:
+- Average proposal pass rate: $0.9983 \pm 0.0054$
+- Average turnout: $22.50\% \pm 0.92\%$
+- Final Gini coefficient for token distribution: $0.4467 \pm 0.0247$
 
-For conviction voting with a 4\% quorum, we observe:
-\begin{itemize}
-    \item The average proposal pass rate is slightly higher at $0.87812$.
-    \item Average turnout remains around $34.61$\%, with a standard deviation of $2.15$\%.
-    \item Final Gini coefficient for token distribution increases to $0.41388$, indicating somewhat greater inequality in the system compared to majority and quadratic voting rules.
-\end{itemize}
+For a conviction voting rule with a 4\% quorum, we observed:
+- Average proposal pass rate: $0.9960 \pm 0.0097$
+- Average turnout: $22.44\% \pm 0.87\%$
+- Final Gini coefficient for token distribution: $0.4524 \pm 0.0334$
 
-In all cases, we observe that higher quorum requirements lead to slightly lower proposal pass rates but also tend to increase average turnout.
+The average margin of victory across all voting systems was approximately $61.13\%$ with a standard deviation of $5.44\%$. The quorum reach rate varied significantly, ranging from an average of $99.80\%$ for quadratic voting to only $69.33\%$ under conviction voting.
 
-The final treasury balance is around $\$11,406.2$ for most scenarios with a standard deviation of approximately \$578. The volatility in the treasury balance ranges from $23.5\%$ to $23.7\%$, indicating relatively stable funding levels across different governance rules and quorum percentages.
+The single entity control was found to be the highest at approximately $1.94\% \pm 0.32\%$, indicating a relatively low risk of centralization, with an average final treasury balance around $\$11,622$. The volatility in the treasury across all simulations averaged about $23.39\%\pm 1.96$\%.
 
-In summary, while there are slight differences between the various voting mechanisms and quorum thresholds, all configurations exhibit similar overall performance metrics with respect to proposal pass rates, turnout, inequality measures (Gini coefficients), and treasury stability.
+These results suggest that while different voting systems and quorum requirements can influence proposal pass rates and voter turnout, they also impact measures of centralization risk such as whale influence and single entity control.
 ```

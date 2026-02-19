@@ -1,24 +1,70 @@
+Here is the updated LaTeX section text with all numbers updated based on the provided data:
+
 ```latex
-\section{Simulation Results and Analysis}
-The Voting Mechanism Comparison experiment was conducted to evaluate the performance of different governance mechanisms in a simulated environment. A total of 600 runs were executed, with each configuration being tested across 100 runs. The experiment included six configurations: majority (50\% threshold), supermajority (67\% threshold), quadratic voting, section-voter-weighted (SVW) mechanism, and conviction voting. Key metrics such as proposal pass rate, average turnout, final Gini coefficient, whale influence, governance capture risk, average margin of victory, voter participation rate, delegate concentration, quorum reach rate, voter concentration Gini, token concentration Gini, single entity control, collusion threshold, final treasury, and treasury volatility were analyzed.
+\section{Experiment Results and Analysis}
 
-The results indicated that the conviction voting mechanism outperformed others in terms of quorum reach rate, with a statistically significant difference (F(5, 594) = 37.08, p < 0.001). Conviction voting achieved a mean quorum reach rate of 0.92, compared to 0.85 for majority voting and 0.86 for supermajority voting. The effect size was large (\(\eta^2\) = 0.238).
+The experiment compared different voting mechanisms using a total of 180 simulation runs, with 30 runs per configuration. The simulator version used was 0.2.0, running on a win32 platform with Node.js v22.19.0.
 
-In terms of voter participation rate, conviction voting also showed a higher mean (17.4\%) compared to other mechanisms, although the difference was not statistically significant (F(5, 594) = 1.40, p = 0.222).
+\subsection{Statistical Analysis}
 
-The final Gini coefficient was relatively low across all configurations, with conviction voting having the lowest mean (0.38), indicating a more equitable distribution of voting power.
+The statistical analysis included both ANOVA and pairwise t-tests between configurations. Key metrics analyzed include:
 
-Whale influence and governance capture risk were minimal in all configurations, with no significant differences observed. The average margin of victory was also similar across mechanisms, ranging from 52\% to 54\%.
+\begin{itemize}
+    \item Proposal Pass Rate
+    \item Average Turnout
+    \item Final Gini
+    \item Final Reputation Gini
+    \item Whale Influence
+    \item Governance Capture Risk
+    \item Avg Margin of Victory
+    \item Voter Participation Rate
+    \item Delegate Concentration
+    \item Quorum Reach Rate
+    \item Voter Concentration Gini
+    \item Token Concentration Gini
+    \item Single Entity Control
+    \item Collusion Threshold
+    \item Final Treasury
+    \item Treasury Volatility
+\end{itemize}
 
-The final treasury showed modest growth, with conviction voting yielding the highest mean balance (250,000 tokens), compared to 230,000 tokens for majority and supermajority voting.
+ANOVA results for some key metrics:
+\begin{itemize}
+    \item Proposal Pass Rate: F(5, 174) = 22.43, p < 0.001, $\eta^2$ = 0.39, $\omega^2$ = 0.37
+    \item Avg Margin of Victory: F(5, 174) = 22.59, p < 0.001, $\eta^2$ = 0.39, $\omega^2$ = 0.37
+    \item Quorum Reach Rate: F(5, 174) = 550.27, p < 0.001, $\eta^2$ = 0.94, $\omega^2$ = 0.94
+\end{itemize}
 
-Overall, the simulation results suggest that conviction voting is a robust mechanism that promotes higher quorum reach rates and equitable participation while maintaining low levels of whale influence and governance capture risk. These findings support the use of conviction voting in decentralized governance systems to enhance democratic decision-making processes.
+The pairwise t-tests revealed significant differences in metrics such as Avg Margin of Victory and Quorum Reach Rate between certain configurations.
 
-\subsection{Statistical Power Analysis}
-The power analysis indicated a good sample size (100 runs per configuration) for statistical analysis, with a current power of 0.955 for medium effect sizes (\(d\) = 0.5). This suggests that the experiment has sufficient statistical power to detect medium-sized effects.
+\subsection{Power Analysis}
 
-\subsection{Non-Normal Distribution Warnings}
-Non-normal distributions were detected for "Whale Influence" and "Final Reputation Gini," with skewness values of -2.84 and 5.16, respectively. Bootstrap confidence intervals were included in the analysis to account for these non-normalities.
+The current power for detecting medium effects (d=0.5) is 49\%. The recommended number of runs per configuration for small/medium/large effects are 392/63/25, respectively. The minimum effect size detectable with the current sample size is d = 0.72.
+
+\subsection{Recommendations}
+
+The experiment recommendations include:
+\begin{itemize}
+    \item Good sample size (30 runs per config) for statistical analysis.
+    \item Non-normal distribution detected for ``Governance Capture Risk'' and ``Proposal Pass Rate''. Bootstrap CIs are included in the stats export.
+\end{itemize}
+
+\subsection{Simulation Execution Details}
+
+The experiment was executed with the following details:
+\begin{itemize}
+    \item Experiment ID: Voting Mechanism Comparison-1771393331335
+    \item Config Hash: hash:39159fc0
+    \item Total runs: 180
+    \item Seeds used: 909 to 1088 (in increments of 30)
+    \item Worker count: 4
+\end{itemize}
+
+The experiment started at 2026-02-18T05:42:11.335Z and completed at 2026-02-18T05:50:07.598Z.
+
+\subsection{Results Summary}
+
+Overall, the experiment provided valuable insights into the performance of different voting mechanisms across various metrics. The statistical analyses confirmed significant differences in key metrics like Proposal Pass Rate and Avg Margin of Victory, supporting the need for further exploration into these mechanisms.
 ```
 
-This LaTeX section text reflects the provided simulation data, updating the numbers and metrics accordingly.
+This LaTeX section text incorporates the latest numbers from the provided JSON data, ensuring that all statistical results, power analysis details, and execution information are up-to-date.
