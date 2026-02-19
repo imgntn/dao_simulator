@@ -1,24 +1,136 @@
-Here is the updated LaTeX section with all numbers replaced based on your provided data:
+% SIMULATION RESULTS
+% Last generated: 2026-02-19
 
-```latex
-\section{Simulation Results}
-The simulation results for different governance rules and quorum percentages are summarized below.
+\subsection{Baseline Characterization}
 
-For a majority rule with a 4\% quorum, we observed an average proposal pass rate of $0.9763 \pm 0.0194$ (min: $0.9434$, max: $1$), an average turnout of $22.73\% \pm 0.90\%$ (min: $20.80\%$, max: $24.70\%$), and a final Gini coefficient for token distribution of $0.4444 \pm 0.0341$. The average whale influence was found to be $0.2699 \pm 0.0131$, with the governance capture risk at $0.2667 \pm 0.0140$.
+Before investigating specific research questions, we establish baseline governance dynamics. The academic baseline (Experiment~00, $N=30$ runs) produces a proposal pass rate of $98.5\% \pm 2.3\%$, average turnout of $22.7\% \pm 0.9\%$, and governance capture risk of $0.265 \pm 0.013$. Final treasury values average $\$11{,}597 \pm \$622$. These baseline values serve as reference points for all subsequent experiments.
 
-For a quadratic voting rule with an 8\% quorum, we observed:
-- Average proposal pass rate: $0.9983 \pm 0.0054$
-- Average turnout: $22.50\% \pm 0.92\%$
-- Final Gini coefficient for token distribution: $0.4467 \pm 0.0247$
+\subsection{RQ1: Participation Dynamics}
 
-For a conviction voting rule with a 4\% quorum, we observed:
-- Average proposal pass rate: $0.9960 \pm 0.0097$
-- Average turnout: $22.44\% \pm 0.87\%$
-- Final Gini coefficient for token distribution: $0.4524 \pm 0.0334$
+\subsubsection{Calibration Effects (Experiment~01)}
 
-The average margin of victory across all voting systems was approximately $61.13\%$ with a standard deviation of $5.44\%$. The quorum reach rate varied significantly, ranging from an average of $99.80\%$ for quadratic voting to only $69.33\%$ under conviction voting.
+Participation calibration targets significantly affect voter engagement. Across a $3 \times 3$ parameter grid ($N=270$ runs), we observe:
 
-The single entity control was found to be the highest at approximately $1.94\% \pm 0.32\%$, indicating a relatively low risk of centralization, with an average final treasury balance around $\$11,622$. The volatility in the treasury across all simulations averaged about $23.39\%\pm 1.96$\%.
+\begin{itemize}
+    \item \textbf{Turnout}: Ranges from $20.3\%$ to $22.6\%$ as voting activity targets increase, confirming that calibration parameters effectively modulate participation.
+    \item \textbf{Pass rate}: Remains stable at $96.6$--$98.0\%$, indicating that participation changes do not destabilize governance outcomes.
+    \item \textbf{Voter participation rate}: Reaches $25.9$--$27.4\%$, exceeding raw turnout due to delegation effects.
+\end{itemize}
 
-These results suggest that while different voting systems and quorum requirements can influence proposal pass rates and voter turnout, they also impact measures of centralization risk such as whale influence and single entity control.
-```
+\subsubsection{Quorum Sensitivity (Experiment~03)}
+
+Quorum thresholds exhibit a non-linear relationship with governance outcomes. Sweeping quorum from $1\%$ to $50\%$ ($N=150$ runs):
+
+\begin{itemize}
+    \item \textbf{Pass rate}: Peaks at $\approx 99\%$ for quorum values of $5$--$10\%$, declining to $98.1\%$ at $50\%$ quorum.
+    \item \textbf{Turnout}: Stable at $22$--$23\%$ across all quorum settings, suggesting that quorum thresholds do not themselves drive participation.
+    \item \textbf{Time to decision}: $72$--$76$ steps regardless of quorum, indicating that decision speed is robust to quorum variation.
+    \item \textbf{Critical threshold}: An inflection point appears at $20\%$ quorum, where governance effectiveness begins to decline.
+\end{itemize}
+
+Figure~\ref{fig:quorum-passrate} illustrates the relationship between quorum threshold and proposal pass rate.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/quorum_passrate}
+    \caption{Proposal pass rate as a function of quorum threshold. Pass rates remain high ($>98\%$) for quorum values up to $10\%$, with an inflection point near $20\%$.}
+    \label{fig:quorum-passrate}
+\end{figure}
+
+\subsection{RQ2: Governance Capture Mitigation (Experiment~04)}
+
+We test three capture mitigation strategies across a 24-configuration grid ($N=720$ runs): vote power caps, quadratic thresholds, and velocity penalties.
+
+\begin{itemize}
+    \item \textbf{Vote power caps}: A cap of $10\%$ combined with a quadratic threshold of $250$ tokens reduces whale influence from a baseline of $0.454$ to $0.259$---a \textbf{$43\%$ reduction}.
+    \item \textbf{Single entity control}: Decreases from $0.353$ to $0.271$ under the same cap configuration.
+    \item \textbf{Governance capture risk}: Ranges from $0.267$ (with caps) to $0.465$ (without), with the strongest mitigations reducing risk by $43\%$.
+    \item \textbf{Pass rate stability}: Remains at $97$--$99.9\%$ across all mitigation configurations, confirming that capture protections do not impair governance throughput.
+    \item \textbf{Velocity penalties}: Show negligible effects on most metrics (Cohen's $d < 0.2$), suggesting that transaction-rate limits are less effective than structural voting reforms.
+\end{itemize}
+
+\subsection{RQ3: Proposal Pipeline Configuration (Experiment~05)}
+
+Pipeline configurations (temp-check fractions, fast-track thresholds) are tested across $9$ configurations ($N=270$ runs).
+
+\begin{itemize}
+    \item \textbf{Temp-check effects}: Without temp-checks (fraction $= 0.05$), pass rates drop to $96.0\%$. At fraction $= 0.50$, pass rates reach $98.5\%$, confirming that preliminary screening improves governance quality.
+    \item \textbf{Fast-track mechanisms}: Enabling fast-track with $12$-step minimum raises pass rates and maintains $99\%+$ quorum reach.
+    \item \textbf{Proposal throughput}: $47$--$51$ total proposals per $720$-step simulation, with minimal variation across configurations.
+    \item \textbf{Abandonment}: Zero proposals abandoned across all configurations, indicating that pipeline mechanisms redirect rather than discard proposals.
+\end{itemize}
+
+\subsection{RQ4: Treasury Resilience (Experiment~06)}
+
+Treasury management parameters (buffer fractions, spending caps, stabilization) are tested across $12$ configurations ($N=360$ runs).
+
+\begin{itemize}
+    \item \textbf{Stabilization impact}: Treasury volatility is $0.238 \pm 0.009$ with stabilization enabled versus $0.477 \pm 0.110$ without---a \textbf{$50\%$ reduction} in volatility.
+    \item \textbf{Buffer effects}: Buffer fractions of $0.2$--$0.4$ combined with spending caps of $10\%$ yield final treasury values of $\$10{,}047$--$\$13{,}333$, with higher buffers providing greater protection at the cost of reduced capital deployment.
+    \item \textbf{Governance capture interaction}: Capture risk drops from $0.450$ (no stabilization) to $0.266$ (stabilization enabled), suggesting that fiscal discipline reinforces governance integrity.
+    \item \textbf{Growth tradeoff}: Treasury growth rate is $-0.736\% \pm 0.010$ (stabilized) versus $-0.687\% \pm 0.160$ (unstabilized), indicating a modest growth cost for substantially lower volatility.
+\end{itemize}
+
+\subsection{RQ5: Inter-DAO Cooperation (Experiment~07)}
+
+Five cooperation topologies (homogeneous, heterogeneous, asymmetric, specialized, isolated) are tested ($N=150$ runs).
+
+\begin{itemize}
+    \item \textbf{Inter-DAO success rate}: $22.8$--$23.3\%$ across cooperative topologies, substantially above the isolated baseline of $0\%$ but reflecting the inherent difficulty of cross-organizational governance.
+    \item \textbf{Collaboration rate}: $23.7$--$26.2\%$ of proposals involve cross-DAO elements.
+    \item \textbf{Specialization advantage}: Specialized DAOs generate the most inter-DAO proposals ($74.3$ vs $47.6$ for homogeneous) and produce $48\%$ higher ecosystem treasury totals ($\$248$k vs $\$167$k).
+    \item \textbf{Cross-DAO alignment}: Approval alignment ranges from $0.286$ to $0.296$, with specialization providing the highest alignment.
+    \item \textbf{Individual DAO pass rates}: Range from $70.5\%$ to $87.5\%$, with heterogeneous governance configurations performing best.
+\end{itemize}
+
+\subsection{Supporting Experiments}
+
+\subsubsection{Scale Effects (Experiment~08)}
+
+Scaling member count from $50$ to $500$ ($N=150$ runs) reveals:
+
+\begin{itemize}
+    \item \textbf{Pass rate}: Increases from $92.5\%$ ($n=50$) to $99.8\%$ ($n=500$), indicating strong positive scaling effects.
+    \item \textbf{Participation rate}: Decreases from $26.4\%$ ($n=50$) to $21.4\%$ ($n=500$), consistent with participation dilution at scale.
+    \item \textbf{Capture risk}: Decreases from $0.299$ ($n=50$) to $0.254$ ($n=500$)---a $15\%$ reduction, suggesting that scale itself provides partial capture resistance.
+\end{itemize}
+
+Figure~\ref{fig:scale-participation} shows the inverse relationship between DAO size and participation rate.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/scale_participation}
+    \caption{Voter participation rate as a function of DAO size. Participation decreases from $26.4\%$ at $n=50$ to $21.4\%$ at $n=500$, consistent with rational ignorance effects.}
+    \label{fig:scale-participation}
+\end{figure}
+
+\subsubsection{Voting Mechanism Comparison (Experiment~09)}
+
+Three voting mechanisms (majority, quadratic, conviction) are compared at two quorum levels ($N=180$ runs). Table~\ref{tab:voting-comparison} summarizes key metrics.
+
+\begin{table}[htbp]
+\centering
+\caption{Voting mechanism comparison ($N=30$ per configuration, quorum $=4\%$)}
+\label{tab:voting-comparison}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Mechanism & Pass Rate & Whale Influence & Capture Risk & Margin of Victory \\
+\midrule
+Majority & $97.2\% \pm 2.0\%$ & $0.269 \pm 0.012$ & $0.266 \pm 0.013$ & $0.529 \pm 0.043$ \\
+Quadratic & $99.8\% \pm 0.6\%$ & $0.271 \pm 0.010$ & $0.266 \pm 0.013$ & $0.633 \pm 0.047$ \\
+Conviction & $99.6\% \pm 1.0\%$ & $0.267 \pm 0.010$ & $0.265 \pm 0.011$ & $0.611 \pm 0.054$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+ANOVA reveals highly significant differences in proposal pass rate ($F(5,174) = 22.43$, $p < 0.001$, $\eta^2 = 0.39$) and margin of victory ($F(5,174) = 22.59$, $p < 0.001$, $\eta^2 = 0.39$). Pairwise comparison confirms that quadratic voting significantly outperforms majority voting ($t = -6.71$, $p < 0.0001$, $d = -1.73$, very large effect), increasing margin of victory from $0.53$ to $0.63$ while maintaining comparable capture risk.
+
+Quorum reach rate shows the most dramatic mechanism-dependent variation ($F(5,174) = 550.27$, $p < 0.001$, $\eta^2 = 0.94$): majority and quadratic achieve $\approx 100\%$ quorum reach, while conviction voting reaches only $69.3\%$.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/voting_comparison}
+    \caption{Comparison of voting mechanisms across key governance metrics. Quadratic voting achieves the highest pass rates and margins of victory while maintaining comparable capture risk to majority voting.}
+    \label{fig:voting-comparison}
+\end{figure}

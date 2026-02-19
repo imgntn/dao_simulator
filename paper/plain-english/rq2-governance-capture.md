@@ -8,7 +8,7 @@ In most DAOs, voting power equals token holdings. If you own 10% of the tokens, 
 
 ### What we did
 
-We tested three ways to limit whale power across 810 simulations with 27 different configurations:
+We tested three ways to limit whale power across 720 simulations with 24 different configurations:
 
 1. **Vote caps** -- Nobody can use more than X% of total voting power, no matter how many tokens they hold
 2. **Quadratic voting** -- Voting power equals the square root of tokens held (100x more tokens = only 10x more votes)

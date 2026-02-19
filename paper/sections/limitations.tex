@@ -8,10 +8,10 @@
 Our agent models make several simplifying assumptions:
 
 \begin{itemize}
-    \item \textbf{Static preferences}: Agents don't learn or adapt over time
-    \item \textbf{No social dynamics}: No influence, persuasion, or social pressure
-    \item \textbf{Limited adversarial modeling}: Attack/defense scenarios in experiment~07 only; no general strategic manipulation
-    \item \textbf{Isolated system}: No external market or protocol interactions
+    \item \textbf{Simplified learning}: While agents learn via three-tier reinforcement learning (tabular Q-learning, deep Q-networks, and hierarchical options), social dynamics such as persuasion and influence are not modeled
+    \item \textbf{Limited social dynamics}: No influence propagation, persuasion, or social pressure networks
+    \item \textbf{Counterfactual scope}: Counterfactual governance analysis compares alternative voting mechanisms but does not model strategic adaptation by agents to new rules
+    \item \textbf{Simplified market coupling}: Price oracles (GBM, historical replay) drive treasury values but do not model feedback from governance decisions to token prices
 \end{itemize}
 
 \subsubsection{Mechanism Coverage}
@@ -84,9 +84,9 @@ Our analysis is bounded by:
 \subsubsection{Medium-Term Goals}
 
 \begin{enumerate}
-    \item \textbf{Blockchain validation}: Calibrate against on-chain data from real DAOs
+    \item \textbf{Extended calibration}: Expand historical calibration beyond 14 DAOs and incorporate Bayesian methods for parameter uncertainty quantification
     \item \textbf{Mechanism synthesis}: Use evolutionary algorithms to discover optimal mechanisms
-    \item \textbf{Real-time analysis}: Integrate with live DAO data for monitoring
+    \item \textbf{Real-time analysis}: Integrate with live DAO data for monitoring and early-warning systems
 \end{enumerate}
 
 \subsubsection{Long-Term Vision}

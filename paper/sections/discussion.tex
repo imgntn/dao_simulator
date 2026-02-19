@@ -1,70 +1,63 @@
-Here is the updated LaTeX section text with all numbers updated based on the provided data:
+% DISCUSSION
+% Last generated: 2026-02-19
 
-```latex
-\section{Experiment Results and Analysis}
+\subsection{Interpretation of Results}
 
-The experiment compared different voting mechanisms using a total of 180 simulation runs, with 30 runs per configuration. The simulator version used was 0.2.0, running on a win32 platform with Node.js v22.19.0.
+\subsubsection{Participation Dynamics (RQ1)}
 
-\subsection{Statistical Analysis}
+Our results reveal a nuanced picture of DAO participation. Quorum thresholds between $5$--$10\%$ optimize pass rates without driving additional participation, suggesting that turnout is determined by agent engagement patterns rather than institutional requirements. The inflection point at $20\%$ quorum marks where institutional demands begin to conflict with natural participation levels. This aligns with empirical observations that most DAOs set quorum at $4$--$10\%$~\citep{barbereau2022dao}.
 
-The statistical analysis included both ANOVA and pairwise t-tests between configurations. Key metrics analyzed include:
+The participation rate decline from $26.4\%$ at $n=50$ to $21.4\%$ at $n=500$ (Experiment~08) is consistent with the ``rational ignorance'' hypothesis from political science~\citep{downs1957economic}: as the marginal impact of each vote decreases with group size, individual incentives to participate diminish. However, governance quality (pass rate, capture risk) improves with scale, suggesting that collective intelligence benefits outweigh individual engagement losses.
 
-\begin{itemize}
-    \item Proposal Pass Rate
-    \item Average Turnout
-    \item Final Gini
-    \item Final Reputation Gini
-    \item Whale Influence
-    \item Governance Capture Risk
-    \item Avg Margin of Victory
-    \item Voter Participation Rate
-    \item Delegate Concentration
-    \item Quorum Reach Rate
-    \item Voter Concentration Gini
-    \item Token Concentration Gini
-    \item Single Entity Control
-    \item Collusion Threshold
-    \item Final Treasury
-    \item Treasury Volatility
-\end{itemize}
+\subsubsection{Governance Capture (RQ2)}
 
-ANOVA results for some key metrics:
-\begin{itemize}
-    \item Proposal Pass Rate: F(5, 174) = 22.43, p < 0.001, $\eta^2$ = 0.39, $\omega^2$ = 0.37
-    \item Avg Margin of Victory: F(5, 174) = 22.59, p < 0.001, $\eta^2$ = 0.39, $\omega^2$ = 0.37
-    \item Quorum Reach Rate: F(5, 174) = 550.27, p < 0.001, $\eta^2$ = 0.94, $\omega^2$ = 0.94
-\end{itemize}
+The $43\%$ reduction in whale influence achieved by vote power caps and quadratic thresholds is the strongest effect observed in our experiments. Notably, this reduction comes at no cost to governance throughput---pass rates remain above $97\%$ across all mitigation configurations. This suggests that capture mitigation and governance efficiency are not inherently in tension, contradicting the common assumption that decentralization necessarily reduces operational effectiveness.
 
-The pairwise t-tests revealed significant differences in metrics such as Avg Margin of Victory and Quorum Reach Rate between certain configurations.
+Velocity penalties, by contrast, show negligible effects (Cohen's $d < 0.2$), indicating that the rate of voting activity is less important than the structural distribution of voting power. This implies that reform efforts should focus on power allocation mechanisms rather than activity-based restrictions.
 
-\subsection{Power Analysis}
+\subsubsection{Proposal Pipeline (RQ3)}
 
-The current power for detecting medium effects (d=0.5) is 49\%. The recommended number of runs per configuration for small/medium/large effects are 392/63/25, respectively. The minimum effect size detectable with the current sample size is d = 0.72.
+Temp-check stages emerge as the highest-impact pipeline feature, consistent with their widespread adoption in major DAOs like Uniswap and Aave. The zero abandonment rate across all configurations suggests that pipeline stages filter rather than eliminate proposals, redirecting low-quality submissions through iterative refinement rather than outright rejection.
 
-\subsection{Recommendations}
+Fast-track mechanisms complement temp-checks by accelerating consensus items, but their impact is secondary. This suggests a design principle: pipeline stages should add information value (screening, deliberation) rather than merely adding process overhead.
 
-The experiment recommendations include:
-\begin{itemize}
-    \item Good sample size (30 runs per config) for statistical analysis.
-    \item Non-normal distribution detected for ``Governance Capture Risk'' and ``Proposal Pass Rate''. Bootstrap CIs are included in the stats export.
-\end{itemize}
+\subsubsection{Treasury Resilience (RQ4)}
 
-\subsection{Simulation Execution Details}
+The $50\%$ volatility reduction from treasury stabilization is practically significant for DAO sustainability. The interaction between stabilization and capture risk ($0.266$ vs $0.450$) suggests a mechanism through which fiscal discipline affects governance: when treasury resources are managed conservatively, the stakes of individual proposals decrease, reducing incentives for capture.
 
-The experiment was executed with the following details:
-\begin{itemize}
-    \item Experiment ID: Voting Mechanism Comparison-1771393331335
-    \item Config Hash: hash:39159fc0
-    \item Total runs: 180
-    \item Seeds used: 909 to 1088 (in increments of 30)
-    \item Worker count: 4
-\end{itemize}
+The modest growth rate cost ($0.05$ percentage points) represents an attractive trade-off for the substantial reduction in tail risk. Real DAOs should consider whether the marginal capital deployment justifies the substantially higher volatility exposure.
 
-The experiment started at 2026-02-18T05:42:11.335Z and completed at 2026-02-18T05:50:07.598Z.
+\subsubsection{Inter-DAO Cooperation (RQ5)}
 
-\subsection{Results Summary}
+Inter-DAO cooperation success rates of $22.8$--$23.3\%$ are notable for being both substantially above zero (cooperation is achievable) and substantially below single-DAO pass rates ($>95\%$). This gap quantifies the ``cooperation tax'' of cross-organizational governance.
 
-Overall, the experiment provided valuable insights into the performance of different voting mechanisms across various metrics. The statistical analyses confirmed significant differences in key metrics like Proposal Pass Rate and Avg Margin of Victory, supporting the need for further exploration into these mechanisms.
-```
+The specialization advantage---$48\%$ higher ecosystem treasury with specialized DAOs---supports the economic intuition that cooperation is most valuable when partners bring complementary capabilities. Homogeneous DAOs cooperate easily but gain little, while specialized DAOs face higher coordination costs but generate greater joint value.
 
-This LaTeX section text incorporates the latest numbers from the provided JSON data, ensuring that all statistical results, power analysis details, and execution information are up-to-date.
+\subsection{Cross-Cutting Themes}
+
+\subsubsection{Scale and Decentralization}
+
+A consistent finding across experiments is that larger DAOs produce better governance outcomes despite lower individual participation rates. This suggests that the ``decentralization trilemma'' may be less severe than commonly assumed: systems can be simultaneously large, decentralized, and effective, provided that mechanisms are properly configured.
+
+\subsubsection{Mechanism Complementarity}
+
+The strongest governance configurations combine multiple mechanisms: quadratic voting (structural power equalization), temp-check stages (quality filtering), treasury stabilization (fiscal discipline), and vote power caps (capture resistance). No single mechanism is sufficient; governance quality emerges from the interaction of complementary institutional designs.
+
+\subsubsection{Statistical Power and Effect Sizes}
+
+With 30 runs per configuration, our experiments achieve $49\%$ power for medium effects ($d = 0.5$) and detect minimum effect sizes of $d = 0.72$. The strongest observed effects---quadratic voting's improvement over majority ($d = -1.73$) and quorum reach rate variation ($\eta^2 = 0.94$)---are well above detection thresholds. However, some practically interesting effects (e.g., velocity penalties) may be below our detection limit, motivating future experiments with larger sample sizes.
+
+\subsection{Practical Implications}
+
+Based on our findings, we offer the following evidence-based design recommendations for DAO practitioners:
+
+\begin{enumerate}
+    \item Set quorum at $5$--$10\%$ to balance legitimacy with operational efficiency.
+    \item Implement vote power caps at $10$--$15\%$ to reduce capture risk by up to $43\%$ without sacrificing throughput.
+    \item Adopt quadratic voting to increase margin of victory and reduce plutocratic influence.
+    \item Include temp-check stages in the proposal pipeline to filter low-quality proposals.
+    \item Maintain treasury buffer reserves of $15$--$20\%$ with active stabilization to halve volatility.
+    \item For inter-DAO cooperation, seek specialized partners and establish explicit cost-sharing rules.
+\end{enumerate}
+
+These recommendations are simulation-conditional and should be validated against specific DAO contexts before deployment.

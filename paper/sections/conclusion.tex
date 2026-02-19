@@ -1,6 +1,5 @@
-```latex
 % CONCLUSION
-% Last generated: 2026-01-15T07:27:20.548Z
+% Last generated: 2026-02-19
 
 \subsection{Summary}
 
@@ -25,9 +24,10 @@ Across \totalruns{} simulation runs and \experimentcount{} experiment sets, we t
 This work makes the following contributions:
 
 \begin{enumerate}
-    \item An open-source simulation framework for DAO governance research
-    \item A research CLI enabling reproducible batch experiments
-    \item Empirical analysis infrastructure for quorum, scale, and mechanism effects
+    \item An open-source simulation framework for DAO governance research supporting multiple voting mechanisms, agent heterogeneity, and delegation
+    \item A historical data calibration pipeline validating simulator outputs against 14 real-world DAOs with an average accuracy score of 0.770
+    \item A research CLI enabling reproducible batch experiments with parameter sweeps, checkpoint/resume, and statistical export
+    \item Empirical analysis infrastructure for quorum, scale, mechanism, treasury, and inter-DAO cooperation effects
     \item A theoretical framework connecting multi-agent systems, mechanism design, and social choice
 \end{enumerate}
 
@@ -72,7 +72,7 @@ The simulation framework, experiment configurations, and analysis scripts are pu
 
 \textbf{Computational requirements:}
 \begin{itemize}
-    \item Runtime: Approximately 4--6 hours for full experiment suite (single-threaded)
+    \item Runtime: Approximately 2.5 hours for full experiment suite (4 parallel workers)
     \item Memory: 8GB RAM minimum, 16GB recommended
     \item Storage: 500MB for full results
 \end{itemize}
@@ -81,4 +81,3 @@ All results are deterministically reproducible given the same random seeds (spec
 
 % The simulation framework supports ongoing extension with additional experiments.
 % Current version reflects \experimentcount{} experiment sets with \totalruns{} total runs.
-```

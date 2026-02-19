@@ -16,7 +16,7 @@ Right now, DAO designers mostly guess. We wanted to give them a lab where they c
 
 ### What did we test?
 
-We ran 9,191 simulations across 20 different experiments, looking at five big questions:
+We ran 2,730 simulations across 11 different experiments, looking at five big questions:
 
 1. **Why don't people vote, and can we fix it?** (Spoiler: there's a natural ceiling, and pushing too hard backfires)
 2. **Can we stop rich players from taking over?** (Yes, but it takes a combination of tools)
@@ -27,7 +27,7 @@ We ran 9,191 simulations across 20 different experiments, looking at five big qu
 ### The biggest takeaways
 
 - **Quorum (minimum voter turnout) should be set low** -- around 4-5%. Setting it higher doesn't get more people to vote; it just means nothing gets done.
-- **Quadratic voting works** -- it cuts the power gap between whales and small holders roughly in half.
+- **Vote power caps work** -- capping any single voter at 10-15% of total power reduces whale influence by 43% without slowing governance down. Quadratic voting further improves decision margins.
 - **Temp-checks save governance** -- having a quick "does anyone even want this?" vote before the real vote prevents the system from getting clogged.
 - **Treasury buffers are cheap insurance** -- setting aside 15-20% of funds makes a DAO dramatically more resilient to market crashes.
 - **Bigger DAOs pass more proposals but have lower individual participation** -- there's a fundamental tradeoff between scale and engagement.
