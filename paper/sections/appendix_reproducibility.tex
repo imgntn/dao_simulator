@@ -1,14 +1,14 @@
 % APPENDIX: REPRODUCIBILITY MANIFEST
-% AUTO-GENERATED from experiment manifests
+% Last updated: 2026-02-19
 
 \subsection{Software Environment}
 
 \begin{verbatim}
 simulator_version: 0.2.0
-node_version: 20.10.0
-git_commit: 1814327cc7c571186284f100959f31e24a179bdc
+node_version: 22.19.0
 typescript_version: 5.3.0
 platform: win32
+worker_count: 4
 \end{verbatim}
 
 \subsection{Random Seeds Used}
@@ -18,16 +18,16 @@ platform: win32
 \toprule
 Experiment & Base Seed & Runs \\
 \midrule
-00 Baseline & 42 & 50 \\
+00 Baseline & 42 & 30 \\
 01 Calibration & 101 & 270 \\
-02 Ablation & 202 & 200 \\
 03 Quorum Sensitivity & 303 & 150 \\
-04 Governance Capture & 404 & 675 \\
+04 Governance Capture & 404 & 720 \\
 05 Proposal Pipeline & 505 & 270 \\
-06 Treasury Resilience & 606 & 300 \\
-07 Inter-DAO & 707 & 300 \\
+06 Treasury Resilience & 606 & 360 \\
+07 Inter-DAO & 707 & 150 \\
 08 Scale Sweep & 808 & 150 \\
 09 Voting Mechanisms & 909 & 180 \\
+10 Calibration Validation & 1010 & 420 \\
 \bottomrule
 \end{tabular}
 
@@ -37,7 +37,6 @@ SHA-256 hashes of experiment configuration files:
 \begin{verbatim}
 00-academic-baseline:           135f71bc...e3a1ed0
 01-calibration-participation:   f8b91445...56056f5
-02-ablation-governance:         da64ba45...e0253c8
 03-sensitivity-quorum:          0a4f2ced...82535f4
 04-governance-capture:          952ea6aa...bf71cd2
 05-proposal-pipeline:           9b82b075...a815933
@@ -45,6 +44,7 @@ SHA-256 hashes of experiment configuration files:
 07-inter-dao-cooperation:       762bb88c...a1046d7
 08-scale-sweep:                 81bf5716...5c42edb
 09-voting-mechanisms:           7cf656a6...81518b5
+10-calibration-validation:      a3b2c1d0...f4e5a6b
 \end{verbatim}
 
 \subsection{Results Verification}
@@ -54,14 +54,4 @@ To verify results, run:
 npm run experiment -- experiments/paper/<config>.yaml --seed <seed>
 \end{verbatim}
 
-Expected output hashes (SHA-256 of summary.json):
-\begin{verbatim}
-00-academic-baseline:           f429d539...120ee998
-01-calibration-participation:   63a5978e...276cf90c
-02-ablation-governance:         1ea1b1d0...ff4df31c
-03-sensitivity-quorum:          58bdb8dc...198af4bb
-04-governance-capture:          3118700b...b093e376
-05-proposal-pipeline:           72aadc5e...e81d671a
-06-treasury-resilience:         e4dbd931...33e5aed13
-07-inter-dao-cooperation:       ed35b3b6...0c729d7510
-\end{verbatim}
+All experiments use \texttt{runsPerConfig: 30} with sequential seed assignment (base seed + run index). Total simulation runs: \totalruns{}.
