@@ -22,10 +22,10 @@ Participation calibration targets significantly affect voter engagement. Across 
 Quorum thresholds exhibit a non-linear relationship with governance outcomes. Sweeping quorum from $1\%$ to $50\%$ ($N=150$ runs):
 
 \begin{itemize}
-    \item \textbf{Pass rate}: Peaks at $\approx 99\%$ for quorum values of $5$--$10\%$, declining to $98.1\%$ at $50\%$ quorum.
-    \item \textbf{Turnout}: Stable at $22$--$23\%$ across all quorum settings, suggesting that quorum thresholds do not themselves drive participation.
-    \item \textbf{Time to decision}: $72$--$76$ steps regardless of quorum, indicating that decision speed is robust to quorum variation.
-    \item \textbf{Critical threshold}: An inflection point appears at $20\%$ quorum, where governance effectiveness begins to decline.
+    \item \textbf{Pass rate}: Remarkably stable at $97.8$--$99.1\%$ across all quorum values, with a slight peak at $5\%$ quorum ($99.1\%$). Pass rate measures proposals that reach quorum, so stability reflects consistent voter support.
+    \item \textbf{Quorum reach rate}: The critical metric---drops sharply from $100\%$ at $5\%$ quorum to $23.9\%$ at $20\%$ and $0\%$ at $40\%$+. Above $15\%$ quorum, most proposals expire without reaching quorum.
+    \item \textbf{Turnout}: Stable at $22$--$23\%$ across all quorum settings, confirming that quorum thresholds do not themselves drive participation.
+    \item \textbf{Critical threshold}: An inflection point in quorum reach appears at $15$--$20\%$, where the gap between required and actual participation causes governance gridlock.
 \end{itemize}
 
 Figure~\ref{fig:quorum-passrate} illustrates the relationship between quorum threshold and proposal pass rate.
@@ -33,7 +33,7 @@ Figure~\ref{fig:quorum-passrate} illustrates the relationship between quorum thr
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/quorum_passrate}
-    \caption{Proposal pass rate as a function of quorum threshold. Pass rates remain high ($>98\%$) for quorum values up to $10\%$, with an inflection point near $20\%$.}
+    \caption{Proposal pass rate as a function of quorum threshold. Pass rates remain stable ($97.8$--$99.1\%$) across all quorum values from $1\%$ to $50\%$, with a slight peak near $5\%$. The real constraint is quorum reach rate (not shown), which drops sharply above $15\%$.}
     \label{fig:quorum-passrate}
 \end{figure}
 
@@ -131,6 +131,6 @@ Quorum reach rate shows the most dramatic mechanism-dependent variation ($F(5,17
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/voting_comparison}
-    \caption{Comparison of voting mechanisms across key governance metrics. Quadratic voting achieves the highest pass rates and margins of victory while maintaining comparable capture risk to majority voting.}
+    \caption{Voting mechanism comparison across four governance metrics (quorum $= 4\%$, $N=30$ per mechanism). Quadratic voting achieves the highest pass rates and margins of victory. Conviction voting shows substantially lower quorum reach ($69.3\%$ vs $\approx 100\%$).}
     \label{fig:voting-comparison}
 \end{figure}
