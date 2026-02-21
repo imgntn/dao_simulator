@@ -42,7 +42,7 @@ sweep:
     - parameter: participation_target_rate
       values: [0.0, 0.15, 0.25]
 execution:
-  runsPerConfig: 30
+  runsPerConfig: 100
   stepsPerRun: 2000
   seedStrategy: sequential
   baseSeed: 101

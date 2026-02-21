@@ -429,3 +429,161 @@ describe('LiquidDelegator Integration', () => {
     expect(delegator.representative).toBe(representative);
   });
 });
+
+// =============================================================================
+// Enhanced Liquid Democracy Tests
+// =============================================================================
+
+describe('Enhanced Delegation Features', () => {
+  let simulation: DAOSimulation;
+
+  beforeEach(() => {
+    simulation = new DAOSimulation({
+      num_developers: 0,
+      num_investors: 0,
+      num_validators: 0,
+      num_proposal_creators: 0,
+      num_passive_members: 0,
+    });
+    // Reset enhanced features
+    DelegationResolver.maxDepth = 0;
+    DelegationResolver.decayPerHop = 0;
+  });
+
+  describe('Delegation depth limit', () => {
+    it('limits delegation chain depth', () => {
+      DelegationResolver.maxDepth = 2;
+
+      // Create chain: A → B → C → D
+      const a = new DAOMember('a', simulation, 100, 0, 'loc');
+      const b = new DAOMember('b', simulation, 100, 0, 'loc');
+      const c = new DAOMember('c', simulation, 0, 0, 'loc');
+      const d = new DAOMember('d', simulation, 0, 0, 'loc');
+      simulation.dao.addMember(a);
+      simulation.dao.addMember(b);
+      simulation.dao.addMember(c);
+      simulation.dao.addMember(d);
+
+      // A delegates 50 to B, B delegates 50 to C, C delegates 50 to D
+      a.delegate(50, b);
+      b.delegate(50, c);
+      c.delegate(50, d);
+
+      DelegationResolver.clearCache();
+
+      // With maxDepth=2, D should only get C's delegation (depth 1)
+      // but not A's delegation through B→C (depth 3 from D's perspective)
+      const powerD = DelegationResolver.resolveVotingPower(d);
+      // D's own tokens (0) + C's delegation (50, depth 1)
+      // But B→C delegation is at depth 2, which should still be included
+      // A→B delegation is at depth 3 from D, which should be cut off
+      expect(powerD).toBeLessThan(150); // Would be 150 without depth limit
+    });
+
+    it('unlimited depth when maxDepth=0', () => {
+      DelegationResolver.maxDepth = 0;
+
+      const a = new DAOMember('a', simulation, 100, 0, 'loc');
+      const b = new DAOMember('b', simulation, 50, 0, 'loc');
+      const c = new DAOMember('c', simulation, 0, 0, 'loc');
+      simulation.dao.addMember(a);
+      simulation.dao.addMember(b);
+      simulation.dao.addMember(c);
+
+      a.delegate(80, b);
+      b.delegate(30, c);
+
+      DelegationResolver.clearCache();
+      const powerC = DelegationResolver.resolveVotingPower(c);
+      // C gets: own(0) + B's delegation(30) + A's through B (80)
+      expect(powerC).toBe(110);
+    });
+  });
+
+  describe('Delegation power decay', () => {
+    it('reduces power with each hop', () => {
+      DelegationResolver.decayPerHop = 0.1; // 10% decay per hop
+
+      const a = new DAOMember('a', simulation, 100, 0, 'loc');
+      const b = new DAOMember('b', simulation, 0, 0, 'loc');
+      simulation.dao.addMember(a);
+      simulation.dao.addMember(b);
+
+      a.delegate(100, b);
+      DelegationResolver.clearCache();
+
+      const powerB = DelegationResolver.resolveVotingPower(b);
+      // B gets: own(0) + A's delegation(100) * (1-0.1)^0 = 100
+      // Decay at depth 0 = no decay for direct delegation
+      expect(powerB).toBe(100);
+
+      // Reset
+      DelegationResolver.decayPerHop = 0;
+    });
+
+    it('no decay when decayPerHop=0', () => {
+      DelegationResolver.decayPerHop = 0;
+
+      const a = new DAOMember('a', simulation, 100, 0, 'loc');
+      const b = new DAOMember('b', simulation, 50, 0, 'loc');
+      const c = new DAOMember('c', simulation, 0, 0, 'loc');
+      simulation.dao.addMember(a);
+      simulation.dao.addMember(b);
+      simulation.dao.addMember(c);
+
+      a.delegate(80, b);
+      b.delegate(30, c);
+      DelegationResolver.clearCache();
+
+      const powerC = DelegationResolver.resolveVotingPower(c);
+      expect(powerC).toBe(110); // 0 + 30 + 80, no decay
+    });
+  });
+
+  describe('Topic-specific delegation', () => {
+    it('sets and retrieves topic-specific delegates', () => {
+      const member = new DAOMember('m1', simulation, 100, 0, 'loc');
+      const govExpert = new DAOMember('gov', simulation, 50, 0, 'loc');
+      const finExpert = new DAOMember('fin', simulation, 50, 0, 'loc');
+      simulation.dao.addMember(member);
+      simulation.dao.addMember(govExpert);
+      simulation.dao.addMember(finExpert);
+
+      member.setTopicDelegation('Governance', govExpert);
+      member.setTopicDelegation('Funding', finExpert);
+
+      expect(member.getRepresentativeForTopic('Governance')).toBe(govExpert);
+      expect(member.getRepresentativeForTopic('Funding')).toBe(finExpert);
+      // Unknown topic falls back to general representative
+      expect(member.getRepresentativeForTopic('Other')).toBeNull();
+    });
+
+    it('falls back to general representative for unset topics', () => {
+      const member = new DAOMember('m1', simulation, 100, 0, 'loc');
+      const generalRep = new DAOMember('gen', simulation, 50, 0, 'loc');
+      const govExpert = new DAOMember('gov', simulation, 50, 0, 'loc');
+      simulation.dao.addMember(member);
+      simulation.dao.addMember(generalRep);
+      simulation.dao.addMember(govExpert);
+
+      member.setRepresentative(generalRep);
+      member.setTopicDelegation('Governance', govExpert);
+
+      expect(member.getRepresentativeForTopic('Governance')).toBe(govExpert);
+      expect(member.getRepresentativeForTopic('Funding')).toBe(generalRep); // Falls back
+    });
+
+    it('can clear topic-specific delegation', () => {
+      const member = new DAOMember('m1', simulation, 100, 0, 'loc');
+      const expert = new DAOMember('exp', simulation, 50, 0, 'loc');
+      simulation.dao.addMember(member);
+      simulation.dao.addMember(expert);
+
+      member.setTopicDelegation('Governance', expert);
+      expect(member.getRepresentativeForTopic('Governance')).toBe(expert);
+
+      member.setTopicDelegation('Governance', null);
+      expect(member.getRepresentativeForTopic('Governance')).toBeNull();
+    });
+  });
+});

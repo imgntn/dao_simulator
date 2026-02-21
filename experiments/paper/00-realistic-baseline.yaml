@@ -39,7 +39,7 @@ baseConfig:
     learning_enabled: false
 
 execution:
-  runsPerConfig: 30
+  runsPerConfig: 100
   stepsPerRun: 2000
   seedStrategy: sequential
   baseSeed: 42

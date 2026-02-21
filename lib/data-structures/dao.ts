@@ -3,6 +3,7 @@
 import { EventBus } from '../utils/event-bus';
 import { Treasury } from './treasury';
 import { PredictionMarket } from './prediction-market';
+import type { PredictionMarket as LMSRMarket } from '../utils/prediction-market';
 import type { Proposal } from './proposal';
 import type { Project } from './project';
 import type { Dispute } from './dispute';
@@ -138,6 +139,9 @@ export class DAO {
   };
   participationBoost: number = 0;
   treasuryBuffer: number = 0;
+
+  // Per-proposal LMSR prediction markets for Futarchy governance
+  predictionMarkets: Map<string, LMSRMarket> = new Map();
   delegationLockSteps: number = 0;
   proposalTopicConfig?: TopicConfig[];
 

@@ -71,6 +71,9 @@ export class DAOMember implements Agent {
   delegations: Map<string, number> = new Map(); // memberId -> amount
   delegates: DAOMember[] = [];
   representative: DAOMember | null = null; // For liquid delegation - who votes on my behalf
+  // Topic-specific delegation: delegate to different experts per proposal category
+  // Maps topic string (e.g. 'Governance', 'Funding') to a representative for that topic
+  topicDelegations: Map<string, DAOMember> = new Map();
   private _active: boolean = false;
   pos: [number, number] | null = null; // For visualization
   optimism: number;
@@ -102,6 +105,11 @@ export class DAOMember implements Agent {
   // Per-agent voting probability override (set from voter cluster calibration data)
   // When set, bypasses the generic apathy/salience/boost calculation
   calibratedVotingProbability?: number;
+
+  // Per-agent opposition bias (0.0–1.0) — likelihood of voting NO
+  // Set from calibration data based on historical pass_rate:
+  // Low-pass DAOs (e.g. Nouns: 45%) assign higher opposition to some agents
+  oppositionBias: number = 0;
 
   // Voting power velocity tracking (time-weighted voting)
   recentTokenInflow: number = 0;
@@ -588,10 +596,13 @@ export class DAOMember implements Agent {
       }
 
       // Factor in vote ratio (information cascade / herding effect)
+      // Dampen herding for agents with opposition bias (low-pass DAOs) to prevent
+      // early YES votes from snowballing. High-pass DAO agents keep full herding.
       const totalVotes = proposal.votesFor + proposal.votesAgainst;
       if (totalVotes > 0) {
         const supportRatio = proposal.votesFor / totalVotes;
-        belief += supportRatio * settings.voteHerdingFactor;
+        const herdingScale = this.oppositionBias > 0 ? 0.3 : 1.0;
+        belief += supportRatio * settings.voteHerdingFactor * herdingScale;
       }
 
       // Factor in forum discussion sentiment (if forum is enabled)
@@ -623,6 +634,12 @@ export class DAOMember implements Agent {
       // Without calibration, optimism adds only mild noise (±5%).
       const optimismFactor = this.calibratedVotingProbability !== undefined ? 1.0 : 0.1;
       belief += (this.optimism - 0.5) * optimismFactor;
+
+      // Apply opposition bias — structural NO tendency for calibrated low-pass DAOs.
+      // Subtracts up to oppositionBias * 0.3 from belief, creating genuine opposition.
+      if (this.oppositionBias > 0) {
+        belief -= this.oppositionBias * 0.3;
+      }
 
       belief = clamp(belief);
 
@@ -715,6 +732,28 @@ export class DAOMember implements Agent {
 
     // Invalidate cache for self
     DelegationResolver.invalidateMember(this.uniqueId);
+  }
+
+  /**
+   * Set a topic-specific representative for liquid delegation.
+   * When voting on a proposal with a matching topic, this representative
+   * is preferred over the general representative.
+   */
+  setTopicDelegation(topic: string, rep: DAOMember | null): void {
+    if (rep) {
+      this.topicDelegations.set(topic, rep);
+    } else {
+      this.topicDelegations.delete(topic);
+    }
+    DelegationResolver.invalidateMember(this.uniqueId);
+  }
+
+  /**
+   * Get the effective representative for a given topic.
+   * Returns topic-specific delegate if set, otherwise the general representative.
+   */
+  getRepresentativeForTopic(topic: string): DAOMember | null {
+    return this.topicDelegations.get(topic) || this.representative;
   }
 
   /**

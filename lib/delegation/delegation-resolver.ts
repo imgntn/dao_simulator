@@ -22,6 +22,12 @@ export class DelegationResolver {
   private static cacheStep = -1;
   private static cacheDaoId = '';
 
+  // Configurable delegation parameters
+  /** Maximum delegation chain depth (0 = unlimited) */
+  static maxDepth: number = 0;
+  /** Power decay per hop in delegation chain (0 = no decay, 0.1 = 10% per hop) */
+  static decayPerHop: number = 0;
+
   /**
    * Clear the voting power cache. Call this at step boundaries.
    */
@@ -86,7 +92,7 @@ export class DelegationResolver {
     return result;
   }
 
-  private static resolveVotingPowerUncached(member: DAOMember, visited: Set<string>): number {
+  private static resolveVotingPowerUncached(member: DAOMember, visited: Set<string>, depth: number = 0): number {
     // Cycle detection: if we've seen this member, don't count again
     if (visited.has(member.uniqueId)) {
       return 0;
@@ -96,6 +102,16 @@ export class DelegationResolver {
     // Start with member's own voting power (tokens + staked tokens)
     let totalPower = member.tokens + member.stakedTokens;
 
+    // Check depth limit
+    if (this.maxDepth > 0 && depth >= this.maxDepth) {
+      return totalPower; // Don't traverse further
+    }
+
+    // Calculate decay factor for this hop
+    const decayFactor = this.decayPerHop > 0
+      ? Math.pow(1 - this.decayPerHop, depth)
+      : 1;
+
     // Add power from all delegators (members who delegated TO this member)
     // This is stored in the delegates array
     for (const delegator of member.delegates) {
@@ -103,19 +119,15 @@ export class DelegationResolver {
       const delegatedAmount = delegator.delegations.get(member.uniqueId) || 0;
 
       if (delegatedAmount > 0) {
-        // TOKEN DELEGATION: Add the delegated amount directly (tokens were already transferred)
-        totalPower += delegatedAmount;
+        // TOKEN DELEGATION: Add the delegated amount with decay applied
+        totalPower += delegatedAmount * decayFactor;
       } else if (delegator.representative === member) {
-        // LIQUID DELEGATION: Add delegator's full voting power (no tokens moved, just vote authority)
-        // This handles the case where a LiquidDelegator sets this member as their representative
-        // We add their tokens + staked tokens directly (not recursively, to avoid double-counting)
-        totalPower += delegator.tokens + delegator.stakedTokens;
+        // LIQUID DELEGATION: Add delegator's full voting power with decay
+        totalPower += (delegator.tokens + delegator.stakedTokens) * decayFactor;
       }
 
       // For transitive chains, we need to get what was delegated TO the delegator
-      // (not the delegator's own tokens, since they already gave those away)
-      // This handles A -> B -> C: C gets B's delegated amount, plus what A delegated to B
-      totalPower += this.getReceivedDelegations(delegator, visited);
+      totalPower += this.getReceivedDelegations(delegator, visited, depth + 1);
     }
 
     return totalPower;
@@ -125,7 +137,16 @@ export class DelegationResolver {
    * Get the total amount of tokens delegated TO a member (not their own tokens).
    * Used for transitive delegation calculation.
    */
-  private static getReceivedDelegations(member: DAOMember, visited: Set<string>): number {
+  private static getReceivedDelegations(member: DAOMember, visited: Set<string>, depth: number = 1): number {
+    // Check depth limit
+    if (this.maxDepth > 0 && depth >= this.maxDepth) {
+      return 0;
+    }
+
+    const decayFactor = this.decayPerHop > 0
+      ? Math.pow(1 - this.decayPerHop, depth)
+      : 1;
+
     let total = 0;
 
     for (const delegator of member.delegates) {
@@ -135,13 +156,13 @@ export class DelegationResolver {
 
       const delegatedAmount = delegator.delegations.get(member.uniqueId) || 0;
       if (delegatedAmount > 0) {
-        total += delegatedAmount;
+        total += delegatedAmount * decayFactor;
       }
 
       // Recursively get what was delegated to the delegator
       // Pass the SAME visited set to prevent double-counting in diamond patterns
       visited.add(delegator.uniqueId);
-      total += this.getReceivedDelegations(delegator, visited);
+      total += this.getReceivedDelegations(delegator, visited, depth + 1);
     }
 
     return total;

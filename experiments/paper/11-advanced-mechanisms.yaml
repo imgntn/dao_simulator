@@ -1,11 +1,14 @@
-name: Voting Mechanism Comparison
-description: Compares majority, quadratic, and conviction voting across quorum levels (RQ3).
+name: Advanced Voting Mechanisms
+description: Compares ranked-choice (IRV), futarchy (prediction markets), enhanced liquid democracy, and majority baseline (RQ3b).
 version: 1.0.0
 author: DAO Simulator Research Framework
 tags:
   - paper
   - voting
   - mechanisms
+  - ranked-choice
+  - futarchy
+  - liquid-democracy
   - rq3
 baseConfig:
   template: compound
@@ -45,14 +48,19 @@ baseConfig:
 sweep:
   grid:
     - parameter: governance_rule
-      values: [majority, quadratic, conviction]
-    - parameter: governance_config.quorumPercentage
-      values: [0.04, 0.08]
+      values: [majority, instant-runoff, futarchy, majority]
+    - parameter: voting_mechanism
+      values: [default, ranked-choice, futarchy, default]
+    - parameter: delegation_max_depth
+      values: [0, 0, 0, 5]
+    - parameter: delegation_decay_per_hop
+      values: [0, 0, 0, 0.1]
+  type: zip  # Zip instead of grid — each row is one config
 execution:
   runsPerConfig: 100
   stepsPerRun: 2000
   seedStrategy: sequential
-  baseSeed: 909
+  baseSeed: 1109
   workers: 4
 metrics:
   - name: Proposal Pass Rate
@@ -120,7 +128,7 @@ metrics:
     builtin: treasury_volatility
     description: Coefficient of variation of treasury over time
 output:
-  directory: results/paper/09-voting-mechanisms
+  directory: results/paper/11-advanced-mechanisms
   formats:
     - json
     - csv

@@ -59,7 +59,7 @@ sweep:
     - parameter: vote_power_velocity_penalty
       values: [0.0, 0.3, 0.6]
 execution:
-  runsPerConfig: 30
+  runsPerConfig: 100
   stepsPerRun: 2000
   seedStrategy: sequential
   baseSeed: 404

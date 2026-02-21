@@ -393,6 +393,10 @@ export class DAOSimulation extends Model {
     };
     this.dao.delegationLockSteps = config.delegation_lock_steps ?? settings.delegation_lock_steps;
 
+    // Configure enhanced delegation parameters
+    DelegationResolver.maxDepth = config.delegation_max_depth ?? settings.delegation_max_depth;
+    DelegationResolver.decayPerHop = config.delegation_decay_per_hop ?? settings.delegation_decay_per_hop;
+
     // Initialize event logger
     if (this.eventLogging) {
       if (this.useIndexedDB && typeof window !== 'undefined') {
@@ -623,7 +627,14 @@ export class DAOSimulation extends Model {
     // NOTE: We must reconstruct the governance rule here — GovernanceRule subclasses
     // store quorumPercentage as a private field, so setting it via type cast only
     // creates a new public property that the class never reads.
-    const zeroQuorumRule = getRule(this.governanceRuleName, { quorumPercentage: 0, threshold: 0 });
+    const zeroQuorumRule = getRule(this.governanceRuleName, {
+      quorumPercentage: 0,
+      threshold: 0,
+      // Zero out all quorum variants for rule subtypes (CategoryQuorum, etc.)
+      constitutionalQuorum: 0,
+      nonConstitutionalQuorum: 0,
+      approvalThreshold: 0.5,
+    });
     if (zeroQuorumRule) {
       this.governanceRule = zeroQuorumRule;
     }
@@ -693,53 +704,50 @@ export class DAOSimulation extends Model {
   private applyCalibrationAgentTuning(profile: CalibrationProfile): void {
     const voting = profile.voting;
 
-    if (this.useRealGovernance) {
-      // With real governance, use pass_rate-aware optimism blending
-      // (mirrors legacy approach but preserves inter-agent spread)
-      const forPct = Math.min(voting.avg_for_percentage, 1);
-      const passRate = profile.proposals.pass_rate;
-      let target: number;
-      if (passRate >= 0.8) {
-        // High pass rate DAOs: strong optimism push
-        target = 0.5 + (forPct - 0.5) * 0.85;
-      } else if (passRate >= 0.5) {
-        // Medium pass rate: blend toward neutral
-        const blend = Math.min(1.0, (passRate - 0.5) / 0.3);
-        target = 0.5 + (forPct - 0.5) * blend * 0.85;
-      } else {
-        // Low pass rate: slightly pessimistic
-        target = 0.48 + passRate * 0.04;
-      }
-      for (const member of this.dao.members) {
-        const spread = (member.optimism - 0.5) * 0.1;
-        member.optimism = Math.max(0, Math.min(1, target + spread));
-      }
+    // Pass-rate-aware optimism blending (shared by real governance and legacy paths)
+    const passRate = profile.proposals.pass_rate;
+    const forPct = Math.min(voting.avg_for_percentage, 1);
+    let target: number;
+    if (passRate >= 0.8) {
+      // High pass rate DAOs: strong optimism push.
+      // Use the HIGHER of for_percentage and a pass-rate-derived target.
+      // DAOs like Lido have forPct=0.65 but pass_rate=0.9963 — the moderate
+      // for_percentage reflects vote margins, but nearly all proposals pass
+      // because whales consistently vote YES. With token-weighted majority
+      // in a concentrated sim, a single whale NO can flip results, so we need
+      // high optimism to reproduce near-100% pass rates.
+      const passTarget = 0.5 + passRate * 0.45; // 0.9963 → 0.948
+      target = Math.max(Math.min(forPct, 1), passTarget);
+    } else if (passRate >= 0.5) {
+      // Medium pass rate: blend toward neutral
+      const blend = (passRate - 0.5) / 0.3; // 0 at passRate=0.5, 1 at passRate=0.8
+      target = 0.5 + (forPct - 0.5) * blend * 0.85;
     } else {
-      // Legacy: Bias agent voting toward historical pass rate.
-      // With MajorityRule, P(proposal passes) depends on P(YES vote) per agent.
-      // For high pass rates (>0.8), set optimism = avg_for_percentage (most votes YES).
-      // For moderate/low pass rates, blend toward 0.5 (contested, more proposals fail).
-      // This handles DAOs like Nouns (pass_rate=0.45, for_pct=0.70) where quorum/mechanics
-      // cause failures not captured by simple for_percentage targeting.
-      const passRate = profile.proposals.pass_rate;
-      const forPct = voting.avg_for_percentage;
-      if (forPct > 0.5) {
-        let target: number;
-        if (passRate >= 0.8) {
-          // High pass rate: use for_percentage directly (aave, lido, maker)
-          target = Math.min(forPct, 1);
-        } else if (passRate >= 0.5) {
-          // Moderate pass rate: blend for_percentage toward 0.5
-          // e.g. passRate=0.7 → blend 60% of forPct, 40% of 0.5
-          const blend = (passRate - 0.5) / 0.3; // 0 at passRate=0.5, 1 at passRate=0.8
-          target = 0.5 + blend * (forPct - 0.5);
+      // Low pass rate (<0.5): meaningfully below 0.5 so more proposals fail
+      // e.g. Nouns (passRate=0.45) → target=0.435 instead of old 0.498
+      target = 0.3 + passRate * 0.3;
+    }
+    for (const member of this.dao.members) {
+      const spread = (member.optimism - 0.5) * 0.1; // ±5% noise
+      member.optimism = Math.max(0, Math.min(1, target + spread));
+    }
+
+    // Distribute opposition bias for low-pass DAOs.
+    // Agents in low-pass DAOs get a structural NO tendency proportional to
+    // how far below 1.0 the pass rate is. For Nouns (0.45), ~40% of agents
+    // get oppositionBias in [0.3, 0.6], creating genuine opposition blocks.
+    if (passRate < 0.8) {
+      const oppositionStrength = 1 - passRate; // 0.55 for Nouns, 0.2 for 80% pass DAO
+      const members = this.dao.members;
+      for (let i = 0; i < members.length; i++) {
+        // Assign opposition to a fraction of agents proportional to opposition strength
+        const agentFraction = i / members.length;
+        if (agentFraction < oppositionStrength) {
+          // Scale from 0.6 (strongest opponents) down to 0.1 (mild opponents)
+          const biasScale = 1 - (agentFraction / oppositionStrength);
+          members[i].oppositionBias = 0.1 + biasScale * 0.5; // Range [0.1, 0.6]
         } else {
-          // Low pass rate (<0.5): target slightly below 0.5 so more proposals fail
-          target = 0.48 + passRate * 0.04; // range [0.48, 0.50]
-        }
-        for (const member of this.dao.members) {
-          const spread = (member.optimism - 0.5) * 0.1; // ±5% noise
-          member.optimism = Math.max(0, Math.min(1, target + spread));
+          members[i].oppositionBias = 0;
         }
       }
     }

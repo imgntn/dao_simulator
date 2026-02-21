@@ -46,7 +46,7 @@ sweep:
   parameter: governance_config.quorumPercentage
   values: [0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.50]
 execution:
-  runsPerConfig: 30
+  runsPerConfig: 100
   stepsPerRun: 2000
   seedStrategy: sequential
   baseSeed: 303

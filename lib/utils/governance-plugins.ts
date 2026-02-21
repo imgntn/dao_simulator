@@ -763,6 +763,140 @@ export class HolographicConsensusRule extends GovernanceRule {
   }
 }
 
+/**
+ * Futarchy Rule — Prediction Market Governance
+ *
+ * Proposals are approved based on prediction market prices rather than direct votes.
+ * A LMSR prediction market is attached to each proposal. Agents trade YES/NO tokens.
+ * If the YES price exceeds the threshold at resolution, the proposal passes.
+ *
+ * Falls back to standard majority if no prediction market is attached.
+ */
+export class FutarchyRule extends GovernanceRule {
+  private threshold: number;
+
+  constructor(config?: GovernanceRuleConfig) {
+    super();
+    this.threshold = config?.approvalThreshold ?? 0.5;
+  }
+
+  approve(proposal: Proposal, dao: DAO): boolean {
+    // Look up the prediction market for this proposal
+    const market = dao.predictionMarkets?.get(proposal.uniqueId);
+
+    if (!market) {
+      // No market attached — fall back to standard majority
+      return proposal.votesFor > proposal.votesAgainst;
+    }
+
+    // If market hasn't been resolved yet, use current price
+    if (!market.resolved) {
+      return market.getYesPrice() > this.threshold;
+    }
+
+    // Use resolved outcome
+    return market.outcome === true;
+  }
+}
+
+/**
+ * Instant Runoff Voting Rule (IRV)
+ *
+ * Used with RankedChoiceVotingStrategy. Tabulates ranked-choice ballots:
+ * 1. Count first-choice votes for each option
+ * 2. If any option has >50% of votes, it wins
+ * 3. Otherwise, eliminate the option with fewest first-choice votes
+ * 4. Redistribute eliminated option's ballots to next preference
+ * 5. Repeat until a winner emerges or all options are eliminated
+ *
+ * Falls back to standard majority if no ranked ballots are present.
+ */
+export class InstantRunoffRule extends GovernanceRule {
+  private quorumPercentage: number;
+
+  constructor(config?: GovernanceRuleConfig) {
+    super();
+    this.quorumPercentage = config?.quorumPercentage ?? 0;
+  }
+
+  approve(proposal: Proposal, dao: DAO): boolean {
+    // If no ranked ballots, fall back to standard majority
+    if (!proposal.ballots || proposal.ballots.size === 0) {
+      return proposal.votesFor > proposal.votesAgainst;
+    }
+
+    // Check quorum if configured
+    if (this.quorumPercentage > 0) {
+      const totalTokens = getTotalTokenSupply(dao);
+      const totalVoters = proposal.ballots.size;
+      const participationRate = totalVoters / Math.max(dao.members.length, 1);
+      if (participationRate < this.quorumPercentage) {
+        return false;
+      }
+    }
+
+    const options = proposal.options;
+    if (!options || options.length < 2) {
+      return proposal.votesFor > proposal.votesAgainst;
+    }
+
+    // Run IRV elimination rounds
+    const winner = this.runIRV(proposal.ballots, new Set(options));
+    // Proposal is "approved" if a winner was found (first option is often "approve")
+    return winner !== null;
+  }
+
+  /**
+   * Run instant-runoff voting elimination.
+   * Returns the winning option or null if no winner.
+   */
+  runIRV(ballots: Map<string, string[]>, activeOptions: Set<string>): string | null {
+    const remaining = new Set(activeOptions);
+
+    while (remaining.size > 1) {
+      // Count first-choice votes for each remaining option
+      const counts = new Map<string, number>();
+      for (const opt of remaining) {
+        counts.set(opt, 0);
+      }
+
+      let totalBallots = 0;
+      for (const [, ranking] of ballots) {
+        // Find first active option in this ballot's ranking
+        const firstChoice = ranking.find(opt => remaining.has(opt));
+        if (firstChoice) {
+          counts.set(firstChoice, (counts.get(firstChoice) || 0) + 1);
+          totalBallots++;
+        }
+      }
+
+      if (totalBallots === 0) return null;
+
+      // Check if any option has majority
+      for (const [opt, count] of counts) {
+        if (count > totalBallots / 2) {
+          return opt; // Winner!
+        }
+      }
+
+      // Find option with fewest votes (eliminate it)
+      let minCount = Infinity;
+      let eliminateOption = '';
+      for (const [opt, count] of counts) {
+        if (count < minCount) {
+          minCount = count;
+          eliminateOption = opt;
+        }
+      }
+
+      remaining.delete(eliminateOption);
+    }
+
+    // Last option standing
+    return remaining.size === 1 ? remaining.values().next().value! : null;
+  }
+}
+
 // =============================================================================
 // RULE REGISTRATION
 // =============================================================================
@@ -785,3 +919,7 @@ registerRule('approvalvoting', ApprovalVotingRule);
 registerRule('securitycouncil', SecurityCouncilRule);
 registerRule('optimistic', OptimisticApprovalRule);
 registerRule('holographic', HolographicConsensusRule);
+
+// Register advanced mechanism rules
+registerRule('instant-runoff', InstantRunoffRule);
+registerRule('futarchy', FutarchyRule);

@@ -33,6 +33,11 @@ export class Proposal {
   bondSlashed: boolean = false;
   quorumMet?: boolean;
 
+  // Ranked choice voting: maps memberId → ordered list of option IDs (most to least preferred)
+  ballots: Map<string, string[]> = new Map();
+  // Option labels for ranked choice proposals (e.g. ['Option A', 'Option B', 'Option C'])
+  options: string[] = [];
+
   // Voting power snapshot - captures member balances at proposal creation
   // This prevents flash loan attacks and ensures votes are counted against
   // the balance at proposal creation, not current balance

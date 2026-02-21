@@ -137,6 +137,24 @@ export interface SimulationSettings {
   calibration_strict_replay?: boolean;
   /** When true, use DAO's real governance rule (from governance-mapping.ts) instead of majority+optimism hack */
   calibration_use_real_governance: boolean;
+
+  // Advanced voting mechanisms
+  /** Voting mechanism: 'default' | 'ranked-choice' | 'futarchy' */
+  voting_mechanism: string;
+  /** Futarchy: LMSR liquidity parameter (higher = less price impact) */
+  futarchy_liquidity: number;
+  /** Futarchy: YES price threshold for approval (0-1) */
+  futarchy_threshold: number;
+  /** Futarchy: steps after proposal creation before market resolves */
+  futarchy_resolution_steps: number;
+
+  // Enhanced liquid democracy
+  /** Maximum delegation chain depth (0 = unlimited) */
+  delegation_max_depth: number;
+  /** Power decay per hop in delegation chain (0 = no decay) */
+  delegation_decay_per_hop: number;
+  /** Enable topic-specific delegation */
+  delegation_topic_specific: boolean;
 }
 
 /**
@@ -252,6 +270,17 @@ export const defaultSettings: SimulationSettings = {
   calibration_dao_id: undefined,
   calibration_strict_replay: false,
   calibration_use_real_governance: false,
+
+  // Advanced voting mechanism defaults
+  voting_mechanism: 'default',
+  futarchy_liquidity: 100,
+  futarchy_threshold: 0.5,
+  futarchy_resolution_steps: 50,
+
+  // Enhanced liquid democracy defaults
+  delegation_max_depth: 0,   // 0 = unlimited
+  delegation_decay_per_hop: 0,  // 0 = no decay
+  delegation_topic_specific: false,
 };
 
 /**

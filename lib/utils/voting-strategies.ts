@@ -2,6 +2,7 @@
 
 import type { DAOMember } from '../agents/base';
 import type { Proposal } from '../data-structures/proposal';
+import { random as rng } from './random';
 
 export interface VotingStrategy {
   vote(member: DAOMember, proposal: Proposal): void;
@@ -230,6 +231,135 @@ export class TokenWeightedStrategy extends BaseVotingStrategy {
   }
 }
 
+/**
+ * Ranked Choice Voting Strategy
+ *
+ * Instead of a single yes/no vote, agents submit ranked preferences over
+ * the proposal's options. The rankings are stored in proposal.ballots
+ * for later tabulation by InstantRunoffRule.
+ *
+ * Weight still applies (token-weighted ranked choice) — each ballot
+ * carries the voter's weight for the elimination rounds.
+ */
+export class RankedChoiceVotingStrategy extends BaseVotingStrategy {
+  protected calculateWeight(member: DAOMember, _proposal: Proposal): number {
+    return 1; // 1p1v ranked choice
+  }
+
+  /**
+   * Override recordVote to submit ranked preferences instead of yes/no.
+   * Falls back to standard yes/no if proposal has no options.
+   */
+  protected recordVote(member: DAOMember, proposal: Proposal, weight: number): void {
+    if (!proposal.options || proposal.options.length < 2) {
+      // No ranked-choice options — fall back to standard binary vote
+      super.recordVote(member, proposal, weight);
+      return;
+    }
+
+    // Generate ranked preferences based on agent belief + noise
+    const rankings = this.generateRankings(member, proposal);
+    proposal.ballots.set(member.uniqueId, rankings);
+
+    // Record as a standard vote too (first choice = yes, else = no)
+    // This ensures compatibility with standard governance rules
+    member.votes.set(proposal.uniqueId, { vote: true, weight });
+    proposal.addVote(member.uniqueId, true, weight);
+
+    if (member.model?.eventBus) {
+      member.model.eventBus.publish('ranked_vote_cast', {
+        step: member.model.currentStep,
+        agentId: member.uniqueId,
+        proposalId: proposal.uniqueId,
+        rankings,
+        weight,
+      });
+    }
+  }
+
+  /**
+   * Generate ranked preferences. Each option gets a score based on
+   * the agent's optimism + random noise, then sorted by score descending.
+   */
+  private generateRankings(member: DAOMember, proposal: Proposal): string[] {
+    // Uses rng imported at module level
+    const options = proposal.options;
+
+    // Score each option: base belief + per-option noise
+    const scored = options.map((opt, idx) => {
+      // First option gets a slight boost from optimism (creator's preferred)
+      const optimismBoost = idx === 0 ? (member.optimism - 0.5) * 0.3 : 0;
+      const noise = (rng() - 0.5) * 0.4;
+      return { option: opt, score: 0.5 + optimismBoost + noise };
+    });
+
+    // Sort by score descending (most preferred first)
+    scored.sort((a, b) => b.score - a.score);
+    return scored.map(s => s.option);
+  }
+}
+
+/**
+ * Futarchy Voting Strategy
+ *
+ * Agents "vote" by buying YES or NO outcome tokens in a prediction market
+ * attached to the proposal. The market price at resolution determines
+ * whether the proposal passes.
+ *
+ * Each agent allocates a fraction of their tokens to YES or NO positions
+ * based on their belief about the proposal's impact.
+ */
+export class FutarchyVotingStrategy extends BaseVotingStrategy {
+  protected calculateWeight(member: DAOMember, _proposal: Proposal): number {
+    // Weight = tokens available for trading (up to 10% of holdings)
+    return Math.max(1, Math.floor(member.tokens * 0.1));
+  }
+
+  /**
+   * Override recordVote to trade in the prediction market instead.
+   * Falls back to standard vote if no market is attached.
+   */
+  protected recordVote(member: DAOMember, proposal: Proposal, weight: number): void {
+    // Uses rng imported at module level
+
+    // Get or create market for this proposal (stored on dao)
+    const market = member.model?.dao?.predictionMarkets?.get(proposal.uniqueId);
+
+    if (!market) {
+      // No prediction market — fall back to standard binary vote
+      super.recordVote(member, proposal, weight);
+      return;
+    }
+
+    // Agent decides YES or NO based on belief
+    const belief = 0.5 + (member.optimism - 0.5) * 0.6 + (rng() - 0.5) * 0.2;
+    const side: 'yes' | 'no' = belief > 0.5 ? 'yes' : 'no';
+
+    // Trade amount proportional to conviction strength
+    const conviction = Math.abs(belief - 0.5) * 2; // 0-1
+    const tradeAmount = Math.max(1, Math.floor(weight * conviction));
+
+    const cost = market.trade(member.uniqueId, side, tradeAmount, member.model?.currentStep ?? 0);
+
+    // Record as standard vote for compatibility
+    const voteBool = side === 'yes';
+    member.votes.set(proposal.uniqueId, { vote: voteBool, weight: tradeAmount });
+    proposal.addVote(member.uniqueId, voteBool, tradeAmount);
+
+    if (member.model?.eventBus) {
+      member.model.eventBus.publish('futarchy_trade', {
+        step: member.model.currentStep,
+        agentId: member.uniqueId,
+        proposalId: proposal.uniqueId,
+        side,
+        amount: tradeAmount,
+        cost,
+        yesPrice: market.getYesPrice(),
+      });
+    }
+  }
+}
+
 // Strategy registry
 const strategyRegistry = new Map<string, new (...args: any[]) => VotingStrategy>();
 
@@ -250,3 +380,5 @@ registerStrategy('default', DefaultVotingStrategy);
 registerStrategy('quadratic', QuadraticVotingStrategy);
 registerStrategy('reputation', ReputationWeightedStrategy);
 registerStrategy('token', TokenWeightedStrategy);
+registerStrategy('ranked-choice', RankedChoiceVotingStrategy);
+registerStrategy('futarchy', FutarchyVotingStrategy);

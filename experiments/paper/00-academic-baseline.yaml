@@ -45,7 +45,7 @@ baseConfig:
     vote_power_velocity_penalty: 0.5
     delegation_lock_steps: 48
 execution:
-  runsPerConfig: 30
+  runsPerConfig: 100
   stepsPerRun: 2000
   seedStrategy: sequential
   baseSeed: 42

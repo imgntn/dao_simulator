@@ -15,6 +15,8 @@ export {
   TimeDecayRule,
   ReputationQuorumRule,
   ConvictionVotingRule,
+  InstantRunoffRule,
+  FutarchyRule,
   registerRule,
   getRule,
   listRules,
@@ -26,6 +28,8 @@ export {
   QuadraticVotingStrategy,
   ReputationWeightedStrategy,
   TokenWeightedStrategy,
+  RankedChoiceVotingStrategy,
+  FutarchyVotingStrategy,
   registerStrategy,
   getStrategy,
 } from './voting-strategies';
@@ -41,6 +45,7 @@ export {
 } from './stats';
 export * from './path-utils';
 export * from './oracles';
+export { PredictionMarket as LMSRMarket } from './prediction-market';
 export { logger, Logger, type LogLevel } from './logger';
 
 // Attack Detection

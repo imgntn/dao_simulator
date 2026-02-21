@@ -1205,3 +1205,90 @@ describe('End-to-End: Forum + Voting + Calibration', () => {
     expect(duringPrice).toBeLessThanOrEqual(100);
   });
 });
+
+// =============================================================================
+// Opposition Bias & Herding Dampening (Phase 1 — Pass Rate Gap)
+// =============================================================================
+
+describe('Opposition Bias for Low-Pass DAOs', () => {
+  let tmpDir: string;
+
+  beforeEach(() => {
+    tmpDir = path.join(os.tmpdir(), `opp-bias-test-${Date.now()}`);
+    fs.mkdirSync(path.join(tmpDir, 'calibration'), { recursive: true });
+    CalibrationLoader.setCalibrationDir(tmpDir);
+  });
+
+  afterEach(() => {
+    CalibrationLoader.clearCache();
+    try { fs.rmSync(tmpDir, { recursive: true }); } catch { /* ignore */ }
+  });
+
+  it('assigns opposition bias to agents for low-pass DAOs', async () => {
+    const { DAOSimulation } = await import('@/lib/engine/simulation');
+    const profile = makeProfile();
+    profile.proposals.pass_rate = 0.45; // Low pass rate (like Nouns)
+    fs.writeFileSync(
+      path.join(tmpDir, 'lowpass_profile.json'),
+      JSON.stringify(profile)
+    );
+
+    const sim = new DAOSimulation({
+      calibration_dao_id: 'lowpass',
+      seed: 42,
+    });
+
+    const members = sim.dao.members;
+    // Some agents should have opposition bias > 0
+    const withBias = members.filter(m => m.oppositionBias > 0);
+    expect(withBias.length).toBeGreaterThan(0);
+    // Opposition strength = 1 - 0.45 = 0.55, so ~55% of agents should have bias
+    expect(withBias.length / members.length).toBeGreaterThan(0.4);
+    expect(withBias.length / members.length).toBeLessThan(0.7);
+    // Max bias should be around 0.6
+    const maxBias = Math.max(...members.map(m => m.oppositionBias));
+    expect(maxBias).toBeGreaterThanOrEqual(0.5);
+    expect(maxBias).toBeLessThanOrEqual(0.61);
+  });
+
+  it('assigns no opposition bias for high-pass DAOs', async () => {
+    const { DAOSimulation } = await import('@/lib/engine/simulation');
+    const profile = makeProfile();
+    profile.proposals.pass_rate = 0.95; // High pass rate (like Aave)
+    fs.writeFileSync(
+      path.join(tmpDir, 'highpass_profile.json'),
+      JSON.stringify(profile)
+    );
+
+    const sim = new DAOSimulation({
+      calibration_dao_id: 'highpass',
+      seed: 42,
+    });
+
+    const members = sim.dao.members;
+    // No agents should have opposition bias for high-pass DAOs
+    const withBias = members.filter(m => m.oppositionBias > 0);
+    expect(withBias.length).toBe(0);
+  });
+
+  it('low-pass optimism target is meaningfully below 0.5', async () => {
+    const { DAOSimulation } = await import('@/lib/engine/simulation');
+    const profile = makeProfile();
+    profile.proposals.pass_rate = 0.45;
+    profile.voting.avg_for_percentage = 0.70;
+    fs.writeFileSync(
+      path.join(tmpDir, 'nounslike_profile.json'),
+      JSON.stringify(profile)
+    );
+
+    const sim = new DAOSimulation({
+      calibration_dao_id: 'nounslike',
+      seed: 42,
+    });
+
+    // Average optimism should be around 0.3 + 0.45 * 0.3 = 0.435
+    const avgOptimism = sim.dao.members.reduce((s, m) => s + m.optimism, 0) / sim.dao.members.length;
+    expect(avgOptimism).toBeLessThan(0.5);
+    expect(avgOptimism).toBeGreaterThan(0.35);
+  });
+});
