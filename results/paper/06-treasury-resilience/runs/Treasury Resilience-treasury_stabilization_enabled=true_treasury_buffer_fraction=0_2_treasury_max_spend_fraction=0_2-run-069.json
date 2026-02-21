@@ -78,21 +78,21 @@
     "delegation_lock_steps": 48,
     "treasury_stabilization_enabled": true,
     "treasury_buffer_fraction": 0.2,
-    "seed": 3674,
+    "seed": 974,
     "useIndexedDB": false
   },
-  "seed": 3674,
+  "seed": 974,
   "metrics": {
-    "Treasury Volatility": 0.26089070969951134,
-    "Treasury Growth Rate": -0.7559338836516888,
-    "Final Treasury": 10177.392060992364,
-    "Treasury Trend": -15.066172232464165,
-    "Final Token Price": 0.9462182436097292,
-    "Proposal Pass Rate": 0.96,
+    "Treasury Volatility": 0.2375024524562174,
+    "Treasury Growth Rate": -0.7017722355453957,
+    "Final Treasury": 11987.630940992529,
+    "Treasury Trend": -14.45949017463874,
+    "Final Token Price": 1.2948732278235577,
+    "Proposal Pass Rate": 1,
     "Quorum Reach Rate": 1
   },
-  "startedAt": "2026-02-14T07:27:15.377Z",
-  "completedAt": "2026-02-14T07:27:22.096Z",
-  "durationMs": 6719,
+  "startedAt": "2026-02-21T16:57:27.610Z",
+  "completedAt": "2026-02-21T16:57:48.776Z",
+  "durationMs": 21166,
   "stepsCompleted": 2000
 }

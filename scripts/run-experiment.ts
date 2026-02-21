@@ -339,19 +339,26 @@ async function main(): Promise<void> {
     sweepInfo = 'No parameter sweep';
     totalConfigs = 1;
   } else if (config.sweep.grid) {
-    // Multi-parameter grid search
+    // Multi-parameter grid/zip search
+    const isZip = config.sweep.type === 'zip';
     const gridInfo = config.sweep.grid.map(g => {
       const numValues = g.values?.length ||
         (g.range ? Math.ceil((g.range.max - g.range.min) / g.range.step) + 1 : 0);
       const label = g.label || g.parameter.split('.').pop();
       return `${label}(${numValues})`;
     });
-    sweepInfo = `Grid Search: ${gridInfo.join(' x ')}`;
-    totalConfigs = config.sweep.grid.reduce((acc, g) => {
-      const numValues = g.values?.length ||
-        (g.range ? Math.ceil((g.range.max - g.range.min) / g.range.step) + 1 : 0);
-      return acc * numValues;
-    }, 1);
+    if (isZip) {
+      const firstLen = config.sweep.grid[0]?.values?.length || 0;
+      sweepInfo = `Zip Sweep: ${gridInfo.join(' + ')} = ${firstLen} configs`;
+      totalConfigs = firstLen;
+    } else {
+      sweepInfo = `Grid Search: ${gridInfo.join(' x ')}`;
+      totalConfigs = config.sweep.grid.reduce((acc, g) => {
+        const numValues = g.values?.length ||
+          (g.range ? Math.ceil((g.range.max - g.range.min) / g.range.step) + 1 : 0);
+        return acc * numValues;
+      }, 1);
+    }
   } else {
     // Single parameter sweep
     sweepInfo = `Sweep: ${config.sweep.parameter} (${config.sweep.values?.length || 'range'} values)`;

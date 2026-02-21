@@ -1,5 +1,5 @@
 % DISCUSSION
-% Last generated: 2026-02-19
+% Last generated: 2026-02-21
 
 \subsection{Interpretation of Results}
 
@@ -7,7 +7,7 @@
 
 Our results reveal a nuanced picture of DAO participation. Quorum thresholds between $5$--$10\%$ optimize pass rates without driving additional participation, suggesting that turnout is determined by agent engagement patterns rather than institutional requirements. The inflection point at $20\%$ quorum marks where institutional demands begin to conflict with natural participation levels. This aligns with empirical observations that most DAOs set quorum at $4$--$10\%$~\citep{barbereau2022dao}.
 
-The participation rate decline from $26.4\%$ at $n=50$ to $21.4\%$ at $n=500$ (Experiment~08) is consistent with the ``rational ignorance'' hypothesis from political science~\citep{downs1957economic}: as the marginal impact of each vote decreases with group size, individual incentives to participate diminish. However, governance quality (pass rate, capture risk) improves with scale, suggesting that collective intelligence benefits outweigh individual engagement losses.
+The participation rate decline from $26.1\%$ at $n=50$ to $21.9\%$ at $n=500$ (Experiment~08) is consistent with the ``rational ignorance'' hypothesis from political science~\citep{downs1957economic}: as the marginal impact of each vote decreases with group size, individual incentives to participate diminish. However, governance quality (pass rate, capture risk) improves with scale, suggesting that collective intelligence benefits outweigh individual engagement losses.
 
 \subsubsection{Governance Capture (RQ2)}
 
@@ -23,15 +23,15 @@ Fast-track mechanisms complement temp-checks by accelerating consensus items, bu
 
 \subsubsection{Treasury Resilience (RQ4)}
 
-The $50\%$ volatility reduction from treasury stabilization is practically significant for DAO sustainability. The interaction between stabilization and capture risk ($0.266$ vs $0.450$) suggests a mechanism through which fiscal discipline affects governance: when treasury resources are managed conservatively, the stakes of individual proposals decrease, reducing incentives for capture.
+The $50\%$ volatility reduction from treasury stabilization is practically significant for DAO sustainability. The interaction between fiscal discipline and governance quality suggests a mechanism through which fiscal discipline affects governance: when treasury resources are managed conservatively, the stakes of individual proposals decrease, reducing incentives for capture.
 
 The modest growth rate cost ($0.05$ percentage points) represents an attractive trade-off for the substantial reduction in tail risk. Real DAOs should consider whether the marginal capital deployment justifies the substantially higher volatility exposure.
 
 \subsubsection{Inter-DAO Cooperation (RQ5)}
 
-Inter-DAO cooperation success rates of $22.8$--$23.3\%$ are notable for being both substantially above zero (cooperation is achievable) and substantially below single-DAO pass rates ($>95\%$). This gap quantifies the ``cooperation tax'' of cross-organizational governance.
+Inter-DAO cooperation success rates of $21.4$--$23.4\%$ are notable for being both substantially above zero (cooperation is achievable) and substantially below single-DAO pass rates ($>95\%$). This gap quantifies the ``cooperation tax'' of cross-organizational governance.
 
-The specialization advantage---$48\%$ higher ecosystem treasury with specialized DAOs---supports the economic intuition that cooperation is most valuable when partners bring complementary capabilities. Homogeneous DAOs cooperate easily but gain little, while specialized DAOs face higher coordination costs but generate greater joint value.
+The specialization advantage---higher ecosystem treasury with specialized DAOs ($\$26{,}107$ vs $\$24{,}071$ for homogeneous)---supports the economic intuition that cooperation is most valuable when partners bring complementary capabilities. Homogeneous DAOs cooperate easily but gain little, while specialized DAOs face higher coordination costs but generate greater joint value.
 
 \subsection{Cross-Cutting Themes}
 
@@ -45,7 +45,7 @@ The strongest governance configurations combine multiple mechanisms: quadratic v
 
 \subsubsection{Statistical Power and Effect Sizes}
 
-With 30 runs per configuration, our experiments achieve $49\%$ power for medium effects ($d = 0.5$) and detect minimum effect sizes of $d = 0.72$. The strongest observed effects---quadratic voting's improvement over majority ($d = -1.73$) and quorum reach rate variation ($\eta^2 = 0.94$)---are well above detection thresholds. However, some practically interesting effects (e.g., velocity penalties) may be below our detection limit, motivating future experiments with larger sample sizes.
+With 100 runs per configuration, our experiments achieve $96\%$ power for medium effects ($d = 0.5$) and detect minimum effect sizes of $d = 0.40$. The strongest observed effects---quadratic voting's improvement over majority ($d = -2.00$ for margin of victory) and quorum reach rate variation ($\eta^2 = 0.93$)---are well above detection thresholds. This increase from $N=30$ to $N=100$ resolved previously ambiguous comparisons: the quadratic vs conviction voting difference, previously non-significant ($p = 0.38$), now reaches significance ($p = 0.034$, $d = 0.41$).
 
 \subsection{Practical Implications}
 

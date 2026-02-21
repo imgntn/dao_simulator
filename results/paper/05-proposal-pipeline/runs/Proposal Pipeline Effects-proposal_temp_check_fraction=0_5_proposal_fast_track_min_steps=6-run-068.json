@@ -76,24 +76,24 @@
     "delegation_lock_steps": 48,
     "proposal_temp_check_fraction": 0.5,
     "proposal_fast_track_min_steps": 6,
-    "seed": 7572,
+    "seed": 1272,
     "useIndexedDB": false
   },
-  "seed": 7572,
+  "seed": 1272,
   "metrics": {
-    "Proposal Pass Rate": 0.9259259259259259,
+    "Proposal Pass Rate": 0.9821428571428571,
     "Quorum Reach Rate": 1,
-    "Avg Time to Decision": 1172.962962962963,
+    "Avg Time to Decision": 844.6785714285714,
     "Proposal Abandonment Rate": 0,
-    "Proposal Rejection Rate": 0.07407407407407407,
-    "Governance Overhead": 45.851851851851855,
-    "Average Turnout": 0.2887527500714975,
-    "Avg Margin of Victory": 0.2790378140610897,
-    "Proposal Rate": 1.35,
-    "Total Proposals": 27
+    "Proposal Rejection Rate": 0.017857142857142856,
+    "Governance Overhead": 74.625,
+    "Average Turnout": 0.23523063778234451,
+    "Avg Margin of Victory": 0.6260490155089024,
+    "Proposal Rate": 2.9000000000000004,
+    "Total Proposals": 58
   },
-  "startedAt": "2026-02-14T06:00:22.052Z",
-  "completedAt": "2026-02-14T06:00:30.538Z",
-  "durationMs": 8486,
+  "startedAt": "2026-02-21T16:16:24.741Z",
+  "completedAt": "2026-02-21T16:16:45.143Z",
+  "durationMs": 20402,
   "stepsCompleted": 2000
 }

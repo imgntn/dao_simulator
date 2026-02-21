@@ -1,7 +1,5 @@
-⚠️ Low sample size (5 runs per config). Recommend at least 10 runs, ideally 30+ for robust statistical power.
+✓ Good sample size (100 runs per config) for statistical analysis.
 
-High variability in "Proposal Rejection Rate" (CV=59.8%). Consider longer simulation runs or more controlled initial conditions.
-
-Non-normal distribution detected for "Proposal Pass Rate" (skewness=1.50). Bootstrap CIs are included in stats export.
+Non-normal distribution detected for "Final Treasury" (skewness=8.15). Bootstrap CIs are included in stats export.
 
 No parameter sweep configured. Add sweep values to compare configurations.

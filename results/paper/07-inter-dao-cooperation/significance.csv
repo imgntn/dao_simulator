@@ -1,132 +1,132 @@
 # Pairwise T-Test Comparisons
 sweep_value_1,sweep_value_2,metric,t_statistic,df,p_value,significant,cohens_d,effect_interpretation
-homogeneous-governance,heterogeneous-governance,ecosystem.Inter-DAO Proposal Count,-1.898783,57.348887,0.062628,false,-0.490264,small
-homogeneous-governance,heterogeneous-governance,ecosystem.Inter-DAO Proposal Success Rate,-0.103744,52.401021,0.917769,false,-0.026787,negligible
-homogeneous-governance,heterogeneous-governance,ecosystem.Collaboration Proposal Rate,-1.712114,53.455709,0.092672,false,-0.442066,small
-homogeneous-governance,heterogeneous-governance,ecosystem.Treaty Proposal Rate,-0.066558,57.988925,0.947163,false,-0.017185,negligible
-homogeneous-governance,heterogeneous-governance,ecosystem.Resource Sharing Rate,1.070804,46.883045,0.289739,false,0.276480,small
-homogeneous-governance,heterogeneous-governance,ecosystem.Joint Venture Rate,0.577230,56.795343,0.566065,false,0.149040,negligible
-homogeneous-governance,heterogeneous-governance,ecosystem.Inter-DAO Voting Participation,2.173596,57.459968,0.033870,false,0.561220,medium
-homogeneous-governance,heterogeneous-governance,ecosystem.Cross-DAO Approval Alignment,0.678242,56.017628,0.500410,false,0.175121,negligible
-homogeneous-governance,heterogeneous-governance,ecosystem.Total Shared Budget,-0.216940,55.146918,0.829056,false,-0.056014,negligible
-homogeneous-governance,heterogeneous-governance,ecosystem.Resource Flow Volume,-1.093629,56.986127,0.278719,false,-0.282374,small
-homogeneous-governance,heterogeneous-governance,ecosystem.Ecosystem Treasury Total,-0.309660,57.234992,0.757944,false,-0.079954,negligible
-homogeneous-governance,asymmetric-treasury,ecosystem.Inter-DAO Proposal Count,-0.911220,55.896074,0.366093,false,-0.235276,small
-homogeneous-governance,asymmetric-treasury,ecosystem.Inter-DAO Proposal Success Rate,-0.233216,53.872827,0.816477,false,-0.060216,negligible
-homogeneous-governance,asymmetric-treasury,ecosystem.Collaboration Proposal Rate,-0.755946,53.922635,0.452971,false,-0.195185,negligible
-homogeneous-governance,asymmetric-treasury,ecosystem.Treaty Proposal Rate,-0.765788,53.591079,0.447162,false,-0.197726,negligible
-homogeneous-governance,asymmetric-treasury,ecosystem.Resource Sharing Rate,-1.032537,50.151866,0.306774,false,-0.266600,small
-homogeneous-governance,asymmetric-treasury,ecosystem.Joint Venture Rate,2.544452,55.803142,0.013740,true,0.656975,medium
-homogeneous-governance,asymmetric-treasury,ecosystem.Inter-DAO Voting Participation,-2.678094,54.738792,0.009755,true,-0.691481,medium
-homogeneous-governance,asymmetric-treasury,ecosystem.Cross-DAO Approval Alignment,-0.209272,57.289273,0.834978,false,-0.054034,negligible
-homogeneous-governance,asymmetric-treasury,ecosystem.Total Shared Budget,0.204782,42.047716,0.838731,false,0.052874,negligible
-homogeneous-governance,asymmetric-treasury,ecosystem.Resource Flow Volume,-2.017547,56.175603,0.048425,false,-0.520928,medium
-homogeneous-governance,asymmetric-treasury,ecosystem.Ecosystem Treasury Total,-0.645185,57.151741,0.521389,false,-0.166586,negligible
-homogeneous-governance,specialized-daos,ecosystem.Inter-DAO Proposal Count,-14.286186,53.592162,0,true,-3.688677,very_large
-homogeneous-governance,specialized-daos,ecosystem.Inter-DAO Proposal Success Rate,0.358142,42.685135,0.722002,false,0.092472,negligible
-homogeneous-governance,specialized-daos,ecosystem.Collaboration Proposal Rate,-0.226693,57.959481,0.821460,false,-0.058532,negligible
-homogeneous-governance,specialized-daos,ecosystem.Treaty Proposal Rate,0.476206,53.318522,0.635873,false,0.122956,negligible
-homogeneous-governance,specialized-daos,ecosystem.Resource Sharing Rate,0.461319,56.340636,0.646346,false,0.119112,negligible
-homogeneous-governance,specialized-daos,ecosystem.Joint Venture Rate,-0.560494,56.037615,0.577377,false,-0.144719,negligible
-homogeneous-governance,specialized-daos,ecosystem.Inter-DAO Voting Participation,-6.393860,49.100413,0.000000,true,-1.650888,very_large
-homogeneous-governance,specialized-daos,ecosystem.Cross-DAO Approval Alignment,0.516754,57.667372,0.607304,false,0.133425,negligible
-homogeneous-governance,specialized-daos,ecosystem.Total Shared Budget,-3.513113,57.962962,0.000866,true,-0.907082,large
-homogeneous-governance,specialized-daos,ecosystem.Resource Flow Volume,-3.773911,50.826945,0.000421,true,-0.974420,large
-homogeneous-governance,specialized-daos,ecosystem.Ecosystem Treasury Total,-2.089326,53.563987,0.041444,false,-0.539462,medium
-homogeneous-governance,isolated-daos,ecosystem.Inter-DAO Proposal Count,42.733105,29,0,true,11.033640,very_large
-homogeneous-governance,isolated-daos,ecosystem.Inter-DAO Proposal Success Rate,12.402060,29.000000,0.000000,true,3.202198,very_large
-homogeneous-governance,isolated-daos,ecosystem.Collaboration Proposal Rate,26.749184,29,0,true,6.906610,very_large
-homogeneous-governance,isolated-daos,ecosystem.Treaty Proposal Rate,25.840746,29.000000,0,true,6.672052,very_large
-homogeneous-governance,isolated-daos,ecosystem.Resource Sharing Rate,33.432009,29,0,true,8.632108,very_large
-homogeneous-governance,isolated-daos,ecosystem.Joint Venture Rate,22.334429,29,0,true,5.766725,very_large
-homogeneous-governance,isolated-daos,ecosystem.Inter-DAO Voting Participation,102.291496,29,0,true,26.411551,very_large
-homogeneous-governance,isolated-daos,ecosystem.Cross-DAO Approval Alignment,43.014119,29.000000,0,true,11.106198,very_large
-homogeneous-governance,isolated-daos,ecosystem.Total Shared Budget,10.048302,29,0.000000,true,2.594460,very_large
-homogeneous-governance,isolated-daos,ecosystem.Resource Flow Volume,8.625280,29.000000,0.000000,true,2.227038,very_large
-homogeneous-governance,isolated-daos,ecosystem.Ecosystem Treasury Total,-11.309604,29.243863,0.000000,true,-2.920127,very_large
-heterogeneous-governance,asymmetric-treasury,ecosystem.Inter-DAO Proposal Count,0.852217,57.541105,0.397627,false,0.220042,small
-heterogeneous-governance,asymmetric-treasury,ecosystem.Inter-DAO Proposal Success Rate,-0.158769,57.824598,0.874404,false,-0.040994,negligible
-heterogeneous-governance,asymmetric-treasury,ecosystem.Collaboration Proposal Rate,0.856619,57.981154,0.395182,false,0.221178,small
-heterogeneous-governance,asymmetric-treasury,ecosystem.Treaty Proposal Rate,-0.713441,53.226828,0.478689,false,-0.184210,negligible
-heterogeneous-governance,asymmetric-treasury,ecosystem.Resource Sharing Rate,-1.749584,57.266627,0.085547,false,-0.451741,small
-heterogeneous-governance,asymmetric-treasury,ecosystem.Joint Venture Rate,1.695649,52.166899,0.095914,false,0.437815,small
-heterogeneous-governance,asymmetric-treasury,ecosystem.Inter-DAO Voting Participation,-5.292294,56.711940,0.000002,true,-1.366464,very_large
-heterogeneous-governance,asymmetric-treasury,ecosystem.Cross-DAO Approval Alignment,-0.953164,57.645872,0.344487,false,-0.246106,small
-heterogeneous-governance,asymmetric-treasury,ecosystem.Total Shared Budget,0.542056,48.168498,0.590279,false,0.139958,negligible
-heterogeneous-governance,asymmetric-treasury,ecosystem.Resource Flow Volume,-0.898852,57.866780,0.372457,false,-0.232083,small
-heterogeneous-governance,asymmetric-treasury,ecosystem.Ecosystem Treasury Total,-0.318813,57.997694,0.751014,false,-0.082317,negligible
-heterogeneous-governance,specialized-daos,ecosystem.Inter-DAO Proposal Count,-12.086177,56.062200,0,true,-3.120637,very_large
-heterogeneous-governance,specialized-daos,ecosystem.Inter-DAO Proposal Success Rate,0.606317,52.041841,0.546940,false,0.156550,negligible
-heterogeneous-governance,specialized-daos,ecosystem.Collaboration Proposal Rate,1.537880,52.747111,0.130056,false,0.397079,small
-heterogeneous-governance,specialized-daos,ecosystem.Treaty Proposal Rate,0.556406,53.680803,0.580245,false,0.143663,negligible
-heterogeneous-governance,specialized-daos,ecosystem.Resource Sharing Rate,-0.672897,51.859927,0.504000,false,-0.173741,negligible
-heterogeneous-governance,specialized-daos,ecosystem.Joint Venture Rate,-1.131681,52.491571,0.262912,false,-0.292199,small
-heterogeneous-governance,specialized-daos,ecosystem.Inter-DAO Voting Participation,-8.176738,46.327011,0.000000,true,-2.111225,very_large
-heterogeneous-governance,specialized-daos,ecosystem.Cross-DAO Approval Alignment,-0.141273,57.258527,0.888150,false,-0.036477,negligible
-heterogeneous-governance,specialized-daos,ecosystem.Total Shared Budget,-3.683137,55.696946,0.000522,true,-0.950982,large
-heterogeneous-governance,specialized-daos,ecosystem.Resource Flow Volume,-2.718062,54.457131,0.008789,true,-0.701801,medium
-heterogeneous-governance,specialized-daos,ecosystem.Ecosystem Treasury Total,-1.732576,56.216959,0.088654,false,-0.447349,small
-heterogeneous-governance,isolated-daos,ecosystem.Inter-DAO Proposal Count,40.951092,29,0,true,10.573526,very_large
-heterogeneous-governance,isolated-daos,ecosystem.Inter-DAO Proposal Success Rate,17.591360,29.000000,0,true,4.542070,very_large
-heterogeneous-governance,isolated-daos,ecosystem.Collaboration Proposal Rate,21.941348,29,0,true,5.665232,very_large
-heterogeneous-governance,isolated-daos,ecosystem.Treaty Proposal Rate,26.295144,29.000000,0,true,6.789377,very_large
-heterogeneous-governance,isolated-daos,ecosystem.Resource Sharing Rate,18.395969,29.000000,0,true,4.749819,very_large
-heterogeneous-governance,isolated-daos,ecosystem.Joint Venture Rate,18.524650,29,0,true,4.783044,very_large
-heterogeneous-governance,isolated-daos,ecosystem.Inter-DAO Voting Participation,109.504496,29.000000,0,true,28.273939,very_large
-heterogeneous-governance,isolated-daos,ecosystem.Cross-DAO Approval Alignment,50.970336,29,0,true,13.160484,very_large
-heterogeneous-governance,isolated-daos,ecosystem.Total Shared Budget,13.014889,29,0.000000,true,3.360430,very_large
-heterogeneous-governance,isolated-daos,ecosystem.Resource Flow Volume,8.994960,29,0.000000,true,2.322489,very_large
-heterogeneous-governance,isolated-daos,ecosystem.Ecosystem Treasury Total,-9.660050,29.193320,0.000000,true,-2.494214,very_large
-asymmetric-treasury,specialized-daos,ecosystem.Inter-DAO Proposal Count,-12.406238,57.445532,0,true,-3.203277,very_large
-asymmetric-treasury,specialized-daos,ecosystem.Inter-DAO Proposal Success Rate,0.765956,50.470760,0.447270,false,0.197769,negligible
-asymmetric-treasury,specialized-daos,ecosystem.Collaboration Proposal Rate,0.570779,53.233058,0.570551,false,0.147375,negligible
-asymmetric-treasury,specialized-daos,ecosystem.Treaty Proposal Rate,1.223131,45.000830,0.227647,false,0.315811,small
-asymmetric-treasury,specialized-daos,ecosystem.Resource Sharing Rate,1.344871,54.834168,0.184203,false,0.347244,small
-asymmetric-treasury,specialized-daos,ecosystem.Joint Venture Rate,-3.450574,57.992041,0.001050,true,-0.890934,large
-asymmetric-treasury,specialized-daos,ecosystem.Inter-DAO Voting Participation,-4.856080,42.392401,0.000017,true,-1.253835,very_large
-asymmetric-treasury,specialized-daos,ecosystem.Cross-DAO Approval Alignment,0.765089,57.926023,0.447324,false,0.197545,negligible
-asymmetric-treasury,specialized-daos,ecosystem.Total Shared Budget,-4.710025,42.646820,0.000026,true,-1.216123,very_large
-asymmetric-treasury,specialized-daos,ecosystem.Resource Flow Volume,-1.887845,55.558068,0.064274,false,-0.487439,small
-asymmetric-treasury,specialized-daos,ecosystem.Ecosystem Treasury Total,-1.438880,56.333799,0.155718,false,-0.371517,small
-asymmetric-treasury,isolated-daos,ecosystem.Inter-DAO Proposal Count,36.288872,29,0,true,9.369747,very_large
-asymmetric-treasury,isolated-daos,ecosystem.Inter-DAO Proposal Success Rate,16.866366,29.000000,0.000000,true,4.354877,very_large
-asymmetric-treasury,isolated-daos,ecosystem.Collaboration Proposal Rate,21.118046,29.000000,0,true,5.452656,very_large
-asymmetric-treasury,isolated-daos,ecosystem.Treaty Proposal Rate,20.191919,29,0,true,5.213531,very_large
-asymmetric-treasury,isolated-daos,ecosystem.Resource Sharing Rate,23.237555,29,0,true,5.999911,very_large
-asymmetric-treasury,isolated-daos,ecosystem.Joint Venture Rate,23.289681,29,0,true,6.013370,very_large
-asymmetric-treasury,isolated-daos,ecosystem.Inter-DAO Voting Participation,135.584682,29.000000,0,true,35.007814,very_large
-asymmetric-treasury,isolated-daos,ecosystem.Cross-DAO Approval Alignment,48.418390,29,0,true,12.501575,very_large
-asymmetric-treasury,isolated-daos,ecosystem.Total Shared Budget,20.144090,29,0,true,5.201182,very_large
-asymmetric-treasury,isolated-daos,ecosystem.Resource Flow Volume,9.814973,29.000000,0.000000,true,2.534215,very_large
-asymmetric-treasury,isolated-daos,ecosystem.Ecosystem Treasury Total,-9.150810,29.190898,0.000000,true,-2.362729,very_large
-specialized-daos,isolated-daos,ecosystem.Inter-DAO Proposal Count,49.624681,29,0,true,12.813038,very_large
-specialized-daos,isolated-daos,ecosystem.Inter-DAO Proposal Success Rate,23.965155,29,0,true,6.187776,very_large
-specialized-daos,isolated-daos,ecosystem.Collaboration Proposal Rate,27.790960,29,0,true,7.175595,very_large
-specialized-daos,isolated-daos,ecosystem.Treaty Proposal Rate,34.270002,29,0,true,8.848477,very_large
-specialized-daos,isolated-daos,ecosystem.Resource Sharing Rate,27.508852,29,0,true,7.102755,very_large
-specialized-daos,isolated-daos,ecosystem.Joint Venture Rate,27.869940,29,0,true,7.195988,very_large
-specialized-daos,isolated-daos,ecosystem.Inter-DAO Voting Participation,72.492266,29,0,true,18.717423,very_large
-specialized-daos,isolated-daos,ecosystem.Cross-DAO Approval Alignment,45.654756,29,0,true,11.788007,very_large
-specialized-daos,isolated-daos,ecosystem.Total Shared Budget,15.337903,29,0.000000,true,3.960229,very_large
-specialized-daos,isolated-daos,ecosystem.Resource Flow Volume,10.361039,29,0.000000,true,2.675209,very_large
-specialized-daos,isolated-daos,ecosystem.Ecosystem Treasury Total,-5.817879,29.134872,0.000003,true,-1.502170,very_large
+homogeneous-governance,heterogeneous-governance,ecosystem.Inter-DAO Proposal Count,1.534676,197.998931,0.126460,false,0.217036,small
+homogeneous-governance,heterogeneous-governance,ecosystem.Inter-DAO Proposal Success Rate,1.300798,197.548140,0.194843,false,0.183961,negligible
+homogeneous-governance,heterogeneous-governance,ecosystem.Collaboration Proposal Rate,-0.683458,195.307114,0.495127,false,-0.096656,negligible
+homogeneous-governance,heterogeneous-governance,ecosystem.Treaty Proposal Rate,-0.977184,193.434585,0.329699,false,-0.138195,negligible
+homogeneous-governance,heterogeneous-governance,ecosystem.Resource Sharing Rate,-0.400063,197.978205,0.689541,false,-0.056577,negligible
+homogeneous-governance,heterogeneous-governance,ecosystem.Joint Venture Rate,2.132564,196.095472,0.034204,false,0.301590,small
+homogeneous-governance,heterogeneous-governance,ecosystem.Inter-DAO Voting Participation,-0.080684,188.082782,0.935779,false,-0.011411,negligible
+homogeneous-governance,heterogeneous-governance,ecosystem.Cross-DAO Approval Alignment,2.119478,186.259865,0.035375,false,0.299739,small
+homogeneous-governance,heterogeneous-governance,ecosystem.Total Shared Budget,1.872068,197.864320,0.062673,false,0.264750,small
+homogeneous-governance,heterogeneous-governance,ecosystem.Resource Flow Volume,-0.031389,196.207818,0.974992,false,-0.004439,negligible
+homogeneous-governance,heterogeneous-governance,ecosystem.Ecosystem Treasury Total,-0.343280,196.539150,0.731755,false,-0.048547,negligible
+homogeneous-governance,asymmetric-treasury,ecosystem.Inter-DAO Proposal Count,0.515008,197.704709,0.607122,false,0.072833,negligible
+homogeneous-governance,asymmetric-treasury,ecosystem.Inter-DAO Proposal Success Rate,0.179727,197.997709,0.857551,false,0.025417,negligible
+homogeneous-governance,asymmetric-treasury,ecosystem.Collaboration Proposal Rate,0.411662,196.691633,0.681035,false,0.058218,negligible
+homogeneous-governance,asymmetric-treasury,ecosystem.Treaty Proposal Rate,-0.274559,197.980236,0.783941,false,-0.038829,negligible
+homogeneous-governance,asymmetric-treasury,ecosystem.Resource Sharing Rate,-1.083515,197.826655,0.279899,false,-0.153232,negligible
+homogeneous-governance,asymmetric-treasury,ecosystem.Joint Venture Rate,0.859668,197.260778,0.391015,false,0.121575,negligible
+homogeneous-governance,asymmetric-treasury,ecosystem.Inter-DAO Voting Participation,-5.690445,197.777450,0.000000,true,-0.804750,large
+homogeneous-governance,asymmetric-treasury,ecosystem.Cross-DAO Approval Alignment,0.331979,196.803532,0.740258,false,0.046949,negligible
+homogeneous-governance,asymmetric-treasury,ecosystem.Total Shared Budget,0.455408,197.765269,0.649316,false,0.064404,negligible
+homogeneous-governance,asymmetric-treasury,ecosystem.Resource Flow Volume,-1.205882,192.728194,0.229341,false,-0.170538,negligible
+homogeneous-governance,asymmetric-treasury,ecosystem.Ecosystem Treasury Total,-0.896488,196.656554,0.371088,false,-0.126783,negligible
+homogeneous-governance,specialized-daos,ecosystem.Inter-DAO Proposal Count,-23.839126,187.366929,0,true,-3.371362,very_large
+homogeneous-governance,specialized-daos,ecosystem.Inter-DAO Proposal Success Rate,-0.381398,191.153632,0.703332,false,-0.053938,negligible
+homogeneous-governance,specialized-daos,ecosystem.Collaboration Proposal Rate,0.321434,192.077300,0.748231,false,0.045458,negligible
+homogeneous-governance,specialized-daos,ecosystem.Treaty Proposal Rate,-0.258210,193.149152,0.796520,false,-0.036516,negligible
+homogeneous-governance,specialized-daos,ecosystem.Resource Sharing Rate,-0.041349,192.008618,0.967061,false,-0.005848,negligible
+homogeneous-governance,specialized-daos,ecosystem.Joint Venture Rate,-0.026192,197.912753,0.979130,false,-0.003704,negligible
+homogeneous-governance,specialized-daos,ecosystem.Inter-DAO Voting Participation,-7.156139,148.993426,0.000000,true,-1.012031,large
+homogeneous-governance,specialized-daos,ecosystem.Cross-DAO Approval Alignment,1.636696,196.369005,0.103296,false,0.231464,small
+homogeneous-governance,specialized-daos,ecosystem.Total Shared Budget,-6.392979,180.637298,0.000000,true,-0.904104,large
+homogeneous-governance,specialized-daos,ecosystem.Resource Flow Volume,-5.743852,185.512004,0.000000,true,-0.812303,large
+homogeneous-governance,specialized-daos,ecosystem.Ecosystem Treasury Total,-2.088904,196.813190,0.038002,false,-0.295416,small
+homogeneous-governance,isolated-daos,ecosystem.Inter-DAO Proposal Count,76.283828,99,0,true,10.788162,very_large
+homogeneous-governance,isolated-daos,ecosystem.Inter-DAO Proposal Success Rate,25.921270,99.000000,0,true,3.665821,very_large
+homogeneous-governance,isolated-daos,ecosystem.Collaboration Proposal Rate,42.466533,99,0,true,6.005675,very_large
+homogeneous-governance,isolated-daos,ecosystem.Treaty Proposal Rate,42.851248,99,0,true,6.060082,very_large
+homogeneous-governance,isolated-daos,ecosystem.Resource Sharing Rate,45.766516,99,0,true,6.472363,very_large
+homogeneous-governance,isolated-daos,ecosystem.Joint Venture Rate,45.267660,99,0,true,6.401814,very_large
+homogeneous-governance,isolated-daos,ecosystem.Inter-DAO Voting Participation,175.857434,99,0,true,24.869997,very_large
+homogeneous-governance,isolated-daos,ecosystem.Cross-DAO Approval Alignment,83.714742,99,0,true,11.839052,very_large
+homogeneous-governance,isolated-daos,ecosystem.Total Shared Budget,20.011866,99,0,true,2.830105,very_large
+homogeneous-governance,isolated-daos,ecosystem.Resource Flow Volume,14.771473,99,0,true,2.089002,very_large
+homogeneous-governance,isolated-daos,ecosystem.Ecosystem Treasury Total,-17.680690,99.212489,0,true,-2.500427,very_large
+heterogeneous-governance,asymmetric-treasury,ecosystem.Inter-DAO Proposal Count,-0.989078,197.668259,0.323834,false,-0.139877,negligible
+heterogeneous-governance,asymmetric-treasury,ecosystem.Inter-DAO Proposal Success Rate,-1.119125,197.609885,0.264445,false,-0.158268,negligible
+heterogeneous-governance,asymmetric-treasury,ecosystem.Collaboration Proposal Rate,1.046757,197.740731,0.296489,false,0.148034,negligible
+heterogeneous-governance,asymmetric-treasury,ecosystem.Treaty Proposal Rate,0.728904,192.852832,0.466945,false,0.103083,negligible
+heterogeneous-governance,asymmetric-treasury,ecosystem.Resource Sharing Rate,-0.694979,197.682421,0.487885,false,-0.098285,negligible
+heterogeneous-governance,asymmetric-treasury,ecosystem.Joint Venture Rate,-1.253838,197.721049,0.211381,false,-0.177319,negligible
+heterogeneous-governance,asymmetric-treasury,ecosystem.Inter-DAO Voting Participation,-6.206869,185.357867,0.000000,true,-0.877784,large
+heterogeneous-governance,asymmetric-treasury,ecosystem.Cross-DAO Approval Alignment,-1.765236,192.015282,0.079114,false,-0.249642,small
+heterogeneous-governance,asymmetric-treasury,ecosystem.Total Shared Budget,-1.443362,197.986450,0.150499,false,-0.204122,small
+heterogeneous-governance,asymmetric-treasury,ecosystem.Resource Flow Volume,-1.127078,197.008614,0.261080,false,-0.159393,negligible
+heterogeneous-governance,asymmetric-treasury,ecosystem.Ecosystem Treasury Total,-0.530077,197.997452,0.596653,false,-0.074964,negligible
+heterogeneous-governance,specialized-daos,ecosystem.Inter-DAO Proposal Count,-25.199293,187.181240,0,true,-3.563718,very_large
+heterogeneous-governance,specialized-daos,ecosystem.Inter-DAO Proposal Success Rate,-1.817211,194.047616,0.070727,false,-0.256992,small
+heterogeneous-governance,specialized-daos,ecosystem.Collaboration Proposal Rate,1.032424,182.922244,0.303237,false,0.146007,negligible
+heterogeneous-governance,specialized-daos,ecosystem.Treaty Proposal Rate,0.804483,181.180327,0.422172,false,0.113771,negligible
+heterogeneous-governance,specialized-daos,ecosystem.Resource Sharing Rate,0.392761,192.661431,0.694930,false,0.055545,negligible
+heterogeneous-governance,specialized-daos,ecosystem.Joint Venture Rate,-2.177452,195.221512,0.030646,false,-0.307938,small
+heterogeneous-governance,specialized-daos,ecosystem.Inter-DAO Voting Participation,-7.409816,131.680072,0.000000,true,-1.047906,large
+heterogeneous-governance,specialized-daos,ecosystem.Cross-DAO Approval Alignment,-0.788564,178.070723,0.431415,false,-0.111520,negligible
+heterogeneous-governance,specialized-daos,ecosystem.Total Shared Budget,-7.998760,178.181153,0.000000,true,-1.131196,large
+heterogeneous-governance,specialized-daos,ecosystem.Resource Flow Volume,-5.504142,192.561989,0.000000,true,-0.778403,medium
+heterogeneous-governance,specialized-daos,ecosystem.Ecosystem Treasury Total,-1.672755,197.985296,0.095955,false,-0.236563,small
+heterogeneous-governance,isolated-daos,ecosystem.Inter-DAO Proposal Count,74.288379,99,0,true,10.505963,very_large
+heterogeneous-governance,isolated-daos,ecosystem.Inter-DAO Proposal Success Rate,25.306860,99,0,true,3.578931,very_large
+heterogeneous-governance,isolated-daos,ecosystem.Collaboration Proposal Rate,38.655474,99.000000,0,true,5.466710,very_large
+heterogeneous-governance,isolated-daos,ecosystem.Treaty Proposal Rate,37.990423,99,0,true,5.372657,very_large
+heterogeneous-governance,isolated-daos,ecosystem.Resource Sharing Rate,46.818023,99,0,true,6.621068,very_large
+heterogeneous-governance,isolated-daos,ecosystem.Joint Venture Rate,38.128670,99,0,true,5.392208,very_large
+heterogeneous-governance,isolated-daos,ecosystem.Inter-DAO Voting Participation,222.305563,99.000000,0,true,31.438754,very_large
+heterogeneous-governance,isolated-daos,ecosystem.Cross-DAO Approval Alignment,62.092072,99,0,true,8.781145,very_large
+heterogeneous-governance,isolated-daos,ecosystem.Total Shared Budget,17.860084,99,0,true,2.525797,very_large
+heterogeneous-governance,isolated-daos,ecosystem.Resource Flow Volume,13.463571,99,0,true,1.904037,very_large
+heterogeneous-governance,isolated-daos,ecosystem.Ecosystem Treasury Total,-15.752530,99.178758,0,true,-2.227744,very_large
+asymmetric-treasury,specialized-daos,ecosystem.Inter-DAO Proposal Count,-23.933859,190.279589,0,true,-3.384759,very_large
+asymmetric-treasury,specialized-daos,ecosystem.Inter-DAO Proposal Success Rate,-0.578229,191.381164,0.563789,false,-0.081774,negligible
+asymmetric-treasury,specialized-daos,ecosystem.Collaboration Proposal Rate,-0.137317,186.041979,0.890928,false,-0.019420,negligible
+asymmetric-treasury,specialized-daos,ecosystem.Treaty Proposal Rate,0.036047,193.715487,0.971282,false,0.005098,negligible
+asymmetric-treasury,specialized-daos,ecosystem.Resource Sharing Rate,1.131637,190.001596,0.259213,false,0.160038,negligible
+asymmetric-treasury,specialized-daos,ecosystem.Joint Venture Rate,-0.893450,196.674114,0.372708,false,-0.126353,negligible
+asymmetric-treasury,specialized-daos,ecosystem.Inter-DAO Voting Participation,-3.351284,151.943385,0.001015,true,-0.473943,small
+asymmetric-treasury,specialized-daos,ecosystem.Cross-DAO Approval Alignment,1.220488,192.570457,0.223772,false,0.172603,negligible
+asymmetric-treasury,specialized-daos,ecosystem.Total Shared Budget,-6.843999,177.391813,0.000000,true,-0.967888,large
+asymmetric-treasury,specialized-daos,ecosystem.Resource Flow Volume,-4.303027,196.105739,0.000027,true,-0.608540,medium
+asymmetric-treasury,specialized-daos,ecosystem.Ecosystem Treasury Total,-1.143415,197.994989,0.254247,false,-0.161703,negligible
+asymmetric-treasury,isolated-daos,ecosystem.Inter-DAO Proposal Count,72.675857,99,0,true,10.277918,very_large
+asymmetric-treasury,isolated-daos,ecosystem.Inter-DAO Proposal Success Rate,25.754992,99,0,true,3.642306,very_large
+asymmetric-treasury,isolated-daos,ecosystem.Collaboration Proposal Rate,38.573581,99,0,true,5.455128,very_large
+asymmetric-treasury,isolated-daos,ecosystem.Treaty Proposal Rate,43.671791,99,0,true,6.176124,very_large
+asymmetric-treasury,isolated-daos,ecosystem.Resource Sharing Rate,45.941364,99,0,true,6.497090,very_large
+asymmetric-treasury,isolated-daos,ecosystem.Joint Venture Rate,41.396224,99,0,true,5.854310,very_large
+asymmetric-treasury,isolated-daos,ecosystem.Inter-DAO Voting Participation,177.969869,99,0,true,25.168740,very_large
+asymmetric-treasury,isolated-daos,ecosystem.Cross-DAO Approval Alignment,76.970919,99,0,true,10.885332,very_large
+asymmetric-treasury,isolated-daos,ecosystem.Total Shared Budget,20.058171,99,0,true,2.836654,very_large
+asymmetric-treasury,isolated-daos,ecosystem.Resource Flow Volume,14.080320,99,0,true,1.991258,very_large
+asymmetric-treasury,isolated-daos,ecosystem.Ecosystem Treasury Total,-15.058439,99.180045,0,true,-2.129585,very_large
+specialized-daos,isolated-daos,ecosystem.Inter-DAO Proposal Count,90.131324,99.000000,0,true,12.746494,very_large
+specialized-daos,isolated-daos,ecosystem.Inter-DAO Proposal Success Rate,31.993270,99,0,true,4.524532,very_large
+specialized-daos,isolated-daos,ecosystem.Collaboration Proposal Rate,50.210924,99,0,true,7.100897,very_large
+specialized-daos,isolated-daos,ecosystem.Treaty Proposal Rate,50.675554,99,0,true,7.166606,very_large
+specialized-daos,isolated-daos,ecosystem.Resource Sharing Rate,54.775783,99,0,true,7.746466,very_large
+specialized-daos,isolated-daos,ecosystem.Joint Venture Rate,46.265731,99,0,true,6.542962,very_large
+specialized-daos,isolated-daos,ecosystem.Inter-DAO Voting Participation,99.622040,99,0,true,14.088684,very_large
+specialized-daos,isolated-daos,ecosystem.Cross-DAO Approval Alignment,89.297972,99,0,true,12.628640,very_large
+specialized-daos,isolated-daos,ecosystem.Total Shared Budget,22.422276,99,0,true,3.170989,very_large
+specialized-daos,isolated-daos,ecosystem.Resource Flow Volume,18.564979,99,0,true,2.625485,very_large
+specialized-daos,isolated-daos,ecosystem.Ecosystem Treasury Total,-13.513946,99.181866,0,true,-1.911161,very_large
 
 # One-Way ANOVA Results
 metric,f_statistic,df_between,df_within,p_value,significant
-ecosystem.Inter-DAO Proposal Count,535.450682,4,145,0,true
-ecosystem.Inter-DAO Proposal Success Rate,66.359524,4,145,0,true
-ecosystem.Collaboration Proposal Rate,141.498761,4,145,0,true
-ecosystem.Treaty Proposal Rate,157.462531,4,145,0,true
-ecosystem.Resource Sharing Rate,145.925706,4,145,0,true
-ecosystem.Joint Venture Rate,127.908124,4,145,0,true
-ecosystem.Inter-DAO Voting Participation,2292.045184,4,145,0,true
-ecosystem.Cross-DAO Approval Alignment,545.657520,4,145,0,true
-ecosystem.Total Shared Budget,53.227637,4,145,0,true
-ecosystem.Resource Flow Volume,27.512521,4,145,0,true
-ecosystem.Ecosystem Treasury Total,20.766305,4,145,0.000000,true
+ecosystem.Inter-DAO Proposal Count,1857.868872,4,495,0,true
+ecosystem.Inter-DAO Proposal Success Rate,182.930074,4,495,0,true
+ecosystem.Collaboration Proposal Rate,435.579288,4,495,0,true
+ecosystem.Treaty Proposal Rate,463.398684,4,495,0,true
+ecosystem.Resource Sharing Rate,573.939296,4,495,0,true
+ecosystem.Joint Venture Rate,454.846188,4,495,0,true
+ecosystem.Inter-DAO Voting Participation,5208.718867,4,495,0,true
+ecosystem.Cross-DAO Approval Alignment,1447.160167,4,495,0,true
+ecosystem.Total Shared Budget,129.561746,4,495,0,true
+ecosystem.Resource Flow Volume,72.632102,4,495,0,true
+ecosystem.Ecosystem Treasury Total,61.223382,4,495,0,true
 
 # Power Analysis
-current_runs_per_config,30
+current_runs_per_config,100
 recommended_runs,63
-current_power,0.486874
-minimum_effect_detectable,0.722957
+current_power,0.955248
+minimum_effect_detectable,0.395980

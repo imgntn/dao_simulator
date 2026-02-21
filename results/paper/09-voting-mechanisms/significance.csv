@@ -1,267 +1,267 @@
 # Pairwise T-Test Comparisons
 sweep_value_1,sweep_value_2,metric,t_statistic,df,p_value,significant,cohens_d,effect_interpretation
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Proposal Pass Rate,-0.878428,57.845692,0.383346,false,-0.226809,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Average Turnout,-0.563130,57.943234,0.575519,false,-0.145399,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Final Gini,0.989603,57.998957,0.326479,false,0.255514,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Final Reputation Gini,0.261526,57.763954,0.794617,false,0.067526,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Whale Influence,-0.313187,56.881680,0.755284,false,-0.080864,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Governance Capture Risk,-0.137358,57.212361,0.891230,false,-0.035466,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Avg Margin of Victory,-1.249565,55.599726,0.216693,false,-0.322636,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Voter Participation Rate,0.993719,56.808559,0.324574,false,0.256577,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Delegate Concentration,0.286586,57.006569,0.775468,false,0.073996,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Quorum Reach Rate,1.771564,29,0.086976,false,0.457416,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Voter Concentration Gini,0.957090,57.716808,0.342514,false,0.247120,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Token Concentration Gini,0.987573,57.996958,0.327464,false,0.254990,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Single Entity Control,-1.341527,48.507532,0.185996,false,-0.346381,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Collusion Threshold,-0.816703,56.979673,0.417500,false,-0.210872,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Final Treasury,-1.477467,57.999964,0.144960,false,-0.381480,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Treasury Volatility,-1.058565,56.301199,0.294319,false,-0.273320,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Proposal Pass Rate,-6.706188,34.561455,0.000000,true,-1.731530,very_large
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Average Turnout,1.130991,57.516888,0.262753,false,0.292021,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Final Gini,-0.075306,57.212398,0.940234,false,-0.019444,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Final Reputation Gini,0.675071,57.693108,0.502328,false,0.174302,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Whale Influence,-0.797776,56.067877,0.428366,false,-0.205985,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Governance Capture Risk,0.344211,55.896303,0.731979,false,0.088875,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Avg Margin of Victory,-8.988179,57.314841,0.000000,true,-2.320738,very_large
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Voter Participation Rate,0.922097,57.756794,0.360314,false,0.238084,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Delegate Concentration,-0.157018,55.386412,0.875801,false,-0.040542,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Quorum Reach Rate,1.780164,29.000000,0.085530,false,0.459636,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Voter Concentration Gini,0.087203,52.788907,0.930840,false,0.022516,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Token Concentration Gini,-0.077824,57.182583,0.938240,false,-0.020094,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Single Entity Control,-2.717657,57.922042,0.008657,false,-0.701696,medium
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Collusion Threshold,-0.128776,57.007434,0.897988,false,-0.033250,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Final Treasury,-1.474400,57.853206,0.145795,false,-0.380688,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Treasury Volatility,1.199543,57.410176,0.235244,false,0.309721,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Proposal Pass Rate,-6.875013,33.048605,0.000000,true,-1.775121,very_large
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Average Turnout,0.368962,57.995970,0.713500,false,0.095266,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Final Gini,0.829376,52.785399,0.410627,false,0.214144,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Final Reputation Gini,0.475880,56.209889,0.636004,false,0.122872,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Whale Influence,-0.260479,57.513469,0.795424,false,-0.067255,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Governance Capture Risk,-0.079754,57.253282,0.936711,false,-0.020592,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Avg Margin of Victory,-7.717908,54.591241,0.000000,true,-1.992755,very_large
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Voter Participation Rate,1.445286,57.998513,0.153759,false,0.373171,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Delegate Concentration,-0.043717,57.186959,0.965283,false,-0.011288,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Quorum Reach Rate,2.270910,29,0.030757,false,0.586346,medium
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Voter Concentration Gini,-0.171886,53.258747,0.864179,false,-0.044381,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Token Concentration Gini,0.841578,52.806820,0.403820,false,0.217294,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Single Entity Control,-1.599019,52.513408,0.115816,false,-0.412865,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Collusion Threshold,-0.776552,56.831449,0.440643,false,-0.200505,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Final Treasury,-1.242016,57.668467,0.219258,false,-0.320687,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Treasury Volatility,0.317834,57.021359,0.751772,false,0.082064,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Proposal Pass Rate,-5.873456,41.533547,0.000001,true,-1.516520,very_large
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Average Turnout,0.652070,57.723716,0.516944,false,0.168364,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Final Gini,0.084770,57.962209,0.932736,false,0.021888,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Final Reputation Gini,1.516918,57.631121,0.134754,false,0.391667,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Whale Influence,0.893993,57.101598,0.375078,false,0.230828,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Governance Capture Risk,0.397948,57.370317,0.692145,false,0.102750,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Avg Margin of Victory,-6.557866,54.767173,0.000000,true,-1.693234,very_large
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Voter Participation Rate,0.607793,56.368788,0.545765,false,0.156932,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Delegate Concentration,0.316221,57.909517,0.752971,false,0.081648,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Quorum Reach Rate,25.466174,29,0,true,6.575338,very_large
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Voter Concentration Gini,-0.438127,48.342974,0.663245,false,-0.113124,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Token Concentration Gini,0.078587,57.955805,0.937632,false,0.020291,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Single Entity Control,-2.051697,39.505419,0.046869,false,-0.529746,medium
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Collusion Threshold,-0.424106,57.080224,0.673083,false,-0.109504,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Final Treasury,-1.315044,57.898221,0.193680,false,-0.339543,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Treasury Volatility,-0.110433,57.574782,0.912450,false,-0.028514,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Proposal Pass Rate,-4.810727,47.005262,0.000016,true,-1.242124,very_large
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Average Turnout,-0.163933,54.929895,0.870386,false,-0.042327,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Gini,0.037838,57.911017,0.969947,false,0.009770,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Reputation Gini,-0.568371,57.970420,0.571978,false,-0.146753,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Whale Influence,-0.002457,55.329705,0.998048,false,-0.000634,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Governance Capture Risk,0.355119,56.935444,0.723812,false,0.091691,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Avg Margin of Victory,-4.631979,56.837486,0.000022,true,-1.195972,large
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Voter Participation Rate,-0.206125,57.315787,0.837424,false,-0.053221,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Delegate Concentration,0.237409,53.564317,0.813245,false,0.061299,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Quorum Reach Rate,28.646863,29,0,true,7.396588,very_large
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Voter Concentration Gini,-0.000713,57.940149,0.999434,false,-0.000184,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Token Concentration Gini,0.031500,57.905622,0.974979,false,0.008133,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Single Entity Control,-1.516442,56.592029,0.134974,false,-0.391544,small
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Collusion Threshold,-0.086527,57.518675,0.931348,false,-0.022341,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Treasury,0.196478,57.903409,0.844924,false,0.050730,negligible
-governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Treasury Volatility,0.536909,57.791325,0.593392,false,0.138629,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Proposal Pass Rate,-5.816015,35.154105,0.000001,true,-1.501689,very_large
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Average Turnout,1.739420,57.788323,0.087285,false,0.449116,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Final Gini,-1.121793,57.266885,0.266632,false,-0.289646,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Final Reputation Gini,0.402268,57.995249,0.688966,false,0.103865,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Whale Influence,-0.517635,57.874143,0.606686,false,-0.133653,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Governance Capture Risk,0.468180,53.081416,0.641573,false,0.120884,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Avg Margin of Victory,-6.899652,57.417436,0.000000,true,-1.781483,very_large
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Voter Participation Rate,-0.108731,57.624836,0.913794,false,-0.028074,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Delegate Concentration,-0.455981,52.005710,0.650302,false,-0.117734,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Quorum Reach Rate,0.126071,57.476341,0.900116,false,0.032551,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Voter Concentration Gini,-0.716435,54.597539,0.476776,false,-0.184983,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Token Concentration Gini,-1.123536,57.276177,0.265897,false,-0.290096,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Single Entity Control,-0.718567,49.570393,0.475781,false,-0.185533,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Collusion Threshold,0.742539,54.296808,0.460961,false,0.191723,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Final Treasury,0.040401,57.848606,0.967913,false,0.010432,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Treasury Volatility,2.431980,57.687157,0.018142,false,0.627935,medium
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Proposal Pass Rate,-5.985285,33.484547,0.000001,true,-1.545394,very_large
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Average Turnout,0.940286,57.969413,0.350973,false,0.242781,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Final Gini,-0.303582,52.900531,0.762637,false,-0.078385,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Final Reputation Gini,0.224659,57.231829,0.823045,false,0.058007,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Whale Influence,0.020165,55.104350,0.983985,false,0.005207,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Governance Capture Risk,0.054716,57.999416,0.956553,false,0.014127,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Avg Margin of Victory,-5.943590,57.885817,0.000000,true,-1.534628,very_large
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Voter Participation Rate,0.340185,56.727469,0.734974,false,0.087835,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Delegate Concentration,-0.312154,57.990233,0.756043,false,-0.080598,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Quorum Reach Rate,1.252321,42.337167,0.217327,false,0.323348,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Voter Concentration Gini,-0.977720,55.008661,0.332493,false,-0.252446,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Token Concentration Gini,-0.287586,53.002842,0.774785,false,-0.074255,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Single Entity Control,-0.097698,56.900419,0.922515,false,-0.025226,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Collusion Threshold,0.149144,54.004777,0.881995,false,0.038509,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Final Treasury,0.178829,57.675238,0.858699,false,0.046173,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Treasury Volatility,1.487123,57.889485,0.142409,false,0.383973,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Proposal Pass Rate,-4.983546,42.743696,0.000011,true,-1.286746,very_large
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Average Turnout,1.245829,57.916520,0.217843,false,0.321672,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Final Gini,-0.917258,57.973710,0.362808,false,-0.236835,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Final Reputation Gini,1.192801,56.834587,0.237903,false,0.307980,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Whale Influence,1.298330,57.986870,0.199314,false,0.335227,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Governance Capture Risk,0.515091,55.336290,0.608541,false,0.132996,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Avg Margin of Victory,-4.874360,57.920479,0.000009,true,-1.258554,very_large
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Voter Participation Rate,-0.347504,57.961026,0.729471,false,-0.089725,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Delegate Concentration,0.013782,57.503013,0.989052,false,0.003559,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Quorum Reach Rate,25.198609,29.486084,0,true,6.506253,very_large
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Voter Concentration Gini,-1.152453,50.374190,0.254575,false,-0.297562,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Token Concentration Gini,-0.922337,57.975928,0.360175,false,-0.238146,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Single Entity Control,-0.931950,51.772484,0.355688,false,-0.240628,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Collusion Threshold,0.371567,57.997162,0.711570,false,0.095938,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Final Treasury,0.193592,57.894377,0.847173,false,0.049985,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Treasury Volatility,0.990896,57.543215,0.325885,false,0.255848,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Proposal Pass Rate,-3.912607,48.482907,0.000284,true,-1.010231,large
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Average Turnout,0.461399,55.624755,0.646312,false,0.119133,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Final Gini,-0.970975,57.929186,0.335598,false,-0.250705,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Final Reputation Gini,-0.809044,57.900781,0.421802,false,-0.208894,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Whale Influence,0.269905,51.697880,0.788307,false,0.069689,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Governance Capture Risk,0.465003,57.977447,0.643671,false,0.120063,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Avg Margin of Victory,-3.011094,57.742772,0.003857,true,-0.777461,medium
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Voter Participation Rate,-1.137514,57.924376,0.260007,false,-0.293705,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Delegate Concentration,-0.021081,56.518403,0.983255,false,-0.005443,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Quorum Reach Rate,28.286952,29.687088,0,true,7.303660,very_large
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Voter Concentration Gini,-0.971943,57.403276,0.335157,false,-0.250955,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Token Concentration Gini,-0.975839,57.936375,0.333201,false,-0.251961,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Single Entity Control,0.102429,53.034454,0.918802,false,0.026447,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Collusion Threshold,0.702234,57.893633,0.485347,false,0.181316,negligible
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Final Treasury,1.643408,57.907084,0.105718,false,0.424326,small
-governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Treasury Volatility,1.599615,55.052658,0.115408,false,0.413019,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Proposal Pass Rate,-0.217420,56.559739,0.828663,false,-0.056138,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Average Turnout,-0.750483,57.599584,0.456019,false,-0.193774,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Final Gini,0.981280,55.671375,0.330700,false,0.253365,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Final Reputation Gini,-0.154690,57.344512,0.877609,false,-0.039941,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Whale Influence,0.472559,53.978508,0.638433,false,0.122014,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Governance Capture Risk,-0.406627,53.166350,0.685914,false,-0.104991,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Avg Margin of Victory,0.507806,56.813795,0.613555,false,0.131115,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Voter Participation Rate,0.473100,57.717732,0.637926,false,0.122154,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Delegate Concentration,0.097869,52.367169,0.922410,false,0.025270,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Quorum Reach Rate,1.145907,44.740491,0.257926,false,0.295872,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Voter Concentration Gini,-0.226256,57.982324,0.821798,false,-0.058419,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Token Concentration Gini,0.998563,55.734918,0.322322,false,0.257828,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Single Entity Control,0.670275,53.501012,0.505566,false,0.173064,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Collusion Threshold,-0.695106,57.992112,0.489765,false,-0.179476,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Final Treasury,0.144214,57.097630,0.885840,false,0.037236,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Treasury Volatility,-0.948465,57.947689,0.346831,false,-0.244893,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Proposal Pass Rate,0.907371,49.908983,0.368571,false,0.234282,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Average Turnout,-0.489719,57.970368,0.626181,false,-0.126445,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Final Gini,0.166116,57.512459,0.868648,false,0.042891,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Final Reputation Gini,0.756794,56.689366,0.452307,false,0.195403,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Whale Influence,1.841337,57.780481,0.070707,false,0.475431,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Governance Capture Risk,0.073800,57.522761,0.941425,false,0.019055,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Avg Margin of Victory,1.653573,56.927337,0.103719,false,0.426951,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Voter Participation Rate,-0.253675,57.350787,0.800654,false,-0.065499,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Delegate Concentration,0.500620,54.469996,0.618655,false,0.129260,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Quorum Reach Rate,25.159461,29.588650,0,true,6.496145,very_large
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Voter Concentration Gini,-0.461294,56.648772,0.646354,false,-0.119106,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Token Concentration Gini,0.162312,57.510570,0.871629,false,0.041909,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Single Entity Control,-0.492759,40.245199,0.624861,false,-0.127230,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Collusion Threshold,-0.328158,54.468554,0.744050,false,-0.084730,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Final Treasury,0.157400,57.995846,0.875477,false,0.040640,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Treasury Volatility,-1.371908,57.985967,0.175377,false,-0.354225,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Proposal Pass Rate,2.155668,43.971316,0.036623,false,0.556591,medium
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Average Turnout,-1.444612,56.757277,0.154065,false,-0.372997,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Gini,0.117034,57.644851,0.907240,false,0.030218,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Reputation Gini,-1.215656,57.852880,0.229053,false,-0.313881,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Whale Influence,0.688152,50.361985,0.494515,false,0.177680,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Governance Capture Risk,0.067340,52.545399,0.946567,false,0.017387,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Avg Margin of Victory,3.980483,57.932184,0.000194,true,1.027756,large
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Voter Participation Rate,-1.073403,57.884419,0.287545,false,-0.277152,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Delegate Concentration,0.382663,47.312312,0.703683,false,0.098803,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Quorum Reach Rate,28.231806,29.832041,0,true,7.289421,very_large
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Voter Concentration Gini,-0.088737,51.898845,0.929633,false,-0.022912,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Token Concentration Gini,0.112983,57.635056,0.910437,false,0.029172,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Single Entity Control,1.008691,57.152824,0.317374,false,0.260443,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Collusion Threshold,0.030503,55.304627,0.975776,false,0.007876,negligible
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Treasury,1.643653,57.523358,0.105703,false,0.424389,small
-governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Treasury Volatility,-0.597665,56.543907,0.552450,false,-0.154316,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Proposal Pass Rate,1.110028,45.345491,0.272839,false,0.286608,small
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Average Turnout,0.273349,57.785804,0.785559,false,0.070579,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Final Gini,-0.745713,53.468823,0.459107,false,-0.192542,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Final Reputation Gini,0.874152,54.463426,0.385874,false,0.225705,small
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Whale Influence,1.121770,55.439037,0.266796,false,0.289640,small
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Governance Capture Risk,0.455646,55.405890,0.650426,false,0.117647,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Avg Margin of Victory,1.068429,57.996848,0.289754,false,0.275867,small
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Voter Participation Rate,-0.706994,56.276043,0.482488,false,-0.182545,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Delegate Concentration,0.340418,57.630380,0.734780,false,0.087895,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Quorum Reach Rate,24.624894,30.993228,0,true,6.358120,very_large
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Voter Concentration Gini,-0.256906,56.343936,0.798187,false,-0.066333,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Token Concentration Gini,-0.766374,53.544015,0.446820,false,-0.197877,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Single Entity Control,-0.894354,47.743583,0.375619,false,-0.230921,small
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Collusion Threshold,0.269654,54.180764,0.788451,false,0.069624,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Final Treasury,0.003574,57.211786,0.997161,false,0.000923,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Treasury Volatility,-0.451201,57.879748,0.653530,false,-0.116500,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Proposal Pass Rate,2.360634,40.233530,0.023177,false,0.609513,medium
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Average Turnout,-0.575446,55.121278,0.567332,false,-0.148579,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Final Gini,-0.807084,53.824094,0.423170,false,-0.208388,small
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Final Reputation Gini,-0.987633,56.613428,0.327535,false,-0.255006,small
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Whale Influence,0.230091,57.031074,0.818845,false,0.059409,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Governance Capture Risk,0.411554,57.969617,0.682184,false,0.106263,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Avg Margin of Victory,3.190541,57.296231,0.002305,true,0.823794,large
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Voter Participation Rate,-1.570259,57.252548,0.121866,false,-0.405439,small
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Delegate Concentration,0.264273,56.285692,0.792535,false,0.068235,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Quorum Reach Rate,27.485553,31.814340,0,true,7.096739,very_large
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Voter Concentration Gini,0.173201,52.385825,0.863161,false,0.044720,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Token Concentration Gini,-0.827550,53.874362,0.411576,false,-0.213672,small
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Single Entity Control,0.225821,56.288115,0.822158,false,0.058307,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Collusion Threshold,0.643452,55.041769,0.522603,false,0.166139,negligible
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Final Treasury,1.407452,57.928682,0.164637,false,0.363402,small
-governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Treasury Volatility,0.261831,55.987272,0.794413,false,0.067604,negligible
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Proposal Pass Rate,1.214543,55.551358,0.229678,false,0.313594,small
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Average Turnout,-0.901979,56.370678,0.370906,false,-0.232890,small
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Gini,-0.048122,57.989151,0.961784,false,-0.012425,negligible
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Reputation Gini,-2.088471,57.398042,0.041202,false,-0.539241,medium
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Whale Influence,-0.781623,52.120594,0.437972,false,-0.201814,small
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Governance Capture Risk,0.003492,54.888452,0.997226,false,0.000902,negligible
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Avg Margin of Victory,2.077050,57.384797,0.042284,false,0.536292,medium
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Voter Participation Rate,-0.768582,57.777862,0.445272,false,-0.198447,negligible
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Delegate Concentration,-0.034398,54.560038,0.972685,false,-0.008882,negligible
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Quorum Reach Rate,-1.050031,56.345302,0.298187,false,-0.271117,small
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Voter Concentration Gini,0.441423,47.421706,0.660913,false,0.113975,negligible
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Token Concentration Gini,-0.048252,57.990542,0.961681,false,-0.012459,negligible
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Single Entity Control,1.091363,43.016770,0.281188,false,0.281789,small
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Collusion Threshold,0.325288,57.925433,0.746135,false,0.083989,negligible
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Treasury,1.487191,57.606690,0.142418,false,0.383991,small
-governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Treasury Volatility,0.664854,56.801157,0.508835,false,0.171664,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Proposal Pass Rate,-1.777187,197.999795,0.077073,false,-0.251332,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Average Turnout,0.199356,197.887487,0.842189,false,0.028193,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Final Gini,-1.064947,197.180539,0.288202,false,-0.150606,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Final Reputation Gini,0.127047,197.990130,0.899032,false,0.017967,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Whale Influence,1.308066,191.564584,0.192418,false,0.184988,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Governance Capture Risk,0.804437,190.394948,0.422148,false,0.113765,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Avg Margin of Victory,0.139562,193.368033,0.889151,false,0.019737,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Voter Participation Rate,-1.351005,197.489725,0.178240,false,-0.191061,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Delegate Concentration,0.815570,193.340202,0.415749,false,0.115339,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Quorum Reach Rate,1.653408,162.775003,0.100175,false,0.233827,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Voter Concentration Gini,-1.340774,191.346940,0.181584,false,-0.189614,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Token Concentration Gini,-1.041340,197.205986,0.298993,false,-0.147268,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Single Entity Control,-0.392109,197.944336,0.695400,false,-0.055453,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Collusion Threshold,0.610889,196.640805,0.541979,false,0.086393,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Final Treasury,-1.462210,194.415821,0.145298,false,-0.206788,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=majority_quorumPercentage=0.08,Treasury Volatility,0.451679,197.762852,0.651995,false,0.063877,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Proposal Pass Rate,-9.985095,117.764517,0,true,-1.412106,very_large
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Average Turnout,4.554681,187.904664,0.000009,true,0.644129,medium
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Final Gini,-2.363288,192.444433,0.019111,false,-0.334219,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Final Reputation Gini,-0.896591,196.799238,0.371033,false,-0.126797,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Whale Influence,-1.079695,197.972310,0.281592,false,-0.152692,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Governance Capture Risk,0.088365,196.615929,0.929676,false,0.012497,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Avg Margin of Victory,-14.159440,197.247292,0,true,-2.002447,very_large
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Voter Participation Rate,-0.076425,196.818903,0.939159,false,-0.010808,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Delegate Concentration,-0.627160,197.359299,0.531279,false,-0.088694,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Quorum Reach Rate,1.421815,182.051148,0.156791,false,0.201075,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Voter Concentration Gini,1.091802,196.855629,0.276254,false,0.154404,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Token Concentration Gini,-2.353790,192.439301,0.019591,false,-0.332876,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Single Entity Control,-0.384604,187.090349,0.700968,false,-0.054391,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Collusion Threshold,1.760419,193.297541,0.079918,false,0.248961,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Final Treasury,-1.496924,194.288274,0.136036,false,-0.211697,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.04,Treasury Volatility,1.001111,197.271074,0.317999,false,0.141579,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Proposal Pass Rate,-9.070650,138.583014,0.000000,true,-1.282784,very_large
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Average Turnout,2.771663,197.970344,0.006109,true,0.391972,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Final Gini,-0.999007,197.964943,0.319011,false,-0.141281,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Final Reputation Gini,0.060624,197.961626,0.951720,false,0.008573,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Whale Influence,0.923635,194.665151,0.356820,false,0.130622,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Governance Capture Risk,1.317069,196.848054,0.189347,false,0.186262,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Avg Margin of Victory,-15.097638,192.852750,0,true,-2.135128,very_large
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Voter Participation Rate,0.459751,196.232374,0.646204,false,0.065019,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Delegate Concentration,0.840085,193.598923,0.401897,false,0.118806,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Quorum Reach Rate,1.658377,162.738935,0.099168,false,0.234530,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Voter Concentration Gini,-0.679422,190.639589,0.497695,false,-0.096085,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Token Concentration Gini,-1.004145,197.959299,0.316535,false,-0.142008,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Single Entity Control,-1.172705,193.840406,0.242353,false,-0.165846,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Collusion Threshold,0.484163,197.901404,0.628805,false,0.068471,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Final Treasury,-2.411012,192.573713,0.016848,false,-0.340969,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Treasury Volatility,0.061333,192.170458,0.951157,false,0.008674,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Proposal Pass Rate,-7.389727,159.351926,0.000000,true,-1.045065,large
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Average Turnout,3.639193,197.999956,0.000349,true,0.514660,medium
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Final Gini,-2.033115,196.281893,0.043387,false,-0.287526,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Final Reputation Gini,-1.483075,197.906450,0.139645,false,-0.209738,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Whale Influence,-1.024997,197.169687,0.306620,false,-0.144956,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Governance Capture Risk,0.463091,195.537626,0.643814,false,0.065491,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Avg Margin of Victory,-7.065113,197.976067,0.000000,true,-0.999158,large
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Voter Participation Rate,-0.335762,197.994345,0.737406,false,-0.047484,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Delegate Concentration,-0.817559,197.250421,0.414595,false,-0.115620,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Quorum Reach Rate,43.044344,99.857315,0,true,6.087390,very_large
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Voter Concentration Gini,0.203816,194.111314,0.838711,false,0.028824,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Token Concentration Gini,-2.012112,196.225786,0.045575,false,-0.284556,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Single Entity Control,-1.020574,197.568129,0.308705,false,-0.144331,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Collusion Threshold,1.510830,196.655451,0.132437,false,0.213664,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Final Treasury,-1.634050,196.459322,0.103850,false,-0.231090,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Treasury Volatility,0.064749,197.949611,0.948439,false,0.009157,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Proposal Pass Rate,-8.009477,154.258386,0.000000,true,-1.132711,large
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Average Turnout,2.444306,194.758689,0.015403,false,0.345677,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Gini,-0.127327,197.825851,0.898811,false,-0.018007,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Reputation Gini,-0.902906,197.997250,0.367673,false,-0.127690,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Whale Influence,0.217184,192.202401,0.828295,false,0.030714,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Governance Capture Risk,-0.567038,193.893745,0.571344,false,-0.080191,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Avg Margin of Victory,-8.227026,196.760402,0.000000,true,-1.163477,large
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Voter Participation Rate,0.704565,197.718744,0.481910,false,0.099641,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Delegate Concentration,-0.417045,190.306457,0.677115,false,-0.058979,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Quorum Reach Rate,43.775111,99.904860,0,true,6.190736,very_large
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Voter Concentration Gini,-0.369846,191.441837,0.711906,false,-0.052304,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Token Concentration Gini,-0.116412,197.855951,0.907444,false,-0.016463,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Single Entity Control,-1.999346,197.004459,0.046945,false,-0.282750,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Collusion Threshold,-0.352941,197.966058,0.724508,false,-0.049913,negligible
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Treasury,-1.431417,190.485358,0.153949,false,-0.202433,small
+governance_rule=majority_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Treasury Volatility,-0.689521,197.083619,0.491307,false,-0.097513,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Proposal Pass Rate,-7.575715,117.727093,0.000000,true,-1.071368,large
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Average Turnout,4.267018,185.979783,0.000032,true,0.603448,medium
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Final Gini,-1.293508,195.774941,0.197360,false,-0.182930,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Final Reputation Gini,-1.025053,196.575543,0.306598,false,-0.144964,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Whale Influence,-2.278523,192.321433,0.023794,false,-0.322232,small
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Governance Capture Risk,-0.696775,195.283866,0.486772,false,-0.098539,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Avg Margin of Victory,-13.099006,189.291091,0,true,-1.852479,very_large
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Voter Participation Rate,1.225580,197.858527,0.221814,false,0.173323,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Delegate Concentration,-1.374513,196.072588,0.170851,false,-0.194386,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Quorum Reach Rate,-0.374239,190.658778,0.708643,false,-0.052925,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Voter Concentration Gini,2.289745,195.555223,0.023104,false,0.323819,small
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Token Concentration Gini,-1.308017,195.729833,0.192402,false,-0.184982,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Single Entity Control,0.055417,185.714005,0.955866,false,0.007837,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Collusion Threshold,1.183029,196.927707,0.238224,false,0.167306,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Final Treasury,-0.035659,197.998776,0.971590,false,-0.005043,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.04,Treasury Volatility,0.546465,197.864041,0.585362,false,0.077282,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Proposal Pass Rate,-6.777635,138.509304,0.000000,true,-0.958502,large
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Average Turnout,2.537477,197.742678,0.011937,false,0.358853,small
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Final Gini,0.041322,197.482256,0.967081,false,0.005844,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Final Reputation Gini,-0.065754,197.990675,0.947640,false,-0.009299,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Whale Influence,-0.389452,197.430918,0.697361,false,-0.055077,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Governance Capture Risk,0.408203,194.940583,0.683573,false,0.057729,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Avg Margin of Victory,-13.856654,180.610166,0,true,-1.959627,very_large
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Voter Participation Rate,1.737405,197.612326,0.083874,false,0.245706,small
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Delegate Concentration,0.020795,197.995848,0.983430,false,0.002941,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Quorum Reach Rate,0.004475,197.999973,0.996434,false,0.000633,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Voter Concentration Gini,0.600136,197.978558,0.549102,false,0.084872,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Token Concentration Gini,0.013272,197.522662,0.989424,false,0.001877,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Single Entity Control,-0.801564,194.707495,0.423782,false,-0.113358,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Collusion Threshold,-0.113887,197.267618,0.909443,false,-0.016106,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Final Treasury,-1.000779,197.786789,0.318157,false,-0.141531,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=quadratic_quorumPercentage=0.08,Treasury Volatility,-0.351263,194.173077,0.725772,false,-0.049676,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Proposal Pass Rate,-5.213530,159.254690,0.000001,true,-0.737304,medium
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Average Turnout,3.396254,197.891877,0.000826,true,0.480303,small
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Final Gini,-0.986955,197.830521,0.324870,false,-0.139577,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Final Reputation Gini,-1.606128,197.835932,0.109841,false,-0.227141,small
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Whale Influence,-2.204373,195.197659,0.028667,false,-0.311745,small
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Governance Capture Risk,-0.347641,196.421278,0.728482,false,-0.049164,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Avg Margin of Victory,-6.639850,193.976511,0.000000,true,-0.939017,large
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Voter Participation Rate,1.020411,197.590950,0.308781,false,0.144308,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Delegate Concentration,-1.548884,196.247244,0.123021,false,-0.219045,small
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Quorum Reach Rate,42.674668,101.348461,0,true,6.035109,very_large
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Voter Concentration Gini,1.445303,197.579282,0.149957,false,0.204397,small
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Token Concentration Gini,-0.988229,197.799642,0.324248,false,-0.139757,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Single Entity Control,-0.610571,197.205479,0.542187,false,-0.086348,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Collusion Threshold,0.939974,197.999959,0.348376,false,0.132932,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Final Treasury,-0.217183,197.548704,0.828290,false,-0.030714,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Treasury Volatility,-0.384550,197.930901,0.700984,false,-0.054384,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Proposal Pass Rate,-5.803777,154.165209,0.000000,true,-0.820778,large
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Average Turnout,2.199783,193.506690,0.029007,false,0.311096,small
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Final Gini,0.950172,197.759640,0.343184,false,0.134375,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Final Reputation Gini,-1.026983,197.976963,0.305682,false,-0.145237,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Whale Influence,-1.008977,197.980499,0.314217,false,-0.142691,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Governance Capture Risk,-1.269419,197.381888,0.205786,false,-0.179523,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Avg Margin of Victory,-7.745255,196.852893,0.000000,true,-1.095344,large
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Voter Participation Rate,2.013638,197.965818,0.045401,false,0.284771,small
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Delegate Concentration,-1.130068,197.558108,0.259818,false,-0.159816,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Quorum Reach Rate,43.388098,101.478669,0,true,6.136004,very_large
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Voter Concentration Gini,0.892298,197.999595,0.373317,false,0.126190,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Token Concentration Gini,0.936049,197.736083,0.350390,false,0.132377,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Single Entity Control,-1.575766,196.486969,0.116688,false,-0.222847,small
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Collusion Threshold,-0.973666,196.187109,0.331421,false,-0.137697,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Final Treasury,0.076385,197.177554,0.939190,false,0.010802,negligible
+governance_rule=majority_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Treasury Volatility,-1.114801,197.776195,0.266288,false,-0.157657,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Proposal Pass Rate,0.869605,174.007025,0.385714,false,0.122981,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Average Turnout,-1.508454,188.845449,0.133110,false,-0.213328,small
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Final Gini,1.299883,193.239590,0.195190,false,0.183831,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Final Reputation Gini,0.952756,196.340535,0.341885,false,0.134740,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Whale Influence,1.926207,195.224067,0.055531,false,0.272407,small
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Governance Capture Risk,1.179480,197.989007,0.239622,false,0.166804,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Avg Margin of Victory,-0.286095,195.936125,0.775107,false,-0.040460,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Voter Participation Rate,0.516193,197.938874,0.606296,false,0.073001,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Delegate Concentration,1.399776,196.243399,0.163159,false,0.197958,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Quorum Reach Rate,0.379050,190.633147,0.705072,false,0.053606,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Voter Concentration Gini,-1.644045,195.092621,0.101777,false,-0.232503,small
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Token Concentration Gini,1.286031,193.294223,0.199971,false,0.181872,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Single Entity Control,-0.934937,173.621841,0.351119,false,-0.132220,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Collusion Threshold,-1.261602,194.501312,0.208603,false,-0.178417,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Final Treasury,-0.965822,197.817806,0.335312,false,-0.136588,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=quadratic_quorumPercentage=0.08,Treasury Volatility,-0.854859,195.433493,0.393676,false,-0.120895,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Proposal Pass Rate,2.874339,150.603899,0.004635,true,0.406493,small
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Average Turnout,-0.514588,187.867849,0.607446,false,-0.072774,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Final Gini,0.274498,196.815390,0.783990,false,0.038820,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Final Reputation Gini,-0.634163,197.370699,0.526709,false,-0.089684,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Whale Influence,0.025166,197.443126,0.979948,false,0.003559,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Governance Capture Risk,0.361685,197.838341,0.717973,false,0.051150,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Avg Margin of Victory,6.799010,196.958447,0.000000,true,0.961525,large
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Voter Participation Rate,-0.246326,196.974586,0.805686,false,-0.034836,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Delegate Concentration,-0.186733,197.995654,0.852061,false,-0.026408,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Quorum Reach Rate,42.809468,100.578112,0,true,6.054173,very_large
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Voter Concentration Gini,-0.820135,197.141081,0.413130,false,-0.115985,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Token Concentration Gini,0.289082,196.859033,0.772823,false,0.040882,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Single Entity Control,-0.747882,190.606594,0.455453,false,-0.105767,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Collusion Threshold,-0.208719,196.914578,0.834883,false,-0.029517,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Final Treasury,-0.182646,197.500761,0.855263,false,-0.025830,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.04,Treasury Volatility,-0.930794,197.602063,0.353096,false,-0.131634,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Proposal Pass Rate,2.056433,155.519623,0.041412,false,0.290824,small
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Average Turnout,-2.159255,195.802048,0.032046,false,-0.305365,small
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Gini,2.266091,194.143111,0.024549,false,0.320474,small
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Reputation Gini,-0.039252,196.909839,0.968729,false,-0.005551,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Whale Influence,1.198594,192.925322,0.232156,false,0.169507,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Governance Capture Risk,-0.628259,197.232360,0.530561,false,-0.088849,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Avg Margin of Victory,5.096080,194.169320,0.000001,true,0.720695,medium
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Voter Participation Rate,0.752795,197.685817,0.452468,false,0.106461,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Delegate Concentration,0.156484,193.880929,0.875814,false,0.022130,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Quorum Reach Rate,43.530297,100.665624,0,true,6.156114,very_large
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Voter Concentration Gini,-1.350629,195.615851,0.178375,false,-0.191008,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Token Concentration Gini,2.264615,193.996028,0.024642,false,0.320265,small
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Single Entity Control,-1.845575,192.222471,0.066492,false,-0.261004,small
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Collusion Threshold,-2.126155,192.519504,0.034764,false,-0.300684,small
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Treasury,0.113281,197.239189,0.909923,false,0.016020,negligible
+governance_rule=quadratic_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Treasury Volatility,-1.638010,197.989062,0.103008,false,-0.231650,small
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Proposal Pass Rate,1.913805,187.253522,0.057170,false,0.270653,small
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Average Turnout,0.890382,197.968021,0.374341,false,0.125919,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Final Gini,-1.002527,196.729839,0.317321,false,-0.141779,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Final Reputation Gini,-1.533761,197.748626,0.126687,false,-0.216907,small
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Whale Influence,-1.856631,197.126732,0.064856,false,-0.262567,small
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Governance Capture Risk,-0.799384,197.743311,0.425027,false,-0.113050,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Avg Margin of Victory,7.387370,192.178052,0.000000,true,1.044732,large
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Voter Participation Rate,-0.778150,196.422707,0.437417,false,-0.110047,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Delegate Concentration,-1.574522,196.410297,0.116976,false,-0.222671,small
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Quorum Reach Rate,42.673798,101.350198,0,true,6.034986,very_large
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Voter Concentration Gini,0.823739,197.369392,0.411082,false,0.116494,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Token Concentration Gini,-0.976351,196.713841,0.330090,false,-0.138077,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Single Entity Control,0.256067,190.965532,0.798174,false,0.036213,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Collusion Threshold,1.024762,197.278444,0.306730,false,0.144923,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Final Treasury,0.755257,196.725092,0.450998,false,0.106810,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.04,Treasury Volatility,-0.002005,193.138350,0.998403,false,-0.000283,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Proposal Pass Rate,1.146996,191.258423,0.252816,false,0.162210,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Average Turnout,-0.486188,195.328348,0.627379,false,-0.068757,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Final Gini,0.885723,197.946960,0.376842,false,0.125260,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Final Reputation Gini,-0.957310,197.938347,0.339579,false,-0.135384,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Whale Influence,-0.644500,197.621099,0.519999,false,-0.091146,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Governance Capture Risk,-1.772280,197.039871,0.077893,false,-0.250638,small
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Avg Margin of Victory,5.576399,187.247227,0.000000,true,0.788622,medium
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Voter Participation Rate,0.219693,197.349804,0.826338,false,0.031069,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Delegate Concentration,-1.152825,197.468861,0.250376,false,-0.163034,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Quorum Reach Rate,43.387196,101.480502,0,true,6.135876,very_large
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Voter Concentration Gini,0.287076,197.972263,0.774355,false,0.040599,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Token Concentration Gini,0.900532,197.968328,0.368931,false,0.127354,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Single Entity Control,-0.630165,189.225893,0.529347,false,-0.089119,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Collusion Threshold,-0.837719,197.752127,0.403200,false,-0.118471,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Final Treasury,1.111398,197.799740,0.267746,false,0.157175,negligible
+governance_rule=quadratic_quorumPercentage=0.08,governance_rule=conviction_quorumPercentage=0.08,Treasury Volatility,-0.689918,195.748172,0.491063,false,-0.097569,negligible
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Proposal Pass Rate,-0.741470,197.418846,0.459289,false,-0.104860,negligible
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Average Turnout,-1.423040,194.735792,0.156325,false,-0.201248,small
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Gini,1.932590,197.190624,0.054719,false,0.273310,small
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Reputation Gini,0.573191,197.935753,0.567166,false,0.081061,negligible
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Whale Influence,1.148253,195.631798,0.252266,false,0.162388,negligible
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Governance Capture Risk,-0.970302,197.773236,0.333081,false,-0.137221,negligible
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Avg Margin of Victory,-1.403357,197.076953,0.162084,false,-0.198465,negligible
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Voter Participation Rate,1.032153,197.792642,0.303261,false,0.145969,negligible
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Delegate Concentration,0.328818,194.131195,0.742648,false,0.046502,negligible
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Quorum Reach Rate,-0.308637,197.855952,0.757922,false,-0.043648,negligible
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Voter Concentration Gini,-0.533700,197.604847,0.594149,false,-0.075477,negligible
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Token Concentration Gini,1.919721,197.081159,0.056337,false,0.271490,small
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Single Entity Control,-0.990973,197.882050,0.322909,false,-0.140145,negligible
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Collusion Threshold,-1.867139,196.203932,0.063374,false,-0.264053,small
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Final Treasury,0.298164,195.545569,0.765895,false,0.042167,negligible
+governance_rule=conviction_quorumPercentage=0.04,governance_rule=conviction_quorumPercentage=0.08,Treasury Volatility,-0.746907,197.460077,0.456008,false,-0.105629,negligible
 
 # One-Way ANOVA Results
 metric,f_statistic,df_between,df_within,p_value,significant
-Proposal Pass Rate,22.433031,5,174,0,true
-Average Turnout,0.785921,5,174,0.561105,false
-Final Gini,0.461378,5,174,0.804591,false
-Final Reputation Gini,0.853441,5,174,0.513752,false
-Whale Influence,0.550510,5,174,0.737781,false
-Governance Capture Risk,0.113152,5,174,0.989349,false
-Avg Margin of Victory,22.593037,5,174,0,true
-Voter Participation Rate,0.699497,5,174,0.624523,false
-Delegate Concentration,0.071999,5,174,0.996295,false
-Quorum Reach Rate,550.270136,5,174,0,true
-Voter Concentration Gini,0.347156,5,174,0.883565,false
-Token Concentration Gini,0.468347,5,174,0.799476,false
-Single Entity Control,1.346570,5,174,0.246980,false
-Collusion Threshold,0.253767,5,174,0.937474,false
-Final Treasury,1.164843,5,174,0.328429,false
-Treasury Volatility,1.154676,5,174,0.333557,false
+Proposal Pass Rate,39.275094,5,594,0,true
+Average Turnout,6.571463,5,594,0.000006,true
+Final Gini,1.821799,5,594,0.106592,false
+Final Reputation Gini,0.897534,5,594,0.482286,false
+Whale Influence,1.764022,5,594,0.118282,false
+Governance Capture Risk,0.798855,5,594,0.550720,false
+Avg Margin of Victory,76.622457,5,594,0,true
+Voter Participation Rate,0.997306,5,594,0.418542,false
+Delegate Concentration,0.950414,5,594,0.447774,false
+Quorum Reach Rate,1476.177923,5,594,0,true
+Voter Concentration Gini,1.218750,5,594,0.298704,false
+Token Concentration Gini,1.803798,5,594,0.110115,false
+Single Entity Control,1.060391,5,594,0.381323,false
+Collusion Threshold,1.368390,5,594,0.234376,false
+Final Treasury,1.338956,5,594,0.246027,false
+Treasury Volatility,0.585411,5,594,0.711204,false
 
 # Power Analysis
-current_runs_per_config,30
+current_runs_per_config,100
 recommended_runs,63
-current_power,0.486874
-minimum_effect_detectable,0.722957
+current_power,0.955248
+minimum_effect_detectable,0.395980

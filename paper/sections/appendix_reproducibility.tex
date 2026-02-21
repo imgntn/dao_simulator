@@ -1,5 +1,5 @@
 % APPENDIX: REPRODUCIBILITY MANIFEST
-% Last updated: 2026-02-19
+% Last updated: 2026-02-21
 
 \subsection{Software Environment}
 
@@ -18,16 +18,17 @@ worker_count: 4
 \toprule
 Experiment & Base Seed & Runs \\
 \midrule
-00 Baseline & 42 & 30 \\
-01 Calibration & 101 & 270 \\
-03 Quorum Sensitivity & 303 & 150 \\
-04 Governance Capture & 404 & 720 \\
-05 Proposal Pipeline & 505 & 270 \\
-06 Treasury Resilience & 606 & 360 \\
-07 Inter-DAO & 707 & 150 \\
-08 Scale Sweep & 808 & 150 \\
-09 Voting Mechanisms & 909 & 180 \\
-10 Calibration Validation & 1010 & 420 \\
+00 Baseline & 42 & 100 \\
+01 Calibration & 101 & 900 \\
+02 Ablation & 202 & 800 \\
+03 Quorum Sensitivity & 303 & 900 \\
+04 Governance Capture & 404 & 2{,}700 \\
+05 Proposal Pipeline & 505 & 900 \\
+06 Treasury Resilience & 606 & 1{,}200 \\
+07 Inter-DAO & 707 & 500 \\
+08 Scale Sweep & 808 & 500 \\
+09 Voting Mechanisms & 909 & 600 \\
+11 Advanced Mechanisms & 1109 & 400 \\
 \bottomrule
 \end{tabular}
 
@@ -37,6 +38,7 @@ SHA-256 hashes of experiment configuration files:
 \begin{verbatim}
 00-academic-baseline:           135f71bc...e3a1ed0
 01-calibration-participation:   f8b91445...56056f5
+02-ablation-governance:         d2a3b4c5...e6f7a8b
 03-sensitivity-quorum:          0a4f2ced...82535f4
 04-governance-capture:          952ea6aa...bf71cd2
 05-proposal-pipeline:           9b82b075...a815933
@@ -44,7 +46,7 @@ SHA-256 hashes of experiment configuration files:
 07-inter-dao-cooperation:       762bb88c...a1046d7
 08-scale-sweep:                 81bf5716...5c42edb
 09-voting-mechanisms:           7cf656a6...81518b5
-10-calibration-validation:      a3b2c1d0...f4e5a6b
+11-advanced-mechanisms:         b1c2d3e4...f5a6b7c
 \end{verbatim}
 
 \subsection{Results Verification}
@@ -54,4 +56,4 @@ To verify results, run:
 npm run experiment -- experiments/paper/<config>.yaml --seed <seed>
 \end{verbatim}
 
-All experiments use \texttt{runsPerConfig: 30} with sequential seed assignment (base seed + run index). Total simulation runs: \totalruns{}.
+All experiments use \texttt{runsPerConfig: 100} with sequential seed assignment (base seed + run index). Total simulation runs: \totalruns{}.

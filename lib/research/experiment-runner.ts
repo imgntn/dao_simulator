@@ -1247,6 +1247,21 @@ export class ExperimentRunner {
       parameterValues.push({ parameter: gridParam.parameter, values });
     }
 
+    // Check if this is a zip sweep (parallel iteration) vs grid (Cartesian product)
+    if (this.config.sweep?.type === 'zip') {
+      // Zip: iterate parameters in parallel (each row is one config)
+      const len = parameterValues[0]?.values.length || 0;
+      const combinations: Array<Record<string, number | string | boolean>> = [];
+      for (let i = 0; i < len; i++) {
+        const combo: Record<string, number | string | boolean> = {};
+        for (const pv of parameterValues) {
+          combo[pv.parameter] = pv.values[i % pv.values.length];
+        }
+        combinations.push(combo);
+      }
+      return combinations;
+    }
+
     // Generate Cartesian product
     const combinations: Array<Record<string, number | string | boolean>> = [];
 

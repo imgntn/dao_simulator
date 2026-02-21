@@ -1,381 +1,381 @@
 # Pairwise T-Test Comparisons
 sweep_value_1,sweep_value_2,metric,t_statistic,df,p_value,significant,cohens_d,effect_interpretation
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Proposal Pass Rate,-0.122677,55.343061,0.902808,false,-0.031675,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Quorum Reach Rate,-1.045649,47.789784,0.300983,false,-0.269986,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Avg Time to Decision,0.058989,56.228729,0.953170,false,0.015231,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Proposal Rejection Rate,0.122677,55.343061,0.902808,false,0.031675,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Governance Overhead,8.522835,53.491655,0.000000,true,2.200587,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Average Turnout,7.762476,46.914437,0.000000,true,2.004263,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Avg Margin of Victory,-1.224104,54.418126,0.226186,false,-0.316062,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Proposal Rate,0.655573,57.931480,0.514694,false,0.169268,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Total Proposals,0.655573,57.931480,0.514694,false,0.169268,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Pass Rate,-1.709102,55.419979,0.093027,false,-0.441288,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Quorum Reach Rate,-1.412058,43.014640,0.165127,false,-0.364592,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Avg Time to Decision,2.285764,57.699605,0.025960,false,0.590182,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Rejection Rate,1.709102,55.419979,0.093027,false,0.441288,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Governance Overhead,8.256192,55.214043,0.000000,true,2.131740,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Average Turnout,8.592142,43.933704,0.000000,true,2.218482,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Avg Margin of Victory,-1.647859,57.992123,0.104790,false,-0.425475,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Rate,-1.652555,57.992848,0.103826,false,-0.426688,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Total Proposals,-1.652555,57.992848,0.103826,false,-0.426688,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Pass Rate,-3.502164,50.741153,0.000972,true,-0.904255,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Quorum Reach Rate,-1.226911,42.843230,0.226556,false,-0.316787,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Avg Time to Decision,0.974127,57.935226,0.334043,false,0.251519,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Rejection Rate,3.502164,50.741153,0.000972,true,0.904255,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Governance Overhead,1.941248,57.185878,0.057162,false,0.501228,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Average Turnout,0.620634,57.288679,0.537302,false,0.160247,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Avg Margin of Victory,-5.587710,52.626614,0.000001,true,-1.442741,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Rate,-1.523317,55.322462,0.133376,false,-0.393319,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Total Proposals,-1.523317,55.322462,0.133376,false,-0.393319,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Pass Rate,-2.139101,52.591753,0.037089,false,-0.552314,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Quorum Reach Rate,-2.091185,29,0.045383,false,-0.539942,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Time to Decision,2.132956,57.109253,0.037239,false,0.550727,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rejection Rate,2.139101,52.591753,0.037089,false,0.552314,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Governance Overhead,7.050173,50.200291,0.000000,true,1.820347,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Average Turnout,7.902201,44.922038,0.000000,true,2.040340,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Margin of Victory,-5.620453,55.338490,0.000001,true,-1.451195,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rate,0.033457,57.812599,0.973425,false,0.008639,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Total Proposals,0.033457,57.812599,0.973425,false,0.008639,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Pass Rate,-3.690942,56.935188,0.000502,true,-0.952997,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Quorum Reach Rate,-2.091185,29,0.045383,false,-0.539942,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Time to Decision,1.411098,56.007510,0.163747,false,0.364344,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rejection Rate,3.690942,56.935188,0.000502,true,0.952997,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Governance Overhead,8.786267,51.500275,0.000000,true,2.268604,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Average Turnout,7.943967,53.555852,0.000000,true,2.051124,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Margin of Victory,-7.184888,51.087703,0.000000,true,-1.855130,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rate,-0.070239,54.467332,0.944261,false,-0.018136,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Total Proposals,-0.070239,54.467332,0.944261,false,-0.018136,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Pass Rate,-4.185787,45.686567,0.000128,true,-1.080765,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Quorum Reach Rate,-1.592539,37.404141,0.119681,false,-0.411192,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Time to Decision,0.203394,56.930432,0.839552,false,0.052516,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rejection Rate,4.185787,45.686567,0.000128,true,1.080765,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Governance Overhead,3.600846,56.771078,0.000668,true,0.929734,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Average Turnout,0.844389,57.478900,0.401953,false,0.218020,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Margin of Victory,-8.506635,47.434407,0.000000,true,-2.196404,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rate,-0.384972,57.804815,0.701671,false,-0.099399,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Total Proposals,-0.384972,57.804815,0.701671,false,-0.099399,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,-3.191556,56.631935,0.002310,true,-0.824056,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,-1.531917,39.191622,0.133576,false,-0.395539,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,1.609160,57.401988,0.113068,false,0.415483,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,3.191556,56.631935,0.002310,true,0.824056,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,9.094960,55.722453,0.000000,true,2.348308,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,9.008662,51.120305,0.000000,true,2.326026,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,-9.537027,47.063337,0.000000,true,-2.462450,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-1.899418,57.864024,0.062498,false,-0.490428,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-1.899418,57.864024,0.062498,false,-0.490428,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,-3.908820,50.227685,0.000278,true,-1.009253,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,-1.361666,44.695834,0.180128,false,-0.351581,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,0.809458,57.492051,0.421590,false,0.209001,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,3.908820,50.227685,0.000278,true,1.009253,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,8.207532,56.756575,0.000000,true,2.119176,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,8.452586,47.463018,0.000000,true,2.182448,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,-10.463975,52.429330,0.000000,true,-2.701787,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,0.892151,55.716589,0.376149,false,0.230352,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,0.892151,55.716589,0.376149,false,0.230352,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Pass Rate,-1.343641,49.470098,0.185195,false,-0.346927,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Quorum Reach Rate,-0.456033,56.256563,0.650122,false,-0.117747,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Avg Time to Decision,1.999178,54.678091,0.050569,false,0.516185,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Rejection Rate,1.343641,49.470098,0.185195,false,0.346927,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Governance Overhead,-0.568389,57.715031,0.571976,false,-0.146757,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Average Turnout,0.893620,57.306722,0.375263,false,0.230732,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Avg Margin of Victory,-0.204192,54.699576,0.838962,false,-0.052722,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Rate,-2.282657,57.880280,0.026142,false,-0.589379,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Total Proposals,-2.282657,57.880280,0.026142,false,-0.589379,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Pass Rate,-2.835616,44.468749,0.006859,true,-0.732153,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Quorum Reach Rate,-0.191556,56.123926,0.848781,false,-0.049460,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Avg Time to Decision,0.821061,55.557414,0.415121,false,0.211997,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Rejection Rate,2.835616,44.468749,0.006859,true,0.732153,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Governance Overhead,-7.256986,50.140546,0.000000,true,-1.873746,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Average Turnout,-6.389861,43.896419,0.000000,true,-1.649855,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Avg Margin of Victory,-3.974533,57.728297,0.000198,true,-1.026220,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Rate,-2.083779,56.039909,0.041752,false,-0.538029,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Total Proposals,-2.083779,56.039909,0.041752,false,-0.538029,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Pass Rate,-1.690906,46.238412,0.097586,false,-0.436590,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Quorum Reach Rate,-1.431733,29,0.162911,false,-0.369672,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Time to Decision,1.900430,57.832675,0.062365,false,0.490689,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rejection Rate,1.690906,46.238412,0.097586,false,0.436590,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Governance Overhead,-0.737976,57.213048,0.463545,false,-0.190545,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Average Turnout,0.001896,57.697002,0.998494,false,0.000490,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Margin of Victory,-3.875147,57.909776,0.000274,true,-1.000559,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rate,-0.640473,57.522114,0.524408,false,-0.165369,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Total Proposals,-0.640473,57.522114,0.524408,false,-0.165369,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Pass Rate,-3.084939,51.814485,0.003263,true,-0.796528,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Quorum Reach Rate,-1.431733,29,0.162911,false,-0.369672,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Time to Decision,1.247687,57.992312,0.217160,false,0.322151,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rejection Rate,3.084939,51.814485,0.003263,true,0.796528,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Governance Overhead,0.589555,57.697455,0.557791,false,0.152222,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Average Turnout,0.942782,55.079195,0.349910,false,0.243425,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Margin of Victory,-5.487092,57.137340,0.000001,true,-1.416761,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rate,-0.637791,55.270450,0.526243,false,-0.164677,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Total Proposals,-0.637791,55.270450,0.526243,false,-0.164677,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Pass Rate,-3.361648,40.295014,0.001707,true,-0.867974,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Quorum Reach Rate,-0.673136,49.094544,0.504017,false,-0.173803,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Time to Decision,0.131273,57.900632,0.896014,false,0.033895,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rejection Rate,3.361648,40.295014,0.001707,true,0.867974,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Governance Overhead,-4.944209,56.730830,0.000007,true,-1.276589,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Average Turnout,-6.212186,44.319090,0.000000,true,-1.603979,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Margin of Victory,-6.874810,54.713870,0.000000,true,-1.775068,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rate,-1.051595,57.509890,0.297384,false,-0.271521,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Total Proposals,-1.051595,57.509890,0.297384,false,-0.271521,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,-2.643810,51.273511,0.010850,true,-0.682629,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,-0.596701,52.017784,0.553295,false,-0.154068,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,1.384974,53.933714,0.171763,false,0.357599,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,2.643810,51.273511,0.010850,true,0.682629,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,0.050667,57.495879,0.959767,false,0.013082,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,2.103540,56.803544,0.039859,false,0.543132,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,-7.843169,54.397882,0.000000,true,-2.025097,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-2.535632,57.605735,0.013961,false,-0.654697,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-2.535632,57.605735,0.013961,false,-0.654697,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,-3.175326,44.007413,0.002733,true,-0.819866,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,-0.400793,57.288136,0.690064,false,-0.103484,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,0.683697,57.584860,0.496909,false,0.176530,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,3.175326,44.007413,0.002733,true,0.819866,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,-0.973724,56.745465,0.334326,false,-0.251414,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,1.012395,57.978266,0.315556,false,0.261399,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,-8.375227,57.669188,0.000000,true,-2.162474,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,0.157255,54.959790,0.875620,false,0.040603,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,0.157255,54.959790,0.875620,false,0.040603,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Pass Rate,-1.935762,56.240031,0.057930,false,-0.499811,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Quorum Reach Rate,0.292993,57.997146,0.770573,false,0.075650,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Avg Time to Decision,-1.316595,57.912769,0.193161,false,-0.339943,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Rejection Rate,1.935762,56.240031,0.057930,false,0.499811,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Governance Overhead,-6.933198,52.148790,0.000000,true,-1.790144,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Average Turnout,-7.102202,41.254959,0.000000,true,-1.833781,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Avg Margin of Victory,-4.203566,52.943785,0.000102,true,-1.085356,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Rate,-0.072164,55.072960,0.942733,false,-0.018633,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Total Proposals,-0.072164,55.072960,0.942733,false,-0.018633,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Pass Rate,-0.408895,57.272396,0.684142,false,-0.105576,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Quorum Reach Rate,-1.000000,29,0.325582,false,-0.258199,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Time to Decision,0.069980,55.869393,0.944460,false,0.018069,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rejection Rate,0.408895,57.272396,0.684142,false,0.105576,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Governance Overhead,-0.228504,56.060224,0.820086,false,-0.059000,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Average Turnout,-0.927137,57.917143,0.357703,false,-0.239386,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Margin of Victory,-4.136898,55.590682,0.000120,true,-1.068143,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rate,1.733138,57.878285,0.088396,false,0.447494,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Total Proposals,1.733138,57.878285,0.088396,false,0.447494,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Pass Rate,-2.281381,57.618131,0.026240,false,-0.589050,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Quorum Reach Rate,-1.000000,29,0.325582,false,-0.258199,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Time to Decision,-0.593800,54.399493,0.555107,false,-0.153318,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rejection Rate,2.281381,57.618131,0.026240,false,0.589050,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Governance Overhead,1.154406,56.854266,0.253163,false,0.298066,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Average Turnout,0.206672,52.245942,0.837070,false,0.053362,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Margin of Victory,-5.845247,51.420301,0.000000,true,-1.509236,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rate,1.354147,54.193429,0.181309,false,0.349639,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Total Proposals,1.354147,54.193429,0.181309,false,0.349639,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Pass Rate,-2.662319,51.937279,0.010306,true,-0.687408,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Quorum Reach Rate,-0.192800,54.055990,0.847839,false,-0.049781,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Time to Decision,-1.903349,55.613080,0.062176,false,-0.491443,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rejection Rate,2.662319,51.937279,0.010306,true,0.687408,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Governance Overhead,-4.529418,57.629813,0.000030,true,-1.169491,large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Average Turnout,-6.931964,41.623251,0.000000,true,-1.789825,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Margin of Victory,-7.279522,47.767046,0.000000,true,-1.879564,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rate,1.313211,57.871978,0.194295,false,0.339070,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Total Proposals,1.313211,57.871978,0.194295,false,0.339070,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,-1.710869,57.774810,0.092470,false,-0.441744,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,-0.123103,56.306358,0.902464,false,-0.031785,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,-0.736095,57.947372,0.464642,false,-0.190059,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,1.710869,57.774810,0.092470,false,0.441744,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,0.648960,57.967920,0.518927,false,0.167561,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,1.379011,54.559618,0.173519,false,0.356059,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,-8.318758,47.393803,0.000000,true,-2.147894,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-0.217858,57.919026,0.828305,false,-0.056251,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-0.217858,57.919026,0.828305,false,-0.056251,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,-2.396440,55.894591,0.019926,false,-0.618758,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,0.046597,57.749490,0.962995,false,0.012031,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,-1.333023,56.462256,0.187878,false,-0.344185,small
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,2.396440,55.894591,0.019926,false,0.618758,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,-0.400269,57.638015,0.690438,false,-0.103349,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,0.181500,57.049520,0.856619,false,0.046863,negligible
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,-9.067169,52.749149,0.000000,true,-2.341133,very_large
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,2.712266,55.942724,0.008862,true,0.700304,medium
-proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,2.712266,55.942724,0.008862,true,0.700304,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Pass Rate,1.614530,57.752278,0.111864,false,0.416870,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Quorum Reach Rate,-1.422856,29,0.165447,false,-0.367380,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Time to Decision,1.254436,56.593146,0.214840,false,0.323894,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rejection Rate,-1.614530,57.752278,0.111864,false,-0.416870,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Governance Overhead,5.812834,46.754768,0.000001,true,1.500867,very_large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Average Turnout,6.486704,42.118039,0.000000,true,1.674860,very_large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Margin of Victory,0.311934,57.333926,0.756223,false,0.080541,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rate,1.585730,53.963256,0.118644,false,0.409434,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Total Proposals,1.585730,53.963256,0.118644,false,0.409434,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Pass Rate,-0.615249,54.468108,0.540953,false,-0.158857,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Quorum Reach Rate,-1.422856,29,0.165447,false,-0.367380,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Time to Decision,0.555283,55.307055,0.580940,false,0.143373,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rejection Rate,0.615249,54.468108,0.540953,false,0.158857,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Governance Overhead,7.577990,48.042055,0.000000,true,1.956629,very_large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Average Turnout,6.677603,50.442548,0.000000,true,1.724150,very_large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Margin of Victory,-1.579852,57.826783,0.119596,false,-0.407916,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rate,1.289732,57.921840,0.202270,false,0.333007,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Total Proposals,1.289732,57.921840,0.202270,false,0.333007,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Pass Rate,-0.666480,56.269685,0.507828,false,-0.172084,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Quorum Reach Rate,-0.524173,54.231756,0.602294,false,-0.135341,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Time to Decision,-0.696547,56.375983,0.488949,false,-0.179848,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rejection Rate,0.666480,56.269685,0.507828,false,0.172084,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Governance Overhead,1.999379,54.278412,0.050584,false,0.516237,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Average Turnout,0.206706,57.984428,0.836964,false,0.053371,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Margin of Victory,-3.208549,56.189850,0.002205,true,-0.828444,large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rate,1.219184,53.933287,0.228080,false,0.314792,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Total Proposals,1.219184,53.933287,0.228080,false,0.314792,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,0.018224,54.922397,0.985526,false,0.004705,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,-0.441188,56.433274,0.660763,false,-0.113914,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,0.614257,57.726229,0.541459,false,0.158601,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,-0.018224,54.922397,0.985526,false,-0.004705,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,7.794860,52.797224,0.000000,true,2.012624,very_large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,7.612302,47.888924,0.000000,true,1.965488,very_large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,-4.181234,55.935510,0.000103,true,-1.079590,large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-0.117098,54.177013,0.907215,false,-0.030235,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-0.117098,54.177013,0.907215,false,-0.030235,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,-0.493033,57.981647,0.623852,false,-0.127300,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,-0.236365,57.693862,0.813986,false,-0.061029,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,-0.104173,57.078894,0.917397,false,-0.026897,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,0.493033,57.981647,0.623852,false,0.127300,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,6.831493,54.255987,0.000000,true,1.763884,very_large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,7.032715,44.396597,0.000000,true,1.815839,very_large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,-4.272893,57.997017,0.000073,true,-1.103256,large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,2.405356,49.846971,0.019910,false,0.621060,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,2.405356,49.846971,0.019910,false,0.621060,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Pass Rate,-2.005442,55.930481,0.049763,false,-0.517803,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Quorum Reach Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Time to Decision,-0.608466,57.754012,0.545264,false,-0.157105,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rejection Rate,2.005442,55.930481,0.049763,false,0.517803,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Governance Overhead,1.270064,57.881474,0.209144,false,0.327929,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Average Turnout,0.966649,53.275904,0.338087,false,0.249588,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Margin of Victory,-1.960319,56.524580,0.054894,false,-0.506152,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rate,-0.100370,52.999807,0.920429,false,-0.025916,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Total Proposals,-0.100370,52.999807,0.920429,false,-0.025916,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Pass Rate,-2.381026,54.887883,0.020762,false,-0.614778,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Quorum Reach Rate,1.000000,29,0.325582,false,0.258199,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Time to Decision,-1.806652,57.991098,0.076006,false,-0.466476,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rejection Rate,2.381026,54.887883,0.020762,false,0.614778,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Governance Overhead,-3.820632,54.267672,0.000345,true,-0.986483,large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Average Turnout,-6.308851,42.505665,0.000000,true,-1.628938,very_large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Margin of Victory,-3.624704,53.732506,0.000643,true,-0.935895,large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rate,-0.430909,57.999919,0.668132,false,-0.111260,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Total Proposals,-0.430909,57.999919,0.668132,false,-0.111260,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,-1.403858,56.297095,0.165854,false,-0.362475,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,1.000000,29.000000,0.325582,false,0.258199,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,-0.729206,55.226466,0.468957,false,-0.188280,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,1.403858,56.297095,0.165854,false,0.362475,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,0.814895,55.580834,0.418611,false,0.210405,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,2.165316,55.429793,0.034684,false,0.559082,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,-4.633451,53.390886,0.000024,true,-1.196352,large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-1.989747,57.995828,0.051341,false,-0.513750,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-1.989747,57.995828,0.051341,false,-0.513750,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,-2.104217,57.601387,0.039735,false,-0.543307,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,1.000000,29,0.325582,false,0.258199,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,-1.280551,57.943376,0.205454,false,-0.330637,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,2.104217,57.601387,0.039735,false,0.543307,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,-0.122839,54.290075,0.902689,false,-0.031717,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,1.045826,57.516348,0.300017,false,0.270031,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,-4.806233,57.244688,0.000012,true,-1.240964,very_large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,0.885627,56.769856,0.379554,false,0.228668,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,0.885627,56.769856,0.379554,false,0.228668,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Pass Rate,0.089637,49.596735,0.928936,false,0.023144,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Quorum Reach Rate,1.000000,29,0.325582,false,0.258199,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Time to Decision,-1.142481,57.838049,0.257961,false,-0.294987,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rejection Rate,-0.089637,49.596735,0.928936,false,-0.023144,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Governance Overhead,-5.364967,55.331525,0.000002,true,-1.385228,very_large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Average Turnout,-6.509328,50.914482,0.000000,true,-1.680701,very_large
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Margin of Victory,-1.696799,57.093695,0.095181,false,-0.438112,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rate,-0.258201,52.968038,0.797253,false,-0.066667,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Total Proposals,-0.258201,52.968038,0.797253,false,-0.066667,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,0.570720,57.978904,0.570395,false,0.147359,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,1.000000,29.000000,0.325582,false,0.258199,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,-0.031578,53.637415,0.974926,false,-0.008153,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,-0.570720,57.978904,0.570395,false,-0.147359,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,-0.565826,56.464033,0.573754,false,-0.146096,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,0.990517,57.553357,0.326068,false,0.255750,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,-2.659212,56.903031,0.010154,true,-0.686605,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-1.558300,53.227039,0.125089,false,-0.402351,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-1.558300,53.227039,0.125089,false,-0.402351,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,0.194602,54.026225,0.846434,false,0.050246,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,1.000000,29,0.325582,false,0.258199,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,-0.619525,57.466773,0.538019,false,-0.159961,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,-0.194602,54.026225,0.846434,false,-0.050246,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,-1.561290,55.351450,0.124155,false,-0.403123,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,-0.045501,55.508433,0.963871,false,-0.011748,negligible
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,-2.580648,57.869005,0.012420,false,-0.666321,medium
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,0.826206,48.781850,0.412710,false,0.213325,small
-proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,0.826206,48.781850,0.412710,false,0.213325,small
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,0.589914,50.149550,0.557897,false,0.152315,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,0.071816,57.409339,0.942998,false,0.018543,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,1.272424,54.944094,0.208581,false,0.328539,small
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,-0.589914,50.149550,0.557897,false,-0.152315,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,5.261813,57.813943,0.000002,true,1.358594,very_large
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,7.452815,48.360127,0.000000,true,1.924309,very_large
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,-0.919529,57.990076,0.361628,false,-0.237421,small
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-1.561834,57.994588,0.123768,false,-0.403264,small
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-1.561834,57.994588,0.123768,false,-0.403264,small
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,0.138082,56.586310,0.890666,false,0.035653,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,0.236760,52.300853,0.813768,false,0.061131,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,0.561971,57.889784,0.576305,false,0.145100,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,-0.138082,56.586310,0.890666,false,-0.035653,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,4.303159,57.999953,0.000066,true,1.111071,large
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,6.863667,44.827822,0.000000,true,1.772191,very_large
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,-0.673895,56.323337,0.503135,false,-0.173999,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,1.347802,56.788647,0.183075,false,0.348001,small
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,1.347802,56.788647,0.183075,false,0.348001,small
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,-0.448185,54.499352,0.655796,false,-0.115721,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,0.168497,54.925476,0.866811,false,0.043506,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,-0.678656,55.892094,0.500157,false,-0.175228,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,58,1,false,0,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,0.448185,54.499352,0.655796,false,0.115721,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,-1.080141,57.819790,0.284564,false,-0.278891,small
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,-1.148640,57.091824,0.255494,false,-0.296578,small
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,0.325860,56.076642,0.745743,false,0.084137,negligible
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,3.011154,56.630803,0.003884,true,0.777477,medium
-proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,3.011154,56.630803,0.003884,true,0.777477,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Proposal Pass Rate,0.349993,197.999913,0.726716,false,0.049497,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Quorum Reach Rate,-0.087905,197.573927,0.930042,false,-0.012432,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Avg Time to Decision,0.030001,197.904945,0.976096,false,0.004243,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Proposal Rejection Rate,-0.349993,197.999913,0.726716,false,-0.049497,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Governance Overhead,18.061484,186.872075,0,true,2.554280,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Average Turnout,12.937636,160.681744,0,true,1.829658,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Avg Margin of Victory,0.380370,197.915214,0.704079,false,0.053792,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Proposal Rate,-1.766624,197.143350,0.078839,false,-0.249838,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,Total Proposals,-1.766624,197.143350,0.078839,false,-0.249838,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Pass Rate,-0.343077,196.982281,0.731907,false,-0.048518,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Quorum Reach Rate,0.690249,191.961177,0.490872,false,0.097616,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Avg Time to Decision,0.990862,188.167768,0.323026,false,0.140129,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Rejection Rate,0.343077,196.982281,0.731907,false,0.048518,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Governance Overhead,14.292309,186.333081,0,true,2.021238,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Average Turnout,14.422509,155.601850,0,true,2.039651,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Avg Margin of Victory,-1.797778,194.605775,0.073762,false,-0.254244,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Rate,-1.298842,196.049759,0.195524,false,-0.183684,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Total Proposals,-1.298842,196.049759,0.195524,false,-0.183684,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Pass Rate,-4.110290,184.247838,0.000059,true,-0.581283,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Quorum Reach Rate,-0.514995,196.116676,0.607136,false,-0.072831,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Avg Time to Decision,-0.626270,189.401122,0.531892,false,-0.088568,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Rejection Rate,4.110290,184.247838,0.000059,true,0.581283,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Governance Overhead,5.715672,197.429217,0.000000,true,0.808318,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Average Turnout,3.165334,195.878746,0.001796,true,0.447646,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Avg Margin of Victory,-10.926112,179.565406,0,true,-1.545186,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Rate,-0.942099,196.023521,0.347301,false,-0.133233,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Total Proposals,-0.942099,196.023521,0.347301,false,-0.133233,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Pass Rate,-3.719595,172.139714,0.000270,true,-0.526030,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Quorum Reach Rate,-1.024876,179.951852,0.306797,false,-0.144939,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Time to Decision,1.838137,190.316008,0.067601,false,0.259952,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rejection Rate,3.719595,172.139714,0.000270,true,0.526030,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Governance Overhead,18.575724,189.353353,0,true,2.627004,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Average Turnout,14.217515,144.259440,0,true,2.010660,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Margin of Victory,-11.581354,191.873693,0,true,-1.637851,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rate,-0.770243,196.055213,0.442083,false,-0.108929,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Total Proposals,-0.770243,196.055213,0.442083,false,-0.108929,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Pass Rate,-4.836597,180.531294,0.000003,true,-0.683998,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Quorum Reach Rate,-0.999519,181.980184,0.318871,false,-0.141353,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Time to Decision,1.411747,197.876925,0.159595,false,0.199651,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rejection Rate,4.836597,180.531294,0.000003,true,0.683998,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Governance Overhead,15.841351,177.737007,0,true,2.240305,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Average Turnout,14.183324,163.866915,0,true,2.005825,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Margin of Victory,-10.604090,177.962976,0,true,-1.499645,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rate,-1.396635,197.949330,0.164087,false,-0.197514,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Total Proposals,-1.396635,197.949330,0.164087,false,-0.197514,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Pass Rate,-5.165516,177.125117,0.000001,true,-0.730514,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Quorum Reach Rate,-2.114014,132.776122,0.036384,false,-0.298967,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Time to Decision,0.841783,197.298773,0.400929,false,0.119046,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rejection Rate,5.165516,177.125117,0.000001,true,0.730514,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Governance Overhead,6.621024,196.623481,0.000000,true,0.936354,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Average Turnout,6.230886,195.933765,0.000000,true,0.881180,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Margin of Victory,-18.745961,170.553375,0,true,-2.651079,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rate,-1.480379,197.009151,0.140370,false,-0.209357,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Total Proposals,-1.480379,197.009151,0.140370,false,-0.209357,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,-6.486187,153.260661,0.000000,true,-0.917285,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,-1.439429,161.136475,0.151969,false,-0.203566,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,0.353551,197.889323,0.724052,false,0.050000,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,6.486187,153.260661,0.000000,true,0.917285,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,17.844784,191.716779,0,true,2.523634,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,14.976307,148.207108,0,true,2.117970,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,-19.985000,182.397820,0,true,-2.826306,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-2.007931,197.966112,0.046010,false,-0.283964,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-2.007931,197.966112,0.046010,false,-0.283964,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,-6.190955,162.510494,0.000000,true,-0.875533,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,0.203396,197.624223,0.839034,false,0.028765,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,0.699469,197.853519,0.485080,false,0.098920,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,6.190955,162.510494,0.000000,true,0.875533,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,17.814352,194.963600,0,true,2.519330,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,14.442711,160.813234,0,true,2.042508,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,-17.476571,168.042070,0,true,-2.471560,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,-1.711128,197.715867,0.088626,false,-0.241990,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,-1.711128,197.715867,0.088626,false,-0.241990,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Pass Rate,-0.680160,197.000737,0.497202,false,-0.096189,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Quorum Reach Rate,0.782606,188.702043,0.434839,false,0.110677,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Avg Time to Decision,0.972877,186.418186,0.331875,false,0.137586,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Rejection Rate,0.680160,197.000737,0.497202,false,0.096189,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Governance Overhead,-3.315455,197.991364,0.001088,true,-0.468876,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Average Turnout,1.844917,197.434034,0.066548,false,0.260911,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Avg Margin of Victory,-2.136362,195.561141,0.033893,false,-0.302127,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Proposal Rate,0.334145,192.778600,0.738633,false,0.047255,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,Total Proposals,0.334145,192.778600,0.738633,false,0.047255,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Pass Rate,-4.503443,184.190462,0.000012,true,-0.636883,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Quorum Reach Rate,-0.435698,197.470292,0.663531,false,-0.061617,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Avg Time to Decision,-0.658174,187.729702,0.511232,false,-0.093080,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Rejection Rate,4.503443,184.190462,0.000012,true,0.636883,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Governance Overhead,-12.683092,190.904741,0,true,-1.793660,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Average Turnout,-8.189826,150.987466,0.000000,true,-1.158216,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Avg Margin of Victory,-11.163091,181.479791,0,true,-1.578699,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Rate,0.700612,192.737525,0.484390,false,0.099082,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Total Proposals,0.700612,192.737525,0.484390,false,0.099082,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Pass Rate,-4.130115,172.074501,0.000056,true,-0.584086,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Quorum Reach Rate,-0.954580,184.145956,0.341041,false,-0.134998,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Time to Decision,1.829325,191.798758,0.068904,false,0.258706,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rejection Rate,4.130115,172.074501,0.000056,true,0.584086,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Governance Overhead,0.138819,197.797423,0.889734,false,0.019632,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Average Turnout,1.059069,191.655451,0.290901,false,0.149775,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Margin of Victory,-11.827480,193.143200,0,true,-1.672658,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rate,1.060775,197.772708,0.290086,false,0.150016,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Total Proposals,1.060775,197.772708,0.290086,false,0.150016,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Pass Rate,-5.235208,180.470088,0.000000,true,-0.740370,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Quorum Reach Rate,-0.928785,186.021553,0.354204,false,-0.131350,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Time to Decision,1.397142,197.998188,0.163935,false,0.197586,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rejection Rate,5.235208,180.470088,0.000000,true,0.740370,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Governance Overhead,-0.966476,195.960103,0.334997,false,-0.136680,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Average Turnout,1.871209,197.788197,0.062793,false,0.264629,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Margin of Victory,-10.841544,179.914835,0,true,-1.533226,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rate,0.338946,197.506775,0.735010,false,0.047934,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Total Proposals,0.338946,197.506775,0.735010,false,0.047934,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Pass Rate,-5.568820,177.061621,0.000000,true,-0.787550,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Quorum Reach Rate,-2.082063,135.840138,0.039213,false,-0.294448,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Time to Decision,0.820611,197.718238,0.412856,false,0.116052,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rejection Rate,5.568820,177.061621,0.000000,true,0.787550,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Governance Overhead,-11.652173,192.832722,0,true,-1.647866,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Average Turnout,-6.154808,170.810109,0.000000,true,-0.870421,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Margin of Victory,-18.924024,172.596666,0,true,-2.676261,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rate,0.174030,194.393857,0.862023,false,0.024612,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Total Proposals,0.174030,194.393857,0.862023,false,0.024612,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,-6.917177,153.200642,0.000000,true,-0.978237,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,-1.381016,165.679965,0.169134,false,-0.195305,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,0.327135,197.999404,0.743911,false,0.046264,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,6.917177,153.200642,0.000000,true,0.978237,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,-0.848536,197.143783,0.397169,false,-0.120001,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,2.321604,194.426261,0.021290,false,0.328324,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,-20.158150,184.226637,0,true,-2.850793,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-0.295039,197.447856,0.768274,false,-0.041725,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-0.295039,197.447856,0.768274,false,-0.041725,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,-6.611842,162.446055,0.000000,true,-0.935056,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,0.293735,196.413912,0.769271,false,0.041540,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,0.676888,197.994445,0.499267,false,0.095726,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,6.611842,162.446055,0.000000,true,0.935056,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,-1.429866,195.050344,0.154355,false,-0.202214,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,2.096691,197.999633,0.037291,false,0.296517,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,-17.661228,170.091137,0,true,-2.497675,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,-0.033769,195.898684,0.973096,false,-0.004776,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,-0.033769,195.898684,0.973096,false,-0.004776,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Pass Rate,-3.538129,177.652047,0.000514,true,-0.500367,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Quorum Reach Rate,-1.180163,184.485512,0.239455,false,-0.166900,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Avg Time to Decision,-1.465162,197.947351,0.144463,false,-0.207205,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Rejection Rate,3.538129,177.652047,0.000514,true,0.500367,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Governance Overhead,-9.014438,190.447699,0.000000,true,-1.274834,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Average Turnout,-9.492018,146.384505,0,true,-1.342374,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Avg Margin of Victory,-8.887112,190.627087,0.000000,true,-1.256827,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Proposal Rate,0.339729,197.999908,0.734421,false,0.048045,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,Total Proposals,0.339729,197.999908,0.734421,false,0.048045,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Pass Rate,-3.135909,165.024040,0.002029,true,-0.443485,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Quorum Reach Rate,-1.675190,162.452104,0.095821,false,-0.236908,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Time to Decision,0.516843,169.427367,0.605940,false,0.073093,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rejection Rate,3.135909,165.024040,0.002029,true,0.443485,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Governance Overhead,3.506078,197.705446,0.000563,true,0.495834,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Average Turnout,-0.923201,194.725955,0.357045,false,-0.130560,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Margin of Victory,-9.270306,197.549635,0,true,-1.311019,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rate,0.628053,190.575792,0.530721,false,0.088820,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Total Proposals,0.628053,190.575792,0.530721,false,0.088820,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Pass Rate,-4.219788,173.638018,0.000039,true,-0.596768,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Quorum Reach Rate,-1.649709,164.611988,0.100909,false,-0.233304,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Time to Decision,0.236125,186.169045,0.813595,false,0.033393,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rejection Rate,4.219788,173.638018,0.000039,true,0.596768,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Governance Overhead,2.179226,196.210949,0.030506,false,0.308189,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Average Turnout,0.106077,196.542522,0.915630,false,0.015002,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Margin of Victory,-8.606498,189.413400,0.000000,true,-1.217143,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rate,-0.015953,195.391049,0.987288,false,-0.002256,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Total Proposals,-0.015953,195.391049,0.987288,false,-0.002256,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Pass Rate,-4.523312,170.078236,0.000011,true,-0.639693,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Quorum Reach Rate,-2.657272,122.967637,0.008924,true,-0.375795,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Time to Decision,-0.278739,183.190265,0.780760,false,-0.039420,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rejection Rate,4.523312,170.078236,0.000011,true,0.639693,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Governance Overhead,-8.032751,192.431061,0.000000,true,-1.136002,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Average Turnout,-7.666263,165.510928,0.000000,true,-1.084173,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Margin of Victory,-16.516553,183.208144,0,true,-2.335793,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rate,-0.153218,197.833338,0.878382,false,-0.021668,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Total Proposals,-0.153218,197.833338,0.878382,false,-0.021668,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,-5.713065,146.965099,0.000000,true,-0.807949,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,-2.059223,145.023961,0.041262,false,-0.291218,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,-0.690123,186.275572,0.490976,false,-0.097598,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,5.713065,146.965099,0.000000,true,0.807949,large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,2.576671,196.965412,0.010707,true,0.364396,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,0.418459,196.657103,0.676069,false,0.059179,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,-17.446682,192.637236,0,true,-2.467333,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-0.597466,195.517790,0.550887,false,-0.084494,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-0.597466,195.517790,0.550887,false,-0.084494,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,-5.457823,155.643253,0.000000,true,-0.771853,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,-0.492460,194.466223,0.622949,false,-0.069644,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,-0.388701,185.980826,0.697942,false,-0.054971,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,5.457823,155.643253,0.000000,true,0.771853,medium
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,2.087419,194.735602,0.038151,false,0.295206,small
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,0.308418,197.405044,0.758090,false,0.043617,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,-15.349266,180.915857,0,true,-2.170714,very_large
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,-0.350232,197.240244,0.726538,false,-0.049530,negligible
+proposal_temp_check_fraction=0.05_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,-0.350232,197.240244,0.726538,false,-0.049530,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Pass Rate,0.681820,194.811279,0.496162,false,0.096424,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Quorum Reach Rate,-0.490650,188.402513,0.624245,false,-0.069388,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Time to Decision,2.268843,171.040910,0.024528,false,0.320863,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rejection Rate,-0.681820,194.811279,0.496162,false,-0.096424,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Governance Overhead,13.076451,192.949863,0,true,1.849289,very_large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Average Turnout,9.154384,136.434549,0.000000,true,1.294625,very_large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Avg Margin of Victory,0.365192,193.624270,0.715367,false,0.051646,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Proposal Rate,0.256075,190.528257,0.798169,false,0.036214,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,Total Proposals,0.256075,190.528257,0.798169,false,0.036214,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Pass Rate,-0.785182,197.661516,0.433287,false,-0.111041,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Quorum Reach Rate,-0.467760,190.040448,0.640492,false,-0.066151,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Time to Decision,1.881385,187.490609,0.061469,false,0.266068,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rejection Rate,0.785182,197.661516,0.433287,false,0.111041,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Governance Overhead,10.856882,182.725163,0,true,1.535395,very_large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Average Turnout,9.384821,153.932594,0,true,1.327214,very_large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Margin of Victory,0.174226,197.943066,0.861866,false,0.024639,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rate,-0.374753,195.360974,0.708250,false,-0.052998,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Total Proposals,-0.374753,195.360974,0.708250,false,-0.052998,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Pass Rate,-1.118459,196.822376,0.264734,false,-0.158174,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Quorum Reach Rate,-1.599434,139.529331,0.111986,false,-0.226194,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Time to Decision,1.382650,184.614322,0.168442,false,0.195536,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rejection Rate,1.118459,196.822376,0.264734,false,0.158174,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Governance Overhead,0.971418,197.821520,0.332526,false,0.137379,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Average Turnout,2.560241,190.046752,0.011237,true,0.362073,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Margin of Victory,-7.496862,196.314576,0.000000,true,-1.060216,large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rate,-0.497785,197.825426,0.619188,false,-0.070397,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Total Proposals,-0.497785,197.825426,0.619188,false,-0.070397,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,-2.401895,180.297658,0.017326,false,-0.339679,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,-0.903581,170.806371,0.367490,false,-0.127786,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,0.944886,187.592871,0.345933,false,0.133627,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,2.401895,180.297658,0.017326,false,0.339679,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,12.245660,194.782863,0,true,1.731798,very_large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,9.903063,139.853664,0,true,1.400505,very_large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,-7.651972,197.812014,0.000000,true,-1.082152,large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-0.955583,195.488405,0.340463,false,-0.135140,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-0.955583,195.488405,0.340463,false,-0.135140,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,-2.148572,188.658389,0.032943,false,-0.303854,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,0.715244,194.140370,0.475317,false,0.101151,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,1.251601,187.309816,0.212276,false,0.177003,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,2.148572,188.658389,0.032943,false,0.303854,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,12.022068,196.992707,0,true,1.700177,very_large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,9.581829,151.108083,0,true,1.355075,very_large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,-6.562132,195.292354,0.000000,true,-0.928026,large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,-0.700210,197.223581,0.484621,false,-0.099025,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,-0.700210,197.223581,0.484621,false,-0.099025,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Pass Rate,-1.533748,196.512001,0.126700,false,-0.216905,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Quorum Reach Rate,0.021153,197.903632,0.983145,false,0.002991,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Time to Decision,-0.314612,191.993063,0.753398,false,-0.044493,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rejection Rate,1.533748,196.512001,0.126700,false,0.216905,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Governance Overhead,-1.111553,194.528157,0.267702,false,-0.157197,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Average Turnout,0.989789,189.376040,0.323540,false,0.139977,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Avg Margin of Victory,-0.174995,192.636309,0.861267,false,-0.024748,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Proposal Rate,-0.688704,196.621497,0.491821,false,-0.097397,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,Total Proposals,-0.688704,196.621497,0.491821,false,-0.097397,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Pass Rate,-1.905001,197.484466,0.058233,false,-0.269408,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Quorum Reach Rate,-1.234776,159.185926,0.218733,false,-0.174624,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Time to Decision,-0.975510,194.030499,0.330522,false,-0.137958,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rejection Rate,1.905001,197.484466,0.058233,false,0.269408,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Governance Overhead,-12.018427,194.589516,0,true,-1.699662,very_large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Average Turnout,-7.253723,153.092470,0.000000,true,-1.025831,large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Margin of Victory,-8.330684,187.246162,0.000000,true,-1.178137,large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rate,-0.807077,192.481702,0.420619,false,-0.114138,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Total Proposals,-0.807077,192.481702,0.420619,false,-0.114138,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,-3.401164,190.879054,0.000817,true,-0.480997,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,-0.440322,191.069111,0.660202,false,-0.062271,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,-1.475810,191.910468,0.141634,false,-0.208711,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,3.401164,190.879054,0.000817,true,0.480997,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,-1.006388,197.771761,0.315459,false,-0.142325,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,1.412940,197.553496,0.159247,false,0.199820,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,-8.597726,195.186554,0.000000,true,-1.215902,very_large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-1.331152,196.525247,0.184681,false,-0.188253,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-1.331152,196.525247,0.184681,false,-0.188253,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,-3.079910,196.140974,0.002368,true,-0.435565,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,1.227229,175.796448,0.221377,false,0.173556,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,-1.099458,192.137244,0.272944,false,-0.155487,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,3.079910,196.140974,0.002368,true,0.435565,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,-1.602829,196.362090,0.110580,false,-0.226674,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,1.220968,191.566283,0.223599,false,0.172671,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,-7.316658,185.152711,0.000000,true,-1.034732,large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,-1.036860,194.352793,0.301089,false,-0.146634,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,-1.036860,194.352793,0.301089,false,-0.146634,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Pass Rate,-0.326906,197.742516,0.744085,false,-0.046231,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Quorum Reach Rate,-1.240191,157.092684,0.216754,false,-0.175389,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Time to Decision,-0.601452,197.761482,0.548228,false,-0.085058,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rejection Rate,0.326906,197.742516,0.744085,false,0.046231,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Governance Overhead,-9.916705,185.339628,0,true,-1.402434,very_large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Average Turnout,-7.553405,174.033318,0.000000,true,-1.068213,large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Avg Margin of Victory,-7.604954,196.868370,0.000000,true,-1.075503,large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Proposal Rate,-0.145891,196.518722,0.884157,false,-0.020632,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,Total Proposals,-0.145891,196.518722,0.884157,false,-0.020632,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,-1.561416,184.028694,0.120144,false,-0.220818,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,-0.457555,189.511856,0.647796,false,-0.064708,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,-1.070727,197.999670,0.285596,false,-0.151424,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,1.561416,184.028694,0.120144,false,0.220818,small
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,0.193082,192.639759,0.847098,false,0.027306,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,0.288638,192.592892,0.773169,false,0.040820,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,-7.761670,197.549349,0.000000,true,-1.097666,large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-0.618252,197.998316,0.537119,false,-0.087434,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-0.618252,197.998316,0.537119,false,-0.087434,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,-1.330560,191.595993,0.184915,false,-0.188170,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,1.201350,177.918635,0.231212,false,0.169897,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,-0.722933,197.998978,0.470574,false,-0.102238,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,1.330560,191.595993,0.184915,false,0.188170,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,-0.328726,188.683022,0.742728,false,-0.046489,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,0.192170,197.805429,0.847806,false,0.027177,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,-6.676566,196.000988,0.000000,true,-0.944209,large
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,-0.354748,197.426959,0.723157,false,-0.050169,negligible
+proposal_temp_check_fraction=0.25_proposal_fast_track_min_steps=12,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,-0.354748,197.426959,0.723157,false,-0.050169,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Pass Rate,-1.226244,187.058320,0.221648,false,-0.173417,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Quorum Reach Rate,0.850034,178.040768,0.396448,false,0.120213,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Time to Decision,-0.488086,197.743467,0.626030,false,-0.069026,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rejection Rate,1.226244,187.058320,0.221648,false,0.173417,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Governance Overhead,11.175086,196.083571,0,true,1.580396,very_large
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Average Turnout,8.141325,157.496331,0.000000,true,1.151357,large
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Avg Margin of Victory,0.322227,195.042827,0.747626,false,0.045570,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Proposal Rate,-0.445183,196.615181,0.656677,false,-0.062958,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,Total Proposals,-0.445183,196.615181,0.656677,false,-0.062958,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,-1.002129,193.772040,0.317531,false,-0.141722,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,2.297824,130.102965,0.023168,false,0.324961,small
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,-0.133249,197.791598,0.894132,false,-0.018844,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,1.002129,193.772040,0.317531,false,0.141722,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,10.915825,197.658600,0,true,1.543731,very_large
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,7.778204,170.944764,0.000000,true,1.100004,large
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,0.795294,197.872665,0.427396,false,0.112472,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,-0.197555,197.783322,0.843596,false,-0.027938,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=0,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,-0.197555,197.783322,0.843596,false,-0.027938,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Pass Rate,0.200549,196.130615,0.841259,false,0.028362,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Quorum Reach Rate,1.638002,156.972102,0.103424,false,0.231648,small
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Time to Decision,0.349476,197.997487,0.727104,false,0.049423,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Abandonment Rate,0,198,1,false,0,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rejection Rate,-0.200549,196.130615,0.841259,false,-0.028362,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Governance Overhead,-0.579385,197.346666,0.562990,false,-0.081937,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Average Turnout,-0.085708,194.356738,0.931787,false,-0.012121,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Avg Margin of Victory,0.523905,193.753837,0.600944,false,0.074091,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Proposal Rate,0.247157,197.486999,0.805044,false,0.034953,negligible
+proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=6,proposal_temp_check_fraction=0.5_proposal_fast_track_min_steps=12,Total Proposals,0.247157,197.486999,0.805044,false,0.034953,negligible
 
 # One-Way ANOVA Results
 metric,f_statistic,df_between,df_within,p_value,significant
-Proposal Pass Rate,5.292321,8,261,0.000004,true
-Quorum Reach Rate,1.400305,8,261,0.196434,false
-Avg Time to Decision,1.342378,8,261,0.222689,false
-Proposal Abandonment Rate,0,8,261,1,false
-Proposal Rejection Rate,5.292321,8,261,0.000004,true
-Governance Overhead,21.860583,8,261,0,true
-Average Turnout,32.293570,8,261,0,true
-Avg Margin of Victory,27.476144,8,261,0,true
-Proposal Rate,1.968730,8,261,0.050671,false
-Total Proposals,1.968730,8,261,0.050671,false
+Proposal Pass Rate,15.603934,8,891,0,true
+Quorum Reach Rate,1.486814,8,891,0.157768,false
+Avg Time to Decision,1.085139,8,891,0.371060,false
+Proposal Abandonment Rate,0,8,891,1,false
+Proposal Rejection Rate,15.603934,8,891,0,true
+Governance Overhead,87.111448,8,891,0,true
+Average Turnout,73.149465,8,891,0,true
+Avg Margin of Victory,118.500534,8,891,0,true
+Proposal Rate,0.728356,8,891,0.666558,false
+Total Proposals,0.728356,8,891,0.666558,false
 
 # Power Analysis
-current_runs_per_config,30
+current_runs_per_config,100
 recommended_runs,63
-current_power,0.486874
-minimum_effect_detectable,0.722957
+current_power,0.955248
+minimum_effect_detectable,0.395980

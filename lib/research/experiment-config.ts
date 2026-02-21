@@ -147,6 +147,9 @@ export interface SweepConfig {
   // === Multi-Parameter Grid Search (new) ===
   // Array of parameters to sweep together (creates Cartesian product)
   grid?: GridParameter[];
+
+  // Sweep type: 'grid' (Cartesian product, default) or 'zip' (parallel iteration)
+  type?: 'grid' | 'zip';
 }
 
 /**

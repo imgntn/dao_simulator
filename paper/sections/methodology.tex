@@ -130,13 +130,13 @@ Omega-squared provides a less biased estimate of population effect size than eta
 We ensure internal validity through:
 \begin{itemize}
     \item Deterministic seeding for reproducibility
-    \item Multiple runs per configuration (30 runs per configuration for all experiments)
+    \item Multiple runs per configuration (100 runs per configuration for all experiments)
     \item Systematic parameter variation
 \end{itemize}
 
 \subsubsection{External Validity}
 
-We validate simulator outputs against empirical DAO data from DeepDAO, Messari governance reports, and academic literature. Table~\ref{tab:validation} compares baseline simulation results ($N=30$ runs) with observed values from real DAOs.
+We validate simulator outputs against empirical DAO data from DeepDAO, Messari governance reports, and academic literature. Table~\ref{tab:validation} compares baseline simulation results ($N=100$ runs) with observed values from real DAOs.
 
 \begin{table}[htbp]
 \centering
@@ -147,11 +147,11 @@ We validate simulator outputs against empirical DAO data from DeepDAO, Messari g
 \toprule
 Metric & Simulator & 95\% CI & Empirical Range & Source \\
 \midrule
-Proposal Pass Rate & 0.985 & [0.962, 1.000] & [0.30, 0.85] & DeepDAO \\
-Average Turnout & 0.227 & [0.222, 0.231] & [0.01, 0.15] & Messari \\
-Quorum Reach Rate & 1.000 & [1.000, 1.000] & [0.20, 0.70] & DeepDAO \\
-Voter Participation & 0.234 & [0.229, 0.238] & [0.01, 0.10] & \cite{barbereau2022dao} \\
-Token Gini & 0.445 & [0.438, 0.452] & [0.70, 0.95] & \cite{nadler2020} \\
+Proposal Pass Rate & 0.987 & [0.983, 0.990] & [0.30, 0.85] & DeepDAO \\
+Average Turnout & 0.225 & [0.223, 0.227] & [0.01, 0.15] & Messari \\
+Quorum Reach Rate & 1.000 & [0.999, 1.000] & [0.20, 0.70] & DeepDAO \\
+Voter Participation & 0.232 & [0.230, 0.235] & [0.01, 0.10] & \cite{barbereau2022dao} \\
+Token Gini & 0.457 & [0.450, 0.463] & [0.70, 0.95] & \cite{nadler2020} \\
 Whale Influence & 0.269 & [0.264, 0.274] & [0.40, 0.80] & \cite{fritsch2022} \\
 Capture Risk & 0.265 & [0.260, 0.270] & [0.15, 0.55] & \cite{barbereau2022dao} \\
 Delegate Conc. & 0.265 & [0.261, 0.270] & [0.30, 0.70] & DeepDAO \\
