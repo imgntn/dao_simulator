@@ -88,20 +88,20 @@ Supported quorum types:
 
 Each simulation step represents one day:
 
-\begin{algorithmic}
-\FOR{step = 1 to max\_steps}
-    \STATE Generate new proposals based on frequency
-    \STATE Update proposal states (advance stages)
-    \FOR{each active proposal}
-        \FOR{each agent}
-            \STATE Agent decides: vote, delegate, or abstain
-        \ENDFOR
-        \STATE Tally votes, check quorum
-    \ENDFOR
-    \STATE Execute passed proposals
-    \STATE Update treasury, token distributions
-    \STATE Collect metrics
-\ENDFOR
+\begin{algorithmic}[1]
+\For{step $= 1$ to max\_steps}
+    \State Generate new proposals based on frequency
+    \State Update proposal states (advance stages)
+    \For{each active proposal}
+        \For{each agent}
+            \State Agent decides: vote, delegate, or abstain
+        \EndFor
+        \State Tally votes, check quorum
+    \EndFor
+    \State Execute passed proposals
+    \State Update treasury, token distributions
+    \State Collect metrics
+\EndFor
 \end{algorithmic}
 
 \subsection{Reproducibility Features}

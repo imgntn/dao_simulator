@@ -34,10 +34,15 @@ function compile(): void {
   }
 
   try {
+    // Fontconfig config to suppress "Cannot load default config file" on Windows
+    const fontsConf = path.join(ROOT_DIR, 'tools', 'fonts.conf');
+
     // Run tectonic from the paper directory so it can find includes
-    execSync(`"${TECTONIC_PATH}" -X compile main.tex`, {
+    // --reruns 2: cap TeX passes to avoid Tectonic's spurious bbl-changed loop
+    execSync(`"${TECTONIC_PATH}" -X compile --reruns 2 main.tex`, {
       cwd: PAPER_DIR,
       stdio: 'inherit',
+      env: { ...process.env, FONTCONFIG_FILE: fontsConf },
     });
 
     const pdfPath = path.join(PAPER_DIR, 'main.pdf');
