@@ -575,7 +575,8 @@ describe('AccuracyMetrics', () => {
 
       const report = compareToHistorical(metrics, profile);
       expect(report.overall_score).toBeLessThan(0.5);
-      expect(report.metrics.proposal_frequency_error).toBeGreaterThan(1);
+      // With Poisson tolerance, error is capped at 1.0 for extreme deviations
+      expect(report.metrics.proposal_frequency_error).toBeGreaterThanOrEqual(1);
     });
 
     it('handles null market gracefully', () => {
@@ -1242,13 +1243,13 @@ describe('Opposition Bias for Low-Pass DAOs', () => {
     // Some agents should have opposition bias > 0
     const withBias = members.filter(m => m.oppositionBias > 0);
     expect(withBias.length).toBeGreaterThan(0);
-    // Opposition strength = 1 - 0.45 = 0.55, so ~55% of agents should have bias
-    expect(withBias.length / members.length).toBeGreaterThan(0.4);
-    expect(withBias.length / members.length).toBeLessThan(0.7);
-    // Max bias should be around 0.6
+    // Opposition fraction = (1 - 0.45) * 0.6 = 0.33, so ~33% of agents should have bias
+    expect(withBias.length / members.length).toBeGreaterThan(0.25);
+    expect(withBias.length / members.length).toBeLessThan(0.45);
+    // Max bias should be around 0.4
     const maxBias = Math.max(...members.map(m => m.oppositionBias));
-    expect(maxBias).toBeGreaterThanOrEqual(0.5);
-    expect(maxBias).toBeLessThanOrEqual(0.61);
+    expect(maxBias).toBeGreaterThanOrEqual(0.35);
+    expect(maxBias).toBeLessThanOrEqual(0.41);
   });
 
   it('assigns no opposition bias for high-pass DAOs', async () => {

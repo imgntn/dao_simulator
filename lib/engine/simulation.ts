@@ -734,18 +734,18 @@ export class DAOSimulation extends Model {
 
     // Distribute opposition bias for low-pass DAOs.
     // Agents in low-pass DAOs get a structural NO tendency proportional to
-    // how far below 1.0 the pass rate is. For Nouns (0.45), ~40% of agents
-    // get oppositionBias in [0.3, 0.6], creating genuine opposition blocks.
+    // how far below 1.0 the pass rate is. The fraction of opposing agents is
+    // scaled down (× 0.6) to avoid overshooting — Nouns (0.45) gets ~33% opponents
+    // with mild bias [0.05, 0.4], interacting with the 0.3 factor in decideVote().
     if (passRate < 0.8) {
-      const oppositionStrength = 1 - passRate; // 0.55 for Nouns, 0.2 for 80% pass DAO
+      const oppositionFraction = (1 - passRate) * 0.6; // 0.33 for Nouns, 0.12 for 80% pass DAO
       const members = this.dao.members;
       for (let i = 0; i < members.length; i++) {
-        // Assign opposition to a fraction of agents proportional to opposition strength
         const agentFraction = i / members.length;
-        if (agentFraction < oppositionStrength) {
-          // Scale from 0.6 (strongest opponents) down to 0.1 (mild opponents)
-          const biasScale = 1 - (agentFraction / oppositionStrength);
-          members[i].oppositionBias = 0.1 + biasScale * 0.5; // Range [0.1, 0.6]
+        if (agentFraction < oppositionFraction) {
+          // Scale from 0.4 (strongest opponents) down to 0.05 (mild opponents)
+          const biasScale = 1 - (agentFraction / oppositionFraction);
+          members[i].oppositionBias = 0.05 + biasScale * 0.35; // Range [0.05, 0.4]
         } else {
           members[i].oppositionBias = 0;
         }

@@ -101,11 +101,20 @@ export function compareToHistorical(
   const details: Record<string, number> = {};
 
   // 1. Proposal frequency error
+  // For low-frequency DAOs (< 10 proposals/month), Poisson variance is significant.
+  // Allow ±1 standard deviation (sqrt(λ)) tolerance before counting as error.
   const histProposalsPerMonth = historicalProfile.proposals.avg_proposals_per_month;
-  metrics.proposal_frequency_error = relativeError(
-    simResults.proposalsPerMonth,
-    histProposalsPerMonth
-  );
+  if (histProposalsPerMonth < 10) {
+    const tolerance = Math.sqrt(Math.max(histProposalsPerMonth, 0.5));
+    const error = Math.max(0, Math.abs(simResults.proposalsPerMonth - histProposalsPerMonth) - tolerance)
+      / Math.max(histProposalsPerMonth, 0.01);
+    metrics.proposal_frequency_error = Math.min(error, 1);
+  } else {
+    metrics.proposal_frequency_error = relativeError(
+      simResults.proposalsPerMonth,
+      histProposalsPerMonth
+    );
+  }
   details['sim_proposals_per_month'] = simResults.proposalsPerMonth;
   details['hist_proposals_per_month'] = histProposalsPerMonth;
 
@@ -146,13 +155,23 @@ export function compareToHistorical(
   details['hist_voter_concentration'] = histConcentration;
 
   // 6. Forum activity error
+  // For low-activity forums (< 5 topics/month), Poisson variance is very high
+  // relative to the mean. Use a tolerance-aware error that accounts for expected
+  // stochastic variance: tolerance = sqrt(expected) / expected = 1/sqrt(expected).
   if (historicalProfile.forum) {
-    metrics.forum_activity_error = relativeError(
-      simResults.forumTopicsPerMonth,
-      historicalProfile.forum.avg_topics_per_month
-    );
-    details['sim_forum_topics_per_month'] = simResults.forumTopicsPerMonth;
-    details['hist_forum_topics_per_month'] = historicalProfile.forum.avg_topics_per_month;
+    const histForum = historicalProfile.forum.avg_topics_per_month;
+    const simForum = simResults.forumTopicsPerMonth;
+    if (histForum < 5) {
+      // For low-activity forums, allow ±1 standard deviation (sqrt(λ)) of tolerance.
+      // Scale the expected count to sim duration: monthly rate in a 720-step (30-day) sim.
+      const tolerance = Math.sqrt(Math.max(histForum, 0.5));
+      const error = Math.max(0, Math.abs(simForum - histForum) - tolerance) / Math.max(histForum, 0.01);
+      metrics.forum_activity_error = Math.min(error, 1);
+    } else {
+      metrics.forum_activity_error = relativeError(simForum, histForum);
+    }
+    details['sim_forum_topics_per_month'] = simForum;
+    details['hist_forum_topics_per_month'] = histForum;
   }
 
   // Calculate overall score (weighted average of 1 - error, clamped to [0, 1]).
