@@ -14,16 +14,17 @@ Full YAML configs are available in the repository under \texttt{experiments/pape
 \toprule
 ID & Name & Swept Parameters & Configs & Runs/Config \\
 \midrule
-00 & Baseline & (none) & 1 & 30 \\
-01 & Calibration & participation targets & $3\times3=9$ & 30 \\
-03 & Quorum Sensitivity & quorumPercentage & 5 & 30 \\
-04 & Governance Capture & mitigation grid & 24 & 30 \\
-05 & Proposal Pipeline & pipeline grid & 9 & 30 \\
-06 & Treasury Resilience & treasury grid & 12 & 30 \\
-07 & Inter-DAO & scenarios & 5 & 30 \\
-08 & Scale Sweep & totalMembers & 5 & 30 \\
-09 & Voting Mechanisms & mechanism $\times$ quorum & 6 & 30 \\
+00 & Baseline & (none) & 1 & 100 \\
+01 & Calibration & participation targets & $3\times3=9$ & 100 \\
+03 & Quorum Sensitivity & quorumPercentage & 5 & 100 \\
+04 & Governance Capture & mitigation grid & 24 & 100 \\
+05 & Proposal Pipeline & pipeline grid & 9 & 100 \\
+06 & Treasury Resilience & treasury grid & 12 & 100 \\
+07 & Inter-DAO & scenarios & 5 & 100 \\
+08 & Scale Sweep & totalMembers & 5 & 100 \\
+09 & Voting Mechanisms & mechanism $\times$ quorum & 6 & 100 \\
 10 & Calibration Validation & DAO-specific profiles & 14 & 30 \\
+11 & Advanced Mechanisms & mechanism (zip) & 4 & 100 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -41,4 +42,5 @@ ID & Name & Swept Parameters & Configs & Runs/Config \\
     \item[08 Scale Sweep] \texttt{totalMembers} $\in \{50, 100, 200, 350, 500\}$.
     \item[09 Voting Mechanisms] Grid: governance rule $\in \{\text{majority, quadratic, conviction}\}$ $\times$ quorum $\in \{0.04, 0.08\}$.
     \item[10 Calibration Validation] Per-DAO profiles for 14 real-world DAOs (Uniswap, Compound, Aave, MakerDAO, ENS, Gitcoin, Hop, Arbitrum, Lido, Optimism, Nouns, Balancer, dYdX, SushiSwap), validating simulator accuracy against historical governance data.
+    \item[11 Advanced Mechanisms] Zip sweep: governance rule $\in \{\text{majority, instant-runoff, futarchy}\}$ with matching voting strategy; includes enhanced liquid democracy (depth limit, decay).
 \end{description}
