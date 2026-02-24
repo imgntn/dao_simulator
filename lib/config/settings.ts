@@ -35,6 +35,9 @@ export interface SimulationSettings {
   num_market_makers: number;
   num_whistleblowers: number;
 
+  num_llm_agents: number;
+  num_llm_reporters: number;
+
   // Behavior probabilities
   violation_probability: number;
   reputation_penalty: number;
@@ -155,6 +158,34 @@ export interface SimulationSettings {
   delegation_decay_per_hop: number;
   /** Enable topic-specific delegation */
   delegation_topic_specific: boolean;
+
+  // LLM agent configuration
+  /** Enable LLM agent reasoning (requires Ollama) */
+  llm_enabled: boolean;
+  /** Ollama API base URL */
+  llm_base_url: string;
+  /** Default model for standard agents */
+  llm_default_model: string;
+  /** Premium model for key governance agents */
+  llm_premium_model: string;
+  /** Max parallel LLM requests per step */
+  llm_max_concurrent: number;
+  /** Request timeout in milliseconds */
+  llm_timeout_ms: number;
+  /** LLM temperature */
+  llm_temperature: number;
+  /** Cache LLM responses for reproducibility */
+  llm_cache_enabled: boolean;
+  /** LLM agent mode: 'disabled' | 'hybrid' | 'all' */
+  llm_agent_mode: string;
+  /** Fraction of agents using LLM in hybrid mode (0-1) */
+  llm_hybrid_fraction: number;
+  /** Enable LLM-generated forum posts */
+  llm_forum_enabled: boolean;
+  /** Max response tokens */
+  llm_max_tokens: number;
+  /** Ollama seed for reproducibility (syncs with sim seed if unset) */
+  llm_seed?: number;
 }
 
 /**
@@ -185,6 +216,8 @@ export const defaultSettings: SimulationSettings = {
   num_governance_whales: 0,
   num_risk_managers: 2,
   num_market_makers: 2,
+  num_llm_agents: 0,
+  num_llm_reporters: 0,
   num_whistleblowers: 1,
   violation_probability: 0.1,
   reputation_penalty: 5,
@@ -281,6 +314,21 @@ export const defaultSettings: SimulationSettings = {
   delegation_max_depth: 0,   // 0 = unlimited
   delegation_decay_per_hop: 0,  // 0 = no decay
   delegation_topic_specific: false,
+
+  // LLM agent defaults
+  llm_enabled: false,
+  llm_base_url: 'http://localhost:11434',
+  llm_default_model: 'qwen3:8b',
+  llm_premium_model: 'qwen3:8b',
+  llm_max_concurrent: 8,
+  llm_timeout_ms: 30000,
+  llm_temperature: 0.3,
+  llm_cache_enabled: true,
+  llm_agent_mode: 'disabled',
+  llm_hybrid_fraction: 0.3,
+  llm_forum_enabled: false,
+  llm_max_tokens: 256,
+  llm_seed: undefined,
 };
 
 /**

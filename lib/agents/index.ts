@@ -48,6 +48,10 @@ export {
   type FlashLoanStrategy,
 } from './flashloan-attacker';
 
+// LLM-powered agents
+export { LLMAgent } from './llm-agent';
+export { LLMReporter, type NewsReport } from './llm-reporter';
+
 // Twin agent factory
 export {
   TwinAgentFactory,

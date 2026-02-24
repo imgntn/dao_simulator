@@ -323,7 +323,12 @@ export type BuiltinMetricType =
   | 'transfer_count'
   | 'transfer_origin_distribution'
   | 'transfer_request_count'
-  | 'transfer_completion_rate';
+  | 'transfer_completion_rate'
+
+  // === LLM Agent Metrics ===
+  | 'llm_vote_consistency'        // % of LLM votes matching rule-based prediction
+  | 'llm_cache_hit_rate'          // Cache hits / total requests
+  | 'llm_avg_latency_ms';        // Average LLM response time
 
 /**
  * Configuration for a single metric to capture

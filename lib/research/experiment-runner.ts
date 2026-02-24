@@ -1960,6 +1960,47 @@ export class ExperimentRunner {
         return proposalRate * avgParticipation * resolutionRate;
       }
 
+      // =========================================================================
+      // LLM AGENT METRICS
+      // =========================================================================
+
+      case 'llm_vote_consistency': {
+        // % of LLM votes that match what rule-based voting would have chosen
+        const { LLMAgent } = require('../../lib/agents/llm-agent');
+        const llmAgents = members.filter((m: any) => m instanceof LLMAgent && m.llmVoting);
+        if (llmAgents.length === 0) return 0;
+
+        let totalDecisions = 0;
+        let matchingDecisions = 0;
+        for (const agent of llmAgents) {
+          const llm = agent as any;
+          if (!llm.llmVoting) continue;
+          const history = llm.llmVoting.voteHistory || [];
+          for (const record of history) {
+            if (record.decision.vote === 'abstain') continue;
+            totalDecisions++;
+            // Compare with what rule-based would have done
+            const proposal = proposals.find((p: any) => p.uniqueId === record.proposalId);
+            if (proposal) {
+              const ruleVote = llm.optimism > 0.5 ? 'yes' : 'no';
+              if (record.decision.vote === ruleVote) matchingDecisions++;
+            }
+          }
+        }
+        return totalDecisions > 0 ? matchingDecisions / totalDecisions : 0;
+      }
+
+      case 'llm_cache_hit_rate': {
+        if (!simulation.llmCache) return 0;
+        const cacheStats = simulation.llmCache.stats;
+        return cacheStats.hitRate;
+      }
+
+      case 'llm_avg_latency_ms': {
+        if (!simulation.ollamaClient) return 0;
+        return simulation.ollamaClient.avgLatencyMs;
+      }
+
       default:
         return 0;
     }

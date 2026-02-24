@@ -27,6 +27,8 @@ import { Auditor } from './auditor';
 import { DABMember } from './dab-member';
 import { NodeOperator } from './node-operator';
 import { FoundationAgent, FoundationType } from './foundation-agent';
+import { LLMAgent } from './llm-agent';
+import { LLMReporter } from './llm-reporter';
 
 import { random, randomInt, randomChoice } from '../utils/random';
 import type { CalibrationProfile, VoterCluster } from '../digital-twins/calibration-loader';
@@ -53,7 +55,9 @@ export type AgentClass =
   | typeof Auditor
   | typeof DABMember
   | typeof NodeOperator
-  | typeof FoundationAgent;
+  | typeof FoundationAgent
+  | typeof LLMAgent
+  | typeof LLMReporter;
 
 export interface AgentCreationConfig {
   archetype: string;
@@ -116,6 +120,11 @@ const ARCHETYPE_TO_AGENT_CLASS: Record<string, AgentClass[]> = {
   node_operator: [NodeOperator],
   operator: [NodeOperator],
   foundation: [FoundationAgent],
+
+  // LLM-powered agents
+  llm_agent: [LLMAgent],
+  llm_reporter: [LLMReporter],
+  reporter: [LLMReporter],
 
   // Default fallback
   member: [PassiveMember],
@@ -295,6 +304,8 @@ export class TwinAgentFactory {
       DABMember,
       NodeOperator,
       FoundationAgent,
+      LLMAgent,
+      LLMReporter,
     };
 
     return nameMap[name] || null;

@@ -24,6 +24,8 @@ import {
   PassiveMember,
   StakerAgent,
   GovernanceWhale,
+  LLMAgent,
+  LLMReporter,
 } from '../agents';
 import { generateRandomLocation } from './locations';
 import * as constants from '../config/constants';
@@ -134,6 +136,14 @@ export class AgentManager {
     }],
     [GovernanceWhale as AgentClass, {
       tokens: constants.GOVERNANCE_WHALE_TOKENS,
+      reputation: constants.DEFAULT_AGENT_REPUTATION,
+    }],
+    [LLMAgent as AgentClass, {
+      tokens: constants.DEFAULT_AGENT_TOKENS,
+      reputation: constants.DEFAULT_AGENT_REPUTATION,
+    }],
+    [LLMReporter as AgentClass, {
+      tokens: constants.DEFAULT_AGENT_TOKENS,
       reputation: constants.DEFAULT_AGENT_REPUTATION,
     }],
   ]);

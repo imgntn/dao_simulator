@@ -68,8 +68,12 @@ import {
   StakerAgent,
 } from '../agents';
 import { DAOMember } from '../agents/base';
+import { LLMAgent } from '../agents/llm-agent';
+import { LLMReporter } from '../agents/llm-reporter';
 import type { DAOModel } from './model';
 import { type Proposal, isMultiStageProposal, type MultiStageFields } from '../data-structures/proposal';
+import { OllamaClient } from '../llm/ollama-client';
+import { LLMResponseCache } from '../llm/response-cache';
 
 // Type for agent constructor classes - uses DAOModel since that's what agents accept
 type AgentClass = new (
@@ -114,6 +118,23 @@ interface AgentConfigEntry {
   class: AgentClass;
   count: number;
   params: Record<string, unknown>;
+}
+
+/** Premium agent types that get the larger LLM model */
+const PREMIUM_LLM_AGENT_TYPES = new Set([
+  'GovernanceExpert',
+  'GovernanceWhale',
+  'ProposalCreator',
+  'RiskManager',
+]);
+
+/** Select model tier based on agent type */
+function getModelForAgent(
+  agentType: string,
+  defaultModel: string,
+  premiumModel: string
+): string {
+  return PREMIUM_LLM_AGENT_TYPES.has(agentType) ? premiumModel : defaultModel;
 }
 
 export interface DAOSimulationConfig extends Partial<SimulationSettings> {
@@ -207,6 +228,8 @@ export class DAOSimulation extends Model {
   numRiskManagers: number;
   numMarketMakers: number;
   numWhistleblowers: number;
+  numLLMAgents: number;
+  numLLMReporters: number;
 
   // Probabilities and parameters
   commentProbability: number;
@@ -238,6 +261,13 @@ export class DAOSimulation extends Model {
   calibrationProfile: CalibrationProfile | null = null;
   /** Whether to use real governance rules for calibrated simulations */
   useRealGovernance: boolean = false;
+
+  /** Ollama client for LLM agent reasoning */
+  ollamaClient: OllamaClient | null = null;
+  /** Shared LLM response cache */
+  llmCache: LLMResponseCache | null = null;
+  /** Whether Ollama availability has been checked */
+  private ollamaAvailabilityChecked: boolean = false;
 
   constructor(config: DAOSimulationConfig = {}) {
     super();
@@ -343,6 +373,8 @@ export class DAOSimulation extends Model {
     this.numRiskManagers = config.num_risk_managers ?? settings.num_risk_managers;
     this.numMarketMakers = config.num_market_makers ?? settings.num_market_makers;
     this.numWhistleblowers = config.num_whistleblowers ?? settings.num_whistleblowers;
+    this.numLLMAgents = config.num_llm_agents ?? settings.num_llm_agents;
+    this.numLLMReporters = config.num_llm_reporters ?? settings.num_llm_reporters;
 
     // Probabilities
     this.commentProbability = config.comment_probability ?? settings.comment_probability;
@@ -559,6 +591,13 @@ export class DAOSimulation extends Model {
     // Apply calibration-based agent adjustments (must happen AFTER agents are created)
     if (this.calibrationProfile) {
       this.applyCalibrationAgentTuning(this.calibrationProfile);
+    }
+
+    // Initialize LLM infrastructure if enabled
+    const llmEnabled = config.llm_enabled ?? settings.llm_enabled;
+    const llmMode = config.llm_agent_mode ?? settings.llm_agent_mode;
+    if (llmEnabled && llmMode !== 'disabled') {
+      this.initializeLLMAgents(config);
     }
 
     // Override global learning_enabled if config explicitly sets it
@@ -1055,6 +1094,8 @@ export class DAOSimulation extends Model {
       { class: RiskManager as AgentClass, count: this.numRiskManagers, params: {} },
       { class: MarketMaker as AgentClass, count: this.numMarketMakers, params: {} },
       { class: Whistleblower as AgentClass, count: this.numWhistleblowers, params: {} },
+      { class: LLMAgent as AgentClass, count: this.numLLMAgents, params: {} },
+      { class: LLMReporter as AgentClass, count: this.numLLMReporters, params: {} },
     ];
 
     for (const config of agentConfigs) {
@@ -1066,6 +1107,120 @@ export class DAOSimulation extends Model {
         );
         this.dao.addMember(agent);
         this.schedule.add(agent);
+      }
+    }
+  }
+
+  /**
+   * Initialize LLM agents based on configuration.
+   * In 'hybrid' mode, upgrades a fraction of existing agents with LLM capabilities.
+   * In 'all' mode, upgrades all agents.
+   */
+  private initializeLLMAgents(config: DAOSimulationConfig): void {
+    const baseUrl = config.llm_base_url ?? settings.llm_base_url;
+    const maxConcurrent = config.llm_max_concurrent ?? settings.llm_max_concurrent;
+    const timeoutMs = config.llm_timeout_ms ?? settings.llm_timeout_ms;
+
+    this.ollamaClient = new OllamaClient({
+      baseUrl,
+      maxConcurrent,
+      timeoutMs,
+    });
+
+    if (config.llm_cache_enabled ?? settings.llm_cache_enabled) {
+      this.llmCache = new LLMResponseCache();
+    }
+
+    const mode = config.llm_agent_mode ?? settings.llm_agent_mode;
+    const fraction = config.llm_hybrid_fraction ?? settings.llm_hybrid_fraction;
+    const temperature = config.llm_temperature ?? settings.llm_temperature;
+    const maxTokens = config.llm_max_tokens ?? settings.llm_max_tokens;
+    const llmSeed = config.llm_seed ?? settings.llm_seed ?? this.seed;
+
+    // Determine which LLMAgent instances get LLM capabilities
+    const members = [...this.dao.members];
+    const llmAgents = members.filter(m => m instanceof LLMAgent) as LLMAgent[];
+
+    let agentsToUpgrade: LLMAgent[];
+
+    if (mode === 'all') {
+      agentsToUpgrade = llmAgents;
+    } else {
+      // hybrid mode: select a fraction of LLMAgent instances
+      const count = Math.max(1, Math.round(llmAgents.length * fraction));
+      // Shuffle and take first `count`
+      const shuffled = llmAgents.slice().sort(() => random() - 0.5);
+      agentsToUpgrade = shuffled.slice(0, count);
+    }
+
+    for (const agent of agentsToUpgrade) {
+      const model = getModelForAgent(
+        agent.constructor.name,
+        config.llm_default_model ?? settings.llm_default_model,
+        config.llm_premium_model ?? settings.llm_premium_model
+      );
+      agent.initLLM(this.ollamaClient!, this.llmCache, model, temperature, maxTokens, llmSeed);
+    }
+
+    // Also initialize any LLMReporter agents (always get LLM, regardless of mode)
+    for (const agent of members) {
+      if (agent instanceof LLMReporter) {
+        const reporterModel = config.llm_default_model ?? settings.llm_default_model;
+        agent.initLLM(this.ollamaClient!, this.llmCache, reporterModel, 0.5, 512, llmSeed);
+      }
+    }
+
+    const upgraded = agentsToUpgrade.filter(a => a instanceof LLMAgent).length;
+    const reporters = members.filter(a => a instanceof LLMReporter).length;
+    if (upgraded > 0 || reporters > 0) {
+      logger.info(`LLM agents initialized: ${upgraded} voters + ${reporters} reporters / ${members.length} total (mode=${mode})`);
+    }
+  }
+
+  /**
+   * Pre-compute LLM agent decisions for the current step.
+   * Called before schedule.step() so that decideVote() can read synchronously.
+   * Also prepares LLMReporter agents for news generation.
+   */
+  private async prepareLLMAgentDecisions(): Promise<void> {
+    // Lazy availability check on first call — disable LLM if Ollama is unreachable
+    if (!this.ollamaAvailabilityChecked && this.ollamaClient) {
+      this.ollamaAvailabilityChecked = true;
+      const available = await this.ollamaClient.isAvailable();
+      if (!available) {
+        logger.warn('Ollama is not available — disabling LLM agents for this simulation');
+        this.ollamaClient = null;
+        return;
+      }
+    }
+
+    // Collect all agents that need async preparation
+    const preparableAgents: Array<DAOMember & { prepareStep: () => Promise<void> }> = [];
+
+    for (const m of this.dao.members) {
+      if (m instanceof LLMAgent && m.llmVoting !== null) {
+        // Clear stale decisions from previous step before preparing new ones
+        m.llmVoting.clearDecisions();
+        preparableAgents.push(m);
+      } else if (m instanceof LLMReporter) {
+        preparableAgents.push(m);
+      }
+    }
+
+    if (preparableAgents.length === 0) return;
+
+    const maxConcurrent = settings.llm_max_concurrent;
+
+    // Process in batches to respect concurrency limits
+    for (let i = 0; i < preparableAgents.length; i += maxConcurrent) {
+      const batch = preparableAgents.slice(i, i + maxConcurrent);
+      const results = await Promise.allSettled(batch.map((agent) => agent.prepareStep()));
+      // Log any failures without crashing the simulation
+      for (let j = 0; j < results.length; j++) {
+        if (results[j].status === 'rejected') {
+          const reason = (results[j] as PromiseRejectedResult).reason;
+          logger.warn(`LLM prepareStep failed for ${batch[j].uniqueId}: ${reason}`);
+        }
       }
     }
   }
@@ -1443,6 +1598,21 @@ export class DAOSimulation extends Model {
 
       // Update reputation based on voting outcomes
       this.updateReputationFromVoting(proposal, approved);
+
+      // Notify LLM agents of proposal outcome for memory
+      this.notifyLLMAgentsOfOutcome(proposal, approved);
+    }
+  }
+
+  /**
+   * Notify LLM agents that a proposal has been resolved so they can
+   * record the outcome in their memory for future reasoning.
+   */
+  private notifyLLMAgentsOfOutcome(proposal: Proposal, passed: boolean): void {
+    for (const member of this.dao.members) {
+      if (member instanceof LLMAgent && member.votes.has(proposal.uniqueId)) {
+        member.recordProposalOutcome(proposal, passed);
+      }
     }
   }
 
@@ -1767,6 +1937,11 @@ export class DAOSimulation extends Model {
         .filter(p => p.status === 'open')
         .map(p => p.uniqueId);
       this.forumSimulation.step(agentIds, this.currentStep, openProposalIds);
+    }
+
+    // Pre-compute LLM agent decisions (async batch) before agent step
+    if (this.ollamaClient) {
+      await this.prepareLLMAgentDecisions();
     }
 
     // Step agents - await to handle async schedulers
