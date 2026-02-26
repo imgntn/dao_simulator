@@ -22,8 +22,15 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as yaml from 'yaml';
 import { execSync } from 'child_process';
+import {
+  type PaperProfile,
+  assertFreshResults,
+  parseCSV as parseCsvRows,
+  resolveOutputDir,
+  resolveProfileConfigPaths,
+  toNumber,
+} from './paper-pipeline-utils';
 
 // =============================================================================
 // CONFIGURATION
@@ -125,6 +132,7 @@ function applyPaperDirOverride(paperDir: string): void {
 
 interface ExperimentResults {
   name: string;
+  configPath: string;
   directory: string;
   summary: any;
   metrics: any[];
@@ -142,91 +150,14 @@ interface PaperMetadata {
 // RESULTS LOADING
 // =============================================================================
 
-const PAPER_PROFILE_CONFIGS: Record<string, string[]> = {
-  full: [
-    'experiments/paper/00-academic-baseline.yaml',
-    'experiments/paper/01-calibration-participation.yaml',
-    'experiments/paper/02-ablation-governance.yaml',
-    'experiments/paper/03-sensitivity-quorum.yaml',
-    'experiments/paper/04-governance-capture-mitigations.yaml',
-    'experiments/paper/05-proposal-pipeline.yaml',
-    'experiments/paper/06-treasury-resilience.yaml',
-    'experiments/paper/07-inter-dao-cooperation.yaml',
-    'experiments/paper/08-scale-sweep.yaml',
-    'experiments/paper/09-voting-mechanisms.yaml',
-  ],
-  p3: [
-    'experiments/paper/00-academic-baseline.yaml',
-    'experiments/paper/08-scale-sweep.yaml',
-    'experiments/paper/09-voting-mechanisms.yaml',
-  ],
-  p1: [
-    'experiments/paper/00-academic-baseline.yaml',
-    'experiments/paper/01-calibration-participation.yaml',
-    'experiments/paper/02-ablation-governance.yaml',
-    'experiments/paper/03-sensitivity-quorum.yaml',
-    'experiments/paper/04-governance-capture-mitigations.yaml',
-  ],
-  p2: [
-    'experiments/paper/00-academic-baseline.yaml',
-    'experiments/paper/02-ablation-governance.yaml',
-    'experiments/paper/05-proposal-pipeline.yaml',
-    'experiments/paper/06-treasury-resilience.yaml',
-    'experiments/paper/07-inter-dao-cooperation.yaml',
-  ],
-};
-
-function resolveOutputDir(configPath: string): string {
-  const absolutePath = path.resolve(configPath);
-  if (!fs.existsSync(absolutePath)) return '';
-  const content = fs.readFileSync(absolutePath, 'utf8');
-  const parsed = yaml.parse(content);
-  const outputDir = parsed?.output?.directory;
-  if (outputDir) return path.isAbsolute(outputDir) ? outputDir : path.join(process.cwd(), outputDir);
-  if (parsed?.name) {
-    return path.join(process.cwd(), 'results', String(parsed.name).replace(/[^\w\-]+/g, '_').toLowerCase());
-  }
-  return '';
-}
-
-function resolveProfileOutputDirs(profile: string): Set<string> {
-  const configs = PAPER_PROFILE_CONFIGS[profile] || PAPER_PROFILE_CONFIGS.full;
-  const dirs = configs
-    .map(resolveOutputDir)
-    .filter((dir) => dir);
-  return new Set(dirs.map((dir) => path.resolve(dir)));
-}
-
-async function loadAllResults(allowedDirs?: Set<string>): Promise<ExperimentResults[]> {
+async function loadResultsForConfigs(configPaths: string[]): Promise<ExperimentResults[]> {
   const results: ExperimentResults[] = [];
-
-  if (!fs.existsSync(CONFIG.resultsDir)) {
-    console.log('No results directory found');
-    return results;
-  }
-
-  const rootDirs = fs.readdirSync(CONFIG.resultsDir, { withFileTypes: true })
-    .filter(d => d.isDirectory())
-    .map(d => d.name);
-
-  const candidateDirs: string[] = [];
-  for (const dir of rootDirs) {
-    if (dir === 'paper') {
-      const paperRoot = path.join(CONFIG.resultsDir, dir);
-      if (!fs.existsSync(paperRoot)) continue;
-      const paperDirs = fs.readdirSync(paperRoot, { withFileTypes: true })
-        .filter(d => d.isDirectory())
-        .map(d => path.join(paperRoot, d.name));
-      candidateDirs.push(...paperDirs);
-    } else {
-      candidateDirs.push(path.join(CONFIG.resultsDir, dir));
-    }
-  }
-
-  for (const dirPath of candidateDirs) {
-    if (allowedDirs && !allowedDirs.has(path.resolve(dirPath))) {
+  for (const configPath of configPaths) {
+    const dirPath = resolveOutputDir(process.cwd(), configPath);
+    if (!dirPath) {
       continue;
     }
+
     const summaryPath = path.join(dirPath, 'summary.json');
     const metricsPath = path.join(dirPath, 'metrics.csv');
     const statsPath = path.join(dirPath, 'stats.csv');
@@ -234,16 +165,17 @@ async function loadAllResults(allowedDirs?: Set<string>): Promise<ExperimentResu
     if (fs.existsSync(summaryPath)) {
       const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
       const metrics = fs.existsSync(metricsPath)
-        ? parseCSV(fs.readFileSync(metricsPath, 'utf8'))
+        ? parseCsvRows(fs.readFileSync(metricsPath, 'utf8'))
         : [];
       const stats = fs.existsSync(statsPath)
-        ? parseCSV(fs.readFileSync(statsPath, 'utf8'))
+        ? parseCsvRows(fs.readFileSync(statsPath, 'utf8'))
         : [];
 
       const name = path.basename(dirPath);
 
       results.push({
         name,
+        configPath,
         directory: dirPath,
         summary,
         metrics,
@@ -253,22 +185,6 @@ async function loadAllResults(allowedDirs?: Set<string>): Promise<ExperimentResu
   }
 
   return results;
-}
-
-function parseCSV(content: string): any[] {
-  const lines = content.trim().split('\n');
-  if (lines.length < 2) return [];
-
-  const headers = lines[0].split(',');
-  return lines.slice(1).map(line => {
-    const values = line.split(',');
-    const obj: any = {};
-    headers.forEach((h, i) => {
-      const val = values[i];
-      obj[h] = isNaN(Number(val)) ? val : Number(val);
-    });
-    return obj;
-  });
 }
 
 // =============================================================================
@@ -552,16 +468,86 @@ async function generateChartWithPython(
   } catch (error) {
     console.error(`Chart generation failed: ${error}`);
     return false;
+  } finally {
+    if (fs.existsSync(scriptPath)) {
+      fs.unlinkSync(scriptPath);
+    }
   }
 }
 
-async function generatePlaceholderChart(
-  label: string,
-  outputPath: string
-): Promise<boolean> {
+function normalizeKey(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function findResult(results: ExperimentResults[], nameFragment: string): ExperimentResults | null {
+  const key = normalizeKey(nameFragment);
+  return results.find((result) => normalizeKey(result.name).includes(key)) || null;
+}
+
+function findMetricBase(statsRows: Record<string, string>[], candidates: string[]): string {
+  if (statsRows.length === 0) return '';
+
+  const headers = Object.keys(statsRows[0]).filter((header) => header.endsWith('_mean'));
+  for (const candidate of candidates) {
+    const target = normalizeKey(candidate);
+    const exact = headers.find((header) => normalizeKey(header.slice(0, -5)) === target);
+    if (exact) {
+      return exact.slice(0, -5);
+    }
+  }
+
+  for (const candidate of candidates) {
+    const target = normalizeKey(candidate);
+    const partial = headers.find((header) => normalizeKey(header.slice(0, -5)).includes(target));
+    if (partial) {
+      return partial.slice(0, -5);
+    }
+  }
+
+  return '';
+}
+
+function buildSeries(
+  statsRows: Record<string, string>[],
+  metricCandidates: string[]
+): Array<{ sweep: string; mean: number; std: number }> {
+  const metricBase = findMetricBase(statsRows, metricCandidates);
+  if (!metricBase) return [];
+
+  return statsRows.map((row) => ({
+    sweep: String(row.sweep_value ?? ''),
+    mean: toNumber(row[`${metricBase}_mean`]),
+    std: toNumber(row[`${metricBase}_std`]),
+  }));
+}
+
+function toLineData(series: Array<{ sweep: string; mean: number; std: number }>): any[] {
+  return series.map((point) => ({
+    sweep_value: point.sweep,
+    mean: point.mean,
+    std: point.std,
+  }));
+}
+
+function toBarData(series: Array<{ sweep: string; mean: number; std: number }>): any[] {
+  return series.map((point) => ({
+    category: point.sweep,
+    value: point.mean,
+    std: point.std,
+  }));
+}
+
+function extractVotingMechanismLabel(sweepValue: string): string {
+  const lowered = sweepValue.toLowerCase();
+  if (lowered.includes('quadratic')) return 'Quadratic';
+  if (lowered.includes('conviction')) return 'Conviction';
+  if (lowered.includes('majority')) return 'Majority';
+  return sweepValue;
+}
+
+async function generatePlaceholderChart(label: string, outputPath: string): Promise<boolean> {
   const scriptPath = path.join(CONFIG.generatedDir, `placeholder_${Date.now()}.py`);
   const safeLabel = label.replace(/'/g, "\\'");
-
   const pythonScript = `
 import matplotlib.pyplot as plt
 import matplotlib
@@ -573,42 +559,18 @@ plt.axis('off')
 plt.tight_layout()
 plt.savefig('${outputPath.replace(/\\/g, '/')}', dpi=300, bbox_inches='tight')
 plt.close()
-print('Placeholder chart saved to ${outputPath.replace(/\\/g, '/')}')
 `;
 
   fs.writeFileSync(scriptPath, pythonScript);
-
   try {
     execSync(`python "${scriptPath}"`, { stdio: 'inherit' });
     return true;
-  } catch (error) {
-    console.error(`Placeholder chart generation failed: ${error}`);
+  } catch {
     return false;
-  }
-}
-
-async function ensurePlaceholderFigures(): Promise<void> {
-  const placeholders = [
-    { file: 'rq1_turnout.png', label: 'RQ1: Turnout vs participation_target_rate' },
-    { file: 'rq1_retention.png', label: 'RQ1: Voter retention vs participation_target_rate' },
-    { file: 'rq2_whale_influence.png', label: 'RQ2: Whale influence vs mitigation settings' },
-    { file: 'rq2_tradeoff.png', label: 'RQ2: Capture risk vs throughput tradeoff' },
-    { file: 'rq3_time.png', label: 'RQ3: Time-to-decision vs temp-check fraction' },
-    { file: 'rq3_passrate.png', label: 'RQ3: Pass rate vs fast-track settings' },
-    { file: 'rq4_volatility.png', label: 'RQ4: Treasury volatility vs stabilization' },
-    { file: 'rq4_growth.png', label: 'RQ4: Treasury trend/growth vs buffer fraction' },
-    { file: 'rq5_success.png', label: 'RQ5: Inter-DAO success rate by scenario' },
-    { file: 'rq5_resources.png', label: 'RQ5: Resource flow volume by scenario' },
-    { file: 'ablation_impact.png', label: 'Ablation: Mechanism removal impacts' },
-    { file: 'quorum_sensitivity.png', label: 'Sensitivity: Quorum curve' },
-  ];
-
-  for (const placeholder of placeholders) {
-    const outputPath = path.join(CONFIG.figuresDir, placeholder.file);
-    if (fs.existsSync(outputPath)) {
-      continue;
+  } finally {
+    if (fs.existsSync(scriptPath)) {
+      fs.unlinkSync(scriptPath);
     }
-    await generatePlaceholderChart(placeholder.label, outputPath);
   }
 }
 
@@ -667,7 +629,9 @@ values = [d['${options.value || 'value'}'] for d in data]
 errors = [d.get('${options.error || 'std'}', 0) for d in data]
 
 x = np.arange(len(categories))
-plt.bar(x, values, yerr=errors, capsize=5, color=['#2ecc71', '#3498db', '#e74c3c'][:len(categories)])
+palette = ['#1f77b4', '#2ca02c', '#ff7f0e', '#d62728', '#9467bd', '#8c564b', '#17becf']
+colors = [palette[i % len(palette)] for i in range(len(categories))]
+plt.bar(x, values, yerr=errors, capsize=5, color=colors)
 plt.xticks(x, categories)
 plt.xlabel('${options.xlabel || 'Category'}')
 plt.ylabel('${options.ylabel || 'Value'}')
@@ -685,10 +649,11 @@ plt.ylabel('${options.ylabel || 'Y'}')
 plt.title('${options.title || ''}')
 
 # Add regression line
-z = np.polyfit(x, y, 1)
-p = np.poly1d(z)
-plt.plot(x, p(x), 'r--', alpha=0.8, label=f'y = {z[0]:.3f}x + {z[1]:.3f}')
-plt.legend()
+if len(set(x)) > 1:
+    z = np.polyfit(x, y, 1)
+    p = np.poly1d(z)
+    plt.plot(x, p(x), 'r--', alpha=0.8, label=f'y = {z[0]:.3f}x + {z[1]:.3f}')
+    plt.legend()
 `;
 
     default:
@@ -970,7 +935,99 @@ async function updateSection(
 // CHART GENERATION TASKS
 // =============================================================================
 
-async function generateAllCharts(results: ExperimentResults[]): Promise<void> {
+async function renderLineFigure(
+  result: ExperimentResults | null,
+  outputFile: string,
+  metricCandidates: string[],
+  options: { xlabel: string; ylabel: string; title: string }
+): Promise<boolean> {
+  if (!result || result.stats.length === 0) return false;
+  const series = buildSeries(result.stats, metricCandidates);
+  if (series.length === 0) return false;
+
+  return generateChartWithPython(
+    'line_with_error',
+    toLineData(series),
+    path.join(CONFIG.figuresDir, outputFile),
+    options
+  );
+}
+
+async function renderScatterFigure(
+  result: ExperimentResults | null,
+  outputFile: string,
+  xCandidates: string[],
+  yCandidates: string[],
+  options: { xlabel: string; ylabel: string; title: string }
+): Promise<boolean> {
+  if (!result || result.stats.length === 0) return false;
+
+  const xMetricBase = findMetricBase(result.stats, xCandidates);
+  const yMetricBase = findMetricBase(result.stats, yCandidates);
+  if (!xMetricBase || !yMetricBase) return false;
+
+  const data = result.stats.map((row) => ({
+    x: toNumber(row[`${xMetricBase}_mean`], Number.NaN),
+    y: toNumber(row[`${yMetricBase}_mean`], Number.NaN),
+  })).filter((row) => Number.isFinite(row.x) && Number.isFinite(row.y));
+
+  if (data.length < 2) return false;
+
+  return generateChartWithPython(
+    'scatter',
+    data,
+    path.join(CONFIG.figuresDir, outputFile),
+    options
+  );
+}
+
+async function renderVotingComparisonFigure(
+  result: ExperimentResults | null,
+  outputFile: string
+): Promise<boolean> {
+  if (!result || result.stats.length === 0) return false;
+  const passRateBase = findMetricBase(result.stats, ['Proposal Pass Rate']);
+  if (!passRateBase) return false;
+
+  const byMechanism = new Map<string, { valueSum: number; stdSum: number; count: number }>();
+  for (const row of result.stats) {
+    const mechanism = extractVotingMechanismLabel(String(row.sweep_value || 'unknown'));
+    const value = toNumber(row[`${passRateBase}_mean`], Number.NaN);
+    const std = toNumber(row[`${passRateBase}_std`], 0);
+    if (!Number.isFinite(value)) continue;
+
+    const current = byMechanism.get(mechanism) || { valueSum: 0, stdSum: 0, count: 0 };
+    current.valueSum += value;
+    current.stdSum += std;
+    current.count += 1;
+    byMechanism.set(mechanism, current);
+  }
+
+  if (byMechanism.size === 0) return false;
+
+  const data = Array.from(byMechanism.entries()).map(([category, agg]) => ({
+    category,
+    value: agg.valueSum / agg.count,
+    std: agg.stdSum / agg.count,
+  }));
+
+  return generateChartWithPython(
+    'bar_comparison',
+    data,
+    path.join(CONFIG.figuresDir, outputFile),
+    {
+      xlabel: 'Voting Mechanism',
+      ylabel: 'Proposal Pass Rate',
+      title: 'Comparison of Voting Mechanisms',
+    }
+  );
+}
+
+async function generateAllCharts(
+  results: ExperimentResults[],
+  profile: PaperProfile,
+  allowPlaceholders: boolean
+): Promise<void> {
   console.log('\n=== Generating Charts ===\n');
 
   // Ensure figures directory exists
@@ -981,68 +1038,273 @@ async function generateAllCharts(results: ExperimentResults[]): Promise<void> {
     fs.mkdirSync(CONFIG.generatedDir, { recursive: true });
   }
 
-  // Find quorum sweep results
-  const quorumResults = results.find(r => r.name.includes('quorum'));
-  if (quorumResults && quorumResults.stats.length > 0) {
-    console.log('Generating quorum sensitivity chart...');
-    await generateChartWithPython(
-      'line_with_error',
-      quorumResults.stats.map(s => ({
-        sweep_value: s.sweep_value,
-        mean: s['Proposal Pass Rate_mean'] ?? s['proposal_pass_rate_mean'] ?? 0,
-        std: s['Proposal Pass Rate_std'] ?? s['proposal_pass_rate_std'] ?? 0,
-      })),
-      path.join(CONFIG.figuresDir, 'quorum_passrate.png'),
-      {
-        xlabel: 'Quorum Threshold (%)',
-        ylabel: 'Proposal Pass Rate',
-        title: 'Effect of Quorum on Proposal Outcomes',
-      }
-    );
+  type ChartTask = {
+    file: string;
+    label: string;
+    run: () => Promise<boolean>;
+  };
+
+  const tasks: ChartTask[] = [];
+
+  if (profile === 'full') {
+    tasks.push({
+      file: 'quorum_passrate.png',
+      label: 'Quorum pass rate',
+      run: () => renderLineFigure(
+        findResult(results, '03-sensitivity-quorum'),
+        'quorum_passrate.png',
+        ['Proposal Pass Rate'],
+        {
+          xlabel: 'Quorum Threshold',
+          ylabel: 'Proposal Pass Rate',
+          title: 'Effect of Quorum on Proposal Outcomes',
+        }
+      ),
+    });
+    tasks.push({
+      file: 'scale_participation.png',
+      label: 'Scale participation',
+      run: () => renderLineFigure(
+        findResult(results, '08-scale-sweep'),
+        'scale_participation.png',
+        ['Voter Participation Rate', 'Average Turnout'],
+        {
+          xlabel: 'DAO Size',
+          ylabel: 'Participation Rate',
+          title: 'Participation vs DAO Size',
+        }
+      ),
+    });
+    tasks.push({
+      file: 'voting_comparison.png',
+      label: 'Voting comparison',
+      run: () => renderVotingComparisonFigure(
+        findResult(results, '09-voting-mechanisms'),
+        'voting_comparison.png'
+      ),
+    });
+  } else if (profile === 'p1') {
+    tasks.push({
+      file: 'rq1_turnout.png',
+      label: 'RQ1 turnout',
+      run: () => renderLineFigure(
+        findResult(results, '01-calibration-participation'),
+        'rq1_turnout.png',
+        ['Average Turnout'],
+        {
+          xlabel: 'Calibration Sweep',
+          ylabel: 'Average Turnout',
+          title: 'Turnout vs Participation Calibration',
+        }
+      ),
+    });
+    tasks.push({
+      file: 'rq1_retention.png',
+      label: 'RQ1 retention',
+      run: () => renderLineFigure(
+        findResult(results, '01-calibration-participation'),
+        'rq1_retention.png',
+        ['Voter Retention Rate'],
+        {
+          xlabel: 'Calibration Sweep',
+          ylabel: 'Voter Retention Rate',
+          title: 'Retention vs Participation Calibration',
+        }
+      ),
+    });
+    tasks.push({
+      file: 'rq2_whale_influence.png',
+      label: 'RQ2 whale influence',
+      run: () => renderLineFigure(
+        findResult(results, '04-governance-capture-mitigations'),
+        'rq2_whale_influence.png',
+        ['Whale Influence'],
+        {
+          xlabel: 'Mitigation Configuration',
+          ylabel: 'Whale Influence',
+          title: 'Whale Influence Across Mitigations',
+        }
+      ),
+    });
+    tasks.push({
+      file: 'rq2_tradeoff.png',
+      label: 'RQ2 tradeoff',
+      run: () => renderScatterFigure(
+        findResult(results, '04-governance-capture-mitigations'),
+        'rq2_tradeoff.png',
+        ['Governance Capture Risk'],
+        ['Proposal Pass Rate'],
+        {
+          xlabel: 'Governance Capture Risk',
+          ylabel: 'Proposal Pass Rate',
+          title: 'Capture Risk vs Throughput',
+        }
+      ),
+    });
+    tasks.push({
+      file: 'rq3_time.png',
+      label: 'RQ3 time to decision',
+      run: () => renderLineFigure(
+        findResult(results, '05-proposal-pipeline'),
+        'rq3_time.png',
+        ['Avg Time to Decision'],
+        {
+          xlabel: 'Pipeline Configuration',
+          ylabel: 'Average Time to Decision',
+          title: 'Decision Time by Pipeline Configuration',
+        }
+      ),
+    });
+    tasks.push({
+      file: 'rq3_passrate.png',
+      label: 'RQ3 pass rate',
+      run: () => renderLineFigure(
+        findResult(results, '05-proposal-pipeline'),
+        'rq3_passrate.png',
+        ['Proposal Pass Rate'],
+        {
+          xlabel: 'Pipeline Configuration',
+          ylabel: 'Proposal Pass Rate',
+          title: 'Proposal Pass Rate by Pipeline Configuration',
+        }
+      ),
+    });
+  } else if (profile === 'p2') {
+    tasks.push({
+      file: 'rq4_volatility.png',
+      label: 'RQ4 volatility',
+      run: () => renderLineFigure(
+        findResult(results, '06-treasury-resilience'),
+        'rq4_volatility.png',
+        ['Treasury Volatility'],
+        {
+          xlabel: 'Treasury Configuration',
+          ylabel: 'Treasury Volatility',
+          title: 'Treasury Volatility by Policy',
+        }
+      ),
+    });
+    tasks.push({
+      file: 'rq4_growth.png',
+      label: 'RQ4 growth',
+      run: () => renderLineFigure(
+        findResult(results, '06-treasury-resilience'),
+        'rq4_growth.png',
+        ['Treasury Growth Rate', 'Treasury Trend'],
+        {
+          xlabel: 'Treasury Configuration',
+          ylabel: 'Treasury Growth Rate',
+          title: 'Treasury Growth by Policy',
+        }
+      ),
+    });
+    tasks.push({
+      file: 'rq5_success.png',
+      label: 'RQ5 success',
+      run: () => renderLineFigure(
+        findResult(results, '07-inter-dao-cooperation'),
+        'rq5_success.png',
+        ['ecosystem.Inter-DAO Proposal Success Rate'],
+        {
+          xlabel: 'Cooperation Scenario',
+          ylabel: 'Inter-DAO Success Rate',
+          title: 'Inter-DAO Success by Scenario',
+        }
+      ),
+    });
+    tasks.push({
+      file: 'rq5_resources.png',
+      label: 'RQ5 resources',
+      run: () => renderLineFigure(
+        findResult(results, '07-inter-dao-cooperation'),
+        'rq5_resources.png',
+        ['ecosystem.Resource Flow Volume', 'ecosystem.Total Shared Budget'],
+        {
+          xlabel: 'Cooperation Scenario',
+          ylabel: 'Resource Flow Volume',
+          title: 'Resource Flow by Scenario',
+        }
+      ),
+    });
+  } else {
+    const llmResult = findResult(results, '12-llm-reasoning') || findResult(results, 'llm-agent-reasoning');
+    tasks.push({
+      file: 'llm_vote_consistency.png',
+      label: 'LLM vote consistency',
+      run: () => renderLineFigure(
+        llmResult,
+        'llm_vote_consistency.png',
+        ['LLM Vote Consistency'],
+        {
+          xlabel: 'LLM Mode',
+          ylabel: 'Vote Consistency',
+          title: 'LLM Vote Consistency by Reasoning Mode',
+        }
+      ),
+    });
+    tasks.push({
+      file: 'llm_cache_hit_rate.png',
+      label: 'LLM cache hit rate',
+      run: () => renderLineFigure(
+        llmResult,
+        'llm_cache_hit_rate.png',
+        ['LLM Cache Hit Rate'],
+        {
+          xlabel: 'LLM Mode',
+          ylabel: 'Cache Hit Rate',
+          title: 'Cache Hit Rate by Reasoning Mode',
+        }
+      ),
+    });
+    tasks.push({
+      file: 'llm_avg_latency.png',
+      label: 'LLM average latency',
+      run: () => renderLineFigure(
+        llmResult,
+        'llm_avg_latency.png',
+        ['LLM Avg Latency', 'LLM Avg Latency ms'],
+        {
+          xlabel: 'LLM Mode',
+          ylabel: 'Average Latency (ms)',
+          title: 'LLM Inference Latency by Reasoning Mode',
+        }
+      ),
+    });
+    tasks.push({
+      file: 'llm_outcomes_tradeoff.png',
+      label: 'LLM outcomes tradeoff',
+      run: () => renderScatterFigure(
+        llmResult,
+        'llm_outcomes_tradeoff.png',
+        ['LLM Avg Latency', 'LLM Avg Latency ms'],
+        ['Proposal Pass Rate'],
+        {
+          xlabel: 'Average LLM Latency (ms)',
+          ylabel: 'Proposal Pass Rate',
+          title: 'Governance Throughput vs LLM Latency',
+        }
+      ),
+    });
   }
 
-  // Find scale study results
-  const scaleResults = results.find(r => r.name.includes('scale'));
-  if (scaleResults && scaleResults.stats.length > 0) {
-    console.log('Generating scale effects chart...');
-    await generateChartWithPython(
-      'line_with_error',
-      scaleResults.stats.map(s => ({
-        sweep_value: s.sweep_value,
-        mean: s['Average Turnout_mean'] ?? s['average_turnout_mean'] ?? 0,
-        std: s['Average Turnout_std'] ?? s['average_turnout_std'] ?? 0,
-      })),
-      path.join(CONFIG.figuresDir, 'scale_participation.png'),
-      {
-        xlabel: 'DAO Size (Members)',
-        ylabel: 'Average Turnout',
-        title: 'Participation Rate vs. DAO Size',
-      }
-    );
-  }
+  for (const task of tasks) {
+    const success = await task.run();
+    if (success) {
+      console.log(`Generated: ${task.file}`);
+      continue;
+    }
 
-  // Find voting comparison results
-  const votingResults = results.find(r => r.name.includes('voting'));
-  if (votingResults && votingResults.stats.length > 0) {
-    console.log('Generating voting comparison chart...');
-    await generateChartWithPython(
-      'bar_comparison',
-      votingResults.stats.map(s => ({
-        category: s.sweep_value,
-        value: s['Proposal Pass Rate_mean'] ?? s['proposal_pass_rate_mean'] ?? 0,
-        std: s['Proposal Pass Rate_std'] ?? s['proposal_pass_rate_std'] ?? 0,
-      })),
-      path.join(CONFIG.figuresDir, 'voting_comparison.png'),
-      {
-        xlabel: 'Voting Mechanism',
-        ylabel: 'Proposal Pass Rate',
-        title: 'Comparison of Voting Mechanisms',
+    const outputPath = path.join(CONFIG.figuresDir, task.file);
+    if (allowPlaceholders) {
+      console.warn(`Data missing for ${task.file}; writing placeholder`);
+      const placeholderSuccess = await generatePlaceholderChart(task.label, outputPath);
+      if (placeholderSuccess) {
+        continue;
       }
-    );
-  }
+    }
 
-  console.log('Ensuring placeholder figures for new RQs...');
-  await ensurePlaceholderFigures();
+    throw new Error(`Unable to generate required figure: ${task.file}`);
+  }
 
   console.log('Chart generation complete.\n');
 }
@@ -1055,8 +1317,11 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const chartsOnly = args.includes('--charts-only');
   const compile = args.includes('--compile');
+  const allowPlaceholders = args.includes('--allow-placeholders');
+  const strictFreshness = !(args.includes('--allow-stale') || args.includes('--skip-freshness-check'));
   const noLLM = args.includes('--no-llm');
-  const useLLM = !noLLM; // LLM generation is ON by default
+  const enableLLM = args.includes('--llm') || args.includes('--use-llm');
+  const useLLM = enableLLM && !noLLM;
   const sectionArg = args.find(a => a.startsWith('--section='));
   const targetSection = sectionArg?.split('=')[1];
   const paperDirArg = (() => {
@@ -1080,6 +1345,17 @@ async function main(): Promise<void> {
     if (idx !== -1) return args[idx + 1];
     return '';
   })();
+  const profile = (() => {
+    const parsed = profileArg as PaperProfile;
+    if (parsed === 'p1' || parsed === 'p2' || parsed === 'llm' || parsed === 'full') {
+      return parsed;
+    }
+    const targetDir = (paperDirArg || CONFIG.paperDir).toLowerCase();
+    if (targetDir.includes('paper_p1')) return 'p1' as PaperProfile;
+    if (targetDir.includes('paper_p2')) return 'p2' as PaperProfile;
+    if (targetDir.includes('paper_llm')) return 'llm' as PaperProfile;
+    return 'full' as PaperProfile;
+  })();
 
   // Parse LLM provider argument
   const providerArg = (() => {
@@ -1100,26 +1376,50 @@ async function main(): Promise<void> {
   }
 
   console.log('=== Living Document Paper Updater ===\n');
+  console.log(`Profile: ${profile}`);
+  console.log(`Strict freshness check: ${strictFreshness ? 'enabled' : 'disabled'}`);
+  console.log(`Placeholder figures: ${allowPlaceholders ? 'enabled' : 'disabled'}\n`);
 
   // Show LLM provider info
-  const provider = CONFIG.llm.provider;
-  if (provider === 'claude') {
-    const hasKey = !!CONFIG.claude.apiKey;
-    console.log(`LLM Provider: Claude (${CONFIG.claude.model})`);
-    if (!hasKey) {
-      console.warn('Warning: ANTHROPIC_API_KEY not set, will fall back to Ollama if needed\n');
+  if (useLLM) {
+    const provider = CONFIG.llm.provider;
+    if (provider === 'claude') {
+      const hasKey = !!CONFIG.claude.apiKey;
+      console.log(`LLM Provider: Claude (${CONFIG.claude.model})`);
+      if (!hasKey) {
+        console.warn('Warning: ANTHROPIC_API_KEY not set, will fall back to Ollama if needed\n');
+      }
+    } else {
+      console.log(`LLM Provider: Ollama (${CONFIG.ollama.model})`);
+      console.log(`  Fallback: ${CONFIG.ollama.fallbackModel}`);
     }
   } else {
-    console.log(`LLM Provider: Ollama (${CONFIG.ollama.model})`);
-    console.log(`  Fallback: ${CONFIG.ollama.fallbackModel}`);
+    console.log('LLM content generation disabled by default. Pass --llm to enable.\n');
   }
   console.log('');
 
   // Load results
-  console.log('Loading experiment results...');
-  const allowedDirs = profileArg ? resolveProfileOutputDirs(profileArg) : undefined;
-  const results = await loadAllResults(allowedDirs);
+  const configPaths = resolveProfileConfigPaths(process.cwd(), profile, false);
+  console.log(`Using ${configPaths.length} experiment configs for profile ${profile}`);
+
+  const freshnessResults = assertFreshResults(process.cwd(), configPaths, strictFreshness);
+  const warningCount = freshnessResults.reduce(
+    (sum, item) => sum + item.issues.filter((issue) => issue.severity === 'warning').length,
+    0
+  );
+  if (warningCount > 0) {
+    console.warn(`Freshness warnings detected: ${warningCount}`);
+  }
+
+  console.log('\nLoading experiment results...');
+  const results = await loadResultsForConfigs(configPaths);
   console.log(`Found ${results.length} experiment result sets\n`);
+  if (results.length === 0 && !allowPlaceholders) {
+    throw new Error(`No results found for profile ${profile}. Run paper suite first, or pass --allow-placeholders with --allow-stale for scaffold generation.`);
+  }
+  if (results.length === 0 && allowPlaceholders) {
+    console.warn('No result sets found; generating placeholder-backed paper assets.');
+  }
 
   // Calculate metadata
   const metadata: PaperMetadata = {
@@ -1133,18 +1433,21 @@ async function main(): Promise<void> {
 
   // Generate RQ checklist appendix section from docs
   const defaultChecklist = (() => {
-    if (paperDirArg && paperDirArg.includes('paper_p1')) {
+    if (profile === 'p1') {
       return 'docs/RQ_PAPER_CHECKLIST_P1.md';
     }
-    if (paperDirArg && paperDirArg.includes('paper_p2')) {
+    if (profile === 'p2') {
       return 'docs/RQ_PAPER_CHECKLIST_P2.md';
+    }
+    if (profile === 'llm') {
+      return 'docs/RQ_PAPER_CHECKLIST_LLM.md';
     }
     return '';
   })();
   buildRqChecklistSection(metadata, rqChecklistArg || defaultChecklist || undefined);
 
   // Generate charts
-  await generateAllCharts(results);
+  await generateAllCharts(results, profile, allowPlaceholders);
 
   if (chartsOnly) {
     console.log('Charts-only mode, skipping text updates.');
@@ -1189,14 +1492,15 @@ async function main(): Promise<void> {
   if (compile) {
     console.log('=== Compiling PDF ===\n');
     try {
-      process.chdir(CONFIG.paperDir);
-      execSync('pdflatex -interaction=nonstopmode main.tex', { stdio: 'inherit' });
-      execSync('bibtex main', { stdio: 'inherit' });
-      execSync('pdflatex -interaction=nonstopmode main.tex', { stdio: 'inherit' });
-      execSync('pdflatex -interaction=nonstopmode main.tex', { stdio: 'inherit' });
-      console.log(`\nPDF compiled: ${path.join(CONFIG.paperDir, 'main.pdf')}`);
+      execSync(
+        `npx tsx scripts/paper-compile.ts --paper-dir "${CONFIG.paperDir}" --no-archive`,
+        {
+          cwd: process.cwd(),
+          stdio: 'inherit',
+        }
+      );
     } catch (error) {
-      console.error('PDF compilation failed. Ensure LaTeX is installed.');
+      console.error('PDF compilation failed.');
     }
   }
 
@@ -1206,4 +1510,7 @@ async function main(): Promise<void> {
   console.log(`Timestamp: ${metadata.timestamp}`);
 }
 
-main().catch(console.error);
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

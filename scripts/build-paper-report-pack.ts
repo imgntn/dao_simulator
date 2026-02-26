@@ -83,7 +83,7 @@ function buildIndex(packDir: string, entries: PackEntry[]): void {
     const steps = entry.stepsPerRun ?? '-';
     const sweep = entry.sweep ?? '-';
     const resultsPath = entry.status === 'ok'
-      ? path.posix.join(path.basename(packDir), path.basename(entry.outputDir))
+      ? `./${path.basename(entry.outputDir)}`
       : '-';
     const status = entry.status === 'ok' ? 'ok' : 'missing';
 
@@ -155,7 +155,7 @@ function main(): void {
       'significance.csv',
       'recommendations.txt',
       'manifest.json',
-      'report.md',
+      'research-quality-report.md',
       'experiment.log',
       'status.json',
     ];

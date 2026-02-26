@@ -81,20 +81,30 @@ export async function POST(request: NextRequest) {
   let action = '';
   let configPath = '';
   let resultsDir = '';
+  let paperProfile = '';
 
   if (contentType.includes('application/json')) {
     const body = await request.json().catch(() => ({} as Record<string, string>));
     action = body.action || '';
     configPath = body.configPath || '';
     resultsDir = body.resultsDir || '';
+    paperProfile = body.paperProfile || '';
   } else {
     const formData = await request.formData();
     action = String(formData.get('action') || '');
     configPath = String(formData.get('configPath') || '');
     resultsDir = String(formData.get('resultsDir') || '');
+    paperProfile = String(formData.get('paperProfile') || '');
   }
 
   try {
+    const normalizedProfile = (() => {
+      if (paperProfile === 'p1' || paperProfile === 'p2' || paperProfile === 'llm' || paperProfile === 'full' || paperProfile === 'both' || paperProfile === 'all') {
+        return paperProfile;
+      }
+      return 'full';
+    })();
+
     switch (action) {
       case 'run': {
         const resolvedConfig = normalizePath(EXPERIMENTS_DIR, configPath);
@@ -131,27 +141,37 @@ export async function POST(request: NextRequest) {
       }
       case 'paper-update': {
         const logFile = path.join(LOG_DIR, `paper-update-${Date.now()}.log`);
-        const pid = spawnTsx('scripts/paper-update.ts', [], logFile);
+        const argsByProfile: Record<string, string[]> = {
+          p1: ['--paper-dir', 'paper_p1', '--profile', 'p1'],
+          p2: ['--paper-dir', 'paper_p2', '--profile', 'p2'],
+          llm: ['--paper-dir', 'paper_llm', '--profile', 'llm'],
+          full: ['--paper-dir', 'paper', '--profile', 'full'],
+        };
+        const updateArgs = argsByProfile[normalizedProfile] || argsByProfile.full;
+        const pid = spawnTsx('scripts/paper-update.ts', updateArgs, logFile);
         return buildRedirect(request, {
           action,
+          target: `profile:${normalizedProfile}`,
           pid: pid ? String(pid) : '',
           log: path.relative(ROOT_DIR, logFile).replace(/\\/g, '/'),
         });
       }
       case 'paper-compile': {
         const logFile = path.join(LOG_DIR, `paper-compile-${Date.now()}.log`);
-        const pid = spawnTsx('scripts/paper-compile.ts', [], logFile);
+        const pid = spawnTsx('scripts/paper-compile.ts', ['--profile', normalizedProfile], logFile);
         return buildRedirect(request, {
           action,
+          target: `profile:${normalizedProfile}`,
           pid: pid ? String(pid) : '',
           log: path.relative(ROOT_DIR, logFile).replace(/\\/g, '/'),
         });
       }
       case 'paper-archive': {
         const logFile = path.join(LOG_DIR, `paper-archive-${Date.now()}.log`);
-        const pid = spawnTsx('scripts/paper-archive.ts', [], logFile);
+        const pid = spawnTsx('scripts/paper-archive.ts', ['--profile', normalizedProfile], logFile);
         return buildRedirect(request, {
           action,
+          target: `profile:${normalizedProfile}`,
           pid: pid ? String(pid) : '',
           log: path.relative(ROOT_DIR, logFile).replace(/\\/g, '/'),
         });

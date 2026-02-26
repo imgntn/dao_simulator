@@ -204,6 +204,9 @@ export interface ExecutionConfig {
   // Parallelization (Phase 2)
   workers?: number;
 
+  // Per-run timeout used by the batch runner (milliseconds)
+  runTimeoutMs?: number;
+
   // Early stopping (Phase 2)
   earlyStop?: {
     enabled: boolean;

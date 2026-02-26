@@ -17,6 +17,8 @@ type ExperimentConfigSummary = {
 };
 
 type ResultSummary = {
+  id: string;
+  path: string;
   name: string;
   state: string;
   progress: number | null;
@@ -84,11 +86,32 @@ function listExperimentConfigs(): ExperimentConfigSummary[] {
 function listResults(): ResultSummary[] {
   if (!fs.existsSync(RESULTS_DIR)) return [];
 
-  const dirs = fs.readdirSync(RESULTS_DIR, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory());
+  function collectResultDirs(baseDir: string, relativeDir = '', depth = 0): string[] {
+    if (depth > 4) return [];
+    const currentDir = path.join(baseDir, relativeDir);
+    const entries = fs.readdirSync(currentDir, { withFileTypes: true });
+    const found: string[] = [];
 
-  return dirs.map((entry) => {
-    const resultDir = path.join(RESULTS_DIR, entry.name);
+    const hasArtifacts = ['summary.json', 'status.json'].some((file) =>
+      fs.existsSync(path.join(currentDir, file))
+    );
+    if (hasArtifacts && relativeDir) {
+      found.push(relativeDir.replace(/\\/g, '/'));
+    }
+
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const childRelative = relativeDir ? path.join(relativeDir, entry.name) : entry.name;
+      found.push(...collectResultDirs(baseDir, childRelative, depth + 1));
+    }
+
+    return found;
+  }
+
+  const dirs = collectResultDirs(RESULTS_DIR);
+
+  return dirs.map((relativePath) => {
+    const resultDir = path.join(RESULTS_DIR, relativePath);
     const statusPath = path.join(resultDir, 'status.json');
     const reportPath = path.join(resultDir, 'report.md');
     const qualityReportPath = path.join(resultDir, 'research-quality-report.md');
@@ -127,16 +150,18 @@ function listResults(): ResultSummary[] {
     }
 
     return {
-      name: entry.name,
+      id: relativePath,
+      path: relativePath,
+      name: path.basename(relativePath),
       state,
       progress,
       completedRuns,
       totalRuns,
       lastUpdate,
-      hasReport: fs.existsSync(reportPath),
+      hasReport: fs.existsSync(reportPath) || fs.existsSync(qualityReportPath),
       hasQualityReport: fs.existsSync(qualityReportPath),
     };
-  }).sort((a, b) => a.name.localeCompare(b.name));
+  }).sort((a, b) => a.path.localeCompare(b.path));
 }
 
 function getParam(value: string | string[] | undefined): string {
@@ -250,8 +275,8 @@ export default function Home({
               >
                 <option value="" disabled>Select a result set</option>
                 {results.map((result) => (
-                  <option key={result.name} value={`results/${result.name}`}>
-                    results/{result.name}
+                  <option key={result.id} value={`results/${result.path}`}>
+                    results/{result.path}
                   </option>
                 ))}
               </select>
@@ -270,8 +295,22 @@ export default function Home({
           <p className="text-sm text-slate-400">
             Update the academic paper from the latest results, compile PDFs, and archive releases.
           </p>
-          <div className="flex flex-wrap gap-2">
-            <form action="/api/research" method="post">
+          <div className="flex flex-wrap items-end gap-4">
+            <label className="block text-xs uppercase tracking-wide text-slate-500">
+              Paper Profile
+              <select
+                name="paperProfile"
+                form="paper-update-form"
+                defaultValue="full"
+                className="mt-2 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+              >
+                <option value="full">full (paper/)</option>
+                <option value="p1">p1 (paper_p1/)</option>
+                <option value="p2">p2 (paper_p2/)</option>
+                <option value="llm">llm (paper_llm/)</option>
+              </select>
+            </label>
+            <form id="paper-update-form" action="/api/research" method="post">
               <input type="hidden" name="action" value="paper-update" />
               <button
                 type="submit"
@@ -282,20 +321,52 @@ export default function Home({
             </form>
             <form action="/api/research" method="post">
               <input type="hidden" name="action" value="paper-compile" />
+              <input type="hidden" name="paperProfile" value="full" />
               <button
                 type="submit"
                 className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
               >
-                Compile PDF
+                Compile Full
+              </button>
+            </form>
+            <form action="/api/research" method="post">
+              <input type="hidden" name="action" value="paper-compile" />
+              <input type="hidden" name="paperProfile" value="p1" />
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
+              >
+                Compile P1
+              </button>
+            </form>
+            <form action="/api/research" method="post">
+              <input type="hidden" name="action" value="paper-compile" />
+              <input type="hidden" name="paperProfile" value="p2" />
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
+              >
+                Compile P2
+              </button>
+            </form>
+            <form action="/api/research" method="post">
+              <input type="hidden" name="action" value="paper-compile" />
+              <input type="hidden" name="paperProfile" value="llm" />
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
+              >
+                Compile LLM
               </button>
             </form>
             <form action="/api/research" method="post">
               <input type="hidden" name="action" value="paper-archive" />
+              <input type="hidden" name="paperProfile" value="all" />
               <button
                 type="submit"
                 className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
               >
-                Archive Paper
+                Archive All
               </button>
             </form>
           </div>
@@ -357,11 +428,15 @@ export default function Home({
                 </thead>
                 <tbody>
                   {results.map((result) => (
-                    <tr key={result.name} className="border-b border-slate-900">
+                    <tr key={result.id} className="border-b border-slate-900">
                       <td className="py-2 pr-4 text-slate-200">
-                        <Link href={`/results/${result.name}`} className="text-blue-400 hover:text-blue-300">
-                          {result.name}
-                        </Link>
+                        {result.path.includes('/') ? (
+                          <span>{result.path}</span>
+                        ) : (
+                          <Link href={`/results/${result.name}`} className="text-blue-400 hover:text-blue-300">
+                            {result.path}
+                          </Link>
+                        )}
                       </td>
                       <td className="py-2 pr-4 text-slate-400">{result.state}</td>
                       <td className="py-2 pr-4 text-slate-400">

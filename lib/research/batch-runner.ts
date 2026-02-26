@@ -73,6 +73,22 @@ interface RunTask {
   seed: number;
 }
 
+function shortHash(input: string): string {
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) {
+    hash = ((hash << 5) - hash + input.charCodeAt(i)) | 0;
+  }
+  return Math.abs(hash).toString(16).slice(0, 8);
+}
+
+function compactSweepPart(sweepValue: string): string {
+  const sanitized = sweepValue.replace(/[^a-zA-Z0-9._=-]+/g, '_');
+  if (sanitized.length <= 80) {
+    return sanitized;
+  }
+  return `sweep_${shortHash(sanitized)}`;
+}
+
 // =============================================================================
 // DEFAULT CONFIG
 // =============================================================================
@@ -176,8 +192,11 @@ export class BatchRunner {
     for (const { daoConfig, sweepValue } of configs) {
       for (let i = 0; i < this.experimentConfig.execution.runsPerConfig; i++) {
         const seed = this.getSeed(globalIndex);
-        const sweepPart = sweepValue !== undefined ? `-${String(sweepValue).replace(/\./g, '_')}` : '';
-        const runId = `${this.experimentConfig.name}${sweepPart}-run-${String(i + 1).padStart(3, '0')}`;
+        const sweepPart = sweepValue !== undefined
+          ? `-${compactSweepPart(String(sweepValue).replace(/\./g, '_'))}`
+          : '';
+        const experimentId = this.experimentConfig.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
+        const runId = `${experimentId}${sweepPart}-run-${String(i + 1).padStart(3, '0')}`;
 
         tasks.push({
           id: runId,

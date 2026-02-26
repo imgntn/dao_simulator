@@ -1,0 +1,22 @@
+% ABSTRACT - LLM Paper Profile
+% This section can be updated by `paper-update.ts` when --llm is enabled.
+
+Decentralized Autonomous Organizations increasingly embed large language model (LLM)
+agents for proposal analysis, voter guidance, and reporting. This paper presents a
+focused multi-agent evaluation of how LLM reasoning modes change governance outcomes
+relative to rule-based baselines. We compare pure rule-based agents, hybrid
+deployments, and all-LLM agent populations using a controlled, reproducible
+simulation protocol.
+
+The analysis emphasizes both governance performance and systems quality: proposal pass
+rates, turnout, and activity are evaluated alongside LLM vote consistency, cache hit
+rate, and inference latency. The resulting profile is intended as a living benchmark
+that can be regenerated whenever the simulator, prompts, or model stack changes.
+
+Rather than treating LLM integration as a binary feature, we characterize the
+operational trade space across reasoning modes and identify where hybrid deployment
+offers a practical balance between decision quality, throughput, and runtime cost.
+
+% === AUTO-GENERATION METADATA ===
+% Regenerate this section:
+%   npm run paper:update:llm -- --section abstract

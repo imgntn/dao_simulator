@@ -516,8 +516,7 @@ export class ExperimentRunner {
     const runEndTime = Date.now();
 
     // Build run ID
-    const sweepPart = sweepValue !== undefined ? `-${String(sweepValue).replace(/\./g, '_')}` : '';
-    const runId = `${this.config.name}${sweepPart}-run-${String(runIndexWithinSweep + 1).padStart(3, '0')}`;
+    const runId = this.buildRunId(sweepValue, runIndexWithinSweep);
 
     return {
       runId,
@@ -560,8 +559,7 @@ export class ExperimentRunner {
     const runEndTime = Date.now();
 
     // Build run ID
-    const sweepPart = sweepValue !== undefined ? `-${String(sweepValue).replace(/\./g, '_')}` : '';
-    const runId = `${this.config.name}${sweepPart}-run-${String(runIndexWithinSweep + 1).padStart(3, '0')}`;
+    const runId = this.buildRunId(sweepValue, runIndexWithinSweep);
 
     return {
       runId,
@@ -576,6 +574,35 @@ export class ExperimentRunner {
       durationMs: runEndTime - runStartTime,
       stepsCompleted: stepsToRun,
     };
+  }
+
+  private buildRunId(
+    sweepValue: number | string | boolean | undefined,
+    runIndexWithinSweep: number
+  ): string {
+    const experimentId = this.config.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
+    const runSuffix = `-run-${String(runIndexWithinSweep + 1).padStart(3, '0')}`;
+    if (sweepValue === undefined) {
+      return `${experimentId}${runSuffix}`;
+    }
+
+    const rawSweep = String(sweepValue)
+      .replace(/\./g, '_')
+      .replace(/[^a-zA-Z0-9._=-]+/g, '_');
+
+    const sweepPart = rawSweep.length <= 80
+      ? rawSweep
+      : `sweep_${this.shortHash(rawSweep)}`;
+
+    return `${experimentId}-${sweepPart}${runSuffix}`;
+  }
+
+  private shortHash(input: string): string {
+    let hash = 0;
+    for (let i = 0; i < input.length; i++) {
+      hash = ((hash << 5) - hash + input.charCodeAt(i)) | 0;
+    }
+    return Math.abs(hash).toString(16).slice(0, 8);
   }
 
   private buildCityConfig(baseCityConfig: CityBaseConfig, scenario: CityScenarioConfig): DAOCityConfig {

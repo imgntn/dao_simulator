@@ -1,0 +1,35 @@
+schemaVersion: 1
+
+discovery:
+  includePattern: '^\d{2}-.*\.ya?ml$'
+  exclude:
+    - 00-realistic-baseline.yaml
+
+profiles:
+  full:
+    mode: discovered
+
+  p1:
+    mode: manual
+    include:
+      - 00-academic-baseline.yaml
+      - 01-calibration-participation.yaml
+      - 02-ablation-governance.yaml
+      - 03-sensitivity-quorum.yaml
+      - 04-governance-capture-mitigations.yaml
+      - 05-proposal-pipeline.yaml
+      - 08-scale-sweep.yaml
+      - 09-voting-mechanisms.yaml
+
+  p2:
+    mode: manual
+    include:
+      - 00-academic-baseline.yaml
+      - 02-ablation-governance.yaml
+      - 06-treasury-resilience.yaml
+      - 07-inter-dao-cooperation.yaml
+
+  llm:
+    mode: manual
+    include:
+      - 12-llm-agent-reasoning.yaml

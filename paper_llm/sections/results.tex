@@ -1,0 +1,78 @@
+% RESULTS - AUTO-UPDATED SECTION
+% LLM paper profile scaffold.
+
+\subsection{Overview}
+
+We evaluated LLM-enabled governance under three effective reasoning modes
+(rule-based, hybrid, and all-LLM) using 8 total simulation runs.
+
+\begin{table}[htbp]
+\centering
+\caption{LLM reasoning mode summary}
+\label{tab:llm-summary}
+\begin{tabular}{lccccc}
+\toprule
+Mode & Runs & Pass Rate & Turnout & Vote Consistency & Avg Latency (ms) \\
+\midrule
+Rule-based & 2 & 0.00 & 0.0000 & 0.0000 & 0.00 \\
+Hybrid & 4 & 0.50 & 0.1083 & 0.6625 & 807.98 \\
+All-LLM & 2 & 0.50 & 0.2161 & 0.7474 & 1380.76 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================================
+\subsection{LLM Behavioral Metrics}
+% ============================================================================
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/llm_vote_consistency}
+    \caption{LLM vote consistency by reasoning mode.}
+    \label{fig:llm-vote-consistency}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/llm_cache_hit_rate}
+    \caption{LLM cache hit rate by reasoning mode.}
+    \label{fig:llm-cache-hit-rate}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/llm_avg_latency}
+    \caption{Average LLM latency by reasoning mode.}
+    \label{fig:llm-avg-latency}
+\end{figure}
+
+% ============================================================================
+\subsection{Governance Outcome Tradeoffs}
+% ============================================================================
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/llm_outcomes_tradeoff}
+    \caption{Governance throughput (pass rate) versus LLM latency.}
+    \label{fig:llm-outcomes-tradeoff}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\caption{Outcome metrics by reasoning mode}
+\label{tab:llm-outcomes}
+\begin{tabular}{lccc}
+\toprule
+Mode & Final Treasury & Participation Rate & Governance Activity \\
+\midrule
+Rule-based & 10670.36 & 0.0000 & 0.0000 \\
+Hybrid & 11010.26 & 0.1863 & 0.0019 \\
+All-LLM & 10589.73 & 0.3115 & 0.0061 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% === AUTO-GENERATION METADATA ===
+% Regenerate this section:
+%   npm run paper:update:llm -- --section results
+% Source experiment: experiments/paper/12-llm-agent-reasoning.yaml

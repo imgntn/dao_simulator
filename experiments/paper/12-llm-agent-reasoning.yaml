@@ -1,123 +1,124 @@
-# Experiment 12: LLM Agent Reasoning
-#
-# Compares governance outcomes across three LLM agent modes:
-# - disabled: Pure rule-based agents (baseline)
-# - hybrid: 30% LLM + 70% rule-based (realistic deployment)
-# - all: 100% LLM agents (full LLM reasoning)
-#
-# Also includes reporter mode to test news generation.
-#
-# Requirements: Ollama running at localhost:11434 with qwen3:8b model
-# Note: Smaller agent count (50) to manage LLM costs/latency
+# Experiment 12: LLM Agent Reasoning (runner-compatible schema)
 
-name: "LLM Agent Reasoning Modes"
+name: LLM Agent Reasoning Modes
 description: >
-  Investigates how LLM-powered agent reasoning affects governance outcomes,
-  voting patterns, and decision quality compared to rule-based agents.
+  Compares governance outcomes across rule-based, hybrid, all-LLM, and
+  hybrid-with-reporter modes while tracking LLM consistency, cache behavior,
+  and latency.
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - paper
+  - llm
+  - governance
 
-# Common settings for all configs
-defaults:
-  steps: 500
-  runs: 30
-  seed: 42
-  num_developers: 10
-  num_investors: 5
-  num_traders: 2
-  num_passive_members: 10
-  num_proposal_creators: 5
-  num_validators: 3
-  num_delegators: 5
-  num_governance_experts: 2
-  num_risk_managers: 2
-  governance_rule: "majority"
-  learning_enabled: false
-  forum_enabled: true
-  llm_base_url: "http://localhost:11434"
-  llm_default_model: "qwen3:8b"
-  llm_premium_model: "qwen3:8b"
-  llm_max_concurrent: 8
-  llm_temperature: 0.3
-  llm_cache_enabled: true
-  llm_max_tokens: 256
+baseConfig:
+  template: compound
+  overrides:
+    governance_rule: majority
+    learning_enabled: false
+    forum_enabled: true
 
-configs:
-  - name: "Baseline (Rule-Based)"
-    description: "No LLM agents — pure rule-based decision making"
-    settings:
-      llm_enabled: false
-      llm_agent_mode: "disabled"
-      num_llm_agents: 0
-      num_llm_reporters: 0
+    # Baseline population mix
+    num_developers: 4
+    num_investors: 2
+    num_traders: 1
+    num_passive_members: 4
+    num_proposal_creators: 2
+    num_validators: 1
+    num_delegators: 2
+    num_governance_experts: 1
+    num_risk_managers: 1
 
-  - name: "Hybrid Mode (30% LLM)"
-    description: "30% of agents use LLM reasoning, 70% rule-based"
-    settings:
-      llm_enabled: true
-      llm_agent_mode: "hybrid"
-      llm_hybrid_fraction: 0.3
-      num_llm_agents: 15
-      num_llm_reporters: 1
+    # LLM runtime settings
+    llm_base_url: http://localhost:11434
+    llm_default_model: qwen3:8b
+    llm_premium_model: qwen3:8b
+    llm_max_concurrent: 4
+    llm_timeout_ms: 5000
+    llm_temperature: 0.3
+    llm_cache_enabled: true
+    llm_max_tokens: 256
 
-  - name: "All LLM"
-    description: "100% LLM-powered voting decisions (all agents are LLMAgent)"
-    settings:
-      llm_enabled: true
-      llm_agent_mode: "all"
-      num_llm_agents: 49
-      num_llm_reporters: 1
-      num_developers: 0
-      num_investors: 0
-      num_traders: 0
-      num_passive_members: 0
-      num_proposal_creators: 0
-      num_validators: 0
-      num_delegators: 0
-      num_governance_experts: 0
-      num_risk_managers: 0
+sweep:
+  type: zip
+  grid:
+    - parameter: llm_agent_mode
+      values: [disabled, hybrid, all, hybrid]
+    - parameter: llm_enabled
+      values: [false, true, true, true]
+    - parameter: llm_hybrid_fraction
+      values: [0.0, 0.3, 1.0, 0.3]
+    - parameter: num_llm_agents
+      values: [0, 4, 8, 4]
+    - parameter: num_llm_reporters
+      values: [0, 1, 1, 1]
 
-  - name: "Hybrid with Reporter"
-    description: "Hybrid mode with LLM reporter generating news summaries"
-    settings:
-      llm_enabled: true
-      llm_agent_mode: "hybrid"
-      llm_hybrid_fraction: 0.3
-      num_llm_agents: 10
-      num_llm_reporters: 2
+    # Force non-LLM roles to zero for all-LLM mode only
+    - parameter: num_developers
+      values: [4, 4, 0, 4]
+    - parameter: num_investors
+      values: [2, 2, 0, 2]
+    - parameter: num_traders
+      values: [1, 1, 0, 1]
+    - parameter: num_passive_members
+      values: [4, 4, 0, 4]
+    - parameter: num_proposal_creators
+      values: [2, 2, 0, 2]
+    - parameter: num_validators
+      values: [1, 1, 0, 1]
+    - parameter: num_delegators
+      values: [2, 2, 0, 2]
+    - parameter: num_governance_experts
+      values: [1, 1, 0, 1]
+    - parameter: num_risk_managers
+      values: [1, 1, 0, 1]
+
+execution:
+  runsPerConfig: 2
+  stepsPerRun: 120
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 1
+  runTimeoutMs: 180000
 
 metrics:
-  - name: "Proposal Pass Rate"
+  - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
-  - name: "Average Turnout"
+  - name: Average Turnout
     type: builtin
     builtin: average_turnout
-  - name: "Final Treasury"
+  - name: Final Treasury
     type: builtin
     builtin: final_treasury
-  - name: "Voter Participation Rate"
+  - name: Voter Participation Rate
     type: builtin
     builtin: voter_participation_rate
-  - name: "Avg Margin of Victory"
+  - name: Avg Margin of Victory
     type: builtin
     builtin: avg_margin_of_victory
-  - name: "Proposal Abandonment Rate"
+  - name: Proposal Abandonment Rate
     type: builtin
     builtin: proposal_abandonment_rate
-  - name: "Governance Activity Index"
+  - name: Governance Activity Index
     type: builtin
     builtin: governance_activity_index
-  - name: "LLM Vote Consistency"
+  - name: LLM Vote Consistency
     type: builtin
     builtin: llm_vote_consistency
-  - name: "LLM Cache Hit Rate"
+  - name: LLM Cache Hit Rate
     type: builtin
     builtin: llm_cache_hit_rate
-  - name: "LLM Avg Latency"
+  - name: LLM Avg Latency
     type: builtin
     builtin: llm_avg_latency_ms
 
 output:
-  format: "json"
-  directory: "results/experiments/12-llm-reasoning"
-  include_raw_data: false
-  include_confidence_intervals: true
+  directory: results/experiments/12-llm-reasoning-v4
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeManifest: true
+  includeTimeline: false

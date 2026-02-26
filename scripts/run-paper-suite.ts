@@ -3,77 +3,50 @@
  * Paper Suite Runner
  *
  * Usage:
- *   npx tsx scripts/run-paper-suite.ts run [--include-validation] [--profile p1|p2|full]
- *   npx tsx scripts/run-paper-suite.ts report [--include-validation] [--profile p1|p2|full]
- *   npx tsx scripts/run-paper-suite.ts pack [--include-validation] [--output <dir>] [--profile p1|p2|full]
- *   npx tsx scripts/run-paper-suite.ts summary [--include-validation] [--profile p1|p2|full]
- *   npx tsx scripts/run-paper-suite.ts all [--include-validation] [--output <dir>] [--profile p1|p2|full]
+ *   npx tsx scripts/run-paper-suite.ts run [--include-validation] [--profile p1|p2|llm|full]
+ *   npx tsx scripts/run-paper-suite.ts report [--include-validation] [--profile p1|p2|llm|full]
+ *   npx tsx scripts/run-paper-suite.ts pack [--include-validation] [--output <dir>] [--profile p1|p2|llm|full]
+ *   npx tsx scripts/run-paper-suite.ts summary [--include-validation] [--profile p1|p2|llm|full]
+ *   npx tsx scripts/run-paper-suite.ts all [--include-validation] [--output <dir>] [--profile p1|p2|llm|full]
  */
 
+import { spawnSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as yaml from 'yaml';
-import { spawnSync } from 'child_process';
+import { pathToFileURL } from 'url';
+import {
+  type PaperProfile,
+  assertFreshResults,
+  resolveOutputDir,
+  resolveProfileConfigPaths,
+} from './paper-pipeline-utils';
 
 const ROOT = process.cwd();
+const TSX_CLI = path.join(ROOT, 'node_modules', 'tsx', 'dist', 'cli.mjs');
 
-const PAPER_CONFIGS = [
-  'experiments/paper/00-academic-baseline.yaml',
-  'experiments/paper/01-calibration-participation.yaml',
-  'experiments/paper/02-ablation-governance.yaml',
-  'experiments/paper/03-sensitivity-quorum.yaml',
-  'experiments/paper/04-governance-capture-mitigations.yaml',
-  'experiments/paper/05-proposal-pipeline.yaml',
-  'experiments/paper/06-treasury-resilience.yaml',
-  'experiments/paper/07-inter-dao-cooperation.yaml',
-  'experiments/paper/08-scale-sweep.yaml',
-  'experiments/paper/09-voting-mechanisms.yaml',
-];
+export function parseArgs(args: string[]) {
+  const commandSet = new Set(['run', 'report', 'pack', 'summary', 'all']);
+  let commandArg = 'all';
+  let commandIndex = -1;
 
-const PAPER_PROFILES: Record<string, string[]> = {
-  full: PAPER_CONFIGS,
-  p3: [
-    'experiments/paper/00-academic-baseline.yaml',
-    'experiments/paper/08-scale-sweep.yaml',
-    'experiments/paper/09-voting-mechanisms.yaml',
-  ],
-  p1: [
-    'experiments/paper/00-academic-baseline.yaml',
-    'experiments/paper/01-calibration-participation.yaml',
-    'experiments/paper/02-ablation-governance.yaml',
-    'experiments/paper/03-sensitivity-quorum.yaml',
-    'experiments/paper/04-governance-capture-mitigations.yaml',
-  ],
-  p2: [
-    'experiments/paper/00-academic-baseline.yaml',
-    'experiments/paper/02-ablation-governance.yaml',
-    'experiments/paper/05-proposal-pipeline.yaml',
-    'experiments/paper/06-treasury-resilience.yaml',
-    'experiments/paper/07-inter-dao-cooperation.yaml',
-  ],
-};
-
-function loadValidationConfigs(): string[] {
-  const dir = path.join(ROOT, 'experiments', 'validation');
-  if (!fs.existsSync(dir)) return [];
-  return fs.readdirSync(dir)
-    .filter((f) => f.endsWith('.yaml') || f.endsWith('.yml'))
-    .map((f) => path.join('experiments', 'validation', f));
-}
-
-function parseArgs(args: string[]) {
-  const result = {
-    command: 'all',
-    includeValidation: false,
-    outputDir: '',
-    profile: 'full',
-  };
-
-  if (args[0] && !args[0].startsWith('-')) {
-    result.command = args[0];
+  for (let i = 0; i < args.length; i++) {
+    if (!args[i].startsWith('-') && commandSet.has(args[i])) {
+      commandArg = args[i];
+      commandIndex = i;
+      break;
+    }
   }
 
-  for (let i = 1; i < args.length; i++) {
+  const result = {
+    command: commandArg,
+    includeValidation: false,
+    outputDir: '',
+    profile: 'full' as PaperProfile,
+    strictFreshness: true,
+  };
+
+  for (let i = 0; i < args.length; i++) {
+    if (i === commandIndex) continue;
     const arg = args[i];
     if (arg === '--include-validation') {
       result.includeValidation = true;
@@ -81,33 +54,38 @@ function parseArgs(args: string[]) {
       result.outputDir = args[i + 1] || '';
       i++;
     } else if (arg === '--profile' || arg === '--paper') {
-      result.profile = args[i + 1] || 'full';
+      const profile = args[i + 1] as PaperProfile | undefined;
+      result.profile = profile === 'p1' || profile === 'p2' || profile === 'llm' || profile === 'full' ? profile : 'full';
       i++;
     } else if (arg.startsWith('--profile=')) {
-      result.profile = arg.split('=')[1] || 'full';
+      const profile = arg.split('=')[1] as PaperProfile | undefined;
+      result.profile = profile === 'p1' || profile === 'p2' || profile === 'llm' || profile === 'full' ? profile : 'full';
+    } else if (arg === '--allow-stale' || arg === '--skip-freshness-check') {
+      result.strictFreshness = false;
     }
   }
 
   return result;
 }
 
-function resolveOutputDir(configPath: string): string {
-  const absolutePath = path.resolve(configPath);
-  const content = fs.readFileSync(absolutePath, 'utf8');
-  const parsed = yaml.parse(content);
-  const outputDir = parsed?.output?.directory;
-  if (outputDir) return outputDir;
-  if (parsed?.name) {
-    return path.join('results', String(parsed.name).replace(/[^\w\-]+/g, '_').toLowerCase());
-  }
-  return 'results';
-}
-
 function runCommand(command: string, args: string[]): void {
-  const result = spawnSync(command, args, { stdio: 'inherit', shell: true });
+  const shouldAppendCmd = process.platform === 'win32'
+    && !path.extname(command)
+    && !command.includes('\\')
+    && !command.includes('/');
+  const executable = shouldAppendCmd ? `${command}.cmd` : command;
+  const result = spawnSync(executable, args, { stdio: 'inherit' });
   if (result.status !== 0) {
     process.exit(result.status ?? 1);
   }
+}
+
+function runTsx(scriptPath: string, args: string[]): void {
+  if (fs.existsSync(TSX_CLI)) {
+    runCommand(process.execPath, [TSX_CLI, scriptPath, ...args]);
+    return;
+  }
+  runCommand('npx', ['tsx', scriptPath, ...args]);
 }
 
 function runSuite(configs: string[]): void {
@@ -118,73 +96,66 @@ function runSuite(configs: string[]): void {
 
 function runReports(configs: string[]): void {
   for (const config of configs) {
-    const outputDir = resolveOutputDir(config);
-    if (!fs.existsSync(path.join(outputDir, 'summary.json'))) {
-      console.warn(`[paper-suite] Skipping report; no summary.json in ${outputDir}`);
+    const outputDir = resolveOutputDir(ROOT, config);
+    if (!outputDir) {
+      console.warn(`[paper-suite] Skipping report; could not resolve output directory for ${config}`);
       continue;
     }
-    runCommand('npx', [
-      'tsx',
-      'scripts/generate-research-quality-report.ts',
+    runTsx('scripts/generate-research-quality-report.ts', [
       outputDir,
-      path.join(outputDir, 'report.md'),
+      path.join(outputDir, 'research-quality-report.md'),
     ]);
   }
 }
 
 function buildPack(configs: string[], outputDir: string): void {
-  const args = ['tsx', 'scripts/build-paper-report-pack.ts'];
+  const args: string[] = [];
   if (outputDir) {
     args.push('--output', outputDir);
   }
   args.push(...configs);
-  runCommand('npx', args);
+  runTsx('scripts/build-paper-report-pack.ts', args);
 }
 
 function generateSummary(configs: string[]): void {
   const dirs = configs
-    .map((c) => resolveOutputDir(c))
-    .filter((d) => fs.existsSync(path.join(d, 'summary.json')));
+    .map((c) => resolveOutputDir(ROOT, c))
+    .filter((dir) => dir && fs.existsSync(path.join(dir, 'summary.json')));
 
   if (dirs.length === 0) {
     console.warn('[paper-suite] No summary.json files found; skipping executive summary');
     return;
   }
 
-  runCommand('npx', [
-    'tsx',
-    'scripts/generate-executive-summary.ts',
-    ...dirs,
-  ]);
+  runTsx('scripts/generate-executive-summary.ts', dirs);
 }
 
 function main(): void {
   const args = parseArgs(process.argv.slice(2));
-
-  const profileConfigs = PAPER_PROFILES[args.profile] || PAPER_CONFIGS;
-  const configs = [
-    ...profileConfigs,
-    ...(args.includeValidation ? loadValidationConfigs() : []),
-  ];
+  const configs = resolveProfileConfigPaths(ROOT, args.profile, args.includeValidation);
 
   switch (args.command) {
     case 'run':
       runSuite(configs);
       break;
     case 'report':
+      assertFreshResults(ROOT, configs, args.strictFreshness);
       runReports(configs);
       break;
     case 'pack':
+      assertFreshResults(ROOT, configs, args.strictFreshness);
       runReports(configs);
       buildPack(configs, args.outputDir);
       generateSummary(configs);
       break;
     case 'summary':
+      assertFreshResults(ROOT, configs, args.strictFreshness);
       generateSummary(configs);
       break;
     case 'all':
     default:
       runSuite(configs);
+      assertFreshResults(ROOT, configs, args.strictFreshness);
       runReports(configs);
       buildPack(configs, args.outputDir);
       generateSummary(configs);
@@ -192,4 +163,11 @@ function main(): void {
   }
 }
 
-main();
+const isMain = (() => {
+  if (!process.argv[1]) return false;
+  return import.meta.url === pathToFileURL(process.argv[1]).href;
+})();
+
+if (isMain) {
+  main();
+}

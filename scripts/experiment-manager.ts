@@ -259,12 +259,18 @@ function calculateTotalRuns(config: ExperimentConfig): number {
   if (!config.sweep) {
     totalConfigs = 1;
   } else if (config.sweep.grid) {
-    // Multi-parameter grid search - Cartesian product
-    totalConfigs = config.sweep.grid.reduce((acc, g) => {
-      const numValues = g.values?.length ||
-        (g.range ? Math.ceil((g.range.max - g.range.min) / g.range.step) + 1 : 0);
-      return acc * numValues;
-    }, 1);
+    const valueCounts = config.sweep.grid
+      .map((g) => g.values?.length ||
+        (g.range ? Math.ceil((g.range.max - g.range.min) / g.range.step) + 1 : 0))
+      .filter((count) => count > 0);
+    if (valueCounts.length === 0) {
+      totalConfigs = 1;
+    } else if (config.sweep.type === 'zip') {
+      totalConfigs = valueCounts[0];
+    } else {
+      // Multi-parameter grid search - Cartesian product
+      totalConfigs = valueCounts.reduce((acc, count) => acc * count, 1);
+    }
   } else {
     // Single parameter sweep
     totalConfigs = config.sweep.values?.length ||
@@ -383,6 +389,7 @@ async function runExperiment(configFile: string, options: { resume?: boolean } =
       {
         concurrency: config.execution.workers || 1,
         checkpointInterval: Math.max(10, Math.floor(totalRuns / 100)), // Checkpoint every ~1%
+        runTimeoutMs: config.execution.runTimeoutMs,
       },
       progressCallback
     );
