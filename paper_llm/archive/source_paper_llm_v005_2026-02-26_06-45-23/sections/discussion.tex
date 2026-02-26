@@ -1,0 +1,37 @@
+% DISCUSSION - LLM paper profile
+
+\subsection{Interpretation of Results}
+
+The LLM profile highlights a clear reliability-latency tradeoff. Relative to the
+rule-based baseline, both hybrid and all-LLM modes increase governance activity and
+participation, but at the cost of substantially higher inference latency.
+
+\subsection{Reasoning Mode Implications}
+
+\begin{itemize}
+    \item \textbf{Rule-based mode} produced near-zero governance activity in this short-horizon setup.
+    \item \textbf{Hybrid mode} delivered strong treasury outcomes and lower latency than all-LLM.
+    \item \textbf{All-LLM mode} achieved the highest participation and vote consistency, with the largest latency cost.
+\end{itemize}
+
+\subsection{Operational Tradeoffs}
+
+For production governance pipelines, three controls are essential:
+
+\begin{enumerate}
+    \item enforce latency budgets for model calls,
+    \item track vote-consistency drift across model updates,
+    \item monitor cache effectiveness as proposal diversity changes.
+\end{enumerate}
+
+\subsection{Practical Guidance}
+
+On this benchmark, hybrid deployment is the most practical default: it preserves much
+of the consistency/participation gain while keeping latency substantially below all-LLM
+operation.
+
+\subsection{Limitations}
+
+This run set is intentionally lightweight for pipeline reliability (8 runs total).
+Claims should be treated as directional and should be re-evaluated with larger run
+budgets before normative policy decisions.

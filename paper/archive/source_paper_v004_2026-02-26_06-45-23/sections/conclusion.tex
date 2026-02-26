@@ -1,0 +1,83 @@
+% CONCLUSION
+% Last generated: 2026-02-21
+
+\subsection{Summary}
+
+We have presented a comprehensive multi-agent simulation framework for studying DAO governance mechanisms. Our framework supports multiple voting systems, agent heterogeneity, and systematic parameter exploration, enabling reproducible research into fundamental questions of decentralized governance.
+
+Across \totalruns{} simulation runs and \experimentcount{} experiment sets, we target the following empirical questions:
+
+\begin{enumerate}
+    \item \textbf{Participation dynamics}: How participation incentives and calibration targets affect voter turnout and retention (RQ1, Experiments~01, 03).
+
+    \item \textbf{Governance capture}: How mitigation strategies (vote caps, quadratic thresholds, velocity penalties) affect governance capture risk (RQ2, Experiment~04).
+
+    \item \textbf{Proposal pipeline}: How pipeline settings (temp-checks, fast-tracks, expiry windows) affect throughput and decision quality (RQ3, Experiment~05).
+
+    \item \textbf{Treasury resilience}: How treasury management parameters affect fiscal stability under varying market conditions (RQ4, Experiment~06).
+
+    \item \textbf{Inter-DAO cooperation}: How cross-DAO collaboration affects governance outcomes and resource efficiency (RQ5, Experiment~07).
+\end{enumerate}
+
+\subsection{Contributions}
+
+This work makes the following contributions:
+
+\begin{enumerate}
+    \item An open-source simulation framework for DAO governance research supporting multiple voting mechanisms, agent heterogeneity, and delegation
+    \item A historical data calibration pipeline validating simulator outputs against 14 real-world DAOs with an average accuracy score of 0.850
+    \item A research CLI enabling reproducible batch experiments with parameter sweeps, checkpoint/resume, and statistical export
+    \item Empirical analysis infrastructure for quorum, scale, mechanism, treasury, and inter-DAO cooperation effects
+    \item A theoretical framework connecting multi-agent systems, mechanism design, and social choice
+\end{enumerate}
+
+\subsection{Implications}
+
+For researchers, our framework provides infrastructure for systematic governance studies. The combination of formal models, simulation capabilities, and empirical methodology establishes a foundation for computational governance science.
+
+For practitioners, this work provides a structured way to explore parameter space and test governance hypotheses before on-chain deployment. Specific numeric guidance should be interpreted as simulation-conditional and comparative rather than universal prescriptions.
+
+For the broader ecosystem, our work contributes to the maturation of decentralized governance from experimentation to engineering discipline.
+
+\subsection{Closing Remarks}
+
+DAOs represent a significant experiment in organizational design, with potential to reshape how humans coordinate at scale. Understanding their dynamics through rigorous simulation and analysis is essential to realizing this potential while avoiding pitfalls.
+
+We release our framework as open-source software, inviting the community to extend, critique, and improve upon this work. The future of governance is being written now; we hope this contribution helps write it well.
+
+\subsection{Data and Code Availability}
+
+The simulation framework, experiment configurations, and analysis scripts are publicly available:
+
+\begin{description}
+    \item[Repository] \url{https://github.com/imgntn/dao_simulator}
+    \item[Documentation] Included in repository \texttt{docs/} directory
+\end{description}
+
+\textbf{Repository structure:}
+\begin{itemize}
+    \item \texttt{lib/}: Core simulation engine (TypeScript, 48{,}000+ lines)
+    \item \texttt{experiments/paper/}: All experiment configurations (YAML)
+    \item \texttt{scripts/}: Analysis and figure generation scripts (Python/TypeScript)
+    \item \texttt{results/}: Simulation outputs (generated)
+\end{itemize}
+
+\textbf{Reproduction steps:}
+\begin{enumerate}
+    \item Clone repository: \texttt{git clone https://github.com/imgntn/dao\_simulator}
+    \item Install dependencies: \texttt{npm install}
+    \item Run experiments: \texttt{npm run experiment -- experiments/paper/<config>.yaml}
+    \item Generate figures: \texttt{python scripts/generate\_figures.py}
+\end{enumerate}
+
+\textbf{Computational requirements:}
+\begin{itemize}
+    \item Runtime: Approximately 3 hours for full experiment suite (4 parallel workers)
+    \item Memory: 8GB RAM minimum, 16GB recommended
+    \item Storage: 700MB for full results
+\end{itemize}
+
+All results are deterministically reproducible given the same random seeds (specified in each experiment configuration).
+
+% The simulation framework supports ongoing extension with additional experiments.
+% Current version reflects \experimentcount{} experiment sets with \totalruns{} total runs.

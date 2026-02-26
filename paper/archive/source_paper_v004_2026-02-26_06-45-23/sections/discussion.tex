@@ -1,0 +1,63 @@
+% DISCUSSION
+% Last generated: 2026-02-21
+
+\subsection{Interpretation of Results}
+
+\subsubsection{Participation Dynamics (RQ1)}
+
+Our results reveal a nuanced picture of DAO participation. Quorum thresholds between $5$--$10\%$ optimize pass rates without driving additional participation, suggesting that turnout is determined by agent engagement patterns rather than institutional requirements. The inflection point at $20\%$ quorum marks where institutional demands begin to conflict with natural participation levels. This aligns with empirical observations that most DAOs set quorum at $4$--$10\%$~\citep{barbereau2022dao}.
+
+The participation rate decline from $26.1\%$ at $n=50$ to $21.9\%$ at $n=500$ (Experiment~08) is consistent with the ``rational ignorance'' hypothesis from political science~\citep{downs1957economic}: as the marginal impact of each vote decreases with group size, individual incentives to participate diminish. However, governance quality (pass rate, capture risk) improves with scale, suggesting that collective intelligence benefits outweigh individual engagement losses.
+
+\subsubsection{Governance Capture (RQ2)}
+
+The $43\%$ reduction in whale influence achieved by vote power caps and quadratic thresholds is the strongest effect observed in our experiments. Notably, this reduction comes at no cost to governance throughput---pass rates remain above $97\%$ across all mitigation configurations. This suggests that capture mitigation and governance efficiency are not inherently in tension, contradicting the common assumption that decentralization necessarily reduces operational effectiveness.
+
+Velocity penalties, by contrast, show negligible effects (Cohen's $d < 0.2$), indicating that the rate of voting activity is less important than the structural distribution of voting power. This implies that reform efforts should focus on power allocation mechanisms rather than activity-based restrictions.
+
+\subsubsection{Proposal Pipeline (RQ3)}
+
+Temp-check stages emerge as the highest-impact pipeline feature, consistent with their widespread adoption in major DAOs like Uniswap and Aave. The zero abandonment rate across all configurations suggests that pipeline stages filter rather than eliminate proposals, redirecting low-quality submissions through iterative refinement rather than outright rejection.
+
+Fast-track mechanisms complement temp-checks by accelerating consensus items, but their impact is secondary. This suggests a design principle: pipeline stages should add information value (screening, deliberation) rather than merely adding process overhead.
+
+\subsubsection{Treasury Resilience (RQ4)}
+
+The $50\%$ volatility reduction from treasury stabilization is practically significant for DAO sustainability. The interaction between fiscal discipline and governance quality suggests a mechanism through which fiscal discipline affects governance: when treasury resources are managed conservatively, the stakes of individual proposals decrease, reducing incentives for capture.
+
+The modest growth rate cost ($0.05$ percentage points) represents an attractive trade-off for the substantial reduction in tail risk. Real DAOs should consider whether the marginal capital deployment justifies the substantially higher volatility exposure.
+
+\subsubsection{Inter-DAO Cooperation (RQ5)}
+
+Inter-DAO cooperation success rates of $21.4$--$23.4\%$ are notable for being both substantially above zero (cooperation is achievable) and substantially below single-DAO pass rates ($>95\%$). This gap quantifies the ``cooperation tax'' of cross-organizational governance.
+
+The specialization advantage---higher ecosystem treasury with specialized DAOs ($\$26{,}107$ vs $\$24{,}071$ for homogeneous)---supports the economic intuition that cooperation is most valuable when partners bring complementary capabilities. Homogeneous DAOs cooperate easily but gain little, while specialized DAOs face higher coordination costs but generate greater joint value.
+
+\subsection{Cross-Cutting Themes}
+
+\subsubsection{Scale and Decentralization}
+
+A consistent finding across experiments is that larger DAOs produce better governance outcomes despite lower individual participation rates. This suggests that the ``decentralization trilemma'' may be less severe than commonly assumed: systems can be simultaneously large, decentralized, and effective, provided that mechanisms are properly configured.
+
+\subsubsection{Mechanism Complementarity}
+
+The strongest governance configurations combine multiple mechanisms: quadratic voting (structural power equalization), temp-check stages (quality filtering), treasury stabilization (fiscal discipline), and vote power caps (capture resistance). No single mechanism is sufficient; governance quality emerges from the interaction of complementary institutional designs.
+
+\subsubsection{Statistical Power and Effect Sizes}
+
+With 100 runs per configuration, our experiments achieve $96\%$ power for medium effects ($d = 0.5$) and detect minimum effect sizes of $d = 0.40$. The strongest observed effects---quadratic voting's improvement over majority ($d = -2.00$ for margin of victory) and quorum reach rate variation ($\eta^2 = 0.93$)---are well above detection thresholds. This increase from $N=30$ to $N=100$ resolved previously ambiguous comparisons: the quadratic vs conviction voting difference, previously non-significant ($p = 0.38$), now reaches significance ($p = 0.034$, $d = 0.41$).
+
+\subsection{Practical Implications}
+
+Based on our findings, we offer the following evidence-based design recommendations for DAO practitioners:
+
+\begin{enumerate}
+    \item Set quorum at $5$--$10\%$ to balance legitimacy with operational efficiency.
+    \item Implement vote power caps at $10$--$15\%$ to reduce capture risk by up to $43\%$ without sacrificing throughput.
+    \item Adopt quadratic voting to increase margin of victory and reduce plutocratic influence.
+    \item Include temp-check stages in the proposal pipeline to filter low-quality proposals.
+    \item Maintain treasury buffer reserves of $15$--$20\%$ with active stabilization to halve volatility.
+    \item For inter-DAO cooperation, seek specialized partners and establish explicit cost-sharing rules.
+\end{enumerate}
+
+These recommendations are simulation-conditional and should be validated against specific DAO contexts before deployment.

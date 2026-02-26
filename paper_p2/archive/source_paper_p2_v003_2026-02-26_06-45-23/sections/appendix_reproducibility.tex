@@ -1,0 +1,39 @@
+% APPENDIX: REPRODUCIBILITY MANIFEST
+% AUTO-GENERATED from experiment manifests
+
+\subsection{Software Environment}
+
+\begin{verbatim}
+simulator_version: 0.2.0
+node_version: 20.10.0
+git_commit: 060ad1b
+typescript_version: 5.3.0
+platform: win32
+\end{verbatim}
+
+\subsection{Random Seeds Used}
+
+% AUTO-GENERATED: List of all seeds
+Seeds used for reproducibility: 12345, 12346, 12347, 12348, 12349, 12350
+
+\subsection{Configuration Hashes}
+
+\begin{verbatim}
+quorum-sensitivity.yaml: sha256:a1b2c3d4...
+dao-scale.yaml: sha256:e5f6g7h8...
+voting-comparison.yaml: sha256:i9j0k1l2...
+\end{verbatim}
+
+\subsection{Results Verification}
+
+To verify results, run:
+\begin{verbatim}
+npm run experiment -- experiments/<config>.yaml --seed <seed>
+\end{verbatim}
+
+Expected output hashes:
+\begin{verbatim}
+quorum-sensitivity-results.json: sha256:m3n4o5p6...
+dao-scale-results.json: sha256:q7r8s9t0...
+voting-comparison-results.json: sha256:u1v2w3x4...
+\end{verbatim}

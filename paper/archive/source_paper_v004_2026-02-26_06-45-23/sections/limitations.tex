@@ -1,0 +1,113 @@
+% LIMITATIONS & FUTURE WORK
+% Last generated: 2026-01-15T05:34:34.872Z
+
+\subsection{Limitations}
+
+\subsubsection{Model Simplifications}
+
+Our agent models make several simplifying assumptions:
+
+\begin{itemize}
+    \item \textbf{Simplified learning}: While agents learn via three-tier reinforcement learning (tabular Q-learning, deep Q-networks, and hierarchical options), social dynamics such as persuasion and influence are not modeled
+    \item \textbf{Limited social dynamics}: No influence propagation, persuasion, or social pressure networks
+    \item \textbf{Counterfactual scope}: Counterfactual governance analysis compares alternative voting mechanisms but does not model strategic adaptation by agents to new rules
+    \item \textbf{Simplified market coupling}: Price oracles (GBM, historical replay) drive treasury values but do not model feedback from governance decisions to token prices
+\end{itemize}
+
+\subsubsection{Mechanism Coverage}
+
+While we implement several voting mechanisms, we omit:
+
+\begin{itemize}
+    \item Futarchy (prediction market governance)
+    \item Holographic consensus (boosted proposals)
+    \item Optimistic governance (veto-based systems)
+    \item Multi-sig and council-based governance
+\end{itemize}
+
+\subsubsection{Validation Constraints}
+
+External validity is limited by:
+
+\begin{itemize}
+    \item Lack of ground-truth agent behavior data
+    \item Difficulty isolating mechanism effects in real DAOs
+    \item Rapidly evolving DAO landscape
+\end{itemize}
+
+\subsubsection{Calibration Uncertainty}
+
+Our calibration targets derive from observational data on existing DAOs, which introduces several sources of uncertainty:
+
+\begin{itemize}
+    \item \textbf{Selection bias}: Observable DAOs may differ systematically from failed or inactive DAOs not captured in available datasets
+    \item \textbf{Temporal variation}: DAO behavior varies with market conditions; our calibration reflects 2022--2024 averages and may not generalize to other periods
+    \item \textbf{Measurement error}: On-chain metrics may not capture off-chain coordination, informal governance discussions, or signaling votes
+    \item \textbf{Parameter sensitivity}: While we conducted sensitivity analyses, some parameter interactions may remain unexplored
+\end{itemize}
+
+Future work should incorporate Bayesian calibration methods to quantify parameter uncertainty and propagate it through simulation outputs, providing credible intervals rather than point estimates.
+
+\subsubsection{Parameter Interaction Effects}
+
+Our experiments varied parameters independently (one-at-a-time sensitivity analysis). However, governance mechanisms may interact in complex, non-linear ways:
+
+\begin{itemize}
+    \item Quorum thresholds may interact with delegation rates to produce threshold effects
+    \item Vote power caps may interact with proposal frequency to affect throughput
+    \item Treasury buffer sizes may interact with attack intensity in non-monotonic ways
+\end{itemize}
+
+Full factorial designs or response surface methodology would require prohibitively many simulation runs but represent an important direction for future research with sufficient computational resources.
+
+\subsubsection{Computational Constraints}
+
+Our analysis is bounded by:
+
+\begin{itemize}
+    \item Grid sweeps explore pairwise interactions; higher-order interaction effects remain unexplored
+    \item Configurable simulation length (720 steps for current experiments)
+    \item Limited agent heterogeneity configurations
+\end{itemize}
+
+\subsection{Future Work}
+
+\subsubsection{Near-Term Extensions}
+
+\begin{enumerate}
+    \item \textbf{LLM-based agents}: Use language models for more realistic agent reasoning
+    \item \textbf{Multi-parameter sweeps}: Grid and random search over parameter space
+    \item \textbf{Adversarial agents}: Model strategic behavior and attacks
+    \item \textbf{Network effects}: Add social network structure
+\end{enumerate}
+
+\subsubsection{Medium-Term Goals}
+
+\begin{enumerate}
+    \item \textbf{Extended calibration}: Expand historical calibration beyond 14 DAOs and incorporate Bayesian methods for parameter uncertainty quantification
+    \item \textbf{Mechanism synthesis}: Use evolutionary algorithms to discover optimal mechanisms
+    \item \textbf{Real-time analysis}: Integrate with live DAO data for monitoring and early-warning systems
+\end{enumerate}
+
+\subsubsection{Long-Term Vision}
+
+\begin{enumerate}
+    \item \textbf{Governance-as-a-Service}: Provide simulation-backed recommendations to DAOs
+    \item \textbf{Formal verification}: Prove properties about mechanism designs
+    \item \textbf{Cross-DAO analysis}: Study inter-DAO coordination and competition
+\end{enumerate}
+
+\subsection{Open Questions}
+
+This work raises questions for future research:
+
+\begin{enumerate}
+    \item What is the optimal trade-off curve between decentralization and efficiency?
+    \item How can DAOs maintain engagement at scale without professionalizing governance?
+    \item What mechanisms are robust to both apathy and adversarial behavior?
+    \item How should DAOs evolve their governance as they mature?
+\end{enumerate}
+
+\subsection{Ethical Considerations}
+
+Governance simulation tools could in principle be used to identify and exploit governance vulnerabilities. We mitigate this risk by: (1) focusing on defensive analysis and mechanism robustness rather than attack optimization; (2) releasing the framework as open-source to enable community scrutiny; and (3) framing results as conditional hypotheses rather than actionable exploits. We encourage responsible use of simulation tools for governance improvement rather than manipulation.

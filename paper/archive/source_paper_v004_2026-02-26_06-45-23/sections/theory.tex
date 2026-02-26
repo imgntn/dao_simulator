@@ -1,0 +1,110 @@
+% THEORETICAL FRAMEWORK
+% Last generated: 2026-01-15T05:34:34.872Z
+
+We develop a theoretical framework integrating multi-agent systems, mechanism design, and complex systems theory to analyze DAO governance.
+
+\subsection{Formal Model}
+
+\subsubsection{DAO Definition}
+
+A DAO is formally defined as a tuple $\mathcal{D} = (A, T, G, M, S)$ where:
+
+\begin{itemize}
+    \item $A = \{a_1, ..., a_n\}$ is the set of agents (members)
+    \item $T: A \rightarrow \mathbb{R}^+$ is the token distribution function
+    \item $G = (V, Q, \tau)$ is the governance configuration (voting rules, quorum, timelock)
+    \item $M$ is the mechanism (how votes are weighted and aggregated)
+    \item $S$ is the state (treasury, proposals, delegations)
+\end{itemize}
+
+\subsubsection{Agent Model}
+
+Each agent $a_i$ is characterized by:
+
+\begin{equation}
+a_i = (\theta_i, \rho_i, \delta_i, \pi_i)
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $\theta_i \in [0, 1]$ is the participation propensity
+    \item $\rho_i \in \mathbb{R}^k$ is the preference vector over $k$ proposal dimensions
+    \item $\delta_i \in A \cup \{\emptyset\}$ is the delegation target (or self)
+    \item $\pi_i$ is the voting strategy function
+\end{itemize}
+
+\subsubsection{Proposal Lifecycle}
+
+A proposal $p$ transitions through states:
+
+\begin{equation}
+p: \text{Draft} \rightarrow \text{Active} \rightarrow \text{Voting} \rightarrow \{\text{Passed}, \text{Failed}\} \rightarrow \text{Executed}
+\end{equation}
+
+The outcome is determined by the aggregation function:
+
+\begin{equation}
+\text{outcome}(p) = M\left(\sum_{a_i \in \text{voters}(p)} w(a_i) \cdot v_i(p)\right)
+\end{equation}
+
+where $w(a_i)$ is the voting weight and $v_i(p) \in \{0, 1\}$ is the vote (abstention is modeled as non-participation rather than a zero vote).
+
+\subsection{Voting Mechanisms}
+
+\subsubsection{Token-Weighted Voting}
+
+\begin{equation}
+w_{\text{token}}(a_i) = T(a_i) + \sum_{a_j: \delta_j = a_i} T(a_j)
+\end{equation}
+
+\subsubsection{Quadratic Voting}
+
+\begin{equation}
+w_{\text{quad}}(a_i) = \sqrt{T(a_i) + \sum_{a_j: \delta_j = a_i} T(a_j)}
+\end{equation}
+
+\subsubsection{Conviction Voting}
+
+Conviction accumulates over time:
+
+\begin{equation}
+C_i(t+1) = \alpha \cdot C_i(t) + \left(T(a_i) + \sum_{a_j: \delta_j = a_i} T(a_j)\right) \cdot v_i
+\end{equation}
+
+where $\alpha \in (0, 1)$ is the decay factor.
+
+\subsection{Equilibrium Concepts}
+
+\subsubsection{Participation Equilibrium}
+
+An agent participates if expected benefit exceeds cost:
+
+\begin{equation}
+\mathbb{E}[U_i(\text{vote})] - c_i > \mathbb{E}[U_i(\text{abstain})]
+\end{equation}
+
+This leads to participation equilibria that depend on quorum and voting mechanism.
+
+\subsubsection{Delegation Equilibrium}
+
+Delegation occurs when:
+
+\begin{equation}
+U_i(\text{delegate to } a_j) > U_i(\text{vote directly}) - c_{\text{attention}}
+\end{equation}
+
+\subsection{Key Theoretical Predictions}
+
+Based on this framework, we derive several testable predictions:
+
+\begin{enumerate}
+    \item \textbf{Quorum-Participation Trade-off}: Higher quorums reduce false positives but increase governance failures
+    \item \textbf{Scale-Participation Decay}: Participation decreases with DAO size following $\theta(n) \propto n^{-\beta}$
+    \item \textbf{Quadratic Egalitarianism}: Quadratic voting reduces Gini coefficient of voting power
+    \item \textbf{Delegation Concentration}: Without intervention, delegation concentrates in power-law distributions
+    \item \textbf{Pipeline Throughput-Quality Trade-off}: Faster proposal pipelines increase throughput but may reduce decision quality as measured by proposal abandonment rate
+    \item \textbf{Treasury Buffer Stabilization}: Emergency reserves and buffer policies reduce treasury volatility at the cost of reduced capital efficiency
+    \item \textbf{Cooperation Surplus}: Inter-DAO cooperation generates positive-sum outcomes when participating DAOs have complementary resource profiles
+\end{enumerate}
+
+These predictions are tested in Section~\ref{sec:results}.

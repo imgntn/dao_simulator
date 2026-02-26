@@ -1,0 +1,176 @@
+% AUTO-GENERATED RQ CHECKLIST
+% Source: docs\RQ_PAPER_CHECKLIST.md
+% Last generated: 2026-02-21T19:55:55.646Z
+
+\subsection*{Legend}
+\begin{itemize}
+  \item[$\Box$] todo
+  \item[$\boxtimes$] done
+\end{itemize}
+
+Use this as a concrete checklist for wiring each research question to
+specific figures/tables in \texttt{paper/} and in the generated report pack.
+**Status: ALL COMPLETE** (Updated 2026-02-07)
+\begin{itemize}
+  \item Total simulation runs: \totalruns{}
+  \item Experiments: 13 configurations (N=100 per config, calibration validation N=30)
+  \item Paper: 35+ pages, compiles successfully
+\end{itemize}
+
+---
+\subsection{RQ1 Participation Dynamics}
+
+\begin{itemize}
+  \item[$\boxtimes$] Experiment: \texttt{experiments/paper/01-calibration-participation.yaml}
+  \item[$\boxtimes$] Experiment: \texttt{experiments/paper/03-sensitivity-quorum.yaml}
+  \item[$\boxtimes$] Results: \texttt{results/paper/01-calibration-participation/} (900 runs)
+  \item[$\boxtimes$] Results: \texttt{results/paper/03-sensitivity-quorum/} (500 runs)
+  \item[$\boxtimes$] Figure: \texttt{rq1\_turnout.png} - Turnout vs participation\_target\_rate
+  \item[$\boxtimes$] Figure: \texttt{rq1\_retention.png} - Voter retention curves
+  \item[$\boxtimes$] Figure: \texttt{rq1\_quorum\_curve.png} - Quorum sensitivity
+  \item[$\boxtimes$] Figure: \texttt{rq1\_fatigue\_quorum.png} - Fatigue accumulation
+  \item[$\boxtimes$] Table: Summary stats (mean, std, 95\% CI) for turnout/quorum/retention
+  \item[$\boxtimes$] Results paragraph in results.tex
+  \item[$\boxtimes$] Discussion paragraph in discussion.tex
+\end{itemize}
+
+\subsection{RQ2 Governance Capture Mitigation}
+
+\begin{itemize}
+  \item[$\boxtimes$] Experiment: \texttt{experiments/paper/04-governance-capture-mitigations.yaml}
+  \item[$\boxtimes$] Results: \texttt{results/paper/04-governance-capture-mitigations/} (2,701 runs)
+  \item[$\boxtimes$] Figure: \texttt{rq2\_whale\_influence.png} - Whale influence comparison
+  \item[$\boxtimes$] Figure: \texttt{rq2\_tradeoff.png} - Capture risk vs throughput
+  \item[$\boxtimes$] Figure: \texttt{rq2\_gini\_quad.png} - Gini coefficient by mechanism
+  \item[$\boxtimes$] Figure: \texttt{rq2\_velocity.png} - Voting velocity effects
+  \item[$\boxtimes$] Figure: \texttt{rq2\_interactions.png} - Mechanism interactions
+  \item[$\boxtimes$] Table: Top mitigation configs with lowest capture risk
+  \item[$\boxtimes$] Results paragraph in results.tex
+  \item[$\boxtimes$] Discussion paragraph in discussion.tex
+\end{itemize}
+
+\subsection{RQ3 Proposal Pipeline Effects}
+
+\begin{itemize}
+  \item[$\boxtimes$] Experiment: \texttt{experiments/paper/05-proposal-pipeline.yaml}
+  \item[$\boxtimes$] Results: \texttt{results/paper/05-proposal-pipeline/} (900 runs)
+  \item[$\boxtimes$] Figure: \texttt{rq3\_time.png} - Time-to-decision
+  \item[$\boxtimes$] Figure: \texttt{rq3\_passrate.png} - Pass rate by settings
+  \item[$\boxtimes$] Figure: \texttt{rq3\_tempcheck.png} - Temp-check effects
+  \item[$\boxtimes$] Figure: \texttt{rq3\_quality.png} - Quality vs speed tradeoff
+  \item[$\boxtimes$] Figure: \texttt{rq3\_ttd.png} - Time-to-decision distribution
+  \item[$\boxtimes$] Figure: \texttt{rq3\_expiry.png} - Proposal expiry rates
+  \item[$\boxtimes$] Figure: \texttt{rq3\_interactions.png} - Pipeline interactions
+  \item[$\boxtimes$] Table: Abandonment and quorum reach by pipeline settings
+  \item[$\boxtimes$] Results paragraph in results.tex
+  \item[$\boxtimes$] Discussion paragraph in discussion.tex
+\end{itemize}
+
+\subsection{RQ4 Treasury Resilience}
+
+\begin{itemize}
+  \item[$\boxtimes$] Experiment: \texttt{experiments/paper/06-treasury-resilience.yaml}
+  \item[$\boxtimes$] Results: \texttt{results/paper/06-treasury-resilience/} (1,200 runs)
+  \item[$\boxtimes$] Figure: \texttt{rq4\_volatility.png} - Volatility vs buffer
+  \item[$\boxtimes$] Figure: \texttt{rq4\_growth.png} - Growth trajectories
+  \item[$\boxtimes$] Figure: \texttt{rq4\_efficiency.png} - Allocation efficiency
+  \item[$\boxtimes$] Figure: \texttt{rq4\_runway.png} - Runway analysis
+  \item[$\boxtimes$] Figure: \texttt{rq4\_topup.png} - Top-up patterns
+  \item[$\boxtimes$] Figure: \texttt{rq4\_regimes.png} - Stability regimes
+  \item[$\boxtimes$] Table: Final treasury + volatility by config
+  \item[$\boxtimes$] Results paragraph in results.tex
+  \item[$\boxtimes$] Discussion paragraph in discussion.tex
+\end{itemize}
+
+\subsection{RQ5 Inter-DAO Cooperation}
+
+\begin{itemize}
+  \item[$\boxtimes$] Experiment: \texttt{experiments/paper/07-inter-dao-cooperation.yaml}
+  \item[$\boxtimes$] Results: \texttt{results/paper/07-inter-dao-cooperation/} (500 runs)
+  \item[$\boxtimes$] Figure: \texttt{rq5\_success.png} - Success rates
+  \item[$\boxtimes$] Figure: \texttt{rq5\_resources.png} - Resource flows
+  \item[$\boxtimes$] Figure: \texttt{rq5\_surplus.png} - Surplus distribution
+  \item[$\boxtimes$] Figure: \texttt{rq5\_fairness.png} - Fairness metrics
+  \item[$\boxtimes$] Figure: \texttt{rq5\_hub.png} - Hub dynamics
+  \item[$\boxtimes$] Figure: \texttt{rq5\_overlap.png} - Overlap analysis
+  \item[$\boxtimes$] Table: Cross-DAO alignment + shared budget summary
+  \item[$\boxtimes$] Results paragraph in results.tex
+  \item[$\boxtimes$] Discussion paragraph in discussion.tex
+\end{itemize}
+
+---
+\subsection{Baseline + Robustness (Supporting)}
+
+\#\#\# Baseline
+\begin{itemize}
+  \item[$\boxtimes$] Experiment: \texttt{experiments/paper/00-academic-baseline.yaml}
+  \item[$\boxtimes$] Experiment: \texttt{experiments/paper/00-realistic-baseline.yaml}
+  \item[$\boxtimes$] Results: \texttt{results/paper/00-academic-baseline/} (100 runs)
+  \item[$\boxtimes$] Results: \texttt{results/paper/00-realistic-baseline/} (100 runs)
+  \item[$\boxtimes$] Table: Baseline headline metrics (all anchors)
+  \item[$\boxtimes$] Validation table: Simulator vs empirical data
+\end{itemize}
+
+\#\#\# Ablation
+\begin{itemize}
+  \item[$\boxtimes$] Experiment: \texttt{experiments/paper/02-ablation-governance.yaml}
+  \item[$\boxtimes$] Results: \texttt{results/paper/02-ablation-governance/} (800 runs)
+  \item[$\boxtimes$] Figure: \texttt{ablation\_impact.png} - Mechanism removal impacts
+\end{itemize}
+
+\#\#\# Sensitivity
+\begin{itemize}
+  \item[$\boxtimes$] Experiment: \texttt{experiments/paper/03-sensitivity-quorum.yaml}
+  \item[$\boxtimes$] Figure: \texttt{quorum\_sensitivity.png} - Quorum curve
+  \item[$\boxtimes$] Figure: \texttt{quorum\_passrate.png} - Pass rate vs quorum
+\end{itemize}
+
+\#\#\# Scale Study
+\begin{itemize}
+  \item[$\boxtimes$] Experiment: \texttt{experiments/paper/08-scale-sweep.yaml}
+  \item[$\boxtimes$] Results: \texttt{results/paper/08-scale-sweep/} (500 runs)
+  \item[$\boxtimes$] Figure: \texttt{scale\_participation.png} - Size effects
+\end{itemize}
+
+\#\#\# Voting Mechanisms
+\begin{itemize}
+  \item[$\boxtimes$] Experiment: \texttt{experiments/paper/09-voting-mechanisms.yaml}
+  \item[$\boxtimes$] Results: \texttt{results/paper/09-voting-mechanisms/} (600 runs)
+  \item[$\boxtimes$] Figure: \texttt{voting\_comparison.png} - Mechanism comparison
+\end{itemize}
+
+---
+\subsection{Paper Sections Status}
+
+\begin{itemize}
+  \item[$\boxtimes$] Abstract - Updated with \totalruns{} runs, key findings
+  \item[$\boxtimes$] Introduction - RQs defined, paper organization
+  \item[$\boxtimes$] Background - Related work, theoretical foundations
+  \item[$\boxtimes$] Theory - Theoretical framework
+  \item[$\boxtimes$] Architecture - Simulation design
+  \item[$\boxtimes$] Methodology - Experimental design, statistical methods
+  \item[$\boxtimes$] Results - All 5 RQs with tables and findings
+  \item[$\boxtimes$] Discussion - RQ interpretations, practical recommendations
+  \item[$\boxtimes$] Limitations - Model constraints, future work
+  \item[$\boxtimes$] Conclusion - Summary, contributions
+  \item[$\boxtimes$] Appendix Stats - Full statistical tables
+  \item[$\boxtimes$] Appendix Configs - Experiment configurations
+  \item[$\boxtimes$] Appendix Reproducibility - Manifest and hashes
+\end{itemize}
+
+---
+\subsection{Key Metrics Summary}
+
+| Experiment | Runs | Key Finding |
+|------------|------|-------------|
+| 00-academic-baseline | 100 | Whale influence 23.8\%, pass rate 87.9\% |
+| 00-realistic-baseline | 100 | Whale influence 31.0\%, pass rate 90.4\% |
+| 01-calibration | 900 | Participation stable across configs |
+| 02-ablation | 800 | Mechanism removal effects quantified |
+| 03-quorum | 500 | Quorum 1-10\% produces stable outcomes |
+| 04-capture | 2,701 | Vote caps reduce whale influence 40\% |
+| 05-pipeline | 900 | Temp-checks critical for success |
+| 06-treasury | 1,200 | Stabilization maintains reserves |
+| 07-inter-dao | 500 | 22\% inter-DAO vs 73\% intra-DAO success |
+| 08-scale | 500 | Larger DAOs: higher pass, lower turnout |
+| 09-voting | 600 | Mechanisms show equivalent outcomes |

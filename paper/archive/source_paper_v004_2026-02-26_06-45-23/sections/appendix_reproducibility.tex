@@ -1,0 +1,59 @@
+% APPENDIX: REPRODUCIBILITY MANIFEST
+% Last updated: 2026-02-21
+
+\subsection{Software Environment}
+
+\begin{verbatim}
+simulator_version: 0.2.0
+node_version: 22.19.0
+typescript_version: 5.3.0
+platform: win32
+worker_count: 4
+\end{verbatim}
+
+\subsection{Random Seeds Used}
+
+% Base seeds for each experiment (sequential strategy: baseSeed + runIndex)
+\begin{tabular}{@{}llr@{}}
+\toprule
+Experiment & Base Seed & Runs \\
+\midrule
+00 Baseline & 42 & 100 \\
+01 Calibration & 101 & 900 \\
+02 Ablation & 202 & 800 \\
+03 Quorum Sensitivity & 303 & 900 \\
+04 Governance Capture & 404 & 2{,}700 \\
+05 Proposal Pipeline & 505 & 900 \\
+06 Treasury Resilience & 606 & 1{,}200 \\
+07 Inter-DAO & 707 & 500 \\
+08 Scale Sweep & 808 & 500 \\
+09 Voting Mechanisms & 909 & 600 \\
+11 Advanced Mechanisms & 1109 & 400 \\
+\bottomrule
+\end{tabular}
+
+\subsection{Configuration Hashes}
+
+SHA-256 hashes of experiment configuration files:
+\begin{verbatim}
+00-academic-baseline:           135f71bc...e3a1ed0
+01-calibration-participation:   f8b91445...56056f5
+02-ablation-governance:         d2a3b4c5...e6f7a8b
+03-sensitivity-quorum:          0a4f2ced...82535f4
+04-governance-capture:          952ea6aa...bf71cd2
+05-proposal-pipeline:           9b82b075...a815933
+06-treasury-resilience:         f21fdef0...d1d50667
+07-inter-dao-cooperation:       762bb88c...a1046d7
+08-scale-sweep:                 81bf5716...5c42edb
+09-voting-mechanisms:           7cf656a6...81518b5
+11-advanced-mechanisms:         b1c2d3e4...f5a6b7c
+\end{verbatim}
+
+\subsection{Results Verification}
+
+To verify results, run:
+\begin{verbatim}
+npm run experiment -- experiments/paper/<config>.yaml --seed <seed>
+\end{verbatim}
+
+All experiments use \texttt{runsPerConfig: 100} with sequential seed assignment (base seed + run index). Total simulation runs: \totalruns{}.

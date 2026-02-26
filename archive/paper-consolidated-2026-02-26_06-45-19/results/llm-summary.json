@@ -1,0 +1,1769 @@
+{
+  "experimentId": "LLM Agent Reasoning Modes-1772082200135",
+  "experimentName": "LLM Agent Reasoning Modes",
+  "totalRuns": 8,
+  "successfulRuns": 8,
+  "failedRuns": 0,
+  "totalDurationMs": 220527,
+  "metricsSummary": [
+    {
+      "sweepValue": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+      "runCount": 2,
+      "metrics": [
+        {
+          "name": "Proposal Pass Rate",
+          "mean": 0,
+          "median": 0,
+          "std": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0
+          ],
+          "standardError": 0,
+          "ci95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0,
+          "skewness": 0,
+          "iqr": 0
+        },
+        {
+          "name": "Average Turnout",
+          "mean": 0,
+          "median": 0,
+          "std": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0
+          ],
+          "standardError": 0,
+          "ci95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0,
+          "skewness": 0,
+          "iqr": 0
+        },
+        {
+          "name": "Final Treasury",
+          "mean": 10670.360911026964,
+          "median": 10670.360911026964,
+          "std": 272.52699599238485,
+          "min": 10477.65522410435,
+          "max": 10863.066597949579,
+          "values": [
+            10477.65522410435,
+            10863.066597949579
+          ],
+          "standardError": 192.70568692261438,
+          "ci95": {
+            "lower": 8221.802999259482,
+            "upper": 13118.918822794447,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -1596.6548910028177,
+            "upper": 22937.376713056747,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 10477.65522410435,
+            "upper": 10863.066597949579,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 10477.65522410435,
+            "upper": 10863.066597949579,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0.0255405602739032,
+          "skewness": 0,
+          "iqr": 192.7056869226144
+        },
+        {
+          "name": "Voter Participation Rate",
+          "mean": 0,
+          "median": 0,
+          "std": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0
+          ],
+          "standardError": 0,
+          "ci95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0,
+          "skewness": 0,
+          "iqr": 0
+        },
+        {
+          "name": "Avg Margin of Victory",
+          "mean": 0,
+          "median": 0,
+          "std": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0
+          ],
+          "standardError": 0,
+          "ci95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0,
+          "skewness": 0,
+          "iqr": 0
+        },
+        {
+          "name": "Proposal Abandonment Rate",
+          "mean": 0,
+          "median": 0,
+          "std": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0
+          ],
+          "standardError": 0,
+          "ci95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0,
+          "skewness": 0,
+          "iqr": 0
+        },
+        {
+          "name": "Governance Activity Index",
+          "mean": 0,
+          "median": 0,
+          "std": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0
+          ],
+          "standardError": 0,
+          "ci95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0,
+          "skewness": 0,
+          "iqr": 0
+        },
+        {
+          "name": "LLM Vote Consistency",
+          "mean": 0,
+          "median": 0,
+          "std": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0
+          ],
+          "standardError": 0,
+          "ci95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0,
+          "skewness": 0,
+          "iqr": 0
+        },
+        {
+          "name": "LLM Cache Hit Rate",
+          "mean": 0,
+          "median": 0,
+          "std": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0
+          ],
+          "standardError": 0,
+          "ci95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0,
+          "skewness": 0,
+          "iqr": 0
+        },
+        {
+          "name": "LLM Avg Latency",
+          "mean": 0,
+          "median": 0,
+          "std": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0
+          ],
+          "standardError": 0,
+          "ci95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0,
+          "skewness": 0,
+          "iqr": 0
+        }
+      ],
+      "powerAnalysis": {
+        "currentRunsPerConfig": 2,
+        "recommendedRuns": 63,
+        "currentPower": 0.05653376699922846,
+        "minimumEffectDetectable": 2.8,
+        "explanation": "Current sample size of 2 runs has ~6% power. Recommend 63 runs to detect a 0.50 effect size with 80% power."
+      }
+    },
+    {
+      "sweepValue": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+      "runCount": 4,
+      "metrics": [
+        {
+          "name": "Proposal Pass Rate",
+          "mean": 0.5,
+          "median": 0.5,
+          "std": 0.5773502691896257,
+          "min": 0,
+          "max": 1,
+          "values": [
+            1,
+            1,
+            0,
+            0
+          ],
+          "standardError": 0.28867513459481287,
+          "ci95": {
+            "lower": -0.4186931153785226,
+            "upper": 1.4186931153785225,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -1.1861252805121276,
+            "upper": 2.186125280512128,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 1,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 1,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 1.1547005383792515,
+          "skewness": 0,
+          "iqr": 1
+        },
+        {
+          "name": "Average Turnout",
+          "mean": 0.10826472269600917,
+          "median": 0.11885602719111418,
+          "std": 0.09080223690848714,
+          "min": 0,
+          "max": 0.19534683640180828,
+          "values": [
+            0.1698768195851251,
+            0.19534683640180828,
+            0,
+            0.06783523479710328
+          ],
+          "standardError": 0.04540111845424357,
+          "ci95": {
+            "lower": -0.03622189896242525,
+            "upper": 0.2527513443544436,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -0.15691909265641057,
+            "upper": 0.3734485380484289,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0.19534683640180828,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0.19534683640180828,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0.8387056711302533,
+          "skewness": -0.3925454566698677,
+          "iqr": 0.12536789769146844
+        },
+        {
+          "name": "Final Treasury",
+          "mean": 11010.264203631797,
+          "median": 11107.965330689702,
+          "std": 586.3709457731042,
+          "min": 10233.016873122464,
+          "max": 11592.109280025325,
+          "values": [
+            11592.109280025325,
+            10921.224156900296,
+            11294.706504479107,
+            10233.016873122464
+          ],
+          "standardError": 293.1854728865521,
+          "ci95": {
+            "lower": 10077.217178823337,
+            "upper": 11943.311228440258,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 9297.794446211266,
+            "upper": 12722.733961052329,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 10577.12051501138,
+            "upper": 11424.387999244067,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 10233.016873122464,
+            "upper": 11517.75858613877,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0.05325675523569057,
+          "skewness": -0.8275216281396238,
+          "iqr": 619.8848624098227
+        },
+        {
+          "name": "Voter Participation Rate",
+          "mean": 0.1863086524460142,
+          "median": 0.22178234501347707,
+          "std": 0.14490718497420835,
+          "min": 0,
+          "max": 0.3016699197571026,
+          "values": [
+            0.3016699197571026,
+            0.3007075471698113,
+            0,
+            0.14285714285714285
+          ],
+          "standardError": 0.07245359248710417,
+          "ci95": {
+            "lower": -0.04427101523395957,
+            "upper": 0.416888320125988,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -0.23688621027710538,
+            "upper": 0.6095035151691337,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0.301188733463457,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0.3016699197571026,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0.7777802215396166,
+          "skewness": -0.7704761227060782,
+          "iqr": 0.193805283173777
+        },
+        {
+          "name": "Avg Margin of Victory",
+          "mean": 0.23987638780024262,
+          "median": 0.21689367255599828,
+          "std": 0.2795164677893795,
+          "min": 0,
+          "max": 0.5257182060889739,
+          "values": [
+            0.43378734511199657,
+            0.5257182060889739,
+            0,
+            0
+          ],
+          "standardError": 0.13975823389468975,
+          "ci95": {
+            "lower": -0.20489668722310178,
+            "upper": 0.6846494628235871,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -0.5764387813615339,
+            "upper": 1.0561915569620193,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0.5257182060889739,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0.5257182060889739,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 1.1652521131931801,
+          "skewness": 0.09282991583914724,
+          "iqr": 0.4567700603562409
+        },
+        {
+          "name": "Proposal Abandonment Rate",
+          "mean": 0,
+          "median": 0,
+          "std": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "standardError": 0,
+          "ci95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0,
+          "skewness": 0,
+          "iqr": 0
+        },
+        {
+          "name": "Governance Activity Index",
+          "mean": 0.0019287378091159897,
+          "median": 0.0014156401632093758,
+          "std": 0.0023795147754064948,
+          "min": 0,
+          "max": 0.004883670910045207,
+          "values": [
+            0.0028312803264187517,
+            0.004883670910045207,
+            0,
+            0
+          ],
+          "standardError": 0.0011897573877032474,
+          "ci95": {
+            "lower": -0.0018576011929871353,
+            "upper": 0.005715076811219115,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -0.00502052719044231,
+            "upper": 0.008878002808674288,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0.004883670910045207,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0.004883670910045207,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 1.2337160417346267,
+          "skewness": 0.6030148445042123,
+          "iqr": 0.0033443779723253656
+        },
+        {
+          "name": "LLM Vote Consistency",
+          "mean": 0.6625,
+          "median": 0.825,
+          "std": 0.4714781719938545,
+          "min": 0,
+          "max": 1,
+          "values": [
+            1,
+            0.65,
+            0,
+            1
+          ],
+          "standardError": 0.23573908599692725,
+          "ci95": {
+            "lower": -0.08772698312753835,
+            "upper": 1.4127269831275382,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -0.7144306215519952,
+            "upper": 2.039430621551995,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0.9125,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 1,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0.7116651652737427,
+          "skewness": -1.3605537929147578,
+          "iqr": 0.5125
+        },
+        {
+          "name": "LLM Cache Hit Rate",
+          "mean": 0,
+          "median": 0,
+          "std": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "standardError": 0,
+          "ci95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0,
+          "skewness": 0,
+          "iqr": 0
+        },
+        {
+          "name": "LLM Avg Latency",
+          "mean": 807.9841485507246,
+          "median": 798.4791666666667,
+          "std": 122.80116696896049,
+          "min": 702.4782608695652,
+          "max": 932.5,
+          "values": [
+            894.4583333333334,
+            702.4782608695652,
+            932.5,
+            702.5
+          ],
+          "standardError": 61.400583484480244,
+          "ci95": {
+            "lower": 612.5800885280579,
+            "upper": 1003.3882085733914,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 449.34890898742816,
+            "upper": 1166.6193881140211,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 702.4782608695652,
+            "upper": 932.5,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 702.4782608695652,
+            "upper": 932.5,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0.15198462394247222,
+          "skewness": 0.08244102811780407,
+          "iqr": 201.47418478260875
+        }
+      ],
+      "powerAnalysis": {
+        "currentRunsPerConfig": 4,
+        "recommendedRuns": 63,
+        "currentPower": 0.08375878292858951,
+        "minimumEffectDetectable": 1.9798989873223327,
+        "explanation": "Current sample size of 4 runs has ~8% power. Recommend 63 runs to detect a 0.50 effect size with 80% power."
+      }
+    },
+    {
+      "sweepValue": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+      "runCount": 2,
+      "metrics": [
+        {
+          "name": "Proposal Pass Rate",
+          "mean": 0.5,
+          "median": 0.5,
+          "std": 0.7071067811865476,
+          "min": 0,
+          "max": 1,
+          "values": [
+            0,
+            1
+          ],
+          "standardError": 0.5,
+          "ci95": {
+            "lower": -5.853102367837124,
+            "upper": 6.853102367837124,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -31.328369982033532,
+            "upper": 32.328369982033536,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 1,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 1,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 1.4142135623730951,
+          "skewness": 0,
+          "iqr": 0.5
+        },
+        {
+          "name": "Average Turnout",
+          "mean": 0.21610733508895147,
+          "median": 0.21610733508895147,
+          "std": 0.01667566641572368,
+          "min": 0.2043158582855885,
+          "max": 0.22789881189231445,
+          "values": [
+            0.2043158582855885,
+            0.22789881189231445
+          ],
+          "standardError": 0.011791476803362982,
+          "ci95": {
+            "lower": 0.06628241668946769,
+            "upper": 0.3659322534884353,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -0.5344996375750546,
+            "upper": 0.9667143077529576,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0.2043158582855885,
+            "upper": 0.22789881189231445,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0.2043158582855885,
+            "upper": 0.22789881189231445,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0.0771638149573213,
+          "skewness": 0,
+          "iqr": 0.01179147680336301
+        },
+        {
+          "name": "Final Treasury",
+          "mean": 10589.727440580908,
+          "median": 10589.727440580908,
+          "std": 133.35860850782635,
+          "min": 10495.428664175422,
+          "max": 10684.026216986395,
+          "values": [
+            10495.428664175422,
+            10684.026216986395
+          ],
+          "standardError": 94.29877640548601,
+          "ci95": {
+            "lower": 9391.547881249235,
+            "upper": 11787.90699991258,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 4586.974752007182,
+            "upper": 16592.480129154632,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 10495.428664175422,
+            "upper": 10684.026216986395,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 10495.428664175422,
+            "upper": 10684.026216986395,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0.01259320499570014,
+          "skewness": 0,
+          "iqr": 94.29877640548693
+        },
+        {
+          "name": "Voter Participation Rate",
+          "mean": 0.31150293654793615,
+          "median": 0.31150293654793615,
+          "std": 0.031154067424504214,
+          "min": 0.2894736842105263,
+          "max": 0.333532188885346,
+          "values": [
+            0.333532188885346,
+            0.2894736842105263
+          ],
+          "standardError": 0.02202925233740985,
+          "ci95": {
+            "lower": 0.031594746174976096,
+            "upper": 0.5914111269208961,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -1.0908074510973793,
+            "upper": 1.7138133241932514,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0.2894736842105263,
+            "upper": 0.333532188885346,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0.2894736842105263,
+            "upper": 0.333532188885346,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0.10001211471632473,
+          "skewness": 0,
+          "iqr": 0.022029252337409877
+        },
+        {
+          "name": "Avg Margin of Victory",
+          "mean": 0.515460086335131,
+          "median": 0.515460086335131,
+          "std": 0.3064248290639227,
+          "min": 0.2987850117801026,
+          "max": 0.7321351608901594,
+          "values": [
+            0.2987850117801026,
+            0.7321351608901594
+          ],
+          "standardError": 0.2166750745550284,
+          "ci95": {
+            "lower": -2.2376577720785416,
+            "upper": 3.2685779447488037,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -13.277368791309158,
+            "upper": 14.308288963979418,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0.2987850117801026,
+            "upper": 0.7321351608901594,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0.2987850117801026,
+            "upper": 0.7321351608901594,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0.5944685867776344,
+          "skewness": 0,
+          "iqr": 0.21667507455502844
+        },
+        {
+          "name": "Proposal Abandonment Rate",
+          "mean": 0,
+          "median": 0,
+          "std": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0
+          ],
+          "standardError": 0,
+          "ci95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0,
+          "skewness": 0,
+          "iqr": 0
+        },
+        {
+          "name": "Governance Activity Index",
+          "mean": 0.006057474840024356,
+          "median": 0.006057474840024356,
+          "std": 0.005880749817272689,
+          "min": 0.001899156765769287,
+          "max": 0.010215792914279424,
+          "values": [
+            0.010215792914279424,
+            0.001899156765769287
+          ],
+          "standardError": 0.0041583180742550685,
+          "ci95": {
+            "lower": -0.04677896596751521,
+            "upper": 0.058893915647563924,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -0.2586474975007107,
+            "upper": 0.27076244718075937,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0.001899156765769287,
+            "upper": 0.010215792914279424,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0.001899156765769287,
+            "upper": 0.010215792914279424,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0.9708252980955087,
+          "skewness": 0,
+          "iqr": 0.0041583180742550685
+        },
+        {
+          "name": "LLM Vote Consistency",
+          "mean": 0.7473669329186401,
+          "median": 0.7473669329186401,
+          "std": 0.2445158954947756,
+          "min": 0.574468085106383,
+          "max": 0.920265780730897,
+          "values": [
+            0.920265780730897,
+            0.574468085106383
+          ],
+          "standardError": 0.172898847812257,
+          "ci95": {
+            "lower": -1.4495212259460808,
+            "upper": 2.944255091783361,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -10.25881006235301,
+            "upper": 11.75354392819029,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0.574468085106383,
+            "upper": 0.920265780730897,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0.574468085106383,
+            "upper": 0.920265780730897,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0.32716980739284873,
+          "skewness": 0,
+          "iqr": 0.17289884781225695
+        },
+        {
+          "name": "LLM Cache Hit Rate",
+          "mean": 0,
+          "median": 0,
+          "std": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0
+          ],
+          "standardError": 0,
+          "ci95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 0,
+            "upper": 0,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0,
+          "skewness": 0,
+          "iqr": 0
+        },
+        {
+          "name": "LLM Avg Latency",
+          "mean": 1380.7574636306135,
+          "median": 1380.7574636306135,
+          "std": 71.56005603652393,
+          "min": 1330.1568627450981,
+          "max": 1431.358064516129,
+          "values": [
+            1431.358064516129,
+            1330.1568627450981
+          ],
+          "standardError": 50.600600885515405,
+          "ci95": {
+            "lower": 737.8158690311151,
+            "upper": 2023.6990582301119,
+            "level": 0.95
+          },
+          "ci99": {
+            "lower": -1840.311828964182,
+            "upper": 4601.82675622541,
+            "level": 0.99
+          },
+          "bootstrapCi95": {
+            "lower": 1330.1568627450981,
+            "upper": 1431.358064516129,
+            "level": 0.95
+          },
+          "bootstrapCi99": {
+            "lower": 1330.1568627450981,
+            "upper": 1431.358064516129,
+            "level": 0.99
+          },
+          "coefficientOfVariation": 0.05182666610279356,
+          "skewness": 0,
+          "iqr": 50.60060088551563
+        }
+      ],
+      "powerAnalysis": {
+        "currentRunsPerConfig": 2,
+        "recommendedRuns": 63,
+        "currentPower": 0.05653376699922846,
+        "minimumEffectDetectable": 2.8,
+        "explanation": "Current sample size of 2 runs has ~6% power. Recommend 63 runs to detect a 0.50 effect size with 80% power."
+      }
+    }
+  ],
+  "statisticalSignificance": {
+    "pairwiseComparisons": [
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "metricName": "Proposal Pass Rate",
+        "tStatistic": -1.7320508075688774,
+        "degreesOfFreedom": 3,
+        "pValue": 0.18169011381620925,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -1,
+          "interpretation": "large"
+        },
+        "correctedPValue": 0.4259970633535506,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "metricName": "Average Turnout",
+        "tStatistic": -2.384626775332004,
+        "degreesOfFreedom": 3,
+        "pValue": 0.09721112310319024,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -1.3767649106547217,
+          "interpretation": "very_large"
+        },
+        "correctedPValue": 0.32403707701063417,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "metricName": "Final Treasury",
+        "tStatistic": -0.9688093795191038,
+        "degreesOfFreedom": 3.943810055287124,
+        "pValue": 0.38822833163160375,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -0.6464786966639279,
+          "interpretation": "medium"
+        },
+        "correctedPValue": 0.6351344723707462,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "metricName": "Voter Participation Rate",
+        "tStatistic": -2.571420492078081,
+        "degreesOfFreedom": 3,
+        "pValue": 0.08239133864343007,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -1.484610313301,
+          "interpretation": "very_large"
+        },
+        "correctedPValue": 0.32403707701063417,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "metricName": "Avg Margin of Victory",
+        "tStatistic": -1.7163667650593928,
+        "degreesOfFreedom": 3,
+        "pValue": 0.18459872745320527,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -0.9909448138351675,
+          "interpretation": "large"
+        },
+        "correctedPValue": 0.4259970633535506,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "metricName": "Proposal Abandonment Rate",
+        "tStatistic": 0,
+        "degreesOfFreedom": 4,
+        "pValue": 1,
+        "significant": false,
+        "effectSize": {
+          "cohensD": 0,
+          "interpretation": "negligible"
+        },
+        "correctedPValue": 1,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "metricName": "Governance Activity Index",
+        "tStatistic": -1.6211185818642389,
+        "degreesOfFreedom": 3,
+        "pValue": 0.20343959906211984,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -0.9359532496276226,
+          "interpretation": "large"
+        },
+        "correctedPValue": 0.4359419979902568,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "metricName": "LLM Vote Consistency",
+        "tStatistic": -2.8103103785200703,
+        "degreesOfFreedom": 3,
+        "pValue": 0.0672754720839901,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -1.6225334535449614,
+          "interpretation": "very_large"
+        },
+        "correctedPValue": 0.32403707701063417,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "metricName": "LLM Cache Hit Rate",
+        "tStatistic": 0,
+        "degreesOfFreedom": 4,
+        "pValue": 1,
+        "significant": false,
+        "effectSize": {
+          "cohensD": 0,
+          "interpretation": "negligible"
+        },
+        "correctedPValue": 1,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "metricName": "LLM Avg Latency",
+        "tStatistic": -13.15922590141106,
+        "degreesOfFreedom": 3,
+        "pValue": 0.0009480340210812344,
+        "significant": true,
+        "effectSize": {
+          "cohensD": -7.597482616506772,
+          "interpretation": "very_large"
+        },
+        "correctedPValue": 0.02844102063243703,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Proposal Pass Rate",
+        "tStatistic": -1,
+        "degreesOfFreedom": 1,
+        "pValue": 0.4999999999999998,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -1,
+          "interpretation": "large"
+        },
+        "correctedPValue": 0.714285714285714,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Average Turnout",
+        "tStatistic": -18.327418922396276,
+        "degreesOfFreedom": 1,
+        "pValue": 0.034701511171211896,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -18.327418922396276,
+          "interpretation": "very_large"
+        },
+        "correctedPValue": 0.2602613337840892,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Final Treasury",
+        "tStatistic": 0.3758421828715118,
+        "degreesOfFreedom": 1.4529382669665019,
+        "pValue": 0.7545813533175942,
+        "significant": false,
+        "effectSize": {
+          "cohensD": 0.3758421828715118,
+          "interpretation": "small"
+        },
+        "correctedPValue": 1,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Voter Participation Rate",
+        "tStatistic": -14.1404225516517,
+        "degreesOfFreedom": 1,
+        "pValue": 0.04494644012959803,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -14.1404225516517,
+          "interpretation": "very_large"
+        },
+        "correctedPValue": 0.2696786407775882,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Avg Margin of Victory",
+        "tStatistic": -2.3789542354776985,
+        "degreesOfFreedom": 1,
+        "pValue": 0.2533287215729736,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -2.3789542354776985,
+          "interpretation": "very_large"
+        },
+        "correctedPValue": 0.4749913529493255,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Proposal Abandonment Rate",
+        "tStatistic": 0,
+        "degreesOfFreedom": 2,
+        "pValue": 1,
+        "significant": false,
+        "effectSize": {
+          "cohensD": 0,
+          "interpretation": "negligible"
+        },
+        "correctedPValue": 1,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Governance Activity Index",
+        "tStatistic": -1.4567127217918525,
+        "degreesOfFreedom": 1,
+        "pValue": 0.38298565129098483,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -1.4567127217918525,
+          "interpretation": "very_large"
+        },
+        "correctedPValue": 0.6351344723707462,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "LLM Vote Consistency",
+        "tStatistic": -4.322567457072773,
+        "degreesOfFreedom": 1,
+        "pValue": 0.14473198925805675,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -4.322567457072773,
+          "interpretation": "very_large"
+        },
+        "correctedPValue": 0.4259970633535506,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "LLM Cache Hit Rate",
+        "tStatistic": 0,
+        "degreesOfFreedom": 2,
+        "pValue": 1,
+        "significant": false,
+        "effectSize": {
+          "cohensD": 0,
+          "interpretation": "negligible"
+        },
+        "correctedPValue": 1,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=disabled_llm_enabled=false_llm_hybrid_fraction=0_num_llm_agents=0_num_llm_reporters=0_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "LLM Avg Latency",
+        "tStatistic": -27.287372866472424,
+        "degreesOfFreedom": 1,
+        "pValue": 0.023319760795808886,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -27.287372866472424,
+          "interpretation": "very_large"
+        },
+        "correctedPValue": 0.23319760795808886,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Proposal Pass Rate",
+        "tStatistic": 0,
+        "degreesOfFreedom": 1.7142857142857142,
+        "pValue": 1,
+        "significant": false,
+        "effectSize": {
+          "cohensD": 0,
+          "interpretation": "negligible"
+        },
+        "correctedPValue": 1,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Average Turnout",
+        "tStatistic": -2.2990552212756237,
+        "degreesOfFreedom": 3.3723378367500065,
+        "pValue": 0.09534668579306249,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -1.36375270191195,
+          "interpretation": "very_large"
+        },
+        "correctedPValue": 0.32403707701063417,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Final Treasury",
+        "tStatistic": 1.3654800016936754,
+        "degreesOfFreedom": 3.539174553222477,
+        "pValue": 0.25243230739392786,
+        "significant": false,
+        "effectSize": {
+          "cohensD": 0.8210863833946638,
+          "interpretation": "large"
+        },
+        "correctedPValue": 0.4749913529493255,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Voter Participation Rate",
+        "tStatistic": -1.653198282487354,
+        "degreesOfFreedom": 3.4908064257446734,
+        "pValue": 0.18392867757371012,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -0.99001960469439,
+          "interpretation": "large"
+        },
+        "correctedPValue": 0.4259970633535506,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Avg Margin of Victory",
+        "tStatistic": -1.0688248512326601,
+        "degreesOfFreedom": 1.8957928102499813,
+        "pValue": 0.40225183250147256,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -0.9619628548123335,
+          "interpretation": "large"
+        },
+        "correctedPValue": 0.6351344723707462,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Proposal Abandonment Rate",
+        "tStatistic": 0,
+        "degreesOfFreedom": 4,
+        "pValue": 1,
+        "significant": false,
+        "effectSize": {
+          "cohensD": 0,
+          "interpretation": "negligible"
+        },
+        "correctedPValue": 1,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "Governance Activity Index",
+        "tStatistic": -0.9545828309622408,
+        "degreesOfFreedom": 1.1678163509288095,
+        "pValue": 0.495704434356373,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -1.1498754437756933,
+          "interpretation": "large"
+        },
+        "correctedPValue": 0.714285714285714,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "LLM Vote Consistency",
+        "tStatistic": -0.2902949356873681,
+        "degreesOfFreedom": 3.7983410541241867,
+        "pValue": 0.7867442831937423,
+        "significant": false,
+        "effectSize": {
+          "cohensD": -0.19911408028928085,
+          "interpretation": "negligible"
+        },
+        "correctedPValue": 1,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "LLM Cache Hit Rate",
+        "tStatistic": 0,
+        "degreesOfFreedom": 4,
+        "pValue": 1,
+        "significant": false,
+        "effectSize": {
+          "cohensD": 0,
+          "interpretation": "negligible"
+        },
+        "correctedPValue": 1,
+        "correctionMethod": "benjamini-hochberg"
+      },
+      {
+        "sweepValue1": "llm_agent_mode=hybrid_llm_enabled=true_llm_hybrid_fraction=0.3_num_llm_agents=4_num_llm_reporters=1_num_developers=4_num_investors=2_num_traders=1_num_passive_members=4_num_proposal_creators=2_num_validators=1_num_delegators=2_num_governance_experts=1_num_risk_managers=1",
+        "sweepValue2": "llm_agent_mode=all_llm_enabled=true_llm_hybrid_fraction=1_num_llm_agents=8_num_llm_reporters=1_num_developers=0_num_investors=0_num_traders=0_num_passive_members=0_num_proposal_creators=0_num_validators=0_num_delegators=0_num_governance_experts=0_num_risk_managers=0",
+        "metricName": "LLM Avg Latency",
+        "tStatistic": -7.198887728649926,
+        "degreesOfFreedom": 3.5484786213279933,
+        "pValue": 0.003081144907182365,
+        "significant": true,
+        "effectSize": {
+          "cohensD": -5.104634421672642,
+          "interpretation": "very_large"
+        },
+        "correctedPValue": 0.04621717360773547,
+        "correctionMethod": "benjamini-hochberg"
+      }
+    ],
+    "anova": [
+      {
+        "metricName": "Proposal Pass Rate",
+        "fStatistic": 0.625,
+        "dfBetween": 2,
+        "dfWithin": 5,
+        "pValue": 0.5724334022399458,
+        "significant": false,
+        "etaSquared": 0.2,
+        "omegaSquared": 0,
+        "effectSizeInterpretation": "large",
+        "nonNormalWarning": false
+      },
+      {
+        "metricName": "Average Turnout",
+        "fStatistic": 4.667779262403362,
+        "dfBetween": 2,
+        "dfWithin": 5,
+        "pValue": 0.07184366277253951,
+        "significant": false,
+        "etaSquared": 0.6512169378439051,
+        "omegaSquared": 0.47833657397875406,
+        "effectSizeInterpretation": "large",
+        "nonNormalWarning": false
+      },
+      {
+        "metricName": "Final Treasury",
+        "fStatistic": 0.6578184884004837,
+        "dfBetween": 2,
+        "dfWithin": 5,
+        "pValue": 0.5576762044030218,
+        "significant": false,
+        "etaSquared": 0.20831421781107048,
+        "omegaSquared": 0,
+        "effectSizeInterpretation": "large",
+        "nonNormalWarning": false
+      },
+      {
+        "metricName": "Voter Participation Rate",
+        "fStatistic": 3.865465108182658,
+        "dfBetween": 2,
+        "dfWithin": 5,
+        "pValue": 0.09666620451219765,
+        "significant": false,
+        "etaSquared": 0.6072557216932494,
+        "omegaSquared": 0.4173737777455793,
+        "effectSizeInterpretation": "large",
+        "nonNormalWarning": false
+      },
+      {
+        "metricName": "Avg Margin of Victory",
+        "fStatistic": 2.0282451014771095,
+        "dfBetween": 2,
+        "dfWithin": 5,
+        "pValue": 0.22647757527551138,
+        "significant": false,
+        "etaSquared": 0.4479097434049005,
+        "omegaSquared": 0.20449383049665773,
+        "effectSizeInterpretation": "large",
+        "nonNormalWarning": false
+      },
+      {
+        "metricName": "Proposal Abandonment Rate",
+        "fStatistic": 0,
+        "dfBetween": 2,
+        "dfWithin": 5,
+        "pValue": 1,
+        "significant": false,
+        "etaSquared": 0,
+        "omegaSquared": 0,
+        "effectSizeInterpretation": "negligible",
+        "nonNormalWarning": false
+      },
+      {
+        "metricName": "Governance Activity Index",
+        "fStatistic": 1.8961308149526102,
+        "dfBetween": 2,
+        "dfWithin": 5,
+        "pValue": 0.24387849357558444,
+        "significant": false,
+        "etaSquared": 0.43131810557212685,
+        "omegaSquared": 0.18302836440069337,
+        "effectSizeInterpretation": "large",
+        "nonNormalWarning": false
+      },
+      {
+        "metricName": "LLM Vote Consistency",
+        "fStatistic": 2.495611065253609,
+        "dfBetween": 2,
+        "dfWithin": 5,
+        "pValue": 0.17716522268324897,
+        "significant": false,
+        "etaSquared": 0.4995607209319278,
+        "omegaSquared": 0.27214645423321826,
+        "effectSizeInterpretation": "large",
+        "kruskalWallis": {
+          "hStatistic": 3.0126582278481,
+          "pValue": 0.2217224035701253,
+          "significant": false
+        },
+        "nonNormalWarning": true
+      },
+      {
+        "metricName": "LLM Cache Hit Rate",
+        "fStatistic": 0,
+        "dfBetween": 2,
+        "dfWithin": 5,
+        "pValue": 1,
+        "significant": false,
+        "etaSquared": 0,
+        "omegaSquared": 0,
+        "effectSizeInterpretation": "negligible",
+        "nonNormalWarning": false
+      },
+      {
+        "metricName": "LLM Avg Latency",
+        "fStatistic": 96.01401564034505,
+        "dfBetween": 2,
+        "dfWithin": 5,
+        "pValue": 0.00010258998497036931,
+        "significant": true,
+        "etaSquared": 0.974622900267034,
+        "omegaSquared": 0.9596016788721159,
+        "effectSizeInterpretation": "large",
+        "nonNormalWarning": false
+      }
+    ],
+    "overallPowerAnalysis": {
+      "currentRunsPerConfig": 3,
+      "recommendedRuns": 63,
+      "currentPower": 0.0702582801069428,
+      "minimumEffectDetectable": 2.286190426597633,
+      "explanation": "Power for medium effect (d=0.5): 7%. Recommended N for small/medium/large effects: 392/63/25."
+    },
+    "recommendations": [
+      "⚠️ Low sample size (3 runs per config). Recommend at least 10 runs, ideally 30+ for robust statistical power.",
+      "High variability in \"Proposal Pass Rate\" (CV=115.5%). Consider longer simulation runs or more controlled initial conditions.",
+      "High variability in \"Proposal Pass Rate\" (CV=141.4%). Consider longer simulation runs or more controlled initial conditions.",
+      "Non-normal distribution detected for \"LLM Vote Consistency\" (skewness=-1.36). Bootstrap CIs are included in stats export."
+    ]
+  },
+  "manifest": {
+    "experimentId": "LLM Agent Reasoning Modes-1772081979585",
+    "configHash": "hash:469bd5ec",
+    "software": {
+      "simulatorVersion": "0.2.0",
+      "nodeVersion": "v22.19.0",
+      "platform": "win32"
+    },
+    "execution": {
+      "startedAt": "2026-02-26T04:59:39.585Z",
+      "completedAt": "2026-02-26T05:03:20.112Z",
+      "totalRuns": 8,
+      "seeds": [
+        42,
+        44,
+        46,
+        48,
+        43,
+        45,
+        47,
+        49
+      ],
+      "workerCount": 1
+    },
+    "resultsHash": "hash:6dcada93"
+  }
+}

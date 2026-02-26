@@ -1,0 +1,300 @@
+% APPENDIX: STATISTICAL ANALYSIS DETAILS
+% Last updated: 2026-02-21
+\label{sec:appendix-stats}
+
+\subsection{Baseline Statistics}
+
+Table~\ref{tab:baseline-stats-full} reports comprehensive summary statistics from the academic baseline experiment ($N=100$ runs, 720 steps each).
+
+\begin{table}[htbp]
+\centering
+\caption{Baseline simulation summary statistics ($N=100$ runs)}
+\label{tab:baseline-stats-full}
+\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Metric & Mean & SD & 95\% CI & Range \\
+\midrule
+Proposal Pass Rate & 0.987 & 0.020 & [0.983, 0.990] & [0.93, 1.00] \\
+Average Turnout & 0.225 & 0.010 & [0.223, 0.227] & [0.20, 0.25] \\
+Quorum Reach Rate & 1.000 & 0.002 & [0.999, 1.000] & [0.99, 1.00] \\
+Voter Participation & 0.232 & 0.012 & [0.230, 0.235] & [0.20, 0.26] \\
+Token Gini & 0.457 & 0.031 & [0.450, 0.463] & [0.37, 0.52] \\
+Whale Influence & 0.269 & 0.012 & [0.267, 0.272] & [0.24, 0.30] \\
+Capture Risk & 0.267 & 0.013 & [0.264, 0.269] & [0.23, 0.30] \\
+Delegate Conc. & 0.265 & 0.013 & [0.262, 0.267] & [0.23, 0.29] \\
+Treasury Final & 11{,}676 & 509 & [11{,}574, 11{,}777] & [10{,}315, 12{,}592] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Confidence Interval Computation}
+
+Confidence intervals are computed using Student's $t$-distribution to account for estimation uncertainty in the sample standard deviation:
+\begin{equation}
+\text{CI}_{1-\alpha} = \bar{x} \pm t_{n-1, \alpha/2} \cdot \frac{s}{\sqrt{n}}
+\end{equation}
+where $\bar{x}$ is the sample mean, $s$ is the sample standard deviation, $n$ is the number of simulation runs, and $t_{n-1, \alpha/2}$ is the critical value from the $t$-distribution with $n-1$ degrees of freedom.
+
+For our sample sizes ($n = 100$), $t_{99, 0.025} \approx 1.984$ for 95\% CIs.
+
+\subsubsection{Power Analysis}
+
+Table~\ref{tab:power-analysis} reports the statistical power achieved for each experiment based on sample size and assumed medium effect size ($d = 0.5$).
+
+\begin{table}[htbp]
+\centering
+\caption{Statistical power analysis by experiment ($\alpha = 0.05$, target $d = 0.5$)}
+\label{tab:power-analysis}
+\small
+\begin{tabular}{@{}lrrrl@{}}
+\toprule
+Experiment & N (per config) & Power & Min Detectable $d$ & Adequacy \\
+\midrule
+00 Baseline & 100 & 0.96 & 0.40 & Good \\
+01 Calibration & 100 & 0.96 & 0.40 & Good \\
+03 Quorum & 100 & 0.96 & 0.40 & Good \\
+04 Capture & 100 & 0.96 & 0.40 & Good \\
+05 Pipeline & 100 & 0.96 & 0.40 & Good \\
+06 Treasury & 100 & 0.96 & 0.40 & Good \\
+07 Inter-DAO & 100 & 0.96 & 0.40 & Good \\
+08 Scale & 100 & 0.96 & 0.40 & Good \\
+09 Voting & 100 & 0.96 & 0.40 & Good \\
+11 Advanced Mech. & 100 & 0.96 & 0.40 & Good \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+With 100 runs per configuration, experiments achieve power $\approx 0.96$ for detecting medium effects ($d = 0.5$) and can reliably detect effects as small as $d \geq 0.40$. Recommended sample sizes for small/medium/large effects are 392/63/25, respectively. Our strongest observed effects (quadratic voting margin $d = -2.00$, quorum reach $\eta^2 = 0.93$) are well above the detection threshold.
+
+\subsection{Descriptive Statistics}
+
+\subsubsection{Quorum Sensitivity Experiment}
+
+Table~\ref{tab:quorum-descriptive} reports descriptive statistics for the quorum sensitivity experiment (Experiment~03).
+
+\begin{table}[htbp]
+\centering
+\caption{Descriptive statistics for quorum sensitivity experiment (Pass Rate)}
+\label{tab:quorum-descriptive}
+\begin{tabular}{lrrrrr}
+\toprule
+Quorum (\%) & N & Mean & SD & Min & Max \\
+\midrule
+1 & 100 & 0.985 & 0.017 & 0.93 & 1.00 \\
+5 & 100 & 0.982 & 0.022 & 0.93 & 1.00 \\
+10 & 100 & 0.977 & 0.024 & 0.90 & 1.00 \\
+20 & 100 & 0.982 & 0.021 & 0.92 & 1.00 \\
+50 & 100 & 0.976 & 0.023 & 0.92 & 1.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Regression Results}
+
+\subsubsection{Quorum vs Pass Rate}
+
+Linear regression of proposal pass rate on quorum threshold yields negligible explanatory power:
+
+\begin{table}[htbp]
+\centering
+\caption{Linear Regression: Pass Rate $\sim$ Quorum}
+\label{tab:quorum-regression}
+\begin{tabular}{lr}
+\toprule
+Statistic & Value \\
+\midrule
+Coefficient & $-0.018$ (SE: 0.010) \\
+Intercept & 0.985 (SE: 0.002) \\
+$R^2$ & 0.021 \\
+Adjusted $R^2$ & 0.020 \\
+$F$-statistic & 19.3 ($p < 0.001$) \\
+$N$ observations & 900 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The low $R^2$ confirms that quorum thresholds within the 1--50\% range have minimal effect on pass rates in the calibrated baseline, though a slight negative trend is detectable.
+
+\subsection{ANOVA Tables}
+
+\subsubsection{Voting Mechanism Comparison}
+
+One-way ANOVA comparing pass rates across majority, quadratic, and conviction voting at two quorum levels:
+
+\begin{table}[htbp]
+\centering
+\caption{ANOVA: Voting mechanism comparison (Pass Rate)}
+\label{tab:anova-voting}
+\begin{tabular}{lrrrrr}
+\toprule
+Source & SS & df & MS & F & p \\
+\midrule
+Between & 0.050 & 5 & 0.010 & 39.28 & $<$0.001 \\
+Within & 0.152 & 594 & 0.000 & & \\
+Total & 0.202 & 599 & & & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Effect sizes: $\eta^2 = 0.25$, $\omega^2 = 0.24$ (large). Voting mechanism choice substantially affects pass rates.
+
+Additional ANOVA results for Experiment~09:
+\begin{itemize}
+    \item Margin of Victory: $F(5,594) = 76.62$, $p < 0.001$, $\eta^2 = 0.39$, $\omega^2 = 0.39$
+    \item Quorum Reach Rate: $F(5,594) = 1{,}476.18$, $p < 0.001$, $\eta^2 = 0.93$, $\omega^2 = 0.93$
+\end{itemize}
+
+\subsubsection{Scale Effect on Pass Rate}
+
+One-way ANOVA comparing pass rates across DAO sizes (50, 100, 200, 350, 500 members):
+
+\begin{table}[htbp]
+\centering
+\caption{ANOVA: Scale effect on pass rate}
+\label{tab:anova-scale}
+\begin{tabular}{lrrrrr}
+\toprule
+Source & SS & df & MS & F & p \\
+\midrule
+Between & 0.307 & 4 & 0.077 & 109.5 & $<$0.001 \\
+Within & 0.347 & 495 & 0.001 & & \\
+Total & 0.654 & 499 & & & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Effect sizes: $\eta^2 = 0.47$, $\omega^2 = 0.46$ (very large). Scale has a substantial effect on governance outcomes.
+
+\subsection{Pairwise Comparisons}
+
+\subsubsection{Voting Mechanism Pairwise}
+
+Following significant omnibus ANOVA, pairwise comparisons identify mechanism differences (BH-corrected):
+
+\begin{table}[htbp]
+\centering
+\caption{Pairwise comparisons for voting mechanisms (BH-corrected, quorum $= 4\%$)}
+\label{tab:voting-pairwise}
+\begin{tabular}{lcccc}
+\toprule
+Comparison & $t$ & Cohen's $d$ & Adj $p$ & Significant \\
+\midrule
+Majority vs Quadratic & $-9.99$ & $-1.41$ & $<$0.001 & Yes \\
+Majority vs Conviction & $-7.39$ & $-1.05$ & $<$0.001 & Yes \\
+Quadratic vs Conviction & $2.87$ & $0.41$ & 0.034 & Yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All three pairwise comparisons are statistically significant with $N=100$ per configuration. Quadratic and conviction voting both produce significantly higher pass rates than majority voting, with very large effect sizes. With increased statistical power, the difference between quadratic and conviction is now also significant ($d = 0.41$, small-medium effect).
+
+\subsubsection{Scale Effect Pairwise}
+
+Following significant omnibus ANOVA, pairwise comparisons identify scale thresholds:
+
+\begin{table}[htbp]
+\centering
+\caption{Pairwise comparisons for DAO scale (BH-corrected)}
+\label{tab:scale-pairwise}
+\begin{tabular}{lcccc}
+\toprule
+Comparison & Mean Diff & Cohen's $d$ & Adj $p$ & Significant \\
+\midrule
+50 vs 100 & $-0.028$ & 1.12 & $<$0.001 & Yes \\
+100 vs 200 & $-0.022$ & 0.89 & $<$0.001 & Yes \\
+200 vs 350 & $-0.009$ & 0.58 & 0.003 & Yes \\
+350 vs 500 & $-0.004$ & 0.25 & 0.088 & No \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Scale transitions from 50 to 350 show statistically significant and practically meaningful differences, with diminishing returns above 350 members.
+
+\subsection{Effect Sizes}
+
+\subsubsection{Governance Capture Mitigations}
+
+Effect sizes for vote power cap intervention (Experiment~04):
+
+\begin{table}[htbp]
+\centering
+\caption{Effect sizes for governance capture mitigations}
+\label{tab:capture-effects}
+\begin{tabular}{lcc}
+\toprule
+Metric & Cohen's $d$ & Interpretation \\
+\midrule
+Whale Influence (no cap vs 10\% cap) & 1.42 & Large \\
+Capture Risk (no cap vs 10\% cap) & 1.38 & Large \\
+Single Entity Control & 0.82 & Large \\
+Collusion Threshold & 0.65 & Medium \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Vote power caps produce large, practically significant improvements across all governance health metrics.
+
+\subsubsection{Inter-DAO Cooperation}
+
+\begin{table}[htbp]
+\centering
+\caption{Effect sizes for inter-DAO vs intra-DAO governance}
+\label{tab:interdao-effects}
+\begin{tabular}{lcc}
+\toprule
+Comparison & Cohen's $d$ & Interpretation \\
+\midrule
+Pass Rate (inter vs intra) & 2.31 & Very Large \\
+Voting Participation & 0.42 & Small-Medium \\
+Time to Decision & 0.89 & Large \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The large effect size for pass rate confirms that inter-DAO coordination introduces substantial friction.
+
+\subsection{Robustness Checks}
+
+\subsubsection{Normality Assessment}
+
+Shapiro-Wilk tests for normality (selected metrics, $N=100$):
+
+\begin{table}[htbp]
+\centering
+\caption{Normality tests for key metrics}
+\label{tab:normality}
+\begin{tabular}{lccc}
+\toprule
+Metric & W statistic & $p$-value & Normal? \\
+\midrule
+Proposal Pass Rate & 0.943 & 0.11 & Yes \\
+Average Turnout & 0.977 & 0.74 & Yes \\
+Token Gini & 0.971 & 0.57 & Yes \\
+Whale Influence & 0.968 & 0.48 & Yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All primary metrics satisfy normality assumptions, supporting use of parametric tests. Non-normal distributions were detected for Governance Capture Risk and Proposal Pass Rate in some configurations; bootstrap CIs are included in the stats export for these cases.
+
+\subsubsection{Variance Homogeneity}
+
+Levene's test for homogeneity of variances across experimental groups:
+
+\begin{table}[htbp]
+\centering
+\caption{Variance homogeneity tests}
+\label{tab:levene}
+\begin{tabular}{lccc}
+\toprule
+Experiment & Levene $F$ & $p$-value & Equal Variance? \\
+\midrule
+Quorum Sensitivity & 1.12 & 0.35 & Yes \\
+Voting Mechanisms & 3.87 & 0.002 & No \\
+Scale Sweep & 2.56 & 0.041 & No (marginal) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Welch's $t$-tests were used for all pairwise comparisons to account for heteroscedasticity, particularly in the voting mechanisms and scale sweep experiments where variance differs across groups.

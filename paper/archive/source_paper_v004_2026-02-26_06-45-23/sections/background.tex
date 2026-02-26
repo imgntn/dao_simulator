@@ -1,0 +1,82 @@
+% BACKGROUND & RELATED WORK
+% Last generated: 2026-01-15T05:34:34.872Z
+
+\subsection{Decentralized Autonomous Organizations}
+
+DAOs emerged from the intersection of blockchain technology and organizational theory. The concept was first articulated by \citet{buterin2014dao} as ``an entity that lives on the internet and exists autonomously, but also heavily relies on hiring individuals to perform certain tasks that the automaton itself cannot do.''
+
+Early implementations like The DAO (2016) demonstrated both the potential and risks of on-chain governance, with its \$60M exploit highlighting the importance of rigorous mechanism design \citep{dhillon2017dao}. Modern DAOs have evolved significantly, with diverse governance structures including:
+
+\begin{itemize}
+    \item \textbf{Token-weighted voting}: Compound \citep{compound2020governance}, Uniswap \citep{uniswap2021governance}, Aave \citep{aave2020governance}
+    \item \textbf{Optimistic governance}: Optimism \citep{optimism2022governance}, with bicameral structure
+    \item \textbf{Conviction voting}: Giveth, 1Hive \citep{emmett2019conviction}
+    \item \textbf{Holographic consensus}: DAOstack \citep{daostack2019holographic}
+    \item \textbf{Dual governance}: Lido \citep{lido2022dualgovernance}, with staker veto rights
+\end{itemize}
+
+Recent empirical work has quantified voting power concentration in deployed DAOs \citep{fritsch2022analyzing, fritsch2024voting}. A comprehensive review by \citet{han2025review} synthesizes the emerging literature on DAO governance, highlighting the tension between decentralization ideals and observed centralization. \citet{cong2025centralized} provide empirical evidence that DAO governance often exhibits significant whale dominance, with large token holders able to unilaterally influence outcomes. Large-scale analyses of over 100 DAOs reveal that treasury assets have grown to \$24.5 billion while participation dynamics vary significantly by DAO category \citep{nabben2024future}.
+
+\subsection{Multi-Agent Systems}
+
+Our work builds on the multi-agent systems (MAS) literature, particularly work on emergent behavior in complex adaptive systems \citep{wooldridge2009introduction}. In MAS, autonomous agents interact according to local rules, producing system-level dynamics that may be difficult to predict analytically.
+
+Key concepts from MAS relevant to DAO simulation include:
+\begin{itemize}
+    \item \textbf{Agent heterogeneity}: Agents differ in preferences, resources, and strategies
+    \item \textbf{Bounded rationality}: Agents use heuristics rather than optimal computation
+    \item \textbf{Emergent coordination}: System-level order arises from local interactions
+    \item \textbf{Path dependence}: Historical trajectories constrain future possibilities
+\end{itemize}
+
+\subsection{Mechanism Design}
+
+Mechanism design, or ``reverse game theory,'' studies how to design rules that achieve desired outcomes given strategic agent behavior \citep{nisan2007algorithmic}. Classical results include:
+
+\begin{itemize}
+    \item \textbf{Revelation Principle}: Any mechanism can be converted to a truthful direct mechanism
+    \item \textbf{Gibbard-Satterthwaite}: No voting system satisfies strategy-proofness, non-dictatorship, and unrestricted domain \citep{gibbard1973manipulation, satterthwaite1975strategy}
+    \item \textbf{VCG Mechanisms}: Achieving efficiency through appropriate transfers
+\end{itemize}
+
+DAO governance mechanisms must navigate these theoretical constraints while accommodating real-world considerations like gas costs, participation fatigue, and adversarial behavior. These challenges echo classic collective action problems \citep{olson1965logic} and commons governance dilemmas \citep{ostrom1990governing}.
+
+\subsection{Computational Social Choice}
+
+Social choice theory studies collective decision-making, with computational social choice extending this to algorithmic settings \citep{brandt2016handbook}. Relevant topics include:
+
+\begin{itemize}
+    \item \textbf{Voting rules}: Plurality, approval, ranked choice, quadratic \citep{weyl2018quadratic, lalley2018quadratic, buterin2019flexible, daian2024quadratic}
+    \item \textbf{Aggregation}: Arrow's impossibility theorem and its implications \citep{arrow1950difficulty}
+    \item \textbf{Manipulation}: Strategic voting, whale attacks, and collusion resistance \citep{barbereau2024whale}
+    \item \textbf{Liquid democracy}: Delegative voting systems and their governance implications \citep{hardt2023liquid, sharma2024delegated}
+\end{itemize}
+
+\subsection{Agent-Based Modeling in Economics}
+
+Agent-based computational economics (ACE) provides methodological foundations for our work \citep{tesfatsion2006handbook}. ACE models have been used to study:
+
+\begin{itemize}
+    \item Market dynamics and price formation
+    \item Emergence of institutions and norms
+    \item Policy evaluation under bounded rationality
+    \item Network effects in economic systems
+\end{itemize}
+
+Our simulation framework extends this tradition to the specific domain of decentralized governance.
+
+\subsection{Prior DAO Simulation Work}
+
+Limited prior work has applied simulation to DAO governance:
+
+\begin{itemize}
+    \item \citet{faqir2021cadcad} used cadCAD for tokenomic modeling, focusing on token engineering and bonding curve dynamics
+    \item \citet{tan2023agentdao} explored LLM-based agent DAOs, demonstrating emergent coordination in simple governance tasks
+    \item DeepDAO \citep{deepdao2023analytics} provides empirical analytics across hundreds of DAOs, offering participation and treasury benchmarks
+    \item Snapshot \citep{snapshot2021governance} off-chain voting data has enabled large-scale empirical studies of DAO participation patterns
+    \item Various projects have modeled specific mechanisms (conviction voting, bonding curves) in isolation
+\end{itemize}
+
+Recent empirical studies have provided valuable benchmarks for simulation validation. \citet{kiayias2024democracy} conducted an empirical study of decentralized governance dynamics in the Internet Computer SNS ecosystem, finding participation rates between 50-70\% with generally increasing trends over time. \citet{rozas2024democratic} examined mechanisms for enhancing democratic participation in DAOs. The first European DAO Workshop \citep{dawo2025trends} identified four critical research streams: governance mechanisms, technical frameworks, value assessment, and legal dimensions.
+
+Our framework's architecture draws on established ABM frameworks such as Mesa \citep{mesa2023framework}, adapted for the specific requirements of DAO governance simulation. Our work differs by providing a comprehensive, open-source framework supporting multiple mechanisms, agent heterogeneity, and systematic parameter exploration across the full governance lifecycle.

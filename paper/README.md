@@ -200,3 +200,21 @@ If using this paper or framework:
   note={Living document, last updated: TIMESTAMP}
 }
 ```
+
+## Maintenance Commands
+
+Use these commands to keep papers and companion assets up to date:
+
+```bash
+# Regenerate plain-English summaries (includes LLM paper summary)
+npm run paper:plain-english
+
+# Consolidate all paper PDFs + plain-English + LLM report into archive/
+npm run paper:consolidate
+
+# Archive all paper profiles (full, p1, p2, llm) with source bundles
+npx tsx scripts/paper-archive.ts --profile all --with-source
+
+# Clean temporary generated chart scripts from paper*/generated
+npm run paper:cleanup
+```
