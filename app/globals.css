@@ -1,28 +1,140 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f6f0e4;
+  --foreground: #1f2a36;
+  --ink-soft: #4e5c6b;
+  --panel: #ffffffd9;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-space-grotesk);
+  --font-mono: var(--font-ibm-plex-mono);
+  --font-display: var(--font-source-serif);
 }
 
 body {
-  background: var(--background);
+  min-height: 100vh;
+  margin: 0;
+  background: radial-gradient(circle at 12% 14%, rgba(245, 207, 136, 0.18), transparent 38%),
+    radial-gradient(circle at 86% 12%, rgba(92, 150, 164, 0.15), transparent 34%),
+    linear-gradient(172deg, #fffefb 0%, #f8f2e8 56%, #efe7da 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-serif-display {
+  font-family: var(--font-display), Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+.hub-link {
+  border: 1px solid #d5c7b1;
+  border-radius: 999px;
+  background: #fffdf9;
+  color: #2a4154;
+  padding: 0.48rem 0.92rem;
+  font-size: 0.8rem;
+  font-weight: 580;
+  letter-spacing: 0.012em;
+  transition: all 150ms ease;
+}
+
+.hub-link:hover {
+  border-color: #a98758;
+  background: #fff2dc;
+  color: #1c3344;
+  transform: translateY(-1px);
+}
+
+.markdown-surface {
+  max-width: 72ch;
+  margin: 0 auto;
+  color: #2d3f52;
+  line-height: 1.84;
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.12rem);
+  text-wrap: pretty;
+}
+
+.markdown-surface h1,
+.markdown-surface h2,
+.markdown-surface h3 {
+  color: #1c2834;
+  font-family: var(--font-display), Georgia, Cambria, "Times New Roman", Times, serif;
+  line-height: 1.24;
+  letter-spacing: 0.01em;
+  margin-top: 1.3rem;
+  margin-bottom: 0.55rem;
+}
+
+.markdown-surface h1 {
+  font-size: 1.5rem;
+}
+
+.markdown-surface h2 {
+  font-size: 1.25rem;
+}
+
+.markdown-surface h3 {
+  font-size: 1.1rem;
+}
+
+.markdown-surface p {
+  margin-top: 0.65rem;
+  margin-bottom: 0.72rem;
+}
+
+.markdown-surface ul,
+.markdown-surface ol {
+  margin: 0.8rem 0;
+  padding-left: 1.25rem;
+}
+
+.markdown-surface li {
+  margin: 0.35rem 0;
+}
+
+.markdown-surface code {
+  background: #f5ebd9;
+  border: 1px solid #e1d2b8;
+  border-radius: 0.35rem;
+  padding: 0.05rem 0.3rem;
+  font-family: var(--font-mono), "Courier New", Courier, monospace;
+  font-size: 0.88em;
+  color: #593c22;
+}
+
+.markdown-surface a {
+  color: #1f7a8c;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, #1f7a8c 40%, transparent);
+  text-underline-offset: 0.22em;
+}
+
+.markdown-surface blockquote {
+  margin: 1rem 0;
+  border-left: 3px solid #d2b58a;
+  padding: 0.25rem 0 0.25rem 0.9rem;
+  color: #4a5d6f;
+  font-style: italic;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise {
+  animation: rise 620ms cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

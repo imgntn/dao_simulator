@@ -1,36 +1,43 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Mono, Space_Grotesk, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
+
+const sourceSerif = Source_Serif_4({
+  variable: "--font-source-serif",
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "DAO Research Console",
-    template: "%s | DAO Research Console",
+    default: "DAO Research Atlas",
+    template: "%s | DAO Research Atlas",
   },
-  description: "Academic experiment management for DAO governance simulations.",
+  description: "Narrative paper and experiment hub for DAO governance simulations.",
   keywords: ["DAO", "simulation", "governance", "experiment", "research", "analysis"],
   authors: [{ name: "DAO Research Team" }],
   openGraph: {
-    title: "DAO Research Console",
-    description: "Academic experiment management for DAO governance simulations.",
+    title: "DAO Research Atlas",
+    description: "Narrative paper and experiment hub for DAO governance simulations.",
     type: "website",
     locale: "en_US",
-    siteName: "DAO Research Console",
+    siteName: "DAO Research Atlas",
   },
   twitter: {
     card: "summary_large_image",
-    title: "DAO Research Console",
-    description: "Academic experiment management for DAO governance simulations.",
+    title: "DAO Research Atlas",
+    description: "Narrative paper and experiment hub for DAO governance simulations.",
   },
   robots: {
     index: true,
@@ -45,7 +52,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0f172a",
+  themeColor: "#f4efe3",
 };
 
 export default function RootLayout({
@@ -56,7 +63,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-950 text-slate-100`}
+        className={`${spaceGrotesk.variable} ${ibmPlexMono.variable} ${sourceSerif.variable} antialiased`}
       >
         {/* Skip to main content link for keyboard users */}
         <a

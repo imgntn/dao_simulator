@@ -67,7 +67,7 @@ function spawnTsx(scriptPath: string, args: string[], logFile: string): number |
 }
 
 function buildRedirect(request: NextRequest, params: Record<string, string>): NextResponse {
-  const url = new URL('/', request.url);
+  const url = new URL('/console', request.url);
   for (const [key, value] of Object.entries(params)) {
     if (value) {
       url.searchParams.set(key, value);

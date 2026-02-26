@@ -93,7 +93,10 @@ export default async function ResultPage({
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <div className="max-w-5xl mx-auto px-6 py-10 space-y-8">
         <header className="space-y-2">
-          <Link href="/" className="text-sm text-blue-400 hover:text-blue-300">Back to console</Link>
+          <div className="flex flex-wrap gap-3 text-sm">
+            <Link href="/" className="text-amber-300 hover:text-amber-200">Back to narrative hub</Link>
+            <Link href="/console" className="text-blue-400 hover:text-blue-300">Back to operations console</Link>
+          </div>
           <h1 className="text-3xl font-semibold">Results: {params.name}</h1>
           <p className="text-sm text-slate-400">Directory: results/{params.name}</p>
         </header>

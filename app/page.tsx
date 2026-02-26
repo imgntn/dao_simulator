@@ -1,464 +1,365 @@
 import fs from 'fs';
 import path from 'path';
-import yaml from 'yaml';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const ROOT_DIR = process.cwd();
-const EXPERIMENTS_DIR = path.join(ROOT_DIR, 'experiments');
-const RESULTS_DIR = path.join(ROOT_DIR, 'results');
+const JAMES_SITE_URL = 'https://jamesbpollack.com';
 
-type ExperimentConfigSummary = {
+type PlainEnglishSection = {
   id: string;
-  path: string;
-  name: string;
+  title: string;
+  question: string;
+  whyItMatters: string;
+  filePath: string;
+  relatedPaperPath: string;
+};
+
+type PaperProfile = {
+  id: 'paper' | 'paper_p1' | 'paper_p2' | 'paper_llm';
+  label: string;
   description: string;
-  tags: string[];
-  sweepParameter?: string;
+  directory: string;
+  archivePrefix: string;
 };
 
-type ResultSummary = {
-  id: string;
-  path: string;
-  name: string;
-  state: string;
-  progress: number | null;
-  completedRuns: number | null;
-  totalRuns: number | null;
-  lastUpdate: string | null;
-  hasReport: boolean;
-  hasQualityReport: boolean;
-};
+const PLAIN_ENGLISH_SECTIONS: PlainEnglishSection[] = [
+  {
+    id: 'rq1',
+    title: 'Participation Dynamics',
+    question: 'How do we get more people to vote consistently?',
+    whyItMatters: 'Healthy participation is the baseline for every other governance decision.',
+    filePath: 'paper/plain-english/rq1-participation.md',
+    relatedPaperPath: 'paper_p1/main.pdf',
+  },
+  {
+    id: 'rq2',
+    title: 'Governance Capture Mitigation',
+    question: 'How do we reduce whale control without freezing the DAO?',
+    whyItMatters: 'Fairness and safety matter, but governance still has to ship decisions.',
+    filePath: 'paper/plain-english/rq2-governance-capture.md',
+    relatedPaperPath: 'paper_p1/main.pdf',
+  },
+  {
+    id: 'rq3',
+    title: 'Proposal Pipeline Effects',
+    question: 'How do we make proposals move faster without lowering quality?',
+    whyItMatters: 'Slow governance burns momentum and increases operational risk.',
+    filePath: 'paper/plain-english/rq3-proposal-pipeline.md',
+    relatedPaperPath: 'paper_p2/main.pdf',
+  },
+  {
+    id: 'rq4',
+    title: 'Treasury Resilience',
+    question: 'How do we protect treasury health through volatility?',
+    whyItMatters: 'Treasury policy drives long-term survival, growth, and strategic optionality.',
+    filePath: 'paper/plain-english/rq4-treasury.md',
+    relatedPaperPath: 'paper_p2/main.pdf',
+  },
+  {
+    id: 'rq5',
+    title: 'Inter-DAO Cooperation',
+    question: 'What kinds of cross-DAO coordination actually work?',
+    whyItMatters: 'Ecosystem collaboration can unlock scale that single DAOs cannot reach alone.',
+    filePath: 'paper/plain-english/rq5-cooperation.md',
+    relatedPaperPath: 'paper_p2/main.pdf',
+  },
+  {
+    id: 'rq6',
+    title: 'LLM Agent Reasoning',
+    question: 'Where do LLMs help governance, and where do they add risk?',
+    whyItMatters: 'AI governance is moving from theory to production, so evaluation quality is critical.',
+    filePath: 'paper/plain-english/rq6-llm-agent-reasoning.md',
+    relatedPaperPath: 'paper_llm/main.pdf',
+  },
+];
 
-function parseExperimentConfig(filePath: string): ExperimentConfigSummary {
-  const raw = fs.readFileSync(filePath, 'utf8');
-  const ext = path.extname(filePath).toLowerCase();
-  let parsed: any = {};
+const PAPER_PROFILES: PaperProfile[] = [
+  {
+    id: 'paper',
+    label: 'Core Governance Paper',
+    description: 'Full synthesis across the complete research program.',
+    directory: 'paper',
+    archivePrefix: 'dao-governance-paper',
+  },
+  {
+    id: 'paper_p1',
+    label: 'Part I: Participation + Capture',
+    description: 'Focus on fairness, participation quality, and anti-capture design.',
+    directory: 'paper_p1',
+    archivePrefix: 'dao-governance-paper_p1',
+  },
+  {
+    id: 'paper_p2',
+    label: 'Part II: Operations + Treasury',
+    description: 'Focus on proposal flow, treasury resilience, and inter-DAO outcomes.',
+    directory: 'paper_p2',
+    archivePrefix: 'dao-governance-paper_p2',
+  },
+  {
+    id: 'paper_llm',
+    label: 'LLM Governance Paper',
+    description: 'Dedicated analysis of LLM and hybrid governance modes.',
+    directory: 'paper_llm',
+    archivePrefix: 'dao-governance-paper_llm',
+  },
+];
 
-  try {
-    parsed = ext === '.json' ? JSON.parse(raw) : yaml.parse(raw);
-  } catch {
-    parsed = {};
-  }
-
-  const relativePath = path.relative(ROOT_DIR, filePath).replace(/\\/g, '/');
-  const name = typeof parsed?.name === 'string' ? parsed.name : path.basename(filePath);
-  const description = typeof parsed?.description === 'string' ? parsed.description : '';
-  const tags = Array.isArray(parsed?.tags) ? parsed.tags.filter((tag: unknown) => typeof tag === 'string') : [];
-  const sweepParameter = typeof parsed?.sweep?.parameter === 'string' ? parsed.sweep.parameter : undefined;
-
-  return {
-    id: relativePath,
-    path: relativePath,
-    name,
-    description,
-    tags,
-    sweepParameter,
-  };
+function toPath(relativePath: string): string {
+  return path.join(ROOT_DIR, ...relativePath.split('/'));
 }
 
-function listExperimentConfigs(): ExperimentConfigSummary[] {
-  if (!fs.existsSync(EXPERIMENTS_DIR)) return [];
-
-  const configs: ExperimentConfigSummary[] = [];
-  const stack = [EXPERIMENTS_DIR];
-
-  while (stack.length > 0) {
-    const current = stack.pop();
-    if (!current) continue;
-
-    const entries = fs.readdirSync(current, { withFileTypes: true });
-    for (const entry of entries) {
-      const fullPath = path.join(current, entry.name);
-      if (entry.isDirectory()) {
-        stack.push(fullPath);
-      } else if (entry.isFile()) {
-        const ext = path.extname(entry.name).toLowerCase();
-        if (ext === '.yaml' || ext === '.yml' || ext === '.json') {
-          configs.push(parseExperimentConfig(fullPath));
-        }
-      }
-    }
-  }
-
-  return configs.sort((a, b) => a.path.localeCompare(b.path));
+function readText(relativePath: string): string | null {
+  const absolute = toPath(relativePath);
+  if (!fs.existsSync(absolute)) return null;
+  return fs.readFileSync(absolute, 'utf8');
 }
 
-function listResults(): ResultSummary[] {
-  if (!fs.existsSync(RESULTS_DIR)) return [];
-
-  function collectResultDirs(baseDir: string, relativeDir = '', depth = 0): string[] {
-    if (depth > 4) return [];
-    const currentDir = path.join(baseDir, relativeDir);
-    const entries = fs.readdirSync(currentDir, { withFileTypes: true });
-    const found: string[] = [];
-
-    const hasArtifacts = ['summary.json', 'status.json'].some((file) =>
-      fs.existsSync(path.join(currentDir, file))
-    );
-    if (hasArtifacts && relativeDir) {
-      found.push(relativeDir.replace(/\\/g, '/'));
-    }
-
-    for (const entry of entries) {
-      if (!entry.isDirectory()) continue;
-      const childRelative = relativeDir ? path.join(relativeDir, entry.name) : entry.name;
-      found.push(...collectResultDirs(baseDir, childRelative, depth + 1));
-    }
-
-    return found;
-  }
-
-  const dirs = collectResultDirs(RESULTS_DIR);
-
-  return dirs.map((relativePath) => {
-    const resultDir = path.join(RESULTS_DIR, relativePath);
-    const statusPath = path.join(resultDir, 'status.json');
-    const reportPath = path.join(resultDir, 'report.md');
-    const qualityReportPath = path.join(resultDir, 'research-quality-report.md');
-
-    let state = 'unknown';
-    let progress: number | null = null;
-    let completedRuns: number | null = null;
-    let totalRuns: number | null = null;
-    let lastUpdate: string | null = null;
-
-    if (fs.existsSync(statusPath)) {
-      try {
-        const status = JSON.parse(fs.readFileSync(statusPath, 'utf8')) as {
-          state?: string;
-          lastUpdate?: string;
-          progress?: {
-            completedRuns?: number;
-            totalRuns?: number;
-            percentComplete?: number;
-          };
-        };
-        state = status.state ?? state;
-        lastUpdate = status.lastUpdate ?? null;
-        progress = typeof status.progress?.percentComplete === 'number'
-          ? status.progress.percentComplete
-          : null;
-        completedRuns = typeof status.progress?.completedRuns === 'number'
-          ? status.progress.completedRuns
-          : null;
-        totalRuns = typeof status.progress?.totalRuns === 'number'
-          ? status.progress.totalRuns
-          : null;
-      } catch {
-        state = 'invalid_status';
-      }
-    }
-
-    return {
-      id: relativePath,
-      path: relativePath,
-      name: path.basename(relativePath),
-      state,
-      progress,
-      completedRuns,
-      totalRuns,
-      lastUpdate,
-      hasReport: fs.existsSync(reportPath) || fs.existsSync(qualityReportPath),
-      hasQualityReport: fs.existsSync(qualityReportPath),
-    };
-  }).sort((a, b) => a.path.localeCompare(b.path));
+function exists(relativePath: string): boolean {
+  return fs.existsSync(toPath(relativePath));
 }
 
-function getParam(value: string | string[] | undefined): string {
-  if (!value) return '';
-  return Array.isArray(value) ? value[0] ?? '' : value;
+function artifactHref(relativePath: string): string {
+  return `/api/artifacts/${relativePath
+    .split('/')
+    .map((segment) => encodeURIComponent(segment))
+    .join('/')}`;
 }
 
-export default function Home({
-  searchParams,
-}: {
-  searchParams?: Record<string, string | string[] | undefined>;
-}) {
-  const configs = listExperimentConfigs();
-  const results = listResults();
-  const action = getParam(searchParams?.action);
-  const target = getParam(searchParams?.target);
-  const pid = getParam(searchParams?.pid);
-  const log = getParam(searchParams?.log);
+function findLatestFile(relativeDir: string, matcher: RegExp): string | null {
+  const absolute = toPath(relativeDir);
+  if (!fs.existsSync(absolute)) return null;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
-        <header className="space-y-3">
-          <p className="text-sm uppercase tracking-[0.3em] text-slate-500">DAO Research Console</p>
-          <h1 className="text-3xl sm:text-4xl font-semibold text-slate-100">Experiment Management</h1>
-          <p className="text-slate-400 max-w-2xl">
-            Manage experiment runs, review results, generate reports, and update paper artifacts.
-            All actions run locally and write logs to the results directory.
+    fs
+      .readdirSync(absolute, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && matcher.test(entry.name))
+      .map((entry) => entry.name)
+      .sort((a, b) => b.localeCompare(a))[0] ?? null
+  );
+}
+
+function findLatestBundle(): string | null {
+  const absolute = toPath('archive');
+  if (!fs.existsSync(absolute)) return null;
+  return (
+    fs
+      .readdirSync(absolute, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory() && entry.name.startsWith('paper-consolidated-'))
+      .map((entry) => entry.name)
+      .sort((a, b) => b.localeCompare(a))[0] ?? null
+  );
+}
+
+function countWords(markdown: string): number {
+  return markdown.replace(/#|\*|_|`|\[|\]|\(|\)/g, ' ').split(/\s+/).filter(Boolean).length;
+}
+
+export default function Home() {
+  const executiveOverview = readText('paper/plain-english/00-main-paper.md');
+  const sections = PLAIN_ENGLISH_SECTIONS.map((section) => {
+    const markdown = readText(section.filePath);
+    return {
+      ...section,
+      markdown,
+      words: markdown ? countWords(markdown) : 0,
+      hasRelatedPaper: exists(section.relatedPaperPath),
+    };
+  });
+
+  const paperCards = PAPER_PROFILES.map((profile) => {
+    const currentPdf = exists(`${profile.directory}/main.pdf`) ? `${profile.directory}/main.pdf` : null;
+    const currentTex = exists(`${profile.directory}/main.tex`) ? `${profile.directory}/main.tex` : null;
+    const latestArchiveName = findLatestFile(
+      `${profile.directory}/archive`,
+      new RegExp(`^${profile.archivePrefix}.*\\.pdf$`)
+    );
+
+    return {
+      ...profile,
+      currentPdf,
+      currentTex,
+      latestArchive: latestArchiveName ? `${profile.directory}/archive/${latestArchiveName}` : null,
+    };
+  });
+
+  const latestBundle = findLatestBundle();
+
+  return (
+    <div className="relative min-h-screen overflow-hidden text-[#1d2935]">
+      <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_10%_12%,rgba(244,201,122,0.33),transparent_38%),radial-gradient(circle_at_88%_18%,rgba(87,153,167,0.24),transparent_44%),linear-gradient(180deg,#fffef9_0%,#f5efe2_52%,#ebe4d6_100%)]" />
+      <div className="mx-auto w-full max-w-6xl px-4 pb-24 pt-8 sm:px-6 lg:px-8 lg:pt-12">
+        <header className="rounded-3xl border border-[#d8cab4] bg-white/90 p-7 shadow-[0_24px_70px_rgba(52,45,33,0.1)] sm:p-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[#8f6f42]">DAO Research, Made Readable</p>
+          <h1 className="mt-3 max-w-4xl font-serif-display text-3xl leading-[1.08] text-[#1d1a14] sm:text-5xl">
+            Plain-English Research Hub For DAO Governance
+          </h1>
+          <p className="mt-5 max-w-3xl text-[1.04rem] leading-relaxed text-[#3f5163] sm:text-[1.15rem]">
+            This site is designed for operators, founders, policy teams, and investors who want clear answers without
+            digging through technical jargon. Start with the plain-English summaries, then open full papers only if you
+            want the underlying technical depth.
           </p>
+
+          <div className="mt-7 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl border border-[#e7dbc8] bg-[#fff9ef] p-4 sm:p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#8d6f46]">Executive Focus</p>
+              <p className="mt-2 text-sm leading-relaxed text-[#45586b]">What changes improve governance quality and execution speed in the real world.</p>
+            </div>
+            <div className="rounded-2xl border border-[#e7dbc8] bg-[#fff9ef] p-4 sm:p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#8d6f46]">Why It Matters</p>
+              <p className="mt-2 text-sm leading-relaxed text-[#45586b]">Governance is now business-critical infrastructure, not just community process.</p>
+            </div>
+            <div className="rounded-2xl border border-[#e7dbc8] bg-[#fff9ef] p-4 sm:p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#8d6f46]">Built By</p>
+              <p className="mt-2 text-sm leading-relaxed text-[#45586b]">
+                Research direction and systems thinking by{' '}
+                <a href={JAMES_SITE_URL} target="_blank" rel="noreferrer" className="text-[#1f7a8c] underline decoration-[#1f7a8c]/40 underline-offset-4 hover:text-[#165f6d]">
+                  James B. Pollack
+                </a>
+                .
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-7 flex flex-wrap gap-3">
+            <a href="#summaries" className="rounded-full bg-[#1f7a8c] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_6px_18px_rgba(31,122,140,0.22)] transition hover:bg-[#166877]">Read Plain-English Summaries</a>
+            <a href={JAMES_SITE_URL} target="_blank" rel="noreferrer" className="rounded-full border border-[#cdbda8] bg-white px-5 py-2.5 text-sm font-semibold text-[#304457] transition hover:border-[#a88a64]">Visit JamesBPollack.com</a>
+            <Link href="/console" className="rounded-full border border-[#d6cab8] bg-[#f8f2e8] px-5 py-2.5 text-sm font-semibold text-[#4e5f71] transition hover:bg-[#efe6d6]">
+              Open Operations Console
+            </Link>
+          </div>
         </header>
 
-        {(action || log || pid) && (
-          <section className="rounded-lg border border-slate-800 bg-slate-900/60 p-4 text-sm text-slate-200">
-            <p className="font-medium">Latest action queued</p>
-            <div className="mt-2 space-y-1 text-slate-400">
-              {action && <p>Action: {action}</p>}
-              {target && <p>Target: {target}</p>}
-              {pid && <p>PID: {pid}</p>}
-              {log && <p>Log: {log}</p>}
-            </div>
-          </section>
-        )}
-
-        <section className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
-            <h2 className="text-lg font-semibold">Run Experiments</h2>
-            <p className="text-sm text-slate-400">
-              Select a configuration file to start or resume a batch run.
-            </p>
-            <form action="/api/research" method="post" className="space-y-3">
-              <input type="hidden" name="action" value="run" />
-              <label className="block text-xs uppercase tracking-wide text-slate-500">Experiment Config</label>
-              <select
-                name="configPath"
-                required
-                className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
-              >
-                <option value="" disabled>Select a config</option>
-                {configs.map((config) => (
-                  <option key={config.id} value={config.path}>
-                    {config.path}
-                  </option>
-                ))}
-              </select>
-              <div className="flex gap-2">
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500"
-                >
-                  Run
-                </button>
-              </div>
-            </form>
-
-            <form action="/api/research" method="post" className="space-y-3 pt-3 border-t border-slate-800">
-              <input type="hidden" name="action" value="resume" />
-              <label className="block text-xs uppercase tracking-wide text-slate-500">Resume Config</label>
-              <select
-                name="configPath"
-                required
-                className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
-              >
-                <option value="" disabled>Select a config</option>
-                {configs.map((config) => (
-                  <option key={`${config.id}-resume`} value={config.path}>
-                    {config.path}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
-              >
-                Resume
-              </button>
-            </form>
-          </div>
-
-          <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
-            <h2 className="text-lg font-semibold">Reports</h2>
-            <p className="text-sm text-slate-400">
-              Generate research-quality reports from existing results.
-            </p>
-            <form action="/api/research" method="post" className="space-y-3">
-              <input type="hidden" name="action" value="report" />
-              <label className="block text-xs uppercase tracking-wide text-slate-500">Results Directory</label>
-              <select
-                name="resultsDir"
-                required
-                className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
-              >
-                <option value="" disabled>Select a result set</option>
-                {results.map((result) => (
-                  <option key={result.id} value={`results/${result.path}`}>
-                    results/{result.path}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md bg-emerald-600 text-white hover:bg-emerald-500"
-              >
-                Generate Report
-              </button>
-            </form>
-          </div>
-        </section>
-
-        <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
-          <h2 className="text-lg font-semibold">Paper Pipeline</h2>
-          <p className="text-sm text-slate-400">
-            Update the academic paper from the latest results, compile PDFs, and archive releases.
+        <section className="mt-9 rounded-3xl border border-[#d9ccb8] bg-white/88 p-7 sm:p-9">
+          <h2 className="font-serif-display text-2xl text-[#1f1b14] sm:text-3xl">Executive Summary</h2>
+          <p className="mt-4 max-w-3xl text-[1.03rem] leading-relaxed text-[#425466] sm:text-[1.1rem]">
+            The research asks a practical question: what governance configurations actually work when DAOs face scale,
+            concentration risk, operational bottlenecks, treasury stress, and AI-driven decision-making?
           </p>
-          <div className="flex flex-wrap items-end gap-4">
-            <label className="block text-xs uppercase tracking-wide text-slate-500">
-              Paper Profile
-              <select
-                name="paperProfile"
-                form="paper-update-form"
-                defaultValue="full"
-                className="mt-2 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
-              >
-                <option value="full">full (paper/)</option>
-                <option value="p1">p1 (paper_p1/)</option>
-                <option value="p2">p2 (paper_p2/)</option>
-                <option value="llm">llm (paper_llm/)</option>
-              </select>
-            </label>
-            <form id="paper-update-form" action="/api/research" method="post">
-              <input type="hidden" name="action" value="paper-update" />
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md bg-slate-100 text-slate-900 hover:bg-white"
-              >
-                Update Paper
-              </button>
-            </form>
-            <form action="/api/research" method="post">
-              <input type="hidden" name="action" value="paper-compile" />
-              <input type="hidden" name="paperProfile" value="full" />
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
-              >
-                Compile Full
-              </button>
-            </form>
-            <form action="/api/research" method="post">
-              <input type="hidden" name="action" value="paper-compile" />
-              <input type="hidden" name="paperProfile" value="p1" />
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
-              >
-                Compile P1
-              </button>
-            </form>
-            <form action="/api/research" method="post">
-              <input type="hidden" name="action" value="paper-compile" />
-              <input type="hidden" name="paperProfile" value="p2" />
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
-              >
-                Compile P2
-              </button>
-            </form>
-            <form action="/api/research" method="post">
-              <input type="hidden" name="action" value="paper-compile" />
-              <input type="hidden" name="paperProfile" value="llm" />
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
-              >
-                Compile LLM
-              </button>
-            </form>
-            <form action="/api/research" method="post">
-              <input type="hidden" name="action" value="paper-archive" />
-              <input type="hidden" name="paperProfile" value="all" />
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
-              >
-                Archive All
-              </button>
-            </form>
-          </div>
-        </section>
+          <p className="mt-3 max-w-3xl text-[1.03rem] leading-relaxed text-[#425466] sm:text-[1.1rem]">
+            The plain-English papers below translate simulation evidence into strategy-level guidance. They are meant to
+            support clearer board conversations, policy design, and implementation priorities.
+          </p>
+          <p className="mt-3 max-w-3xl text-[1.03rem] leading-relaxed text-[#425466] sm:text-[1.1rem]">
+            If you want to discuss applications to your own governance context, see{' '}
+            <a href={JAMES_SITE_URL} target="_blank" rel="noreferrer" className="text-[#1f7a8c] underline decoration-[#1f7a8c]/40 underline-offset-4 hover:text-[#165f6d]">
+              jamesbpollack.com
+            </a>
+            .
+          </p>
 
-        <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Experiment Configs</h2>
-            <span className="text-xs text-slate-500">{configs.length} configs</span>
-          </div>
-          {configs.length === 0 ? (
-            <p className="text-sm text-slate-500">No experiment configs found.</p>
-          ) : (
-            <div className="overflow-auto">
-              <table className="min-w-full text-sm">
-                <thead className="text-xs uppercase text-slate-500 border-b border-slate-800">
-                  <tr>
-                    <th className="text-left py-2 pr-4">Path</th>
-                    <th className="text-left py-2 pr-4">Name</th>
-                    <th className="text-left py-2 pr-4">Description</th>
-                    <th className="text-left py-2 pr-4">Sweep</th>
-                    <th className="text-left py-2">Tags</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {configs.map((config) => (
-                    <tr key={config.id} className="border-b border-slate-900">
-                      <td className="py-2 pr-4 text-slate-300">{config.path}</td>
-                      <td className="py-2 pr-4 text-slate-200">{config.name}</td>
-                      <td className="py-2 pr-4 text-slate-500">{config.description || '-'}</td>
-                      <td className="py-2 pr-4 text-slate-500">{config.sweepParameter || '-'}</td>
-                      <td className="py-2 text-slate-500">{config.tags.join(', ') || '-'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {executiveOverview && (
+            <div className="markdown-surface mt-7 rounded-2xl border border-[#eadfcd] bg-[#fffaf2] p-5 sm:p-7">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{executiveOverview}</ReactMarkdown>
             </div>
           )}
         </section>
 
-        <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Results Archive</h2>
-            <span className="text-xs text-slate-500">{results.length} result sets</span>
+        <section id="summaries" className="mt-12 space-y-6">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <h2 className="font-serif-display text-2xl text-[#1f1b14] sm:text-3xl">Plain-English Summaries</h2>
+            <p className="text-sm text-[#607284]">Primary reading path: {sections.length} summaries</p>
           </div>
-          {results.length === 0 ? (
-            <p className="text-sm text-slate-500">No results found in ./results.</p>
-          ) : (
-            <div className="overflow-auto">
-              <table className="min-w-full text-sm">
-                <thead className="text-xs uppercase text-slate-500 border-b border-slate-800">
-                  <tr>
-                    <th className="text-left py-2 pr-4">Result</th>
-                    <th className="text-left py-2 pr-4">State</th>
-                    <th className="text-left py-2 pr-4">Progress</th>
-                    <th className="text-left py-2 pr-4">Last Update</th>
-                    <th className="text-left py-2">Reports</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {results.map((result) => (
-                    <tr key={result.id} className="border-b border-slate-900">
-                      <td className="py-2 pr-4 text-slate-200">
-                        {result.path.includes('/') ? (
-                          <span>{result.path}</span>
-                        ) : (
-                          <Link href={`/results/${result.name}`} className="text-blue-400 hover:text-blue-300">
-                            {result.path}
-                          </Link>
-                        )}
-                      </td>
-                      <td className="py-2 pr-4 text-slate-400">{result.state}</td>
-                      <td className="py-2 pr-4 text-slate-400">
-                        {result.progress !== null
-                          ? `${result.progress.toFixed(1)}% (${result.completedRuns ?? 0}/${result.totalRuns ?? 0})`
-                          : '-'}
-                      </td>
-                      <td className="py-2 pr-4 text-slate-500">{result.lastUpdate ?? '-'}</td>
-                      <td className="py-2 text-slate-500">
-                        {result.hasReport ? 'report.md' : '-'}
-                        {result.hasQualityReport ? `${result.hasReport ? ', ' : ''}research-quality-report.md` : ''}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+
+          <div className="grid gap-5">
+            {sections.map((section, index) => (
+              <article
+                key={section.id}
+                className="animate-rise rounded-3xl border border-[#d9ccb9] bg-white/92 p-6 shadow-[0_14px_34px_rgba(38,33,25,0.08)] sm:p-8"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-[#8b6a3e]">
+                  {section.id.toUpperCase()} Summary
+                </p>
+                <h3 className="mt-2 max-w-3xl text-2xl font-semibold leading-tight text-[#1f2934] sm:text-[1.95rem]">{section.title}</h3>
+                <p className="mt-4 max-w-3xl text-[1.04rem] font-medium leading-relaxed text-[#2b5064] sm:text-[1.1rem]">{section.question}</p>
+                <p className="mt-2 max-w-3xl text-[1.02rem] leading-relaxed text-[#495d70] sm:text-[1.08rem]">{section.whyItMatters}</p>
+
+                <div className="mt-5 flex flex-wrap gap-2.5">
+                  <a className="hub-link" href={artifactHref(section.filePath)}>Open Markdown File</a>
+                  {section.hasRelatedPaper && <a className="hub-link" href={artifactHref(section.relatedPaperPath)}>Open Related Paper PDF</a>}
+                  <a className="hub-link" href={JAMES_SITE_URL} target="_blank" rel="noreferrer">Connect via JamesBPollack.com</a>
+                  <span className="rounded-full border border-[#dbcdb8] bg-[#faf4e8] px-3 py-1 text-xs font-semibold uppercase tracking-[0.11em] text-[#7c6341]">
+                    {section.words} words
+                  </span>
+                </div>
+
+                <div className="markdown-surface mt-6 rounded-2xl border border-[#eadfcd] bg-[#fffbf5] p-5 sm:p-7">
+                  {section.markdown ? (
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{section.markdown}</ReactMarkdown>
+                  ) : (
+                    <p>Summary file not found at `{section.filePath}`.</p>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
         </section>
 
-        <footer className="text-xs text-slate-600">
-          Workspace: {ROOT_DIR}
+        <section className="mt-12 rounded-3xl border border-[#d9ccb8] bg-white/88 p-7 sm:p-9">
+          <h2 className="font-serif-display text-2xl text-[#1f1b14] sm:text-3xl">Why This Work Is Important</h2>
+          <ul className="mt-4 max-w-3xl space-y-3 text-[1.03rem] leading-relaxed text-[#435567] sm:text-[1.08rem]">
+            <li>It turns governance from opinion-driven debate into evidence-informed decision design.</li>
+            <li>It helps teams balance participation, speed, fairness, and resilience instead of optimizing one metric in isolation.</li>
+            <li>It creates a practical bridge between policy choices and measurable operational outcomes.</li>
+          </ul>
+          <p className="mt-4 max-w-3xl text-[1.03rem] leading-relaxed text-[#435567] sm:text-[1.08rem]">
+            More writing and applied governance work is available at{' '}
+            <a href={JAMES_SITE_URL} target="_blank" rel="noreferrer" className="text-[#1f7a8c] underline decoration-[#1f7a8c]/40 underline-offset-4 hover:text-[#165f6d]">
+              jamesbpollack.com
+            </a>
+            .
+          </p>
+        </section>
+
+        <section className="mt-12">
+          <details className="rounded-3xl border border-[#d8ccb9] bg-[#fcf7ee] p-6 sm:p-7">
+            <summary className="cursor-pointer select-none font-serif-display text-xl text-[#1f1b14] sm:text-2xl">
+              Technical Appendix (Optional)
+            </summary>
+            <p className="mt-3 text-sm text-[#5f7080]">Use this only when you want full technical artifacts and source materials.</p>
+
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+              {paperCards.map((paper) => (
+                <article key={paper.id} className="rounded-2xl border border-[#dfd3c1] bg-white p-4">
+                  <h3 className="text-lg font-semibold text-[#1f2b38]">{paper.label}</h3>
+                  <p className="mt-1 text-sm text-[#5e6e7d]">{paper.description}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {paper.currentPdf && <a className="hub-link" href={artifactHref(paper.currentPdf)}>Current PDF</a>}
+                    {paper.currentTex && <a className="hub-link" href={artifactHref(paper.currentTex)}>Current TeX</a>}
+                    {paper.latestArchive && <a className="hub-link" href={artifactHref(paper.latestArchive)}>Latest Archived PDF</a>}
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            {latestBundle && (
+              <div className="mt-5 rounded-2xl border border-[#dfd3c1] bg-white p-4">
+                <p className="text-sm text-[#5c6c7c]">
+                  Latest consolidated bundle: <span className="font-semibold text-[#263342]">{latestBundle}</span>
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <a className="hub-link" href={artifactHref(`archive/${latestBundle}/INDEX.md`)}>Bundle Index</a>
+                  <a className="hub-link" href={artifactHref(`archive/${latestBundle}/pdf/full.pdf`)}>Full PDF</a>
+                  <a className="hub-link" href={artifactHref(`archive/${latestBundle}/pdf/p1.pdf`)}>P1 PDF</a>
+                  <a className="hub-link" href={artifactHref(`archive/${latestBundle}/pdf/p2.pdf`)}>P2 PDF</a>
+                  <a className="hub-link" href={artifactHref(`archive/${latestBundle}/pdf/llm.pdf`)}>LLM PDF</a>
+                </div>
+              </div>
+            )}
+          </details>
+        </section>
+
+        <footer className="mt-14 border-t border-[#d8ccb8] pt-7 text-sm leading-relaxed text-[#5f7387]">
+          <p>
+            DAO Research Atlas by{' '}
+            <a href={JAMES_SITE_URL} target="_blank" rel="noreferrer" className="text-[#1f7a8c] underline decoration-[#1f7a8c]/40 underline-offset-4 hover:text-[#165f6d]">
+              James B. Pollack
+            </a>
+            .
+          </p>
+          <p className="mt-1">Operational tools remain available in the in-repo <Link className="underline underline-offset-4" href="/console">console</Link>.</p>
         </footer>
       </div>
     </div>
