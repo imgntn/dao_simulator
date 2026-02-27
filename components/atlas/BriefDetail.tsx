@@ -104,20 +104,20 @@ export function BriefDetail({
       </div>
 
       {curated.keyTerms && curated.keyTerms.length > 0 && (
-        <details className="mt-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-highlight)] p-4">
+        <details open className="mt-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-highlight)] p-4">
           <summary className="cursor-pointer select-none text-xs font-semibold uppercase tracking-[0.12em] text-[#3d5568]">
             {m.atlas?.keyTerms ?? 'Key Terms'}
           </summary>
-          <dl className="mt-3 grid gap-2 sm:grid-cols-2">
+          <dl className="mt-3 grid gap-x-3 gap-y-2 sm:grid-cols-2 xl:grid-cols-3">
             {curated.keyTerms.map((entry) => (
               <div
                 key={`${id}-term-${entry.term}`}
-                className="rounded-xl border border-[var(--border-subtle)] bg-white px-3 py-2"
+                className="rounded-lg border border-[var(--border-subtle)] bg-white px-3 py-2"
               >
-                <dt className="text-sm font-semibold text-[var(--text-heading)]">
+                <dt className="text-[0.8rem] font-semibold text-[var(--text-heading)]">
                   {entry.term}
                 </dt>
-                <dd className="mt-1 text-sm leading-relaxed text-[var(--text-body-secondary)]">
+                <dd className="mt-0.5 text-[0.8rem] leading-snug text-[var(--text-body-secondary)]">
                   {entry.definition}
                 </dd>
               </div>
