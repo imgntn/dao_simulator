@@ -3,7 +3,8 @@ import path from 'path';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PageShell } from '@/components/layout/PageShell';
-import { messages as m } from '@/lib/i18n';
+import { getMessages, isValidLocale, defaultLocale } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
 const ROOT_DIR = process.cwd();
 const RESULTS_DIR = path.join(ROOT_DIR, 'results');
@@ -44,16 +45,21 @@ export default async function ResultPage({
   params,
   searchParams,
 }: {
-  params: { name: string };
-  searchParams?: Record<string, string | string[] | undefined>;
+  params: Promise<{ locale: string; name: string }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const resultDir = path.join(RESULTS_DIR, params.name);
+  const { locale: rawLocale, name } = await params;
+  const locale: Locale = isValidLocale(rawLocale) ? rawLocale : defaultLocale;
+  const m = getMessages(locale);
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+
+  const resultDir = path.join(RESULTS_DIR, name);
   if (!fs.existsSync(resultDir)) {
     notFound();
   }
 
   const files = listResultFiles(resultDir);
-  const requestedFile = getParam(searchParams?.file);
+  const requestedFile = getParam(resolvedSearchParams?.file);
   const safeFile = requestedFile ? path.basename(requestedFile) : '';
   const fileExists = safeFile && files.includes(safeFile);
   const selectedFile = fileExists ? safeFile : '';
@@ -92,18 +98,18 @@ export default async function ResultPage({
   }
 
   return (
-    <PageShell variant="console">
+    <PageShell variant="console" locale={locale}>
       <header className="space-y-2">
         <div className="flex flex-wrap gap-3 text-sm">
-          <Link href="/" className="text-[var(--accent-gold)] hover:text-[var(--accent-teal)]">
+          <Link href={`/${locale}`} className="text-[var(--accent-gold)] hover:text-[var(--accent-teal)]">
             {m.results?.backToAtlas ?? 'Back to atlas'}
           </Link>
-          <Link href="/console" className="text-[var(--accent-teal)] hover:text-[var(--accent-teal-hover)]">
+          <Link href={`/${locale}/console`} className="text-[var(--accent-teal)] hover:text-[var(--accent-teal-hover)]">
             {m.results?.backToConsole ?? 'Back to console'}
           </Link>
         </div>
         <h1 className="text-3xl font-semibold text-[var(--text-heading)]">
-          {m.results?.heading ?? 'Results'}: {params.name}
+          {m.results?.heading ?? 'Results'}: {name}
         </h1>
       </header>
 
@@ -140,7 +146,7 @@ export default async function ResultPage({
             {files.map((file) => (
               <Link
                 key={file}
-                href={`/results/${params.name}?file=${encodeURIComponent(file)}`}
+                href={`/${locale}/results/${name}?file=${encodeURIComponent(file)}`}
                 className={`px-3 py-1.5 rounded-md text-xs border ${
                   selectedFile === file
                     ? 'border-[var(--accent-teal)] text-[var(--accent-teal)] bg-[var(--surface-highlight)]'

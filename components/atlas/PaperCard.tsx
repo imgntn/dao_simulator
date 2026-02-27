@@ -1,5 +1,6 @@
 import { artifactHref } from '@/lib/atlas/parsers';
-import { messages as m } from '@/lib/i18n';
+import { getMessages } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
 interface PaperCardProps {
   label: string;
@@ -7,9 +8,12 @@ interface PaperCardProps {
   currentPdf: string | null;
   currentTex: string | null;
   latestArchive: string | null;
+  locale: Locale;
 }
 
-export function PaperCard({ label, description, currentPdf, currentTex, latestArchive }: PaperCardProps) {
+export function PaperCard({ label, description, currentPdf, currentTex, latestArchive, locale }: PaperCardProps) {
+  const m = getMessages(locale);
+
   return (
     <article className="rounded-2xl border border-[var(--border-default)] bg-white p-4">
       <h3 className="text-lg font-semibold text-[var(--text-heading)]">{label}</h3>

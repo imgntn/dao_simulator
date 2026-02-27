@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { CuratedBriefCopy } from '@/lib/atlas/content';
-import { messages as m } from '@/lib/i18n';
+import { getMessages } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
 interface BriefDetailProps {
   id: string;
@@ -11,6 +12,7 @@ interface BriefDetailProps {
   curated: CuratedBriefCopy;
   index: number;
   infographic?: ReactNode;
+  locale: Locale;
 }
 
 export function BriefDetail({
@@ -22,7 +24,9 @@ export function BriefDetail({
   curated,
   index,
   infographic,
+  locale,
 }: BriefDetailProps) {
+  const m = getMessages(locale);
   return (
     <article
       id={id}

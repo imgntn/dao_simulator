@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { messages as m } from '@/lib/i18n';
+import { useLocale } from '@/lib/i18n/locale-context';
 
 interface ErrorPageProps {
   error: Error & { digest?: string };
@@ -10,6 +10,8 @@ interface ErrorPageProps {
 }
 
 export default function Error({ error, reset }: ErrorPageProps) {
+  const { locale, messages: m } = useLocale();
+
   useEffect(() => {
     console.error('Application error:', error);
   }, [error]);
@@ -57,7 +59,7 @@ export default function Error({ error, reset }: ErrorPageProps) {
             {m.errors.tryAgain}
           </button>
           <Link
-            href="/"
+            href={`/${locale}`}
             className="px-6 py-3 bg-[var(--surface-warm)] hover:bg-[var(--border-subtle)] text-[var(--text-heading)] font-medium rounded-lg border border-[var(--border-default)] transition-colors"
           >
             {m.errors.goHome}

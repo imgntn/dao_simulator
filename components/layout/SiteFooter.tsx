@@ -1,7 +1,10 @@
 import { JAMES_SITE_URL } from '@/lib/atlas/content';
-import { messages as m } from '@/lib/i18n';
+import { getMessages } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
-export function SiteFooter() {
+export function SiteFooter({ locale }: { locale: Locale }) {
+  const m = getMessages(locale);
+
   return (
     <footer
       role="contentinfo"

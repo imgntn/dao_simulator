@@ -1,7 +1,11 @@
+'use client';
+
 import Link from 'next/link';
-import { messages as m } from '@/lib/i18n';
+import { useLocale } from '@/lib/i18n/locale-context';
 
 export default function NotFound() {
+  const { locale, messages: m } = useLocale();
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--surface-page)] px-4">
       <div className="max-w-md w-full text-center">
@@ -30,7 +34,7 @@ export default function NotFound() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href="/"
+            href={`/${locale}`}
             className="px-6 py-3 bg-[var(--accent-teal)] hover:bg-[var(--accent-teal-hover)] text-white font-medium rounded-lg transition-colors"
           >
             {m.errors.goHome}

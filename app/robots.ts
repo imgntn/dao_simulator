@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/api/', '/console'],
+      disallow: ['/api/', '/en/console', '/es/console', '/zh/console', '/ja/console'],
     },
     sitemap: 'https://dao-research-atlas.vercel.app/sitemap.xml',
   };

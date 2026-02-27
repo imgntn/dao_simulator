@@ -1,3 +1,4 @@
+import type { Locale } from '@/lib/i18n';
 import { SiteHeader } from './SiteHeader';
 import { SiteFooter } from './SiteFooter';
 import { BackToTop } from '../ui/BackToTop';
@@ -5,9 +6,10 @@ import { BackToTop } from '../ui/BackToTop';
 interface PageShellProps {
   children: React.ReactNode;
   variant?: 'atlas' | 'console';
+  locale: Locale;
 }
 
-export function PageShell({ children, variant = 'atlas' }: PageShellProps) {
+export function PageShell({ children, variant = 'atlas', locale }: PageShellProps) {
   const isConsole = variant === 'console';
 
   return (
@@ -23,7 +25,7 @@ export function PageShell({ children, variant = 'atlas' }: PageShellProps) {
         <SiteHeader />
         <div className="mx-auto w-full max-w-6xl px-4 pb-24 pt-8 sm:px-6 lg:px-8 lg:pt-12">
           {children}
-          <SiteFooter />
+          <SiteFooter locale={locale} />
         </div>
         <BackToTop />
       </div>

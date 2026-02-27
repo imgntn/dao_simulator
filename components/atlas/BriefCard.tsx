@@ -1,5 +1,6 @@
 import type { CuratedBriefCopy } from '@/lib/atlas/content';
-import { messages as m } from '@/lib/i18n';
+import { getMessages } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
 interface BriefCardProps {
   id: string;
@@ -8,9 +9,11 @@ interface BriefCardProps {
   question: string;
   curated: CuratedBriefCopy;
   index: number;
+  locale: Locale;
 }
 
-export function BriefCard({ id, label, title, question, curated, index }: BriefCardProps) {
+export function BriefCard({ id, label, title, question, curated, index, locale }: BriefCardProps) {
+  const m = getMessages(locale);
   return (
     <article
       className="animate-rise rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-5 shadow-[var(--shadow-card)]"

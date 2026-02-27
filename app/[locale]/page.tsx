@@ -15,7 +15,8 @@ import {
   parseBriefMarkdown,
   sectionLabel,
 } from '@/lib/atlas/parsers';
-import { messages as m } from '@/lib/i18n';
+import { getMessages, isValidLocale, defaultLocale } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 import { PageShell } from '@/components/layout/PageShell';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { InfoCard } from '@/components/ui/InfoCard';
@@ -30,7 +31,10 @@ import { TreasuryVolatilityChart } from '@/components/atlas/infographics/Treasur
 import { CooperationChart } from '@/components/atlas/infographics/CooperationChart';
 import { LLMComparisonChart } from '@/components/atlas/infographics/LLMComparisonChart';
 
-export default function Home() {
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale: rawLocale } = await params;
+  const locale: Locale = isValidLocale(rawLocale) ? rawLocale : defaultLocale;
+  const m = getMessages(locale);
   // ---------------------------------------------------------------------------
   // Data preparation
   // ---------------------------------------------------------------------------
@@ -100,11 +104,11 @@ export default function Home() {
   // Render
   // ---------------------------------------------------------------------------
   return (
-    <PageShell>
+    <PageShell locale={locale}>
       {/* JSON-LD structured data */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: generateResearchProjectJsonLd() }}
+        dangerouslySetInnerHTML={{ __html: generateResearchProjectJsonLd(locale) }}
       />
 
       {/* ── Hero ── */}
@@ -191,6 +195,7 @@ export default function Home() {
               curated={section.curated}
               index={index}
               infographic={infographics[section.id]}
+              locale={locale}
             />
           ))}
         </div>
@@ -213,6 +218,7 @@ export default function Home() {
               currentPdf={paper.currentPdf}
               currentTex={paper.currentTex}
               latestArchive={paper.latestArchive}
+              locale={locale}
             />
           ))}
         </div>

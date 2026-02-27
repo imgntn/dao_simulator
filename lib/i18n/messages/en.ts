@@ -9,7 +9,7 @@
  *   → "Step 1 of 5"
  */
 
-import type { Messages } from './types';
+import type { Messages } from '../types';
 
 export const messages: Messages = {
   // ═══════════════════════════════════════════════════════════════════════════

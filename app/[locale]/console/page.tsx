@@ -3,7 +3,8 @@ import path from 'path';
 import yaml from 'yaml';
 import Link from 'next/link';
 import { PageShell } from '@/components/layout/PageShell';
-import { messages as m } from '@/lib/i18n';
+import { getMessages, isValidLocale, defaultLocale } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -180,11 +181,16 @@ function getParam(value: string | string[] | undefined): string {
   return Array.isArray(value) ? value[0] ?? '' : value;
 }
 
-export default function ConsolePage({
+export default async function ConsolePage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ locale: string }>;
   searchParams?: Record<string, string | string[] | undefined>;
 }) {
+  const { locale: rawLocale } = await params;
+  const locale: Locale = isValidLocale(rawLocale) ? rawLocale : defaultLocale;
+  const m = getMessages(locale);
   const configs = listExperimentConfigs();
   const results = listResults();
   const action = getParam(searchParams?.action);
@@ -192,7 +198,7 @@ export default function ConsolePage({
   const log = getParam(searchParams?.log);
 
   return (
-    <PageShell variant="console">
+    <PageShell variant="console" locale={locale}>
       <header className="space-y-3">
         <p className="text-sm uppercase tracking-[0.3em] text-[var(--text-faint)]">
           {m.console?.subtitle ?? 'DAO Research Console'}
@@ -443,7 +449,7 @@ export default function ConsolePage({
                       {result.path.includes('/') ? (
                         <span>{result.path}</span>
                       ) : (
-                        <Link href={`/results/${result.name}`} className="text-[var(--accent-teal)] hover:text-[var(--accent-teal-hover)]">
+                        <Link href={`/${locale}/results/${result.name}`} className="text-[var(--accent-teal)] hover:text-[var(--accent-teal-hover)]">
                           {result.path}
                         </Link>
                       )}

@@ -1,6 +1,10 @@
-import { messages as m } from '@/lib/i18n';
+'use client';
+
+import { useLocale } from '@/lib/i18n/locale-context';
 
 export default function Loading() {
+  const { messages: m } = useLocale();
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--surface-page)]">
       <div className="text-center">

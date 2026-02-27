@@ -1,46 +1,45 @@
 /**
  * Internationalization (i18n) Module
  *
- * Provides centralized access to all UI strings with type-safe access
- * and format string support.
+ * Provides centralized access to all UI strings with type-safe access,
+ * format string support, and multi-locale routing.
  *
  * @example
- * // Basic usage
- * import { messages as m } from '@/lib/i18n';
- * <button>{m.controls.start}</button>
+ * // Server component: load messages for a specific locale
+ * import { getMessages } from '@/lib/i18n';
+ * const m = getMessages(params.locale as Locale);
+ *
+ * @example
+ * // Client component: use locale context
+ * import { useLocale } from '@/lib/i18n/locale-context';
+ * const { locale, messages: m } = useLocale();
  *
  * @example
  * // With format strings
- * import { messages as m, format } from '@/lib/i18n';
- * <p>{format(m.tutorial.stepOf, { current: 1, total: 5 })}</p>
+ * import { format, getMessages } from '@/lib/i18n';
+ * const m = getMessages('en');
+ * format(m.tutorial.stepOf, { current: 1, total: 5 })
  * // → "Step 1 of 5"
  */
 
-import { messages } from './messages';
+import { messages as enMessages } from './messages/en';
 import type { Messages, FormatParams } from './types';
 
-export { messages };
+// Re-export locale infrastructure
+export type { Locale } from './config';
+export { locales, defaultLocale, isValidLocale, intlLocaleMap, ogLocaleMap } from './config';
+export { getMessages } from './get-messages';
 export type { Messages, FormatParams };
+
+/**
+ * Default (English) messages — backward-compatible export.
+ * Prefer getMessages(locale) in locale-aware code paths.
+ */
+export const messages = enMessages;
 
 /**
  * Format a string with variable substitution.
  * Replaces {key} placeholders with values from the params object.
- *
- * @param template - The template string with {key} placeholders
- * @param params - Object with key-value pairs for substitution
- * @returns The formatted string
- *
- * @example
- * format('Step {current} of {total}', { current: 1, total: 5 })
- * // → 'Step 1 of 5'
- *
- * @example
- * format('{count} members', { count: 42 })
- * // → '42 members'
- *
- * @example
- * format('Price: ${price}', { price: '1.25' })
- * // → 'Price: $1.25'
  */
 export function format(template: string, params: FormatParams): string {
   return template.replace(
@@ -53,17 +52,10 @@ export function format(template: string, params: FormatParams): string {
 }
 
 /**
- * Helper to get a nested message path (for dynamic lookups)
- *
- * @param path - Array of keys to traverse
- * @returns The message string or the path joined by dots if not found
- *
- * @example
- * getMessage(['reports', 'stepsCompleted'])
- * // → '{count} steps completed'
+ * Helper to get a nested message path (for dynamic lookups).
  */
 export function getMessage(path: string[]): string {
-  let current: unknown = messages;
+  let current: unknown = enMessages;
   for (const key of path) {
     if (current && typeof current === 'object' && key in current) {
       current = (current as Record<string, unknown>)[key];
@@ -77,14 +69,6 @@ export function getMessage(path: string[]): string {
 
 /**
  * Create a regex pattern from a message string for use in tests.
- * Escapes special regex characters and adds case-insensitive flag.
- *
- * @param message - The message string to convert to regex
- * @returns A case-insensitive regex pattern
- *
- * @example
- * toRegex(m.controls.start)
- * // → /Start \(Space\)/i
  */
 export function toRegex(message: string): RegExp {
   const escaped = message.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -93,14 +77,6 @@ export function toRegex(message: string): RegExp {
 
 /**
  * Create a regex that matches a format string with any values.
- * Replaces {key} placeholders with flexible patterns.
- *
- * @param template - The format string template
- * @returns A regex that matches the template with any values
- *
- * @example
- * toFormatRegex('Step {current} of {total}')
- * // → /Step \S+ of \S+/i (matches "Step 1 of 5", "Step 10 of 100", etc.)
  */
 export function toFormatRegex(template: string): RegExp {
   const escaped = template
@@ -112,15 +88,15 @@ export function toFormatRegex(template: string): RegExp {
 /**
  * Format a number using locale-aware formatting.
  */
-export function formatNumber(value: number, options?: Intl.NumberFormatOptions): string {
-  return new Intl.NumberFormat('en-US', options).format(value);
+export function formatNumber(value: number, options?: Intl.NumberFormatOptions, locale = 'en-US'): string {
+  return new Intl.NumberFormat(locale, options).format(value);
 }
 
 /**
  * Format a value as a locale-aware percentage.
  */
-export function formatPercent(value: number): string {
-  return new Intl.NumberFormat('en-US', {
+export function formatPercent(value: number, locale = 'en-US'): string {
+  return new Intl.NumberFormat(locale, {
     style: 'percent',
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
@@ -131,30 +107,11 @@ export function formatPercent(value: number): string {
  * Type-safe message access with utilities
  */
 export const t = {
-  /**
-   * Get raw messages object
-   */
-  raw: messages,
-
-  /**
-   * Format a message with params
-   */
+  raw: enMessages,
   format,
-
-  /**
-   * Get a nested message by path
-   */
   get: getMessage,
-
-  /**
-   * Convert message to regex for testing
-   */
   toRegex,
-
-  /**
-   * Convert format string to regex for testing
-   */
   toFormatRegex,
 };
 
-export default messages;
+export default enMessages;
