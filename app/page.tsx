@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import {
   DECISION_BRIEF_SECTIONS,
   CURATED_BRIEF_COPY,
@@ -22,6 +23,12 @@ import { TableOfContents } from '@/components/atlas/TableOfContents';
 import { BriefDetail } from '@/components/atlas/BriefDetail';
 import { PaperCard } from '@/components/atlas/PaperCard';
 import { generateResearchProjectJsonLd } from '@/lib/atlas/structured-data';
+import { QuorumReachChart } from '@/components/atlas/infographics/QuorumReachChart';
+import { WhaleInfluenceChart } from '@/components/atlas/infographics/WhaleInfluenceChart';
+import { PipelineFlowChart } from '@/components/atlas/infographics/PipelineFlowChart';
+import { TreasuryVolatilityChart } from '@/components/atlas/infographics/TreasuryVolatilityChart';
+import { CooperationChart } from '@/components/atlas/infographics/CooperationChart';
+import { LLMComparisonChart } from '@/components/atlas/infographics/LLMComparisonChart';
 
 export default function Home() {
   // ---------------------------------------------------------------------------
@@ -79,6 +86,15 @@ export default function Home() {
     label: sectionLabel(s.id),
     title: s.title,
   }));
+
+  const infographics: Record<string, ReactNode> = {
+    rq1: <QuorumReachChart />,
+    rq2: <WhaleInfluenceChart />,
+    rq3: <PipelineFlowChart />,
+    rq4: <TreasuryVolatilityChart />,
+    rq5: <CooperationChart />,
+    rq6: <LLMComparisonChart />,
+  };
 
   // ---------------------------------------------------------------------------
   // Render
@@ -174,6 +190,7 @@ export default function Home() {
               whyItMatters={section.whyItMatters}
               curated={section.curated}
               index={index}
+              infographic={infographics[section.id]}
             />
           ))}
         </div>

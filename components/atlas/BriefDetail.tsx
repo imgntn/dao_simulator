@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { CuratedBriefCopy } from '@/lib/atlas/content';
 import { messages as m } from '@/lib/i18n';
 
@@ -9,6 +10,7 @@ interface BriefDetailProps {
   whyItMatters: string;
   curated: CuratedBriefCopy;
   index: number;
+  infographic?: ReactNode;
 }
 
 export function BriefDetail({
@@ -19,6 +21,7 @@ export function BriefDetail({
   whyItMatters,
   curated,
   index,
+  infographic,
 }: BriefDetailProps) {
   return (
     <article
@@ -59,6 +62,11 @@ export function BriefDetail({
           <p className="text-xs font-semibold uppercase tracking-[0.13em] text-[#7b5f3d]">
             {m.atlas?.whatWeFound ?? 'What Results Showed'}
           </p>
+          {infographic && (
+            <div className="mt-3 rounded-xl border border-[var(--border-subtle)] bg-white px-3 py-3">
+              {infographic}
+            </div>
+          )}
           {curated.whatWeFound.length > 0 ? (
             <ul className="mt-3 space-y-2 text-sm leading-relaxed text-[var(--text-body-secondary)]">
               {curated.whatWeFound.map((takeaway, takeawayIndex) => (
