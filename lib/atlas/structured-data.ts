@@ -8,7 +8,7 @@ import { intlLocaleMap } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 
 export function generateResearchProjectJsonLd(locale: Locale = 'en'): string {
-  const baseUrl = 'https://dao-research-atlas.vercel.app';
+  const baseUrl = 'https://daosimulator.com';
 
   const data = {
     '@context': 'https://schema.org',

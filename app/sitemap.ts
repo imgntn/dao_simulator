@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next';
 const locales = ['en', 'es', 'zh', 'ja'] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://dao-research-atlas.vercel.app';
+  const baseUrl = 'https://daosimulator.com';
 
   const pages = ['', '/console'];
 

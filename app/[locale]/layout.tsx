@@ -23,7 +23,7 @@ const sourceSerif = Source_Serif_4({
   weight: ['400', '600', '700'],
 });
 
-const BASE_URL = 'https://dao-research-atlas.vercel.app';
+const BASE_URL = 'https://daosimulator.com';
 
 export async function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
