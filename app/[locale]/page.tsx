@@ -154,6 +154,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <a href="#podcast" className="rounded-full border border-[var(--border-default)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             {m.atlas?.podcastListen ?? 'Podcast'}
           </a>
+          <a href="#digital-twins" className="rounded-full border border-[var(--border-default)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+            Digital Twins
+          </a>
           <a href="#why" className="rounded-full border border-[var(--border-default)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             Why This Matters
           </a>
@@ -210,6 +213,62 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 </svg>
                 {m.atlas?.podcastSpotify ?? 'Spotify'}
               </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Digital Twins ── */}
+      <section id="digital-twins" aria-labelledby="digital-twins-heading" className="mt-10 rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-7 sm:p-9">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
+          {/* Icon */}
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[var(--surface-warm-deep)]">
+            <svg className="h-8 w-8 text-[var(--accent-teal)]" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+            </svg>
+          </div>
+
+          <div className="flex-1">
+            <h2 id="digital-twins-heading" className="font-serif-display text-2xl text-[var(--text-heading)] sm:text-3xl">
+              {m.atlas?.digitalTwinsHeading ?? 'Digital Twins: 14 Real DAOs, Simulated'}
+            </h2>
+            <p className="mt-3 max-w-3xl text-[1.05rem] leading-relaxed text-[var(--text-body)] sm:text-[1.12rem]">
+              {m.atlas?.digitalTwinsDesc ?? 'Every simulation is grounded in reality. We built digital twins of 14 major DAOs \u2014 each one calibrated against real on-chain governance data, Snapshot votes, forum activity, and token prices.'}
+            </p>
+
+            <div className="mt-5 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-xl border border-[var(--border-subtle)] bg-white p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--accent-teal)]">What</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-[var(--text-body-secondary)]">
+                  {m.atlas?.digitalTwinsWhat ?? 'Each twin captures a DAO\u2019s actual governance stack: quorum thresholds, voting periods, proposal pipelines, treasury mechanics, and member archetypes.'}
+                </p>
+              </div>
+              <div className="rounded-xl border border-[var(--border-subtle)] bg-white p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--accent-gold)]">How</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-[var(--text-body-secondary)]">
+                  {m.atlas?.digitalTwinsHow ?? 'Historical calibration profiles compiled from on-chain data drive agent behavior, proposal frequency, participation rates, and pass rates. Calibration scores average 0.85 across all 14 DAOs.'}
+                </p>
+              </div>
+              <div className="rounded-xl border border-[var(--border-subtle)] bg-white p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-heading)]">Why</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-[var(--text-body-secondary)]">
+                  {m.atlas?.digitalTwinsWhy ?? 'Digital twins let researchers test counterfactual governance changes without risking real treasuries.'}
+                </p>
+              </div>
+            </div>
+
+            {/* DAO logos / names grid */}
+            <div className="mt-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm-deep)] p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+                {m.atlas?.digitalTwinsCategories ?? 'DeFi, Layer 2, Public Goods, Staking, Lending, Identity, Stablecoin, DEX'}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {(m.atlas?.digitalTwinsDaos ?? 'Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, SushiSwap').split(', ').map((dao) => (
+                  <span key={dao} className="inline-block rounded-lg border border-[var(--border-default)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-heading)]">
+                    {dao}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>

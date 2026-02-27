@@ -671,6 +671,13 @@ export const messages: Messages = {
     podcastApple: 'Apple Podcasts',
     podcastSpotify: 'Spotify',
     podcastEpisode: 'Green Pill #123: AI DAO Simulator',
+    digitalTwinsHeading: 'Digital Twins: 14 Real DAOs, Simulated',
+    digitalTwinsDesc: 'Every simulation is grounded in reality. We built digital twins of 14 major DAOs \u2014 each one calibrated against real on-chain governance data, Snapshot votes, forum activity, and token prices.',
+    digitalTwinsWhat: 'Each twin captures a DAO\u2019s actual governance stack: quorum thresholds, voting periods, proposal pipelines, treasury mechanics, and member archetypes \u2014 from delegates and token holders to security councils.',
+    digitalTwinsHow: 'Historical calibration profiles compiled from on-chain data drive agent behavior, proposal frequency, participation rates, and pass rates. Calibration scores average 0.85 across all 14 DAOs.',
+    digitalTwinsWhy: 'Digital twins let researchers test counterfactual governance changes \u2014 \u201Cwhat if Uniswap lowered its quorum?\u201D or \u201Cwhat if Optimism added futarchy?\u201D \u2014 without risking real treasuries.',
+    digitalTwinsDaos: 'Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, SushiSwap',
+    digitalTwinsCategories: 'DeFi, Layer 2, Public Goods, Staking, Lending, Identity, Stablecoin, DEX',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════

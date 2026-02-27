@@ -652,6 +652,13 @@ export const messages: Messages = {
     podcastApple: 'Apple Podcasts',
     podcastSpotify: 'Spotify',
     podcastEpisode: 'Green Pill #123: AI DAO Simulator',
+    digitalTwinsHeading: 'Gemelos Digitales: 14 DAOs Reales, Simuladas',
+    digitalTwinsDesc: 'Cada simulaci\u00f3n est\u00e1 basada en la realidad. Construimos gemelos digitales de 14 DAOs importantes \u2014 cada uno calibrado con datos reales de gobernanza on-chain, votos de Snapshot, actividad en foros y precios de tokens.',
+    digitalTwinsWhat: 'Cada gemelo captura la pila de gobernanza real de una DAO: umbrales de qu\u00f3rum, per\u00edodos de votaci\u00f3n, flujos de propuestas, mec\u00e1nicas de tesorer\u00eda y arquetipos de miembros \u2014 desde delegados y poseedores de tokens hasta consejos de seguridad.',
+    digitalTwinsHow: 'Los perfiles de calibraci\u00f3n hist\u00f3rica compilados a partir de datos on-chain impulsan el comportamiento de los agentes, la frecuencia de propuestas, las tasas de participaci\u00f3n y las tasas de aprobaci\u00f3n. Las puntuaciones de calibraci\u00f3n promedian 0.85 en las 14 DAOs.',
+    digitalTwinsWhy: 'Los gemelos digitales permiten a los investigadores probar cambios contrafactuales de gobernanza \u2014 \u00abqu\u00e9 pasar\u00eda si Uniswap redujera su qu\u00f3rum?\u00bb o \u00abqu\u00e9 pasar\u00eda si Optimism agregara futarqu\u00eda?\u00bb \u2014 sin arriesgar tesorer\u00edas reales.',
+    digitalTwinsDaos: 'Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, SushiSwap',
+    digitalTwinsCategories: 'DeFi, Capa 2, Bienes P\u00fablicos, Staking, Pr\u00e9stamos, Identidad, Stablecoin, DEX',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════

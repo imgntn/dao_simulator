@@ -604,6 +604,13 @@ export interface Messages {
     podcastApple: string;
     podcastSpotify: string;
     podcastEpisode: string;
+    digitalTwinsHeading: string;
+    digitalTwinsDesc: string;
+    digitalTwinsWhat: string;
+    digitalTwinsHow: string;
+    digitalTwinsWhy: string;
+    digitalTwinsDaos: string;
+    digitalTwinsCategories: string;
   };
 
   // Console (experiment management)
