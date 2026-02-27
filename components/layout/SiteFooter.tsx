@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { JAMES_SITE_URL } from '@/lib/atlas/content';
 import { messages as m } from '@/lib/i18n';
 
@@ -6,7 +5,7 @@ export function SiteFooter() {
   return (
     <footer
       role="contentinfo"
-      className="mt-14 border-t border-[var(--border-default)] pt-7 text-sm leading-relaxed text-[var(--text-muted)]"
+      className="mt-14 border-t border-[var(--border-default)] pt-7 text-base leading-relaxed text-[var(--text-muted)]"
     >
       <p>
         {m.atlas?.footerAttribution ?? 'DAO Research Atlas by'}{' '}
@@ -18,13 +17,6 @@ export function SiteFooter() {
         >
           James B. Pollack
         </a>
-        .
-      </p>
-      <p className="mt-1">
-        {m.atlas?.footerConsole ?? 'Operational tools remain available in the in-repo'}{' '}
-        <Link className="underline underline-offset-4" href="/console">
-          {m.atlas?.consoleLink ?? 'console'}
-        </Link>
         .
       </p>
     </footer>

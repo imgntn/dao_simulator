@@ -9,7 +9,7 @@ export function InfoCard({ label, children }: InfoCardProps) {
       <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--accent-gold)]">
         {label}
       </p>
-      <div className="mt-2 text-sm leading-relaxed text-[var(--text-body-secondary)]">
+      <div className="mt-2 text-[0.95rem] leading-relaxed text-[var(--text-body-secondary)]">
         {children}
       </div>
     </div>

@@ -96,10 +96,10 @@ export default function Home() {
         <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--accent-gold)]">
           {m.atlas?.tagline ?? 'DAO Research, Made Actionable'}
         </p>
-        <h1 className="mt-3 max-w-4xl font-serif-display text-3xl leading-[1.08] text-[var(--text-heading)] sm:text-5xl">
+        <h1 className="mt-3 max-w-4xl font-serif-display text-4xl leading-[1.08] text-[var(--text-heading)] sm:text-6xl">
           {m.atlas?.heroTitle ?? 'DAO Research Atlas'}
         </h1>
-        <p className="mt-5 max-w-3xl text-[1.04rem] leading-relaxed text-[var(--text-body)] sm:text-[1.15rem]">
+        <p className="mt-5 max-w-3xl text-[1.12rem] leading-relaxed text-[var(--text-body)] sm:text-[1.25rem]">
           {m.atlas?.heroDescription ??
             'Actionable governance findings from 16,370 simulation runs across 21 experiment configurations. Start with any research question below.'}
         </p>
@@ -125,15 +125,34 @@ export default function Home() {
           </InfoCard>
         </div>
 
-        <div className="mt-7">
-          <a
-            href="#research"
-            className="rounded-full bg-[var(--accent-teal)] px-5 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-button)] transition hover:bg-[var(--accent-teal-hover)]"
-          >
-            {m.atlas?.heroCta ?? 'Explore Research'}
+        {/* Page table of contents */}
+        <nav aria-label="Page sections" className="mt-8 flex flex-wrap gap-2">
+          <a href="#why" className="rounded-full border border-[var(--border-default)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+            Why This Matters
           </a>
-        </div>
+          <a href="#research" className="rounded-full border border-[var(--border-default)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+            Research
+          </a>
+          <a href="#papers" className="rounded-full border border-[var(--border-default)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+            Papers
+          </a>
+          <a href="#advanced" className="rounded-full border border-[var(--border-default)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+            Advanced
+          </a>
+        </nav>
       </header>
+
+      {/* ── Why This Work Is Important ── */}
+      <section id="why" aria-labelledby="why-heading" className="mt-10 rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-7 sm:p-9">
+        <h2 id="why-heading" className="font-serif-display text-2xl text-[var(--text-heading)] sm:text-3xl">
+          {m.atlas?.methodologyHeading ?? 'Why This Work Is Important'}
+        </h2>
+        <ul className="mt-5 max-w-3xl space-y-4 text-[1.1rem] leading-relaxed text-[var(--text-body)] sm:text-[1.18rem]">
+          <li>It turns governance conversations from guesswork into testable choices.</li>
+          <li>It helps teams improve participation, execution speed, and trust at the same time.</li>
+          <li>It connects policy decisions to real outcomes leaders can track over time.</li>
+        </ul>
+      </section>
 
       {/* ── Research ── */}
       <section id="research" aria-labelledby="research-heading" className="mt-12 space-y-6">
@@ -206,18 +225,6 @@ export default function Home() {
             </div>
           </div>
         )}
-      </section>
-
-      {/* ── Methodology ── */}
-      <section id="methodology" aria-labelledby="methodology-heading" className="mt-12 rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-7 sm:p-9">
-        <h2 id="methodology-heading" className="font-serif-display text-2xl text-[var(--text-heading)] sm:text-3xl">
-          {m.atlas?.methodologyHeading ?? 'Why This Work Is Important'}
-        </h2>
-        <ul className="mt-4 max-w-3xl space-y-3 text-[1.03rem] leading-relaxed text-[var(--text-body)] sm:text-[1.08rem]">
-          <li>It turns governance conversations from guesswork into testable choices.</li>
-          <li>It helps teams improve participation, execution speed, and trust at the same time.</li>
-          <li>It connects policy decisions to real outcomes leaders can track over time.</li>
-        </ul>
       </section>
 
       {/* ── Advanced ── */}

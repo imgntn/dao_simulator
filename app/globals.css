@@ -102,6 +102,8 @@ body {
     linear-gradient(172deg, #fffefb 0%, #f8f2e8 56%, #efe7da 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  line-height: 1.7;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
@@ -141,8 +143,8 @@ body:has(.theme-console) {
   border-radius: 999px;
   background: var(--surface-warm);
   color: #2a4154;
-  padding: 0.48rem 0.92rem;
-  font-size: 0.8rem;
+  padding: 0.52rem 1rem;
+  font-size: 0.875rem;
   font-weight: 580;
   letter-spacing: 0.012em;
   transition: all 150ms ease;
