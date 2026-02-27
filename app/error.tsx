@@ -11,16 +11,21 @@ interface ErrorPageProps {
 
 export default function Error({ error, reset }: ErrorPageProps) {
   useEffect(() => {
-    // Log the error to an error reporting service
     console.error('Application error:', error);
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--surface-page)] px-4">
       <div className="max-w-md w-full text-center">
-        {/* Error Icon */}
-        <div className="mx-auto w-24 h-24 mb-6 text-red-400">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-full h-full">
+        <div className="mx-auto w-24 h-24 mb-6 text-red-500">
+          <svg
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            className="w-full h-full"
+            role="img"
+            aria-hidden="true"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -30,50 +35,42 @@ export default function Error({ error, reset }: ErrorPageProps) {
           </svg>
         </div>
 
-        {/* Error Message */}
-        <h1 className="text-3xl font-bold text-white mb-3">{m.errors.somethingWentWrong}</h1>
-        <p className="text-gray-400 mb-2">
-          {m.errors.unexpectedError}
-        </p>
+        <h1 className="text-3xl font-bold text-[var(--text-heading)] mb-3">{m.errors.somethingWentWrong}</h1>
+        <p className="text-[var(--text-body)] mb-2">{m.errors.unexpectedError}</p>
 
-        {/* Error Details (development only) */}
         {process.env.NODE_ENV === 'development' && error.message && (
-          <div className="mt-4 p-4 bg-gray-800 rounded-lg text-left">
-            <p className="text-sm font-mono text-red-300 break-all">
-              {error.message}
-            </p>
+          <div className="mt-4 p-4 bg-[var(--surface-warm)] rounded-lg border border-[var(--border-default)] text-left">
+            <p className="text-sm font-mono text-red-600 break-all">{error.message}</p>
             {error.digest && (
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-[var(--text-faint)] mt-2">
                 {m.errors.errorId} {error.digest}
               </p>
             )}
           </div>
         )}
 
-        {/* Actions */}
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={reset}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+            className="px-6 py-3 bg-[var(--accent-teal)] hover:bg-[var(--accent-teal-hover)] text-white font-medium rounded-lg transition-colors"
           >
             {m.errors.tryAgain}
           </button>
           <Link
             href="/"
-            className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+            className="px-6 py-3 bg-[var(--surface-warm)] hover:bg-[var(--border-subtle)] text-[var(--text-heading)] font-medium rounded-lg border border-[var(--border-default)] transition-colors"
           >
             {m.errors.goHome}
           </Link>
         </div>
 
-        {/* Help Text */}
-        <p className="mt-8 text-sm text-gray-500">
+        <p className="mt-8 text-sm text-[var(--text-faint)]">
           {m.errors.persistsReport}{' '}
           <a
             href="https://github.com/imgntn/dao_simulator_private/issues"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-400 hover:text-blue-300 underline"
+            className="text-[var(--accent-teal)] hover:text-[var(--accent-teal-hover)] underline"
           >
             {m.errors.reportIssue}
           </a>

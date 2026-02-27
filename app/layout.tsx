@@ -20,16 +20,28 @@ const sourceSerif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://dao-research-atlas.vercel.app"),
   title: {
     default: "DAO Research Atlas",
     template: "%s | DAO Research Atlas",
   },
-  description: "Narrative paper and experiment hub for DAO governance simulations.",
-  keywords: ["DAO", "simulation", "governance", "experiment", "research", "analysis"],
-  authors: [{ name: "DAO Research Team" }],
+  description:
+    "Actionable governance findings from 16,370 simulation runs across 21 experiments. Decision briefs on participation, capture, treasury, cooperation, and LLM governance.",
+  keywords: [
+    "DAO",
+    "governance",
+    "simulation",
+    "research",
+    "decentralized",
+    "agent-based modeling",
+    "treasury",
+    "participation",
+  ],
+  authors: [{ name: "James B. Pollack", url: "https://jamesbpollack.com" }],
   openGraph: {
     title: "DAO Research Atlas",
-    description: "Narrative paper and experiment hub for DAO governance simulations.",
+    description:
+      "Actionable governance findings from 16,370 simulation runs across 21 experiments.",
     type: "website",
     locale: "en_US",
     siteName: "DAO Research Atlas",
@@ -37,7 +49,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "DAO Research Atlas",
-    description: "Narrative paper and experiment hub for DAO governance simulations.",
+    description:
+      "Actionable governance findings from 16,370 simulation runs across 21 experiments.",
   },
   robots: {
     index: true,
@@ -68,14 +81,14 @@ export default function RootLayout({
         {/* Skip to main content link for keyboard users */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-slate-800 focus:text-white focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[var(--accent-teal)] focus:text-white focus:rounded-lg"
         >
           Skip to main content
         </a>
 
-        <main id="main-content" tabIndex={-1} className="outline-none">
+        <div id="main-content" tabIndex={-1} className="outline-none">
           {children}
-        </main>
+        </div>
       </body>
     </html>
   );

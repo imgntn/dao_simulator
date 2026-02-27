@@ -1,19 +1,98 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   Design Tokens — semantic CSS custom properties
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 :root {
-  --background: #f6f0e4;
+  /* Surfaces */
+  --surface-page: #f6f0e4;
+  --surface-panel: rgba(255, 255, 255, 0.90);
+  --surface-warm: #fff9ef;
+  --surface-warm-deep: #fffbf4;
+  --surface-highlight: #fff9ee;
+
+  /* Borders */
+  --border-default: #d8cab4;
+  --border-subtle: #e7dbc8;
+  --border-warm: #e5d7c2;
+  --border-strong: #cdbda8;
+
+  /* Text */
+  --text-heading: #1d1a14;
+  --text-body: #3f5163;
+  --text-body-secondary: #45586b;
+  --text-muted: #5c7083;
+  --text-faint: #5a6d7f;
+
+  /* Accents */
+  --accent-gold: #8f6f42;
+  --accent-teal: #1f7a8c;
+  --accent-teal-hover: #165f6d;
+
+  /* Shadows */
+  --shadow-card: 0 14px 34px rgba(38, 33, 25, 0.08);
+  --shadow-header: 0 24px 70px rgba(52, 45, 33, 0.1);
+  --shadow-button: 0 6px 18px rgba(31, 122, 140, 0.22);
+
+  /* Legacy compatibility */
+  --background: var(--surface-page);
   --foreground: #1f2a36;
   --ink-soft: #4e5c6b;
-  --panel: #ffffffd9;
+  --panel: var(--surface-panel);
 }
+
+/* Console / dark theme variant */
+.theme-console {
+  --surface-page: #020617;
+  --surface-panel: rgba(15, 23, 42, 0.40);
+  --surface-warm: #0f172a;
+  --surface-warm-deep: #020617;
+  --surface-highlight: rgba(30, 58, 138, 0.10);
+
+  --border-default: #1e293b;
+  --border-subtle: #1e293b;
+  --border-warm: #1e293b;
+  --border-strong: #334155;
+
+  --text-heading: #f1f5f9;
+  --text-body: #94a3b8;
+  --text-body-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --text-faint: #475569;
+
+  --accent-gold: #fbbf24;
+  --accent-teal: #38bdf8;
+  --accent-teal-hover: #7dd3fc;
+
+  --shadow-card: none;
+  --shadow-header: none;
+  --shadow-button: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Tailwind theme registration
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface-page: var(--surface-page);
+  --color-surface-panel: var(--surface-panel);
+  --color-surface-warm: var(--surface-warm);
+  --color-accent-teal: var(--accent-teal);
+  --color-accent-gold: var(--accent-gold);
+  --color-text-heading: var(--text-heading);
+  --color-text-body: var(--text-body);
+  --color-text-muted: var(--text-muted);
   --font-sans: var(--font-space-grotesk);
   --font-mono: var(--font-ibm-plex-mono);
   --font-display: var(--font-source-serif);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Global styles
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 body {
   min-height: 100vh;
@@ -27,14 +106,40 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.theme-console body,
+body:has(.theme-console) {
+  background: var(--surface-page);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Focus styles — global :focus-visible ring
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:focus-visible {
+  outline: 2px solid var(--accent-teal);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Typography helpers
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 .font-serif-display {
   font-family: var(--font-display), Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   Component classes
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 .hub-link {
-  border: 1px solid #d5c7b1;
+  border: 1px solid var(--border-default);
   border-radius: 999px;
-  background: #fffdf9;
+  background: var(--surface-warm);
   color: #2a4154;
   padding: 0.48rem 0.92rem;
   font-size: 0.8rem;
@@ -50,6 +155,10 @@ body {
   transform: translateY(-1px);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   Markdown surface (used for rendered brief content)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 .markdown-surface {
   max-width: 72ch;
   margin: 0 auto;
@@ -62,7 +171,7 @@ body {
 .markdown-surface h1,
 .markdown-surface h2,
 .markdown-surface h3 {
-  color: #1c2834;
+  color: var(--text-heading);
   font-family: var(--font-display), Georgia, Cambria, "Times New Roman", Times, serif;
   line-height: 1.24;
   letter-spacing: 0.01em;
@@ -108,9 +217,9 @@ body {
 }
 
 .markdown-surface a {
-  color: #1f7a8c;
+  color: var(--accent-teal);
   text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, #1f7a8c 40%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--accent-teal) 40%, transparent);
   text-underline-offset: 0.22em;
 }
 
@@ -121,6 +230,10 @@ body {
   color: #4a5d6f;
   font-style: italic;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Animations
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 @keyframes rise {
   from {

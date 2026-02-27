@@ -2,6 +2,14 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'yaml';
 import Link from 'next/link';
+import { PageShell } from '@/components/layout/PageShell';
+import { messages as m } from '@/lib/i18n';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Console',
+  robots: { index: false },
+};
 
 const ROOT_DIR = process.cwd();
 const EXPERIMENTS_DIR = path.join(ROOT_DIR, 'experiments');
@@ -56,14 +64,7 @@ function parseExperimentConfig(filePath: string): ExperimentConfigSummary {
     return typeof parameter === 'string' ? parameter : undefined;
   })();
 
-  return {
-    id: relativePath,
-    path: relativePath,
-    name,
-    description,
-    tags,
-    sweepParameter,
-  };
+  return { id: relativePath, path: relativePath, name, description, tags, sweepParameter };
 }
 
 function listExperimentConfigs(): ExperimentConfigSummary[] {
@@ -179,7 +180,7 @@ function getParam(value: string | string[] | undefined): string {
   return Array.isArray(value) ? value[0] ?? '' : value;
 }
 
-export default function Home({
+export default function ConsolePage({
   searchParams,
 }: {
   searchParams?: Record<string, string | string[] | undefined>;
@@ -188,292 +189,283 @@ export default function Home({
   const results = listResults();
   const action = getParam(searchParams?.action);
   const target = getParam(searchParams?.target);
-  const pid = getParam(searchParams?.pid);
   const log = getParam(searchParams?.log);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
-        <header className="space-y-3">
-          <Link href="/" className="inline-flex text-sm text-amber-300 hover:text-amber-200">
-            Open narrative paper hub
-          </Link>
-          <p className="text-sm uppercase tracking-[0.3em] text-slate-500">DAO Research Console</p>
-          <h1 className="text-3xl sm:text-4xl font-semibold text-slate-100">Experiment Management</h1>
-          <p className="text-slate-400 max-w-2xl">
-            Manage experiment runs, review results, generate reports, and update paper artifacts.
-            All actions run locally and write logs to the results directory.
-          </p>
-        </header>
+    <PageShell variant="console">
+      <header className="space-y-3">
+        <p className="text-sm uppercase tracking-[0.3em] text-[var(--text-faint)]">
+          {m.console?.subtitle ?? 'DAO Research Console'}
+        </p>
+        <h1 className="text-3xl sm:text-4xl font-semibold text-[var(--text-heading)]">
+          {m.console?.heading ?? 'Experiment Management'}
+        </h1>
+        <p className="text-[var(--text-body)] max-w-2xl">
+          {m.console?.description ?? 'Manage experiment runs, review results, generate reports, and update paper artifacts. All actions run locally and write logs to the results directory.'}
+        </p>
+      </header>
 
-        {(action || log || pid) && (
-          <section className="rounded-lg border border-slate-800 bg-slate-900/60 p-4 text-sm text-slate-200">
-            <p className="font-medium">Latest action queued</p>
-            <div className="mt-2 space-y-1 text-slate-400">
-              {action && <p>Action: {action}</p>}
-              {target && <p>Target: {target}</p>}
-              {pid && <p>PID: {pid}</p>}
-              {log && <p>Log: {log}</p>}
-            </div>
-          </section>
-        )}
-
-        <section className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
-            <h2 className="text-lg font-semibold">Run Experiments</h2>
-            <p className="text-sm text-slate-400">
-              Select a configuration file to start or resume a batch run.
-            </p>
-            <form action="/api/research" method="post" className="space-y-3">
-              <input type="hidden" name="action" value="run" />
-              <label className="block text-xs uppercase tracking-wide text-slate-500">Experiment Config</label>
-              <select
-                name="configPath"
-                required
-                className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
-              >
-                <option value="" disabled>Select a config</option>
-                {configs.map((config) => (
-                  <option key={config.id} value={config.path}>
-                    {config.path}
-                  </option>
-                ))}
-              </select>
-              <div className="flex gap-2">
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-500"
-                >
-                  Run
-                </button>
-              </div>
-            </form>
-
-            <form action="/api/research" method="post" className="space-y-3 pt-3 border-t border-slate-800">
-              <input type="hidden" name="action" value="resume" />
-              <label className="block text-xs uppercase tracking-wide text-slate-500">Resume Config</label>
-              <select
-                name="configPath"
-                required
-                className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
-              >
-                <option value="" disabled>Select a config</option>
-                {configs.map((config) => (
-                  <option key={`${config.id}-resume`} value={config.path}>
-                    {config.path}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
-              >
-                Resume
-              </button>
-            </form>
-          </div>
-
-          <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
-            <h2 className="text-lg font-semibold">Reports</h2>
-            <p className="text-sm text-slate-400">
-              Generate research-quality reports from existing results.
-            </p>
-            <form action="/api/research" method="post" className="space-y-3">
-              <input type="hidden" name="action" value="report" />
-              <label className="block text-xs uppercase tracking-wide text-slate-500">Results Directory</label>
-              <select
-                name="resultsDir"
-                required
-                className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
-              >
-                <option value="" disabled>Select a result set</option>
-                {results.map((result) => (
-                  <option key={result.id} value={`results/${result.path}`}>
-                    results/{result.path}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md bg-emerald-600 text-white hover:bg-emerald-500"
-              >
-                Generate Report
-              </button>
-            </form>
+      {(action || log) && (
+        <section className="mt-6 rounded-lg border border-[var(--border-default)] bg-[var(--surface-panel)] p-4 text-sm text-[var(--text-body-secondary)]">
+          <p className="font-medium">{m.console?.latestAction ?? 'Latest action queued'}</p>
+          <div className="mt-2 space-y-1 text-[var(--text-body)]">
+            {action && <p>Action: {action}</p>}
+            {target && <p>Target: {target}</p>}
+            {log && <p>Log: {log}</p>}
           </div>
         </section>
+      )}
 
-        <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
-          <h2 className="text-lg font-semibold">Paper Pipeline</h2>
-          <p className="text-sm text-slate-400">
-            Update the academic paper from the latest results, compile PDFs, and archive releases.
+      <section className="mt-10 grid gap-6 md:grid-cols-2">
+        {/* Run Experiments */}
+        <div className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-panel)] p-5 space-y-4">
+          <h2 className="text-lg font-semibold text-[var(--text-heading)]">
+            {m.console?.runExperiments ?? 'Run Experiments'}
+          </h2>
+          <p className="text-sm text-[var(--text-body)]">
+            {m.console?.selectConfig ?? 'Select a configuration file to start or resume a batch run.'}
           </p>
-          <div className="flex flex-wrap items-end gap-4">
-            <label className="block text-xs uppercase tracking-wide text-slate-500">
-              Paper Profile
-              <select
-                name="paperProfile"
-                form="paper-update-form"
-                defaultValue="full"
-                className="mt-2 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
-              >
-                <option value="full">full (paper/)</option>
-                <option value="p1">p1 (paper_p1/)</option>
-                <option value="p2">p2 (paper_p2/)</option>
-                <option value="llm">llm (paper_llm/)</option>
-              </select>
+          <form action="/api/research" method="post" className="space-y-3">
+            <input type="hidden" name="action" value="run" />
+            <label className="block text-xs uppercase tracking-wide text-[var(--text-faint)]">
+              Experiment Config
             </label>
-            <form id="paper-update-form" action="/api/research" method="post">
-              <input type="hidden" name="action" value="paper-update" />
+            <select
+              name="configPath"
+              required
+              aria-describedby="config-desc"
+              className="w-full rounded-md border border-[var(--border-default)] bg-[var(--surface-warm-deep)] px-3 py-2 text-sm text-[var(--text-body-secondary)]"
+            >
+              <option value="" disabled>{m.console?.selectPlaceholder ?? 'Select a config'}</option>
+              {configs.map((config) => (
+                <option key={config.id} value={config.path}>{config.path}</option>
+              ))}
+            </select>
+            <p id="config-desc" className="sr-only">Choose an experiment configuration file to run</p>
+            <div className="flex gap-2">
               <button
                 type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md bg-slate-100 text-slate-900 hover:bg-white"
+                className="px-4 py-2 text-sm font-medium rounded-md bg-[var(--accent-teal)] text-white hover:bg-[var(--accent-teal-hover)]"
               >
-                Update Paper
+                {m.console?.run ?? 'Run'}
               </button>
-            </form>
-            <form action="/api/research" method="post">
-              <input type="hidden" name="action" value="paper-compile" />
-              <input type="hidden" name="paperProfile" value="full" />
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
-              >
-                Compile Full
-              </button>
-            </form>
-            <form action="/api/research" method="post">
-              <input type="hidden" name="action" value="paper-compile" />
-              <input type="hidden" name="paperProfile" value="p1" />
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
-              >
-                Compile P1
-              </button>
-            </form>
-            <form action="/api/research" method="post">
-              <input type="hidden" name="action" value="paper-compile" />
-              <input type="hidden" name="paperProfile" value="p2" />
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
-              >
-                Compile P2
-              </button>
-            </form>
-            <form action="/api/research" method="post">
-              <input type="hidden" name="action" value="paper-compile" />
-              <input type="hidden" name="paperProfile" value="llm" />
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
-              >
-                Compile LLM
-              </button>
-            </form>
-            <form action="/api/research" method="post">
-              <input type="hidden" name="action" value="paper-archive" />
-              <input type="hidden" name="paperProfile" value="all" />
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md border border-slate-700 text-slate-200 hover:border-slate-500"
-              >
-                Archive All
-              </button>
-            </form>
-          </div>
-        </section>
-
-        <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Experiment Configs</h2>
-            <span className="text-xs text-slate-500">{configs.length} configs</span>
-          </div>
-          {configs.length === 0 ? (
-            <p className="text-sm text-slate-500">No experiment configs found.</p>
-          ) : (
-            <div className="overflow-auto">
-              <table className="min-w-full text-sm">
-                <thead className="text-xs uppercase text-slate-500 border-b border-slate-800">
-                  <tr>
-                    <th className="text-left py-2 pr-4">Path</th>
-                    <th className="text-left py-2 pr-4">Name</th>
-                    <th className="text-left py-2 pr-4">Description</th>
-                    <th className="text-left py-2 pr-4">Sweep</th>
-                    <th className="text-left py-2">Tags</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {configs.map((config) => (
-                    <tr key={config.id} className="border-b border-slate-900">
-                      <td className="py-2 pr-4 text-slate-300">{config.path}</td>
-                      <td className="py-2 pr-4 text-slate-200">{config.name}</td>
-                      <td className="py-2 pr-4 text-slate-500">{config.description || '-'}</td>
-                      <td className="py-2 pr-4 text-slate-500">{config.sweepParameter || '-'}</td>
-                      <td className="py-2 text-slate-500">{config.tags.join(', ') || '-'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
-          )}
-        </section>
+          </form>
 
-        <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Results Archive</h2>
-            <span className="text-xs text-slate-500">{results.length} result sets</span>
-          </div>
-          {results.length === 0 ? (
-            <p className="text-sm text-slate-500">No results found in ./results.</p>
-          ) : (
-            <div className="overflow-auto">
-              <table className="min-w-full text-sm">
-                <thead className="text-xs uppercase text-slate-500 border-b border-slate-800">
-                  <tr>
-                    <th className="text-left py-2 pr-4">Result</th>
-                    <th className="text-left py-2 pr-4">State</th>
-                    <th className="text-left py-2 pr-4">Progress</th>
-                    <th className="text-left py-2 pr-4">Last Update</th>
-                    <th className="text-left py-2">Reports</th>
+          <form action="/api/research" method="post" className="space-y-3 pt-3 border-t border-[var(--border-default)]">
+            <input type="hidden" name="action" value="resume" />
+            <label className="block text-xs uppercase tracking-wide text-[var(--text-faint)]">
+              {m.console?.resumeLabel ?? 'Resume Config'}
+            </label>
+            <select
+              name="configPath"
+              required
+              className="w-full rounded-md border border-[var(--border-default)] bg-[var(--surface-warm-deep)] px-3 py-2 text-sm text-[var(--text-body-secondary)]"
+            >
+              <option value="" disabled>{m.console?.selectPlaceholder ?? 'Select a config'}</option>
+              {configs.map((config) => (
+                <option key={`${config.id}-resume`} value={config.path}>{config.path}</option>
+              ))}
+            </select>
+            <button
+              type="submit"
+              className="px-4 py-2 text-sm font-medium rounded-md border border-[var(--border-strong)] text-[var(--text-body-secondary)] hover:border-[var(--accent-teal)]"
+            >
+              {m.console?.resume ?? 'Resume'}
+            </button>
+          </form>
+        </div>
+
+        {/* Reports */}
+        <div className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-panel)] p-5 space-y-4">
+          <h2 className="text-lg font-semibold text-[var(--text-heading)]">
+            {m.console?.reports ?? 'Reports'}
+          </h2>
+          <p className="text-sm text-[var(--text-body)]">
+            {m.console?.generateReport ?? 'Generate research-quality reports from existing results.'}
+          </p>
+          <form action="/api/research" method="post" className="space-y-3">
+            <input type="hidden" name="action" value="report" />
+            <label className="block text-xs uppercase tracking-wide text-[var(--text-faint)]">
+              Results Directory
+            </label>
+            <select
+              name="resultsDir"
+              required
+              className="w-full rounded-md border border-[var(--border-default)] bg-[var(--surface-warm-deep)] px-3 py-2 text-sm text-[var(--text-body-secondary)]"
+            >
+              <option value="" disabled>Select a result set</option>
+              {results.map((result) => (
+                <option key={result.id} value={`results/${result.path}`}>
+                  results/{result.path}
+                </option>
+              ))}
+            </select>
+            <button
+              type="submit"
+              className="px-4 py-2 text-sm font-medium rounded-md bg-[var(--accent-teal)] text-white hover:bg-[var(--accent-teal-hover)]"
+            >
+              {m.console?.generateReportBtn ?? 'Generate Report'}
+            </button>
+          </form>
+        </div>
+      </section>
+
+      {/* Paper Pipeline */}
+      <section className="mt-6 rounded-lg border border-[var(--border-default)] bg-[var(--surface-panel)] p-5 space-y-4">
+        <h2 className="text-lg font-semibold text-[var(--text-heading)]">
+          {m.console?.paperPipeline ?? 'Paper Pipeline'}
+        </h2>
+        <p className="text-sm text-[var(--text-body)]">
+          {m.console?.paperPipelineDesc ?? 'Update the academic paper from the latest results, compile PDFs, and archive releases.'}
+        </p>
+        <div className="flex flex-wrap items-end gap-4">
+          <label className="block text-xs uppercase tracking-wide text-[var(--text-faint)]">
+            Paper Profile
+            <select
+              name="paperProfile"
+              form="paper-update-form"
+              defaultValue="full"
+              className="mt-2 w-full rounded-md border border-[var(--border-default)] bg-[var(--surface-warm-deep)] px-3 py-2 text-sm text-[var(--text-body-secondary)]"
+            >
+              <option value="full">full (paper/)</option>
+              <option value="p1">p1 (paper_p1/)</option>
+              <option value="p2">p2 (paper_p2/)</option>
+              <option value="llm">llm (paper_llm/)</option>
+            </select>
+          </label>
+          <form id="paper-update-form" action="/api/research" method="post">
+            <input type="hidden" name="action" value="paper-update" />
+            <button
+              type="submit"
+              className="px-4 py-2 text-sm font-medium rounded-md bg-[var(--text-heading)] text-[var(--surface-page)] hover:opacity-90"
+            >
+              {m.console?.updatePaper ?? 'Update Paper'}
+            </button>
+          </form>
+          {['full', 'p1', 'p2', 'llm'].map((profile) => (
+            <form key={profile} action="/api/research" method="post">
+              <input type="hidden" name="action" value="paper-compile" />
+              <input type="hidden" name="paperProfile" value={profile} />
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium rounded-md border border-[var(--border-strong)] text-[var(--text-body-secondary)] hover:border-[var(--accent-teal)]"
+              >
+                {m.console?.compileLabel ?? 'Compile'} {profile.toUpperCase()}
+              </button>
+            </form>
+          ))}
+          <form action="/api/research" method="post">
+            <input type="hidden" name="action" value="paper-archive" />
+            <input type="hidden" name="paperProfile" value="all" />
+            <button
+              type="submit"
+              className="px-4 py-2 text-sm font-medium rounded-md border border-[var(--border-strong)] text-[var(--text-body-secondary)] hover:border-[var(--accent-teal)]"
+            >
+              {m.console?.archiveAll ?? 'Archive All'}
+            </button>
+          </form>
+        </div>
+      </section>
+
+      {/* Experiment Configs */}
+      <section className="mt-6 rounded-lg border border-[var(--border-default)] bg-[var(--surface-panel)] p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-[var(--text-heading)]">
+            {m.console?.experimentConfigs ?? 'Experiment Configs'}
+          </h2>
+          <span className="text-xs text-[var(--text-faint)]">
+            {configs.length} {m.console?.configCount ?? 'configs'}
+          </span>
+        </div>
+        {configs.length === 0 ? (
+          <p className="text-sm text-[var(--text-faint)]">
+            {m.console?.noConfigs ?? 'No experiment configs found.'}
+          </p>
+        ) : (
+          <div className="overflow-auto">
+            <table className="min-w-full text-sm">
+              <thead className="text-xs uppercase text-[var(--text-faint)] border-b border-[var(--border-default)]">
+                <tr>
+                  <th className="text-left py-2 pr-4">Path</th>
+                  <th className="text-left py-2 pr-4">Name</th>
+                  <th className="text-left py-2 pr-4">Description</th>
+                  <th className="text-left py-2 pr-4">Sweep</th>
+                  <th className="text-left py-2">Tags</th>
+                </tr>
+              </thead>
+              <tbody>
+                {configs.map((config) => (
+                  <tr key={config.id} className="border-b border-[var(--border-subtle)]">
+                    <td className="py-2 pr-4 text-[var(--text-body-secondary)]">{config.path}</td>
+                    <td className="py-2 pr-4 text-[var(--text-heading)]">{config.name}</td>
+                    <td className="py-2 pr-4 text-[var(--text-faint)]">{config.description || '-'}</td>
+                    <td className="py-2 pr-4 text-[var(--text-faint)]">{config.sweepParameter || '-'}</td>
+                    <td className="py-2 text-[var(--text-faint)]">{config.tags.join(', ') || '-'}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {results.map((result) => (
-                    <tr key={result.id} className="border-b border-slate-900">
-                      <td className="py-2 pr-4 text-slate-200">
-                        {result.path.includes('/') ? (
-                          <span>{result.path}</span>
-                        ) : (
-                          <Link href={`/results/${result.name}`} className="text-blue-400 hover:text-blue-300">
-                            {result.path}
-                          </Link>
-                        )}
-                      </td>
-                      <td className="py-2 pr-4 text-slate-400">{result.state}</td>
-                      <td className="py-2 pr-4 text-slate-400">
-                        {result.progress !== null
-                          ? `${result.progress.toFixed(1)}% (${result.completedRuns ?? 0}/${result.totalRuns ?? 0})`
-                          : '-'}
-                      </td>
-                      <td className="py-2 pr-4 text-slate-500">{result.lastUpdate ?? '-'}</td>
-                      <td className="py-2 text-slate-500">
-                        {result.hasReport ? 'report.md' : '-'}
-                        {result.hasQualityReport ? `${result.hasReport ? ', ' : ''}research-quality-report.md` : ''}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
 
-        <footer className="text-xs text-slate-600">
-          Workspace: {ROOT_DIR}
-        </footer>
-      </div>
-    </div>
+      {/* Results Archive */}
+      <section className="mt-6 rounded-lg border border-[var(--border-default)] bg-[var(--surface-panel)] p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-[var(--text-heading)]">
+            {m.console?.resultsArchive ?? 'Results Archive'}
+          </h2>
+          <span className="text-xs text-[var(--text-faint)]">
+            {results.length} {m.console?.resultCount ?? 'result sets'}
+          </span>
+        </div>
+        {results.length === 0 ? (
+          <p className="text-sm text-[var(--text-faint)]">
+            {m.console?.noResults ?? 'No results found in ./results.'}
+          </p>
+        ) : (
+          <div className="overflow-auto">
+            <table className="min-w-full text-sm">
+              <thead className="text-xs uppercase text-[var(--text-faint)] border-b border-[var(--border-default)]">
+                <tr>
+                  <th className="text-left py-2 pr-4">Result</th>
+                  <th className="text-left py-2 pr-4">State</th>
+                  <th className="text-left py-2 pr-4">Progress</th>
+                  <th className="text-left py-2 pr-4">Last Update</th>
+                  <th className="text-left py-2">Reports</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((result) => (
+                  <tr key={result.id} className="border-b border-[var(--border-subtle)]">
+                    <td className="py-2 pr-4 text-[var(--text-heading)]">
+                      {result.path.includes('/') ? (
+                        <span>{result.path}</span>
+                      ) : (
+                        <Link href={`/results/${result.name}`} className="text-[var(--accent-teal)] hover:text-[var(--accent-teal-hover)]">
+                          {result.path}
+                        </Link>
+                      )}
+                    </td>
+                    <td className="py-2 pr-4 text-[var(--text-body)]">{result.state}</td>
+                    <td className="py-2 pr-4 text-[var(--text-body)]">
+                      {result.progress !== null
+                        ? `${result.progress.toFixed(1)}% (${result.completedRuns ?? 0}/${result.totalRuns ?? 0})`
+                        : '-'}
+                    </td>
+                    <td className="py-2 pr-4 text-[var(--text-faint)]">{result.lastUpdate ?? '-'}</td>
+                    <td className="py-2 text-[var(--text-faint)]">
+                      {result.hasReport ? 'report.md' : '-'}
+                      {result.hasQualityReport ? `${result.hasReport ? ', ' : ''}research-quality-report.md` : ''}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    </PageShell>
   );
 }

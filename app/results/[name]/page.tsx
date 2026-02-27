@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { PageShell } from '@/components/layout/PageShell';
+import { messages as m } from '@/lib/i18n';
 
 const ROOT_DIR = process.cwd();
 const RESULTS_DIR = path.join(ROOT_DIR, 'results');
@@ -90,66 +92,83 @@ export default async function ResultPage({
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <div className="max-w-5xl mx-auto px-6 py-10 space-y-8">
-        <header className="space-y-2">
-          <div className="flex flex-wrap gap-3 text-sm">
-            <Link href="/" className="text-amber-300 hover:text-amber-200">Back to narrative hub</Link>
-            <Link href="/console" className="text-blue-400 hover:text-blue-300">Back to operations console</Link>
-          </div>
-          <h1 className="text-3xl font-semibold">Results: {params.name}</h1>
-          <p className="text-sm text-slate-400">Directory: results/{params.name}</p>
-        </header>
+    <PageShell variant="console">
+      <header className="space-y-2">
+        <div className="flex flex-wrap gap-3 text-sm">
+          <Link href="/" className="text-[var(--accent-gold)] hover:text-[var(--accent-teal)]">
+            {m.results?.backToAtlas ?? 'Back to atlas'}
+          </Link>
+          <Link href="/console" className="text-[var(--accent-teal)] hover:text-[var(--accent-teal-hover)]">
+            {m.results?.backToConsole ?? 'Back to console'}
+          </Link>
+        </div>
+        <h1 className="text-3xl font-semibold text-[var(--text-heading)]">
+          {m.results?.heading ?? 'Results'}: {params.name}
+        </h1>
+      </header>
 
-        <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-4">
-          <h2 className="text-lg font-semibold">Status</h2>
-          {Object.keys(statusSummary).length === 0 ? (
-            <p className="text-sm text-slate-500">No status.json found.</p>
-          ) : (
-            <dl className="mt-3 grid gap-2 text-sm text-slate-300">
-              {Object.entries(statusSummary).map(([key, value]) => (
-                <div key={key} className="flex flex-col sm:flex-row sm:gap-2">
-                  <dt className="w-32 text-slate-500 uppercase text-xs tracking-wide">{key}</dt>
-                  <dd>{value}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
-        </section>
-
-        <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-4 space-y-4">
-          <h2 className="text-lg font-semibold">Files</h2>
-          {files.length === 0 ? (
-            <p className="text-sm text-slate-500">No files found.</p>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {files.map((file) => (
-                <Link
-                  key={file}
-                  href={`/results/${params.name}?file=${encodeURIComponent(file)}`}
-                  className={`px-3 py-1.5 rounded-md text-xs border ${
-                    selectedFile === file
-                      ? 'border-blue-500 text-blue-200 bg-blue-500/10'
-                      : 'border-slate-700 text-slate-300 hover:border-slate-500'
-                  }`}
-                >
-                  {file}
-                </Link>
-              ))}
-            </div>
-          )}
-
-          {selectedFile && preview && (
-            <div className="rounded-md border border-slate-800 bg-slate-950 p-4">
-              <div className="flex items-center justify-between text-xs text-slate-500 mb-3">
-                <span>{selectedFile}</span>
-                {preview.truncated && <span>Preview truncated at {MAX_FILE_BYTES} bytes</span>}
+      <section className="mt-8 rounded-lg border border-[var(--border-default)] bg-[var(--surface-panel)] p-4">
+        <h2 className="text-lg font-semibold text-[var(--text-heading)]">
+          {m.results?.status ?? 'Status'}
+        </h2>
+        {Object.keys(statusSummary).length === 0 ? (
+          <p className="text-sm text-[var(--text-faint)]">
+            {m.results?.noStatus ?? 'No status.json found.'}
+          </p>
+        ) : (
+          <dl className="mt-3 grid gap-2 text-sm text-[var(--text-body-secondary)]">
+            {Object.entries(statusSummary).map(([key, value]) => (
+              <div key={key} className="flex flex-col sm:flex-row sm:gap-2">
+                <dt className="w-32 text-[var(--text-faint)] uppercase text-xs tracking-wide">{key}</dt>
+                <dd>{value}</dd>
               </div>
-              <pre className="whitespace-pre-wrap text-sm text-slate-200">{preview.content}</pre>
+            ))}
+          </dl>
+        )}
+      </section>
+
+      <section className="mt-6 rounded-lg border border-[var(--border-default)] bg-[var(--surface-panel)] p-4 space-y-4">
+        <h2 className="text-lg font-semibold text-[var(--text-heading)]">
+          {m.results?.files ?? 'Files'}
+        </h2>
+        {files.length === 0 ? (
+          <p className="text-sm text-[var(--text-faint)]">
+            {m.results?.noFiles ?? 'No files found.'}
+          </p>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {files.map((file) => (
+              <Link
+                key={file}
+                href={`/results/${params.name}?file=${encodeURIComponent(file)}`}
+                className={`px-3 py-1.5 rounded-md text-xs border ${
+                  selectedFile === file
+                    ? 'border-[var(--accent-teal)] text-[var(--accent-teal)] bg-[var(--surface-highlight)]'
+                    : 'border-[var(--border-strong)] text-[var(--text-body-secondary)] hover:border-[var(--accent-teal)]'
+                }`}
+              >
+                {file}
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {selectedFile && preview && (
+          <div className="rounded-md border border-[var(--border-default)] bg-[var(--surface-warm-deep)] p-4">
+            <div className="flex items-center justify-between text-xs text-[var(--text-faint)] mb-3">
+              <span>{selectedFile}</span>
+              {preview.truncated && (
+                <span>
+                  {m.results?.previewTruncated ?? 'Preview truncated at'} {MAX_FILE_BYTES} bytes
+                </span>
+              )}
             </div>
-          )}
-        </section>
-      </div>
-    </div>
+            <pre className="whitespace-pre-wrap text-sm text-[var(--text-body-secondary)]">
+              {preview.content}
+            </pre>
+          </div>
+        )}
+      </section>
+    </PageShell>
   );
 }

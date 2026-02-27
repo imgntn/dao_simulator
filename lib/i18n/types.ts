@@ -558,4 +558,84 @@ export interface Messages {
     twitterTitle: string;
     twitterDescription: string;
   };
+
+  // Atlas (research homepage)
+  atlas: {
+    tagline: string;
+    heroTitle: string;
+    heroDescription: string;
+    heroCta: string;
+    nav: string;
+    consoleLink: string;
+    researchHeading: string;
+    researchSubtitle: string;
+    papersHeading: string;
+    papersSubtitle: string;
+    methodologyHeading: string;
+    advancedHeading: string;
+    advancedDesc: string;
+    whatWeFound: string;
+    whatToDo: string;
+    whyItMatters: string;
+    evidenceLabel: string;
+    evidenceDesc: string;
+    briefsLabel: string;
+    briefsCount: string;
+    authorLabel: string;
+    authorDesc: string;
+    confidenceNote: string;
+    briefLabel: string;
+    openFullBrief: string;
+    sourceBriefMarkdown: string;
+    relatedPaperPdf: string;
+    currentPdf: string;
+    currentTex: string;
+    latestArchivedPdf: string;
+    rawMetricTakeaways: string;
+    methodNotes: string;
+    wordsCount: string;
+    briefSourceFiles: string;
+    footerAttribution: string;
+    footerConsole: string;
+  };
+
+  // Console (experiment management)
+  console: {
+    heading: string;
+    subtitle: string;
+    description: string;
+    latestAction: string;
+    runExperiments: string;
+    selectConfig: string;
+    selectPlaceholder: string;
+    run: string;
+    resume: string;
+    resumeLabel: string;
+    reports: string;
+    generateReport: string;
+    generateReportBtn: string;
+    paperPipeline: string;
+    paperPipelineDesc: string;
+    updatePaper: string;
+    compileLabel: string;
+    archiveAll: string;
+    experimentConfigs: string;
+    resultsArchive: string;
+    noConfigs: string;
+    noResults: string;
+    configCount: string;
+    resultCount: string;
+  };
+
+  // Results (individual result viewer)
+  results: {
+    heading: string;
+    status: string;
+    files: string;
+    backToAtlas: string;
+    backToConsole: string;
+    previewTruncated: string;
+    noFiles: string;
+    noStatus: string;
+  };
 }

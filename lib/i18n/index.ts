@@ -110,6 +110,24 @@ export function toFormatRegex(template: string): RegExp {
 }
 
 /**
+ * Format a number using locale-aware formatting.
+ */
+export function formatNumber(value: number, options?: Intl.NumberFormatOptions): string {
+  return new Intl.NumberFormat('en-US', options).format(value);
+}
+
+/**
+ * Format a value as a locale-aware percentage.
+ */
+export function formatPercent(value: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'percent',
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  }).format(value);
+}
+
+/**
  * Type-safe message access with utilities
  */
 export const t = {
