@@ -102,6 +102,29 @@ export function BriefDetail({
           ))}
         </ul>
       </div>
+
+      {curated.keyTerms && curated.keyTerms.length > 0 && (
+        <details className="mt-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-highlight)] p-4">
+          <summary className="cursor-pointer select-none text-xs font-semibold uppercase tracking-[0.12em] text-[#3d5568]">
+            {m.atlas?.keyTerms ?? 'Key Terms'}
+          </summary>
+          <dl className="mt-3 grid gap-2 sm:grid-cols-2">
+            {curated.keyTerms.map((entry) => (
+              <div
+                key={`${id}-term-${entry.term}`}
+                className="rounded-xl border border-[var(--border-subtle)] bg-white px-3 py-2"
+              >
+                <dt className="text-sm font-semibold text-[var(--text-heading)]">
+                  {entry.term}
+                </dt>
+                <dd className="mt-1 text-sm leading-relaxed text-[var(--text-body-secondary)]">
+                  {entry.definition}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </details>
+      )}
     </article>
   );
 }

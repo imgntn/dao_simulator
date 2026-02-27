@@ -663,6 +663,7 @@ export const messages: Messages = {
     wordsCount: 'words',
     briefSourceFiles: 'Brief Source Files + Raw Metrics',
     footerAttribution: 'DAO Research Atlas by',
+    keyTerms: 'Key Terms',
     footerConsole: 'Operational tools remain available in the in-repo',
   },
 

@@ -164,9 +164,9 @@ export default function Home() {
           {m.atlas?.methodologyHeading ?? 'Why This Work Is Important'}
         </h2>
         <ul className="mt-5 max-w-3xl space-y-4 text-[1.1rem] leading-relaxed text-[var(--text-body)] sm:text-[1.18rem]">
-          <li>It turns governance conversations from guesswork into testable choices.</li>
-          <li>It helps teams improve participation, execution speed, and trust at the same time.</li>
-          <li>It connects policy decisions to real outcomes leaders can track over time.</li>
+          <li>A 5-point quorum change can swing proposal passage from 99% to 0%. This research turns those hidden cliffs into visible, testable choices.</li>
+          <li>Quadratic voting cut whale influence by 43% without slowing governance. The right mechanisms improve fairness and throughput at the same time.</li>
+          <li>Every finding links a specific policy lever to a measurable outcome across 16,370 simulation runs, so teams can track what actually changes.</li>
         </ul>
       </section>
 

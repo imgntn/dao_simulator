@@ -34,12 +34,18 @@ export type ParsedBrief = {
   notes: string[];
 };
 
+export type KeyTerm = {
+  term: string;
+  definition: string;
+};
+
 export type CuratedBriefCopy = {
   summary: string;
   whatWeFound: string[];
   whatToDo: string[];
   evidence: string;
   confidence?: string;
+  keyTerms?: KeyTerm[];
 };
 
 // ---------------------------------------------------------------------------
@@ -104,71 +110,214 @@ export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
 export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
   rq1: {
     summary:
-      'Governance stalls when quorum targets exceed real turnout capacity. In the core sweep, turnout stayed near 22-23%, but quorum reach collapsed once quorum moved past ~10-15%.',
+      'Governance stalls when quorum targets exceed real turnout capacity. In the core sweep, turnout stayed near 22\u201323%, but quorum reach collapsed once quorum moved past ~10\u201315%.',
     whatWeFound: [
-      'At 5% quorum, 99.9% of proposals reached quorum. At 20%, only 25.4% reached quorum. At 40%+, quorum reach fell to 0%.',
-      'Pass rate among proposals that did reach quorum stayed high (97.6-98.5%), showing the bottleneck was threshold reach, not voter disagreement.',
+      'At 5% quorum, 99.9% of proposals reached quorum. At 10%, reach was 82%. At 20%, only 25.4% reached quorum. By 40%, reach fell to 0%.',
+      'Pass rate among proposals that did reach quorum stayed high (97.6\u201398.5%), showing the bottleneck was reaching the threshold, not voter disagreement.',
       'As DAO size scaled from 50 to 500 members, participation fell (26.1% to 21.9%) but pass rate rose (92.8% to 99.7%).',
     ],
     whatToDo: [
       'Set quorum from observed behavior, not aspiration. A practical rule from the paper is ~80% of natural turnout.',
-      'Use low-to-moderate quorum first (often around 4-5% in tested baselines), then adjust from data.',
+      'Use low-to-moderate quorum first (often around 4\u20135% in tested baselines), then adjust from data.',
       'Track fatigue and retention alongside pass rate, and use delegation before raising quorum.',
     ],
     evidence: 'Core paper RQ1 + scale analysis (Experiments 01, 03, 08).',
+    keyTerms: [
+      {
+        term: 'Quorum',
+        definition:
+          'The minimum percentage of eligible voters who must participate for a proposal vote to count. If turnout falls below quorum, the proposal fails regardless of how those who did vote chose.',
+      },
+      {
+        term: 'Quorum Reach Rate',
+        definition:
+          'The percentage of proposals that met the quorum threshold. A reach rate of 82% means 82 out of every 100 proposals got enough voters to produce a valid result.',
+      },
+      {
+        term: 'Turnout / Participation Rate',
+        definition:
+          'The share of eligible members who actually cast a vote on a given proposal. A 22% turnout means roughly one in five members voted.',
+      },
+      {
+        term: 'Pass Rate',
+        definition:
+          'The percentage of proposals that were approved by voters, counting only proposals that reached quorum.',
+      },
+      {
+        term: 'Voter Retention',
+        definition:
+          'The fraction of voters who continue participating over consecutive voting rounds. High retention means voters are engaged long-term, not just showing up once.',
+      },
+      {
+        term: 'Voter Fatigue',
+        definition:
+          'The gradual decline in voting activity that occurs when members face too many proposals or overly complex governance demands.',
+      },
+      {
+        term: 'Delegation',
+        definition:
+          'A mechanism where a member assigns their voting power to another member (a delegate) who votes on their behalf, boosting effective participation without requiring every member to vote directly.',
+      },
+    ],
   },
   rq2: {
     summary:
       'Capture resistance improved most when power-distribution rules changed directly, not when only rate limits were added.',
     whatWeFound: [
-      'A quadratic threshold of 250 cut whale influence from 0.449 to 0.256, a 43% reduction.',
-      'Capture risk dropped from 0.464 to 0.269 in strong mitigation settings, a 42% reduction.',
-      'Throughput improved rather than collapsed: pass rate moved from 92.7% to 98.5%. Velocity penalties alone were weak (small effects).',
+      'Applying quadratic voting (where voting power scales with the square root of tokens held, kicking in above a 250-token threshold) cut whale influence from 0.449 to 0.256 \u2014 a 43% reduction.',
+      'Capture risk dropped from 0.464 to 0.269 under the strongest mitigation settings, a 42% reduction.',
+      'Governance throughput improved rather than collapsed: pass rate moved from 92.7% to 98.5%. Velocity penalties alone had only small effects.',
     ],
     whatToDo: [
-      'Use a layered stack: quadratic base + delegation caps + 30-60 day velocity controls.',
+      'Use a layered stack: quadratic base + delegation caps + 30\u201360 day velocity controls.',
       'Prioritize mechanisms that reshape power distribution over activity-only throttles.',
       'Evaluate capture resistance and governance throughput together before deployment.',
     ],
     evidence: 'Core paper RQ2 mitigation sweep (Experiment 04) and comparative analysis.',
+    keyTerms: [
+      {
+        term: 'Whale',
+        definition:
+          'A large token holder whose holdings give them outsized voting power. In many DAOs, a single whale can control more votes than hundreds of smaller holders combined.',
+      },
+      {
+        term: 'Whale Influence',
+        definition:
+          'A metric (0\u20131) measuring how much of the total voting outcome is determined by the largest holders. Higher values mean a few wallets dominate decisions.',
+      },
+      {
+        term: 'Governance Capture',
+        definition:
+          'A state where a small group of actors can reliably control proposal outcomes, effectively overriding the broader membership.',
+      },
+      {
+        term: 'Capture Risk',
+        definition:
+          'A metric (0\u20131) estimating the likelihood that governance is or could be captured. It combines voting-power concentration and outcome predictability.',
+      },
+      {
+        term: 'Quadratic Voting',
+        definition:
+          'A voting mechanism where each additional unit of voting power costs progressively more. Voting power scales with the square root of tokens held, compressing whale advantage while preserving small-holder voice.',
+      },
+      {
+        term: 'Velocity Penalty',
+        definition:
+          'A rule that reduces the voting weight of tokens acquired recently (e.g., within the last 30\u201360 days), discouraging last-minute vote buying.',
+      },
+      {
+        term: 'Delegation Cap',
+        definition:
+          'A ceiling on how much voting power any single delegate can accumulate through others\u2019 delegations, preventing re-concentration of power.',
+      },
+      {
+        term: 'Throughput',
+        definition:
+          'The number of proposals a governance system can process and resolve in a given period. High throughput means decisions get made; low throughput means governance stalls.',
+      },
+    ],
   },
   rq3: {
     summary:
       'Proposal flow improves with moderate filtering and selective fast-tracking. Extreme settings are where quality or speed starts to break.',
     whatWeFound: [
-      'In Experiment 05, raising temp-check pressure from 0.05 to 0.50 lifted pass rate from 96.4% to 98.5%.',
-      'Fast-track with a 12-step minimum kept quorum reach above 99% while accelerating obvious-consensus proposals.',
-      'Core runs showed 47-50 proposals per 720-step cycle with zero abandonment; companion RQ3 analysis still flags very short expiry windows as risky for complex work.',
+      'Raising temp-check pressure from 5% to 50% lifted pass rate from 96.4% to 98.5%, filtering out weak proposals before they consumed full voting resources.',
+      'Fast-track with a 12-day minimum voting window kept quorum reach above 99% while accelerating obvious-consensus proposals.',
+      'Core runs showed 47\u201350 proposals per simulated cycle with zero abandonment, though very short expiry windows remain risky for complex work.',
     ],
     whatToDo: [
-      'Use moderate thresholds (roughly 20-30% temp-check and ~70% fast-track as a starting point).',
+      'Use moderate thresholds (roughly 20\u201330% temp-check and ~70% fast-track as a starting point).',
       'Keep default expiry windows near 60 days, with longer windows for complex proposals.',
       'Monitor false negatives, abandonment, and time-to-decision as a single operating set.',
     ],
     evidence: 'Core paper RQ3 pipeline experiments (Experiment 05).',
+    keyTerms: [
+      {
+        term: 'Temp-Check',
+        definition:
+          'A preliminary signal vote (often off-chain, e.g., via Snapshot) used to gauge community interest before a proposal enters formal on-chain voting. Proposals that fail the temp-check are filtered out early.',
+      },
+      {
+        term: 'Fast-Track',
+        definition:
+          'An expedited governance path for proposals that show overwhelming early support. Fast-tracked proposals skip some process stages but still require a minimum voting window to ensure participation.',
+      },
+      {
+        term: 'Pass Rate',
+        definition:
+          'The percentage of proposals that receive enough \u201cyes\u201d votes to be approved, among those that completed the voting process.',
+      },
+      {
+        term: 'Proposal Abandonment',
+        definition:
+          'When a proposal expires without ever completing its vote \u2014 typically because quorum was never reached or the expiry window ran out.',
+      },
+      {
+        term: 'Time to Decision',
+        definition:
+          'The average duration from when a proposal is created to when it reaches a final outcome (approved, rejected, or expired).',
+      },
+      {
+        term: 'Expiry Window',
+        definition:
+          'The maximum amount of time allowed for a proposal to complete its voting process. If voting isn\u2019t finished before the window closes, the proposal expires.',
+      },
+    ],
   },
   rq4: {
     summary:
       'Treasury resilience came from explicit policy discipline: stabilization, reserve buffers, spending limits, and clear emergency triggers.',
     whatWeFound: [
-      'Stabilization reduced treasury volatility by about 50%: from roughly 0.448-0.500 down to 0.235-0.271.',
-      'Reserve buffers and spending caps improved downside protection; stabilized runs landed around $10,048-$13,147 final treasury in tested settings.',
+      'Stabilization mechanisms cut treasury value swings roughly in half \u2014 volatility scores dropped from the 0.45\u20130.50 range to 0.24\u20130.27 (on a 0\u20131 scale where lower is more stable).',
+      'Reserve buffers and spending caps improved downside protection; stabilized runs landed around $10,048\u2013$13,147 in final treasury value.',
       'Lower volatility came with modest growth tradeoffs, so treasury policy needs continuous tuning rather than one-time setup.',
     ],
     whatToDo: [
-      'Set explicit reserves (typically 15-20% in companion guidance) and define breach triggers.',
-      'Apply spending limits aligned to burn rate (often 2-5% per period) with explicit emergency overrides.',
+      'Set explicit reserves (typically 15\u201320% of total treasury) and define breach triggers.',
+      'Apply spending limits aligned to burn rate (often 2\u20135% per period) with explicit emergency overrides.',
       'Trigger top-up or freeze controls when reserves fall below policy thresholds (e.g., 50% of target buffer).',
     ],
     evidence: 'Core paper RQ4 treasury resilience results (Experiment 06).',
+    keyTerms: [
+      {
+        term: 'Treasury Volatility',
+        definition:
+          'A measure (0\u20131) of how much a DAO\u2019s treasury value fluctuates over time. Higher volatility means larger swings in value; lower is more predictable and stable.',
+      },
+      {
+        term: 'Buffer Reserve',
+        definition:
+          'A designated portion of the treasury (e.g., 15\u201320%) held in low-risk assets as a safety net. The buffer protects core operations during market downturns.',
+      },
+      {
+        term: 'Spending Limit',
+        definition:
+          'A cap on how much capital can flow out of the treasury per period (e.g., 2\u20135% per month), preventing a single large expenditure from draining reserves.',
+      },
+      {
+        term: 'Maximum Drawdown',
+        definition:
+          'The largest peak-to-trough percentage decline in treasury value. A 40% max drawdown means the treasury lost 40% of its peak value at its worst point.',
+      },
+      {
+        term: 'Stabilization',
+        definition:
+          'Active treasury management mechanisms (rebalancing, diversification, hedging) that reduce value swings. Tested stabilization cut volatility roughly in half.',
+      },
+      {
+        term: 'Emergency Top-Up',
+        definition:
+          'A policy trigger that automatically restores depleted reserves when they fall below a critical threshold, preventing the DAO from running out of operating funds.',
+      },
+    ],
   },
   rq5: {
     summary:
       'Cross-DAO coordination worked, but it was fragile. Outcomes improved when fairness, structure, and partner complementarity were designed upfront.',
     whatWeFound: [
-      'Inter-DAO success rate was 21.4-23.4% across cooperation topologies versus 0% in isolated mode.',
+      'Inter-DAO success rate was 21.4\u201323.4% across cooperation topologies versus 0% when DAOs operated in isolation.',
       'Specialized topology generated more inter-DAO activity (75.8 vs 50.3 proposals) and higher ecosystem treasury ($26,107 vs $24,071).',
-      'Cross-DAO alignment stayed moderate (0.534-0.557), which explains why fairness design and coordination structure mattered.',
+      'Cross-DAO alignment stayed moderate (0.534\u20130.557), which explains why fairness design and coordination structure mattered.',
     ],
     whatToDo: [
       'Define fairness explicitly before launch: cost split, value split, and dispute path.',
@@ -176,22 +325,86 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
       'Build overlap and trust through recurring joint work and shared participant channels.',
     ],
     evidence: 'Core paper RQ5 cooperation experiments (Experiment 07).',
+    keyTerms: [
+      {
+        term: 'Inter-DAO Cooperation',
+        definition:
+          'Any coordinated action between two or more DAOs \u2014 joint proposals, shared funding, resource exchanges, or co-governed initiatives.',
+      },
+      {
+        term: 'Cooperation Topology',
+        definition:
+          'The structural pattern of how DAOs connect. Tested topologies include isolated (no links), generic (uniform connections), and specialized (role-based partnerships where DAOs contribute different strengths).',
+      },
+      {
+        term: 'Cross-DAO Alignment',
+        definition:
+          'A metric (0\u20131) measuring how often cooperating DAOs reach agreement on joint proposals. Low alignment means frequent disagreement and failed initiatives.',
+      },
+      {
+        term: 'Resource Flow',
+        definition:
+          'The total volume of assets (tokens, treasury funds) exchanged between DAOs through cooperation. Higher flow indicates more active economic collaboration.',
+      },
+      {
+        term: 'Hub Coordinator',
+        definition:
+          'A central entity or DAO that manages multi-party cooperation \u2014 routing proposals, mediating disputes, and reducing negotiation overhead for the network.',
+      },
+    ],
   },
   rq6: {
     summary:
-      'LLM-enabled governance showed an engagement-latency tradeoff. Hybrid mode was the strongest default in the current benchmark.',
+      'LLM-enabled governance showed an engagement\u2013latency tradeoff. Hybrid mode was the strongest default in the current benchmark.',
     whatWeFound: [
-      'Hybrid and all-LLM both reached 0.50 pass rate, while the rule-based baseline was 0.00 in this short-horizon setup.',
-      'All-LLM posted higher participation and consistency (0.3115 participation, 0.7474 consistency) than hybrid (0.1863, 0.6625).',
-      'Hybrid reduced average latency to 807.98 ms versus 1,380.76 ms in all-LLM, with stronger treasury outcome in this run set.',
+      'Hybrid and all-LLM modes both reached a 50% pass rate. The rule-based baseline recorded 0% in this limited 8-run benchmark, reflecting the small sample size rather than a fundamental flaw in rule-based governance.',
+      'All-LLM posted higher participation (31.2%) and vote consistency (74.7%) than hybrid mode (18.6% participation, 66.3% consistency).',
+      'Hybrid mode reduced average decision latency to 808 ms versus 1,381 ms in all-LLM, with stronger treasury outcomes in this run set.',
     ],
     whatToDo: [
       'Use hybrid reasoning as default, then escalate to deeper LLM reasoning only where needed.',
       'Track latency budgets, consistency drift, and cache performance as first-class governance metrics.',
       'Increase run budgets beyond the current 8-run benchmark before turning directional findings into hard policy.',
     ],
-    evidence: 'LLM profile paper results/discussion (current benchmark: 8 runs).',
+    evidence: 'LLM profile paper (current benchmark: 8 runs across 4 configurations).',
     confidence: 'Directional confidence only: the LLM profile currently uses a smaller run set than core governance experiments.',
+    keyTerms: [
+      {
+        term: 'LLM (Large Language Model)',
+        definition:
+          'An AI system trained on large text datasets that can reason about complex inputs. In this context, LLMs read proposal text and governance context to produce voting decisions.',
+      },
+      {
+        term: 'Rule-Based Mode',
+        definition:
+          'Traditional governance where voting decisions follow deterministic rules (e.g., vote yes if treasury impact is below threshold). No AI reasoning is involved.',
+      },
+      {
+        term: 'Hybrid Mode',
+        definition:
+          'A mix where some agents use LLM reasoning and others use rule-based logic. Balances the depth of AI analysis with the speed and predictability of rules.',
+      },
+      {
+        term: 'All-LLM Mode',
+        definition:
+          'Every agent uses LLM reasoning for voting decisions. Produces the most nuanced analysis but at higher computational cost and latency.',
+      },
+      {
+        term: 'Vote Consistency',
+        definition:
+          'A metric (0\u20131) measuring how predictably an agent votes given similar inputs. High consistency means an agent\u2019s behavior is reliable and auditable; low consistency may signal noise or instability.',
+      },
+      {
+        term: 'Latency',
+        definition:
+          'The time (in milliseconds) between a vote request and the agent\u2019s response. Higher latency means slower governance cycles. Rule-based agents have near-zero latency; LLM agents add processing delay.',
+      },
+      {
+        term: 'Cache Performance',
+        definition:
+          'How often LLM voting decisions can be served from a stored cache instead of recomputing. High cache hit rates reduce latency and cost without sacrificing decision quality.',
+      },
+    ],
   },
 };
 

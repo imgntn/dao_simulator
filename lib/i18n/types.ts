@@ -596,6 +596,7 @@ export interface Messages {
     wordsCount: string;
     briefSourceFiles: string;
     footerAttribution: string;
+    keyTerms: string;
     footerConsole: string;
   };
 
