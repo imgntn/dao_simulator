@@ -44,6 +44,8 @@ export function LLMComparisonChart() {
       <svg
         viewBox={`0 0 ${chartW} ${chartH}`}
         className="w-full max-w-[320px]"
+        shapeRendering="geometricPrecision"
+        textRendering="optimizeLegibility"
         aria-hidden="true"
       >
         {metrics.map((metric, mi) => {

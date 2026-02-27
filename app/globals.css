@@ -252,6 +252,24 @@ body:has(.theme-console) {
   animation: rise 620ms cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   HiDPI / Retina enhancements
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (min-resolution: 2dppx) {
+  body {
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  :root {
+    --border-hairline: 0.5px;
+  }
+
+  svg {
+    image-rendering: -webkit-optimize-contrast;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -27,6 +27,8 @@ export function TreasuryVolatilityChart() {
       <svg
         viewBox={`0 0 ${chartW} ${chartH}`}
         className="w-full max-w-[320px]"
+        shapeRendering="geometricPrecision"
+        textRendering="optimizeLegibility"
         aria-hidden="true"
       >
         {/* Title badge */}
@@ -61,7 +63,7 @@ export function TreasuryVolatilityChart() {
         })}
 
         {/* Vertical zero line */}
-        <line x1={leftPad} y1={startY - 4} x2={leftPad} y2={startY + totalH + 4} stroke="#d8cab4" strokeWidth="1" strokeDasharray="3,3" />
+        <line x1={leftPad} y1={startY - 4} x2={leftPad} y2={startY + totalH + 4} stroke="#d8cab4" strokeWidth="1" strokeDasharray="3,3" shapeRendering="crispEdges" />
       </svg>
       <figcaption className="mt-1 text-center text-[0.7rem] text-[var(--text-muted)]">
         Volatility range: unstabilized vs stabilized

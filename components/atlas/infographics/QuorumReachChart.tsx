@@ -26,6 +26,8 @@ export function QuorumReachChart() {
       <svg
         viewBox={`0 0 ${chartW} ${chartH}`}
         className="w-full max-w-[320px]"
+        shapeRendering="geometricPrecision"
+        textRendering="optimizeLegibility"
         aria-hidden="true"
       >
         {data.map((d, i) => {
@@ -77,6 +79,7 @@ export function QuorumReachChart() {
           y2={topPad + maxH}
           stroke="#d8cab4"
           strokeWidth="1"
+          shapeRendering="crispEdges"
         />
       </svg>
       <figcaption className="mt-1 text-center text-[0.7rem] text-[var(--text-muted)]">

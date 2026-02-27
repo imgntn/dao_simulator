@@ -26,6 +26,8 @@ export function PipelineFlowChart() {
       <svg
         viewBox={`0 0 ${chartW} ${chartH}`}
         className="w-full max-w-[320px]"
+        shapeRendering="geometricPrecision"
+        textRendering="optimizeLegibility"
         aria-hidden="true"
       >
         {stages.map((s, i) => {

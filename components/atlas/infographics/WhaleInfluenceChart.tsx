@@ -34,6 +34,8 @@ export function WhaleInfluenceChart() {
       <svg
         viewBox={`0 0 ${chartW} ${chartH}`}
         className="w-full max-w-[320px]"
+        shapeRendering="geometricPrecision"
+        textRendering="optimizeLegibility"
         aria-hidden="true"
       >
         {metrics.map((m, i) => {
@@ -70,7 +72,7 @@ export function WhaleInfluenceChart() {
         })}
 
         {/* Axis line */}
-        <line x1={offsetX - 6} y1={topPad + maxH} x2={offsetX + totalW + 6} y2={topPad + maxH} stroke="#d8cab4" strokeWidth="1" />
+        <line x1={offsetX - 6} y1={topPad + maxH} x2={offsetX + totalW + 6} y2={topPad + maxH} stroke="#d8cab4" strokeWidth="1" shapeRendering="crispEdges" />
 
         {/* Legend */}
         <rect x={chartW - 92} y={chartH - 10} width={8} height={8} rx={2} fill="#c4a06a" opacity={0.75} />
