@@ -27,7 +27,7 @@ import type { Messages, FormatParams } from './types';
 
 // Re-export locale infrastructure
 export type { Locale } from './config';
-export { locales, defaultLocale, isValidLocale, intlLocaleMap, ogLocaleMap } from './config';
+export { locales, defaultLocale, isValidLocale, intlLocaleMap, ogLocaleMap, localeLabels } from './config';
 export { getMessages } from './get-messages';
 export type { Messages, FormatParams };
 

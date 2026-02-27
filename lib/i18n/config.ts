@@ -25,3 +25,11 @@ export const ogLocaleMap: Record<Locale, string> = {
   zh: 'zh_CN',
   ja: 'ja_JP',
 };
+
+/** Human-readable labels for the language selector. */
+export const localeLabels: Record<Locale, string> = {
+  en: 'English',
+  es: 'Espa\u00f1ol',
+  zh: '\u4e2d\u6587',
+  ja: '\u65e5\u672c\u8a9e',
+};
