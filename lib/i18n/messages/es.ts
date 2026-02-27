@@ -646,6 +646,12 @@ export const messages: Messages = {
     footerAttribution: 'Atlas de investigaci\u00f3n DAO por',
     keyTerms: 'T\u00e9rminos clave',
     footerConsole: 'Las herramientas operativas siguen disponibles en la',
+    podcastHeading: 'Escucha la historia detr\u00e1s de la investigaci\u00f3n',
+    podcastDesc: 'James Pollack particip\u00f3 en el podcast Green Pill para explorar si una DAO puede ser gestionada por IA \u2014 la din\u00e1mica de modelos basados en agentes, c\u00f3mo se ve la gobernanza en cadena y la investigaci\u00f3n que se convirti\u00f3 en este atlas.',
+    podcastListen: 'Escuchar el episodio',
+    podcastApple: 'Apple Podcasts',
+    podcastSpotify: 'Spotify',
+    podcastEpisode: 'Green Pill #123: AI DAO Simulator',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════

@@ -646,6 +646,12 @@ export const messages: Messages = {
     footerAttribution: 'DAO \u7814\u7a76\u5730\u56fe\u96c6\uff0c\u4f5c\u8005',
     keyTerms: '\u5173\u952e\u672f\u8bed',
     footerConsole: '\u64cd\u4f5c\u5de5\u5177\u4ecd\u53ef\u5728\u4ed3\u5e93\u5185\u7684',
+    podcastHeading: '\u542c\u542c\u7814\u7a76\u80cc\u540e\u7684\u6545\u4e8b',
+    podcastDesc: 'James Pollack \u53c2\u52a0\u4e86 Green Pill \u64ad\u5ba2\uff0c\u63a2\u8ba8 DAO \u80fd\u5426\u7531 AI \u8fd0\u884c\u2014\u2014\u57fa\u4e8e\u667a\u80fd\u4f53\u6a21\u578b\u7684\u52a8\u6001\u3001\u94fe\u4e0a\u6cbb\u7406\u7684\u5b9e\u73b0\uff0c\u4ee5\u53ca\u6210\u4e3a\u672c\u5730\u56fe\u96c6\u7684\u7814\u7a76\u3002',
+    podcastListen: '\u6536\u542c\u8282\u76ee',
+    podcastApple: 'Apple Podcasts',
+    podcastSpotify: 'Spotify',
+    podcastEpisode: 'Green Pill #123: AI DAO Simulator',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════

@@ -665,6 +665,12 @@ export const messages: Messages = {
     footerAttribution: 'DAO Research Atlas by',
     keyTerms: 'Key Terms',
     footerConsole: 'Operational tools remain available in the in-repo',
+    podcastHeading: 'Hear the Story Behind the Research',
+    podcastDesc: 'James Pollack joined the Green Pill podcast to explore whether a DAO can be run by AI \u2014 the dynamics of agent-based models, what it looks like to put governance on-chain, and the research that became this atlas.',
+    podcastListen: 'Listen to the episode',
+    podcastApple: 'Apple Podcasts',
+    podcastSpotify: 'Spotify',
+    podcastEpisode: 'Green Pill #123: AI DAO Simulator',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════

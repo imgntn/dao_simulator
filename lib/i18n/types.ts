@@ -598,6 +598,12 @@ export interface Messages {
     footerAttribution: string;
     keyTerms: string;
     footerConsole: string;
+    podcastHeading: string;
+    podcastDesc: string;
+    podcastListen: string;
+    podcastApple: string;
+    podcastSpotify: string;
+    podcastEpisode: string;
   };
 
   // Console (experiment management)
