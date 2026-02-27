@@ -1,9 +1,694 @@
 /**
- * Japanese (ja) Message Strings — Placeholder
+ * Japanese (ja) Message Strings
  *
- * Currently re-exports English strings. Replace with Japanese translations
- * when ready. The Messages type ensures all keys are covered.
+ * Full Japanese translation of all UI strings.
+ * Format strings use {key} placeholders preserved as-is.
  */
 
-// eslint-disable-next-line -- placeholder re-export until translated
-export { messages } from './en';
+import type { Messages } from '../types';
+
+export const messages: Messages = {
+  // ═══════════════════════════════════════════════════════════════════════════
+  // COMMON
+  // ═══════════════════════════════════════════════════════════════════════════
+  common: {
+    connected: '\u63a5\u7d9a\u6e08\u307f',
+    disconnected: '\u5207\u65ad',
+    running: '\u5b9f\u884c\u4e2d',
+    paused: '\u4e00\u6642\u505c\u6b62',
+    loading: '\u8aad\u307f\u8fbc\u307f\u4e2d...',
+    error: '\u30a8\u30e9\u30fc',
+    close: '\u9589\u3058\u308b',
+    cancel: '\u30ad\u30e3\u30f3\u30bb\u30eb',
+    confirm: '\u78ba\u8a8d',
+    save: '\u4fdd\u5b58',
+    delete: '\u524a\u9664',
+    edit: '\u7de8\u96c6',
+    view: '\u8868\u793a',
+    back: '\u623b\u308b',
+    next: '\u6b21\u3078',
+    done: '\u5b8c\u4e86',
+    skip: '\u30b9\u30ad\u30c3\u30d7',
+    retry: '\u518d\u8a66\u884c',
+    live: '\u30e9\u30a4\u30d6',
+    on: '\u30aa\u30f3',
+    off: '\u30aa\u30d5',
+    active: '\u30a2\u30af\u30c6\u30a3\u30d6',
+    selected: '\u9078\u629e\u6e08\u307f',
+    pending: '\u4fdd\u7559\u4e2d',
+    completed: '\u5b8c\u4e86',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // HEADER
+  // ═══════════════════════════════════════════════════════════════════════════
+  header: {
+    apiDocs: 'API \u30c9\u30ad\u30e5\u30e1\u30f3\u30c8',
+    speed: '\u901f\u5ea6\uff1a',
+    speedDescription: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u901f\u5ea6\u500d\u7387\u3002\u5024\u304c\u9ad8\u3044\u307b\u3069\u9ad8\u901f\u3067\u5b9f\u884c\u3055\u308c\u307e\u3059\u3002',
+    step: '\u30b9\u30c6\u30c3\u30d7\uff1a{step}',
+    hotkeys: '\u30db\u30c3\u30c8\u30ad\u30fc\uff1a\u30b9\u30da\u30fc\u30b9 \u958b\u59cb/\u505c\u6b62\u3001F \u30b9\u30c6\u30c3\u30d7\u3001R \u30ea\u30bb\u30c3\u30c8\u3002',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CONTROLS
+  // ═══════════════════════════════════════════════════════════════════════════
+  controls: {
+    start: '\u958b\u59cb\uff08\u30b9\u30da\u30fc\u30b9\uff09',
+    startCity: '\u30b7\u30c6\u30a3\u958b\u59cb\uff08\u30b9\u30da\u30fc\u30b9\uff09',
+    stop: '\u505c\u6b62',
+    stepButton: '\u30b9\u30c6\u30c3\u30d7\uff08F\uff09',
+    reset: '\u30ea\u30bb\u30c3\u30c8\uff08R\uff09',
+    singleDao: '\u5358\u4e00 DAO',
+    daoCity: 'DAO \u30b7\u30c6\u30a3',
+    visualsLive: '\u30d3\u30b8\u30e5\u30a2\u30eb\uff1a\u30e9\u30a4\u30d6',
+    visualsPaused: '\u30d3\u30b8\u30e5\u30a2\u30eb\uff1a\u4e00\u6642\u505c\u6b62',
+    quickJumpOn: '\u30af\u30a4\u30c3\u30af\u30b8\u30e3\u30f3\u30d7\uff1a\u30aa\u30f3',
+    quickJumpOff: '\u30af\u30a4\u30c3\u30af\u30b8\u30e3\u30f3\u30d7\uff1a\u30aa\u30d5',
+    sidebarOn: '\u30b5\u30a4\u30c9\u30d0\u30fc\uff1a\u30aa\u30f3',
+    sidebarOff: '\u30b5\u30a4\u30c9\u30d0\u30fc\uff1a\u30aa\u30d5',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // TABS
+  // ═══════════════════════════════════════════════════════════════════════════
+  tabs: {
+    overview: '\u6982\u8981',
+    view3d: '3D \u30d3\u30e5\u30fc',
+    charts: '\u30c1\u30e3\u30fc\u30c8',
+    strategy: '\u6226\u7565',
+    reports: '\u30ec\u30dd\u30fc\u30c8',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PANELS
+  // ═══════════════════════════════════════════════════════════════════════════
+  panels: {
+    daoMap: 'DAO \u30de\u30c3\u30d7',
+    opsLog: '\u30aa\u30da\u30ec\u30fc\u30b7\u30e7\u30f3\u30ed\u30b0',
+    tower: '\u30bf\u30ef\u30fc',
+    city: '\u30b7\u30c6\u30a3',
+    network: '\u30cd\u30c3\u30c8\u30ef\u30fc\u30af',
+    price: '\u4fa1\u683c',
+    heatmap: '\u30d2\u30fc\u30c8\u30de\u30c3\u30d7',
+    geo: '\u5730\u7406',
+    daoReport: 'DAO \u30ec\u30dd\u30fc\u30c8',
+    orgHistory: '\u7d44\u7e54\u5c65\u6b74',
+    runHistory: '\u5b9f\u884c\u5c65\u6b74',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // TUTORIAL
+  // ═══════════════════════════════════════════════════════════════════════════
+  tutorial: {
+    title: '\u30af\u30a4\u30c3\u30af\u30b9\u30bf\u30fc\u30c8',
+    stepOf: '\u30b9\u30c6\u30c3\u30d7 {current}/{total}',
+    steps: [
+      '\u6226\u7565\u30d7\u30ea\u30bb\u30c3\u30c8\u307e\u305f\u306f\u30c7\u30a4\u30ea\u30fc/\u30a6\u30a3\u30fc\u30af\u30ea\u30fc\u30c1\u30e3\u30ec\u30f3\u30b8\u3092\u9078\u3093\u3067\u958b\u59cb\u3057\u307e\u3059\u3002',
+      '\u958b\u59cb\uff08\u30b9\u30da\u30fc\u30b9\uff09\u3067\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u30b9\u30c8\u30ea\u30fc\u30e0\uff1b\u30b9\u30c6\u30c3\u30d7\uff08F\uff09\u3067\u624b\u52d5\u3067\u9032\u3081\u307e\u3059\u3002',
+      '\u4e0a\u90e8\u306e\u30df\u30c3\u30b7\u30e7\u30f3\u3092\u78ba\u8a8d\uff1b\u5b8c\u4e86\u3059\u308b\u3068\u52dd\u5229\u3067\u3059\u3002',
+      '\u5fc5\u8981\u306b\u5fdc\u3058\u3066\u30d3\u30b8\u30e5\u30a2\u30eb\u3092\u4e00\u6642\u505c\u6b62\uff1bDAO \u30de\u30c3\u30d7 + \u30ec\u30dd\u30fc\u30c8\u3067\u5065\u5168\u6027\u3092\u4e00\u76ee\u3067\u78ba\u8a8d\u3067\u304d\u307e\u3059\u3002',
+      '\u5931\u6557\u3092\u907f\u3051\u308b\uff1a\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc\u3068\u4fa1\u683c\u3092\u5065\u5168\u306b\u4fdd\u3061\u3001\u63d0\u6848\u306e\u6e9e\u7559\u3092\u89e3\u6d88\u3057\u307e\u3057\u3087\u3046\u3002',
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MISSIONS
+  // ═══════════════════════════════════════════════════════════════════════════
+  missions: {
+    scenario: '\u30b7\u30ca\u30ea\u30aa',
+    status: '\u30b9\u30c6\u30fc\u30bf\u30b9',
+    overallProgress: '\u5168\u4f53\u9032\u6357',
+    missionsProgress: '{completed}/{total} \u30df\u30c3\u30b7\u30e7\u30f3\uff08{percent}%\uff09',
+    noMissions: '\u30df\u30c3\u30b7\u30e7\u30f3\u304c\u5b9a\u7fa9\u3055\u308c\u3066\u3044\u307e\u305b\u3093',
+    startWithObjectives: '\u76ee\u6a19\u4ed8\u304d\u306e\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u958b\u59cb',
+    strengthenTreasury: '\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc\u5f37\u5316',
+    strengthenTreasuryDesc: '\u76ee\u6a19\uff1a\u4eca\u56de\u306e\u5b9f\u884c\u3067\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc\u6b8b\u9ad8 +20%\u3002',
+    protectTreasury: '\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc\u4fdd\u8b77',
+    protectTreasuryDesc: '\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc\u3092\u30d9\u30fc\u30b9\u30e9\u30a4\u30f3\u4ee5\u4e0a\u306b\u5feb\u9069\u306b\u7dad\u6301\u3002',
+    fundGrowth: '\u6210\u9577\u8cc7\u91d1',
+    fundGrowthDesc: '\u62e1\u5f35\u3092\u652f\u63f4\u3059\u308b\u305f\u3081\u306b\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc\u3092\u6210\u9577\u3002',
+    reduceBacklog: '\u6e9e\u7559\u524a\u6e1b',
+    reduceBacklogDesc: '\u5c11\u306a\u304f\u3068\u3082 3 \u4ef6\u306e\u63d0\u6848\u3092\u51e6\u7406\u3002',
+    avoidGridlock: '\u884c\u304d\u8a70\u307e\u308a\u56de\u907f',
+    avoidGridlockDesc: '\u30aa\u30fc\u30d7\u30f3\u63d0\u6848\u3092\u30d9\u30fc\u30b9\u30e9\u30a4\u30f3\u8fd1\u304f\u306b\u7dad\u6301\u3002',
+    shipInitiatives: '\u30a4\u30cb\u30b7\u30a2\u30c1\u30d6\u63a8\u9032',
+    shipInitiativesDesc: '\u6210\u9577\u91cd\u8996\u306e\u63d0\u6848\u3092 3 \u4ef6\u4ee5\u4e0a\u51e6\u7406\u3002',
+    maintainOperations: '\u904b\u55b6\u7dad\u6301',
+    maintainOperationsDesc: '\u5931\u6557\u306a\u3057\u3067 100 \u30b9\u30c6\u30c3\u30d7\u9032\u3081\u308b\u3002',
+    sustainGovernance: '\u30ac\u30d0\u30ca\u30f3\u30b9\u7dad\u6301',
+    sustainGovernanceDesc: '\u3055\u3089\u306b 100 \u30b9\u30c6\u30c3\u30d7\u904b\u55b6\u3092\u7dad\u6301\u3002',
+    sustainGrowthRunway: '\u6210\u9577\u6ed1\u8d70\u8def\u7dad\u6301',
+    sustainGrowthRunwayDesc: '\u3055\u3089\u306b 100 \u30b9\u30c6\u30c3\u30d7\u9032\u3081\u308b\u3002',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // STRATEGIES
+  // ═══════════════════════════════════════════════════════════════════════════
+  strategies: {
+    playbooks: '\u6226\u7565\u30d7\u30ec\u30a4\u30d6\u30c3\u30af',
+    baseline: '\u30d9\u30fc\u30b9\u30e9\u30a4\u30f3',
+    baselineDesc: '\u30d7\u30ea\u30bb\u30c3\u30c8\u8a2d\u5b9a\u3092\u305d\u306e\u307e\u307e\u4f7f\u7528\u3002',
+    riskOff: '\u30ea\u30b9\u30af\u30aa\u30d5\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc',
+    riskOffDesc: '\u30b7\u30e7\u30c3\u30af\u983b\u5ea6\u3092\u4e0b\u3052\u3001\u6295\u8cc7\u5bb6/\u30d0\u30ea\u30c7\u30fc\u30bf\u3092\u3084\u3084\u512a\u904d\u3002',
+    growthMode: '\u6210\u9577\u30e2\u30fc\u30c9',
+    growthModeDesc: '\u30d3\u30eb\u30c0\u30fc\u3068\u63d0\u6848\u4f5c\u6210\u8005\u3092\u5897\u3084\u3057\u3001\u3088\u308a\u591a\u304f\u306e\u30b7\u30e7\u30c3\u30af\u3092\u8a31\u5bb9\u3002',
+    validatorGovernance: '\u30d0\u30ea\u30c7\u30fc\u30bf\u30ac\u30d0\u30ca\u30f3\u30b9',
+    validatorGovernanceDesc: '\u30d0\u30ea\u30c7\u30fc\u30bf\u30bb\u30c3\u30c8\u3068\u30ac\u30d0\u30ca\u30f3\u30b9\u95be\u5024\u3092\u5f37\u5316\u3002',
+    communityFirst: '\u30b3\u30df\u30e5\u30cb\u30c6\u30a3\u30d5\u30a1\u30fc\u30b9\u30c8',
+    communityFirstDesc: '\u3088\u308a\u5e45\u5e83\u3044\u30d1\u30c3\u30b7\u30d6\u30e1\u30f3\u30d0\u30fc\u3068\u30d0\u30ea\u30c7\u30fc\u30bf\u3078\u306e\u4f9d\u5b58\u3092\u8efd\u6e1b\u3002',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PRESETS
+  // ═══════════════════════════════════════════════════════════════════════════
+  presets: {
+    title: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u30d7\u30ea\u30bb\u30c3\u30c8',
+    balanced: '\u30d0\u30e9\u30f3\u30b9',
+    balancedDesc: '\u958b\u767a\u8005/\u6295\u8cc7\u5bb6\u306e\u5747\u7b49\u306a\u6df7\u5408\u3001\u4e2d\u7a0b\u5ea6\u306e\u30b7\u30e7\u30c3\u30af',
+    validatorFirst: '\u30d0\u30ea\u30c7\u30fc\u30bf\u512a\u5148',
+    validatorFirstDesc: '\u3088\u308a\u591a\u304f\u306e\u30d0\u30ea\u30c7\u30fc\u30bf\u3068\u3088\u308a\u53b3\u683c\u306a\u30ac\u30d0\u30ca\u30f3\u30b9',
+    growthPush: '\u6210\u9577\u63a8\u9032',
+    growthPushDesc: '\u3088\u308a\u591a\u304f\u306e\u958b\u767a\u8005\u3068\u63d0\u6848\u4f5c\u6210\u8005\u3001\u8efd\u5fae\u306a\u30b7\u30e7\u30c3\u30af',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CHALLENGES
+  // ═══════════════════════════════════════════════════════════════════════════
+  challenges: {
+    title: '\u30c1\u30e3\u30ec\u30f3\u30b8',
+    startChallenge: '\u30c1\u30e3\u30ec\u30f3\u30b8\u958b\u59cb',
+    daily: '\u30c7\u30a4\u30ea\u30fc\u30c1\u30e3\u30ec\u30f3\u30b8',
+    dailyDesc: '\u30b7\u30fc\u30c9\u4ed8\u304d\u306e\u5b89\u5b9a\u30b7\u30e7\u30c3\u30af\u5b9f\u884c\uff1b120 \u30b9\u30c6\u30c3\u30d7\u3067\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc +30% \u3092\u76ee\u6307\u3059\u3002',
+    weekly: '\u30a6\u30a3\u30fc\u30af\u30ea\u30fc\u30c1\u30e3\u30ec\u30f3\u30b8',
+    weeklyDesc: '\u30d0\u30ea\u30c7\u30fc\u30bf\u91cd\u8996\u306e\u30ac\u30d0\u30ca\u30f3\u30b9\uff1b\u6700\u5c0f\u9650\u306e\u30b7\u30e7\u30c3\u30af\u3067 200 \u30b9\u30c6\u30c3\u30d7\u751f\u304d\u6b8b\u308b\u3002',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // REPORTS
+  // ═══════════════════════════════════════════════════════════════════════════
+  reports: {
+    title: 'DAO \u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u30ec\u30dd\u30fc\u30c8',
+    stepsCompleted: '{count} \u30b9\u30c6\u30c3\u30d7\u5b8c\u4e86',
+    totalSteps: '\u7dcf\u30b9\u30c6\u30c3\u30d7\u6570',
+    currentPrice: '\u73fe\u5728\u4fa1\u683c',
+    priceUp: '{percent}% \u4e0a\u6607',
+    priceDown: '{percent}% \u4e0b\u843d',
+    priceRange: '\u7bc4\u56f2\uff1a${min} - ${max}',
+    treasury: '\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc',
+    members: '\u30e1\u30f3\u30d0\u30fc',
+    activeProposals: '\u30a2\u30af\u30c6\u30a3\u30d6\u63d0\u6848',
+    ofTotal: '\u5168 {total} \u4ef6\u4e2d',
+    treasuryOverTime: '\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc\u306e\u6642\u7cfb\u5217\u63a8\u79fb',
+    topTokenHolders: '\u30c8\u30c3\u30d7\u30c8\u30fc\u30af\u30f3\u4fdd\u6709\u8005',
+    mostInfluential: '\u6700\u3082\u5f71\u97ff\u529b\u306e\u3042\u308b\u30e1\u30f3\u30d0\u30fc',
+    marketShocks: '\u30de\u30fc\u30b1\u30c3\u30c8\u30b7\u30e7\u30c3\u30af\uff08{count}\uff09',
+    showLess: '\u6298\u308a\u305f\u305f\u3080',
+    showAll: '\u3059\u3079\u3066\u8868\u793a\uff08{count}\uff09',
+    noDataAvailable: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u30c7\u30fc\u30bf\u304c\u3042\u308a\u307e\u305b\u3093',
+    runToGenerate: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u5b9f\u884c\u3057\u3066\u30ec\u30dd\u30fc\u30c8\u3092\u751f\u6210',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ORG HISTORY
+  // ═══════════════════════════════════════════════════════════════════════════
+  orgHistory: {
+    title: '\u7d44\u7e54\u5c65\u6b74\u3068 KPI',
+    totalRuns: '\u7dcf\u5b9f\u884c\u56de\u6570\uff1a{count}',
+    totalStepsSimulated: '\u7dcf\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u30b9\u30c6\u30c3\u30d7\u6570',
+    peakTreasury: '\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc\u6700\u9ad8\u5024',
+    maxShocksInRun: '1\u56de\u306e\u5b9f\u884c\u3067\u306e\u6700\u5927\u30b7\u30e7\u30c3\u30af\u6570',
+    winRate: '\u52dd\u7387',
+    milestones: '\u30de\u30a4\u30eb\u30b9\u30c8\u30fc\u30f3',
+    firstSimCompleted: '\u521d\u56de\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u5b8c\u4e86\u3002',
+    runAtLeastOne: '\u5c11\u306a\u304f\u3068\u30821\u56de\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u5b9f\u884c\u3002',
+    sustainedOperator: '\u7d99\u7d9a\u30aa\u30da\u30ec\u30fc\u30bf\u30fc\uff1a\u7dcf\u30b9\u30c6\u30c3\u30d7 500 \u4ee5\u4e0a\u3002',
+    reach500Steps: '\u7dcf\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u30b9\u30c6\u30c3\u30d7 500 \u306b\u5230\u9054\u3002',
+    capitalized: '\u8cc7\u672c\u5316\u6e08\u307f\uff1a\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc\u304c 10,000 \u3092\u8d85\u904e\u3002',
+    growPeakTreasury: '\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc\u6700\u9ad8\u5024\u3092 10,000 \u4ee5\u4e0a\u306b\u6210\u9577\u3002',
+    noHistory: '\u7d44\u7e54\u5c65\u6b74\u304c\u307e\u3060\u3042\u308a\u307e\u305b\u3093\u3002\u5b9f\u884c\u3092\u5b8c\u4e86\u3057\u3066\u6307\u6a19\u3092\u751f\u6210\u3002',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // RUN HISTORY
+  // ═══════════════════════════════════════════════════════════════════════════
+  runHistorySection: {
+    title: '\u5b9f\u884c\u5c65\u6b74\uff08\u30bb\u30c3\u30b7\u30e7\u30f3\uff09',
+    lastRuns: '\u6700\u8fd1 {count} \u56de\u306e\u5b9f\u884c',
+    score: '\u30b9\u30b3\u30a2',
+    steps: '\u30b9\u30c6\u30c3\u30d7',
+    outcomeWon: '\u76ee\u6a19\u9054\u6210',
+    outcomeLost: '\u5b9f\u884c\u7d42\u4e86',
+    leaderboard: '\u30ea\u30fc\u30c0\u30fc\u30dc\u30fc\u30c9\uff08\u30bb\u30c3\u30b7\u30e7\u30f3\uff09',
+    noRunsRecorded: '\u5b9f\u884c\u8a18\u9332\u304c\u307e\u3060\u3042\u308a\u307e\u305b\u3093\u3002',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CHARTS
+  // ═══════════════════════════════════════════════════════════════════════════
+  charts: {
+    priceHistory: 'DAO \u30c8\u30fc\u30af\u30f3\u4fa1\u683c\u5c65\u6b74',
+    memberHeatmap: '\u30e1\u30f3\u30d0\u30fc\u30b9\u30b3\u30a2\uff1a\u30ec\u30d4\u30e5\u30c6\u30fc\u30b7\u30e7\u30f3 vs \u30c8\u30fc\u30af\u30f3\u6b8b\u9ad8',
+    memberHeatmapSubtitle: '\u30b9\u30b3\u30a2 = 50% \u30ec\u30d4\u30e5\u30c6\u30fc\u30b7\u30e7\u30f3 + 50% \u30c8\u30fc\u30af\u30f3\uff08\u6b63\u898f\u5316\uff09',
+    memberDistribution: '\u5730\u57df\u5225\u30e1\u30f3\u30d0\u30fc\u5206\u5e03',
+    loadingData: '{type} \u30c7\u30fc\u30bf\u3092\u8aad\u307f\u8fbc\u307f\u4e2d...',
+    noDataYet: '{type} \u30c7\u30fc\u30bf\u304c\u307e\u3060\u3042\u308a\u307e\u305b\u3093',
+    startToSee: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u958b\u59cb\u3057\u3066{feature}\u3092\u8868\u793a',
+    heatmapPaused: '\u30d2\u30fc\u30c8\u30de\u30c3\u30d7\u304c\u4e00\u6642\u505c\u6b62\u4e2d\u3002\u30d3\u30b8\u30e5\u30a2\u30eb\u3092\u518d\u958b\u3057\u3066\u30e1\u30f3\u30d0\u30fc\u30d2\u30fc\u30c8\u30de\u30c3\u30d7\u3092\u8868\u793a\u3002',
+    geoPaused: '\u5730\u7406\u30c1\u30e3\u30fc\u30c8\u304c\u4e00\u6642\u505c\u6b62\u4e2d\u3002\u30d3\u30b8\u30e5\u30a2\u30eb\u3092\u518d\u958b\u3057\u3066\u8868\u793a\u3002',
+    dataPoints: '{count} \u30c7\u30fc\u30bf\u30dd\u30a4\u30f3\u30c8',
+    currentLabel: '\u73fe\u5728\uff1a',
+    rangeLabel: '\u7bc4\u56f2\uff1a',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // VIEW3D
+  // ═══════════════════════════════════════════════════════════════════════════
+  view3d: {
+    hide3d: '3D \u975e\u8868\u793a',
+    show3d: '3D \u8868\u793a',
+    hidden3dMessage: '\u30ec\u30a4\u30a2\u30a6\u30c8\u3092\u30b3\u30f3\u30d1\u30af\u30c8\u306b\u4fdd\u3064\u305f\u3081 3D \u30d3\u30b8\u30e5\u30a2\u30eb\u306f\u975e\u8868\u793a\u3067\u3059\u3002',
+    show3dView: '3D \u30d3\u30e5\u30fc\u3092\u8868\u793a',
+    networkControls: '\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u30b3\u30f3\u30c8\u30ed\u30fc\u30eb',
+    showLabels: '\u30e9\u30d9\u30eb\u8868\u793a',
+    interactiveControls: '\u30a4\u30f3\u30bf\u30e9\u30af\u30c6\u30a3\u30d6\u30b3\u30f3\u30c8\u30ed\u30fc\u30eb',
+    nodes: '\u30ce\u30fc\u30c9\uff1a{count}',
+    edges: '\u30a8\u30c3\u30b8\uff1a{count}',
+    towerSnapshot: '\u30bf\u30ef\u30fc\u30b9\u30ca\u30c3\u30d7\u30b7\u30e7\u30c3\u30c8',
+    proposals: '\u63d0\u6848',
+    shocks: '\u30b7\u30e7\u30c3\u30af',
+    interDaoProposals: 'DAO \u9593\u63d0\u6848',
+    noInterDaoProposals: 'DAO \u9593\u63d0\u6848\u306f\u307e\u3060\u3042\u308a\u307e\u305b\u3093\u3002',
+    startCitySimulation: '\u30b7\u30c6\u30a3\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u958b\u59cb\u3057\u3066\u53ef\u89c6\u5316\u3092\u8868\u793a',
+    visualsPausedMessage: '\u30d3\u30b8\u30e5\u30a2\u30eb\u4e00\u6642\u505c\u6b62\u4e2d\u30023D \u30b7\u30fc\u30f3\u3092\u8868\u793a\u3059\u308b\u306b\u306f\u518d\u958b\u3057\u3066\u304f\u3060\u3055\u3044\u3002',
+    startToPopulateTower: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u958b\u59cb\u3057\u3066\u30bf\u30ef\u30fc\u3092\u57cb\u3081\u307e\u3059\u3002',
+    startToSeeNetwork: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u958b\u59cb\u3057\u3066\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u30b0\u30e9\u30d5\u3092\u8868\u793a\u3002',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DAO TOWER
+  // ═══════════════════════════════════════════════════════════════════════════
+  daoTower: {
+    title: 'DAO \u30bf\u30ef\u30fc',
+    open3d: '3D \u3092\u958b\u304f',
+    loading: 'DAO \u30bf\u30ef\u30fc\u3092\u69cb\u7bc9\u4e2d...',
+    loadingHelp: '\u5168\u54e1\u3092\u914d\u7f6e\u4e2d',
+    emptyMessage: '\u30bf\u30ef\u30fc\u306b\u30e1\u30f3\u30d0\u30fc\u304c\u307e\u3060\u3044\u307e\u305b\u3093',
+    emptyHelp: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u958b\u59cb\u3057\u3066\u30e1\u30f3\u30d0\u30fc\u306e\u5165\u5c45\u3092\u898b\u307e\u3057\u3087\u3046\uff01',
+    instructions: '\u30c9\u30e9\u30c3\u30b0\u3067\u56de\u8ee2 \u2022 \u30b9\u30af\u30ed\u30fc\u30eb\u3067\u30ba\u30fc\u30e0 \u2022 \u30e1\u30f3\u30d0\u30fc\u3092\u30af\u30ea\u30c3\u30af',
+    membersAcrossFloors: '{floors} \u30d5\u30ed\u30a2\u306b {members} \u30e1\u30f3\u30d0\u30fc',
+    floors: '\u30d5\u30ed\u30a2',
+    floor0: '\u30ed\u30d3\u30fc',
+    floor1: '\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc',
+    floor2: '\u30ac\u30d0\u30ca\u30f3\u30b9',
+    floor3: '\u958b\u767a\u30cf\u30d6',
+    floor4: '\u63d0\u6848',
+    floor5: '\u30e9\u30a6\u30f3\u30b8',
+    activity: '\u30a2\u30af\u30c6\u30a3\u30d3\u30c6\u30a3',
+    floor: '\u30d5\u30ed\u30a2',
+    reputation: '\u30ec\u30d4\u30e5\u30c6\u30fc\u30b7\u30e7\u30f3',
+    tokens: '\u30c8\u30fc\u30af\u30f3',
+    activityVoting: '\u6295\u7968\u4e2d',
+    activityProposing: '\u63d0\u6848\u4e2d',
+    activityDiscussing: '\u8b70\u8ad6\u4e2d',
+    activityCoding: '\u30b3\u30fc\u30c7\u30a3\u30f3\u30b0\u4e2d',
+    activityReviewing: '\u30ec\u30d3\u30e5\u30fc\u4e2d',
+    activityResting: '\u4f11\u61a9\u4e2d',
+    activityTrading: '\u53d6\u5f15\u4e2d',
+    activityChatting: '\u30c1\u30e3\u30c3\u30c8\u4e2d',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // NETWORK GRAPH
+  // ═══════════════════════════════════════════════════════════════════════════
+  networkGraph: {
+    title: 'DAO \u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u30b0\u30e9\u30d5',
+    loading: '\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u53ef\u89c6\u5316\u3092\u8aad\u307f\u8fbc\u307f\u4e2d...',
+    emptyMessage: '\u8868\u793a\u3059\u308b\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u30c7\u30fc\u30bf\u304c\u3042\u308a\u307e\u305b\u3093',
+    emptyHelp: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u958b\u59cb\u3057\u3066 DAO \u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u3092\u8868\u793a',
+    nodeStats: '\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u7d71\u8a08',
+    daoMember: 'DAO \u30e1\u30f3\u30d0\u30fc',
+    daoMemberDesc: '\u6295\u7968\u6a29\u3092\u6301\u3064 DAO \u53c2\u52a0\u8005',
+    governanceProposal: '\u30ac\u30d0\u30ca\u30f3\u30b9\u63d0\u6848',
+    governanceProposalDesc: '\u6295\u7968\u4e2d\u306e\u30ac\u30d0\u30ca\u30f3\u30b9\u63d0\u6848',
+    memberCluster: '\u30e1\u30f3\u30d0\u30fc\u30af\u30e9\u30b9\u30bf\u30fc',
+    memberClusterDesc: '\u985e\u4f3c\u30bf\u30a4\u30d7\u306e\u30e1\u30f3\u30d0\u30fc\u30b0\u30eb\u30fc\u30d7',
+    membersLabel: '\u30e1\u30f3\u30d0\u30fc',
+    proposalsLabel: '\u63d0\u6848',
+    clustersLabel: '\u30af\u30e9\u30b9\u30bf\u30fc',
+    totalLabel: '\u5408\u8a08',
+    inLabel: '\u5165',
+    outLabel: '\u51fa',
+    connections: '\u63a5\u7d9a',
+    connectionTypes: '\u63a5\u7d9a\u30bf\u30a4\u30d7',
+    tokenWeight: '\u30c8\u30fc\u30af\u30f3\u30a6\u30a7\u30a4\u30c8',
+    memberCount: '\u30e1\u30f3\u30d0\u30fc\u6570',
+    voteWeight: '\u6295\u7968\u30a6\u30a7\u30a4\u30c8',
+    position: '\u30dd\u30b8\u30b7\u30e7\u30f3',
+    delegation: '\u59d4\u4efb',
+    representative: '\u4ee3\u8868',
+    created: '\u4f5c\u6210\u6e08\u307f',
+    aggregated: '\u96c6\u7d04\u6e08\u307f',
+    zoomIn: '\u30ba\u30fc\u30e0\u30a4\u30f3',
+    zoomOut: '\u30ba\u30fc\u30e0\u30a2\u30a6\u30c8',
+    resetView: '\u30d3\u30e5\u30fc\u30ea\u30bb\u30c3\u30c8',
+    edgeTypes: '\u30a8\u30c3\u30b8\u30bf\u30a4\u30d7',
+    nodeInfo: '{count} \u30ce\u30fc\u30c9\u3001{edges} \u30a8\u30c3\u30b8',
+    showingOf: '{total} \u4e2d {visible} \u3092\u8868\u793a',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DAO CITY
+  // ═══════════════════════════════════════════════════════════════════════════
+  daoCity: {
+    title: 'DAO \u30b7\u30c6\u30a3',
+    subtitle: '\u30de\u30eb\u30c1 DAO \u30a8\u30b3\u30b7\u30b9\u30c6\u30e0',
+    marketplace: '\u30b0\u30ed\u30fc\u30d0\u30eb\u30de\u30fc\u30b1\u30c3\u30c8\u30d7\u30ec\u30a4\u30b9',
+    daos: 'DAO',
+    totalMembers: '\u7dcf\u30e1\u30f3\u30d0\u30fc',
+    activeLinks: '\u30a2\u30af\u30c6\u30a3\u30d6\u30ea\u30f3\u30af',
+    connections: '\u63a5\u7d9a',
+    tokenBridge: '\u30c8\u30fc\u30af\u30f3\u30d6\u30ea\u30c3\u30b8',
+    jointProposal: '\u5171\u540c\u63d0\u6848',
+    memberTransfer: '\u30e1\u30f3\u30d0\u30fc\u79fb\u7c4d',
+    emptyMessage: 'DAO \u30b7\u30c6\u30a3\u30c7\u30fc\u30bf\u304c\u3042\u308a\u307e\u305b\u3093',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // TOKEN TRACKER
+  // ═══════════════════════════════════════════════════════════════════════════
+  tokenTracker: {
+    daoToken: 'DAO \u30c8\u30fc\u30af\u30f3',
+    marketCap: '\u6642\u4fa1\u7dcf\u984d',
+    high24h: '24\u6642\u9593\u6700\u9ad8\u5024',
+    low24h: '24\u6642\u9593\u6700\u5b89\u5024',
+    holders: '\u4fdd\u6709\u8005\uff1a{count}',
+    supply: '\u4f9b\u7d66\u91cf\uff1a{amount}K',
+    fromStart: '\u958b\u59cb\u6642\u304b\u3089 {change}',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // TOKEN RANKING
+  // ═══════════════════════════════════════════════════════════════════════════
+  tokenRanking: {
+    title: '\u30c8\u30fc\u30af\u30f3\u30e9\u30f3\u30ad\u30f3\u30b0',
+    subtitle: '\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0 DAO \u30c8\u30fc\u30af\u30f3\u4fa1\u683c',
+    totalMarketCap: '\u7dcf\u6642\u4fa1\u7dcf\u984d',
+    volume24h: '24\u6642\u9593\u53d6\u5f15\u91cf',
+    rank: '#',
+    token: '\u30c8\u30fc\u30af\u30f3',
+    price: '\u4fa1\u683c',
+    change24h: '24\u6642\u9593',
+    volume: '\u53d6\u5f15\u91cf',
+    marketCap: '\u6642\u4fa1\u7dcf\u984d',
+    tokensTracked: '{count} \u30c8\u30fc\u30af\u30f3\u3092\u8ffd\u8de1\u4e2d',
+    noDataAvailable: '\u30c8\u30fc\u30af\u30f3\u30c7\u30fc\u30bf\u304c\u3042\u308a\u307e\u305b\u3093',
+    startCityToSee: '\u30b7\u30c6\u30a3\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u958b\u59cb\u3057\u3066\u30e9\u30f3\u30ad\u30f3\u30b0\u3092\u8868\u793a',
+    noRankings: '\u30e9\u30f3\u30ad\u30f3\u30b0\u304c\u3042\u308a\u307e\u305b\u3093',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // HEATMAP
+  // ═══════════════════════════════════════════════════════════════════════════
+  heatmap: {
+    title: '\u30e1\u30f3\u30d0\u30fc\u30b9\u30b3\u30a2\uff1a\u30ec\u30d4\u30e5\u30c6\u30fc\u30b7\u30e7\u30f3 vs \u30c8\u30fc\u30af\u30f3\u6b8b\u9ad8',
+    subtitle: '\u30b9\u30b3\u30a2 = 50% \u30ec\u30d4\u30e5\u30c6\u30fc\u30b7\u30e7\u30f3 + 50% \u30c8\u30fc\u30af\u30f3\uff08\u6b63\u898f\u5316\uff09',
+    loading: '\u30e1\u30f3\u30d0\u30fc\u30c7\u30fc\u30bf\u3092\u8aad\u307f\u8fbc\u307f\u4e2d...',
+    emptyMessage: '\u8868\u793a\u3059\u308b\u30e1\u30f3\u30d0\u30fc\u304c\u3044\u307e\u305b\u3093',
+    emptyHelp: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u958b\u59cb\u3057\u3066\u30e1\u30f3\u30d0\u30fc\u30c7\u30fc\u30bf\u3092\u8868\u793a',
+    colorLow: '\u4f4e',
+    colorHigh: '\u9ad8',
+    xAxis: '\u30c8\u30fc\u30af\u30f3\u6b8b\u9ad8\uff08\u6b63\u898f\u5316 0-100\uff09',
+    yAxis: '\u30ec\u30d4\u30e5\u30c6\u30fc\u30b7\u30e7\u30f3\uff08\u6b63\u898f\u5316 0-100\uff09',
+    quadrantHighRepLowTokens: '\u9ad8\u30ec\u30d4\u30e5\u30c6\u30fc\u30b7\u30e7\u30f3/\u4f4e\u30c8\u30fc\u30af\u30f3',
+    quadrantHighInfluence: '\u9ad8\u5f71\u97ff\u529b',
+    quadrantLowInfluence: '\u4f4e\u5f71\u97ff\u529b',
+    quadrantLowRepHighTokens: '\u4f4e\u30ec\u30d4\u30e5\u30c6\u30fc\u30b7\u30e7\u30f3/\u9ad8\u30c8\u30fc\u30af\u30f3',
+    membersCount: '{count} \u30e1\u30f3\u30d0\u30fc',
+    avgScore: '\u5e73\u5747\u30b9\u30b3\u30a2\uff1a{value}',
+    highInfluenceCount: '{count} \u4ef6\u304c\u9ad8\u5f71\u97ff\u529b',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CHOROPLETH
+  // ═══════════════════════════════════════════════════════════════════════════
+  choropleth: {
+    title: '\u5730\u57df\u5225\u30e1\u30f3\u30d0\u30fc\u5206\u5e03',
+    loading: '\u4f4d\u7f6e\u30c7\u30fc\u30bf\u3092\u8aad\u307f\u8fbc\u307f\u4e2d...',
+    emptyMessage: '\u8868\u793a\u3059\u308b\u4f4d\u7f6e\u30c7\u30fc\u30bf\u304c\u3042\u308a\u307e\u305b\u3093',
+    emptyHelp: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u958b\u59cb\u3057\u3066\u30e1\u30f3\u30d0\u30fc\u5206\u5e03\u3092\u8868\u793a',
+    clickForDetails: '\u30d0\u30fc\u3092\u30af\u30ea\u30c3\u30af\u3057\u3066\u8a73\u7d30\u3092\u8868\u793a',
+    sampleMembers: '\u30b5\u30f3\u30d7\u30eb\u30e1\u30f3\u30d0\u30fc\uff1a',
+    moreMembers: '\u4ed6 {count} \u4ef6',
+    topLocation: '\u4e3b\u8981\u5730\u57df\uff1a{name}\uff08{percentage}%\uff09',
+    locationsShown: '{count} \u5730\u57df\u3092\u8868\u793a',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // STATES
+  // ═══════════════════════════════════════════════════════════════════════════
+  states: {
+    waitingForData: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u30c7\u30fc\u30bf\u3092\u5f85\u6a5f\u4e2d',
+    startSimulation: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u3092\u958b\u59cb\u3057\u3066\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u53ef\u89c6\u5316\u3092\u8868\u793a',
+    connectToWebSocket: 'WebSocket \u306b\u63a5\u7d9a\uff1a{url}',
+    noSimulationData: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u30c7\u30fc\u30bf\u304c\u3042\u308a\u307e\u305b\u3093',
+    mapPaused: '\u30de\u30c3\u30d7\u304c\u4e00\u6642\u505c\u6b62\u4e2d\u3002\u30d3\u30b8\u30e5\u30a2\u30eb\u3092\u518d\u958b\u3057\u3066 DAO \u30de\u30c3\u30d7\u3092\u8868\u793a\u3002',
+    noOpsLogged: '\u307e\u3060\u30aa\u30da\u30ec\u30fc\u30b7\u30e7\u30f3\u304c\u8a18\u9332\u3055\u308c\u3066\u3044\u307e\u305b\u3093\u3002',
+    visualsPaused: '\u30d3\u30b8\u30e5\u30a2\u30eb\u4e00\u6642\u505c\u6b62\u4e2d\u3002{feature}\u3092\u8868\u793a\u3059\u308b\u306b\u306f\u518d\u958b\u3057\u3066\u304f\u3060\u3055\u3044\u3002',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // OPS LOG
+  // ═══════════════════════════════════════════════════════════════════════════
+  opsLog: {
+    title: '\u30aa\u30da\u30ec\u30fc\u30b7\u30e7\u30f3\u30ed\u30b0',
+    recentEvents: '\u6700\u8fd1 {count} \u4ef6\u306e\u30a4\u30d9\u30f3\u30c8',
+    opsSnapshot: '\u30aa\u30da\u30ec\u30fc\u30b7\u30e7\u30f3\u30b9\u30ca\u30c3\u30d7\u30b7\u30e7\u30c3\u30c8',
+    priceAndTreasury: '\u4fa1\u683c {price}\u3001\u30c8\u30ec\u30b8\u30e3\u30ea\u30fc {treasury}',
+    riskEvent: '\u30ea\u30b9\u30af\u30a4\u30d9\u30f3\u30c8\uff1a\u30de\u30fc\u30b1\u30c3\u30c8\u30b7\u30e7\u30c3\u30af',
+    marketShock: '\u30de\u30fc\u30b1\u30c3\u30c8\u30b7\u30e7\u30c3\u30af',
+    upsideMove: '\u4e0a\u6607\u52d5\u304d',
+    downsideMove: '\u4e0b\u843d\u52d5\u304d',
+    severity: '\u6df1\u523b\u5ea6 {value}',
+    objectiveCompleted: '\u76ee\u6a19\u5b8c\u4e86',
+    stepLabel: '\u30b9\u30c6\u30c3\u30d7 {step}',
+    event: '\u30a4\u30d9\u30f3\u30c8',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // NOTIFICATIONS
+  // ═══════════════════════════════════════════════════════════════════════════
+  notifications: {
+    missionCompleted: '\u30df\u30c3\u30b7\u30e7\u30f3\u5b8c\u4e86\uff1a{name}',
+    marketShockAlert: '\u30de\u30fc\u30b1\u30c3\u30c8\u30b7\u30e7\u30c3\u30af\uff1a\u6df1\u523b\u5ea6 {severity}\uff08\u30b9\u30c6\u30c3\u30d7 {step}\uff09',
+    celebrateMessage: '\u52dd\u5229\u3092\u795d\u3044\u3001\u30b7\u30e7\u30c3\u30af\u306b\u5099\u3048\u307e\u3057\u3087\u3046\u3002\u5fc5\u8981\u306b\u5fdc\u3058\u3066\u901f\u5ea6\u3084\u6226\u7565\u3092\u8abf\u6574\u3057\u3066\u304f\u3060\u3055\u3044\u3002',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SHORTCUTS
+  // ═══════════════════════════════════════════════════════════════════════════
+  shortcuts: {
+    title: '\u30ad\u30fc\u30dc\u30fc\u30c9\u30b7\u30e7\u30fc\u30c8\u30ab\u30c3\u30c8',
+    simulation: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3',
+    startStop: '\u958b\u59cb/\u505c\u6b62',
+    step: '\u30b9\u30c6\u30c3\u30d7',
+    reset: '\u30ea\u30bb\u30c3\u30c8',
+    navigation: '\u30ca\u30d3\u30b2\u30fc\u30b7\u30e7\u30f3\uff08Alt + \u30ad\u30fc\uff09',
+    pressToToggle: '? \u3092\u62bc\u3057\u3066\u3053\u306e\u30e1\u30cb\u30e5\u30fc\u3092\u5207\u308a\u66ff\u3048',
+    buttonLabel: '\u30b7\u30e7\u30fc\u30c8\u30ab\u30c3\u30c8',
+    expandNav: '\u30ca\u30d3\u30b2\u30fc\u30b7\u30e7\u30f3\u3092\u5c55\u958b',
+    collapseNav: '\u30ca\u30d3\u30b2\u30fc\u30b7\u30e7\u30f3\u3092\u6298\u308a\u305f\u305f\u3080',
+    showShortcuts: '\u30ad\u30fc\u30dc\u30fc\u30c9\u30b7\u30e7\u30fc\u30c8\u30ab\u30c3\u30c8\u3092\u8868\u793a\uff08?\uff09',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // RUN SUMMARY
+  // ═══════════════════════════════════════════════════════════════════════════
+  runSummary: {
+    title: '\u5b9f\u884c\u30b5\u30de\u30ea\u30fc',
+    runComplete: '\u5b9f\u884c\u5b8c\u4e86',
+    objectivesAchieved: '\u76ee\u6a19\u9054\u6210',
+    runEnded: '\u5b9f\u884c\u7d42\u4e86',
+    treasuryInsolvency: '\u5b9f\u884c\u7d42\u4e86 \u2013 \u30c8\u30ec\u30b8\u30e3\u30ea\u30fc\u7834\u7dbb',
+    priceCollapse: '\u5b9f\u884c\u7d42\u4e86 \u2013 \u30c8\u30fc\u30af\u30f3\u4fa1\u683c\u5d29\u58ca',
+    governanceBacklog: '\u5b9f\u884c\u7d42\u4e86 \u2013 \u30ac\u30d0\u30ca\u30f3\u30b9\u6e9e\u7559',
+    timeline: '\u30bf\u30a4\u30e0\u30e9\u30a4\u30f3',
+    retryPreset: '\u540c\u3058\u30d7\u30ea\u30bb\u30c3\u30c8\u3067\u518d\u8a66\u884c',
+    score: '\u30b9\u30b3\u30a2',
+    seed: '\u30b7\u30fc\u30c9',
+    preset: '\u30d7\u30ea\u30bb\u30c3\u30c8',
+    strategy: '\u6226\u7565',
+    outcome: '\u7d50\u679c',
+    defaultStrategy: '\u30d9\u30fc\u30b9\u30e9\u30a4\u30f3',
+    steps: '\u30b9\u30c6\u30c3\u30d7',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // HOME
+  // ═══════════════════════════════════════════════════════════════════════════
+  home: {
+    title: 'DAO \u30b7\u30df\u30e5\u30ec\u30fc\u30bf',
+    subtitle: '\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u5206\u6563\u578b\u30ac\u30d0\u30ca\u30f3\u30b9\u53ef\u89c6\u5316',
+    description: '\u9a5a\u304f\u3079\u304d 3D \u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u30b0\u30e9\u30d5\u3001\u30a4\u30f3\u30bf\u30e9\u30af\u30c6\u30a3\u30d6\u30c1\u30e3\u30fc\u30c8\u3001\u5305\u62ec\u7684\u306a\u5206\u6790\u3092\u901a\u3058\u3066\u3001\u5206\u6563\u578b\u610f\u601d\u6c7a\u5b9a\u306e\u7f8e\u3057\u3055\u3092\u4f53\u9a13\u3057\u3066\u304f\u3060\u3055\u3044\u3002',
+    launchDashboard: '\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9\u3092\u958b\u304f',
+    feature3dLabel: '3D',
+    feature3dTitle: '3D \u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u30b0\u30e9\u30d5',
+    feature3dDesc: 'WebGL \u3068 Three.js \u3067\u8907\u96d1\u306a\u30ac\u30d0\u30ca\u30f3\u30b9\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u3092\u9a5a\u304f\u3079\u304d 3D \u3067\u53ef\u89c6\u5316',
+    featureLiveLabel: '\u30e9\u30a4\u30d6',
+    featureLiveTitle: '\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u5206\u6790',
+    featureLiveDesc: 'WebSocket \u7d4c\u7531\u3067\u66f4\u65b0\u3055\u308c\u308b\u30e9\u30a4\u30d6\u4fa1\u683c\u30c1\u30e3\u30fc\u30c8\u3001\u30d2\u30fc\u30c8\u30de\u30c3\u30d7\u3001\u5305\u62ec\u7684\u30ec\u30dd\u30fc\u30c8',
+    featureAgentsLabel: '\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8',
+    featureAgentsTitle: '\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u30d9\u30fc\u30b9\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3',
+    featureAgentsDesc: '\u81ea\u5f8b\u578b\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u304c\u4ea4\u6d41\u3001\u6295\u7968\u3057\u3001DAO \u306e\u672a\u6765\u3092\u5f62\u4f5c\u308b\u69d8\u5b50\u3092\u89b3\u5bdf',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // FOOTER
+  // ═══════════════════════════════════════════════════════════════════════════
+  footer: {
+    brand: 'DAO \u30b7\u30df\u30e5\u30ec\u30fc\u30bf',
+    stack: 'Next.js, Three.js, Recharts, Socket.IO',
+    tagline: '\u512a\u308c\u305f\u6280\u8853\u8005\u3068\u30a2\u30fc\u30c6\u30a3\u30b9\u30c8\u304c\u30d3\u30b8\u30e7\u30f3\u3092\u6301\u3063\u3066\u69cb\u7bc9',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ERRORS
+  // ═══════════════════════════════════════════════════════════════════════════
+  errors: {
+    somethingWentWrong: '\u554f\u984c\u304c\u767a\u751f\u3057\u307e\u3057\u305f',
+    unexpectedError: '\u4e88\u671f\u3057\u306a\u3044\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002\u3054\u4e0d\u4fbf\u3092\u304a\u304b\u3051\u3057\u3066\u7533\u3057\u8a33\u3054\u3056\u3044\u307e\u305b\u3093\u3002',
+    errorId: '\u30a8\u30e9\u30fc ID\uff1a',
+    tryAgain: '\u518d\u8a66\u884c',
+    goHome: '\u30db\u30fc\u30e0\u3078',
+    persistsReport: '\u554f\u984c\u304c\u7d9a\u304f\u5834\u5408\u306f\u3001',
+    reportIssue: '\u554f\u984c\u3092\u5831\u544a',
+    pageNotFound: '\u30da\u30fc\u30b8\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093',
+    pageNotFoundDesc: '\u304a\u63a2\u3057\u306e\u30da\u30fc\u30b8\u306f\u5b58\u5728\u3057\u306a\u3044\u304b\u3001\u79fb\u52d5\u3055\u308c\u307e\u3057\u305f\u3002',
+    openDashboard: '\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9\u3092\u958b\u304f',
+    visualization3dUnavailable: '3D \u53ef\u89c6\u5316\u306f\u5229\u7528\u3067\u304d\u307e\u305b\u3093',
+    webglError: '3D \u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u30b0\u30e9\u30d5\u3092\u30ec\u30f3\u30c0\u30ea\u30f3\u30b0\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u30d6\u30e9\u30a6\u30b6\u307e\u305f\u306f\u30b0\u30e9\u30d5\u30a3\u30c3\u30af\u30b9\u30ab\u30fc\u30c9\u306e WebGL \u4e92\u63db\u6027\u306e\u554f\u984c\u304c\u539f\u56e0\u304b\u3082\u3057\u308c\u307e\u305b\u3093\u3002',
+    checkWebgl: 'WebGL \u30b5\u30dd\u30fc\u30c8\u3092\u78ba\u8a8d',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // LOADING
+  // ═══════════════════════════════════════════════════════════════════════════
+  loadingStates: {
+    loading: '\u8aad\u307f\u8fbc\u307f\u4e2d',
+    pleaseWait: '\u304a\u5f85\u3061\u304f\u3060\u3055\u3044...',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ACCESSIBILITY
+  // ═══════════════════════════════════════════════════════════════════════════
+  a11y: {
+    skipToMain: '\u30e1\u30a4\u30f3\u30b3\u30f3\u30c6\u30f3\u30c4\u3078\u30b9\u30ad\u30c3\u30d7',
+    expandNavigation: '\u30ca\u30d3\u30b2\u30fc\u30b7\u30e7\u30f3\u3092\u5c55\u958b',
+    collapseNavigation: '\u30ca\u30d3\u30b2\u30fc\u30b7\u30e7\u30f3\u3092\u6298\u308a\u305f\u305f\u3080',
+    showKeyboardShortcuts: '\u30ad\u30fc\u30dc\u30fc\u30c9\u30b7\u30e7\u30fc\u30c8\u30ab\u30c3\u30c8\u3092\u8868\u793a\uff08?\uff09',
+    simulationSpeedMultiplier: '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u901f\u5ea6\u500d\u7387\u3002\u5024\u304c\u9ad8\u3044\u307b\u3069\u9ad8\u901f\u3067\u5b9f\u884c\u3055\u308c\u307e\u3059\u3002',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // METADATA
+  // ═══════════════════════════════════════════════════════════════════════════
+  metadata: {
+    title: 'DAO \u30b7\u30df\u30e5\u30ec\u30fc\u30bf',
+    titleTemplate: '%s | DAO \u30b7\u30df\u30e5\u30ec\u30fc\u30bf',
+    description: '\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u5206\u6563\u578b\u30ac\u30d0\u30ca\u30f3\u30b9\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9\u3002DAO \u306e\u30c0\u30a4\u30ca\u30df\u30af\u30b9\u3001\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u306e\u884c\u52d5\u3001\u30ac\u30d0\u30ca\u30f3\u30b9\u30e1\u30ab\u30cb\u30ba\u30e0\u3092\u63a2\u7d22\u3002',
+    keywords: ['DAO', '\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3', '\u30ac\u30d0\u30ca\u30f3\u30b9', '\u30d6\u30ed\u30c3\u30af\u30c1\u30a7\u30fc\u30f3', '\u5206\u6563\u578b', '\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8\u30d9\u30fc\u30b9\u30e2\u30c7\u30ea\u30f3\u30b0'],
+    author: 'DAO \u30b7\u30df\u30e5\u30ec\u30fc\u30bf\u30c1\u30fc\u30e0',
+    ogTitle: 'DAO \u30b7\u30df\u30e5\u30ec\u30fc\u30bf',
+    ogDescription: '\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u5206\u6563\u578b\u30ac\u30d0\u30ca\u30f3\u30b9\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9',
+    ogSiteName: 'DAO \u30b7\u30df\u30e5\u30ec\u30fc\u30bf',
+    twitterTitle: 'DAO \u30b7\u30df\u30e5\u30ec\u30fc\u30bf',
+    twitterDescription: '\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u5206\u6563\u578b\u30ac\u30d0\u30ca\u30f3\u30b9\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ATLAS
+  // ═══════════════════════════════════════════════════════════════════════════
+  atlas: {
+    tagline: 'DAO \u7814\u7a76\u3092\u5b9f\u884c\u53ef\u80fd\u306b',
+    heroTitle: 'DAO \u7814\u7a76\u30a2\u30c8\u30e9\u30b9',
+    heroDescription: '21 \u306e\u5b9f\u9a13\u69cb\u6210\u306b\u304a\u3051\u308b 16,370 \u56de\u306e\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u5b9f\u884c\u304b\u3089\u5f97\u3089\u308c\u305f\u5b9f\u884c\u53ef\u80fd\u306a\u30ac\u30d0\u30ca\u30f3\u30b9\u306e\u77e5\u898b\u3002\u4ee5\u4e0b\u306e\u4efb\u610f\u306e\u7814\u7a76\u8ab2\u984c\u304b\u3089\u59cb\u3081\u307e\u3057\u3087\u3046\u3002',
+    heroCta: '\u7814\u7a76\u3092\u63a2\u7d22',
+    nav: '\u30e1\u30a4\u30f3\u30ca\u30d3\u30b2\u30fc\u30b7\u30e7\u30f3',
+    consoleLink: '\u30b3\u30f3\u30bd\u30fc\u30eb',
+    researchHeading: '\u7814\u7a76',
+    researchSubtitle: '\u3059\u3079\u3066\u306e\u7814\u7a76\u8ab2\u984c\u306b\u5bfe\u3059\u308b\u610f\u601d\u6c7a\u5b9a\u30d6\u30ea\u30fc\u30d5',
+    papersHeading: '\u8ad6\u6587',
+    papersSubtitle: '\u5b8c\u5168\u306a\u7814\u7a76\u8ad6\u6587\u3068\u30a2\u30fc\u30ab\u30a4\u30d6\u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9',
+    methodologyHeading: '\u3053\u306e\u7814\u7a76\u304c\u91cd\u8981\u306a\u7406\u7531',
+    advancedHeading: '\u4e0a\u7d1a\u30bb\u30af\u30b7\u30e7\u30f3',
+    advancedDesc: '\u751f\u306e\u6307\u6a19\u3001\u30bd\u30fc\u30b9\u30d5\u30a1\u30a4\u30eb\u3001\u5b8c\u5168\u306a\u6280\u8853\u30a2\u30fc\u30c6\u30a3\u30d5\u30a1\u30af\u30c8\u3002',
+    whatWeFound: '\u7d50\u679c\u304c\u793a\u3057\u305f\u3053\u3068',
+    whatToDo: '\u4f55\u3092\u3059\u3079\u304d\u304b',
+    whyItMatters: '\u91cd\u8981\u306a\u7406\u7531\uff1a',
+    evidenceLabel: '\u30a8\u30d3\u30c7\u30f3\u30b9\u30d9\u30fc\u30b9',
+    evidenceDesc: '\u6838\u5fc3\u30ac\u30d0\u30ca\u30f3\u30b9\u8ad6\u6587\u306f 21 \u306e\u5b9f\u9a13\u69cb\u6210\u3067 16,370 \u56de\u306e\u5b9f\u884c\u3092\u5831\u544a\u3002',
+    briefsLabel: '\u610f\u601d\u6c7a\u5b9a\u30d6\u30ea\u30fc\u30d5',
+    briefsCount: '\u4ef6\u306e\u30d6\u30ea\u30fc\u30d5\u304c\u53c2\u52a0\u3001\u6355\u7372\u3001\u904b\u55b6\u3001\u8ca1\u52d9\u3001\u5354\u8abf\u3001LLM \u30ac\u30d0\u30ca\u30f3\u30b9\u3092\u30ab\u30d0\u30fc\u3002',
+    authorLabel: '\u8457\u8005',
+    authorDesc: '\u7814\u7a76\u65b9\u5411\u3068\u30b7\u30b9\u30c6\u30e0\u601d\u8003\uff1a',
+    confidenceNote: '\u78ba\u4fe1\u5ea6\u306b\u95a2\u3059\u308b\u6ce8\u8a18\uff1a',
+    briefLabel: '\u30d6\u30ea\u30fc\u30d5',
+    openFullBrief: '\u5b8c\u5168\u306a\u30d6\u30ea\u30fc\u30d5\u3092\u958b\u304f',
+    sourceBriefMarkdown: '\u30d6\u30ea\u30fc\u30d5\u30bd\u30fc\u30b9 Markdown',
+    relatedPaperPdf: '\u95a2\u9023\u8ad6\u6587 PDF',
+    currentPdf: '\u73fe\u5728\u306e PDF',
+    currentTex: '\u73fe\u5728\u306e TeX',
+    latestArchivedPdf: '\u6700\u65b0\u30a2\u30fc\u30ab\u30a4\u30d6 PDF',
+    rawMetricTakeaways: '\u751f\u6307\u6a19\u306e\u8981\u70b9',
+    methodNotes: '\u65b9\u6cd5\u8ad6\u30ce\u30fc\u30c8',
+    wordsCount: '\u5b57',
+    briefSourceFiles: '\u30d6\u30ea\u30fc\u30d5\u30bd\u30fc\u30b9\u30d5\u30a1\u30a4\u30eb + \u751f\u6307\u6a19',
+    footerAttribution: 'DAO \u7814\u7a76\u30a2\u30c8\u30e9\u30b9\uff1a\u8457\u8005',
+    keyTerms: '\u91cd\u8981\u7528\u8a9e',
+    footerConsole: '\u904b\u7528\u30c4\u30fc\u30eb\u306f\u30ea\u30dd\u30b8\u30c8\u30ea\u5185\u306e',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CONSOLE
+  // ═══════════════════════════════════════════════════════════════════════════
+  console: {
+    heading: '\u5b9f\u9a13\u7ba1\u7406',
+    subtitle: 'DAO \u7814\u7a76\u30b3\u30f3\u30bd\u30fc\u30eb',
+    description: '\u5b9f\u9a13\u5b9f\u884c\u306e\u7ba1\u7406\u3001\u7d50\u679c\u306e\u78ba\u8a8d\u3001\u30ec\u30dd\u30fc\u30c8\u306e\u751f\u6210\u3001\u8ad6\u6587\u30a2\u30fc\u30c6\u30a3\u30d5\u30a1\u30af\u30c8\u306e\u66f4\u65b0\u3002\u3059\u3079\u3066\u306e\u64cd\u4f5c\u306f\u30ed\u30fc\u30ab\u30eb\u3067\u5b9f\u884c\u3055\u308c\u3001\u30ed\u30b0\u306f\u7d50\u679c\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u306b\u66f8\u304d\u8fbc\u307e\u308c\u307e\u3059\u3002',
+    latestAction: '\u6700\u65b0\u306e\u30a2\u30af\u30b7\u30e7\u30f3\u304c\u30ad\u30e5\u30fc\u306b\u5165\u308a\u307e\u3057\u305f',
+    runExperiments: '\u5b9f\u9a13\u3092\u5b9f\u884c',
+    selectConfig: '\u8a2d\u5b9a\u30d5\u30a1\u30a4\u30eb\u3092\u9078\u629e\u3057\u3066\u30d0\u30c3\u30c1\u5b9f\u884c\u3092\u958b\u59cb\u307e\u305f\u306f\u518d\u958b\u3002',
+    selectPlaceholder: '\u8a2d\u5b9a\u3092\u9078\u629e',
+    run: '\u5b9f\u884c',
+    resume: '\u518d\u958b',
+    resumeLabel: '\u518d\u958b\u8a2d\u5b9a',
+    reports: '\u30ec\u30dd\u30fc\u30c8',
+    generateReport: '\u65e2\u5b58\u306e\u7d50\u679c\u304b\u3089\u7814\u7a76\u54c1\u8cea\u306e\u30ec\u30dd\u30fc\u30c8\u3092\u751f\u6210\u3002',
+    generateReportBtn: '\u30ec\u30dd\u30fc\u30c8\u3092\u751f\u6210',
+    paperPipeline: '\u8ad6\u6587\u30d1\u30a4\u30d7\u30e9\u30a4\u30f3',
+    paperPipelineDesc: '\u6700\u65b0\u306e\u7d50\u679c\u304b\u3089\u5b66\u8853\u8ad6\u6587\u3092\u66f4\u65b0\u3001PDF \u3092\u30b3\u30f3\u30d1\u30a4\u30eb\u3001\u30ea\u30ea\u30fc\u30b9\u3092\u30a2\u30fc\u30ab\u30a4\u30d6\u3002',
+    updatePaper: '\u8ad6\u6587\u3092\u66f4\u65b0',
+    compileLabel: '\u30b3\u30f3\u30d1\u30a4\u30eb',
+    archiveAll: '\u3059\u3079\u3066\u30a2\u30fc\u30ab\u30a4\u30d6',
+    experimentConfigs: '\u5b9f\u9a13\u8a2d\u5b9a',
+    resultsArchive: '\u7d50\u679c\u30a2\u30fc\u30ab\u30a4\u30d6',
+    noConfigs: '\u5b9f\u9a13\u8a2d\u5b9a\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002',
+    noResults: './results \u306b\u7d50\u679c\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002',
+    configCount: '\u4ef6\u306e\u8a2d\u5b9a',
+    resultCount: '\u4ef6\u306e\u7d50\u679c\u30bb\u30c3\u30c8',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // RESULTS
+  // ═══════════════════════════════════════════════════════════════════════════
+  results: {
+    heading: '\u7d50\u679c',
+    status: '\u30b9\u30c6\u30fc\u30bf\u30b9',
+    files: '\u30d5\u30a1\u30a4\u30eb',
+    backToAtlas: '\u30a2\u30c8\u30e9\u30b9\u3078\u623b\u308b',
+    backToConsole: '\u30b3\u30f3\u30bd\u30fc\u30eb\u3078\u623b\u308b',
+    previewTruncated: '\u30d7\u30ec\u30d3\u30e5\u30fc\u304c\u5207\u308a\u8a70\u3081\u3089\u308c\u307e\u3057\u305f\uff1a',
+    noFiles: '\u30d5\u30a1\u30a4\u30eb\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002',
+    noStatus: 'status.json \u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002',
+  },
+};
