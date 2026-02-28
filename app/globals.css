@@ -274,6 +274,14 @@ body:has(.theme-console) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   Chart Gallery — override SVG max-width when in gallery context
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.chart-gallery-item svg {
+  max-width: 100% !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    Chart Lightbox — native <dialog> for enlarged infographics
    ═══════════════════════════════════════════════════════════════════════════ */
 

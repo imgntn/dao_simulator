@@ -4,6 +4,7 @@ import {
   CURATED_BRIEF_COPY,
   PAPER_PROFILES,
   JAMES_SITE_URL,
+  CALIBRATION_SCORES,
 } from '@/lib/atlas/content';
 import {
   readText,
@@ -24,6 +25,8 @@ import { TableOfContents } from '@/components/atlas/TableOfContents';
 import { BriefDetail } from '@/components/atlas/BriefDetail';
 import { PaperCard } from '@/components/atlas/PaperCard';
 import { generateResearchProjectJsonLd } from '@/lib/atlas/structured-data';
+import { StickyNav } from '@/components/atlas/StickyNav';
+import { CollapsibleBrief } from '@/components/atlas/CollapsibleBrief';
 import { QuorumReachChart } from '@/components/atlas/infographics/QuorumReachChart';
 import { WhaleInfluenceChart } from '@/components/atlas/infographics/WhaleInfluenceChart';
 import { PipelineFlowChart } from '@/components/atlas/infographics/PipelineFlowChart';
@@ -111,22 +114,58 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         dangerouslySetInnerHTML={{ __html: generateResearchProjectJsonLd(locale) }}
       />
 
+      <StickyNav sections={[
+        { id: 'podcast', label: 'Podcast' },
+        { id: 'digital-twins', label: 'Digital Twins' },
+        { id: 'why', label: 'Why It Matters' },
+        { id: 'charts', label: 'Charts' },
+        { id: 'research', label: 'Research' },
+        { id: 'papers', label: 'Papers' },
+        { id: 'advanced', label: 'Advanced' },
+      ]} />
+
       {/* ── Hero ── */}
       <header className="rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-7 shadow-[var(--shadow-header)] sm:p-10">
-        <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--accent-gold)]">
-          {m.atlas?.tagline ?? 'DAO Research, Made Actionable'}
-        </p>
-        <h1 className="mt-3 max-w-4xl font-serif-display text-4xl leading-[1.08] text-[var(--text-heading)] sm:text-6xl">
-          {m.atlas?.heroTitle ?? 'DAO Research Atlas'}
-        </h1>
-        <p className="mt-5 max-w-3xl text-[1.12rem] leading-relaxed text-[var(--text-body)] sm:text-[1.25rem]">
-          {m.atlas?.heroDescription ??
-            'Actionable governance findings from 16,370 simulation runs across 21 experiment configurations. Start with any research question below.'}
-        </p>
-        <p className="mt-3 max-w-3xl text-[1rem] leading-relaxed text-[var(--text-body-secondary)] sm:text-[1.08rem]">
-          {m.atlas?.podcastDesc ??
-            'James Pollack joined the Green Pill podcast to explore whether a DAO can be run by AI \u2014 the dynamics of agent-based models, what it looks like to put governance on-chain, and the research that became this atlas.'}
-        </p>
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12">
+          {/* Left: text content */}
+          <div className="flex-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--accent-gold)]">
+              {m.atlas?.tagline ?? 'DAO Research, Made Actionable'}
+            </p>
+            <h1 className="mt-3 max-w-4xl font-serif-display text-4xl leading-[1.08] text-[var(--text-heading)] sm:text-6xl">
+              {m.atlas?.heroTitle ?? 'DAO Research Atlas'}
+            </h1>
+            <p className="mt-5 max-w-3xl text-[1.12rem] leading-relaxed text-[var(--text-body)] sm:text-[1.25rem]">
+              {m.atlas?.heroDescription ??
+                'Actionable governance findings from 16,370 simulation runs across 21 experiment configurations. Start with any research question below.'}
+            </p>
+            <p className="mt-3 max-w-3xl text-[1rem] leading-relaxed text-[var(--text-body-secondary)] sm:text-[1.08rem]">
+              {m.atlas?.podcastDesc ??
+                'James Pollack joined the Green Pill podcast to explore whether a DAO can be run by AI \u2014 the dynamics of agent-based models, what it looks like to put governance on-chain, and the research that became this atlas.'}
+            </p>
+          </div>
+
+          {/* Right: hero chart + stat counters */}
+          <div className="flex shrink-0 flex-col items-center gap-4 lg:w-[280px]">
+            <div className="chart-gallery-item w-full rounded-2xl border border-[var(--border-subtle)] bg-white p-4">
+              <QuorumReachChart />
+            </div>
+            <div className="grid w-full grid-cols-3 gap-2 text-center">
+              <div className="rounded-xl bg-[var(--surface-warm)] p-2">
+                <p className="text-lg font-bold text-[var(--accent-teal)]">16,370</p>
+                <p className="text-[0.6rem] uppercase tracking-wide text-[var(--text-muted)]">Runs</p>
+              </div>
+              <div className="rounded-xl bg-[var(--surface-warm)] p-2">
+                <p className="text-lg font-bold text-[var(--accent-teal)]">14</p>
+                <p className="text-[0.6rem] uppercase tracking-wide text-[var(--text-muted)]">DAOs</p>
+              </div>
+              <div className="rounded-xl bg-[var(--surface-warm)] p-2">
+                <p className="text-lg font-bold text-[var(--accent-gold)]">6</p>
+                <p className="text-[0.6rem] uppercase tracking-wide text-[var(--text-muted)]">Briefs</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div className="mt-7 grid gap-3 sm:grid-cols-3">
           <InfoCard label={m.atlas?.briefsLabel ?? 'Decision Briefs'}>
@@ -266,11 +305,27 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 {m.atlas?.digitalTwinsCategories ?? 'DeFi, Layer 2, Public Goods, Staking, Lending, Identity, Stablecoin, DEX'}
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
-                {(m.atlas?.digitalTwinsDaos ?? 'Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, SushiSwap').split(', ').map((dao) => (
-                  <span key={dao} className="inline-block rounded-lg border border-[var(--border-default)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-heading)]">
-                    {dao}
-                  </span>
-                ))}
+                {(m.atlas?.digitalTwinsDaos ?? 'Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, SushiSwap').split(', ').map((dao) => {
+                  const score = CALIBRATION_SCORES[dao];
+                  return (
+                    <span
+                      key={dao}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border-default)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-heading)]"
+                      title={score ? `Calibration score: ${score.toFixed(3)}` : undefined}
+                    >
+                      {dao}
+                      {score != null && (
+                        <span className={`rounded px-1 py-0.5 text-[0.65rem] font-bold ${
+                          score >= 0.88 ? 'bg-[var(--accent-teal)]/15 text-[var(--accent-teal)]'
+                            : score >= 0.85 ? 'bg-[var(--accent-gold)]/15 text-[var(--accent-gold)]'
+                            : 'bg-[var(--border-subtle)] text-[var(--text-muted)]'
+                        }`}>
+                          {(score * 100).toFixed(0)}
+                        </span>
+                      )}
+                    </span>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -282,11 +337,29 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <h2 id="why-heading" className="font-serif-display text-2xl text-[var(--text-heading)] sm:text-3xl">
           {m.atlas?.methodologyHeading ?? 'Why This Work Is Important'}
         </h2>
-        <ul className="mt-5 max-w-3xl space-y-4 text-[1.1rem] leading-relaxed text-[var(--text-body)] sm:text-[1.18rem]">
-          <li>A 5-point quorum change can swing proposal passage from 99% to 0%. This research turns those hidden cliffs into visible, testable choices.</li>
-          <li>Quadratic voting cut whale influence by 43% without slowing governance. The right mechanisms improve fairness and throughput at the same time.</li>
-          <li>Every finding links a specific policy lever to a measurable outcome across 16,370 simulation runs, so teams can track what actually changes.</li>
-        </ul>
+        <div className="mt-6 grid gap-4 sm:grid-cols-3">
+          <a href="#rq1" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-5 transition hover:border-[var(--accent-teal)] hover:shadow-md">
+            <p className="font-serif-display text-3xl font-bold text-[var(--accent-teal)] sm:text-4xl">99%&rarr;0%</p>
+            <p className="mt-2 text-sm font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Quorum Cliff</p>
+            <p className="mt-1 text-sm leading-relaxed text-[var(--text-body-secondary)]">
+              A 5-point quorum change swings proposal passage from near-certain to impossible. This research turns hidden cliffs into visible, testable choices.
+            </p>
+          </a>
+          <a href="#rq2" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-5 transition hover:border-[var(--accent-teal)] hover:shadow-md">
+            <p className="font-serif-display text-3xl font-bold text-[var(--accent-teal)] sm:text-4xl">43%</p>
+            <p className="mt-2 text-sm font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Whale Power Cut</p>
+            <p className="mt-1 text-sm leading-relaxed text-[var(--text-body-secondary)]">
+              Quadratic voting cut whale influence by 43% without slowing governance. The right mechanisms improve fairness and throughput at the same time.
+            </p>
+          </a>
+          <a href="#rq4" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-5 transition hover:border-[var(--accent-teal)] hover:shadow-md">
+            <p className="font-serif-display text-3xl font-bold text-[var(--accent-gold)] sm:text-4xl">16,370</p>
+            <p className="mt-2 text-sm font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Simulation Runs</p>
+            <p className="mt-1 text-sm leading-relaxed text-[var(--text-body-secondary)]">
+              Every finding links a specific policy lever to a measurable outcome, so teams can track what actually changes before deploying to production.
+            </p>
+          </a>
+        </div>
       </section>
 
       {/* ── Chart Gallery ── */}
@@ -296,20 +369,26 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           title="Results at a Glance"
           subtitle="Key findings from each research question — click any chart to jump to the full brief"
         />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2">
           {sections.map((section) => {
             const chart = infographics[section.id];
             if (!chart) return null;
+            const headline = section.curated.whatWeFound[0]?.headline;
             return (
               <a
                 key={`gallery-${section.id}`}
                 href={`#${section.id}`}
-                className="group rounded-2xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-4 shadow-sm transition hover:border-[var(--accent-teal)] hover:shadow-md"
+                className="chart-gallery-item group rounded-2xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-5 shadow-sm transition hover:border-[var(--accent-teal)] hover:shadow-md"
               >
                 <div className="pointer-events-none">{chart}</div>
                 <p className="mt-3 text-center text-sm font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">
                   {sectionLabel(section.id)}: {section.title}
                 </p>
+                {headline && (
+                  <p className="mt-1 text-center text-xs text-[var(--text-muted)]">
+                    {headline}
+                  </p>
+                )}
               </a>
             );
           })}
@@ -327,18 +406,24 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
         <div className="grid gap-5">
           {sections.map((section, index) => (
-            <BriefDetail
+            <CollapsibleBrief
               key={section.id}
               id={section.id}
               label={sectionLabel(section.id)}
               title={section.title}
-              question={section.question}
-              whyItMatters={section.whyItMatters}
-              curated={section.curated}
-              index={index}
-              infographic={infographics[section.id]}
-              locale={locale}
-            />
+            >
+              <BriefDetail
+                id={section.id}
+                label={sectionLabel(section.id)}
+                title={section.title}
+                question={section.question}
+                whyItMatters={section.whyItMatters}
+                curated={section.curated}
+                index={index}
+                infographic={infographics[section.id]}
+                locale={locale}
+              />
+            </CollapsibleBrief>
           ))}
         </div>
       </section>

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { CuratedBriefCopy } from '@/lib/atlas/content';
+import { BRIEF_CROSS_LINKS, DECISION_BRIEF_SECTIONS } from '@/lib/atlas/content';
 import { injectTermTooltips } from '@/lib/atlas/tooltip-utils';
 import { ChartLightbox } from './ChartLightbox';
 import { getMessages } from '@/lib/i18n';
@@ -33,7 +34,6 @@ export function BriefDetail({
 
   return (
     <article
-      id={id}
       aria-labelledby={`heading-${id}`}
       className="animate-rise rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-6 shadow-[var(--shadow-card)] sm:p-8"
       style={{ animationDelay: `${index * 100}ms` }}
@@ -129,19 +129,26 @@ export function BriefDetail({
             </p>
             {curated.whatWeFound.length > 0 ? (
               <ul className="mt-3 space-y-3">
-                {curated.whatWeFound.map((finding, findingIndex) => (
-                  <li
-                    key={`${id}-finding-${findingIndex}`}
-                    className="rounded-xl border border-[var(--border-subtle)] bg-white px-4 py-3"
-                  >
-                    <p className="text-sm font-bold leading-snug text-[var(--text-heading)]">
-                      {finding.headline}
-                    </p>
-                    <p className="mt-1 text-sm leading-relaxed text-[var(--text-body-secondary)]">
-                      {tt(finding.detail)}
-                    </p>
-                  </li>
-                ))}
+                {curated.whatWeFound.map((finding, findingIndex) => {
+                  const accentColors = ['border-l-[var(--accent-teal)]', 'border-l-[var(--accent-gold)]', 'border-l-[#5ba3b0]'];
+                  const badgeColors = ['bg-[var(--accent-teal)]/15 text-[var(--accent-teal)]', 'bg-[var(--accent-gold)]/15 text-[var(--accent-gold)]', 'bg-[#5ba3b0]/15 text-[#5ba3b0]'];
+                  return (
+                    <li
+                      key={`${id}-finding-${findingIndex}`}
+                      className={`rounded-xl border border-[var(--border-subtle)] border-l-[3px] ${accentColors[findingIndex % 3]} bg-white px-4 py-3`}
+                    >
+                      <p className="flex items-center gap-2 text-sm font-bold leading-snug text-[var(--text-heading)]">
+                        <span className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.65rem] font-bold ${badgeColors[findingIndex % 3]}`}>
+                          {findingIndex + 1}
+                        </span>
+                        {finding.headline}
+                      </p>
+                      <p className="mt-1 pl-7 text-sm leading-relaxed text-[var(--text-body-secondary)]">
+                        {tt(finding.detail)}
+                      </p>
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <p className="mt-3 text-sm text-[var(--text-muted)]">
@@ -152,6 +159,28 @@ export function BriefDetail({
 
         </div>
       </div>
+
+      {/* ── Cross-links to related briefs ── */}
+      {BRIEF_CROSS_LINKS[id] && BRIEF_CROSS_LINKS[id].length > 0 && (
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">See also:</span>
+          {BRIEF_CROSS_LINKS[id].map((link) => {
+            const target = DECISION_BRIEF_SECTIONS.find((s) => s.id === link.id);
+            if (!target) return null;
+            return (
+              <a
+                key={`${id}-xlink-${link.id}`}
+                href={`#${link.id}`}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-default)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
+                title={link.reason}
+              >
+                {target.title}
+                <span className="hidden text-[var(--text-muted)] sm:inline">&middot; {link.reason}</span>
+              </a>
+            );
+          })}
+        </div>
+      )}
     </article>
   );
 }

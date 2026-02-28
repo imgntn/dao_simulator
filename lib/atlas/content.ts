@@ -54,6 +54,58 @@ export type CuratedBriefCopy = {
 };
 
 // ---------------------------------------------------------------------------
+// Digital Twin Calibration Scores (10 episodes, 720 steps)
+// ---------------------------------------------------------------------------
+
+export const CALIBRATION_SCORES: Record<string, number> = {
+  Gitcoin: 0.922,
+  Lido: 0.887,
+  Curve: 0.878,
+  Aave: 0.875,
+  Balancer: 0.870,
+  SushiSwap: 0.867,
+  dYdX: 0.864,
+  ENS: 0.859,
+  MakerDAO: 0.854,
+  Uniswap: 0.850,
+  Arbitrum: 0.846,
+  Optimism: 0.818,
+  Compound: 0.818,
+  Nouns: 0.780,
+};
+
+// ---------------------------------------------------------------------------
+// Cross-links between related briefs
+// ---------------------------------------------------------------------------
+
+export const BRIEF_CROSS_LINKS: Record<string, { id: string; reason: string }[]> = {
+  rq1: [
+    { id: 'rq2', reason: 'Participation levels shape capture risk' },
+    { id: 'rq3', reason: 'Turnout affects proposal pipeline throughput' },
+  ],
+  rq2: [
+    { id: 'rq1', reason: 'Voter turnout determines whale leverage' },
+    { id: 'rq5', reason: 'Capture risk rises in cross-DAO coordination' },
+  ],
+  rq3: [
+    { id: 'rq1', reason: 'Pipeline design depends on participation rates' },
+    { id: 'rq4', reason: 'Proposal flow directly impacts treasury spend' },
+  ],
+  rq4: [
+    { id: 'rq3', reason: 'Treasury outflows follow proposal throughput' },
+    { id: 'rq5', reason: 'Cross-DAO deals affect treasury exposure' },
+  ],
+  rq5: [
+    { id: 'rq2', reason: 'Coordination introduces capture vectors' },
+    { id: 'rq4', reason: 'Joint initiatives require treasury commitments' },
+  ],
+  rq6: [
+    { id: 'rq1', reason: 'LLM agents change participation dynamics' },
+    { id: 'rq2', reason: 'AI voters affect power concentration' },
+  ],
+};
+
+// ---------------------------------------------------------------------------
 // Decision Brief Sections
 // ---------------------------------------------------------------------------
 
