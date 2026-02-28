@@ -61,7 +61,7 @@ export function ChartLightbox({ children }: ChartLightboxProps) {
         className="chart-lightbox-dialog"
         onClick={handleBackdropClick}
       >
-        <div className="relative rounded-2xl border border-[var(--border-default)] bg-white p-4 shadow-xl sm:p-6">
+        <div className="relative w-full rounded-2xl border border-[var(--border-default)] bg-white p-4 shadow-xl sm:p-6">
           <button
             type="button"
             onClick={close}
@@ -70,7 +70,7 @@ export function ChartLightbox({ children }: ChartLightboxProps) {
           >
             &times;
           </button>
-          <div ref={targetRef} className="chart-gallery-item mt-2" />
+          <div ref={targetRef} className="chart-gallery-item mt-2 w-full" />
         </div>
       </dialog>
     </>

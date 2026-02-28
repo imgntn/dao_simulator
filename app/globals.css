@@ -291,6 +291,7 @@ body:has(.theme-console) {
   border: none;
   background: transparent;
   padding: 0;
+  width: min(92vw, 960px);
   max-width: min(92vw, 960px);
   max-height: 90vh;
   overflow: visible;
@@ -308,9 +309,18 @@ body:has(.theme-console) {
   justify-content: center;
 }
 
+/* Override inline max-width constraints on cloned SVGs so they fill the lightbox */
 .chart-lightbox-dialog svg {
   max-width: 100% !important;
+  width: 100% !important;
   height: auto !important;
+}
+
+/* Override Tailwind max-w-* on cloned figures/wrappers inside the lightbox */
+.chart-lightbox-dialog figure,
+.chart-lightbox-dialog [class*="max-w-"] {
+  max-width: 100% !important;
+  width: 100% !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
