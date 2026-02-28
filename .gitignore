@@ -102,3 +102,6 @@ docs/
 
 # Podcast media (hosted on Cloudflare R2)
 podcast_media/
+
+# Wrangler local state
+.wrangler/
