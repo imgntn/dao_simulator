@@ -26,17 +26,23 @@ export function BriefCard({ id, label, title, question, curated, index, locale }
       <p className="mt-2 text-sm font-medium leading-relaxed text-[#2b5064]">{question}</p>
       <p className="mt-3 text-sm leading-relaxed text-[var(--text-body-secondary)]">{curated.summary}</p>
       <ul className="mt-3 space-y-2 text-sm text-[var(--text-body-secondary)]">
-        {(curated.whatWeFound.length > 0
-          ? curated.whatWeFound.slice(0, 2)
-          : [m.atlas?.openFullBrief ?? 'Open brief for outcome details.']
-        ).map((item, itemIndex) => (
-          <li
-            key={`${id}-takeaway-${itemIndex}`}
-            className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] px-3 py-2"
-          >
-            {item}
-          </li>
-        ))}
+        {curated.whatWeFound.length > 0
+          ? curated.whatWeFound.slice(0, 2).map((item, itemIndex) => (
+            <li
+              key={`${id}-takeaway-${itemIndex}`}
+              className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] px-3 py-2"
+            >
+              {item.detail}
+            </li>
+          ))
+          : [m.atlas?.openFullBrief ?? 'Open brief for outcome details.'].map((text, itemIndex) => (
+            <li
+              key={`${id}-takeaway-${itemIndex}`}
+              className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] px-3 py-2"
+            >
+              {text}
+            </li>
+          ))}
       </ul>
       <a
         href={`#${id}`}

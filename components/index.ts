@@ -11,5 +11,6 @@ export { BackToTop } from './ui/BackToTop';
 // Atlas
 export { BriefCard } from './atlas/BriefCard';
 export { BriefDetail } from './atlas/BriefDetail';
+export { ChartLightbox } from './atlas/ChartLightbox';
 export { PaperCard } from './atlas/PaperCard';
 export { TableOfContents } from './atlas/TableOfContents';

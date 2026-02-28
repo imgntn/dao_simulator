@@ -45,7 +45,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       : { overview: null, takeaways: [], notes: [] };
     const curated = CURATED_BRIEF_COPY[section.id] ?? {
       summary: section.whyItMatters,
-      whatWeFound: ['Detailed findings are available in the linked papers.'],
+      whatWeFound: [{ headline: 'Details Available', detail: 'Detailed findings are available in the linked papers.' }],
       whatToDo: ['Review the full brief and apply recommendations to your governance context.'],
       evidence: 'Source paper available in Advanced section.',
     };

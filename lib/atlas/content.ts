@@ -39,9 +39,14 @@ export type KeyTerm = {
   definition: string;
 };
 
+export type FindingEntry = {
+  headline: string;
+  detail: string;
+};
+
 export type CuratedBriefCopy = {
   summary: string;
-  whatWeFound: string[];
+  whatWeFound: FindingEntry[];
   whatToDo: string[];
   evidence: string;
   confidence?: string;
@@ -112,9 +117,9 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
     summary:
       'Governance stalls when quorum targets exceed real turnout capacity. In the core sweep, turnout stayed near 22\u201323%, but quorum reach collapsed once quorum moved past ~10\u201315%.',
     whatWeFound: [
-      'At 5% quorum, 99.9% of proposals reached quorum. At 10%, reach was 82%. At 20%, only 25.4% reached quorum. By 40%, reach fell to 0%.',
-      'Pass rate among proposals that did reach quorum stayed high (97.6\u201398.5%), showing the bottleneck was reaching the threshold, not voter disagreement.',
-      'As DAO size scaled from 50 to 500 members, participation fell (26.1% to 21.9%) but pass rate rose (92.8% to 99.7%).',
+      { headline: 'Quorum Cliff at 10%', detail: 'At 5% quorum, 99.9% of proposals reached quorum. At 10%, reach was 82%. At 20%, only 25.4% reached quorum. By 40%, reach fell to 0%.' },
+      { headline: 'Threshold, Not Disagreement', detail: 'Pass rate among proposals that did reach quorum stayed high (97.6\u201398.5%), showing the bottleneck was reaching the threshold, not voter disagreement.' },
+      { headline: 'Scale Lowers Turnout', detail: 'As DAO size scaled from 50 to 500 members, participation fell (26.1% to 21.9%) but pass rate rose (92.8% to 99.7%).' },
     ],
     whatToDo: [
       'Set quorum from observed behavior, not aspiration. A practical rule from the paper is ~80% of natural turnout.',
@@ -164,9 +169,9 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
     summary:
       'Capture resistance improved most when power-distribution rules changed directly, not when only rate limits were added.',
     whatWeFound: [
-      'Applying quadratic voting (where voting power scales with the square root of tokens held, kicking in above a 250-token threshold) cut whale influence from 0.449 to 0.256 \u2014 a 43% reduction.',
-      'Capture risk dropped from 0.464 to 0.269 under the strongest mitigation settings, a 42% reduction.',
-      'Governance throughput improved rather than collapsed: pass rate moved from 92.7% to 98.5%. Velocity penalties alone had only small effects.',
+      { headline: '43% Less Whale Power', detail: 'Applying quadratic voting (where voting power scales with the square root of tokens held, kicking in above a 250-token threshold) cut whale influence from 0.449 to 0.256 \u2014 a 43% reduction.' },
+      { headline: '42% Capture Risk Drop', detail: 'Capture risk dropped from 0.464 to 0.269 under the strongest mitigation settings, a 42% reduction.' },
+      { headline: 'Throughput Held Steady', detail: 'Governance throughput improved rather than collapsed: pass rate moved from 92.7% to 98.5%. Velocity penalties alone had only small effects.' },
     ],
     whatToDo: [
       'Use a layered stack: quadratic base + delegation caps + 30\u201360 day velocity controls.',
@@ -221,9 +226,9 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
     summary:
       'Proposal flow improves with moderate filtering and selective fast-tracking. Extreme settings are where quality or speed starts to break.',
     whatWeFound: [
-      'Raising temp-check pressure from 5% to 50% lifted pass rate from 96.4% to 98.5%, filtering out weak proposals before they consumed full voting resources.',
-      'Fast-track with a 12-day minimum voting window kept quorum reach above 99% while accelerating obvious-consensus proposals.',
-      'Core runs showed 47\u201350 proposals per simulated cycle with zero abandonment, though very short expiry windows remain risky for complex work.',
+      { headline: 'Filtering Lifts Quality', detail: 'Raising temp-check pressure from 5% to 50% lifted pass rate from 96.4% to 98.5%, filtering out weak proposals before they consumed full voting resources.' },
+      { headline: 'Fast-Track Keeps Quorum', detail: 'Fast-track with a 12-day minimum voting window kept quorum reach above 99% while accelerating obvious-consensus proposals.' },
+      { headline: 'Zero Abandonment', detail: 'Core runs showed 47\u201350 proposals per simulated cycle with zero abandonment, though very short expiry windows remain risky for complex work.' },
     ],
     whatToDo: [
       'Use moderate thresholds (roughly 20\u201330% temp-check and ~70% fast-track as a starting point).',
@@ -268,9 +273,9 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
     summary:
       'Treasury resilience came from explicit policy discipline: stabilization, reserve buffers, spending limits, and clear emergency triggers.',
     whatWeFound: [
-      'Stabilization mechanisms cut treasury value swings roughly in half \u2014 volatility scores dropped from the 0.45\u20130.50 range to 0.24\u20130.27 (on a 0\u20131 scale where lower is more stable).',
-      'Reserve buffers and spending caps improved downside protection; stabilized runs landed around $10,048\u2013$13,147 in final treasury value.',
-      'Lower volatility came with modest growth tradeoffs, so treasury policy needs continuous tuning rather than one-time setup.',
+      { headline: 'Volatility Cut in Half', detail: 'Stabilization mechanisms cut treasury value swings roughly in half \u2014 volatility scores dropped from the 0.45\u20130.50 range to 0.24\u20130.27 (on a 0\u20131 scale where lower is more stable).' },
+      { headline: 'Buffers Protect Downside', detail: 'Reserve buffers and spending caps improved downside protection; stabilized runs landed around $10,048\u2013$13,147 in final treasury value.' },
+      { headline: 'Growth Tradeoff Exists', detail: 'Lower volatility came with modest growth tradeoffs, so treasury policy needs continuous tuning rather than one-time setup.' },
     ],
     whatToDo: [
       'Set explicit reserves (typically 15\u201320% of total treasury) and define breach triggers.',
@@ -315,9 +320,9 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
     summary:
       'Cross-DAO coordination worked, but it was fragile. Outcomes improved when fairness, structure, and partner complementarity were designed upfront.',
     whatWeFound: [
-      'Inter-DAO success rate was 21.4\u201323.4% across cooperation topologies versus 0% when DAOs operated in isolation.',
-      'Specialized topology generated more inter-DAO activity (75.8 vs 50.3 proposals) and higher ecosystem treasury ($26,107 vs $24,071).',
-      'Cross-DAO alignment stayed moderate (0.534\u20130.557), which explains why fairness design and coordination structure mattered.',
+      { headline: '21% Cross-DAO Success', detail: 'Inter-DAO success rate was 21.4\u201323.4% across cooperation topologies versus 0% when DAOs operated in isolation.' },
+      { headline: 'Specialization Wins', detail: 'Specialized topology generated more inter-DAO activity (75.8 vs 50.3 proposals) and higher ecosystem treasury ($26,107 vs $24,071).' },
+      { headline: 'Alignment Stays Moderate', detail: 'Cross-DAO alignment stayed moderate (0.534\u20130.557), which explains why fairness design and coordination structure mattered.' },
     ],
     whatToDo: [
       'Define fairness explicitly before launch: cost split, value split, and dispute path.',
@@ -357,9 +362,9 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
     summary:
       'LLM-enabled governance showed an engagement\u2013latency tradeoff. Hybrid mode was the strongest default in the current benchmark.',
     whatWeFound: [
-      'Hybrid and all-LLM modes both reached a 50% pass rate. The rule-based baseline recorded 0% in this limited 8-run benchmark, reflecting the small sample size rather than a fundamental flaw in rule-based governance.',
-      'All-LLM posted higher participation (31.2%) and vote consistency (74.7%) than hybrid mode (18.6% participation, 66.3% consistency).',
-      'Hybrid mode reduced average decision latency to 808 ms versus 1,381 ms in all-LLM, with stronger treasury outcomes in this run set.',
+      { headline: 'Hybrid Matches All-LLM', detail: 'Hybrid and all-LLM modes both reached a 50% pass rate. The rule-based baseline recorded 0% in this limited 8-run benchmark, reflecting the small sample size rather than a fundamental flaw in rule-based governance.' },
+      { headline: 'All-LLM Peaks Engagement', detail: 'All-LLM posted higher participation (31.2%) and vote consistency (74.7%) than hybrid mode (18.6% participation, 66.3% consistency).' },
+      { headline: 'Hybrid Halves Latency', detail: 'Hybrid mode reduced average decision latency to 808 ms versus 1,381 ms in all-LLM, with stronger treasury outcomes in this run set.' },
     ],
     whatToDo: [
       'Use hybrid reasoning as default, then escalate to deeper LLM reasoning only where needed.',

@@ -234,6 +234,76 @@ body:has(.theme-console) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   Term Tooltips — inline key-term definitions
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.term-tooltip {
+  position: relative;
+  text-decoration: underline dotted var(--accent-gold);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  cursor: help;
+}
+
+.term-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 320px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--text-heading);
+  color: #f6f0e4;
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: normal;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 180ms ease;
+  z-index: 50;
+}
+
+.term-tooltip:hover::after {
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Chart Lightbox — native <dialog> for enlarged infographics
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.chart-lightbox-dialog {
+  border: none;
+  background: transparent;
+  padding: 0;
+  max-width: min(92vw, 960px);
+  max-height: 90vh;
+  overflow: visible;
+}
+
+.chart-lightbox-dialog::backdrop {
+  background: rgba(29, 26, 20, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.chart-lightbox-dialog[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-lightbox-dialog svg {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    Animations
    ═══════════════════════════════════════════════════════════════════════════ */
 
