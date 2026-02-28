@@ -612,16 +612,40 @@ export const messages: Messages = {
   // METADATA - SEO and page metadata
   // ═══════════════════════════════════════════════════════════════════════════
   metadata: {
-    title: 'DAO Simulator',
-    titleTemplate: '%s | DAO Simulator',
-    description: 'Real-time decentralized governance simulation dashboard. Explore DAO dynamics, agent behaviors, and governance mechanisms.',
-    keywords: ['DAO', 'simulation', 'governance', 'blockchain', 'decentralized', 'agent-based modeling'],
-    author: 'DAO Simulator Team',
-    ogTitle: 'DAO Simulator',
-    ogDescription: 'Real-time decentralized governance simulation dashboard',
-    ogSiteName: 'DAO Simulator',
-    twitterTitle: 'DAO Simulator',
-    twitterDescription: 'Real-time decentralized governance simulation dashboard',
+    title: 'DAO Research Atlas',
+    titleTemplate: '%s | DAO Research Atlas',
+    description:
+      'Governance research from 16,370 agent-based simulation runs across 14 calibrated DAO digital twins. Covers participation dynamics, capture mitigation (quadratic voting cut whale power 43%), treasury resilience, proposal pipelines, inter-DAO cooperation, and LLM-augmented governance. By James B. Pollack.',
+    keywords: [
+      'DAO',
+      'governance',
+      'simulation',
+      'agent-based modeling',
+      'decentralized',
+      'digital twins',
+      'quadratic voting',
+      'governance capture',
+      'treasury management',
+      'voter participation',
+      'proposal pipeline',
+      'inter-DAO cooperation',
+      'LLM governance',
+      'reinforcement learning',
+      'prediction markets',
+      'futarchy',
+      'liquid democracy',
+      'delegation',
+      'quorum design',
+      'blockchain governance',
+    ],
+    author: 'James B. Pollack',
+    ogTitle: 'DAO Research Atlas — Governance Findings from 16,370 Simulation Runs',
+    ogDescription:
+      'Agent-based simulation research covering participation, capture, treasury, cooperation, and LLM governance across 14 calibrated DAO digital twins.',
+    ogSiteName: 'DAO Research Atlas',
+    twitterTitle: 'DAO Research Atlas — 16,370 Simulation Runs',
+    twitterDescription:
+      'Actionable DAO governance findings: quadratic voting cuts whale power 43%, quorum cliff at 10%, treasury stabilization halves volatility. 14 calibrated digital twins.',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════

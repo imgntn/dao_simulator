@@ -55,9 +55,19 @@ export async function generateMetadata({
     openGraph: {
       title: m.metadata.ogTitle,
       description: m.metadata.ogDescription,
-      type: 'website',
+      type: 'article',
       locale: ogLocaleMap[locale],
       siteName: m.metadata.ogSiteName,
+      authors: ['James B. Pollack'],
+      publishedTime: '2025-05-01T00:00:00Z',
+      tags: [
+        'DAO governance',
+        'agent-based modeling',
+        'digital twins',
+        'quadratic voting',
+        'governance capture',
+        'treasury management',
+      ],
     },
     twitter: {
       card: 'summary_large_image',
@@ -69,6 +79,14 @@ export async function generateMetadata({
     alternates: {
       canonical: `${BASE_URL}/${locale}`,
       languages: alternates,
+    },
+    other: {
+      // Highwire Press citation tags for Google Scholar indexing
+      'citation_title': 'DAO Research Atlas: Governance Findings from 16,370 Agent-Based Simulation Runs',
+      'citation_author': 'James B. Pollack',
+      'citation_publication_date': '2025/05/01',
+      'citation_pdf_url': `${BASE_URL}/paper/main.pdf`,
+      'citation_language': locale,
     },
   };
 }
