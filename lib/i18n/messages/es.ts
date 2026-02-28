@@ -651,6 +651,7 @@ export const messages: Messages = {
     podcastListen: 'Escuchar el episodio',
     podcastApple: 'Apple Podcasts',
     podcastSpotify: 'Spotify',
+    podcastYouTube: 'YouTube',
     podcastEpisode: 'Green Pill #123: AI DAO Simulator',
     digitalTwinsHeading: 'Gemelos Digitales: 14 DAOs Reales, Simuladas',
     digitalTwinsDesc: 'Cada simulaci\u00f3n est\u00e1 basada en la realidad. Construimos gemelos digitales de 14 DAOs importantes \u2014 cada uno calibrado con datos reales de gobernanza on-chain, votos de Snapshot, actividad en foros y precios de tokens.',

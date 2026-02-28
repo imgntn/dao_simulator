@@ -603,6 +603,7 @@ export interface Messages {
     podcastListen: string;
     podcastApple: string;
     podcastSpotify: string;
+    podcastYouTube: string;
     podcastEpisode: string;
     digitalTwinsHeading: string;
     digitalTwinsDesc: string;

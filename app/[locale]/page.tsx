@@ -236,6 +236,17 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
             <div className="mt-5 flex flex-wrap gap-3">
               <a
+                href="https://www.youtube.com/watch?v=zBP-CLlJIMU&list=PPSV"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-white px-5 py-3 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
+              >
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.546 12 3.546 12 3.546s-7.505 0-9.377.504A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.504 9.376.504 9.376.504s7.505 0 9.377-.504a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814ZM9.545 15.568V8.432L15.818 12l-6.273 3.568Z" />
+                </svg>
+                {m.atlas?.podcastYouTube ?? 'YouTube'}
+              </a>
+              <a
                 href="https://podcasts.apple.com/us/podcast/123-ai-dao-simulator-w-james-pollack/id1609313639?i=1000617149760"
                 target="_blank"
                 rel="noreferrer"
@@ -257,6 +268,18 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 </svg>
                 {m.atlas?.podcastSpotify ?? 'Spotify'}
               </a>
+            </div>
+
+            {/* Inline audio player */}
+            <div className="mt-5">
+              {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+              <audio
+                controls
+                preload="none"
+                className="w-full max-w-lg rounded-lg"
+              >
+                <source src="https://pub-5203989d31a346d288f97e48812ab2e0.r2.dev/greenpill-123-james-pollack.mp3" type="audio/mpeg" />
+              </audio>
             </div>
           </div>
         </div>

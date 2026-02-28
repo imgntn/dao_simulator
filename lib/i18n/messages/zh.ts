@@ -651,6 +651,7 @@ export const messages: Messages = {
     podcastListen: '\u6536\u542c\u8282\u76ee',
     podcastApple: 'Apple Podcasts',
     podcastSpotify: 'Spotify',
+    podcastYouTube: 'YouTube',
     podcastEpisode: 'Green Pill #123: AI DAO Simulator',
     digitalTwinsHeading: '\u6570\u5b57\u5b6a\u751f\uff1a14 \u4e2a\u771f\u5b9e DAO \u7684\u4eff\u771f\u6a21\u62df',
     digitalTwinsDesc: '\u6bcf\u6b21\u4eff\u771f\u90fd\u690d\u6839\u4e8e\u73b0\u5b9e\u3002\u6211\u4eec\u4e3a 14 \u4e2a\u4e3b\u8981 DAO \u6784\u5efa\u4e86\u6570\u5b57\u5b6a\u751f \u2014\u2014 \u6bcf\u4e2a\u90fd\u6839\u636e\u771f\u5b9e\u7684\u94fe\u4e0a\u6cbb\u7406\u6570\u636e\u3001Snapshot \u6295\u7968\u3001\u8bba\u575b\u6d3b\u52a8\u548c\u4ee3\u5e01\u4ef7\u683c\u8fdb\u884c\u6821\u51c6\u3002',
