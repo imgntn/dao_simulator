@@ -96,3 +96,6 @@ __pycache__/
 
 # Claude local settings
 .claude/settings.local.json
+
+# Docs (drafts / transcripts)
+docs/
