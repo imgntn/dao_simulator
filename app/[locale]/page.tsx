@@ -160,6 +160,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <a href="#why" className="rounded-full border border-[var(--border-default)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             Why This Matters
           </a>
+          <a href="#charts" className="rounded-full border border-[var(--border-default)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+            Charts
+          </a>
           <a href="#research" className="rounded-full border border-[var(--border-default)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             Research
           </a>
@@ -284,6 +287,33 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <li>Quadratic voting cut whale influence by 43% without slowing governance. The right mechanisms improve fairness and throughput at the same time.</li>
           <li>Every finding links a specific policy lever to a measurable outcome across 16,370 simulation runs, so teams can track what actually changes.</li>
         </ul>
+      </section>
+
+      {/* ── Chart Gallery ── */}
+      <section id="charts" aria-labelledby="charts-heading" className="mt-12 space-y-6">
+        <SectionHeading
+          id="charts-heading"
+          title="Results at a Glance"
+          subtitle="Key findings from each research question — click any chart to jump to the full brief"
+        />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {sections.map((section) => {
+            const chart = infographics[section.id];
+            if (!chart) return null;
+            return (
+              <a
+                key={`gallery-${section.id}`}
+                href={`#${section.id}`}
+                className="group rounded-2xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-4 shadow-sm transition hover:border-[var(--accent-teal)] hover:shadow-md"
+              >
+                <div className="pointer-events-none">{chart}</div>
+                <p className="mt-3 text-center text-sm font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">
+                  {sectionLabel(section.id)}: {section.title}
+                </p>
+              </a>
+            );
+          })}
+        </div>
       </section>
 
       {/* ── Research ── */}

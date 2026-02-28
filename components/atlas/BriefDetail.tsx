@@ -64,6 +64,13 @@ export function BriefDetail({
         </p>
       )}
 
+      {/* ── Infographic (near the top, full width) ── */}
+      {infographic && (
+        <div className="mt-5">
+          <ChartLightbox>{infographic}</ChartLightbox>
+        </div>
+      )}
+
       {/* ── 2-column grid (stacks on mobile) ── */}
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         {/* ── Left column ── */}
@@ -143,10 +150,6 @@ export function BriefDetail({
             )}
           </div>
 
-          {/* Infographic in ChartLightbox */}
-          {infographic && (
-            <ChartLightbox>{infographic}</ChartLightbox>
-          )}
         </div>
       </div>
     </article>
