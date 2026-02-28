@@ -245,7 +245,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 {m.atlas?.podcastApple ?? 'Apple Podcasts'}
               </a>
               <a
-                href="https://open.spotify.com/show/0l6aXWC94dd0RA3tkKfxjd"
+                href="https://open.spotify.com/episode/3hrMfrE0blYgZIvX6BRZ5j?si=CtWBClNWTw6KcAXcf3Q_-g"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-white px-5 py-3 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
