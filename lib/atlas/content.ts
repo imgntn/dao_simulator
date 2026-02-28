@@ -75,6 +75,74 @@ export const CALIBRATION_SCORES: Record<string, number> = {
 };
 
 // ---------------------------------------------------------------------------
+// Digital Twin Feature Highlights (per-DAO)
+// ---------------------------------------------------------------------------
+
+export type DAOTwinFeature = {
+  governance: string;
+  features: string[];
+};
+
+export const DAO_TWIN_FEATURES: Record<string, DAOTwinFeature> = {
+  Uniswap: {
+    governance: 'Token Quorum',
+    features: ['High activity, 93% pass rate', 'Calibrated 5.7% participation', '4 voter clusters modeled'],
+  },
+  Compound: {
+    governance: 'Token Quorum',
+    features: ['79% pass rate with opposition agents', 'Low 1.8% participation calibrated', 'Governor Bravo rule modeled'],
+  },
+  Aave: {
+    governance: 'Token Quorum',
+    features: ['97% pass rate, high optimism agents', 'Dual executor tiers mapped', 'High proposal frequency calibrated'],
+  },
+  Arbitrum: {
+    governance: 'Category Quorum',
+    features: ['Constitutional vs non-constitutional rules', '94% pass rate calibrated', 'L2 token price oracle modeled'],
+  },
+  Optimism: {
+    governance: 'Bicameral',
+    features: ['Token + Citizens\u2019 House rule mapped', '73% pass rate with opposition bias', 'Highest participation (13.8%)'],
+  },
+  ENS: {
+    governance: 'Token Quorum',
+    features: ['12.4% participation (second highest)', '93% pass rate calibrated', 'Forum activity modeled'],
+  },
+  Lido: {
+    governance: 'Dual Governance',
+    features: ['99.6% pass rate, peak optimism agents', 'Veto + rage quit rule mapped', 'Forum & market oracle calibrated'],
+  },
+  Gitcoin: {
+    governance: 'Quorum',
+    features: ['Highest calibration score (92.2%)', '92.6% pass rate, 11.5% turnout', 'Steward-gated quorum modeled'],
+  },
+  MakerDAO: {
+    governance: 'Approval Voting',
+    features: ['Competing proposal approval rule', 'Unique approval-based mechanism', 'Highest token price oracle ($1,559)'],
+  },
+  Curve: {
+    governance: 'Quorum',
+    features: ['85% pass rate calibrated', 'Sub-dollar token oracle ($0.60)', 'Forum + market data modeled'],
+  },
+  Nouns: {
+    governance: 'Quorum',
+    features: ['45% pass rate (most contentious)', '33% of agents get opposition bias', 'No market data (NFT-based)'],
+  },
+  Balancer: {
+    governance: 'Quorum',
+    features: ['100% pass rate, max optimism agents', 'Low 1.3% participation calibrated', 'Market oracle modeled ($1.01)'],
+  },
+  dYdX: {
+    governance: 'Quorum',
+    features: ['100% pass rate calibrated', 'Sub-dollar token oracle ($0.22)', 'Low proposal frequency modeled'],
+  },
+  SushiSwap: {
+    governance: 'Majority',
+    features: ['Simple majority rule (no quorum)', 'Sub-dollar token oracle ($0.30)', 'No forum data calibrated'],
+  },
+};
+
+// ---------------------------------------------------------------------------
 // Cross-links between related briefs
 // ---------------------------------------------------------------------------
 

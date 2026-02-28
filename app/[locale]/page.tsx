@@ -5,6 +5,7 @@ import {
   PAPER_PROFILES,
   JAMES_SITE_URL,
   CALIBRATION_SCORES,
+  DAO_TWIN_FEATURES,
 } from '@/lib/atlas/content';
 import {
   readText,
@@ -137,11 +138,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </h1>
             <p className="mt-5 max-w-3xl text-[1.2rem] leading-relaxed text-[var(--text-body)] sm:text-[1.35rem]">
               {m.atlas?.heroDescription ??
-                'Actionable governance findings from 16,370 simulation runs across 21 experiment configurations. Start with any research question below.'}
-            </p>
-            <p className="mt-3 max-w-3xl text-[1.1rem] leading-relaxed text-[var(--text-body-secondary)] sm:text-[1.2rem]">
-              {m.atlas?.podcastDesc ??
-                'James Pollack joined the Green Pill podcast to explore whether a DAO can be run by AI \u2014 the dynamics of agent-based models, what it looks like to put governance on-chain, and the research that became this atlas.'}
+                'Actionable governance findings from 16,370 simulation runs across 14 calibrated DAO digital twins. Start with any research question below.'}
             </p>
           </div>
 
@@ -172,7 +169,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             {sections.length} {m.atlas?.briefsCount ?? 'briefs covering participation, capture, operations, treasury, coordination, and LLM governance.'}
           </InfoCard>
           <InfoCard label={m.atlas?.evidenceLabel ?? 'Evidence Base'}>
-            {m.atlas?.evidenceDesc ?? 'Core governance paper reports 16,370 runs across 21 experiment configurations.'}
+            {m.atlas?.evidenceDesc ?? '21 experiment configurations with calibrated digital twins averaging 0.85 accuracy.'}
           </InfoCard>
           <InfoCard label={m.atlas?.authorLabel ?? 'Author'}>
             {m.atlas?.authorDesc ?? 'Research direction and systems thinking by'}{' '}
@@ -230,6 +227,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </h2>
             <p className="mt-3 max-w-3xl text-[1.12rem] leading-relaxed text-[var(--text-body)] sm:text-[1.22rem]">
               {m.atlas?.podcastEpisode ?? 'Green Pill #123: AI DAO Simulator'}
+            </p>
+            <p className="mt-2 max-w-3xl text-base leading-relaxed text-[var(--text-body-secondary)]">
+              {m.atlas?.podcastDesc ??
+                'James Pollack joined the Green Pill podcast to explore whether a DAO can be run by AI \u2014 the dynamics of agent-based models, what it looks like to put governance on-chain, and the research that became this atlas.'}
             </p>
 
             <div className="mt-5 flex flex-wrap gap-3">
@@ -299,31 +300,51 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               </div>
             </div>
 
-            {/* DAO logos / names grid */}
+            {/* DAO twin feature cards */}
             <div className="mt-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm-deep)] p-4">
               <p className="text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)]">
                 {m.atlas?.digitalTwinsCategories ?? 'DeFi, Layer 2, Public Goods, Staking, Lending, Identity, Stablecoin, DEX'}
               </p>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {(m.atlas?.digitalTwinsDaos ?? 'Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, SushiSwap').split(', ').map((dao) => {
                   const score = CALIBRATION_SCORES[dao];
+                  const twin = DAO_TWIN_FEATURES[dao];
                   return (
-                    <span
+                    <div
                       key={dao}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border-default)] bg-white px-3.5 py-2 text-sm font-medium text-[var(--text-heading)]"
+                      className="rounded-lg border border-[var(--border-default)] bg-white p-3"
                       title={score ? `Calibration score: ${score.toFixed(3)}` : undefined}
                     >
-                      {dao}
-                      {score != null && (
-                        <span className={`rounded px-1.5 py-0.5 text-xs font-bold ${
-                          score >= 0.88 ? 'bg-[var(--accent-teal)]/15 text-[var(--accent-teal)]'
-                            : score >= 0.85 ? 'bg-[var(--accent-gold)]/15 text-[var(--accent-gold)]'
-                            : 'bg-[var(--border-subtle)] text-[var(--text-muted)]'
-                        }`}>
-                          {(score * 100).toFixed(0)}
-                        </span>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-sm font-semibold text-[var(--text-heading)]">{dao}</span>
+                        <div className="flex items-center gap-1.5">
+                          {twin && (
+                            <span className="rounded px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide bg-[var(--surface-warm)] text-[var(--text-body-secondary)]">
+                              {twin.governance}
+                            </span>
+                          )}
+                          {score != null && (
+                            <span className={`rounded px-1.5 py-0.5 text-xs font-bold ${
+                              score >= 0.88 ? 'bg-[var(--accent-teal)]/15 text-[var(--accent-teal)]'
+                                : score >= 0.85 ? 'bg-[var(--accent-gold)]/15 text-[var(--accent-gold)]'
+                                : 'bg-[var(--border-subtle)] text-[var(--text-muted)]'
+                            }`}>
+                              {(score * 100).toFixed(0)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      {twin && (
+                        <ul className="mt-2 space-y-0.5">
+                          {twin.features.map((f, i) => (
+                            <li key={i} className="flex items-start gap-1.5 text-xs leading-relaxed text-[var(--text-body-secondary)]">
+                              <span className="mt-[0.35em] h-1 w-1 shrink-0 rounded-full bg-[var(--accent-teal)]" aria-hidden="true" />
+                              {f}
+                            </li>
+                          ))}
+                        </ul>
                       )}
-                    </span>
+                    </div>
                   );
                 })}
               </div>
