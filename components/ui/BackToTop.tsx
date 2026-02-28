@@ -19,11 +19,11 @@ export function BackToTop() {
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       aria-label="Back to top"
-      className="fixed bottom-6 right-6 z-50 rounded-full border border-[var(--border-default)] bg-[var(--surface-panel)] p-3 shadow-lg transition hover:border-[var(--accent-teal)]"
+      className="fixed bottom-6 right-6 z-50 rounded-full border border-[var(--border-default)] bg-[var(--surface-panel)] p-3.5 shadow-lg transition hover:border-[var(--accent-teal)]"
     >
       <svg
         viewBox="0 0 20 20"
-        className="w-5 h-5"
+        className="w-6 h-6"
         fill="none"
         stroke="currentColor"
         strokeWidth="2"

@@ -39,24 +39,24 @@ export function BriefDetail({
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {/* ── Full-width header ── */}
-      <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-[var(--accent-gold)]">
+      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--accent-gold)]">
         {label} {m.atlas?.briefLabel ?? 'Brief'}
       </p>
       <h3
         id={`heading-${id}`}
-        className="mt-2 max-w-3xl text-2xl font-semibold leading-tight text-[var(--text-heading)] sm:text-[1.95rem]"
+        className="mt-2 max-w-3xl text-[1.75rem] font-semibold leading-tight text-[var(--text-heading)] sm:text-[2.25rem]"
       >
         {title}
       </h3>
-      <p className="mt-4 max-w-3xl text-[1.04rem] font-medium leading-relaxed text-[#2b5064] sm:text-[1.1rem]">
+      <p className="mt-4 max-w-3xl text-[1.12rem] font-medium leading-relaxed text-[#2b5064] sm:text-[1.22rem]">
         {tt(question)}
       </p>
-      <p className="mt-3 max-w-3xl text-[1.02rem] leading-relaxed text-[var(--text-body-secondary)] sm:text-[1.08rem]">
+      <p className="mt-3 max-w-3xl text-[1.1rem] leading-relaxed text-[var(--text-body-secondary)] sm:text-[1.18rem]">
         {tt(curated.summary)}
       </p>
-      <p className="mt-4 text-sm text-[var(--text-muted)]">{curated.evidence}</p>
+      <p className="mt-4 text-base text-[var(--text-muted)]">{curated.evidence}</p>
       {curated.confidence && (
-        <p className="mt-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-warm)] px-3 py-2 text-sm text-[var(--text-faint)]">
+        <p className="mt-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-warm)] px-3 py-2.5 text-base text-[var(--text-faint)]">
           <span className="font-semibold text-[#3d5568]">
             {m.atlas?.confidenceNote ?? 'Confidence note:'}
           </span>{' '}
@@ -76,7 +76,7 @@ export function BriefDetail({
         {/* ── Left column ── */}
         <div className="space-y-4">
           {/* Why this matters */}
-          <p className="max-w-prose text-[1.01rem] leading-relaxed text-[var(--text-body-secondary)]">
+          <p className="max-w-prose text-[1.1rem] leading-relaxed text-[var(--text-body-secondary)]">
             <span className="font-semibold text-[#2f495d]">
               {m.atlas?.whyItMatters ?? 'Why this matters:'}
             </span>{' '}
@@ -85,10 +85,10 @@ export function BriefDetail({
 
           {/* What To Do */}
           <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-warm-deep)] p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7a5f3f]">
+            <p className="text-sm font-semibold uppercase tracking-[0.12em] text-[#7a5f3f]">
               {m.atlas?.whatToDo ?? 'What To Do'}
             </p>
-            <ul className="mt-2 space-y-2 text-sm leading-relaxed text-[var(--text-body-secondary)]">
+            <ul className="mt-2 space-y-2 text-base leading-relaxed text-[var(--text-body-secondary)]">
               {curated.whatToDo.map((action, actionIndex) => (
                 <li key={`${id}-action-${actionIndex}`}>{tt(action)}</li>
               ))}
@@ -98,7 +98,7 @@ export function BriefDetail({
           {/* Key Terms (collapsed by default) */}
           {curated.keyTerms && curated.keyTerms.length > 0 && (
             <details className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-highlight)] p-4">
-              <summary className="cursor-pointer select-none text-xs font-semibold uppercase tracking-[0.12em] text-[#3d5568]">
+              <summary className="cursor-pointer select-none text-sm font-semibold uppercase tracking-[0.12em] text-[#3d5568]">
                 {m.atlas?.keyTerms ?? 'Key Terms'}
               </summary>
               <dl className="mt-3 grid gap-x-3 gap-y-2 sm:grid-cols-2">
@@ -107,10 +107,10 @@ export function BriefDetail({
                     key={`${id}-term-${entry.term}`}
                     className="rounded-lg border border-[var(--border-subtle)] bg-white px-3 py-2"
                   >
-                    <dt className="text-[0.8rem] font-semibold text-[var(--text-heading)]">
+                    <dt className="text-[0.9rem] font-semibold text-[var(--text-heading)]">
                       {entry.term}
                     </dt>
-                    <dd className="mt-0.5 text-[0.8rem] leading-snug text-[var(--text-body-secondary)]">
+                    <dd className="mt-0.5 text-[0.9rem] leading-snug text-[var(--text-body-secondary)]">
                       {entry.definition}
                     </dd>
                   </div>
@@ -124,7 +124,7 @@ export function BriefDetail({
         <div className="space-y-4">
           {/* What Results Showed (with headlines) */}
           <div className="rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-4 sm:p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.13em] text-[#7b5f3d]">
+            <p className="text-sm font-semibold uppercase tracking-[0.13em] text-[#7b5f3d]">
               {m.atlas?.whatWeFound ?? 'What Results Showed'}
             </p>
             {curated.whatWeFound.length > 0 ? (
@@ -137,13 +137,13 @@ export function BriefDetail({
                       key={`${id}-finding-${findingIndex}`}
                       className={`rounded-xl border border-[var(--border-subtle)] border-l-[3px] ${accentColors[findingIndex % 3]} bg-white px-4 py-3`}
                     >
-                      <p className="flex items-center gap-2 text-sm font-bold leading-snug text-[var(--text-heading)]">
-                        <span className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.65rem] font-bold ${badgeColors[findingIndex % 3]}`}>
+                      <p className="flex items-center gap-2.5 text-base font-bold leading-snug text-[var(--text-heading)]">
+                        <span className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[0.75rem] font-bold ${badgeColors[findingIndex % 3]}`}>
                           {findingIndex + 1}
                         </span>
                         {finding.headline}
                       </p>
-                      <p className="mt-1 pl-7 text-sm leading-relaxed text-[var(--text-body-secondary)]">
+                      <p className="mt-1 pl-[2.12rem] text-[0.95rem] leading-relaxed text-[var(--text-body-secondary)]">
                         {tt(finding.detail)}
                       </p>
                     </li>
@@ -151,7 +151,7 @@ export function BriefDetail({
                 })}
               </ul>
             ) : (
-              <p className="mt-3 text-sm text-[var(--text-muted)]">
+              <p className="mt-3 text-base text-[var(--text-muted)]">
                 No extracted outcome points found for this brief.
               </p>
             )}
@@ -163,7 +163,7 @@ export function BriefDetail({
       {/* ── Cross-links to related briefs ── */}
       {BRIEF_CROSS_LINKS[id] && BRIEF_CROSS_LINKS[id].length > 0 && (
         <div className="mt-5 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">See also:</span>
+          <span className="text-sm font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">See also:</span>
           {BRIEF_CROSS_LINKS[id].map((link) => {
             const target = DECISION_BRIEF_SECTIONS.find((s) => s.id === link.id);
             if (!target) return null;
@@ -171,7 +171,7 @@ export function BriefDetail({
               <a
                 key={`${id}-xlink-${link.id}`}
                 href={`#${link.id}`}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-default)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-default)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
                 title={link.reason}
               >
                 {target.title}

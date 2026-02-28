@@ -50,7 +50,7 @@ export function ChartLightbox({ children }: ChartLightboxProps) {
         className="group w-full cursor-zoom-in rounded-xl border border-[var(--border-subtle)] bg-white px-3 py-3 text-left transition-shadow hover:shadow-md"
       >
         <div ref={sourceRef} className="pointer-events-none">{children}</div>
-        <p className="mt-2 text-center text-xs text-[var(--text-muted)] opacity-70 transition-opacity group-hover:opacity-100">
+        <p className="mt-2 text-center text-sm text-[var(--text-muted)] opacity-70 transition-opacity group-hover:opacity-100">
           Click to enlarge
         </p>
       </button>

@@ -42,7 +42,7 @@ export function TableOfContents({ items }: TableOfContentsProps) {
         <a
           key={item.id}
           href={`#${item.id}`}
-          className={`rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.11em] transition ${
+          className={`rounded-full border px-4 py-2.5 text-sm font-semibold uppercase tracking-[0.11em] transition ${
             activeId === item.id
               ? 'border-[var(--accent-teal)] bg-[var(--accent-teal)]/10 text-[var(--accent-teal)]'
               : 'border-[var(--border-default)] bg-white text-[#405468] hover:border-[#b49567] hover:bg-[#fff4e4]'

@@ -19,13 +19,13 @@ export function BriefCard({ id, label, title, question, curated, index, locale }
       className="animate-rise rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-5 shadow-[var(--shadow-card)]"
       style={{ animationDelay: `${index * 90}ms` }}
     >
-      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[var(--accent-gold)]">
+      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--accent-gold)]">
         {label}
       </p>
-      <h3 className="mt-2 text-lg font-semibold leading-tight text-[var(--text-heading)]">{title}</h3>
-      <p className="mt-2 text-sm font-medium leading-relaxed text-[#2b5064]">{question}</p>
-      <p className="mt-3 text-sm leading-relaxed text-[var(--text-body-secondary)]">{curated.summary}</p>
-      <ul className="mt-3 space-y-2 text-sm text-[var(--text-body-secondary)]">
+      <h3 className="mt-2 text-xl font-semibold leading-tight text-[var(--text-heading)]">{title}</h3>
+      <p className="mt-2 text-base font-medium leading-relaxed text-[#2b5064]">{question}</p>
+      <p className="mt-3 text-[0.95rem] leading-relaxed text-[var(--text-body-secondary)]">{curated.summary}</p>
+      <ul className="mt-3 space-y-2 text-[0.95rem] text-[var(--text-body-secondary)]">
         {curated.whatWeFound.length > 0
           ? curated.whatWeFound.slice(0, 2).map((item, itemIndex) => (
             <li
@@ -46,7 +46,7 @@ export function BriefCard({ id, label, title, question, curated, index, locale }
       </ul>
       <a
         href={`#${id}`}
-        className="mt-4 inline-flex text-sm font-semibold text-[var(--accent-teal)] underline underline-offset-4"
+        className="mt-4 inline-flex text-base font-semibold text-[var(--accent-teal)] underline underline-offset-4"
       >
         {m.atlas?.openFullBrief ?? 'Open full brief'}
       </a>

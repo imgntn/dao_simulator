@@ -102,8 +102,10 @@ body {
     linear-gradient(172deg, #fffefb 0%, #f8f2e8 56%, #efe7da 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
-  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
-  line-height: 1.7;
+  font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  line-height: 1.72;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
@@ -143,8 +145,8 @@ body:has(.theme-console) {
   border-radius: 999px;
   background: var(--surface-warm);
   color: #2a4154;
-  padding: 0.52rem 1rem;
-  font-size: 0.875rem;
+  padding: 0.6rem 1.15rem;
+  font-size: 1rem;
   font-weight: 580;
   letter-spacing: 0.012em;
   transition: all 150ms ease;
@@ -166,7 +168,7 @@ body:has(.theme-console) {
   margin: 0 auto;
   color: #2d3f52;
   line-height: 1.84;
-  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.12rem);
+  font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.2rem);
   text-wrap: pretty;
 }
 
@@ -182,15 +184,15 @@ body:has(.theme-console) {
 }
 
 .markdown-surface h1 {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
 }
 
 .markdown-surface h2 {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
 }
 
 .markdown-surface h3 {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 .markdown-surface p {
@@ -257,7 +259,7 @@ body:has(.theme-console) {
   border-radius: 8px;
   background: var(--text-heading);
   color: #f6f0e4;
-  font-size: 0.78rem;
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.5;
   letter-spacing: 0;
@@ -345,6 +347,19 @@ body:has(.theme-console) {
 
   svg {
     image-rendering: -webkit-optimize-contrast;
+  }
+}
+
+/* Scale up on very-high-DPI small screens (e.g. 4K laptops, 14" Retina) */
+@media (min-resolution: 2dppx) and (max-width: 1800px) {
+  html {
+    font-size: 112.5%; /* 18px base instead of 16px */
+  }
+}
+
+@media (min-resolution: 3dppx) {
+  html {
+    font-size: 118.75%; /* 19px base for 3x screens */
   }
 }
 

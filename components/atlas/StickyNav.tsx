@@ -56,7 +56,7 @@ export function StickyNav({ sections }: StickyNavProps) {
           <a
             key={s.id}
             href={`#${s.id}`}
-            className={`shrink-0 rounded-full border px-3 py-1 text-xs font-semibold transition ${
+            className={`shrink-0 rounded-full border px-4 py-1.5 text-sm font-semibold transition ${
               activeId === s.id
                 ? 'border-[var(--accent-teal)] bg-[var(--accent-teal)]/10 text-[var(--accent-teal)]'
                 : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-heading)]'

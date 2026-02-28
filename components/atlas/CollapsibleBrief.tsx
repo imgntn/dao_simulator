@@ -46,13 +46,13 @@ export function CollapsibleBrief({ id, label, title, children }: CollapsibleBrie
     <details ref={detailsRef} id={id}>
       <summary className="cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
         <div className="animate-rise rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-5 shadow-[var(--shadow-card)] transition hover:shadow-md sm:p-6 lg:hidden">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-[var(--accent-gold)]">
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--accent-gold)]">
             {label}
           </p>
-          <h3 className="mt-1 text-lg font-semibold leading-tight text-[var(--text-heading)]">
+          <h3 className="mt-1 text-xl font-semibold leading-tight text-[var(--text-heading)]">
             {title}
           </h3>
-          <p className="mt-2 text-xs text-[var(--text-muted)]">Tap to expand</p>
+          <p className="mt-2 text-sm text-[var(--text-muted)]">Tap to expand</p>
         </div>
       </summary>
       {children}
