@@ -75,6 +75,27 @@ export const CALIBRATION_SCORES: Record<string, number> = {
 };
 
 // ---------------------------------------------------------------------------
+// Digital Twin URLs (governance portals)
+// ---------------------------------------------------------------------------
+
+export const DAO_URLS: Record<string, string> = {
+  Uniswap: 'https://app.uniswap.org/vote',
+  Compound: 'https://compound.finance/governance',
+  Aave: 'https://governance.aave.com',
+  Arbitrum: 'https://www.tally.xyz/gov/arbitrum',
+  Optimism: 'https://vote.optimism.io',
+  ENS: 'https://www.tally.xyz/gov/ens',
+  Lido: 'https://vote.lido.fi',
+  Gitcoin: 'https://www.tally.xyz/gov/gitcoin',
+  MakerDAO: 'https://vote.makerdao.com',
+  Curve: 'https://dao.curve.fi',
+  Nouns: 'https://nouns.wtf/vote',
+  Balancer: 'https://vote.balancer.fi',
+  dYdX: 'https://www.mintscan.io/dydx/proposals',
+  SushiSwap: 'https://snapshot.org/#/sushigov.eth',
+};
+
+// ---------------------------------------------------------------------------
 // Digital Twin Feature Highlights (per-DAO)
 // ---------------------------------------------------------------------------
 

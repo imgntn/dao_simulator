@@ -6,6 +6,7 @@ import {
   JAMES_SITE_URL,
   CALIBRATION_SCORES,
   DAO_TWIN_FEATURES,
+  DAO_URLS,
 } from '@/lib/atlas/content';
 import {
   readText,
@@ -316,7 +317,18 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                       title={score ? `Calibration score: ${score.toFixed(3)}` : undefined}
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-sm font-semibold text-[var(--text-heading)]">{dao}</span>
+                        {DAO_URLS[dao] ? (
+                          <a
+                            href={DAO_URLS[dao]}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-sm font-semibold text-[var(--text-heading)] underline decoration-[var(--border-default)] underline-offset-2 hover:text-[var(--accent-teal)] hover:decoration-[var(--accent-teal)]"
+                          >
+                            {dao}
+                          </a>
+                        ) : (
+                          <span className="text-sm font-semibold text-[var(--text-heading)]">{dao}</span>
+                        )}
                         <div className="flex items-center gap-1.5">
                           {twin && (
                             <span className="rounded px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide bg-[var(--surface-warm)] text-[var(--text-body-secondary)]">
