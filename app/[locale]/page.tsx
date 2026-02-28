@@ -192,7 +192,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
             <div className="mt-5 flex flex-wrap gap-3">
               <a
-                href="https://podcasts.apple.com/podcast/id1609313639"
+                href="https://podcasts.apple.com/us/podcast/123-ai-dao-simulator-w-james-pollack/id1609313639?i=1000617149760"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-white px-4 py-2.5 text-sm font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
