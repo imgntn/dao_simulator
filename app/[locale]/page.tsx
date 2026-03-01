@@ -536,9 +536,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     <p className="text-base font-semibold text-[var(--text-heading)]">
                       {sectionLabel(section.id)} {section.title}
                     </p>
-                    <span className="text-sm text-[var(--text-faint)]">
-                      {section.words} {m.atlas?.wordsCount ?? 'words'}
-                    </span>
                   </div>
                   {section.takeaways.length > 0 && (
                     <details className="mt-3 rounded-lg border border-[var(--border-subtle)] bg-white p-3">
