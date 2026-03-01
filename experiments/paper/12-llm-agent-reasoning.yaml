@@ -80,7 +80,7 @@ execution:
   seedStrategy: sequential
   baseSeed: 42
   workers: 1
-  runTimeoutMs: 180000
+  runTimeoutMs: 1800000
 
 metrics:
   - name: Proposal Pass Rate

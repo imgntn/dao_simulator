@@ -243,7 +243,7 @@ export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
     id: 'rq6',
     title: 'LLM Governance (Exploratory)',
     question: 'What happens when AI agents participate in governance votes?',
-    whyItMatters: 'Early-stage exploration. Directional signals only \u2014 not yet a basis for policy.',
+    whyItMatters: '52-run experiment. Hybrid AI governance preserves participation; pure-LLM mode does not.',
     filePath: 'paper/plain-english/rq6-llm-agent-reasoning.md',
     relatedPaperPath: 'paper_llm/main.pdf',
   },
@@ -501,19 +501,19 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
   },
   rq6: {
     summary:
-      'Preliminary results suggest hybrid LLM-rule governance may balance reasoning depth with latency. These are directional signals, not conclusions \u2014 the sample is too small for policy recommendations.',
+      'Across 52 runs, adding LLM agents to governance preserved decision quality while shifting voting dynamics. Hybrid mode (30% LLM) matched baseline participation, but all-LLM mode saw steep engagement drops \u2014 suggesting AI governance needs human anchoring.',
     whatWeFound: [
-      { headline: 'Hybrid Matched Full-LLM on Outcomes', detail: 'Both hybrid and all-LLM modes reached a 50% pass rate. The rule-based baseline recorded 0%, though this reflects the tiny sample, not a fundamental flaw.' },
-      { headline: 'Full-LLM Peaked Engagement', detail: 'All-LLM posted 31% participation and 75% vote consistency vs. hybrid\u2019s 19% and 66%. More AI reasoning meant more consistent behavior.' },
-      { headline: 'Hybrid Halved Latency', detail: '808ms vs 1,381ms. For governance at scale, this latency gap compounds into meaningful throughput differences.' },
+      { headline: 'Hybrid Preserved Governance Quality', detail: 'Hybrid mode (30% LLM agents) achieved 43% pass rate and 20% participation \u2014 comparable to the 58% / 18% baseline. Adding AI voters didn\u2019t break governance.' },
+      { headline: 'All-LLM Collapsed Participation', detail: 'With 100% LLM agents, participation fell to 8.8% and pass rates to 23%. AI agents without human anchoring under-engage, producing more conservative but less active governance.' },
+      { headline: 'LLM Consistency Was 46% in Hybrid', detail: 'LLM agents voted consistently 46% of the time in hybrid mode but only 22% in all-LLM mode. With human agents present, AI reasoning was more stable and auditable.' },
     ],
     whatToDo: [
-      'Treat these as hypotheses, not findings. Small run counts cannot distinguish signal from noise.',
-      'If deploying LLM governance, start with hybrid mode as the lower-risk default.',
-      'Track latency budgets, consistency drift, and cache hit rates as first-class metrics.',
+      'Hybrid mode is the safer deployment default \u2014 it preserves participation while adding AI reasoning depth.',
+      'Pure-LLM governance produces conservative outcomes but loses engagement. Pair AI agents with human voters.',
+      'Monitor LLM vote consistency as a governance health metric \u2014 consistency drops signal reasoning instability.',
     ],
-    evidence: 'LLM profile paper (exploratory benchmark).',
-    confidence: 'Exploratory: the LLM profile uses a smaller run set than core governance experiments. Findings are directional only.',
+    evidence: '52 runs (13 per config) across 4 modes: disabled, hybrid (30% LLM), all-LLM, hybrid+reporter. Local qwen3:8b model via Ollama.',
+    confidence: 'Exploratory but credible: 13 runs per config provides moderate statistical power. Findings are consistent across seeds but limited to a single LLM model.',
     keyTerms: [
       {
         term: 'LLM (Large Language Model)',

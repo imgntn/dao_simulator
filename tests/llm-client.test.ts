@@ -18,14 +18,14 @@ function mockOllamaResponse(response: string, overrides: Record<string, unknown>
     ok: true,
     json: async () => ({
       model: 'test-model',
-      response,
+      message: { role: 'assistant', content: response },
       done: true,
       total_duration: 1000000000,
       eval_count: 20,
       eval_duration: 500000000,
       ...overrides,
     }),
-    text: async () => JSON.stringify({ response }),
+    text: async () => JSON.stringify({ message: { content: response } }),
   };
 }
 
@@ -128,12 +128,15 @@ describe('OllamaClient', () => {
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
       const [url, init] = mockFetch.mock.calls[0];
-      expect(url).toBe('http://localhost:11434/api/generate');
+      expect(url).toBe('http://localhost:11434/api/chat');
       const body = JSON.parse(init.body);
       expect(body.model).toBe('llama3.1:8b');
-      expect(body.prompt).toBe('test prompt');
-      expect(body.system).toBe('test system');
+      expect(body.messages).toEqual([
+        { role: 'system', content: 'test system' },
+        { role: 'user', content: 'test prompt' },
+      ]);
       expect(body.stream).toBe(false);
+      expect(body.think).toBe(false);
       expect(body.format).toBe('json');
     });
 

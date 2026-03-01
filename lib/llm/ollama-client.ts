@@ -1,8 +1,9 @@
 /**
  * Ollama HTTP Client
  *
- * Wraps Ollama's /api/generate endpoint with concurrency limiting,
+ * Wraps Ollama's /api/chat endpoint with concurrency limiting,
  * timeout/retry, and lazy availability checking.
+ * Uses chat API to support think:false for models with CoT (e.g. qwen3).
  */
 
 import { logger } from '../utils/logger';
@@ -14,6 +15,8 @@ export interface OllamaGenerateRequest {
   temperature?: number;
   seed?: number;
   format?: 'json';
+  /** Disable chain-of-thought thinking (e.g. qwen3). Defaults to false. */
+  think?: boolean;
   options?: {
     num_predict?: number;
     [key: string]: unknown;
@@ -161,11 +164,18 @@ export class OllamaClient {
 
     for (let attempt = 0; attempt <= this.config.maxRetries; attempt++) {
       try {
+        // Build messages array for the chat API
+        const messages: Array<{ role: string; content: string }> = [];
+        if (request.system) {
+          messages.push({ role: 'system', content: request.system });
+        }
+        messages.push({ role: 'user', content: request.prompt });
+
         const body = {
           model: request.model,
-          prompt: request.prompt,
-          system: request.system,
+          messages,
           stream: false,
+          think: request.think ?? false,
           options: {
             temperature: request.temperature ?? 0.3,
             seed: request.seed,
@@ -176,7 +186,7 @@ export class OllamaClient {
         };
 
         const response = await this.fetchWithTimeout(
-          `${this.config.baseUrl}/api/generate`,
+          `${this.config.baseUrl}/api/chat`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -189,7 +199,28 @@ export class OllamaClient {
           throw new Error(`Ollama API error ${response.status}: ${errorText}`);
         }
 
-        return (await response.json()) as OllamaGenerateResponse;
+        // Map chat response to generate response format for compatibility
+        const chatResp = (await response.json()) as {
+          model: string;
+          message: { role: string; content: string };
+          done: boolean;
+          total_duration?: number;
+          load_duration?: number;
+          prompt_eval_count?: number;
+          eval_count?: number;
+          eval_duration?: number;
+        };
+
+        return {
+          model: chatResp.model,
+          response: chatResp.message?.content ?? '',
+          done: chatResp.done,
+          total_duration: chatResp.total_duration,
+          load_duration: chatResp.load_duration,
+          prompt_eval_count: chatResp.prompt_eval_count,
+          eval_count: chatResp.eval_count,
+          eval_duration: chatResp.eval_duration,
+        };
       } catch (err) {
         lastError = err instanceof Error ? err : new Error(String(err));
 

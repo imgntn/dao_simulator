@@ -385,6 +385,7 @@ async function main(): Promise<void> {
       {
         concurrency,
         checkpointInterval: 10,
+        runTimeoutMs: config.execution.runTimeoutMs ?? 60000,
       },
       progressCallback
     );
