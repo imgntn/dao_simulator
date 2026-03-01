@@ -201,49 +201,49 @@ export const BRIEF_CROSS_LINKS: Record<string, { id: string; reason: string }[]>
 export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
   {
     id: 'rq1',
-    title: 'Participation Dynamics',
-    question: 'How do we get more people to vote consistently?',
-    whyItMatters: 'Healthy participation is the baseline for every other governance decision.',
+    title: 'Quorum Design & Governance Cliffs',
+    question: 'Where are the hidden cliffs in quorum design?',
+    whyItMatters: 'Most DAOs set quorum by gut feel. A 5-point miscalibration can silently kill governance.',
     filePath: 'paper/plain-english/rq1-participation.md',
     relatedPaperPath: 'paper/rq1/main.pdf',
   },
   {
     id: 'rq2',
     title: 'Governance Capture Mitigation',
-    question: 'How do we reduce whale control without freezing the DAO?',
-    whyItMatters: 'Fairness and safety matter, but governance still has to ship decisions.',
+    question: 'Can you reduce whale dominance without killing governance speed?',
+    whyItMatters: 'The conventional wisdom says fairness costs efficiency. The data says otherwise.',
     filePath: 'paper/plain-english/rq2-governance-capture.md',
     relatedPaperPath: 'paper/rq2/main.pdf',
   },
   {
     id: 'rq3',
-    title: 'Proposal Pipeline Effects',
-    question: 'How do we make proposals move faster without lowering quality?',
-    whyItMatters: 'Slow governance burns momentum and increases operational risk.',
+    title: 'Governance Throughput',
+    question: 'Is the speed-vs-quality tradeoff in governance real?',
+    whyItMatters: 'Everyone assumes faster governance means worse decisions. Filtering mechanics break that assumption.',
     filePath: 'paper/plain-english/rq3-proposal-pipeline.md',
     relatedPaperPath: 'paper/rq3/main.pdf',
   },
   {
     id: 'rq4',
-    title: 'Treasury Resilience',
-    question: 'How do we protect treasury health through volatility?',
-    whyItMatters: 'Treasury policy drives long-term survival, growth, and strategic optionality.',
+    title: 'The Cost of Stability',
+    question: 'What does treasury stability actually cost in growth?',
+    whyItMatters: 'Stabilization halves volatility \u2014 but nothing is free. The growth tradeoff is real and quantifiable.',
     filePath: 'paper/plain-english/rq4-treasury.md',
     relatedPaperPath: 'paper/rq4/main.pdf',
   },
   {
     id: 'rq5',
     title: 'Inter-DAO Cooperation',
-    question: 'What kinds of cross-DAO coordination actually work?',
-    whyItMatters: 'Ecosystem collaboration can unlock scale that single DAOs cannot reach alone.',
+    question: 'Why does specialization beat scale in cross-DAO partnerships?',
+    whyItMatters: 'Generic partnerships fail. The structure of collaboration matters more than the intent.',
     filePath: 'paper/plain-english/rq5-cooperation.md',
     relatedPaperPath: 'paper/rq5/main.pdf',
   },
   {
     id: 'rq6',
-    title: 'LLM Agent Reasoning',
-    question: 'Where do LLMs help governance, and where do they add risk?',
-    whyItMatters: 'AI governance is moving from theory to production, so evaluation quality is critical.',
+    title: 'LLM Governance (Exploratory)',
+    question: 'What happens when AI agents participate in governance votes?',
+    whyItMatters: 'Early-stage exploration. Directional signals only \u2014 not yet a basis for policy.',
     filePath: 'paper/plain-english/rq6-llm-agent-reasoning.md',
     relatedPaperPath: 'paper_llm/main.pdf',
   },
@@ -256,16 +256,16 @@ export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
 export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
   rq1: {
     summary:
-      'Governance stalls when quorum targets exceed real turnout capacity. In the core sweep, turnout stayed near 22\u201323%, but quorum reach collapsed once quorum moved past ~10\u201315%.',
+      'There\u2019s a narrow band in quorum design where governance collapses. Turnout holds steady near 22%, but moving quorum past 10\u201315% causes a cliff \u2014 not a gradual decline \u2014 in proposal passage.',
     whatWeFound: [
-      { headline: 'Quorum Cliff at 10%', detail: 'At 5% quorum, 99.9% of proposals reached quorum. At 10%, reach was 82%. At 20%, only 25.4% reached quorum. By 40%, reach fell to 0%.' },
-      { headline: 'Threshold, Not Disagreement', detail: 'Pass rate among proposals that did reach quorum stayed high (97.6\u201398.5%), showing the bottleneck was reaching the threshold, not voter disagreement.' },
-      { headline: 'Scale Lowers Turnout', detail: 'As DAO size scaled from 50 to 500 members, participation fell (26.1% to 21.9%) but pass rate rose (92.8% to 99.7%).' },
+      { headline: '5-Point Cliff, Not a Slope', detail: 'At 5% quorum, 99.9% of proposals pass. At 10%, 82%. At 20%, 25%. At 40%, zero. The drop is catastrophic, not gradual.' },
+      { headline: 'Voters Agree \u2014 They Just Don\u2019t Show Up', detail: 'Pass rate among proposals that reached quorum stayed 97\u201398%. The bottleneck is turnout, not disagreement.' },
+      { headline: 'Bigger DAOs, Lower Turnout', detail: 'Scaling from 50 to 500 members dropped participation from 26% to 22%, while pass rate actually rose. Size dilutes engagement.' },
     ],
     whatToDo: [
-      'Set quorum from observed behavior, not aspiration. A practical rule from the paper is ~80% of natural turnout.',
-      'Use low-to-moderate quorum first (often around 4\u20135% in tested baselines), then adjust from data.',
-      'Track fatigue and retention alongside pass rate, and use delegation before raising quorum.',
+      'Set quorum from observed turnout data, not aspirational targets. A practical rule: ~80% of natural turnout.',
+      'Start low (4\u20135%) and adjust upward from data, not downward from failure.',
+      'Use delegation to boost effective participation before raising thresholds.',
     ],
     evidence: 'Core paper RQ1 + scale analysis (Experiments 01, 03, 08).',
     keyTerms: [
@@ -308,11 +308,11 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
   },
   rq2: {
     summary:
-      'Capture resistance improved most when power-distribution rules changed directly, not when only rate limits were added.',
+      'Reducing whale power didn\u2019t slow governance \u2014 it sped it up. Quadratic voting cut whale influence 43% while pass rate improved from 93% to 99%.',
     whatWeFound: [
-      { headline: '43% Less Whale Power', detail: 'Applying quadratic voting (where voting power scales with the square root of tokens held, kicking in above a 250-token threshold) cut whale influence from 0.449 to 0.256 \u2014 a 43% reduction.' },
-      { headline: '42% Capture Risk Drop', detail: 'Capture risk dropped from 0.464 to 0.269 under the strongest mitigation settings, a 42% reduction.' },
-      { headline: 'Throughput Held Steady', detail: 'Governance throughput improved rather than collapsed: pass rate moved from 92.7% to 98.5%. Velocity penalties alone had only small effects.' },
+      { headline: 'Fairness Improved Speed', detail: 'Quadratic voting cut whale influence from 0.449 to 0.256 (43% reduction) while pass rate rose from 92.7% to 98.5%. The expected tradeoff didn\u2019t exist.' },
+      { headline: 'Power Shape > Activity Throttles', detail: 'Velocity penalties alone had only small effects. Changing how power distributes mattered far more than limiting how often whales can act.' },
+      { headline: '42% Capture Risk Drop', detail: 'Capture risk fell from 0.464 to 0.269 under the strongest settings, using a layered stack of quadratic voting + delegation caps + velocity controls.' },
     ],
     whatToDo: [
       'Use a layered stack: quadratic base + delegation caps + 30\u201360 day velocity controls.',
@@ -365,16 +365,16 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
   },
   rq3: {
     summary:
-      'Proposal flow improves with moderate filtering and selective fast-tracking. Extreme settings are where quality or speed starts to break.',
+      'The speed-quality tradeoff is a false dilemma \u2014 with the right pipeline design. Moderate temp-checks filtered weak proposals early, while fast-tracking cleared obvious consensus, achieving both higher quality and faster throughput.',
     whatWeFound: [
-      { headline: 'Filtering Lifts Quality', detail: 'Raising temp-check pressure from 5% to 50% lifted pass rate from 96.4% to 98.5%, filtering out weak proposals before they consumed full voting resources.' },
-      { headline: 'Fast-Track Keeps Quorum', detail: 'Fast-track with a 12-day minimum voting window kept quorum reach above 99% while accelerating obvious-consensus proposals.' },
-      { headline: 'Zero Abandonment', detail: 'Core runs showed 47\u201350 proposals per simulated cycle with zero abandonment, though very short expiry windows remain risky for complex work.' },
+      { headline: 'No Tradeoff Found', detail: 'Raising temp-check pressure from 5% to 50% lifted pass rate from 96.4% to 98.5% while maintaining full throughput. Better filtering meant better outcomes, not slower ones.' },
+      { headline: '12-Day Floor Held Quorum', detail: 'Fast-tracking with a 12-day minimum voting window kept quorum reach above 99%. Speed didn\u2019t come at the cost of participation.' },
+      { headline: 'Zero Proposals Abandoned', detail: '47\u201350 proposals per cycle completed without a single abandonment, though very short expiry windows remain risky for complex work.' },
     ],
     whatToDo: [
-      'Use moderate thresholds (roughly 20\u201330% temp-check and ~70% fast-track as a starting point).',
-      'Keep default expiry windows near 60 days, with longer windows for complex proposals.',
-      'Monitor false negatives, abandonment, and time-to-decision as a single operating set.',
+      'Start with moderate thresholds: ~20\u201330% temp-check, ~70% fast-track consensus.',
+      'Keep default expiry near 60 days; extend for complex proposals.',
+      'Monitor false negatives and time-to-decision together \u2014 optimizing one in isolation breaks the other.',
     ],
     evidence: 'Core paper RQ3 pipeline experiments (Experiment 05).',
     keyTerms: [
@@ -412,16 +412,16 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
   },
   rq4: {
     summary:
-      'Treasury resilience came from explicit policy discipline: stabilization, reserve buffers, spending limits, and clear emergency triggers.',
+      'Treasury stabilization works \u2014 volatility dropped roughly in half. But every stability mechanism has a growth cost. The real question isn\u2019t whether to stabilize, but how much growth you\u2019re willing to trade.',
     whatWeFound: [
-      { headline: 'Volatility Cut in Half', detail: 'Stabilization mechanisms cut treasury value swings roughly in half \u2014 volatility scores dropped from the 0.45\u20130.50 range to 0.24\u20130.27 (on a 0\u20131 scale where lower is more stable).' },
-      { headline: 'Buffers Protect Downside', detail: 'Reserve buffers and spending caps improved downside protection; stabilized runs landed around $10,048\u2013$13,147 in final treasury value.' },
-      { headline: 'Growth Tradeoff Exists', detail: 'Lower volatility came with modest growth tradeoffs, so treasury policy needs continuous tuning rather than one-time setup.' },
+      { headline: 'Volatility Halved, Growth Taxed', detail: 'Stabilization cut treasury swings from 0.45\u20130.50 to 0.24\u20130.27, but average growth rate stayed negative (\u20130.71) across all configurations. Stability isn\u2019t growth.' },
+      { headline: 'Buffers Beat Active Management', detail: 'Reserve buffers with spending caps ($10K\u2013$13K final treasury) outperformed configurations without them, providing downside protection without complex rebalancing.' },
+      { headline: 'No Set-and-Forget', detail: 'The growth tradeoff means treasury policy needs continuous tuning. A one-time configuration drifts as market conditions change.' },
     ],
     whatToDo: [
-      'Set explicit reserves (typically 15\u201320% of total treasury) and define breach triggers.',
-      'Apply spending limits aligned to burn rate (often 2\u20135% per period) with explicit emergency overrides.',
-      'Trigger top-up or freeze controls when reserves fall below policy thresholds (e.g., 50% of target buffer).',
+      'Set explicit reserves (15\u201320% of total) with defined breach triggers.',
+      'Cap spending at 2\u20135% per period with emergency overrides.',
+      'Re-evaluate policy quarterly \u2014 stability parameters that worked in a bull market may choke growth in recovery.',
     ],
     evidence: 'Core paper RQ4 treasury resilience results (Experiment 06).',
     keyTerms: [
@@ -459,11 +459,11 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
   },
   rq5: {
     summary:
-      'Cross-DAO coordination worked, but it was fragile. Outcomes improved when fairness, structure, and partner complementarity were designed upfront.',
+      'Cross-DAO coordination worked when partners brought complementary strengths. Generic connections produced half the activity and lower treasury outcomes than specialized, role-based partnerships.',
     whatWeFound: [
-      { headline: '21% Cross-DAO Success', detail: 'Inter-DAO success rate was 21.4\u201323.4% across cooperation topologies versus 0% when DAOs operated in isolation.' },
-      { headline: 'Specialization Wins', detail: 'Specialized topology generated more inter-DAO activity (75.8 vs 50.3 proposals) and higher ecosystem treasury ($26,107 vs $24,071).' },
-      { headline: 'Alignment Stays Moderate', detail: 'Cross-DAO alignment stayed moderate (0.534\u20130.557), which explains why fairness design and coordination structure mattered.' },
+      { headline: 'Structure > Intent', detail: 'Specialized partnerships generated 50% more inter-DAO proposals (75.8 vs 50.3) and 8% higher ecosystem treasury ($26,107 vs $24,071) than generic connections.' },
+      { headline: '21% Success Is the Ceiling (So Far)', detail: 'Inter-DAO proposal success reached 21\u201323% with the best topology, versus 0% in isolation. Cooperation is fragile and needs explicit design.' },
+      { headline: 'Moderate Alignment Is Normal', detail: 'Cross-DAO alignment stabilized at 0.53\u20130.56, not near 1.0. Expecting high alignment between autonomous organizations is unrealistic \u2014 design for disagreement.' },
     ],
     whatToDo: [
       'Define fairness explicitly before launch: cost split, value split, and dispute path.',
@@ -501,19 +501,19 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
   },
   rq6: {
     summary:
-      'LLM-enabled governance showed an engagement\u2013latency tradeoff. Hybrid mode was the strongest default in the current benchmark.',
+      'Preliminary results suggest hybrid LLM-rule governance may balance reasoning depth with latency. These are directional signals, not conclusions \u2014 the sample is too small for policy recommendations.',
     whatWeFound: [
-      { headline: 'Hybrid Matches All-LLM', detail: 'Hybrid and all-LLM modes both reached a 50% pass rate. The rule-based baseline recorded 0% in this limited 8-run benchmark, reflecting the small sample size rather than a fundamental flaw in rule-based governance.' },
-      { headline: 'All-LLM Peaks Engagement', detail: 'All-LLM posted higher participation (31.2%) and vote consistency (74.7%) than hybrid mode (18.6% participation, 66.3% consistency).' },
-      { headline: 'Hybrid Halves Latency', detail: 'Hybrid mode reduced average decision latency to 808 ms versus 1,381 ms in all-LLM, with stronger treasury outcomes in this run set.' },
+      { headline: 'Hybrid Matched Full-LLM on Outcomes', detail: 'Both hybrid and all-LLM modes reached a 50% pass rate. The rule-based baseline recorded 0%, though this reflects the tiny sample, not a fundamental flaw.' },
+      { headline: 'Full-LLM Peaked Engagement', detail: 'All-LLM posted 31% participation and 75% vote consistency vs. hybrid\u2019s 19% and 66%. More AI reasoning meant more consistent behavior.' },
+      { headline: 'Hybrid Halved Latency', detail: '808ms vs 1,381ms. For governance at scale, this latency gap compounds into meaningful throughput differences.' },
     ],
     whatToDo: [
-      'Use hybrid reasoning as default, then escalate to deeper LLM reasoning only where needed.',
-      'Track latency budgets, consistency drift, and cache performance as first-class governance metrics.',
-      'Increase run budgets beyond the current 8-run benchmark before turning directional findings into hard policy.',
+      'Treat these as hypotheses, not findings. Small run counts cannot distinguish signal from noise.',
+      'If deploying LLM governance, start with hybrid mode as the lower-risk default.',
+      'Track latency budgets, consistency drift, and cache hit rates as first-class metrics.',
     ],
-    evidence: 'LLM profile paper (current benchmark: 8 runs across 4 configurations).',
-    confidence: 'Directional confidence only: the LLM profile currently uses a smaller run set than core governance experiments.',
+    evidence: 'LLM profile paper (exploratory benchmark).',
+    confidence: 'Exploratory: the LLM profile uses a smaller run set than core governance experiments. Findings are directional only.',
     keyTerms: [
       {
         term: 'LLM (Large Language Model)',

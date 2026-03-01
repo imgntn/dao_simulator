@@ -295,23 +295,23 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
           <a href="#rq1" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-6 transition hover:border-[var(--accent-teal)] hover:shadow-md">
             <p className="font-serif-display text-4xl font-bold text-[var(--accent-teal)] sm:text-5xl">99%&rarr;0%</p>
-            <p className="mt-2 text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Quorum Cliff</p>
+            <p className="mt-2 text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Hidden Governance Cliff</p>
             <p className="mt-1 text-base leading-relaxed text-[var(--text-body-secondary)]">
-              A 5-point quorum change swings proposal passage from near-certain to impossible. This research turns hidden cliffs into visible, testable choices.
+              A 5-point quorum change collapses proposal passage from near-certain to zero. The drop is a cliff, not a slope.
             </p>
           </a>
           <a href="#rq2" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-6 transition hover:border-[var(--accent-teal)] hover:shadow-md">
             <p className="font-serif-display text-4xl font-bold text-[var(--accent-teal)] sm:text-5xl">43%</p>
-            <p className="mt-2 text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Whale Power Cut</p>
+            <p className="mt-2 text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Fairness Improved Speed</p>
             <p className="mt-1 text-base leading-relaxed text-[var(--text-body-secondary)]">
-              Quadratic voting cut whale influence by 43% without slowing governance. The right mechanisms improve fairness and throughput at the same time.
+              Quadratic voting cut whale influence 43% while pass rate rose from 93% to 99%. The fairness-efficiency tradeoff didn&rsquo;t exist.
             </p>
           </a>
-          <a href="#rq4" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-6 transition hover:border-[var(--accent-teal)] hover:shadow-md">
-            <p className="font-serif-display text-4xl font-bold text-[var(--accent-gold)] sm:text-5xl">16,370</p>
-            <p className="mt-2 text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Simulation Runs</p>
+          <a href="#rq5" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-6 transition hover:border-[var(--accent-teal)] hover:shadow-md">
+            <p className="font-serif-display text-4xl font-bold text-[var(--accent-gold)] sm:text-5xl">50%</p>
+            <p className="mt-2 text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Structure Beats Scale</p>
             <p className="mt-1 text-base leading-relaxed text-[var(--text-body-secondary)]">
-              Every finding links a specific policy lever to a measurable outcome, so teams can track what actually changes before deploying to production.
+              Specialized cross-DAO partnerships generated 50% more proposals and higher treasury outcomes than generic connections.
             </p>
           </a>
         </div>

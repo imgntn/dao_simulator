@@ -75,7 +75,7 @@ sweep:
       values: [1, 1, 0, 1]
 
 execution:
-  runsPerConfig: 2
+  runsPerConfig: 13
   stepsPerRun: 120
   seedStrategy: sequential
   baseSeed: 42
