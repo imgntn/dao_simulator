@@ -1,10 +1,10 @@
 {
-  "experimentId": "Scale Sweep-1771679708292",
+  "experimentId": "Scale Sweep-1772389273300",
   "experimentName": "Scale Sweep",
   "totalRuns": 500,
   "successfulRuns": 500,
   "failedRuns": 0,
-  "totalDurationMs": 2916440,
+  "totalDurationMs": 2986421,
   "metricsSummary": [
     {
       "sweepValue": 50,
@@ -14385,7 +14385,7 @@
     ]
   },
   "manifest": {
-    "experimentId": "Scale Sweep-1771676791687",
+    "experimentId": "Scale Sweep-1772386286764",
     "configHash": "hash:fa6e481",
     "software": {
       "simulatorVersion": "0.2.0",
@@ -14393,8 +14393,8 @@
       "platform": "win32"
     },
     "execution": {
-      "startedAt": "2026-02-21T12:26:31.687Z",
-      "completedAt": "2026-02-21T13:15:08.127Z",
+      "startedAt": "2026-03-01T17:31:26.764Z",
+      "completedAt": "2026-03-01T18:21:13.185Z",
       "totalRuns": 500,
       "seeds": [
         808,
