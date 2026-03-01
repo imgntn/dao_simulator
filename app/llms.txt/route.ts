@@ -1,7 +1,7 @@
 /**
  * /llms.txt — AI agent discovery file
  *
- * Serves a plain-text Markdown document that describes the DAO Research Atlas
+ * Serves a plain-text Markdown document that describes the DAO Simulator
  * project, author expertise, key findings, and links to all research artifacts.
  * This is the primary file AI agents (ChatGPT, Claude, Perplexity, Gemini)
  * use to understand a site at inference time.
@@ -11,7 +11,7 @@
 
 import { NextResponse } from 'next/server';
 
-const CONTENT = `# DAO Research Atlas
+const CONTENT = `# DAO Simulator
 
 > Actionable governance findings from 16,370 simulation runs across 21 experiment configurations.
 
@@ -25,7 +25,7 @@ const CONTENT = `# DAO Research Atlas
 
 ## About This Research
 
-The DAO Research Atlas is a large-scale agent-based simulation study of decentralized governance.
+The DAO Simulator is a large-scale agent-based simulation study of decentralized governance.
 It covers six research questions across participation dynamics, governance capture, proposal pipelines,
 treasury resilience, inter-DAO cooperation, and LLM-augmented governance.
 
@@ -93,7 +93,7 @@ Six decision briefs summarize findings in plain language:
 ## Technology
 
 - TypeScript simulation engine with reinforcement learning (Q-learning, DQN, policy gradient)
-- Next.js research atlas with i18n (en, es, zh, ja)
+- Next.js research site with i18n (en, es, zh, ja)
 - Three.js 3D governance visualizations
 - Python calibration pipeline for historical data ingestion
 

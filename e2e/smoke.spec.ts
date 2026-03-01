@@ -12,14 +12,14 @@ test.describe('Smoke Tests', () => {
       await page.waitForLoadState('networkidle');
 
       // Check that the main heading is present
-      await expect(page.getByRole('heading', { name: toRegex(m.home.title) })).toBeVisible();
+      await expect(page.getByRole('heading', { name: toRegex(m.dashboard.title) })).toBeVisible();
     });
 
     test('has dashboard link that navigates correctly', async ({ page }) => {
       await page.goto('/');
 
       // Click the dashboard link
-      const dashboardLink = page.getByRole('link', { name: toRegex(m.home.launchDashboard) });
+      const dashboardLink = page.getByRole('link', { name: toRegex(m.dashboard.launchDashboard) });
       await expect(dashboardLink).toBeVisible();
       await dashboardLink.click();
 
@@ -31,9 +31,9 @@ test.describe('Smoke Tests', () => {
       await page.goto('/');
 
       // Check all three feature cards are present
-      await expect(page.getByRole('heading', { name: toRegex(m.home.feature3dTitle) })).toBeVisible();
-      await expect(page.getByRole('heading', { name: toRegex(m.home.featureLiveTitle) })).toBeVisible();
-      await expect(page.getByRole('heading', { name: toRegex(m.home.featureAgentsTitle) })).toBeVisible();
+      await expect(page.getByRole('heading', { name: toRegex(m.dashboard.feature3dTitle) })).toBeVisible();
+      await expect(page.getByRole('heading', { name: toRegex(m.dashboard.featureLiveTitle) })).toBeVisible();
+      await expect(page.getByRole('heading', { name: toRegex(m.dashboard.featureAgentsTitle) })).toBeVisible();
     });
   });
 

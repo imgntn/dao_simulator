@@ -1,5 +1,5 @@
 /**
- * Atlas Parsers & Utilities
+ * Home Parsers & Utilities
  *
  * File-system helpers and markdown parsing functions extracted
  * from the monolithic homepage for reuse across components.

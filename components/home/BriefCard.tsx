@@ -1,4 +1,4 @@
-import type { CuratedBriefCopy } from '@/lib/atlas/content';
+import type { CuratedBriefCopy } from '@/lib/home/content';
 import { getMessages } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 
@@ -35,7 +35,7 @@ export function BriefCard({ id, label, title, question, curated, index, locale }
               {item.detail}
             </li>
           ))
-          : [m.atlas?.openFullBrief ?? 'Open brief for outcome details.'].map((text, itemIndex) => (
+          : [m.home?.openFullBrief ?? 'Open brief for outcome details.'].map((text, itemIndex) => (
             <li
               key={`${id}-takeaway-${itemIndex}`}
               className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] px-3 py-2"
@@ -48,7 +48,7 @@ export function BriefCard({ id, label, title, question, curated, index, locale }
         href={`#${id}`}
         className="mt-4 inline-flex text-base font-semibold text-[var(--accent-teal)] underline underline-offset-4"
       >
-        {m.atlas?.openFullBrief ?? 'Open full brief'}
+        {m.home?.openFullBrief ?? 'Open full brief'}
       </a>
     </article>
   );

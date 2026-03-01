@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'DAO Research Atlas — Actionable governance findings from 16,370 simulation runs';
+export const alt = 'DAO Simulator — Actionable governance findings from 16,370 simulation runs';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -57,7 +57,7 @@ export default function OGImage() {
               color: '#1d1a14',
             }}
           >
-            DAO Research Atlas
+            DAO Simulator
           </div>
           <div
             style={{

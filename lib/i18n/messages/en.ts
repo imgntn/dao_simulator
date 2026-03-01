@@ -541,9 +541,9 @@ export const messages: Messages = {
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // HOME - Landing page
+  // DASHBOARD - Landing page
   // ═══════════════════════════════════════════════════════════════════════════
-  home: {
+  dashboard: {
     title: 'DAO Simulator',
     subtitle: 'Real-time decentralized governance visualization',
     description: 'Experience the beauty of distributed decision-making through stunning 3D network graphs, interactive charts, and comprehensive analytics.',
@@ -612,8 +612,8 @@ export const messages: Messages = {
   // METADATA - SEO and page metadata
   // ═══════════════════════════════════════════════════════════════════════════
   metadata: {
-    title: 'DAO Research Atlas',
-    titleTemplate: '%s | DAO Research Atlas',
+    title: 'DAO Simulator',
+    titleTemplate: '%s | DAO Simulator',
     description:
       'Governance research from 16,370 agent-based simulation runs across 14 calibrated DAO digital twins. Covers participation dynamics, capture mitigation (quadratic voting cut whale power 43%), treasury resilience, proposal pipelines, inter-DAO cooperation, and LLM-augmented governance. By James B. Pollack.',
     keywords: [
@@ -639,21 +639,21 @@ export const messages: Messages = {
       'blockchain governance',
     ],
     author: 'James B. Pollack',
-    ogTitle: 'DAO Research Atlas — Governance Findings from 16,370 Simulation Runs',
+    ogTitle: 'DAO Simulator — Governance Findings from 16,370 Simulation Runs',
     ogDescription:
       'Agent-based simulation research covering participation, capture, treasury, cooperation, and LLM governance across 14 calibrated DAO digital twins.',
-    ogSiteName: 'DAO Research Atlas',
-    twitterTitle: 'DAO Research Atlas — 16,370 Simulation Runs',
+    ogSiteName: 'DAO Simulator',
+    twitterTitle: 'DAO Simulator — 16,370 Simulation Runs',
     twitterDescription:
       'Actionable DAO governance findings: quadratic voting cuts whale power 43%, quorum cliff at 10%, treasury stabilization halves volatility. 14 calibrated digital twins.',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // ATLAS - Research homepage
+  // HOME - Research homepage
   // ═══════════════════════════════════════════════════════════════════════════
-  atlas: {
+  home: {
     tagline: 'DAO Research, Made Actionable',
-    heroTitle: 'DAO Research Atlas',
+    heroTitle: 'DAO Simulator',
     heroDescription: 'Actionable governance findings from 16,370 simulation runs across 21 experiment configurations. Start with any research question below.',
     heroCta: 'Explore Research',
     nav: 'Main navigation',
@@ -686,11 +686,11 @@ export const messages: Messages = {
     methodNotes: 'Method Notes',
     wordsCount: 'words',
     briefSourceFiles: 'Brief Source Files + Raw Metrics',
-    footerAttribution: 'DAO Research Atlas by',
+    footerAttribution: 'DAO Simulator by',
     keyTerms: 'Key Terms',
     footerConsole: 'Operational tools remain available in the in-repo',
     podcastHeading: 'Hear the Story Behind the Research',
-    podcastDesc: 'James Pollack joined the Green Pill podcast to explore whether a DAO can be run by AI \u2014 the dynamics of agent-based models, what it looks like to put governance on-chain, and the research that became this atlas.',
+    podcastDesc: 'James Pollack joined the Green Pill podcast to explore whether a DAO can be run by AI \u2014 the dynamics of agent-based models, what it looks like to put governance on-chain, and the research that became this project.',
     podcastListen: 'Listen to the episode',
     podcastApple: 'Apple Podcasts',
     podcastSpotify: 'Spotify',
@@ -745,7 +745,7 @@ export const messages: Messages = {
     heading: 'Results',
     status: 'Status',
     files: 'Files',
-    backToAtlas: 'Back to atlas',
+    backToHome: 'Back to home',
     backToConsole: 'Back to console',
     previewTruncated: 'Preview truncated at',
     noFiles: 'No files found.',

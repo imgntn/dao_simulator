@@ -1,5 +1,5 @@
 /**
- * Atlas Content Data
+ * Home Content Data
  *
  * Extracted from the monolithic homepage — all static data, types,
  * and curated copy for decision briefs and paper profiles.

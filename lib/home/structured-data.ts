@@ -50,7 +50,7 @@ function webSiteSchema() {
   return {
     '@type': 'WebSite',
     '@id': SITE_ID,
-    name: 'DAO Research Atlas',
+    name: 'DAO Simulator',
     url: BASE_URL,
     potentialAction: {
       '@type': 'SearchAction',
@@ -199,7 +199,7 @@ function faqPageSchema() {
     },
     {
       q: 'What is a DAO digital twin and how accurate are they?',
-      a: 'A DAO digital twin is an agent-based simulation model calibrated against a real DAO\'s on-chain governance data, Snapshot votes, forum activity, and token prices. The DAO Research Atlas built digital twins of 14 major DAOs including Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, and SushiSwap. Each twin captures the DAO\'s actual governance stack: quorum thresholds, voting periods, proposal pipelines, and member archetypes. Calibration scores average 0.85, with Gitcoin highest at 0.922.',
+      a: 'A DAO digital twin is an agent-based simulation model calibrated against a real DAO\'s on-chain governance data, Snapshot votes, forum activity, and token prices. The DAO Simulator built digital twins of 14 major DAOs including Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, and SushiSwap. Each twin captures the DAO\'s actual governance stack: quorum thresholds, voting periods, proposal pipelines, and member archetypes. Calibration scores average 0.85, with Gitcoin highest at 0.922.',
     },
     {
       q: 'Does cross-DAO cooperation actually work?',
@@ -228,7 +228,7 @@ function researchProjectSchema(locale: Locale) {
   return {
     '@type': 'ResearchProject',
     '@id': `${BASE_URL}/#research`,
-    name: 'DAO Research Atlas',
+    name: 'DAO Simulator',
     description:
       'Actionable governance findings from 16,370 simulation runs across 21 experiment configurations covering participation, capture, treasury, cooperation, and LLM governance.',
     url: `${BASE_URL}/${locale}`,

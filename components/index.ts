@@ -8,9 +8,9 @@ export { SectionHeading } from './ui/SectionHeading';
 export { InfoCard } from './ui/InfoCard';
 export { BackToTop } from './ui/BackToTop';
 
-// Atlas
-export { BriefCard } from './atlas/BriefCard';
-export { BriefDetail } from './atlas/BriefDetail';
-export { ChartLightbox } from './atlas/ChartLightbox';
-export { PaperCard } from './atlas/PaperCard';
-export { TableOfContents } from './atlas/TableOfContents';
+// Home
+export { BriefCard } from './home/BriefCard';
+export { BriefDetail } from './home/BriefDetail';
+export { ChartLightbox } from './home/ChartLightbox';
+export { PaperCard } from './home/PaperCard';
+export { TableOfContents } from './home/TableOfContents';

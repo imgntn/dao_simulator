@@ -1,4 +1,4 @@
-import { artifactHref } from '@/lib/atlas/parsers';
+import { artifactHref } from '@/lib/home/parsers';
 import { getMessages } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 
@@ -20,12 +20,12 @@ export function PaperCard({ label, description, currentPdf, currentTex, locale }
       <div className="mt-3 flex flex-wrap gap-2">
         {currentPdf && (
           <a className="hub-link" href={artifactHref(currentPdf)}>
-            {m.atlas?.currentPdf ?? 'Current PDF'}
+            {m.home?.currentPdf ?? 'Current PDF'}
           </a>
         )}
         {currentTex && (
           <a className="hub-link" href={artifactHref(currentTex)}>
-            {m.atlas?.currentTex ?? 'Current TeX'}
+            {m.home?.currentTex ?? 'Current TeX'}
           </a>
         )}
       </div>

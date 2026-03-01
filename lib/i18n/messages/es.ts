@@ -524,9 +524,9 @@ export const messages: Messages = {
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // HOME
+  // DASHBOARD
   // ═══════════════════════════════════════════════════════════════════════════
-  home: {
+  dashboard: {
     title: 'Simulador DAO',
     subtitle: 'Visualizaci\u00f3n de gobernanza descentralizada en tiempo real',
     description: 'Experimenta la belleza de la toma de decisiones distribuida a trav\u00e9s de impresionantes grafos de red 3D, gr\u00e1ficos interactivos y an\u00e1lisis completos.',
@@ -606,11 +606,11 @@ export const messages: Messages = {
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // ATLAS
+  // HOME
   // ═══════════════════════════════════════════════════════════════════════════
-  atlas: {
+  home: {
     tagline: 'Investigaci\u00f3n DAO, hecha accionable',
-    heroTitle: 'Atlas de investigaci\u00f3n DAO',
+    heroTitle: 'DAO Simulator',
     heroDescription: 'Hallazgos de gobernanza accionables de 16,370 ejecuciones de simulaci\u00f3n en 21 configuraciones experimentales. Comienza con cualquier pregunta de investigaci\u00f3n a continuaci\u00f3n.',
     heroCta: 'Explorar investigaci\u00f3n',
     nav: 'Navegaci\u00f3n principal',
@@ -643,11 +643,11 @@ export const messages: Messages = {
     methodNotes: 'Notas metodol\u00f3gicas',
     wordsCount: 'palabras',
     briefSourceFiles: 'Archivos fuente de informes + M\u00e9tricas sin procesar',
-    footerAttribution: 'Atlas de investigaci\u00f3n DAO por',
+    footerAttribution: 'DAO Simulator por',
     keyTerms: 'T\u00e9rminos clave',
     footerConsole: 'Las herramientas operativas siguen disponibles en la',
     podcastHeading: 'Escucha la historia detr\u00e1s de la investigaci\u00f3n',
-    podcastDesc: 'James Pollack particip\u00f3 en el podcast Green Pill para explorar si una DAO puede ser gestionada por IA \u2014 la din\u00e1mica de modelos basados en agentes, c\u00f3mo se ve la gobernanza en cadena y la investigaci\u00f3n que se convirti\u00f3 en este atlas.',
+    podcastDesc: 'James Pollack particip\u00f3 en el podcast Green Pill para explorar si una DAO puede ser gestionada por IA \u2014 la din\u00e1mica de modelos basados en agentes, c\u00f3mo se ve la gobernanza en cadena y la investigaci\u00f3n que se convirti\u00f3 en este proyecto.',
     podcastListen: 'Escuchar el episodio',
     podcastApple: 'Apple Podcasts',
     podcastSpotify: 'Spotify',
@@ -702,7 +702,7 @@ export const messages: Messages = {
     heading: 'Resultados',
     status: 'Estado',
     files: 'Archivos',
-    backToAtlas: 'Volver al atlas',
+    backToHome: 'Volver al inicio',
     backToConsole: 'Volver a la consola',
     previewTruncated: 'Vista previa truncada en',
     noFiles: 'No se encontraron archivos.',

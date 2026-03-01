@@ -524,9 +524,9 @@ export const messages: Messages = {
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // HOME
+  // DASHBOARD
   // ═══════════════════════════════════════════════════════════════════════════
-  home: {
+  dashboard: {
     title: 'DAO \u6a21\u62df\u5668',
     subtitle: '\u5b9e\u65f6\u53bb\u4e2d\u5fc3\u5316\u6cbb\u7406\u53ef\u89c6\u5316',
     description: '\u901a\u8fc7\u60ca\u8273\u7684 3D \u7f51\u7edc\u56fe\u3001\u4ea4\u4e92\u5f0f\u56fe\u8868\u548c\u5168\u9762\u5206\u6790\uff0c\u4f53\u9a8c\u5206\u5e03\u5f0f\u51b3\u7b56\u7684\u7f8e\u3002',
@@ -606,11 +606,11 @@ export const messages: Messages = {
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // ATLAS
+  // HOME
   // ═══════════════════════════════════════════════════════════════════════════
-  atlas: {
+  home: {
     tagline: 'DAO \u7814\u7a76\uff0c\u4ed8\u8bf8\u884c\u52a8',
-    heroTitle: 'DAO \u7814\u7a76\u5730\u56fe\u96c6',
+    heroTitle: 'DAO Simulator',
     heroDescription: '\u6765\u81ea 21 \u79cd\u5b9e\u9a8c\u914d\u7f6e\u7684 16,370 \u6b21\u4eff\u771f\u8fd0\u884c\u7684\u53ef\u64cd\u4f5c\u6cbb\u7406\u53d1\u73b0\u3002\u4ece\u4e0b\u65b9\u4efb\u610f\u7814\u7a76\u95ee\u9898\u5f00\u59cb\u3002',
     heroCta: '\u63a2\u7d22\u7814\u7a76',
     nav: '\u4e3b\u5bfc\u822a',
@@ -643,7 +643,7 @@ export const messages: Messages = {
     methodNotes: '\u65b9\u6cd5\u8bf4\u660e',
     wordsCount: '\u5b57',
     briefSourceFiles: '\u7b80\u62a5\u6e90\u6587\u4ef6 + \u539f\u59cb\u6307\u6807',
-    footerAttribution: 'DAO \u7814\u7a76\u5730\u56fe\u96c6\uff0c\u4f5c\u8005',
+    footerAttribution: 'DAO Simulator\uff0c\u4f5c\u8005',
     keyTerms: '\u5173\u952e\u672f\u8bed',
     footerConsole: '\u64cd\u4f5c\u5de5\u5177\u4ecd\u53ef\u5728\u4ed3\u5e93\u5185\u7684',
     podcastHeading: '\u542c\u542c\u7814\u7a76\u80cc\u540e\u7684\u6545\u4e8b',
@@ -702,7 +702,7 @@ export const messages: Messages = {
     heading: '\u7ed3\u679c',
     status: '\u72b6\u6001',
     files: '\u6587\u4ef6',
-    backToAtlas: '\u8fd4\u56de\u5730\u56fe\u96c6',
+    backToHome: '\u8fd4\u56de\u9996\u9875',
     backToConsole: '\u8fd4\u56de\u63a7\u5236\u53f0',
     previewTruncated: '\u9884\u89c8\u5df2\u622a\u65ad\uff0c\u622a\u65ad\u4f4d\u7f6e',
     noFiles: '\u672a\u627e\u5230\u6587\u4ef6\u3002',

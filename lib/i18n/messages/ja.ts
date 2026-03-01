@@ -524,9 +524,9 @@ export const messages: Messages = {
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // HOME
+  // DASHBOARD
   // ═══════════════════════════════════════════════════════════════════════════
-  home: {
+  dashboard: {
     title: 'DAO \u30b7\u30df\u30e5\u30ec\u30fc\u30bf',
     subtitle: '\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u5206\u6563\u578b\u30ac\u30d0\u30ca\u30f3\u30b9\u53ef\u89c6\u5316',
     description: '\u9a5a\u304f\u3079\u304d 3D \u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u30b0\u30e9\u30d5\u3001\u30a4\u30f3\u30bf\u30e9\u30af\u30c6\u30a3\u30d6\u30c1\u30e3\u30fc\u30c8\u3001\u5305\u62ec\u7684\u306a\u5206\u6790\u3092\u901a\u3058\u3066\u3001\u5206\u6563\u578b\u610f\u601d\u6c7a\u5b9a\u306e\u7f8e\u3057\u3055\u3092\u4f53\u9a13\u3057\u3066\u304f\u3060\u3055\u3044\u3002',
@@ -606,11 +606,11 @@ export const messages: Messages = {
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // ATLAS
+  // HOME
   // ═══════════════════════════════════════════════════════════════════════════
-  atlas: {
+  home: {
     tagline: 'DAO \u7814\u7a76\u3092\u5b9f\u884c\u53ef\u80fd\u306b',
-    heroTitle: 'DAO \u7814\u7a76\u30a2\u30c8\u30e9\u30b9',
+    heroTitle: 'DAO Simulator',
     heroDescription: '21 \u306e\u5b9f\u9a13\u69cb\u6210\u306b\u304a\u3051\u308b 16,370 \u56de\u306e\u30b7\u30df\u30e5\u30ec\u30fc\u30b7\u30e7\u30f3\u5b9f\u884c\u304b\u3089\u5f97\u3089\u308c\u305f\u5b9f\u884c\u53ef\u80fd\u306a\u30ac\u30d0\u30ca\u30f3\u30b9\u306e\u77e5\u898b\u3002\u4ee5\u4e0b\u306e\u4efb\u610f\u306e\u7814\u7a76\u8ab2\u984c\u304b\u3089\u59cb\u3081\u307e\u3057\u3087\u3046\u3002',
     heroCta: '\u7814\u7a76\u3092\u63a2\u7d22',
     nav: '\u30e1\u30a4\u30f3\u30ca\u30d3\u30b2\u30fc\u30b7\u30e7\u30f3',
@@ -643,7 +643,7 @@ export const messages: Messages = {
     methodNotes: '\u65b9\u6cd5\u8ad6\u30ce\u30fc\u30c8',
     wordsCount: '\u5b57',
     briefSourceFiles: '\u30d6\u30ea\u30fc\u30d5\u30bd\u30fc\u30b9\u30d5\u30a1\u30a4\u30eb + \u751f\u6307\u6a19',
-    footerAttribution: 'DAO \u7814\u7a76\u30a2\u30c8\u30e9\u30b9\uff1a\u8457\u8005',
+    footerAttribution: 'DAO Simulator\uff1a\u8457\u8005',
     keyTerms: '\u91cd\u8981\u7528\u8a9e',
     footerConsole: '\u904b\u7528\u30c4\u30fc\u30eb\u306f\u30ea\u30dd\u30b8\u30c8\u30ea\u5185\u306e',
     podcastHeading: '\u7814\u7a76\u306e\u80cc\u666f\u3092\u8074\u304f',
@@ -702,7 +702,7 @@ export const messages: Messages = {
     heading: '\u7d50\u679c',
     status: '\u30b9\u30c6\u30fc\u30bf\u30b9',
     files: '\u30d5\u30a1\u30a4\u30eb',
-    backToAtlas: '\u30a2\u30c8\u30e9\u30b9\u3078\u623b\u308b',
+    backToHome: '\u30db\u30fc\u30e0\u3078\u623b\u308b',
     backToConsole: '\u30b3\u30f3\u30bd\u30fc\u30eb\u3078\u623b\u308b',
     previewTruncated: '\u30d7\u30ec\u30d3\u30e5\u30fc\u304c\u5207\u308a\u8a70\u3081\u3089\u308c\u307e\u3057\u305f\uff1a',
     noFiles: '\u30d5\u30a1\u30a4\u30eb\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002',

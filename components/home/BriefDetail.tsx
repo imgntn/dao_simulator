@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import type { CuratedBriefCopy } from '@/lib/atlas/content';
-import { BRIEF_CROSS_LINKS, DECISION_BRIEF_SECTIONS } from '@/lib/atlas/content';
-import { injectTermTooltips } from '@/lib/atlas/tooltip-utils';
+import type { CuratedBriefCopy } from '@/lib/home/content';
+import { BRIEF_CROSS_LINKS, DECISION_BRIEF_SECTIONS } from '@/lib/home/content';
+import { injectTermTooltips } from '@/lib/home/tooltip-utils';
 import { ChartLightbox } from './ChartLightbox';
 import { getMessages } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
@@ -40,7 +40,7 @@ export function BriefDetail({
     >
       {/* ── Full-width header ── */}
       <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--accent-gold)]">
-        {label} {m.atlas?.briefLabel ?? 'Brief'}
+        {label} {m.home?.briefLabel ?? 'Brief'}
       </p>
       <h3
         id={`heading-${id}`}
@@ -58,7 +58,7 @@ export function BriefDetail({
       {curated.confidence && (
         <p className="mt-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-warm)] px-3 py-2.5 text-base text-[var(--text-faint)]">
           <span className="font-semibold text-[#3d5568]">
-            {m.atlas?.confidenceNote ?? 'Confidence note:'}
+            {m.home?.confidenceNote ?? 'Confidence note:'}
           </span>{' '}
           {curated.confidence}
         </p>
@@ -78,7 +78,7 @@ export function BriefDetail({
           {/* Why this matters */}
           <p className="max-w-prose text-[1.1rem] leading-relaxed text-[var(--text-body-secondary)]">
             <span className="font-semibold text-[#2f495d]">
-              {m.atlas?.whyItMatters ?? 'Why this matters:'}
+              {m.home?.whyItMatters ?? 'Why this matters:'}
             </span>{' '}
             {tt(whyItMatters)}
           </p>
@@ -86,7 +86,7 @@ export function BriefDetail({
           {/* What To Do */}
           <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-warm-deep)] p-4">
             <p className="text-sm font-semibold uppercase tracking-[0.12em] text-[#7a5f3f]">
-              {m.atlas?.whatToDo ?? 'What To Do'}
+              {m.home?.whatToDo ?? 'What To Do'}
             </p>
             <ul className="mt-2 space-y-2 text-base leading-relaxed text-[var(--text-body-secondary)]">
               {curated.whatToDo.map((action, actionIndex) => (
@@ -99,7 +99,7 @@ export function BriefDetail({
           {curated.keyTerms && curated.keyTerms.length > 0 && (
             <details className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-highlight)] p-4">
               <summary className="cursor-pointer select-none text-sm font-semibold uppercase tracking-[0.12em] text-[#3d5568]">
-                {m.atlas?.keyTerms ?? 'Key Terms'}
+                {m.home?.keyTerms ?? 'Key Terms'}
               </summary>
               <dl className="mt-3 grid gap-x-3 gap-y-2 sm:grid-cols-2">
                 {curated.keyTerms.map((entry) => (
@@ -125,7 +125,7 @@ export function BriefDetail({
           {/* What Results Showed (with headlines) */}
           <div className="rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-4 sm:p-5">
             <p className="text-sm font-semibold uppercase tracking-[0.13em] text-[#7b5f3d]">
-              {m.atlas?.whatWeFound ?? 'What Results Showed'}
+              {m.home?.whatWeFound ?? 'What Results Showed'}
             </p>
             {curated.whatWeFound.length > 0 ? (
               <ul className="mt-3 space-y-3">

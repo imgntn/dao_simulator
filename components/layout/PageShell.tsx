@@ -5,11 +5,11 @@ import { BackToTop } from '../ui/BackToTop';
 
 interface PageShellProps {
   children: React.ReactNode;
-  variant?: 'atlas' | 'console';
+  variant?: 'home' | 'console';
   locale: Locale;
 }
 
-export function PageShell({ children, variant = 'atlas', locale }: PageShellProps) {
+export function PageShell({ children, variant = 'home', locale }: PageShellProps) {
   const isConsole = variant === 'console';
 
   return (

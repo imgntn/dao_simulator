@@ -487,8 +487,8 @@ export interface Messages {
     steps: string;
   };
 
-  // Home page
-  home: {
+  // Dashboard page
+  dashboard: {
     title: string;
     subtitle: string;
     description: string;
@@ -559,8 +559,8 @@ export interface Messages {
     twitterDescription: string;
   };
 
-  // Atlas (research homepage)
-  atlas: {
+  // Home (research homepage)
+  home: {
     tagline: string;
     heroTitle: string;
     heroDescription: string;
@@ -650,7 +650,7 @@ export interface Messages {
     heading: string;
     status: string;
     files: string;
-    backToAtlas: string;
+    backToHome: string;
     backToConsole: string;
     previewTruncated: string;
     noFiles: string;

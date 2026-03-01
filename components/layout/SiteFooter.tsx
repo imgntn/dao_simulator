@@ -1,8 +1,8 @@
-import { JAMES_SITE_URL } from '@/lib/atlas/content';
+import { JAMES_SITE_URL } from '@/lib/home/content';
 import { getMessages } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 
-const GITHUB_REPO_URL = 'https://github.com/jamesbpollack/dao-research-atlas';
+const GITHUB_REPO_URL = 'https://github.com/imgntn/dao_simulator';
 
 export function SiteFooter({ locale }: { locale: Locale }) {
   const m = getMessages(locale);
@@ -13,7 +13,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
       className="mt-14 border-t border-[var(--border-default)] pt-7 text-base leading-relaxed text-[var(--text-muted)]"
     >
       <p>
-        {m.atlas?.footerAttribution ?? 'DAO Research Atlas by'}{' '}
+        {m.home?.footerAttribution ?? 'DAO Simulator by'}{' '}
         <a
           href={JAMES_SITE_URL}
           target="_blank"

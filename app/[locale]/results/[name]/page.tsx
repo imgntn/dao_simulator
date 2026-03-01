@@ -102,7 +102,7 @@ export default async function ResultPage({
       <header className="space-y-2">
         <div className="flex flex-wrap gap-3 text-sm">
           <Link href={`/${locale}`} className="text-[var(--accent-gold)] hover:text-[var(--accent-teal)]">
-            {m.results?.backToAtlas ?? 'Back to atlas'}
+            {m.results?.backToHome ?? 'Back to home'}
           </Link>
           <Link href={`/${locale}/console`} className="text-[var(--accent-teal)] hover:text-[var(--accent-teal-hover)]">
             {m.results?.backToConsole ?? 'Back to console'}
