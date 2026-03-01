@@ -703,6 +703,9 @@ export const messages: Messages = {
     digitalTwinsWhy: 'Digital twins let researchers test counterfactual governance changes \u2014 \u201Cwhat if Uniswap lowered its quorum?\u201D or \u201Cwhat if Optimism added futarchy?\u201D \u2014 without risking real treasuries.',
     digitalTwinsDaos: 'Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, SushiSwap',
     digitalTwinsCategories: 'DeFi, Layer 2, Public Goods, Staking, Lending, Identity, Stablecoin, DEX',
+    consultingHeading: 'Work With Me',
+    consultingDesc: 'Looking for expert guidance on DAO governance design, agent-based simulation, or decentralized decision-making? I consult on governance mechanism design, calibration strategies, and simulation-driven policy analysis for DAOs and protocol teams.',
+    consultingCta: 'Get in Touch',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
