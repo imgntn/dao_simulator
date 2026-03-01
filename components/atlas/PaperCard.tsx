@@ -7,11 +7,10 @@ interface PaperCardProps {
   description: string;
   currentPdf: string | null;
   currentTex: string | null;
-  latestArchive: string | null;
   locale: Locale;
 }
 
-export function PaperCard({ label, description, currentPdf, currentTex, latestArchive, locale }: PaperCardProps) {
+export function PaperCard({ label, description, currentPdf, currentTex, locale }: PaperCardProps) {
   const m = getMessages(locale);
 
   return (
@@ -27,11 +26,6 @@ export function PaperCard({ label, description, currentPdf, currentTex, latestAr
         {currentTex && (
           <a className="hub-link" href={artifactHref(currentTex)}>
             {m.atlas?.currentTex ?? 'Current TeX'}
-          </a>
-        )}
-        {latestArchive && (
-          <a className="hub-link" href={artifactHref(latestArchive)}>
-            {m.atlas?.latestArchivedPdf ?? 'Latest Archived PDF'}
           </a>
         )}
       </div>

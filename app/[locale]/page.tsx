@@ -12,8 +12,6 @@ import {
   readText,
   exists,
   artifactHref,
-  findLatestFile,
-  findLatestBundle,
   countWords,
   parseBriefMarkdown,
   sectionLabel,
@@ -74,22 +72,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     const currentTex = exists(`${profile.directory}/main.tex`)
       ? `${profile.directory}/main.tex`
       : null;
-    const latestArchiveName = findLatestFile(
-      `${profile.directory}/archive`,
-      new RegExp(`^${profile.archivePrefix}.*\\.pdf$`)
-    );
 
     return {
       ...profile,
       currentPdf,
       currentTex,
-      latestArchive: latestArchiveName
-        ? `${profile.directory}/archive/${latestArchiveName}`
-        : null,
     };
   });
 
-  const latestBundle = findLatestBundle();
   const tocItems = sections.map((s) => ({
     id: s.id,
     label: sectionLabel(s.id),
@@ -512,37 +502,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               description={paper.description}
               currentPdf={paper.currentPdf}
               currentTex={paper.currentTex}
-              latestArchive={paper.latestArchive}
               locale={locale}
             />
           ))}
         </div>
 
-        {latestBundle && (
-          <div className="rounded-2xl border border-[var(--border-default)] bg-white p-4">
-            <p className="text-base text-[var(--text-muted)]">
-              Latest consolidated bundle:{' '}
-              <span className="font-semibold text-[var(--text-heading)]">{latestBundle}</span>
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <a className="hub-link" href={artifactHref(`archive/${latestBundle}/INDEX.md`)}>
-                Bundle Index
-              </a>
-              <a className="hub-link" href={artifactHref(`archive/${latestBundle}/pdf/full.pdf`)}>
-                Full PDF
-              </a>
-              <a className="hub-link" href={artifactHref(`archive/${latestBundle}/pdf/p1.pdf`)}>
-                P1 PDF
-              </a>
-              <a className="hub-link" href={artifactHref(`archive/${latestBundle}/pdf/p2.pdf`)}>
-                P2 PDF
-              </a>
-              <a className="hub-link" href={artifactHref(`archive/${latestBundle}/pdf/llm.pdf`)}>
-                LLM PDF
-              </a>
-            </div>
-          </div>
-        )}
       </section>
 
       {/* ── Advanced ── */}
