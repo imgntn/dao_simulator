@@ -1,19 +1,28 @@
-# DAO Governance Papers (Plain English)
+# DAO Governance Research — Plain English Summaries
 
-## The Plain English Version
+## What This Is
 
-This folder contains short, non-technical summaries of each research question paper plus the LLM reasoning paper.
+Non-technical summaries of each research question, written from real experiment data. Every number comes from completed simulation runs — no estimates, no projections.
 
-## Available Summaries
+## Research Questions
 
-- [rq1-participation.md](./rq1-participation.md)
-- [rq2-governance-capture.md](./rq2-governance-capture.md)
-- [rq3-proposal-pipeline.md](./rq3-proposal-pipeline.md)
-- [rq4-treasury.md](./rq4-treasury.md)
-- [rq5-cooperation.md](./rq5-cooperation.md)
-- [rq6-llm-agent-reasoning.md](./rq6-llm-agent-reasoning.md)
+| RQ | Title | Runs | Key Finding |
+|----|-------|------|-------------|
+| [RQ1](./rq1-participation.md) | Quorum Design & Governance Cliffs | 2,300 | A 5-point quorum miscalibration silently kills governance |
+| [RQ2](./rq2-governance-capture.md) | Governance Capture Mitigation | 2,700 | Quadratic voting cut whale power 43% and *improved* speed |
+| [RQ3](./rq3-proposal-pipeline.md) | Governance Throughput | 900 | The speed-quality tradeoff is a false dilemma |
+| [RQ4](./rq4-treasury.md) | The Cost of Stability | 1,200 | Stabilization halves volatility at ~17% treasury cost |
+| [RQ5](./rq5-cooperation.md) | Inter-DAO Cooperation | 500 | Specialized partnerships generate 50% more proposals |
+| [RQ6](./rq6-llm-agent-reasoning.md) | LLM Governance (Exploratory) | 52 | Hybrid AI governance works; pure-LLM does not |
 
-## Update Info
+## Total Experiment Scale
 
-- Regenerated: 2026-02-26T06:45:15.243Z
-- Generated from current summary.json outputs in `results/paper/*` and `results/experiments/12-llm-reasoning-v4`.
+- **7,652 simulation runs** across 6 research questions
+- **13 experiments** covering quorum design, capture mitigation, pipeline effects, treasury policy, inter-DAO cooperation, and AI governance
+- **14 calibrated digital twin DAOs** (Aave, Uniswap, Compound, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, SushiSwap)
+- All experiments at N=100 runs/config (except RQ6 at N=13/config and calibration validation at N=100/DAO)
+
+## Last Updated
+
+- 2026-03-01
+- Source data: `results/paper/*/summary.json` and `results/experiments/12-llm-reasoning-v4/summary.json`
