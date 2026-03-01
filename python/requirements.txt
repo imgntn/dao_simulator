@@ -4,6 +4,9 @@
 numpy>=1.24.0
 scipy>=1.10.0
 
+# Podcast transcription
+faster-whisper>=1.0.0
+
 # GPU acceleration (optional - falls back to NumPy if not available)
 # For CUDA 11.x:
 # cupy-cuda11x>=12.0.0

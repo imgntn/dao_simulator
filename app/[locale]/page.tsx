@@ -27,6 +27,7 @@ import { PaperCard } from '@/components/home/PaperCard';
 import { generateResearchProjectJsonLd } from '@/lib/home/structured-data';
 import { StickyNav } from '@/components/home/StickyNav';
 import { CollapsibleBrief } from '@/components/home/CollapsibleBrief';
+import { PodcastPlayer } from '@/components/home/PodcastPlayer';
 import { QuorumReachChart } from '@/components/home/infographics/QuorumReachChart';
 import { WhaleInfluenceChart } from '@/components/home/infographics/WhaleInfluenceChart';
 import { PipelineFlowChart } from '@/components/home/infographics/PipelineFlowChart';
@@ -272,17 +273,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               </a>
             </div>
 
-            {/* Inline audio player */}
-            <div className="mt-5">
-              {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-              <audio
-                controls
-                preload="none"
-                className="w-full max-w-lg rounded-lg"
-              >
-                <source src="https://pub-5203989d31a346d288f97e48812ab2e0.r2.dev/greenpill-123-james-pollack.mp3" type="audio/mpeg" />
-              </audio>
-            </div>
+            {/* Audio player with synchronized transcript */}
+            <PodcastPlayer />
           </div>
         </div>
       </section>

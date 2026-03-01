@@ -1,0 +1,3670 @@
+{
+  "segments": [
+    {
+      "id": 0,
+      "start": 5.23,
+      "end": 10.83,
+      "text": "What is up coordination on the pod today? We are talking about an AI dial simulator"
+    },
+    {
+      "id": 1,
+      "start": 10.83,
+      "end": 15.23,
+      "text": "I feel like it's the ultimate nerds knife. This is one of the coolest episodes that we've done"
+    },
+    {
+      "id": 2,
+      "start": 15.43,
+      "end": 22.43,
+      "text": "My guest today is James Pollack who as an artist and programmer has worked for various startups and agencies building software and"
+    },
+    {
+      "id": 3,
+      "start": 22.43,
+      "end": 28.79,
+      "text": "Experiences in the past we connected because of his interest in complex systems and how agent based modeling and"
+    },
+    {
+      "id": 4,
+      "start": 28.79,
+      "end": 36.99,
+      "text": "Dalles could intersect. So basically at a high level this episode is about a dial governance simulator that James has built"
+    },
+    {
+      "id": 5,
+      "start": 37.27,
+      "end": 39.75,
+      "text": "Basically, what if you took a hundred different"
+    },
+    {
+      "id": 6,
+      "start": 40.47,
+      "end": 45.43,
+      "text": "AIs and you gave them tokens and you gave them a governance forum to argue in what kind of"
+    },
+    {
+      "id": 7,
+      "start": 46.23,
+      "end": 48.71,
+      "text": "Things would you learn about dial governance from that?"
+    },
+    {
+      "id": 8,
+      "start": 48.71,
+      "end": 56.03,
+      "text": "So really interesting design space that connects a lot of the recent trends around LLM's and artificial intelligence"
+    },
+    {
+      "id": 9,
+      "start": 56.39,
+      "end": 62.47,
+      "text": "With the things that we breathe every day, which is Dalles Web 3 decentralized governance and protocols"
+    },
+    {
+      "id": 10,
+      "start": 62.59,
+      "end": 68.83,
+      "text": "So in this space we often talk about how we're speedrunning the history of coordination and of finance"
+    },
+    {
+      "id": 11,
+      "start": 68.83,
+      "end": 75.95,
+      "text": "Well, we can speedrun it even faster if we set forward a bunch of AIs to go argue in our governance forums and find the optimal"
+    },
+    {
+      "id": 12,
+      "start": 77.03,
+      "end": 80.51,
+      "text": "Parameters for dial coordination so that we don't have to do it ourselves"
+    },
+    {
+      "id": 13,
+      "start": 80.51,
+      "end": 85.51,
+      "text": "So really interesting design space and James and I have been connected for"
+    },
+    {
+      "id": 14,
+      "start": 86.19,
+      "end": 93.23,
+      "text": "Three to six months sort of nerding out on these ideas and James is actually building a code base that's helping to explore some of these ideas"
+    },
+    {
+      "id": 15,
+      "start": 93.43,
+      "end": 94.55,
+      "text": "So coordination"
+    },
+    {
+      "id": 16,
+      "start": 94.55,
+      "end": 98.99,
+      "text": "I think this is a really fun episode that combines some of the latest thinking on AI and Dalles"
+    },
+    {
+      "id": 17,
+      "start": 98.99,
+      "end": 107.03,
+      "text": "And if we are successful we will be speedrunning the design space of what's possible in Dow coordination using AIs which"
+    },
+    {
+      "id": 18,
+      "start": 107.27,
+      "end": 109.43,
+      "text": "Wow, the future is here. It's just so cool"
+    },
+    {
+      "id": 19,
+      "start": 109.67,
+      "end": 113.15,
+      "text": "So coordination without further ado, I give you James Pollack enjoy"
+    },
+    {
+      "id": 20,
+      "start": 113.55,
+      "end": 121.91,
+      "text": "Balladow is an open global collective working to finance and democratize the governance of synthetic biology technologies to protect the future of our planet"
+    },
+    {
+      "id": 21,
+      "start": 122.11,
+      "end": 129.15,
+      "text": "Research and progress into synthetic biology is critically constrained by the world of nation-state regulations and bureaucracy from middleman"
+    },
+    {
+      "id": 22,
+      "start": 129.15,
+      "end": 132.35,
+      "text": "But the potential that synthetic biology has for the world is massive"
+    },
+    {
+      "id": 23,
+      "start": 132.35,
+      "end": 134.91,
+      "text": "It can produce a world in total harmony with nature"
+    },
+    {
+      "id": 24,
+      "start": 134.91,
+      "end": 139.03,
+      "text": "We can grow stuff using cells like software. It's awesome"
+    },
+    {
+      "id": 25,
+      "start": 139.03,
+      "end": 143.87,
+      "text": "And the best part is we no longer have to pull carbon out of the ground to grow and maintain civilization"
+    },
+    {
+      "id": 26,
+      "start": 143.87,
+      "end": 145.59,
+      "text": "Don't you think we should be funding this?"
+    },
+    {
+      "id": 27,
+      "start": 145.59,
+      "end": 151.99,
+      "text": "Valley Dow does and that's what they're here to do to try and make the solar punk world of tomorrow a reality today"
+    },
+    {
+      "id": 28,
+      "start": 151.99,
+      "end": 156.47,
+      "text": "So join Valley Dow right now and save the planet at valley Dow dot bio"
+    },
+    {
+      "id": 29,
+      "start": 157.03,
+      "end": 159.51,
+      "text": "What's up, James? Hey, how are you Kevin?"
+    },
+    {
+      "id": 30,
+      "start": 159.95,
+      "end": 168.26,
+      "text": "I'm pretty good. I'm excited to get weird here to get weird. Yeah, same. I've been looking forward our conversation since we first met a couple months ago"
+    },
+    {
+      "id": 31,
+      "start": 169.23,
+      "end": 172.35,
+      "text": "Yeah, same. So, um, basically"
+    },
+    {
+      "id": 32,
+      "start": 173.95,
+      "end": 179.23,
+      "text": "Maybe maybe a good jumping off point would be for you to tell us what you've been building this Dow simulator"
+    },
+    {
+      "id": 33,
+      "start": 180.27,
+      "end": 184.19,
+      "text": "Sure, so I've been working on an agent-based model"
+    },
+    {
+      "id": 34,
+      "start": 184.75,
+      "end": 188.99,
+      "text": "And an agent-based model is a computer program where you can"
+    },
+    {
+      "id": 35,
+      "start": 190.11,
+      "end": 194.67,
+      "text": "Code a bunch of I don't want to use the word in the definition. So instead of agents"
+    },
+    {
+      "id": 36,
+      "start": 194.67,
+      "end": 197.95,
+      "text": "I'll say like characters you can think of them like characters in a video game"
+    },
+    {
+      "id": 37,
+      "start": 198.83,
+      "end": 200.83,
+      "text": "And you give them roles and"
+    },
+    {
+      "id": 38,
+      "start": 201.39,
+      "end": 205.95,
+      "text": "Rules of how they should behave and then you run a time through this simulation"
+    },
+    {
+      "id": 39,
+      "start": 205.95,
+      "end": 212.91,
+      "text": "So there's a bunch of time steps and every step these agents make different decisions about what they should do based on the rules that you've given them and"
+    },
+    {
+      "id": 40,
+      "start": 214.35,
+      "end": 218.83,
+      "text": "The situation that I've decided to put these characters in is that they're all members of"
+    },
+    {
+      "id": 41,
+      "start": 219.55,
+      "end": 221.55,
+      "text": "decentralized autonomous organization"
+    },
+    {
+      "id": 42,
+      "start": 222.11,
+      "end": 223.31,
+      "text": "so"
+    },
+    {
+      "id": 43,
+      "start": 223.31,
+      "end": 227.95,
+      "text": "The Dow members are represented by different agent classes and they can create proposals"
+    },
+    {
+      "id": 44,
+      "start": 228.43,
+      "end": 230.75,
+      "text": "Vote on them invest in projects"
+    },
+    {
+      "id": 45,
+      "start": 231.39,
+      "end": 235.31,
+      "text": "a bunch of other activities and the simulation also incorporates"
+    },
+    {
+      "id": 46,
+      "start": 235.87,
+      "end": 241.15,
+      "text": "Treasury management token pricing revenue distribution kind of things that happen"
+    },
+    {
+      "id": 47,
+      "start": 241.95,
+      "end": 248.75,
+      "text": "At the level of the Dow itself, which is one agent and then at the level of the individual Dow members who are your"
+    },
+    {
+      "id": 48,
+      "start": 249.23,
+      "end": 251.95,
+      "text": "investors and delegators and developers"
+    },
+    {
+      "id": 49,
+      "start": 253.26,
+      "end": 257.98,
+      "text": "Yeah, I just think it's so cool and I can't wait to infer all the the possibility space here"
+    },
+    {
+      "id": 50,
+      "start": 258.46,
+      "end": 263.42,
+      "text": "So um, I think the reason that you and I got connected was that in"
+    },
+    {
+      "id": 51,
+      "start": 264.14,
+      "end": 267.9,
+      "text": "On February 2nd, I wrote this post on the super modular community forum"
+    },
+    {
+      "id": 52,
+      "start": 268.62,
+      "end": 271.66,
+      "text": "Um about a Dow AI governance simulation toolkit"
+    },
+    {
+      "id": 53,
+      "start": 272.14,
+      "end": 275.18,
+      "text": "Which I called DAGs just to try to meme it but um"
+    },
+    {
+      "id": 54,
+      "start": 275.74,
+      "end": 281.58,
+      "text": "So basically what I wrote was we could build an AI Dow toolkit where I could spin up 100 different AIs give them all tokens"
+    },
+    {
+      "id": 55,
+      "start": 281.98,
+      "end": 286.46,
+      "text": "And set each AI to maximize their token balances give them a governance forum to argue"
+    },
+    {
+      "id": 56,
+      "start": 287.02,
+      "end": 292.14,
+      "text": "In and let them vote on snapshot and tally and I want to run like 10,000 different AI"
+    },
+    {
+      "id": 57,
+      "start": 292.22,
+      "end": 298.06,
+      "text": "Dows with slightly different starting conditions and like parameters for the agents like their friendly or adversarial"
+    },
+    {
+      "id": 58,
+      "start": 298.38,
+      "end": 300.78,
+      "text": "And see how those dows evolve differently"
+    },
+    {
+      "id": 59,
+      "start": 301.1,
+      "end": 304.78,
+      "text": "So basically we're doing a parameter sweep on governance frameworks"
+    },
+    {
+      "id": 60,
+      "start": 305.02,
+      "end": 311.58,
+      "text": "And then you can start to like introduce different rules to governance or like maybe you introduce quadratic funding to the Dow"
+    },
+    {
+      "id": 61,
+      "start": 311.82,
+      "end": 315.9,
+      "text": "And you see how that affects the agents behavior and um"
+    },
+    {
+      "id": 62,
+      "start": 316.54,
+      "end": 319.66,
+      "text": "And like once you've done a like this this sweep of different setups"
+    },
+    {
+      "id": 63,
+      "start": 319.9,
+      "end": 321.9,
+      "text": "You could find optimal governance setups"
+    },
+    {
+      "id": 64,
+      "start": 322.54,
+      "end": 330.06,
+      "text": "Across the design space of governance and in like to me, that's the exciting idea here is that um instead of my friends having to argue"
+    },
+    {
+      "id": 65,
+      "start": 330.46,
+      "end": 333.42,
+      "text": "In the governance forum over what's what in their Dow"
+    },
+    {
+      "id": 66,
+      "start": 333.42,
+      "end": 335.42,
+      "text": "What if we can have a bunch of AI's"
+    },
+    {
+      "id": 67,
+      "start": 335.42,
+      "end": 339.66,
+      "text": "Simulate that and then find the optimal governance setups and for our human dows"
+    },
+    {
+      "id": 68,
+      "start": 340.22,
+      "end": 346.06,
+      "text": "Actually setup our human dows that way so that that was so I wrote this post in the you and I got connected"
+    },
+    {
+      "id": 69,
+      "start": 346.54,
+      "end": 350.06,
+      "text": "And and just sort of nerd it out from there and and I'm just"
+    },
+    {
+      "id": 70,
+      "start": 350.22,
+      "end": 350.94,
+      "text": "I"
+    },
+    {
+      "id": 71,
+      "start": 350.94,
+      "end": 358.86,
+      "text": "I guess that's that's a to give the reader the backstory of how we got connected but be just this design space feels like it's so exciting to me"
+    },
+    {
+      "id": 72,
+      "start": 359.34,
+      "end": 364.3,
+      "text": "And um, you know, I'd be curious maybe to volley back to you. What what got you excited about this design space?"
+    },
+    {
+      "id": 73,
+      "start": 365.18,
+      "end": 366.77,
+      "text": "Um, I"
+    },
+    {
+      "id": 74,
+      "start": 366.77,
+      "end": 376.45,
+      "text": "You know, I think I had almost exact same realization as you which is that there's actually very little data about this space and that generating it"
+    },
+    {
+      "id": 75,
+      "start": 377.49,
+      "end": 386.45,
+      "text": "Takes time and money and real people's lives and running experiments on actual people in a Dow can be very painful for those people and"
+    },
+    {
+      "id": 76,
+      "start": 387.33,
+      "end": 388.53,
+      "text": "discovering"
+    },
+    {
+      "id": 77,
+      "start": 388.53,
+      "end": 393.25,
+      "text": "It's discovering whether you know a certain kind of voting system or"
+    },
+    {
+      "id": 78,
+      "start": 393.97,
+      "end": 401.89,
+      "text": "You know a penalties or rewards for behaving different ways inside of the Dow or it's structure itself how many members whether you have a native token"
+    },
+    {
+      "id": 79,
+      "start": 402.21,
+      "end": 404.45,
+      "text": "These are things that are not easily changed"
+    },
+    {
+      "id": 80,
+      "start": 404.77,
+      "end": 407.81,
+      "text": "Right, so if you want to test a, you know, how your Dow would run"
+    },
+    {
+      "id": 81,
+      "start": 408.29,
+      "end": 410.29,
+      "text": "Um with its own token or not"
+    },
+    {
+      "id": 82,
+      "start": 411.25,
+      "end": 413.49,
+      "text": "That's quite hard to do um, so"
+    },
+    {
+      "id": 83,
+      "start": 416.0,
+      "end": 419.92,
+      "text": "I also think that this opportunity to explore that design space"
+    },
+    {
+      "id": 84,
+      "start": 420.0,
+      "end": 424.48,
+      "text": "I love that you call it a hyperparameter sweep the like technical term in some of the Python"
+    },
+    {
+      "id": 85,
+      "start": 424.48,
+      "end": 430.48,
+      "text": "I'm using called a batch running but absolutely same thing you want you want to see you know um in the matrix of"
+    },
+    {
+      "id": 86,
+      "start": 430.88,
+      "end": 436.24,
+      "text": "This choice and this choice that you could make how does it work when you choose a and b? How does it work? You can choose a and c"
+    },
+    {
+      "id": 87,
+      "start": 436.72,
+      "end": 438.72,
+      "text": "so on and so forth um"
+    },
+    {
+      "id": 88,
+      "start": 439.47,
+      "end": 441.78,
+      "text": "and uh"
+    },
+    {
+      "id": 89,
+      "start": 441.78,
+      "end": 450.18,
+      "text": "I think I think that maybe a little bit unlike you. I'm not so certain that we will be able to find those perfect um, you know"
+    },
+    {
+      "id": 90,
+      "start": 450.58,
+      "end": 457.86,
+      "text": "Platonic ideals of what a Dow should be I think that a lot of that will depend on what your particular, you know goals are"
+    },
+    {
+      "id": 91,
+      "start": 458.5,
+      "end": 460.5,
+      "text": "um"
+    },
+    {
+      "id": 92,
+      "start": 461.54,
+      "end": 465.7,
+      "text": "And that's because um the agent-based models are typically"
+    },
+    {
+      "id": 93,
+      "start": 466.58,
+      "end": 468.74,
+      "text": "There's source for generating synthetic data"
+    },
+    {
+      "id": 94,
+      "start": 469.22,
+      "end": 472.66,
+      "text": "So you know, we're modeling a system. It's not the real system"
+    },
+    {
+      "id": 95,
+      "start": 473.22,
+      "end": 476.42,
+      "text": "It's not going to necessarily have predictive properties"
+    },
+    {
+      "id": 96,
+      "start": 476.74,
+      "end": 483.46,
+      "text": "But that is sort of um a really fun thing to work on is like where do you put the slider as far as"
+    },
+    {
+      "id": 97,
+      "start": 484.02,
+      "end": 490.42,
+      "text": "How synthetic is our data you mentioned perhaps um letting your agents discuss things on a forum"
+    },
+    {
+      "id": 98,
+      "start": 490.66,
+      "end": 495.7,
+      "text": "Will do you model that forum to just be a simple like somebody left a positive negative comment"
+    },
+    {
+      "id": 99,
+      "start": 495.94,
+      "end": 499.62,
+      "text": "If you maybe build it out more fully so that the agents can talk to each other with"
+    },
+    {
+      "id": 100,
+      "start": 500.02,
+      "end": 507.94,
+      "text": "LLMs or do you um actually plug it into a real forum and let your agents make posts and interact with real people"
+    },
+    {
+      "id": 101,
+      "start": 508.42,
+      "end": 512.82,
+      "text": "I think what you decide to do for that will depends um on what your goals are"
+    },
+    {
+      "id": 102,
+      "start": 514.96,
+      "end": 518.8,
+      "text": "But it's just exciting to be able to to change those things. I've seen"
+    },
+    {
+      "id": 103,
+      "start": 519.6,
+      "end": 521.6,
+      "text": "Dows try to do these and um"
+    },
+    {
+      "id": 104,
+      "start": 522.64,
+      "end": 527.52,
+      "text": "People make these big decisions with you know hundreds of millions of dollars under management with almost no"
+    },
+    {
+      "id": 105,
+      "start": 528.7,
+      "end": 532.22,
+      "text": "Right into it um, so I'm just hoping you know"
+    },
+    {
+      "id": 106,
+      "start": 532.86,
+      "end": 536.06,
+      "text": "Even if a tool like this is an entirely predictive"
+    },
+    {
+      "id": 107,
+      "start": 536.14,
+      "end": 540.78,
+      "text": "I'm hoping that I'll at least give people some insight and help them have a better decision-making"
+    },
+    {
+      "id": 108,
+      "start": 541.74,
+      "end": 549.74,
+      "text": "Yeah, yeah, totally. I'm not gonna imagine a future in which you know say I'm on the governance or the steward council a Dow X"
+    },
+    {
+      "id": 109,
+      "start": 550.22,
+      "end": 551.5,
+      "text": "um"
+    },
+    {
+      "id": 110,
+      "start": 551.5,
+      "end": 553.02,
+      "text": "We could we could"
+    },
+    {
+      "id": 111,
+      "start": 553.02,
+      "end": 555.5,
+      "text": "I'm imagining a future in which this tool is"
+    },
+    {
+      "id": 112,
+      "start": 556.22,
+      "end": 558.78,
+      "text": "um available and you can ingest the"
+    },
+    {
+      "id": 113,
+      "start": 559.42,
+      "end": 561.42,
+      "text": "The parameters of the setup of the Dow"
+    },
+    {
+      "id": 114,
+      "start": 562.22,
+      "end": 568.62,
+      "text": "And maybe ingest the forum posts that have been on the Dow and and that sets the starting conditions in the Dow governance framework"
+    },
+    {
+      "id": 115,
+      "start": 569.02,
+      "end": 569.98,
+      "text": "um"
+    },
+    {
+      "id": 116,
+      "start": 569.98,
+      "end": 576.46,
+      "text": "To be localized to whatever Dow X yeah values and cultural norms inside of is and maybe you could explore"
+    },
+    {
+      "id": 117,
+      "start": 577.18,
+      "end": 583.26,
+      "text": "Instead of sweeping the entire parameter space you could you could sort of sweep the space around it and say you know"
+    },
+    {
+      "id": 118,
+      "start": 583.26,
+      "end": 588.46,
+      "text": "What would happen if we cut our proposal threshold and pat in half or if we changed our culture"
+    },
+    {
+      "id": 119,
+      "start": 588.46,
+      "end": 594.46,
+      "text": "Such that people were 20% friendly or or we introduced quadratic funding or something like that um to me"
+    },
+    {
+      "id": 120,
+      "start": 594.46,
+      "end": 597.18,
+      "text": "That's where it gets really interesting and and yeah"
+    },
+    {
+      "id": 121,
+      "start": 597.58,
+      "end": 604.78,
+      "text": "You know, maybe it's not completely predictive, but it is an interesting way of of simulating Dow governance changes before you just yolo make them"
+    },
+    {
+      "id": 122,
+      "start": 605.74,
+      "end": 614.22,
+      "text": "Live right. I think you bring up a great point that there could be kind of two different users or different times somebody might be trying to use this"
+    },
+    {
+      "id": 123,
+      "start": 614.3,
+      "end": 619.5,
+      "text": "One is you've got a Dow it exists you're thinking about making a change in that case like yeah"
+    },
+    {
+      "id": 124,
+      "start": 619.58,
+      "end": 623.1,
+      "text": "It's very hard to change the ship if it's already underway"
+    },
+    {
+      "id": 125,
+      "start": 623.9,
+      "end": 630.06,
+      "text": "Um, but maybe people thinking about setting up new Dows. I think that's a situation where you're entire hyperparameter sweep would be"
+    },
+    {
+      "id": 126,
+      "start": 630.7,
+      "end": 632.99,
+      "text": "Would be pretty interesting"
+    },
+    {
+      "id": 127,
+      "start": 632.99,
+      "end": 634.35,
+      "text": "Yeah, totally"
+    },
+    {
+      "id": 128,
+      "start": 634.35,
+      "end": 641.07,
+      "text": "Um, well, so can you tell us take us into what you uh, what you built so for the listeners if you click into the github"
+    },
+    {
+      "id": 129,
+      "start": 641.47,
+      "end": 649.31,
+      "text": "Um, you can see this code that the james has put together around the Dow simulation framework and i'm looking at the read me now"
+    },
+    {
+      "id": 130,
+      "start": 649.47,
+      "end": 652.83,
+      "text": "So so take us on a deep dive of what you built for sure"
+    },
+    {
+      "id": 131,
+      "start": 653.23,
+      "end": 654.19,
+      "text": "um"
+    },
+    {
+      "id": 132,
+      "start": 654.19,
+      "end": 661.07,
+      "text": "So agent based models you can build in a variety of frameworks um, the one that i had used previously was called net logo"
+    },
+    {
+      "id": 133,
+      "start": 661.31,
+      "end": 665.07,
+      "text": "That's a big one people learn when they are starting agent based modelings"
+    },
+    {
+      "id": 134,
+      "start": 665.79,
+      "end": 673.87,
+      "text": "But it's based on uh the jvm on java so it's not as like interoperable as you'd like so for this project. I use um"
+    },
+    {
+      "id": 135,
+      "start": 674.43,
+      "end": 679.07,
+      "text": "A different agent based modeling framework. This one's based in python. It's called mesa"
+    },
+    {
+      "id": 136,
+      "start": 679.71,
+      "end": 683.39,
+      "text": "Um, which is great. You want to be in python. That's where all the cool um"
+    },
+    {
+      "id": 137,
+      "start": 684.86,
+      "end": 691.42,
+      "text": "Machine learning stuff and and generative things are happening. So being able to be in python and plug in um, it's super exciting"
+    },
+    {
+      "id": 138,
+      "start": 693.02,
+      "end": 701.02,
+      "text": "So i've built agent based models before um, but maybe not one quite this big or complex. So um, yeah"
+    },
+    {
+      "id": 139,
+      "start": 701.02,
+      "end": 706.14,
+      "text": "Started with just sort of a base class of like a Dow member. You know, what does everybody need to do?"
+    },
+    {
+      "id": 140,
+      "start": 706.7,
+      "end": 712.86,
+      "text": "Um, they vote. They comment on proposals. They hold tokens and they have a reputation"
+    },
+    {
+      "id": 141,
+      "start": 713.42,
+      "end": 714.3,
+      "text": "Um"
+    },
+    {
+      "id": 142,
+      "start": 714.3,
+      "end": 719.5,
+      "text": "Even some of these base assumptions like you're already making choices for the Dow right like there's a reputation right"
+    },
+    {
+      "id": 143,
+      "start": 719.5,
+      "end": 725.02,
+      "text": "We're keeping track of it with points like already. I can think of a ton of different ways to keep track of reputation"
+    },
+    {
+      "id": 144,
+      "start": 725.58,
+      "end": 730.14,
+      "text": "Um, it can be kind of paralyzing because you want to give people you know every option"
+    },
+    {
+      "id": 145,
+      "start": 730.62,
+      "end": 736.06,
+      "text": "Um, but you do just have to make a couple arbitrary choices to get started and then hopefully leave in some lever"
+    },
+    {
+      "id": 146,
+      "start": 736.14,
+      "end": 738.62,
+      "text": "So you can come back and tweak that stuff later"
+    },
+    {
+      "id": 147,
+      "start": 739.26,
+      "end": 743.66,
+      "text": "Um, and so from the Dow member. I um, you know, thought about some other"
+    },
+    {
+      "id": 148,
+      "start": 744.38,
+      "end": 748.86,
+      "text": "roles um of people in dows and the things they might do. So we have"
+    },
+    {
+      "id": 149,
+      "start": 750.05,
+      "end": 756.29,
+      "text": "um, like developers who um, you know, be brought in to like build and maintain projects"
+    },
+    {
+      "id": 150,
+      "start": 756.69,
+      "end": 757.73,
+      "text": "um"
+    },
+    {
+      "id": 151,
+      "start": 757.73,
+      "end": 760.29,
+      "text": "Investors invest in proposals and projects"
+    },
+    {
+      "id": 152,
+      "start": 760.93,
+      "end": 761.97,
+      "text": "um"
+    },
+    {
+      "id": 153,
+      "start": 762.05,
+      "end": 767.09,
+      "text": "I've even modeled like passive members people who like hold tokens um, and they they might vote"
+    },
+    {
+      "id": 154,
+      "start": 767.09,
+      "end": 774.61,
+      "text": "But they're not really like getting involved in projects and stuff and um, we proposal creators who create and submit proposals"
+    },
+    {
+      "id": 155,
+      "start": 775.01,
+      "end": 778.61,
+      "text": "regulators ensure compliance with external regulations and requirements"
+    },
+    {
+      "id": 156,
+      "start": 779.17,
+      "end": 786.77,
+      "text": "Service service providers. That's similar to a developer, but it might be like an external developer or if you need something translated"
+    },
+    {
+      "id": 157,
+      "start": 787.41,
+      "end": 788.96,
+      "text": "um"
+    },
+    {
+      "id": 158,
+      "start": 788.96,
+      "end": 790.96,
+      "text": "And I also have validators"
+    },
+    {
+      "id": 159,
+      "start": 791.44,
+      "end": 792.72,
+      "text": "arbitrators"
+    },
+    {
+      "id": 160,
+      "start": 792.72,
+      "end": 796.96,
+      "text": "Delegators um you know looking at this list. I think"
+    },
+    {
+      "id": 161,
+      "start": 798.18,
+      "end": 804.5,
+      "text": "Going back if I was starting over I look at this and I think to myself like people often hold multiple roles in a dows"
+    },
+    {
+      "id": 162,
+      "start": 804.66,
+      "end": 811.14,
+      "text": "So this is one of those like base assumptions like does everybody fall neatly into one class of like"
+    },
+    {
+      "id": 163,
+      "start": 811.22,
+      "end": 814.5,
+      "text": "I'm an arbitrator or I'm a developer"
+    },
+    {
+      "id": 164,
+      "start": 814.58,
+      "end": 820.02,
+      "text": "Maybe people's roles change and this model doesn't quite account for that yet or maybe people hold multiple roles"
+    },
+    {
+      "id": 165,
+      "start": 820.74,
+      "end": 822.26,
+      "text": "um, so"
+    },
+    {
+      "id": 166,
+      "start": 822.26,
+      "end": 827.78,
+      "text": "Starting with it's got about 10 different classes uh, and all the roles or individual roles um"
+    },
+    {
+      "id": 167,
+      "start": 829.34,
+      "end": 833.98,
+      "text": "It's uh, once you start running the model it'll be interesting because your developers are gonna like develop"
+    },
+    {
+      "id": 168,
+      "start": 833.98,
+      "end": 839.26,
+      "text": "They're not gonna be investing in things, but I think in the real world somebody can be both an investor and a developer"
+    },
+    {
+      "id": 169,
+      "start": 839.66,
+      "end": 844.54,
+      "text": "So I see some potential for that growing out later um, so if go ahead"
+    },
+    {
+      "id": 170,
+      "start": 845.34,
+      "end": 847.34,
+      "text": "Oh, sorry, I mean to interrupt um"
+    },
+    {
+      "id": 171,
+      "start": 848.14,
+      "end": 853.34,
+      "text": "I was gonna say like in a way um, we're getting into some of the fundamental trade-offs when it comes to"
+    },
+    {
+      "id": 172,
+      "start": 854.22,
+      "end": 858.62,
+      "text": "modeling complex systems of which all economies and social systems are"
+    },
+    {
+      "id": 173,
+      "start": 859.02,
+      "end": 864.46,
+      "text": "uh, it's just it's really hard when you've got these agent-based systems and they're intelligent agents to make"
+    },
+    {
+      "id": 174,
+      "start": 865.1,
+      "end": 868.94,
+      "text": "productive assumptions about who is what and what ways they behave"
+    },
+    {
+      "id": 175,
+      "start": 869.5,
+      "end": 874.22,
+      "text": "And um, I think that that's kind of one of the challenges here is having the right level of abstraction"
+    },
+    {
+      "id": 176,
+      "start": 874.62,
+      "end": 881.34,
+      "text": "This not too reductionist uh, with each of these and you know, I know from my experience working with say say get going down"
+    },
+    {
+      "id": 177,
+      "start": 881.66,
+      "end": 886.3,
+      "text": "Which you know, I'm now disaffiliated from but I've watched it from the outside is that you know"
+    },
+    {
+      "id": 178,
+      "start": 886.3,
+      "end": 892.38,
+      "text": "Some of the people who are services providers are also proposal creators are also developers are also delegators"
+    },
+    {
+      "id": 179,
+      "start": 892.78,
+      "end": 898.62,
+      "text": "And you know, you're you're almost like overloading a superclass at that point with different behavior types"
+    },
+    {
+      "id": 180,
+      "start": 899.1,
+      "end": 902.22,
+      "text": "Um, so yeah, just a meta commentary about complex systems there"
+    },
+    {
+      "id": 181,
+      "start": 902.62,
+      "end": 905.1,
+      "text": "Um, and a totally valid one and"
+    },
+    {
+      "id": 182,
+      "start": 906.3,
+      "end": 911.58,
+      "text": "One that makes me realize it's important to point out that these agents sort of out of the box"
+    },
+    {
+      "id": 183,
+      "start": 912.06,
+      "end": 917.66,
+      "text": "They're not AI if they have like rules the responding to conditions. You're saying, you know, if"
+    },
+    {
+      "id": 184,
+      "start": 918.62,
+      "end": 923.1,
+      "text": "token price is more than x do this if it's less than x do do that"
+    },
+    {
+      "id": 185,
+      "start": 923.98,
+      "end": 927.26,
+      "text": "So in that sense like out of the box, they're not very intelligent"
+    },
+    {
+      "id": 186,
+      "start": 927.98,
+      "end": 931.58,
+      "text": "What is great about being in this environment and"
+    },
+    {
+      "id": 187,
+      "start": 932.14,
+      "end": 936.14,
+      "text": "Actually, all of the cool complex systems stuff happening lately is that um"
+    },
+    {
+      "id": 188,
+      "start": 938.29,
+      "end": 942.61,
+      "text": "Your agents can actually be plugged into these systems like"
+    },
+    {
+      "id": 189,
+      "start": 945.95,
+      "end": 954.35,
+      "text": "Generative AI for creating those behaviors you could generate you know 200 different behaviors and plug those in and have the agents pick from those"
+    },
+    {
+      "id": 190,
+      "start": 954.59,
+      "end": 959.95,
+      "text": "Or you could plug in reinforcement learning and give your agents a you know reward function"
+    },
+    {
+      "id": 191,
+      "start": 960.35,
+      "end": 964.19,
+      "text": "And so they could actually change their behaviors on that or um"
+    },
+    {
+      "id": 192,
+      "start": 965.15,
+      "end": 969.31,
+      "text": "You know, let them be self reflexive and actually modify their behavior while it's running"
+    },
+    {
+      "id": 193,
+      "start": 969.95,
+      "end": 975.55,
+      "text": "This simulation is not there yet, but that is why I built it in Python and so that we have the potential"
+    },
+    {
+      "id": 194,
+      "start": 975.79,
+      "end": 979.39,
+      "text": "Every time you call a step on an agent that's how it works is a time step"
+    },
+    {
+      "id": 195,
+      "start": 979.95,
+      "end": 983.31,
+      "text": "But when we step the developer we don't just have to have them"
+    },
+    {
+      "id": 196,
+      "start": 983.71,
+      "end": 986.91,
+      "text": "You know do the rules that we wrote at the beginning of the simulation"
+    },
+    {
+      "id": 197,
+      "start": 986.99,
+      "end": 991.39,
+      "text": "If we plugged in the ability for them to generate new strategies try them out"
+    },
+    {
+      "id": 198,
+      "start": 991.79,
+      "end": 994.59,
+      "text": "Kill the ones that don't work and ride with the ones that do"
+    },
+    {
+      "id": 199,
+      "start": 995.55,
+      "end": 999.95,
+      "text": "Yeah, then stuff's gonna get weird then then we're gonna see some stuff in that hyper parameter space that like"
+    },
+    {
+      "id": 200,
+      "start": 1000.43,
+      "end": 1006.11,
+      "text": "We didn't even know existed because they're gonna be creating new parameters as they go so um"
+    },
+    {
+      "id": 201,
+      "start": 1007.42,
+      "end": 1012.78,
+      "text": "Um, but but level of abstraction is a huge problem with any kind of simulation um"
+    },
+    {
+      "id": 202,
+      "start": 1013.5,
+      "end": 1015.82,
+      "text": "And I don't have a great answer other than like"
+    },
+    {
+      "id": 203,
+      "start": 1015.9,
+      "end": 1022.14,
+      "text": "You know on the one side you have like maybe a game and then on the other side you have you know, you're you're real data"
+    },
+    {
+      "id": 204,
+      "start": 1022.7,
+      "end": 1024.4,
+      "text": "um"
+    },
+    {
+      "id": 205,
+      "start": 1024.4,
+      "end": 1025.6,
+      "text": "I do"
+    },
+    {
+      "id": 206,
+      "start": 1025.6,
+      "end": 1027.12,
+      "text": "No, good"
+    },
+    {
+      "id": 207,
+      "start": 1027.12,
+      "end": 1032.64,
+      "text": "I was gonna say like you know what one of my sort of hunch is about how web3 and AI are complimentary"
+    },
+    {
+      "id": 208,
+      "start": 1033.28,
+      "end": 1036.64,
+      "text": "Is that I broadly think that web3 in a way is about heuristics"
+    },
+    {
+      "id": 209,
+      "start": 1037.12,
+      "end": 1041.6,
+      "text": "Um and the heuristic that we're all traditionally trained on is like my bank account balance"
+    },
+    {
+      "id": 210,
+      "start": 1041.6,
+      "end": 1043.28,
+      "text": "I want my bank account balance to go up"
+    },
+    {
+      "id": 211,
+      "start": 1043.36,
+      "end": 1047.04,
+      "text": "But in web3 we now have like an internet native heuristic, which is my token balance"
+    },
+    {
+      "id": 212,
+      "start": 1047.52,
+      "end": 1054.08,
+      "text": "Um, and then aIs are kind of about heuristic maximization in a way which is like how do I make the most intelligent strategy"
+    },
+    {
+      "id": 213,
+      "start": 1054.56,
+      "end": 1061.44,
+      "text": "Um to maximize that heuristic and so I applied to this project sort of the insight was um"
+    },
+    {
+      "id": 214,
+      "start": 1062.24,
+      "end": 1066.56,
+      "text": "If you give an LOM or an AI a token balance and you just say make number go up"
+    },
+    {
+      "id": 215,
+      "start": 1066.96,
+      "end": 1072.72,
+      "text": "Either your own token balance or the token balance against let's call it ether usdc or something like that"
+    },
+    {
+      "id": 216,
+      "start": 1073.12,
+      "end": 1076.96,
+      "text": "You would get all sorts of interesting behaviors, but um, you know"
+    },
+    {
+      "id": 217,
+      "start": 1076.96,
+      "end": 1084.8,
+      "text": "It just as a way of creating the multi agent system and and moving towards like more advanced reflexive behaviors versus rule-based behaviors"
+    },
+    {
+      "id": 218,
+      "start": 1084.8,
+      "end": 1089.2,
+      "text": "There's a like a ladder up there in terms of a realism. So um"
+    },
+    {
+      "id": 219,
+      "start": 1089.76,
+      "end": 1093.04,
+      "text": "Yeah, just the insight there was heuristics versus heuristic maximization"
+    },
+    {
+      "id": 220,
+      "start": 1093.36,
+      "end": 1098.08,
+      "text": "I'm I'm kind of thinking that's increasingly how AI and web3 fit together"
+    },
+    {
+      "id": 221,
+      "start": 1098.88,
+      "end": 1104.8,
+      "text": "Do you think that um the Dow itself could have you know a heuristic beyond"
+    },
+    {
+      "id": 222,
+      "start": 1105.92,
+      "end": 1109.28,
+      "text": "You know token go up do you think that these organizations"
+    },
+    {
+      "id": 223,
+      "start": 1110.43,
+      "end": 1116.43,
+      "text": "You know have clear enough missions or strong enough missions that it is something you could embody in the actual"
+    },
+    {
+      "id": 224,
+      "start": 1116.83,
+      "end": 1118.43,
+      "text": "You know sort of rules"
+    },
+    {
+      "id": 225,
+      "start": 1118.43,
+      "end": 1127.47,
+      "text": "For example like the Dow could be set to maximize the token balances or it could be set to you know try to redistribute the most income to its members"
+    },
+    {
+      "id": 226,
+      "start": 1128.03,
+      "end": 1132.27,
+      "text": "And not care about having its own balance be high or it could just try to survive"
+    },
+    {
+      "id": 227,
+      "start": 1132.91,
+      "end": 1136.99,
+      "text": "Um, I could imagine a bunch of different sort of goals for the Dow itself"
+    },
+    {
+      "id": 228,
+      "start": 1137.39,
+      "end": 1139.39,
+      "text": "I wonder what you think yeah"
+    },
+    {
+      "id": 229,
+      "start": 1139.47,
+      "end": 1144.27,
+      "text": "Yeah, what is biology say in the network state book is that all of these networks states have their one commandment"
+    },
+    {
+      "id": 230,
+      "start": 1144.27,
+      "end": 1150.59,
+      "text": "Which is the thing that they think is wrong with the world that their networks trying to change and the toy example he gives is like"
+    },
+    {
+      "id": 231,
+      "start": 1151.23,
+      "end": 1156.19,
+      "text": "People think that we should be eating keto and so like they'll be like a keto network state"
+    },
+    {
+      "id": 232,
+      "start": 1156.83,
+      "end": 1162.11,
+      "text": "Um, you know the one that I'm more familiar with is is get coin and their their mission is to fund what matters"
+    },
+    {
+      "id": 233,
+      "start": 1162.43,
+      "end": 1166.19,
+      "text": "So basically to create coordination tools that fund what matters and and you know"
+    },
+    {
+      "id": 234,
+      "start": 1166.19,
+      "end": 1172.03,
+      "text": "You kind of get into like AI alignment here because the token balance will be expressed programmatically on chain"
+    },
+    {
+      "id": 235,
+      "start": 1172.43,
+      "end": 1175.87,
+      "text": "But then the mission can only be expressed socially and it's almost like"
+    },
+    {
+      "id": 236,
+      "start": 1176.35,
+      "end": 1180.75,
+      "text": "memetic social reflexive dynamics versus token economic reflexive dynamics"
+    },
+    {
+      "id": 237,
+      "start": 1180.91,
+      "end": 1188.59,
+      "text": "How do you create a strange attractor that aligns both of those things as opposed to creating opposed it like ones that won't hold together"
+    },
+    {
+      "id": 238,
+      "start": 1189.07,
+      "end": 1190.35,
+      "text": "um"
+    },
+    {
+      "id": 239,
+      "start": 1190.35,
+      "end": 1196.19,
+      "text": "So so yeah, uh, I think that you want to have you you probably have dows that have a one commandment that's strong"
+    },
+    {
+      "id": 240,
+      "start": 1196.19,
+      "end": 1202.03,
+      "text": "And you have dows that have no one commandment or a weak one commandment and the agents will act differently"
+    },
+    {
+      "id": 241,
+      "start": 1202.59,
+      "end": 1204.91,
+      "text": "Uh, based off of that yeah"
+    },
+    {
+      "id": 242,
+      "start": 1206.03,
+      "end": 1208.03,
+      "text": "Um, that makes sense to me"
+    },
+    {
+      "id": 243,
+      "start": 1208.51,
+      "end": 1211.87,
+      "text": "Yeah, I could imagine if if for get coin for example"
+    },
+    {
+      "id": 244,
+      "start": 1212.19,
+      "end": 1215.87,
+      "text": "Um, you would want it to try to maximize. It's a number of projects"
+    },
+    {
+      "id": 245,
+      "start": 1215.87,
+      "end": 1222.43,
+      "text": "And then you'd build in some sort of rating for the impactfulness of projects and have it try to you know maximize that as well"
+    },
+    {
+      "id": 246,
+      "start": 1222.91,
+      "end": 1226.51,
+      "text": "um, I think that's that's going to be super cool once we get that up and running"
+    },
+    {
+      "id": 247,
+      "start": 1226.75,
+      "end": 1229.87,
+      "text": "I think most people are trying to maximize for coins alone"
+    },
+    {
+      "id": 248,
+      "start": 1229.95,
+      "end": 1235.47,
+      "text": "And then I love the idea of being able to balance between that like maybe we're you know 80% mission driven"
+    },
+    {
+      "id": 249,
+      "start": 1235.47,
+      "end": 1241.15,
+      "text": "But 20% you know coin driven. I don't think it's a total either or it can kind of mix between those"
+    },
+    {
+      "id": 250,
+      "start": 1241.63,
+      "end": 1245.95,
+      "text": "Well, I was still like it's something maybe a meta commentary is on the boundary"
+    },
+    {
+      "id": 251,
+      "start": 1246.43,
+      "end": 1248.43,
+      "text": "conditions of the"
+    },
+    {
+      "id": 252,
+      "start": 1248.43,
+      "end": 1252.99,
+      "text": "Of the the agent based system because I know say you were trying to model makerdale"
+    },
+    {
+      "id": 253,
+      "start": 1253.63,
+      "end": 1260.75,
+      "text": "Uh, their primary product is a stablecoin called die and mkr is a secondary token which you can invest in"
+    },
+    {
+      "id": 254,
+      "start": 1261.23,
+      "end": 1263.87,
+      "text": "uh or you know purchase that"
+    },
+    {
+      "id": 255,
+      "start": 1263.87,
+      "end": 1269.07,
+      "text": "Helps create the stability of die and and allows you to set the parameters on the system"
+    },
+    {
+      "id": 256,
+      "start": 1269.07,
+      "end": 1271.23,
+      "text": "And then you've got the governance forums on top of that"
+    },
+    {
+      "id": 257,
+      "start": 1271.79,
+      "end": 1275.55,
+      "text": "And you can agent-based model all of those things um, you know"
+    },
+    {
+      "id": 258,
+      "start": 1275.55,
+      "end": 1278.99,
+      "text": "I suppose given in an ebm and in this toolkit"
+    },
+    {
+      "id": 259,
+      "start": 1279.23,
+      "end": 1283.63,
+      "text": "But you in a way you can't even model the market success of that dow without"
+    },
+    {
+      "id": 260,
+      "start": 1284.11,
+      "end": 1284.91,
+      "text": "um"
+    },
+    {
+      "id": 261,
+      "start": 1284.91,
+      "end": 1286.91,
+      "text": "Modeling the market for you goes"
+    },
+    {
+      "id": 262,
+      "start": 1287.07,
+      "end": 1287.87,
+      "text": "Yeah"
+    },
+    {
+      "id": 263,
+      "start": 1287.87,
+      "end": 1291.39,
+      "text": "Which point if you have a simulation that'll simulate a dow that good"
+    },
+    {
+      "id": 264,
+      "start": 1291.39,
+      "end": 1296.03,
+      "text": "Why don't you just simulate the whole stock market and call it a day, right? Yeah, so um"
+    },
+    {
+      "id": 265,
+      "start": 1296.11,
+      "end": 1298.83,
+      "text": "Yeah, future request james. Can we just simulate all of web 3?"
+    },
+    {
+      "id": 266,
+      "start": 1299.07,
+      "end": 1302.43,
+      "text": "Uh, is i think the ultimate scope creek above all of this"
+    },
+    {
+      "id": 267,
+      "start": 1303.87,
+      "end": 1304.83,
+      "text": "uh"
+    },
+    {
+      "id": 268,
+      "start": 1304.83,
+      "end": 1305.95,
+      "text": "Absolutely"
+    },
+    {
+      "id": 269,
+      "start": 1305.95,
+      "end": 1310.59,
+      "text": "With enough computing power uh, I'm I'm sure that someone could but I"
+    },
+    {
+      "id": 270,
+      "start": 1311.39,
+      "end": 1314.83,
+      "text": "Can i pick up on something you said right there. I thought was super interesting"
+    },
+    {
+      "id": 271,
+      "start": 1315.07,
+      "end": 1321.31,
+      "text": "Um, you mentioned maybe running an ebm inside of it and that hadn't occurred to me is that like so this"
+    },
+    {
+      "id": 272,
+      "start": 1321.39,
+      "end": 1324.99,
+      "text": "Developer agent that we're making you actually could like"
+    },
+    {
+      "id": 273,
+      "start": 1325.63,
+      "end": 1330.83,
+      "text": "Set it up so that it had an ebm that it had access to and maybe you give it an LLM and you'd let it"
+    },
+    {
+      "id": 274,
+      "start": 1331.55,
+      "end": 1333.55,
+      "text": "Write code of some kind"
+    },
+    {
+      "id": 275,
+      "start": 1334.35,
+      "end": 1341.63,
+      "text": "I find that very interesting the idea of actually like um having some agents that can run some solidity code"
+    },
+    {
+      "id": 276,
+      "start": 1341.63,
+      "end": 1344.67,
+      "text": "Because that is what people at these dows are doing ultimately"
+    },
+    {
+      "id": 277,
+      "start": 1345.31,
+      "end": 1351.15,
+      "text": "So in a large enough self-correcting system would LLM discover code audits and re-entering cattacks"
+    },
+    {
+      "id": 278,
+      "start": 1352.11,
+      "end": 1353.79,
+      "text": "All of those type of things"
+    },
+    {
+      "id": 279,
+      "start": 1353.79,
+      "end": 1360.19,
+      "text": "Well and social engineering attacks. I think would be interesting because it's going to be getting all of this other stuff from the dow"
+    },
+    {
+      "id": 280,
+      "start": 1360.19,
+      "end": 1362.03,
+      "text": "Um as well"
+    },
+    {
+      "id": 281,
+      "start": 1362.03,
+      "end": 1364.51,
+      "text": "Yeah, that's me let me write a note down. This is"
+    },
+    {
+      "id": 282,
+      "start": 1365.55,
+      "end": 1368.27,
+      "text": "What's the the analog in like um"
+    },
+    {
+      "id": 283,
+      "start": 1369.07,
+      "end": 1376.19,
+      "text": "I was watching the deep mind documentary about about go and how there have been sort of these human go players"
+    },
+    {
+      "id": 284,
+      "start": 1376.83,
+      "end": 1381.55,
+      "text": "That have a cognitive limit like limit to how far ahead they can think but the"
+    },
+    {
+      "id": 285,
+      "start": 1382.11,
+      "end": 1386.83,
+      "text": "The AIs didn't have that cognitive limit and so they could explore the possibility space"
+    },
+    {
+      "id": 286,
+      "start": 1386.91,
+      "end": 1390.75,
+      "text": "And they were discovering new moves that the human players had never really ever thought of"
+    },
+    {
+      "id": 287,
+      "start": 1390.91,
+      "end": 1394.83,
+      "text": "And I think that that's where it gets interesting with these AI based systems"
+    },
+    {
+      "id": 288,
+      "start": 1395.71,
+      "end": 1396.59,
+      "text": "Um"
+    },
+    {
+      "id": 289,
+      "start": 1396.59,
+      "end": 1398.43,
+      "text": "Totally I'm ready to like"
+    },
+    {
+      "id": 290,
+      "start": 1398.43,
+      "end": 1403.71,
+      "text": "Press go on the simulation sit back like you know take a look at the graphs or read out and just be like"
+    },
+    {
+      "id": 291,
+      "start": 1404.35,
+      "end": 1410.03,
+      "text": "Holy crap like what's going on here? I think that's the moment that I'm shooting for certainly"
+    },
+    {
+      "id": 292,
+      "start": 1411.23,
+      "end": 1413.23,
+      "text": "Yeah, well um"
+    },
+    {
+      "id": 293,
+      "start": 1414.61,
+      "end": 1419.65,
+      "text": "I guess you know one of my next questions for you is like is is how do you how do you want to monetize this?"
+    },
+    {
+      "id": 294,
+      "start": 1419.65,
+      "end": 1424.77,
+      "text": "I mean, I can I can see you very obvious like a very obvious uh business model for you with this would be"
+    },
+    {
+      "id": 295,
+      "start": 1425.17,
+      "end": 1430.85,
+      "text": "Going to Dow X and saying hey, I could simulate your governance and I can I could simulate a bunch of things about your Dow"
+    },
+    {
+      "id": 296,
+      "start": 1431.41,
+      "end": 1432.61,
+      "text": "um"
+    },
+    {
+      "id": 297,
+      "start": 1432.61,
+      "end": 1436.77,
+      "text": "You know, uh pay me X X number of tokens and I'll simulate your Dow"
+    },
+    {
+      "id": 298,
+      "start": 1437.09,
+      "end": 1443.33,
+      "text": "And and we can make recommendations about how you should evolve your Dow forward based off of what the A model comes comes back"
+    },
+    {
+      "id": 299,
+      "start": 1443.57,
+      "end": 1445.89,
+      "text": "Um, but it also I know this is an open source piece of code"
+    },
+    {
+      "id": 300,
+      "start": 1445.89,
+      "end": 1447.89,
+      "text": "So I hope to see it on get going grants in the future"
+    },
+    {
+      "id": 301,
+      "start": 1448.53,
+      "end": 1455.09,
+      "text": "Feels like you're building a public good for the space if this thing reaches any level of usefulness for for Dow's to be able to simulate their upgrades"
+    },
+    {
+      "id": 302,
+      "start": 1456.06,
+      "end": 1462.06,
+      "text": "Um, man, that'd be so cool if somebody helped me build some sort of module that let you plug in your actual"
+    },
+    {
+      "id": 303,
+      "start": 1462.38,
+      "end": 1465.42,
+      "text": "Dow information on the top of this that would be amazing"
+    },
+    {
+      "id": 304,
+      "start": 1465.98,
+      "end": 1471.34,
+      "text": "Um probably just training data and I mean at my level of abstraction is just training data. I know that there's probably a lot of"
+    },
+    {
+      "id": 305,
+      "start": 1472.22,
+      "end": 1477.26,
+      "text": "Things you have to change but totally um some monetization it is interesting um"
+    },
+    {
+      "id": 306,
+      "start": 1478.45,
+      "end": 1482.45,
+      "text": "With a project like this uh, yeah the consulting route um"
+    },
+    {
+      "id": 307,
+      "start": 1482.53,
+      "end": 1489.17,
+      "text": "Dow's do pay a lot of money to people to come in and do the the salaries are sometimes like a million dollars to have someone come into your"
+    },
+    {
+      "id": 308,
+      "start": 1489.17,
+      "end": 1492.61,
+      "text": "Dow and help you make a decision because there's a lot of money at stake. So"
+    },
+    {
+      "id": 309,
+      "start": 1493.17,
+      "end": 1500.37,
+      "text": "You know, maybe we're not going to offer or through this simulation be able to give you you know a hundred percent efficacy of what you'd get from a consultant like that"
+    },
+    {
+      "id": 310,
+      "start": 1500.45,
+      "end": 1503.81,
+      "text": "But if we can give you 70% that you know"
+    },
+    {
+      "id": 311,
+      "start": 1504.77,
+      "end": 1507.25,
+      "text": "One percent of the cost. I think that's a pretty good trade-off"
+    },
+    {
+      "id": 312,
+      "start": 1507.89,
+      "end": 1509.73,
+      "text": "Um, so one"
+    },
+    {
+      "id": 313,
+      "start": 1510.53,
+      "end": 1515.81,
+      "text": "Interesting thing I kind of mentioned earlier is this slider between the gamification or not"
+    },
+    {
+      "id": 314,
+      "start": 1516.37,
+      "end": 1517.17,
+      "text": "um"
+    },
+    {
+      "id": 315,
+      "start": 1517.17,
+      "end": 1520.93,
+      "text": "Actually, I think one cool way to maybe make some money off of this would be to"
+    },
+    {
+      "id": 316,
+      "start": 1521.65,
+      "end": 1525.17,
+      "text": "Um turn it into a game. So at every time step"
+    },
+    {
+      "id": 317,
+      "start": 1526.05,
+      "end": 1534.21,
+      "text": "You would you know add some goals add some options for what the player can do and then you know the simulation games are pretty big genre"
+    },
+    {
+      "id": 318,
+      "start": 1534.37,
+      "end": 1537.01,
+      "text": "There's a lot of people who play those already and this would be"
+    },
+    {
+      "id": 319,
+      "start": 1537.49,
+      "end": 1539.17,
+      "text": "um"
+    },
+    {
+      "id": 320,
+      "start": 1539.17,
+      "end": 1543.33,
+      "text": "Another cool advanced simulation game that's kind of web-3 focused and so like"
+    },
+    {
+      "id": 321,
+      "start": 1543.89,
+      "end": 1544.69,
+      "text": "uh"
+    },
+    {
+      "id": 322,
+      "start": 1544.69,
+      "end": 1546.69,
+      "text": "You know a blockchain"
+    },
+    {
+      "id": 323,
+      "start": 1547.17,
+      "end": 1552.77,
+      "text": "Focused game that's not actually on the blockchain, but dealing with blockchain topics. I think it could be pretty successful"
+    },
+    {
+      "id": 324,
+      "start": 1553.41,
+      "end": 1555.68,
+      "text": "um"
+    },
+    {
+      "id": 325,
+      "start": 1555.68,
+      "end": 1560.0,
+      "text": "I think everybody the past couple weeks has been freaking out about this paper that came out where"
+    },
+    {
+      "id": 326,
+      "start": 1560.56,
+      "end": 1566.24,
+      "text": "Some researchers took chat GPT agents and they put them on the little town and they had a um"
+    },
+    {
+      "id": 327,
+      "start": 1566.96,
+      "end": 1570.32,
+      "text": "They threw a birthday party for one of the other agents and"
+    },
+    {
+      "id": 328,
+      "start": 1571.28,
+      "end": 1575.76,
+      "text": "Um, people are like very excited about that and that seems like very table stakes for me like"
+    },
+    {
+      "id": 329,
+      "start": 1575.76,
+      "end": 1582.24,
+      "text": "Oh, I was I was surprised I guess is what I should say is like people were like that excited about these agents planning birthday parties"
+    },
+    {
+      "id": 330,
+      "start": 1582.64,
+      "end": 1587.36,
+      "text": "I think like if you could give someone the ability to come in and play out their fantasy of like"
+    },
+    {
+      "id": 331,
+      "start": 1587.84,
+      "end": 1595.04,
+      "text": "I'm you know the number one contributor to a DAO or like I'm a super smart DAO investor or like I'm an incredible"
+    },
+    {
+      "id": 332,
+      "start": 1595.2,
+      "end": 1598.48,
+      "text": "Delegator. I know just who to give my tokens to to make things happen"
+    },
+    {
+      "id": 333,
+      "start": 1599.12,
+      "end": 1600.08,
+      "text": "um"
+    },
+    {
+      "id": 334,
+      "start": 1600.16,
+      "end": 1603.04,
+      "text": "I think that there's a way to monetize that um"
+    },
+    {
+      "id": 335,
+      "start": 1604.83,
+      "end": 1606.35,
+      "text": "yeah um well"
+    },
+    {
+      "id": 336,
+      "start": 1606.35,
+      "end": 1608.51,
+      "text": "I think I"
+    },
+    {
+      "id": 337,
+      "start": 1608.51,
+      "end": 1613.07,
+      "text": "I think that um you know what comes to mind for me is uh when i was a kid we used to watch this show"
+    },
+    {
+      "id": 338,
+      "start": 1613.71,
+      "end": 1619.07,
+      "text": "It was called battle bots and it was just like people who had built different robots so they would fight each other um"
+    },
+    {
+      "id": 339,
+      "start": 1619.87,
+      "end": 1621.71,
+      "text": "And and i'm almost imagining like"
+    },
+    {
+      "id": 340,
+      "start": 1622.43,
+      "end": 1627.31,
+      "text": "The entertainment value of of having people fight in the DAO governance forum"
+    },
+    {
+      "id": 341,
+      "start": 1627.71,
+      "end": 1628.51,
+      "text": "uh"
+    },
+    {
+      "id": 342,
+      "start": 1628.51,
+      "end": 1631.23,
+      "text": "And they're just like battle bots but for DAO governance"
+    },
+    {
+      "id": 343,
+      "start": 1631.31,
+      "end": 1638.27,
+      "text": "I think would be all like interesting in my like a motive effective like my friends are fighting in the forum is is way different than like"
+    },
+    {
+      "id": 344,
+      "start": 1638.67,
+      "end": 1643.07,
+      "text": "You know something I'm emotionally detached who is like oh look at the meta of this DAO governance bat"
+    },
+    {
+      "id": 345,
+      "start": 1643.47,
+      "end": 1644.59,
+      "text": "uh"
+    },
+    {
+      "id": 346,
+      "start": 1644.59,
+      "end": 1647.79,
+      "text": "Like bot bot battle that's happening in the governance forum"
+    },
+    {
+      "id": 347,
+      "start": 1647.79,
+      "end": 1654.43,
+      "text": "There's almost like an entertainment monetization or entertainment shelling point there like if people are joining into look at"
+    },
+    {
+      "id": 348,
+      "start": 1655.68,
+      "end": 1660.08,
+      "text": "Agent birthday parties then i'm sure the governance forum well"
+    },
+    {
+      "id": 349,
+      "start": 1660.16,
+      "end": 1667.76,
+      "text": "Yeah, they'll be into like corporate rating and all the weird stuff these agents that do once they get going vampire attacks and other chains"
+    },
+    {
+      "id": 350,
+      "start": 1667.76,
+      "end": 1671.2,
+      "text": "like i think that would be be fun to watch and um"
+    },
+    {
+      "id": 351,
+      "start": 1671.76,
+      "end": 1677.28,
+      "text": "You know these models run had lists your you know in python you're just running a step and it's out putting some data"
+    },
+    {
+      "id": 352,
+      "start": 1677.68,
+      "end": 1683.52,
+      "text": "And you can visualize that data with like network graphs and different kinds of visualizations um"
+    },
+    {
+      "id": 353,
+      "start": 1684.58,
+      "end": 1688.18,
+      "text": "But some kind of like visual on top some sims kind of thing"
+    },
+    {
+      "id": 354,
+      "start": 1688.26,
+      "end": 1690.02,
+      "text": "I think it can make money that way"
+    },
+    {
+      "id": 355,
+      "start": 1690.02,
+      "end": 1691.62,
+      "text": "Obviously just like"
+    },
+    {
+      "id": 356,
+      "start": 1691.62,
+      "end": 1696.26,
+      "text": "What I learn and others learn who are like heavy users of a product like this"
+    },
+    {
+      "id": 357,
+      "start": 1696.26,
+      "end": 1699.86,
+      "text": "I think they'll very quickly start to have um an intuition"
+    },
+    {
+      "id": 358,
+      "start": 1700.34,
+      "end": 1705.46,
+      "text": "backed by you know synthetic data perhaps backed by you know real world data as well"
+    },
+    {
+      "id": 359,
+      "start": 1706.02,
+      "end": 1708.02,
+      "text": "Into what works um"
+    },
+    {
+      "id": 360,
+      "start": 1708.5,
+      "end": 1710.5,
+      "text": "And I think people like that will become"
+    },
+    {
+      "id": 361,
+      "start": 1711.06,
+      "end": 1717.7,
+      "text": "You know valuable Dow members a like this tool should let you on a personal level go into a Dow set it up"
+    },
+    {
+      "id": 362,
+      "start": 1718.1,
+      "end": 1722.82,
+      "text": "Model a change that you want to make and come to that Dow with some evidence that says like"
+    },
+    {
+      "id": 363,
+      "start": 1722.82,
+      "end": 1727.3,
+      "text": "Hey, we should make this change because when I run it through the models in all these different scenarios"
+    },
+    {
+      "id": 364,
+      "start": 1727.3,
+      "end": 1731.86,
+      "text": "It shows us all doubling our money. I think you'll get more votes for something like that"
+    },
+    {
+      "id": 365,
+      "start": 1731.94,
+      "end": 1736.26,
+      "text": "So on a personal level like I guess I could use it to just make my own"
+    },
+    {
+      "id": 366,
+      "start": 1736.82,
+      "end": 1740.58,
+      "text": "Dow investing like really sharp and try to monetize it that way"
+    },
+    {
+      "id": 367,
+      "start": 1741.14,
+      "end": 1742.5,
+      "text": "um"
+    },
+    {
+      "id": 368,
+      "start": 1742.5,
+      "end": 1744.5,
+      "text": "But that seems"
+    },
+    {
+      "id": 369,
+      "start": 1744.5,
+      "end": 1746.5,
+      "text": "Not as fun as building stuff to me"
+    },
+    {
+      "id": 370,
+      "start": 1747.14,
+      "end": 1750.26,
+      "text": "um, yeah totally so I don't know do you have any thoughts what do you think?"
+    },
+    {
+      "id": 371,
+      "start": 1751.5,
+      "end": 1753.5,
+      "text": "I mean, I just think that there's this is"
+    },
+    {
+      "id": 372,
+      "start": 1755.14,
+      "end": 1758.82,
+      "text": "You know, just such an interesting and novel and important design space"
+    },
+    {
+      "id": 373,
+      "start": 1758.82,
+      "end": 1764.66,
+      "text": "I think that there's many implications in past that uh that this could go down to but I mean for me"
+    },
+    {
+      "id": 374,
+      "start": 1765.06,
+      "end": 1767.06,
+      "text": "You know one of I hope that"
+    },
+    {
+      "id": 375,
+      "start": 1767.06,
+      "end": 1769.94,
+      "text": "one of the results of of this podcast is that"
+    },
+    {
+      "id": 376,
+      "start": 1770.66,
+      "end": 1775.06,
+      "text": "uh, you know, we've got five thousand listeners between five and seven depending on the episode and"
+    },
+    {
+      "id": 377,
+      "start": 1775.22,
+      "end": 1778.18,
+      "text": "And I'm hopeful that like if it's just one percent of them check out your good hub"
+    },
+    {
+      "id": 378,
+      "start": 1778.26,
+      "end": 1783.54,
+      "text": "And they're like oh, I'd like to you know hook up with James in run a simulation against my Dow um"
+    },
+    {
+      "id": 379,
+      "start": 1784.26,
+      "end": 1786.26,
+      "text": "You you get more interesting"
+    },
+    {
+      "id": 380,
+      "start": 1787.25,
+      "end": 1791.25,
+      "text": "I think results partnering up with existing dials and helping them solve their problems"
+    },
+    {
+      "id": 381,
+      "start": 1791.25,
+      "end": 1795.41,
+      "text": "Then just sort of building this in the abstract, you know, this is such a wide design space"
+    },
+    {
+      "id": 382,
+      "start": 1795.41,
+      "end": 1801.25,
+      "text": "Maybe eventually it'll be generalizable to all Dow's but just like hooking up with existing dials and and helping them with their needs"
+    },
+    {
+      "id": 383,
+      "start": 1801.49,
+      "end": 1807.97,
+      "text": "I I think that'll get this to the next stage of maturity. I think that's right on I have been building in the wilderness a little bit"
+    },
+    {
+      "id": 384,
+      "start": 1808.05,
+      "end": 1814.05,
+      "text": "It is an abstraction right? I'm not an active member of a bunch of Dow's um"
+    },
+    {
+      "id": 385,
+      "start": 1814.85,
+      "end": 1819.33,
+      "text": "My friend who I spoke about the idea with who pointed out your tweet to me"
+    },
+    {
+      "id": 386,
+      "start": 1819.73,
+      "end": 1821.97,
+      "text": "He's uh, his name is dain luned"
+    },
+    {
+      "id": 387,
+      "start": 1822.05,
+      "end": 1826.69,
+      "text": "He was the Dow architect at alliance Dow and now I think he does like the um"
+    },
+    {
+      "id": 388,
+      "start": 1827.41,
+      "end": 1833.06,
+      "text": "Governing stuff for optimism, but he's not like on their board um and"
+    },
+    {
+      "id": 389,
+      "start": 1833.86,
+      "end": 1839.46,
+      "text": "He this was about a year ago now. We talked about it. He gave me a lot of insight into the Dow side of things"
+    },
+    {
+      "id": 390,
+      "start": 1839.78,
+      "end": 1843.94,
+      "text": "Then I took it and I've just been building and yes, I'm totally at the point now where I'm like"
+    },
+    {
+      "id": 391,
+      "start": 1844.66,
+      "end": 1851.62,
+      "text": "But what does this mean in terms of Dow's like what should I add even like the steps that the Dow is doing when I say like"
+    },
+    {
+      "id": 392,
+      "start": 1851.94,
+      "end": 1853.94,
+      "text": "It's you know redistributing"
+    },
+    {
+      "id": 393,
+      "start": 1854.34,
+      "end": 1861.06,
+      "text": "Tokens or it's doing buybacks or it's staking some of that stuff like I haven't sort of like an intellectual understanding"
+    },
+    {
+      "id": 394,
+      "start": 1861.06,
+      "end": 1866.02,
+      "text": "But I don't have any of the ground level like oh yeah, we we implemented staking here's what it was like"
+    },
+    {
+      "id": 395,
+      "start": 1866.42,
+      "end": 1870.02,
+      "text": "And that's the sort of stuff I would love if your community brought that to us and they're like"
+    },
+    {
+      "id": 396,
+      "start": 1870.02,
+      "end": 1874.66,
+      "text": "Oh, yeah, this step where you're planning on doing staking like here's these other few things you didn't even know about"
+    },
+    {
+      "id": 397,
+      "start": 1875.22,
+      "end": 1876.48,
+      "text": "um"
+    },
+    {
+      "id": 398,
+      "start": 1876.48,
+      "end": 1878.93,
+      "text": "That would be amazing"
+    },
+    {
+      "id": 399,
+      "start": 1878.93,
+      "end": 1882.05,
+      "text": "Yeah, for sure and and you know take that and you know"
+    },
+    {
+      "id": 400,
+      "start": 1882.05,
+      "end": 1889.49,
+      "text": "They're staking and then there's protocol upgrades and then there's I want to introduce quadratic funding to this community and see how it changes things"
+    },
+    {
+      "id": 401,
+      "start": 1889.97,
+      "end": 1896.37,
+      "text": "I think there's a lot of opportunity for people who are building Dow tooling to come here and hook in and say hey in"
+    },
+    {
+      "id": 402,
+      "start": 1896.53,
+      "end": 1898.85,
+      "text": "100 different simulations our tool"
+    },
+    {
+      "id": 403,
+      "start": 1898.85,
+      "end": 1904.13,
+      "text": "Increases the coordination carrying capacity and the token price in the Dow 97% of the time or something like that"
+    },
+    {
+      "id": 404,
+      "start": 1904.13,
+      "end": 1906.77,
+      "text": "There's that's a biotic right there for that right"
+    },
+    {
+      "id": 405,
+      "start": 1906.77,
+      "end": 1909.01,
+      "text": "There's nothing to tell you whether a decision you're making"
+    },
+    {
+      "id": 406,
+      "start": 1909.65,
+      "end": 1912.37,
+      "text": "You know, and I don't know if we'll get to good or bad totally"
+    },
+    {
+      "id": 407,
+      "start": 1912.37,
+      "end": 1917.73,
+      "text": "But just like what any of the implications of it are and I have the sense that that is valuable"
+    },
+    {
+      "id": 408,
+      "start": 1917.73,
+      "end": 1920.53,
+      "text": "That's why I thought about the idea. That's why when I heard"
+    },
+    {
+      "id": 409,
+      "start": 1921.41,
+      "end": 1923.41,
+      "text": "You post about it. I wanted to get in touch"
+    },
+    {
+      "id": 410,
+      "start": 1924.29,
+      "end": 1926.29,
+      "text": "I'm you know, I'm not a Dow"
+    },
+    {
+      "id": 411,
+      "start": 1928.13,
+      "end": 1931.17,
+      "text": "owner or anything member I guess that would be better"
+    },
+    {
+      "id": 412,
+      "start": 1932.13,
+      "end": 1933.17,
+      "text": "um"
+    },
+    {
+      "id": 413,
+      "start": 1933.17,
+      "end": 1940.21,
+      "text": "Actively right now, so I don't actually know and yeah, there's a certain point where like I need to talk to users on that point is now"
+    },
+    {
+      "id": 414,
+      "start": 1940.53,
+      "end": 1943.25,
+      "text": "So it's exciting when you say monetizing it one"
+    },
+    {
+      "id": 415,
+      "start": 1944.59,
+      "end": 1946.98,
+      "text": "uh"
+    },
+    {
+      "id": 416,
+      "start": 1946.98,
+      "end": 1948.58,
+      "text": "Okay, I don't know if there's a good or bad idea"
+    },
+    {
+      "id": 417,
+      "start": 1948.58,
+      "end": 1952.58,
+      "text": "But what if like some part of the model was like on chain and like you know"
+    },
+    {
+      "id": 418,
+      "start": 1953.3,
+      "end": 1957.94,
+      "text": "I guess I'm thinking more of like if you were going to do kind of like a pay per use thing or something"
+    },
+    {
+      "id": 419,
+      "start": 1958.58,
+      "end": 1963.94,
+      "text": "Maybe it would be interesting to like you could deploy this model on your own blockchain or something like it could"
+    },
+    {
+      "id": 420,
+      "start": 1964.5,
+      "end": 1966.24,
+      "text": "uh"
+    },
+    {
+      "id": 421,
+      "start": 1966.24,
+      "end": 1969.12,
+      "text": "It depends how much information people want to reveal about their own stuff"
+    },
+    {
+      "id": 422,
+      "start": 1969.12,
+      "end": 1974.56,
+      "text": "Maybe do you ask you to zk so people are revealing you know private company info, but um"
+    },
+    {
+      "id": 423,
+      "start": 1975.79,
+      "end": 1980.27,
+      "text": "Yeah, as far as like what I want to run it as a software as a service or a game"
+    },
+    {
+      "id": 424,
+      "start": 1981.07,
+      "end": 1986.27,
+      "text": "It's totally unclear software as a service seems hard and like on chain to me"
+    },
+    {
+      "id": 425,
+      "start": 1986.75,
+      "end": 1992.19,
+      "text": "Um, but that was just something I had an idea that came through my head. I thought I should throw out there while we're talking"
+    },
+    {
+      "id": 426,
+      "start": 1993.15,
+      "end": 1995.47,
+      "text": "Totally yeah, yeah, I mean, I guess there's the whole"
+    },
+    {
+      "id": 427,
+      "start": 1996.03,
+      "end": 2000.59,
+      "text": "You know, you open source the code so that people can develop on top of it and the network of that is valuable"
+    },
+    {
+      "id": 428,
+      "start": 2000.67,
+      "end": 2003.87,
+      "text": "But then you sell us ass uh tool that's"
+    },
+    {
+      "id": 429,
+      "start": 2005.07,
+      "end": 2008.51,
+      "text": "Uh link to it, but you know, it's me. They're the hard part of this. I'll probably just"
+    },
+    {
+      "id": 430,
+      "start": 2009.23,
+      "end": 2013.15,
+      "text": "I've got a passing experience running AI agents is just that they"
+    },
+    {
+      "id": 431,
+      "start": 2013.87,
+      "end": 2017.79,
+      "text": "consume a lot of compute power and so if you can extract away the need to"
+    },
+    {
+      "id": 432,
+      "start": 2018.11,
+      "end": 2021.63,
+      "text": "Spend a bunch of cloud servers behind a sass offering. I think people will pay for that"
+    },
+    {
+      "id": 433,
+      "start": 2022.19,
+      "end": 2025.07,
+      "text": "But um, you know, it depends on what we're talking about here"
+    },
+    {
+      "id": 434,
+      "start": 2025.07,
+      "end": 2027.87,
+      "text": "We're going to simulate the whole web3 ecosystem or just a dow"
+    },
+    {
+      "id": 435,
+      "start": 2028.67,
+      "end": 2033.71,
+      "text": "Within that and depends on whether or not my feature creep of trying to get you to simulate all of web3"
+    },
+    {
+      "id": 436,
+      "start": 2034.11,
+      "end": 2036.67,
+      "text": "Uh, mix it into the the code base or not"
+    },
+    {
+      "id": 437,
+      "start": 2037.39,
+      "end": 2040.11,
+      "text": "I think we're going to have to at least make the next agent"
+    },
+    {
+      "id": 438,
+      "start": 2040.11,
+      "end": 2043.07,
+      "text": "I think we'll make as a forum like I find it very interesting"
+    },
+    {
+      "id": 439,
+      "start": 2043.31,
+      "end": 2046.67,
+      "text": "Most of the communication that happens in these dows is"
+    },
+    {
+      "id": 440,
+      "start": 2047.39,
+      "end": 2051.79,
+      "text": "forum-based, you know text-based sort of threaded conversations"
+    },
+    {
+      "id": 441,
+      "start": 2052.35,
+      "end": 2053.78,
+      "text": "um"
+    },
+    {
+      "id": 442,
+      "start": 2053.78,
+      "end": 2057.3,
+      "text": "And so yeah, I don't know if we'll need to model all of everything"
+    },
+    {
+      "id": 443,
+      "start": 2057.3,
+      "end": 2063.78,
+      "text": "But we probably will need a fairly robust model of a chat forum which I find kind of interesting and um"
+    },
+    {
+      "id": 444,
+      "start": 2065.42,
+      "end": 2070.06,
+      "text": "Not I have no idea what will happen once you let a bunch of bots bots chat with each other there"
+    },
+    {
+      "id": 445,
+      "start": 2070.06,
+      "end": 2072.22,
+      "text": "But it'll be fun and I like the idea that like"
+    },
+    {
+      "id": 446,
+      "start": 2072.62,
+      "end": 2073.58,
+      "text": "Um"
+    },
+    {
+      "id": 447,
+      "start": 2073.58,
+      "end": 2076.62,
+      "text": "We'll be able to like pull the headlines of their posts or whatever"
+    },
+    {
+      "id": 448,
+      "start": 2076.62,
+      "end": 2082.46,
+      "text": "You know, you'll see that they're getting you know 200 replies on a post like we should change to quadratic funding or like"
+    },
+    {
+      "id": 449,
+      "start": 2083.02,
+      "end": 2089.02,
+      "text": "Who knows how the bots are going to write maybe they'll be like quadratic funding a bunch of emojis like I'm hoping they're weird and cool"
+    },
+    {
+      "id": 450,
+      "start": 2090.05,
+      "end": 2094.37,
+      "text": "Yeah, I'm sure they'll be weird uh, we'll see if they're cool if they learn learn coolness"
+    },
+    {
+      "id": 451,
+      "start": 2094.93,
+      "end": 2099.73,
+      "text": "But um, yeah, you know you get into some questions about how would you model a social space"
+    },
+    {
+      "id": 452,
+      "start": 2100.61,
+      "end": 2104.61,
+      "text": "For a digital like you know that just having been involved in Dallas"
+    },
+    {
+      "id": 453,
+      "start": 2104.61,
+      "end": 2107.57,
+      "text": "I think that the governance forum is where the formal governance happens"
+    },
+    {
+      "id": 454,
+      "start": 2107.97,
+      "end": 2112.37,
+      "text": "But um, I learned this thing about organizations. Oh man like 15 years ago"
+    },
+    {
+      "id": 455,
+      "start": 2112.61,
+      "end": 2116.69,
+      "text": "One of my mentors taught me that like hey the real culture of this is not within the meetings"
+    },
+    {
+      "id": 456,
+      "start": 2117.01,
+      "end": 2121.73,
+      "text": "It's in the hallways and like in the half-yarders and what people actually say to each other when they're not afraid of"
+    },
+    {
+      "id": 457,
+      "start": 2122.37,
+      "end": 2127.25,
+      "text": "Reprisals from the boss and that makes me think oh well the Dallas confide in the governance forum"
+    },
+    {
+      "id": 458,
+      "start": 2127.33,
+      "end": 2133.33,
+      "text": "But what are they discord DMing to each other and what are they tweeting about uh, and so simulating those social spaces is"
+    },
+    {
+      "id": 459,
+      "start": 2134.29,
+      "end": 2137.73,
+      "text": "Uh, it seems complicated, but with LLM's it actually feels newly"
+    },
+    {
+      "id": 460,
+      "start": 2138.45,
+      "end": 2139.25,
+      "text": "newly easier"
+    },
+    {
+      "id": 461,
+      "start": 2139.25,
+      "end": 2143.09,
+      "text": "Yeah, the past even when we first started talking a couple months ago things hadn't"
+    },
+    {
+      "id": 462,
+      "start": 2143.49,
+      "end": 2149.89,
+      "text": "Tipped quite as far as they have now that does seem more approachable to model um the sort of softer"
+    },
+    {
+      "id": 463,
+      "start": 2150.45,
+      "end": 2157.09,
+      "text": "Social spaces like you're yeah, I'm like well, I guess I got to add a Twitter simulation and like a little bit of a discord"
+    },
+    {
+      "id": 464,
+      "start": 2158.26,
+      "end": 2159.22,
+      "text": "um"
+    },
+    {
+      "id": 465,
+      "start": 2159.22,
+      "end": 2165.06,
+      "text": "Yeah, I think that there's a lot of um, there's a lot of possibilities here and I'm curious to see how the"
+    },
+    {
+      "id": 466,
+      "start": 2166.18,
+      "end": 2169.46,
+      "text": "How the project evolves and so there's big ambitions of"
+    },
+    {
+      "id": 467,
+      "start": 2170.1,
+      "end": 2175.46,
+      "text": "Of being able to simulate lots of different things in web 3 before we actually put our tokens in our time into them"
+    },
+    {
+      "id": 468,
+      "start": 2175.86,
+      "end": 2182.58,
+      "text": "But I think starting small and hopefully you pick up a couple interesting relationships with Dallas from this episode"
+    },
+    {
+      "id": 469,
+      "start": 2183.3,
+      "end": 2186.5,
+      "text": "Is is where I see this going and then would love to have you back"
+    },
+    {
+      "id": 470,
+      "start": 2186.58,
+      "end": 2192.02,
+      "text": "I mean if this if this continues going then would love to have you back in q3 or q4 and just see how"
+    },
+    {
+      "id": 471,
+      "start": 2192.34,
+      "end": 2197.78,
+      "text": "Al simulation has evolved as a category that that you're creating so"
+    },
+    {
+      "id": 472,
+      "start": 2198.82,
+      "end": 2204.74,
+      "text": "Creating a category by stomach drop a little bit when you say that but like it is cool like um"
+    },
+    {
+      "id": 473,
+      "start": 2205.68,
+      "end": 2209.12,
+      "text": "I have really appreciate you starting to accumulate"
+    },
+    {
+      "id": 474,
+      "start": 2210.0,
+      "end": 2212.0,
+      "text": "Gravity towards this idea"
+    },
+    {
+      "id": 475,
+      "start": 2212.48,
+      "end": 2214.72,
+      "text": "It's an idea I had had before but it was kind of floating"
+    },
+    {
+      "id": 476,
+      "start": 2215.52,
+      "end": 2220.88,
+      "text": "Once you grounded it and and now there's code now we have this discussion"
+    },
+    {
+      "id": 477,
+      "start": 2220.88,
+      "end": 2223.92,
+      "text": "There's something for people to look at. I'm super excited about"
+    },
+    {
+      "id": 478,
+      "start": 2225.2,
+      "end": 2229.2,
+      "text": "Where it's gonna go. I had a couple quick questions for you. Maybe just around"
+    },
+    {
+      "id": 479,
+      "start": 2230.4,
+      "end": 2236.72,
+      "text": "What are like the features you would want to see in a dial simulator or do you have like specific questions?"
+    },
+    {
+      "id": 480,
+      "start": 2237.2,
+      "end": 2242.32,
+      "text": "You would want to answer or do you just imagine like the coolness of getting there and playing around with it?"
+    },
+    {
+      "id": 481,
+      "start": 2242.88,
+      "end": 2244.02,
+      "text": "um"
+    },
+    {
+      "id": 482,
+      "start": 2244.02,
+      "end": 2248.5,
+      "text": "Yeah, what what can I do for you? So next time we meet uh, it's yeah something that you'd like"
+    },
+    {
+      "id": 483,
+      "start": 2249.68,
+      "end": 2250.96,
+      "text": "Well um"
+    },
+    {
+      "id": 484,
+      "start": 2250.96,
+      "end": 2257.12,
+      "text": "I'm no longer super involved in any dals since I've disaffiliated from get coin dial leadership, but um"
+    },
+    {
+      "id": 485,
+      "start": 2257.6,
+      "end": 2259.68,
+      "text": "I mean, I do think that"
+    },
+    {
+      "id": 486,
+      "start": 2259.68,
+      "end": 2267.12,
+      "text": "The the problem space that I see around Dallas is what are the initial starting conditions that we want to configure our"
+    },
+    {
+      "id": 487,
+      "start": 2267.12,
+      "end": 2271.2,
+      "text": "Dow and there's like proposal thresholds of you need it at least x amount of tokens to vote"
+    },
+    {
+      "id": 488,
+      "start": 2272.08,
+      "end": 2274.96,
+      "text": "Or sorry x amount of tokens to submit a proposal"
+    },
+    {
+      "id": 489,
+      "start": 2275.68,
+      "end": 2280.96,
+      "text": "Y amount of tokens um in in order for a proposal to pass"
+    },
+    {
+      "id": 490,
+      "start": 2281.28,
+      "end": 2285.84,
+      "text": "You know, there's just basic questions about what are the starting conditions of my Dow that people have that"
+    },
+    {
+      "id": 491,
+      "start": 2285.84,
+      "end": 2290.64,
+      "text": "I think if you can uh inform them on then I think that you add a lot of value"
+    },
+    {
+      "id": 492,
+      "start": 2291.2,
+      "end": 2295.68,
+      "text": "I know a lot of people in the Dow tooling space that are saying if you integrate my tool"
+    },
+    {
+      "id": 493,
+      "start": 2296.24,
+      "end": 2301.6,
+      "text": "x it will help your Dow Y in some way and if you could prove that out in a simulation"
+    },
+    {
+      "id": 494,
+      "start": 2301.84,
+      "end": 2304.64,
+      "text": "I think that that gets really interesting um"
+    },
+    {
+      "id": 495,
+      "start": 2305.68,
+      "end": 2311.39,
+      "text": "And then there's just like the pure uh, there's the pure entertainment aspect of"
+    },
+    {
+      "id": 496,
+      "start": 2311.39,
+      "end": 2316.99,
+      "text": "Of having the battle bots and having them fight in the forums and see how the meta of that evolves and and um"
+    },
+    {
+      "id": 497,
+      "start": 2317.55,
+      "end": 2321.07,
+      "text": "So I think that there's those are some interesting threads threads for you to pull"
+    },
+    {
+      "id": 498,
+      "start": 2321.71,
+      "end": 2326.27,
+      "text": "Yeah, thanks um that is the plan right now is to to pursue it"
+    },
+    {
+      "id": 499,
+      "start": 2326.35,
+      "end": 2331.95,
+      "text": "I do work full time as a senior technical artist right now. I'm contracting with meta"
+    },
+    {
+      "id": 500,
+      "start": 2332.51,
+      "end": 2335.39,
+      "text": "I also work on on chain games with some friends of mine"
+    },
+    {
+      "id": 501,
+      "start": 2335.39,
+      "end": 2339.63,
+      "text": "We have a company we're building on chain games we should talk about that separately at some point"
+    },
+    {
+      "id": 502,
+      "start": 2339.63,
+      "end": 2343.47,
+      "text": "But that's been a real wild ride um as well, but I am um"
+    },
+    {
+      "id": 503,
+      "start": 2344.46,
+      "end": 2349.58,
+      "text": "Going so my interest in this came from a class that I took from the Santa Fe institute"
+    },
+    {
+      "id": 504,
+      "start": 2350.46,
+      "end": 2356.3,
+      "text": "They're this cool complexity think tank based in Santa Fe and I took their agent-based modeling course"
+    },
+    {
+      "id": 505,
+      "start": 2356.86,
+      "end": 2361.34,
+      "text": "Um, they're the ones they have a tutorial on this python mesa language"
+    },
+    {
+      "id": 506,
+      "start": 2361.42,
+      "end": 2364.14,
+      "text": "So that's how I got exposed like oh, I can build this stuff in python"
+    },
+    {
+      "id": 507,
+      "start": 2364.62,
+      "end": 2370.3,
+      "text": "But I'm actually going out there for a conference on collective intelligence in June"
+    },
+    {
+      "id": 508,
+      "start": 2370.94,
+      "end": 2374.38,
+      "text": "And I'm going to talk about not like officially talk about the Dow simulator"
+    },
+    {
+      "id": 509,
+      "start": 2374.38,
+      "end": 2378.78,
+      "text": "But be able to discuss that with people who get agent-based modeling"
+    },
+    {
+      "id": 510,
+      "start": 2379.18,
+      "end": 2382.54,
+      "text": "And get this complexity stuff and I'm just really excited to"
+    },
+    {
+      "id": 511,
+      "start": 2383.26,
+      "end": 2385.12,
+      "text": "um"
+    },
+    {
+      "id": 512,
+      "start": 2385.12,
+      "end": 2392.56,
+      "text": "To to bring that there and get feedback and sort of um a lot of people are are very focused um"
+    },
+    {
+      "id": 513,
+      "start": 2393.44,
+      "end": 2396.08,
+      "text": "Organizations are something people have studied for a long time"
+    },
+    {
+      "id": 514,
+      "start": 2396.72,
+      "end": 2401.68,
+      "text": "But there's very little research into these digital versions of them yet. And I think like"
+    },
+    {
+      "id": 515,
+      "start": 2402.56,
+      "end": 2404.24,
+      "text": "The Dow the a"
+    },
+    {
+      "id": 516,
+      "start": 2405.12,
+      "end": 2409.44,
+      "text": "Came across as autonomous and I think that put a lot of people off in the beginning"
+    },
+    {
+      "id": 517,
+      "start": 2409.92,
+      "end": 2414.96,
+      "text": "Um from the Dow it seemed like this thing that was totally sort of separate from people that it was just all code"
+    },
+    {
+      "id": 518,
+      "start": 2415.44,
+      "end": 2423.12,
+      "text": "But um now I think the important part is the decentralized aspect of that if you think about this as like a decentralized company"
+    },
+    {
+      "id": 519,
+      "start": 2423.6,
+      "end": 2428.4,
+      "text": "You look at what happened during the pandemic how things have spread out how everybody's worked from home now"
+    },
+    {
+      "id": 520,
+      "start": 2428.8,
+      "end": 2432.48,
+      "text": "I think it's like in inevitability that most of this stuff will"
+    },
+    {
+      "id": 521,
+      "start": 2433.39,
+      "end": 2435.39,
+      "text": "Call it five years ten twenty years"
+    },
+    {
+      "id": 522,
+      "start": 2435.79,
+      "end": 2440.51,
+      "text": "Most organizations will be decentralized and so you know, we have a chance to"
+    },
+    {
+      "id": 523,
+      "start": 2441.23,
+      "end": 2446.59,
+      "text": "Learn about this stuff now and sort of get it out of the gate on a good foot with some tools where we can like"
+    },
+    {
+      "id": 524,
+      "start": 2447.66,
+      "end": 2452.62,
+      "text": "Perhaps avoid shooting ourselves in the foot as badly as we have with some other"
+    },
+    {
+      "id": 525,
+      "start": 2453.34,
+      "end": 2455.34,
+      "text": "Public goods. Yes"
+    },
+    {
+      "id": 526,
+      "start": 2455.34,
+      "end": 2457.26,
+      "text": "Yeah, I feel that um"
+    },
+    {
+      "id": 527,
+      "start": 2457.26,
+      "end": 2461.18,
+      "text": "And it was a great point about the precedence of of this opportunity in this moment"
+    },
+    {
+      "id": 528,
+      "start": 2461.26,
+      "end": 2464.94,
+      "text": "But um, I'm also just in it for the nerd snake of uh"
+    },
+    {
+      "id": 529,
+      "start": 2465.74,
+      "end": 2468.94,
+      "text": "Of experimenting with how AI and Dallas fit together in"
+    },
+    {
+      "id": 530,
+      "start": 2469.5,
+      "end": 2474.78,
+      "text": "Tidley native organizations. It's it's just a fun design space to explore and and this has got all the things"
+    },
+    {
+      "id": 531,
+      "start": 2474.94,
+      "end": 2478.3,
+      "text": "It's got agents. It's got LLMs"
+    },
+    {
+      "id": 532,
+      "start": 2478.3,
+      "end": 2485.34,
+      "text": "You've got procedural content generation large language models. There's like so much fun stuff in here"
+    },
+    {
+      "id": 533,
+      "start": 2485.58,
+      "end": 2488.62,
+      "text": "You throw it all together in the Python soup and um"
+    },
+    {
+      "id": 534,
+      "start": 2489.34,
+      "end": 2492.22,
+      "text": "And I think we're gonna we're gonna see some really interesting things"
+    },
+    {
+      "id": 535,
+      "start": 2492.46,
+      "end": 2497.98,
+      "text": "So yeah, if you're out there and listening and you have a a dow and you'd like to model it or help me um"
+    },
+    {
+      "id": 536,
+      "start": 2498.78,
+      "end": 2500.78,
+      "text": "Figure that out. I would love for you to reach out"
+    },
+    {
+      "id": 537,
+      "start": 2502.14,
+      "end": 2504.14,
+      "text": "Yeah, make some comments on the get up"
+    },
+    {
+      "id": 538,
+      "start": 2504.91,
+      "end": 2511.95,
+      "text": "Absolutely, so click the link in the show notes for the GitHub repo and get in touch with James"
+    },
+    {
+      "id": 539,
+      "start": 2512.19,
+      "end": 2516.54,
+      "text": "Is there anything I didn't ask that you want to tell us James before we wrap um"
+    },
+    {
+      "id": 540,
+      "start": 2518.02,
+      "end": 2519.7,
+      "text": "On your"
+    },
+    {
+      "id": 541,
+      "start": 2519.7,
+      "end": 2527.94,
+      "text": "On the prep sheet you had a question a couple questions one was about a period of time um that I found interesting like a"
+    },
+    {
+      "id": 542,
+      "start": 2528.98,
+      "end": 2530.5,
+      "text": "History kind of thing"
+    },
+    {
+      "id": 543,
+      "start": 2530.5,
+      "end": 2535.38,
+      "text": "Silicon Valley history maybe and I hadn't experienced recently where I kind of got plugged into that that I just"
+    },
+    {
+      "id": 544,
+      "start": 2536.1,
+      "end": 2538.1,
+      "text": "Thought might be kind of interesting to share"
+    },
+    {
+      "id": 545,
+      "start": 2538.34,
+      "end": 2539.78,
+      "text": "I make"
+    },
+    {
+      "id": 546,
+      "start": 2539.78,
+      "end": 2546.26,
+      "text": "Interactive art and I got reached out to buy an older interactive artist his name is Larry Cuba"
+    },
+    {
+      "id": 547,
+      "start": 2546.98,
+      "end": 2552.18,
+      "text": "Um, I went to grad school at UC Santa Cruz. He is affiliated with them and he um"
+    },
+    {
+      "id": 548,
+      "start": 2552.98,
+      "end": 2560.66,
+      "text": "On the original Star Wars in 1977 made the visuals for the death star that you see when they're like showing it to the rebel pilots"
+    },
+    {
+      "id": 549,
+      "start": 2561.22,
+      "end": 2563.22,
+      "text": "And he did that at the time"
+    },
+    {
+      "id": 550,
+      "start": 2563.78,
+      "end": 2569.3,
+      "text": "All real time he made this like crazy thing where he could like turn the knobs and it would like change"
+    },
+    {
+      "id": 551,
+      "start": 2569.7,
+      "end": 2573.7,
+      "text": "Like definitely kind of like over engineered for what they ended up using in the movie"
+    },
+    {
+      "id": 552,
+      "start": 2573.78,
+      "end": 2575.78,
+      "text": "but but just really incredible and"
+    },
+    {
+      "id": 553,
+      "start": 2576.66,
+      "end": 2582.98,
+      "text": "He's been making procedural art since then instead of going like the VFX route. He kind of stayed the more um, you know"
+    },
+    {
+      "id": 554,
+      "start": 2583.54,
+      "end": 2585.06,
+      "text": "fine art route"
+    },
+    {
+      "id": 555,
+      "start": 2585.06,
+      "end": 2590.26,
+      "text": "And he is working on some new like procedural content systems and"
+    },
+    {
+      "id": 556,
+      "start": 2591.06,
+      "end": 2600.34,
+      "text": "Needed some help and it was really cool to plug into an older generation of programmer and engineer and to just realize like"
+    },
+    {
+      "id": 557,
+      "start": 2600.58,
+      "end": 2604.1,
+      "text": "Here's a person like a very talented programmer and coder"
+    },
+    {
+      "id": 558,
+      "start": 2604.42,
+      "end": 2608.74,
+      "text": "They just don't know the latest tricks or they don't know the syntax for blender"
+    },
+    {
+      "id": 559,
+      "start": 2609.54,
+      "end": 2612.82,
+      "text": "And so he had been blocked for a couple of years on making stuff"
+    },
+    {
+      "id": 560,
+      "start": 2612.9,
+      "end": 2617.94,
+      "text": "And so I've been able to work with him get him unblocked get him building stuff again"
+    },
+    {
+      "id": 561,
+      "start": 2618.82,
+      "end": 2624.34,
+      "text": "Which is for me as an artist and software engineer. I've found very satisfying and it"
+    },
+    {
+      "id": 562,
+      "start": 2625.14,
+      "end": 2630.34,
+      "text": "Plugged me into this history in an interesting way, which is the Larry Cuba"
+    },
+    {
+      "id": 563,
+      "start": 2630.9,
+      "end": 2636.1,
+      "text": "One of his mentors was this guy John Whitney senior was like one of the first people to ever do"
+    },
+    {
+      "id": 564,
+      "start": 2636.58,
+      "end": 2638.58,
+      "text": "Animation on a computer"
+    },
+    {
+      "id": 565,
+      "start": 2638.58,
+      "end": 2640.02,
+      "text": "So like now all of a sudden"
+    },
+    {
+      "id": 566,
+      "start": 2640.02,
+      "end": 2645.54,
+      "text": "I'm like two steps away from the first computer animation and I find that like very exciting"
+    },
+    {
+      "id": 567,
+      "start": 2645.54,
+      "end": 2650.34,
+      "text": "So if your readers have a chance look him up Larry Cuba. He's got super cool art"
+    },
+    {
+      "id": 568,
+      "start": 2650.74,
+      "end": 2654.66,
+      "text": "Um, that's maybe like a little different than the u-nex bell lab stuff"
+    },
+    {
+      "id": 569,
+      "start": 2654.74,
+      "end": 2660.74,
+      "text": "But he was so creative that they like asked him to do this stuff on this huge movie and then um"
+    },
+    {
+      "id": 570,
+      "start": 2661.54,
+      "end": 2667.7,
+      "text": "Uh, I just think like taking it instead of the VFX direction in the fine art direction was a really interesting choice"
+    },
+    {
+      "id": 571,
+      "start": 2668.02,
+      "end": 2671.86,
+      "text": "Um, and it's led him to some very different places than people you know"
+    },
+    {
+      "id": 572,
+      "start": 2671.94,
+      "end": 2678.18,
+      "text": "We could have gone and started ILM I guess are gone gone there after it so ILM being industrial light magic"
+    },
+    {
+      "id": 573,
+      "start": 2678.58,
+      "end": 2683.46,
+      "text": "Industrial light magic. Yeah, which sort of came out of that a lot of people ended up going and working on that"
+    },
+    {
+      "id": 574,
+      "start": 2684.26,
+      "end": 2688.74,
+      "text": "So so yeah, that was just a neat experience getting plugged into the history of things and"
+    },
+    {
+      "id": 575,
+      "start": 2689.62,
+      "end": 2691.22,
+      "text": "Um, it happened very quickly, you know"
+    },
+    {
+      "id": 576,
+      "start": 2691.22,
+      "end": 2697.06,
+      "text": "I went from having no connection to like the history of computer art to like being a couple steps away from the beginning"
+    },
+    {
+      "id": 577,
+      "start": 2697.62,
+      "end": 2702.42,
+      "text": "And I'll just encourage people be available post about your skills and what you do like"
+    },
+    {
+      "id": 578,
+      "start": 2703.46,
+      "end": 2705.94,
+      "text": "He reached out to me because on my LinkedIn"
+    },
+    {
+      "id": 579,
+      "start": 2706.02,
+      "end": 2709.06,
+      "text": "I said I do some Python and Blender and"
+    },
+    {
+      "id": 580,
+      "start": 2709.78,
+      "end": 2713.14,
+      "text": "Another professor from there saw and and those things don't happen"
+    },
+    {
+      "id": 581,
+      "start": 2713.54,
+      "end": 2720.34,
+      "text": "You know luck luck comes and greets the prepared, I guess so um, you know, we had a discussion of we had a discussion about"
+    },
+    {
+      "id": 582,
+      "start": 2722.34,
+      "end": 2727.62,
+      "text": "Before the call started about whether to I was like a little nervous about like should I open sources coach?"
+    },
+    {
+      "id": 583,
+      "start": 2727.7,
+      "end": 2732.34,
+      "text": "Should I not and actually like as we've gone through this conversation? I think I made the right decision like"
+    },
+    {
+      "id": 584,
+      "start": 2732.9,
+      "end": 2740.02,
+      "text": "You know the prep is there. It's out in the open now. The light is on. Let's hope it brings the right fireflies, you know"
+    },
+    {
+      "id": 585,
+      "start": 2740.66,
+      "end": 2743.22,
+      "text": "Yeah, well if you're listening to this. This is the uh"
+    },
+    {
+      "id": 586,
+      "start": 2744.18,
+      "end": 2749.06,
+      "text": "This is us dropping the story of of James open sourcing the code five minutes before recording"
+    },
+    {
+      "id": 587,
+      "start": 2749.78,
+      "end": 2752.5,
+      "text": "So they could like it send people to it in the show notes"
+    },
+    {
+      "id": 588,
+      "start": 2752.5,
+      "end": 2760.02,
+      "text": "So um you yoloed you gave it to the universe and I hope that the universe universe reciprocates with code contributions and"
+    },
+    {
+      "id": 589,
+      "start": 2760.42,
+      "end": 2765.86,
+      "text": "Mamedic love and hopefully people hire you to simulate your DAO as well, but uh, well, thank you"
+    },
+    {
+      "id": 590,
+      "start": 2766.9,
+      "end": 2770.82,
+      "text": "And yeah and plus one on I mean, I think we're all standing on the shoulders of giants here"
+    },
+    {
+      "id": 591,
+      "start": 2771.3,
+      "end": 2778.9,
+      "text": "I think about the for for fathers of open source software and how they beat Microsoft in the 90s to make every"
+    },
+    {
+      "id": 592,
+      "start": 2779.38,
+      "end": 2782.98,
+      "text": "Web server open source and you know, it could have gone so differently"
+    },
+    {
+      "id": 593,
+      "start": 2782.98,
+      "end": 2784.5,
+      "text": "We could all be using like"
+    },
+    {
+      "id": 594,
+      "start": 2784.5,
+      "end": 2787.94,
+      "text": "Clippy phones and clippy coins instead of Bitcoin and stuff like that"
+    },
+    {
+      "id": 595,
+      "start": 2788.02,
+      "end": 2793.22,
+      "text": "So we're all standing on the shoulders of giants and I take inspiration from the lineage of people that have inspired me"
+    },
+    {
+      "id": 596,
+      "start": 2793.86,
+      "end": 2799.86,
+      "text": "As it seems like you do as well, and well, maybe and maybe in another generation people people will be like"
+    },
+    {
+      "id": 597,
+      "start": 2800.02,
+      "end": 2803.62,
+      "text": "Well, I got connected to James the first author of a DAO AI framework"
+    },
+    {
+      "id": 598,
+      "start": 2803.78,
+      "end": 2810.34,
+      "text": "So that's all we can hope for gonna make me blush um yeah, and I have to say like I'm a I'm a product of public goods"
+    },
+    {
+      "id": 599,
+      "start": 2810.58,
+      "end": 2814.9,
+      "text": "I'm the first one for my family to go to college um my undergrad was private"
+    },
+    {
+      "id": 600,
+      "start": 2814.98,
+      "end": 2819.06,
+      "text": "But I went to public graduate school. I learned you know, I learned everything"
+    },
+    {
+      "id": 601,
+      "start": 2819.06,
+      "end": 2823.14,
+      "text": "I know from the internet from I never met my dad. So like how to tie a tie"
+    },
+    {
+      "id": 602,
+      "start": 2824.34,
+      "end": 2828.34,
+      "text": "To how to code so I'm a big believer um"
+    },
+    {
+      "id": 603,
+      "start": 2829.46,
+      "end": 2833.86,
+      "text": "In information and it's desire to be free and and all the cool things people can do with that"
+    },
+    {
+      "id": 604,
+      "start": 2834.74,
+      "end": 2841.46,
+      "text": "So thanks for the opportunity to come and um tell people about what I'm working on and hopefully uh draw some new folks in"
+    },
+    {
+      "id": 605,
+      "start": 2842.18,
+      "end": 2844.98,
+      "text": "Yeah, well, thanks for returning the meme of AI DAO simulators"
+    },
+    {
+      "id": 606,
+      "start": 2845.78,
+      "end": 2848.02,
+      "text": "From just a meme into actual codes excited"
+    },
+    {
+      "id": 607,
+      "start": 2848.02,
+      "end": 2849.78,
+      "text": "So what I mean you put it out there and sometimes"
+    },
+    {
+      "id": 608,
+      "start": 2850.42,
+      "end": 2853.06,
+      "text": "Sometimes the world just makes it happen. It's cool. Yeah"
+    },
+    {
+      "id": 609,
+      "start": 2853.62,
+      "end": 2857.3,
+      "text": "Well, that's a great place to end it James. Thanks for thanks for joining and keep up the great work"
+    },
+    {
+      "id": 610,
+      "start": 2858.27,
+      "end": 2860.27,
+      "text": "Peace. Thank you Kevin. Peace move"
+    }
+  ]
+}
