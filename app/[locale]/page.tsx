@@ -544,11 +544,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     <a className="hub-link" href={artifactHref(section.filePath)}>
                       {m.atlas?.sourceBriefMarkdown ?? 'Source Brief Markdown'}
                     </a>
-                    {section.hasRelatedPaper && (
-                      <a className="hub-link" href={artifactHref(section.relatedPaperPath)}>
-                        {m.atlas?.relatedPaperPdf ?? 'Related Paper PDF'}
-                      </a>
-                    )}
                   </div>
                   {section.takeaways.length > 0 && (
                     <details className="mt-3 rounded-lg border border-[var(--border-subtle)] bg-white p-3">
