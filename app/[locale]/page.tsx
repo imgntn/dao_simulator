@@ -540,11 +540,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                       {section.words} {m.atlas?.wordsCount ?? 'words'}
                     </span>
                   </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <a className="hub-link" href={artifactHref(section.filePath)}>
-                      {m.atlas?.sourceBriefMarkdown ?? 'Source Brief Markdown'}
-                    </a>
-                  </div>
                   {section.takeaways.length > 0 && (
                     <details className="mt-3 rounded-lg border border-[var(--border-subtle)] bg-white p-3">
                       <summary className="cursor-pointer text-base font-semibold text-[var(--text-heading)]">
