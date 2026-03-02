@@ -7,7 +7,7 @@ const defaultLocale = 'en';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip API routes, Next.js internals, and static assets
+  // Skip API routes, Next.js internals, and static/public assets
   if (
     pathname.startsWith('/api/') ||
     pathname.startsWith('/_next/') ||
@@ -15,7 +15,8 @@ export function middleware(request: NextRequest) {
     pathname === '/icon.svg' ||
     pathname.startsWith('/apple-icon') ||
     pathname === '/robots.txt' ||
-    pathname === '/sitemap.xml'
+    pathname === '/sitemap.xml' ||
+    /\.\w{2,5}$/.test(pathname) // skip files with extensions (.json, .mp3, .png, etc.)
   ) {
     return NextResponse.next();
   }
