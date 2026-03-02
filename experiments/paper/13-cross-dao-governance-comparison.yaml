@@ -1,0 +1,90 @@
+name: Cross-DAO Governance Comparison
+description: >
+  Runs all 14 calibrated DAO digital twins under 4 alternative governance rules
+  (majority, quadratic, conviction, tokenquorum) to identify universal vs
+  DAO-specific governance effects. Each DAO uses its calibrated agent distribution,
+  forum dynamics, and oracle parameters so that governance rule changes are the
+  only independent variable. The grid produces 56 configurations (14 DAOs x 4 rules)
+  enabling both within-DAO and across-DAO comparisons.
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - paper
+  - governance
+  - cross-dao
+  - counterfactual
+
+baseConfig:
+  template: compound
+  overrides:
+    learning_enabled: false
+    forum_enabled: true
+    forum_influence_weight: 0.3
+    oracle_type: calibrated_gbm
+    calibration_use_real_governance: false
+
+sweep:
+  grid:
+    - parameter: calibration_dao_id
+      values:
+        - aave
+        - uniswap
+        - compound
+        - arbitrum
+        - optimism
+        - ens
+        - lido
+        - gitcoin
+        - maker_sky
+        - curve
+        - nouns
+        - balancer
+        - dydx
+        - sushiswap
+    - parameter: governance_rule
+      values:
+        - majority
+        - quadratic
+        - conviction
+        - tokenquorum
+
+execution:
+  runsPerConfig: 5
+  stepsPerRun: 720
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 2
+
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "% of resolved proposals that passed"
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+    description: Average token-weighted voter participation
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+    description: Treasury balance at simulation end
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who ever voted"
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% token holders"
+  - name: Governance Activity Index
+    type: builtin
+    builtin: governance_activity_index
+    description: Composite index of governance health and activity
+
+output:
+  directory: results/experiments/13-cross-dao-governance-comparison
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeManifest: true

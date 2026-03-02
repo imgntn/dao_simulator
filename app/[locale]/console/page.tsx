@@ -222,7 +222,68 @@ export default async function ConsolePage({
         </section>
       )}
 
-      <section className="mt-10 grid gap-6 md:grid-cols-2">
+      {/* Quick Actions — preset experiment launchers */}
+      <section className="mt-10 rounded-lg border border-[var(--border-default)] bg-[var(--surface-panel)] p-5 space-y-4">
+        <h2 className="text-lg font-semibold text-[var(--text-heading)]">Quick Actions</h2>
+        <p className="text-sm text-[var(--text-body)]">
+          Pre-configured experiment launchers for common research tasks.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Calibration Validation */}
+          <form action="/api/research" method="post">
+            <input type="hidden" name="action" value="run" />
+            <input type="hidden" name="configPath" value="experiments/paper/10-calibration-validation.yaml" />
+            <button
+              type="submit"
+              className="w-full rounded-lg border border-[var(--border-default)] p-4 text-left transition hover:border-[var(--accent-teal)] hover:bg-[var(--accent-teal)]/5"
+            >
+              <div className="text-sm font-semibold text-[var(--text-heading)]">Calibration Validation</div>
+              <div className="mt-1 text-xs text-[var(--text-muted)]">All 14 DAOs vs historical data</div>
+            </button>
+          </form>
+
+          {/* Cross-DAO Comparison */}
+          <form action="/api/research" method="post">
+            <input type="hidden" name="action" value="run" />
+            <input type="hidden" name="configPath" value="experiments/paper/13-cross-dao-governance-comparison.yaml" />
+            <button
+              type="submit"
+              className="w-full rounded-lg border border-[var(--border-default)] p-4 text-left transition hover:border-[var(--accent-teal)] hover:bg-[var(--accent-teal)]/5"
+            >
+              <div className="text-sm font-semibold text-[var(--text-heading)]">Cross-DAO Governance</div>
+              <div className="mt-1 text-xs text-[var(--text-muted)]">14 DAOs x 4 rules (56 configs)</div>
+            </button>
+          </form>
+
+          {/* Advanced Mechanisms */}
+          <form action="/api/research" method="post">
+            <input type="hidden" name="action" value="run" />
+            <input type="hidden" name="configPath" value="experiments/paper/11-advanced-mechanisms.yaml" />
+            <button
+              type="submit"
+              className="w-full rounded-lg border border-[var(--border-default)] p-4 text-left transition hover:border-[var(--accent-teal)] hover:bg-[var(--accent-teal)]/5"
+            >
+              <div className="text-sm font-semibold text-[var(--text-heading)]">Advanced Mechanisms</div>
+              <div className="mt-1 text-xs text-[var(--text-muted)]">IRV, futarchy, liquid delegation</div>
+            </button>
+          </form>
+
+          {/* LLM Agent Reasoning */}
+          <form action="/api/research" method="post">
+            <input type="hidden" name="action" value="run" />
+            <input type="hidden" name="configPath" value="experiments/paper/12-llm-agent-reasoning.yaml" />
+            <button
+              type="submit"
+              className="w-full rounded-lg border border-[var(--border-default)] p-4 text-left transition hover:border-[var(--accent-teal)] hover:bg-[var(--accent-teal)]/5"
+            >
+              <div className="text-sm font-semibold text-[var(--text-heading)]">LLM Agent Reasoning</div>
+              <div className="mt-1 text-xs text-[var(--text-muted)]">Disabled / hybrid / all-LLM modes</div>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <section className="mt-6 grid gap-6 md:grid-cols-2">
         {/* Run Experiments */}
         <div className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-panel)] p-5 space-y-4">
           <h2 className="text-lg font-semibold text-[var(--text-heading)]">

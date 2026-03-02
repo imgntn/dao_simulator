@@ -192,6 +192,10 @@ export const BRIEF_CROSS_LINKS: Record<string, { id: string; reason: string }[]>
     { id: 'rq1', reason: 'LLM agents change participation dynamics' },
     { id: 'rq2', reason: 'AI voters affect power concentration' },
   ],
+  rq7: [
+    { id: 'rq1', reason: 'Alternative rules change quorum dynamics' },
+    { id: 'rq2', reason: 'Governance rule choice shapes capture resistance' },
+  ],
 };
 
 // ---------------------------------------------------------------------------
@@ -246,6 +250,14 @@ export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
     whyItMatters: '52-run experiment. Hybrid AI governance preserves participation; pure-LLM mode does not.',
     filePath: 'paper/plain-english/rq6-llm-agent-reasoning.md',
     relatedPaperPath: 'paper_llm/main.pdf',
+  },
+  {
+    id: 'rq7',
+    title: 'Counterfactual Governance',
+    question: 'What if your DAO used a different governance rule?',
+    whyItMatters: 'We ran 5 real DAOs under alternative voting rules. One mechanism consistently destroys governance.',
+    filePath: 'paper/plain-english/rq7-counterfactual-governance.md',
+    relatedPaperPath: 'paper/rq7/main.pdf',
   },
 ];
 
@@ -549,6 +561,49 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
         term: 'Cache Performance',
         definition:
           'How often LLM voting decisions can be served from a stored cache instead of recomputing. High cache hit rates reduce latency and cost without sacrificing decision quality.',
+      },
+    ],
+  },
+  rq7: {
+    summary:
+      'We ran 5 calibrated DAO digital twins under alternative governance rules. Conviction voting destroyed pass rates universally (0\u201320% vs 47\u2013100% baseline), while majority, quadratic, and token-quorum were largely interchangeable.',
+    whatWeFound: [
+      { headline: 'Conviction Voting Universally Collapsed', detail: 'Across all 5 DAOs, conviction voting dropped pass rates to 0\u201320%. Lido went from 100% to 0%. Compound from 81% to 0%. The mechanism\'s continuous-signal design doesn\'t survive discrete proposal cycles.' },
+      { headline: 'Most Rules Are Interchangeable', detail: 'Majority, quadratic, token-quorum, and bicameral produced identical scores within each DAO. The governance rule matters less than the participation and opposition dynamics underneath.' },
+      { headline: 'Quadratic Gave Nouns a Small Edge', detail: 'Only Nouns \u2014 the most contentious DAO (45% baseline pass rate) \u2014 showed measurable improvement under quadratic voting: +2.9% score, +0.6% pass rate, +8.3% throughput.' },
+    ],
+    whatToDo: [
+      'Avoid conviction voting for discrete proposal governance \u2014 it\'s designed for continuous funding allocation, not binary yes/no votes.',
+      'Don\'t expect a governance rule swap to fix participation or pass-rate problems. Those are driven by agent behavior, not vote-counting mechanics.',
+      'For contentious DAOs (low pass rate), quadratic voting offers marginal improvement by compressing whale power.',
+    ],
+    evidence: 'Counterfactual experiments across 5 DAOs (Optimism, Uniswap, Compound, Nouns, Lido) \u00d7 4 alternative rules, 5 episodes each at 720 steps.',
+    confidence: 'Strong for the conviction finding (consistent across all 5 DAOs). Moderate for rule-interchangeability (5 episodes gives limited statistical power for subtle effects).',
+    keyTerms: [
+      {
+        term: 'Counterfactual Experiment',
+        definition:
+          'A simulation that asks "what if?" by running a calibrated DAO model under a governance rule it doesn\'t actually use, keeping all other parameters identical.',
+      },
+      {
+        term: 'Conviction Voting',
+        definition:
+          'A mechanism where voters signal support continuously over time, and proposals pass when accumulated conviction exceeds a threshold. Designed for budget allocation, not discrete proposals.',
+      },
+      {
+        term: 'Digital Twin',
+        definition:
+          'A simulation model calibrated to match a real DAO\'s historical behavior \u2014 participation rates, pass rates, voter concentration, price dynamics, and forum activity.',
+      },
+      {
+        term: 'Governance Rule',
+        definition:
+          'The vote-counting mechanism that determines whether a proposal passes. Examples: majority (>50% yes), quorum (minimum turnout), quadratic (square-root vote weighting), conviction (time-accumulated support).',
+      },
+      {
+        term: 'Baseline',
+        definition:
+          'The DAO\'s real-world governance rule, used as the control condition. Alternatives are compared against this baseline to measure the counterfactual effect.',
       },
     ],
   },
