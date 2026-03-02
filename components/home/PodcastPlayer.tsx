@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { PodcastTranscript, type TranscriptData, type TranscriptSegment, type TranscriptChapter } from './PodcastTranscript';
 import { AudioControls } from './AudioControls';
+import { useLocale } from '@/lib/i18n/locale-context';
 
 const PODCAST_SRC = 'https://pub-5203989d31a346d288f97e48812ab2e0.r2.dev/greenpill-123-james-pollack.mp3';
 
@@ -12,10 +13,15 @@ function PodcastPlayerInner() {
   const [segments, setSegments] = useState<TranscriptSegment[] | null>(null);
   const [chapters, setChapters] = useState<TranscriptChapter[]>([]);
   const searchParams = useSearchParams();
+  const { locale } = useLocale();
 
-  // Load transcript JSON
+  // Load locale-specific transcript JSON (fall back to English)
   useEffect(() => {
-    fetch('/podcast-transcript.json')
+    const file = locale === 'en'
+      ? '/podcast-transcript.json'
+      : `/podcast-transcript-${locale}.json`;
+
+    fetch(file)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
@@ -25,9 +31,20 @@ function PodcastPlayerInner() {
         setChapters(data.chapters ?? []);
       })
       .catch(() => {
-        // Transcript unavailable — audio still works, no crash
+        // Fall back to English transcript if locale version unavailable
+        if (locale !== 'en') {
+          fetch('/podcast-transcript.json')
+            .then((res) => res.ok ? res.json() : null)
+            .then((data: TranscriptData | null) => {
+              if (data) {
+                setSegments(data.segments);
+                setChapters(data.chapters ?? []);
+              }
+            })
+            .catch(() => {});
+        }
       });
-  }, []);
+  }, [locale]);
 
   // Deep link: ?t= param seeks to timestamp on load
   useEffect(() => {
