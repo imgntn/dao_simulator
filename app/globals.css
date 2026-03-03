@@ -150,6 +150,17 @@ html.theme-dark body {
   background: rgba(2, 6, 23, 0.75);
 }
 
+/* Dark theme overrides for inline SVG chart colors */
+.theme-dark svg text[fill="#1d1a14"] { fill: var(--text-heading); }
+.theme-dark svg text[fill="#3f5163"] { fill: var(--text-body); }
+.theme-dark svg text[fill="#5c7083"] { fill: var(--text-muted); }
+.theme-dark svg text[fill="#7b5f3d"] { fill: var(--accent-gold); }
+.theme-dark svg text[fill="#8f6f42"] { fill: var(--accent-gold); }
+.theme-dark svg text[fill="#1f7a8c"] { fill: var(--accent-teal); }
+.theme-dark svg line[stroke="#d8cab4"] { stroke: var(--border-default); }
+.theme-dark svg [fill="#d8cab4"] { fill: var(--border-default); }
+.theme-dark svg [fill="#fff"] { fill: var(--surface-warm); }
+
 /* ═══════════════════════════════════════════════════════════════════════════
    Focus styles — global :focus-visible ring
    ═══════════════════════════════════════════════════════════════════════════ */
