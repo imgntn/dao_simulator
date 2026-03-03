@@ -82,9 +82,11 @@ function PodcastPlayerInner() {
 
       <AudioControls audioRef={audioRef} />
 
+      {/* Transcript hidden — content not yet accurate
       {segments && segments.length > 0 && (
         <PodcastTranscript audioRef={audioRef} segments={segments} chapters={chapters} />
       )}
+      */}
     </div>
   );
 }
