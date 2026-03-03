@@ -2,131 +2,131 @@
   "chapters": [
     {
       "id": 0,
-      "title": "¿Qué pasa, Coordinación? Hoy en el pod, estamos...",
+      "title": "What is up, Coordination? On the pod today, we are...",
       "startTime": 5.23,
       "endTime": 235.37,
       "startSegmentId": 0,
-      "endSegmentId": 49
+      "endSegmentId": 47
     },
     {
       "id": 1,
-      "title": "gestión de tesorería, fijación de precios de tokens, ingresos...",
+      "title": "treasury management, token pricing, revenue...",
       "startTime": 235.37,
       "endTime": 342.22,
-      "startSegmentId": 50,
-      "endSegmentId": 99
+      "startSegmentId": 48,
+      "endSegmentId": 71
     },
     {
       "id": 2,
-      "title": "Así que escribí esta publicación y tú y yo nos conectamos y...",
+      "title": "So I wrote this post, and you and I got connected, and...",
       "startTime": 342.22,
       "endTime": 699.76,
-      "startSegmentId": 100,
-      "endSegmentId": 158
+      "startSegmentId": 72,
+      "endSegmentId": 130
     },
     {
       "id": 3,
-      "title": "comenzó con una especie de clase base de, como, un DAO...",
+      "title": "started with just sort of a base class of, like, a DAO...",
       "startTime": 701.26,
       "endTime": 786.73,
-      "startSegmentId": 159,
-      "endSegmentId": 176
+      "startSegmentId": 131,
+      "endSegmentId": 147
     },
     {
       "id": 4,
-      "title": "y también tengo validadores uh árbitros delegadores...",
+      "title": "and i also have validators uh arbitrators delegators...",
       "startTime": 788.92,
       "endTime": 942.57,
-      "startSegmentId": 177,
-      "endSegmentId": 204
+      "startSegmentId": 148,
+      "endSegmentId": 174
     },
     {
       "id": 5,
-      "title": "IA generativa para crear esos comportamientos que podrías...",
+      "title": "generative ai for creating those behaviors you could...",
       "startTime": 945.91,
       "endTime": 1139.91,
-      "startSegmentId": 205,
-      "endSegmentId": 254
+      "startSegmentId": 175,
+      "endSegmentId": 224
     },
     {
       "id": 6,
-      "title": "Lo que dice Balaji en el libro Network State es que...",
+      "title": "What does Balaji say in the Network State book is that...",
       "startTime": 1139.91,
       "endTime": 1306.23,
-      "startSegmentId": 255,
-      "endSegmentId": 304
+      "startSegmentId": 225,
+      "endSegmentId": 274
     },
     {
       "id": 7,
-      "title": "Con suficiente potencia informática, estoy seguro de que alguien...",
+      "title": "With enough computing power, I'm sure that someone...",
       "startTime": 1306.23,
       "endTime": 1475.4,
-      "startSegmentId": 305,
-      "endSegmentId": 354
+      "startSegmentId": 275,
+      "endSegmentId": 324
     },
     {
       "id": 8,
-      "title": "Entonces la monetización es interesante con un proyecto como...",
+      "title": "So monetization is interesting with a project like...",
       "startTime": 1475.4,
       "endTime": 1652.55,
-      "startSegmentId": 355,
-      "endSegmentId": 404
+      "startSegmentId": 325,
+      "endSegmentId": 374
     },
     {
       "id": 9,
-      "title": "Por ejemplo, si la gente se une para mirar al agente...",
+      "title": "Like, if people are joining in to look at agent...",
       "startTime": 1652.55,
       "endTime": 1837.28,
-      "startSegmentId": 405,
-      "endSegmentId": 454
+      "startSegmentId": 375,
+      "endSegmentId": 424
     },
     {
       "id": 10,
-      "title": "Me dio mucha información sobre el lado DAO de...",
+      "title": "He gave me a lot of the insight into the DAO side of...",
       "startTime": 1837.28,
       "endTime": 1993.43,
-      "startSegmentId": 455,
-      "endSegmentId": 504
+      "startSegmentId": 425,
+      "endSegmentId": 474
     },
     {
       "id": 11,
-      "title": "Sí.",
+      "title": "Yeah.",
       "startTime": 1993.43,
       "endTime": 2147.77,
-      "startSegmentId": 505,
-      "endSegmentId": 554
+      "startSegmentId": 475,
+      "endSegmentId": 524
     },
     {
       "id": 12,
-      "title": "Sí.",
+      "title": "Yeah.",
       "startTime": 2147.77,
       "endTime": 2362.78,
-      "startSegmentId": 555,
-      "endSegmentId": 604
+      "startSegmentId": 525,
+      "endSegmentId": 574
     },
     {
       "id": 13,
-      "title": "oh, puedo construir estas cosas en Python. Pero en realidad estoy...",
+      "title": "oh, I can build this stuff in Python. But I'm actually...",
       "startTime": 2362.84,
       "endTime": 2515.25,
-      "startSegmentId": 605,
-      "endSegmentId": 631
+      "startSegmentId": 575,
+      "endSegmentId": 601
     },
     {
       "id": 14,
-      "title": "En tu hoja de preparación tenías una pregunta, una...",
+      "title": "On your, on the prep sheet, you had a question, a...",
       "startTime": 2517.9,
       "endTime": 2660.64,
-      "startSegmentId": 632,
-      "endSegmentId": 654
+      "startSegmentId": 602,
+      "endSegmentId": 624
     },
     {
       "id": 15,
-      "title": "Simplemente pienso en tomarlo en lugar del VFX...",
+      "title": "I just think like taking it instead of the VFX...",
       "startTime": 2662.2,
       "endTime": 2860.45,
-      "startSegmentId": 655,
-      "endSegmentId": 693
+      "startSegmentId": 625,
+      "endSegmentId": 663
     }
   ],
   "segments": [
@@ -148,7 +148,7 @@
       "id": 2,
       "start": 15.75,
       "end": 20.83,
-      "text": "Mi invitado de hoy es James Palak, artista y programador, ha trabajado para varias startups.",
+      "text": "Mi invitado de hoy es James Pollack, artista y programador, ha trabajado para varias startups.",
       "speaker": "Kevin Owocki"
     },
     {
@@ -274,7 +274,7 @@
       "id": 20,
       "start": 111.93,
       "end": 113.15,
-      "text": "James Polak. Disfrutar.",
+      "text": "James Pollack. Disfrutar.",
       "speaker": "Kevin Owocki"
     },
     {
@@ -434,4555 +434,4345 @@
     {
       "id": 43,
       "start": 205.25,
-      "end": 209.35,
+      "end": 211.1,
       "text": "la simulación. Entonces hay muchos pasos de tiempo. Y cada paso, estos agentes hacen diferente",
       "speaker": "Kevin Owocki"
     },
     {
       "id": 44,
-      "start": 209.35,
-      "end": 210.93,
-      "text": "decisiones sobre lo que deben hacer. Y luego pasas un tiempo a través de la simulación. Entonces hay un",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 45,
-      "start": 210.93,
-      "end": 211.09,
-      "text": "un montón de pasos de tiempo. Y en cada paso, estos agentes toman decisiones diferentes sobre lo que deben hacer.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 46,
       "start": 211.09,
       "end": 216.23,
       "text": "basado en las reglas que les has dado. Y la situación en la que he decidido poner estos",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 47,
+      "id": 45,
       "start": 216.23,
       "end": 223.85,
       "text": "Los personajes es que todos son miembros de una organización autónoma descentralizada. Entonces el DAO",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 48,
+      "id": 46,
       "start": 223.85,
       "end": 228.93,
       "text": "Los miembros están representados por diferentes clases de agentes. Y pueden crear propuestas, votar",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 49,
+      "id": 47,
       "start": 228.93,
       "end": 235.37,
       "text": "ellos, invertir en proyectos, un montón de otras actividades. Y la simulación también incorpora",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 50,
+      "id": 48,
       "start": 235.37,
       "end": 240.91,
       "text": "gestión de tesorería, fijación de precios de tokens, distribución de ingresos, tipo de cosas que suceden en el",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 51,
+      "id": 49,
       "start": 240.93,
       "end": 246.97,
       "text": "suceder en el nivel del propio DAO, que es un agente, y luego en el nivel del",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 52,
+      "id": 50,
       "start": 246.97,
       "end": 252.15,
       "text": "Miembros individuales de DAO que son sus inversores, delegados y desarrolladores.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 53,
+      "id": 51,
       "start": 252.15,
       "end": 253.5,
       "text": "Sí.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 54,
+      "id": 52,
       "start": 253.5,
       "end": 258.66,
       "text": "Creo que es genial y no puedo esperar para desplegar el espacio de posibilidades aquí.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 55,
+      "id": 53,
       "start": 258.66,
       "end": 265.42,
       "text": "Así que creo que la razón por la que tú y yo nos conectamos fue que el 2 de febrero,",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 56,
+      "id": 54,
       "start": 265.42,
       "end": 271.14,
       "text": "escribió esta publicación en el Foro de la comunidad Supermodular sobre una simulación de gobernanza de IA DAO",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 57,
+      "id": 55,
       "start": 271.28,
       "end": 274.98,
       "text": "kit de herramientas, al que llamé DAG, solo para intentar memearlo.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 58,
+      "id": 56,
       "start": 274.98,
       "end": 279.72,
       "text": "Pero básicamente lo que escribí fue que podríamos crear un conjunto de herramientas AI DAO donde podría crear un",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 59,
+      "id": 57,
       "start": 279.72,
       "end": 284.94,
       "text": "cientos de IA diferentes, dales todas las fichas y configura cada IA ​​para maximizar sus saldos de fichas,",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 60,
+      "id": 58,
       "start": 284.94,
       "end": 289.84,
       "text": "darles un foro de gobernanza para discutir y dejarles votar sobre la instantánea y el conteo.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 61,
+      "id": 59,
       "start": 289.84,
       "end": 295.16,
       "text": "Y quiero ejecutar 10.000 DAO de IA diferentes con condiciones iniciales ligeramente diferentes.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 62,
+      "id": 60,
       "start": 295.16,
       "end": 299.38,
       "text": "y parámetros para los agentes, como si son amigables o conflictivos, y ver cómo esos",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 63,
+      "id": 61,
       "start": 299.38,
       "end": 301.28,
       "text": "Los DAO evolucionan de manera diferente.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 64,
+      "id": 62,
       "start": 301.28,
       "end": 305.28,
       "text": "Básicamente, estamos haciendo un barrido de parámetros en los marcos de gobernanza.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 65,
+      "id": 63,
       "start": 305.28,
       "end": 309.98,
       "text": "Y luego puedes empezar a introducir diferentes reglas de gobernanza, o tal vez introducir",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 66,
+      "id": 64,
       "start": 309.98,
       "end": 316.82,
       "text": "financiación cuadrática al DAO, y verá cómo eso afecta el comportamiento del agente.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 67,
+      "id": 65,
       "start": 316.82,
       "end": 321.46,
       "text": "Y una vez que haya realizado esta exploración de diferentes configuraciones, podrá encontrar una gobernanza óptima.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 68,
+      "id": 66,
       "start": 321.46,
       "end": 324.74,
       "text": "configuraciones en todo el espacio de diseño de la gobernanza.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 69,
+      "id": 67,
       "start": 324.74,
       "end": 330.68,
       "text": "Y para mí, esa es la idea interesante: que en lugar de que mis amigos tengan que discutir",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 70,
+      "id": 68,
       "start": 330.68,
       "end": 330.8,
       "text": "en el foro de gobernanza.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 71,
+      "id": 69,
       "start": 330.8,
       "end": 330.82,
       "text": "Sí.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 72,
-      "start": 330.82,
-      "end": 330.84,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 73,
-      "start": 330.84,
-      "end": 330.88,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 74,
-      "start": 330.88,
-      "end": 330.9,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 75,
-      "start": 330.9,
-      "end": 330.92,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 76,
-      "start": 330.92,
-      "end": 330.94,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 77,
-      "start": 330.94,
-      "end": 330.96,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 78,
-      "start": 330.96,
-      "end": 330.98,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 79,
-      "start": 330.98,
-      "end": 331.0,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 80,
-      "start": 331.0,
-      "end": 331.02,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 81,
-      "start": 331.02,
-      "end": 331.26,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 82,
-      "start": 331.28,
-      "end": 331.4,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 83,
-      "start": 331.4,
-      "end": 331.42,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 84,
-      "start": 331.42,
-      "end": 331.7,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 85,
-      "start": 331.7,
-      "end": 331.72,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 86,
-      "start": 331.72,
-      "end": 331.8,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 87,
-      "start": 331.8,
-      "end": 331.84,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 88,
-      "start": 331.84,
-      "end": 331.92,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 89,
-      "start": 331.92,
-      "end": 331.98,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 90,
-      "start": 331.98,
-      "end": 332.04,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 91,
-      "start": 332.04,
-      "end": 332.08,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 92,
-      "start": 332.08,
-      "end": 332.14,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 93,
-      "start": 332.14,
-      "end": 332.38,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 94,
-      "start": 332.38,
-      "end": 332.46,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 95,
-      "start": 332.46,
-      "end": 332.5,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 96,
-      "start": 332.5,
-      "end": 332.52,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 97,
-      "start": 332.52,
-      "end": 332.58,
-      "text": "Sí.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 98,
+      "id": 70,
       "start": 332.58,
       "end": 337.22,
       "text": "En su DAO, ¿qué pasaría si pudiéramos tener un grupo de IA simulando eso y luego encontrar el",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 99,
+      "id": 71,
       "start": 337.22,
       "end": 342.22,
       "text": "configuraciones de gobernanza óptimas para nuestros DAO humanos, en realidad configuran nuestros DAO humanos de esa manera.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 100,
+      "id": 72,
       "start": 342.22,
       "end": 348.8,
       "text": "Así que escribí esta publicación, y tú y yo nos conectamos y, a partir de ahí, nos volvimos un poco nerds.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 101,
+      "id": 73,
       "start": 349.6,
       "end": 355.28,
       "text": "Y supongo que esa es A, para darle al lector la historia de fondo de cómo nos conectamos, pero B,",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 102,
+      "id": 74,
       "start": 355.66,
       "end": 359.0,
       "text": "Simplemente este espacio de diseño me parece muy emocionante.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 103,
+      "id": 75,
       "start": 359.68,
       "end": 361.22,
       "text": "Y tal vez tendría curiosidad por...",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 104,
+      "id": 76,
       "start": 361.22,
       "end": 369.53,
       "text": "Vali, volvamos a ti. ¿Qué te entusiasmó de este espacio de diseño? Creo que tenia casi el mismo",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 105,
+      "id": 77,
       "start": 369.53,
       "end": 375.39,
       "text": "Lo mismo que usted, que es que en realidad hay muy pocos datos sobre este espacio y",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 106,
+      "id": 78,
       "start": 375.39,
       "end": 382.35,
       "text": "que generarlo requiere tiempo y dinero en la vida de personas reales. Y realizar experimentos en realidad",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 107,
+      "id": 79,
       "start": 382.35,
       "end": 391.71,
       "text": "Las personas en una DAO pueden ser muy dolorosas para esas personas. Y descubrir si cierto tipo",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 108,
+      "id": 80,
       "start": 391.71,
       "end": 398.55,
       "text": "del sistema de votación o sanciones o recompensas por comportarse de diferentes maneras dentro de la DAO o",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 109,
+      "id": 81,
       "start": 398.55,
       "end": 402.81,
       "text": "su estructura en sí, cuántos miembros, si tiene un token nativo, estas son cosas que",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 110,
+      "id": 82,
       "start": 402.81,
       "end": 410.13,
       "text": "No se cambian fácilmente, ¿verdad? Entonces, si desea probar cómo se ejecutaría su DAO con su propio token o",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 111,
+      "id": 83,
       "start": 410.13,
       "end": 412.33,
       "text": "No, eso es bastante difícil de hacer.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 112,
+      "id": 84,
       "start": 413.11,
       "end": 420.74,
       "text": "Entonces también creo que esta oportunidad de explorar ese espacio de diseño, me encanta que lo hayas llamado",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 113,
+      "id": 85,
       "start": 420.74,
       "end": 425.94,
       "text": "barrido de hiperparámetro, el término técnico en algunos de los Python que estoy usando se llama ejecución por lotes.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 114,
+      "id": 86,
       "start": 425.94,
       "end": 432.3,
       "text": "Pero absolutamente lo mismo. Quieres ver en la matriz de esta elección y esta elección que",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 115,
+      "id": 87,
       "start": 432.3,
       "end": 436.38,
       "text": "podrías hacer, ¿cómo funciona cuando eliges A y B? ¿Cómo funciona cuando eliges A y C?",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 116,
+      "id": 88,
       "start": 436.84,
       "end": 444.38,
       "text": "Así sucesivamente. Y creo que tal vez un poco diferente a ti,",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 117,
+      "id": 89,
       "start": 444.4,
       "end": 452.84,
       "text": "No estoy tan seguro de que podamos encontrar esos ideales platónicos perfectos de lo que debería ser un DAO.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 118,
+      "id": 90,
       "start": 452.84,
       "end": 462.54,
       "text": "ser. Creo que mucho de eso dependerá de cuáles sean tus objetivos particulares. Y eso es porque",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 119,
+      "id": 91,
       "start": 462.54,
       "end": 470.8,
       "text": "Los modelos basados ​​en agentes suelen ser una fuente para generar datos sintéticos. Así que estamos",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 120,
+      "id": 92,
       "start": 470.8,
       "end": 474.38,
       "text": "modelar un sistema. No es el sistema real. No va a ser, ya sabes, no va a ser un",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 121,
+      "id": 93,
       "start": 474.4,
       "end": 480.62,
       "text": "necesariamente tienen propiedades predictivas, pero es algo realmente divertido en lo que trabajar es como,",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 122,
+      "id": 94,
       "start": 480.62,
       "end": 487.08,
       "text": "¿Dónde pones el control deslizante en cuanto a cuán sintéticos son nuestros datos? Mencionaste tal vez",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 123,
+      "id": 95,
       "start": 487.08,
       "end": 493.58,
       "text": "permitir que sus agentes discutan cosas en un foro. Bueno, ¿modelas ese foro para que sea simplemente un sitio simple y",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 124,
+      "id": 96,
       "start": 493.72,
       "end": 498.0,
       "text": "¿Alguien dejó un comentario positivo o negativo? ¿Quizás podrías desarrollarlo más completamente para que el",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 125,
+      "id": 97,
       "start": 498.0,
       "end": 504.38,
       "text": "¿Los agentes pueden hablar entre sí con LLM? ¿O realmente lo conectas a un foro real?",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 126,
+      "id": 98,
       "start": 504.4,
       "end": 510.46,
       "text": "¿Y dejar que tus agentes hagan publicaciones e interactúen con personas reales? Creo que lo que decides hacer para eso.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 127,
+      "id": 99,
       "start": 510.46,
       "end": 518.56,
       "text": "Dependerá de cuáles sean tus objetivos. Pero es simplemente emocionante poder cambiar esas cosas. he",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 128,
+      "id": 100,
       "start": 518.56,
       "end": 525.38,
       "text": "He visto a DAO intentar hacer esto y la gente toma estas grandes decisiones con, ya sabes, cientos de millones.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 129,
+      "id": 101,
       "start": 525.38,
       "end": 533.66,
       "text": "de dólares bajo gestión sin casi ninguna idea de ello. Así que sólo espero, ya sabes, incluso si un",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 130,
+      "id": 102,
       "start": 533.66,
       "end": 534.96,
       "text": "herramienta como esta no es del todo,",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 131,
+      "id": 103,
       "start": 535.16,
       "end": 540.06,
       "text": "predictivo, espero que al menos le dé a la gente una idea y les ayude a tener una mejor",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 132,
+      "id": 104,
       "start": 540.06,
       "end": 546.8,
       "text": "Toma de decisiones. Sí, sí, totalmente. Quiero decir, puedo imaginar un futuro en el que, ya sabes, digamos que estoy",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 133,
+      "id": 105,
       "start": 546.8,
       "end": 555.08,
       "text": "sobre la gobernanza o el consejo de administración en DAO X. Me imagino un futuro en el que esta herramienta",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 134,
+      "id": 106,
       "start": 555.08,
       "end": 563.3,
       "text": "está disponible y puede ingerir los parámetros de la configuración del DAO y tal vez ingerir el",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 135,
+      "id": 107,
       "start": 563.3,
       "end": 564.84,
       "text": "publicaciones en el foro que han estado en el DAO.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 136,
+      "id": 108,
       "start": 565.16,
       "end": 572.08,
       "text": "Y eso establece las condiciones iniciales en el marco de gobernanza de DAO para que se localice en cualquier lugar.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 137,
+      "id": 109,
       "start": 572.08,
       "end": 578.56,
       "text": "Los valores y las normas culturales y la configuración de DAO X son. Y tal vez podrías, en lugar de barrer todo",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 138,
+      "id": 110,
       "start": 578.56,
       "end": 583.9,
       "text": "espacio de parámetros, podrías barrer el espacio a su alrededor y decir, ya sabes, qué pasaría si",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 139,
+      "id": 111,
       "start": 583.9,
       "end": 589.88,
       "text": "reducimos el umbral de nuestra propuesta a la mitad o si cambiamos nuestra cultura de modo que la gente fuera el 20%",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 140,
+      "id": 112,
       "start": 589.88,
       "end": 595.14,
       "text": "amigable o introdujimos financiación cuadrática o algo así. Para mí, ahí es donde llega",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 141,
+      "id": 113,
       "start": 595.16,
       "end": 600.4,
       "text": "realmente interesante. Y sí, ya sabes, tal vez no sea completamente predictivo, pero es una",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 142,
+      "id": 114,
       "start": 600.4,
       "end": 606.14,
       "text": "Una forma interesante de simular los cambios de gobernanza de DAO antes de que YOLO los haga realidad.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 143,
+      "id": 115,
       "start": 606.74,
       "end": 611.88,
       "text": "Bien. Creo que mencionas un gran punto de que podría haber dos usuarios diferentes o",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 144,
+      "id": 116,
       "start": 611.88,
       "end": 616.82,
       "text": "En diferentes ocasiones alguien podría estar intentando usar esto. Una es que tienes un DAO, existe, estás",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 145,
+      "id": 117,
       "start": 616.82,
       "end": 622.08,
       "text": "pensando en hacer un cambio. En ese caso, sí, es muy difícil cambiar el barco si",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 146,
+      "id": 118,
       "start": 622.08,
       "end": 625.14,
       "text": "ya está en marcha. Pero tal vez la gente que piensa en ello dice, oh, sí, voy a",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 147,
+      "id": 119,
       "start": 625.16,
       "end": 630.22,
       "text": "configurar un nuevo DAO. Creo que esa es una situación en la que todo el barrido de hiperparámetros sería",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 148,
+      "id": 120,
       "start": 630.22,
       "end": 639.67,
       "text": "bastante interesante. Sí, totalmente. Entonces, ¿puedes explicarnos lo que construiste? Entonces, para los oyentes,",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 149,
+      "id": 121,
       "start": 639.91,
       "end": 646.35,
       "text": "Si haces clic en GitHub, puedes ver este código que James ha creado en torno al DAO.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 150,
+      "id": 122,
       "start": 646.35,
       "end": 651.99,
       "text": "marco de simulación. Y estoy mirando el archivo Léame ahora. Así que llévanos a profundizar en lo que construiste.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 151,
+      "id": 123,
       "start": 651.99,
       "end": 655.39,
       "text": "Con seguridad. Entonces, los modelos basados ​​en agentes,",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 152,
+      "id": 124,
       "start": 655.61,
       "end": 661.11,
       "text": "Puedes construir en una variedad de marcos. El que había usado anteriormente se llamaba NetLogo.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 153,
+      "id": 125,
       "start": 661.37,
       "end": 666.97,
       "text": "Esto es algo importante que la gente aprende cuando inician modelos basados ​​en agentes. Pero se basa en",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 154,
+      "id": 126,
       "start": 666.97,
       "end": 672.69,
       "text": "la JVM en Java. Así que no es tan interoperable como quisieras. Entonces, para este proyecto,",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 155,
+      "id": 127,
       "start": 672.69,
       "end": 679.07,
       "text": "Utilizo un marco de modelado diferente basado en agentes. Este está basado en Python. Se llama Mesa",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 156,
+      "id": 128,
       "start": 680.21,
       "end": 683.17,
       "text": "lo cual es genial. Quieres estar en Python. Ahí es donde todo lo genial",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 157,
+      "id": 129,
       "start": 685.96,
       "end": 691.12,
       "text": "Están sucediendo cosas y cosas generativas. Entonces poder estar en Python y conectarlo es genial.",
       "speaker": "James Pollack"
     },
     {
-      "id": 158,
+      "id": 130,
       "start": 691.12,
       "end": 699.76,
       "text": "emocionante. Por eso he creado modelos basados ​​en agentes antes. Pero tal vez no sea uno tan grande o complejo. Entonces",
       "speaker": "James Pollack"
     },
     {
-      "id": 159,
+      "id": 131,
       "start": 701.26,
       "end": 706.0,
       "text": "Comenzó con una especie de clase base de, por ejemplo, un miembro de DAO. Ya sabes, ¿qué es lo que todos necesitan?",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 160,
+      "id": 132,
       "start": 706.0,
       "end": 712.96,
       "text": "¿hacer? Ellos votan. Comentan propuestas. Tienen fichas. Y tienen reputación.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 161,
+      "id": 133,
       "start": 712.96,
       "end": 715.76,
       "text": "Incluso algunos de estos supuestos básicos,",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 162,
+      "id": 134,
       "start": 715.76,
       "end": 720.48,
       "text": "Es decir, ya estás tomando decisiones para el DAO, ¿verdad? Hay una reputación. Estamos realizando un seguimiento",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 163,
+      "id": 135,
       "start": 720.48,
       "end": 725.12,
       "text": "de ello con puntos. Ya puedo pensar en un montón de formas diferentes de realizar un seguimiento de la reputación.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 164,
+      "id": 136,
       "start": 725.96,
       "end": 731.6,
       "text": "Puede ser un poco paralizante porque quieres darle a la gente, ya sabes, todas las opciones. pero lo haces",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 165,
+      "id": 137,
       "start": 731.6,
       "end": 736.34,
       "text": "solo tengo que tomar un par de decisiones arbitrarias para comenzar y luego, con suerte, dejar algunas palancas",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 166,
+      "id": 138,
       "start": 736.34,
       "end": 743.06,
       "text": "puedes volver y modificar esas cosas más tarde. Y del miembro de DAO, ya sabes,",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 167,
+      "id": 139,
       "start": 743.06,
       "end": 744.92,
       "text": "Pensé en algunos otros roles.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 168,
+      "id": 140,
       "start": 744.92,
       "end": 745.1,
       "text": "de personas. Y, ya sabes, he investigado mucho sobre esto. Y creo que es realmente genial.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 169,
-      "start": 745.1,
-      "end": 745.46,
-      "text": "Creo que es realmente genial. Creo que es realmente genial. Creo que es realmente genial. Y creo que es realmente genial.",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 170,
+      "id": 141,
       "start": 745.46,
       "end": 753.85,
       "text": "de personas en dao's y las cosas que podrían hacer, así que tenemos desarrolladores que, ya sabes,",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 171,
+      "id": 142,
       "start": 753.85,
       "end": 760.25,
       "text": "ser incorporado para que le guste construir y mantener proyectos um inversores invertir en propuestas y proyectos",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 172,
+      "id": 143,
       "start": 760.81,
       "end": 767.13,
       "text": "um, incluso he modelado como miembros pasivos, personas a las que les gusta tener tokens um y podrían votar, pero",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 173,
+      "id": 144,
       "start": 767.13,
       "end": 772.89,
       "text": "Realmente no les gusta involucrarse en proyectos y esas cosas y um, los creadores de propuestas.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 174,
+      "id": 145,
       "start": 772.89,
       "end": 777.77,
       "text": "quienes crean y presentan propuestas los reguladores garantizan el cumplimiento de las regulaciones externas",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 175,
+      "id": 146,
       "start": 777.77,
       "end": 782.97,
       "text": "y proveedores de servicios de requisitos que es similar a un desarrollador pero podría ser",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 176,
+      "id": 147,
       "start": 782.97,
       "end": 786.73,
       "text": "como un desarrollador externo o si necesitas algo traducido",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 177,
+      "id": 148,
       "start": 788.92,
       "end": 796.52,
       "text": "y también tengo validadores, árbitros, delegadores, ya sabes, mirando esta lista.",
       "speaker": "James Pollack"
     },
     {
-      "id": 178,
+      "id": 149,
       "start": 796.52,
       "end": 802.54,
       "text": "Creo que si volviera atrás, si estuviera empezando de nuevo, miro esto y pienso para mis adentros que a menudo me gusta la gente.",
       "speaker": "James Pollack"
     },
     {
-      "id": 179,
+      "id": 150,
       "start": 803.5,
       "end": 809.42,
       "text": "son como oh soy un desarrollador soy un árbitro soy un desarrollador soy un desarrollador soy un desarrollador",
       "speaker": "James Pollack"
     },
     {
-      "id": 180,
-      "start": 809.42,
-      "end": 814.54,
-      "text": "soy desarrollador soy desarrollador soy desarrollador soy desarrollador soy desarrollador soy desarrollador soy desarrollador",
-      "speaker": "James Pollack"
-    },
-    {
-      "id": 181,
+      "id": 151,
       "start": 814.54,
       "end": 818.7,
       "text": "tal vez los roles de las personas cambien y este modelo aún no lo tenga en cuenta o tal vez",
       "speaker": "James Pollack"
     },
     {
-      "id": 182,
+      "id": 152,
       "start": 818.7,
       "end": 825.02,
       "text": "las personas desempeñan múltiples roles, así que a partir de ahí hay alrededor de 10 clases diferentes.",
       "speaker": "James Pollack"
     },
     {
-      "id": 183,
+      "id": 153,
       "start": 825.02,
       "end": 831.62,
       "text": "uh y todos los roles son roles individuales um, una vez que comiences a ejecutar el modelo,",
       "speaker": "James Pollack"
     },
     {
-      "id": 184,
+      "id": 154,
       "start": 831.62,
       "end": 834.02,
       "text": "ser interesante porque a tus desarrolladores les gustará desarrollar",
       "speaker": "James Pollack"
     },
     {
-      "id": 185,
+      "id": 155,
       "start": 834.1,
       "end": 837.38,
       "text": "No van a invertir en cosas, pero creo que en el mundo real alguien puede hacerlo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 186,
+      "id": 156,
       "start": 837.38,
       "end": 844.26,
       "text": "tanto un inversionista como un desarrollador, así que veo cierto potencial para que eso crezca más adelante, entonces, si",
       "speaker": "James Pollack"
     },
     {
-      "id": 187,
+      "id": 157,
       "start": 844.26,
       "end": 851.38,
       "text": "Adelante, oh lo siento, quiero interrumpir. Iba a decir que de alguna manera nos estamos metiendo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 188,
+      "id": 158,
       "start": 851.38,
       "end": 857.38,
       "text": "algunas de las compensaciones fundamentales cuando se trata de modelar sistemas complejos de los cuales todas las economías",
       "speaker": "James Pollack"
     },
     {
-      "id": 189,
+      "id": 159,
       "start": 857.38,
       "end": 862.82,
       "text": "y los sistemas sociales son... es muy difícil cuando tienes estos sistemas basados ​​en agentes",
       "speaker": "James Pollack"
     },
     {
-      "id": 190,
+      "id": 160,
       "start": 862.82,
       "end": 864.02,
       "text": "y son agentes inteligentes",
       "speaker": "James Pollack"
     },
     {
-      "id": 191,
+      "id": 161,
       "start": 864.1,
       "end": 870.58,
       "text": "hacer suposiciones productivas sobre quién es qué y de qué manera se comportan y creo que",
       "speaker": "James Pollack"
     },
     {
-      "id": 192,
+      "id": 162,
       "start": 870.58,
       "end": 874.98,
       "text": "que ese es uno de los desafíos aquí es tener el nivel correcto de abstracción que no sea",
       "speaker": "James Pollack"
     },
     {
-      "id": 193,
+      "id": 163,
       "start": 874.98,
       "end": 880.5,
       "text": "demasiado reduccionista con cada uno de estos y sabes, lo sé por mi experiencia trabajando con, por ejemplo,",
       "speaker": "James Pollack"
     },
     {
-      "id": 194,
+      "id": 164,
       "start": 880.5,
       "end": 884.58,
       "text": "di gitcoin dow, del cual sabes que ahora estoy desafiliado pero lo he visto",
       "speaker": "James Pollack"
     },
     {
-      "id": 195,
+      "id": 165,
       "start": 884.58,
       "end": 888.34,
       "text": "desde afuera es que sabes que algunas de las personas que son proveedores de servicios son",
       "speaker": "James Pollack"
     },
     {
-      "id": 196,
+      "id": 166,
       "start": 888.34,
       "end": 893.06,
       "text": "también los creadores de propuestas también son desarrolladores también son delegados y",
       "speaker": "James Pollack"
     },
     {
-      "id": 197,
+      "id": 167,
       "start": 894.1,
       "end": 899.06,
       "text": "eres casi como sobrecargar una superclase en ese punto con diferentes tipos de comportamiento",
       "speaker": "James Pollack"
     },
     {
-      "id": 198,
+      "id": 168,
       "start": 899.06,
       "end": 905.22,
       "text": "um, así que sí, solo un metacomentario sobre sistemas complejos, um, y uno totalmente válido y",
       "speaker": "James Pollack"
     },
     {
-      "id": 199,
+      "id": 169,
       "start": 906.26,
       "end": 912.02,
       "text": "uno que me hace darme cuenta de que es importante señalar que estos agentes están fuera de lo común",
       "speaker": "James Pollack"
     },
     {
-      "id": 200,
+      "id": 170,
       "start": 912.02,
       "end": 916.98,
       "text": "no son ai, tienen reglas similares, responden a las condiciones que dices",
       "speaker": "James Pollack"
     },
     {
-      "id": 201,
+      "id": 171,
       "start": 916.98,
       "end": 923.86,
       "text": "ya sabes, si el precio del token es mayor que x, haz esto, si es menor que x, haz aquello, um",
       "speaker": "James Pollack"
     },
     {
-      "id": 202,
+      "id": 172,
       "start": 924.1,
       "end": 930.1,
       "text": "Entonces, en ese sentido, como si estuvieran fuera de lo común, no son muy inteligentes. ¿Qué tiene de bueno estar en",
       "speaker": "James Pollack"
     },
     {
-      "id": 203,
+      "id": 173,
       "start": 930.1,
       "end": 935.46,
       "text": "este entorno y, de hecho, todas las cosas interesantes del sistema complejo que suceden últimamente es que",
       "speaker": "James Pollack"
     },
     {
-      "id": 204,
+      "id": 174,
       "start": 938.25,
       "end": 942.57,
       "text": "sus agentes pueden conectarse a estos sistemas como",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 205,
+      "id": 175,
       "start": 945.91,
       "end": 951.67,
       "text": "IA generativa para crear esos comportamientos que podrías generar. Conoces 200 comportamientos diferentes.",
       "speaker": "James Pollack"
     },
     {
-      "id": 206,
+      "id": 176,
       "start": 951.67,
       "end": 955.67,
       "text": "y conéctelos y haga que los agentes elijan entre ellos o usted podría conectarlos",
       "speaker": "James Pollack"
     },
     {
-      "id": 207,
+      "id": 177,
       "start": 955.83,
       "end": 961.59,
       "text": "aprendizaje por refuerzo y brinde a sus agentes una función de recompensa que ya conoce para que realmente puedan",
       "speaker": "James Pollack"
     },
     {
-      "id": 208,
+      "id": 178,
       "start": 961.59,
       "end": 967.83,
       "text": "cambiar sus comportamientos en eso o, ya sabes, dejarlos ser autorreflexivos y realmente modificarlos.",
       "speaker": "James Pollack"
     },
     {
-      "id": 209,
+      "id": 179,
       "start": 967.83,
       "end": 973.67,
       "text": "su comportamiento mientras se ejecuta esta simulación aún no está ahí, pero es por eso que la construí",
       "speaker": "James Pollack"
     },
     {
-      "id": 210,
+      "id": 180,
       "start": 973.67,
       "end": 978.31,
       "text": "Python y para que tengamos el potencial cada vez que llamas a un paso en un agente, así es como",
       "speaker": "James Pollack"
     },
     {
-      "id": 211,
+      "id": 181,
       "start": 978.31,
       "end": 983.67,
       "text": "funciona como un paso de tiempo pero cuando damos el paso al desarrollador no solo tenemos que tenerlos",
       "speaker": "James Pollack"
     },
     {
-      "id": 212,
+      "id": 182,
       "start": 983.67,
       "end": 985.75,
       "text": "Ya sabes, haz las reglas que escribimos al principio.",
       "speaker": "James Pollack"
     },
     {
-      "id": 213,
+      "id": 183,
       "start": 985.75,
       "end": 991.03,
       "text": "Al comienzo de la simulación, si les conectáramos la capacidad de generar nuevas estrategias,",
       "speaker": "James Pollack"
     },
     {
-      "id": 214,
+      "id": 184,
       "start": 991.03,
       "end": 995.99,
       "text": "Pruébalos, mata los que no funcionan y viaja con los que sí funcionan, sí, entonces",
       "speaker": "James Pollack"
     },
     {
-      "id": 215,
+      "id": 185,
       "start": 995.99,
       "end": 997.39,
       "text": "las cosas se van a poner raras.",
       "speaker": "James Pollack"
     },
     {
-      "id": 216,
+      "id": 186,
       "start": 997.39,
       "end": 1001.17,
       "text": "Luego veremos algunas cosas en ese espacio de hiperparámetros que ni siquiera sabíamos.",
       "speaker": "James Pollack"
     },
     {
-      "id": 217,
+      "id": 187,
       "start": 1001.17,
       "end": 1009.0,
       "text": "existió porque van a crear nuevos parámetros a medida que avanzan.",
       "speaker": "James Pollack"
     },
     {
-      "id": 218,
+      "id": 188,
       "start": 1009.0,
       "end": 1014.16,
       "text": "Pero el nivel de abstracción es un gran problema con cualquier tipo de simulación, y no tengo",
       "speaker": "James Pollack"
     },
     {
-      "id": 219,
+      "id": 189,
       "start": 1014.16,
       "end": 1019.64,
       "text": "una gran respuesta aparte de que por un lado quizás tengas un juego, y luego por el otro",
       "speaker": "James Pollack"
     },
     {
-      "id": 220,
+      "id": 190,
       "start": 1019.64,
       "end": 1022.62,
       "text": "lado tienes tus datos reales.",
       "speaker": "James Pollack"
     },
     {
-      "id": 221,
+      "id": 191,
       "start": 1022.62,
       "end": 1023.62,
       "text": "Sí...",
       "speaker": "James Pollack"
     },
     {
-      "id": 222,
+      "id": 192,
       "start": 1023.62,
       "end": 1024.72,
       "text": "No, adelante.",
       "speaker": "James Pollack"
     },
     {
-      "id": 223,
+      "id": 193,
       "start": 1024.72,
       "end": 1033.74,
       "text": "Iba a decir que una de mis corazonadas sobre cómo la Web3 y la IA son complementarias es que",
       "speaker": "James Pollack"
     },
     {
-      "id": 224,
+      "id": 194,
       "start": 1033.74,
       "end": 1039.08,
       "text": "En términos generales, creo que Web3, en cierto modo, tiene que ver con heurísticas, y la heurística que todos conocemos.",
       "speaker": "James Pollack"
     },
     {
-      "id": 225,
+      "id": 195,
       "start": 1039.08,
       "end": 1041.5,
       "text": "tradicionalmente entrenado es el saldo de mi cuenta bancaria.",
       "speaker": "James Pollack"
     },
     {
-      "id": 226,
+      "id": 196,
       "start": 1041.5,
       "end": 1043.58,
       "text": "Quiero que el saldo de mi cuenta bancaria aumente.",
       "speaker": "James Pollack"
     },
     {
-      "id": 227,
+      "id": 197,
       "start": 1043.58,
       "end": 1044.58,
       "text": "Pero en Web3, ahora tenemos...",
       "speaker": "James Pollack"
     },
     {
-      "id": 228,
+      "id": 198,
       "start": 1044.58,
       "end": 1048.26,
       "text": "Tengo una heurística nativa de Internet, que es mi saldo de tokens.",
       "speaker": "James Pollack"
     },
     {
-      "id": 229,
+      "id": 199,
       "start": 1048.26,
       "end": 1053.02,
       "text": "Y luego, en cierto modo, las IA tienen que ver con la maximización heurística, que es cómo aprovecho al máximo",
       "speaker": "James Pollack"
     },
     {
-      "id": 230,
+      "id": 200,
       "start": 1053.02,
       "end": 1056.68,
       "text": "¿Estrategia inteligente para maximizar esa heurística?",
       "speaker": "James Pollack"
     },
     {
-      "id": 231,
+      "id": 201,
       "start": 1056.68,
       "end": 1065.16,
       "text": "Y entonces postulé a este proyecto, la idea fue que si le das a un LLM o a una IA un saldo simbólico",
       "speaker": "James Pollack"
     },
     {
-      "id": 232,
+      "id": 202,
       "start": 1065.16,
       "end": 1069.9,
       "text": "y simplemente dices, haz que el número aumente, ya sea tu propio saldo de tokens o el saldo de tokens",
       "speaker": "James Pollack"
     },
     {
-      "id": 233,
+      "id": 203,
       "start": 1069.9,
       "end": 1073.04,
       "text": "en contra, llamémoslo ETH o USDC o algo así.",
       "speaker": "James Pollack"
     },
     {
-      "id": 234,
+      "id": 204,
       "start": 1073.04,
       "end": 1074.04,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 235,
+      "id": 205,
       "start": 1074.04,
       "end": 1076.0,
       "text": "Son muchos comportamientos interesantes.",
       "speaker": "James Pollack"
     },
     {
-      "id": 236,
+      "id": 206,
       "start": 1076.0,
       "end": 1082.38,
       "text": "Pero sólo como una forma de crear el sistema multiagente y avanzar hacia una reflexión más avanzada.",
       "speaker": "James Pollack"
     },
     {
-      "id": 237,
+      "id": 207,
       "start": 1082.38,
       "end": 1088.52,
       "text": "comportamientos versus comportamientos basados ​​en reglas, hay una escalera en términos de realismo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 238,
+      "id": 208,
       "start": 1088.52,
       "end": 1094.3,
       "text": "Entonces sí, solo la idea era heurística versus maximización heurística.",
       "speaker": "James Pollack"
     },
     {
-      "id": 239,
+      "id": 209,
       "start": 1094.3,
       "end": 1099.04,
       "text": "Pienso que así es como encajan cada vez más la IA y la Web3.",
       "speaker": "James Pollack"
     },
     {
-      "id": 240,
+      "id": 210,
       "start": 1099.04,
       "end": 1102.72,
       "text": "¿Crees que la propia DAO podría tener una maximización heurística?",
       "speaker": "James Pollack"
     },
     {
-      "id": 241,
+      "id": 211,
       "start": 1102.72,
       "end": 1103.72,
       "text": "No sé.",
       "speaker": "James Pollack"
     },
     {
-      "id": 242,
+      "id": 212,
       "start": 1103.72,
       "end": 1107.58,
       "text": "¿Crees que es una heurística más allá de la subida del token?",
       "speaker": "James Pollack"
     },
     {
-      "id": 243,
+      "id": 213,
       "start": 1107.58,
       "end": 1113.29,
       "text": "¿Crees que estas organizaciones tienen misiones lo suficientemente claras o misiones lo suficientemente fuertes?",
       "speaker": "James Pollack"
     },
     {
-      "id": 244,
+      "id": 214,
       "start": 1113.29,
       "end": 1118.67,
       "text": "¿Que es algo que podrías incorporar en las reglas reales?",
       "speaker": "James Pollack"
     },
     {
-      "id": 245,
+      "id": 215,
       "start": 1118.67,
       "end": 1124.19,
       "text": "Por ejemplo, el DAO podría configurarse para maximizar los saldos de tokens o podría configurarse para intentar",
       "speaker": "James Pollack"
     },
     {
-      "id": 246,
+      "id": 216,
       "start": 1124.19,
       "end": 1130.15,
       "text": "redistribuir la mayor parte del ingreso a sus miembros y no preocuparse por tener su propio saldo",
       "speaker": "James Pollack"
     },
     {
-      "id": 247,
+      "id": 217,
       "start": 1130.15,
       "end": 1131.15,
       "text": "ser alto.",
       "speaker": "James Pollack"
     },
     {
-      "id": 248,
+      "id": 218,
       "start": 1131.15,
       "end": 1131.87,
       "text": "O simplemente podría intentar sobrevivir.",
       "speaker": "James Pollack"
     },
     {
-      "id": 249,
+      "id": 219,
       "start": 1131.87,
       "end": 1132.87,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 250,
+      "id": 220,
       "start": 1132.87,
       "end": 1133.87,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 251,
+      "id": 221,
       "start": 1133.91,
       "end": 1136.91,
       "text": "Ha habido muchos tipos diferentes de objetivos para el propio DAO.",
       "speaker": "James Pollack"
     },
     {
-      "id": 252,
+      "id": 222,
       "start": 1136.91,
       "end": 1137.91,
       "text": "Me pregunto qué piensas.",
       "speaker": "James Pollack"
     },
     {
-      "id": 253,
+      "id": 223,
       "start": 1137.91,
       "end": 1138.91,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 254,
+      "id": 224,
       "start": 1138.91,
       "end": 1139.91,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 255,
+      "id": 225,
       "start": 1139.91,
       "end": 1143.39,
       "text": "Lo que dice Balaji en el libro Network State es que todos estos estados de la red tienen",
       "speaker": "James Pollack"
     },
     {
-      "id": 256,
+      "id": 226,
       "start": 1143.39,
       "end": 1146.85,
       "text": "su único mandamiento, que es lo que ellos piensan que está mal en el mundo, que",
       "speaker": "James Pollack"
     },
     {
-      "id": 257,
+      "id": 227,
       "start": 1146.85,
       "end": 1148.87,
       "text": "Su red está intentando cambiar.",
       "speaker": "James Pollack"
     },
     {
-      "id": 258,
+      "id": 228,
       "start": 1148.87,
       "end": 1154.89,
       "text": "Y el ejemplo de juguete que da es que la gente piensa que deberíamos comer ceto, por lo que habrá",
       "speaker": "James Pollack"
     },
     {
-      "id": 259,
+      "id": 229,
       "start": 1154.89,
       "end": 1157.65,
       "text": "ser un estado de red cetogénica.",
       "speaker": "James Pollack"
     },
     {
-      "id": 260,
+      "id": 230,
       "start": 1157.65,
       "end": 1162.67,
       "text": "El que conozco más es Gitcoin, y su misión es financiar lo que importa.",
       "speaker": "James Pollack"
     },
     {
-      "id": 261,
+      "id": 231,
       "start": 1162.67,
       "end": 1165.91,
       "text": "Básicamente, crear herramientas de coordinación que financien lo que importa.",
       "speaker": "James Pollack"
     },
     {
-      "id": 262,
+      "id": 232,
       "start": 1165.91,
       "end": 1170.83,
       "text": "Y aquí te alineas con la IA porque el saldo del token se expresará",
       "speaker": "James Pollack"
     },
     {
-      "id": 263,
+      "id": 233,
       "start": 1170.83,
       "end": 1175.73,
       "text": "programáticamente en cadena, pero entonces la misión sólo puede expresarse socialmente, y es casi",
       "speaker": "James Pollack"
     },
     {
-      "id": 264,
+      "id": 234,
       "start": 1175.73,
       "end": 1181.17,
       "text": "como dinámicas reflexivas sociales miméticas versus dinámicas reflexivas económicas simbólicas.",
       "speaker": "James Pollack"
     },
     {
-      "id": 265,
+      "id": 235,
       "start": 1181.17,
       "end": 1185.99,
       "text": "¿Cómo se crea un atractor extraño que alinee ambas cosas en lugar de",
       "speaker": "James Pollack"
     },
     {
-      "id": 266,
+      "id": 236,
       "start": 1185.99,
       "end": 1189.67,
       "text": "¿Crear unos que no se mantengan unidos?",
       "speaker": "James Pollack"
     },
     {
-      "id": 267,
+      "id": 237,
       "start": 1189.67,
       "end": 1190.67,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 268,
+      "id": 238,
       "start": 1190.67,
       "end": 1191.67,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 269,
+      "id": 239,
       "start": 1191.67,
       "end": 1196.43,
       "text": "Creo que probablemente tengas DAO que tengan un único mandamiento que sea fuerte y",
       "speaker": "James Pollack"
     },
     {
-      "id": 270,
+      "id": 240,
       "start": 1196.43,
       "end": 1201.21,
       "text": "tienes DAO que no tienen ningún mandamiento o un mandamiento débil, y los agentes",
       "speaker": "James Pollack"
     },
     {
-      "id": 271,
+      "id": 241,
       "start": 1201.21,
       "end": 1204.91,
       "text": "trabajar de manera diferente basándose en eso.",
       "speaker": "James Pollack"
     },
     {
-      "id": 272,
+      "id": 242,
       "start": 1204.91,
       "end": 1206.83,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 273,
+      "id": 243,
       "start": 1206.83,
       "end": 1208.31,
       "text": "Eso tiene sentido para mí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 274,
+      "id": 244,
       "start": 1208.31,
       "end": 1209.31,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 275,
+      "id": 245,
       "start": 1209.31,
       "end": 1215.23,
       "text": "Me imagino si para Gitcoin, por ejemplo, quisieras que intentara maximizar su número.",
       "speaker": "James Pollack"
     },
     {
-      "id": 276,
+      "id": 246,
       "start": 1215.23,
       "end": 1219.59,
       "text": "de proyectos, y luego crearías algún tipo de calificación para el impacto de los proyectos",
       "speaker": "James Pollack"
     },
     {
-      "id": 277,
+      "id": 247,
       "start": 1219.59,
       "end": 1221.23,
       "text": "y haga que intente maximizar eso.",
       "speaker": "James Pollack"
     },
     {
-      "id": 278,
+      "id": 248,
       "start": 1221.23,
       "end": 1226.69,
       "text": "Creo que será genial una vez que lo pongamos en funcionamiento.",
       "speaker": "James Pollack"
     },
     {
-      "id": 279,
+      "id": 249,
       "start": 1226.69,
       "end": 1230.11,
       "text": "Creo que la mayoría de la gente está tratando de maximizar sólo para las monedas.",
       "speaker": "James Pollack"
     },
     {
-      "id": 280,
+      "id": 250,
       "start": 1230.11,
       "end": 1232.99,
       "text": "Y luego me encanta la idea de poder equilibrar eso.",
       "speaker": "James Pollack"
     },
     {
-      "id": 281,
+      "id": 251,
       "start": 1232.99,
       "end": 1237.57,
       "text": "Quizás estemos impulsados ​​en un 80% por la misión, pero en un 20% por las monedas.",
       "speaker": "James Pollack"
     },
     {
-      "id": 282,
+      "id": 252,
       "start": 1237.57,
       "end": 1239.47,
       "text": "No creo que sea un total tampoco.",
       "speaker": "James Pollack"
     },
     {
-      "id": 283,
+      "id": 253,
       "start": 1239.47,
       "end": 1241.87,
       "text": "Puedes mezclarlos.",
       "speaker": "James Pollack"
     },
     {
-      "id": 284,
+      "id": 254,
       "start": 1241.87,
       "end": 1249.99,
       "text": "Bueno, simplemente siento que tal vez haya un metacomentario sobre las condiciones límite de la tecnología basada en agentes.",
       "speaker": "James Pollack"
     },
     {
-      "id": 285,
+      "id": 255,
       "start": 1249.99,
       "end": 1251.19,
       "text": "sistema.",
       "speaker": "James Pollack"
     },
     {
-      "id": 286,
+      "id": 256,
       "start": 1251.19,
       "end": 1254.07,
       "text": "Porque digamos que estás intentando modelar MakerDAO.",
       "speaker": "James Pollack"
     },
     {
-      "id": 287,
+      "id": 257,
       "start": 1254.07,
       "end": 1260.11,
       "text": "Su producto principal es una moneda estable llamada DAI, y MKR es un token secundario que",
       "speaker": "James Pollack"
     },
     {
-      "id": 288,
+      "id": 258,
       "start": 1260.11,
       "end": 1267.83,
       "text": "puede invertir o comprar, lo que ayuda a crear la estabilidad de DAI y le permite configurar",
       "speaker": "James Pollack"
     },
     {
-      "id": 289,
+      "id": 259,
       "start": 1267.83,
       "end": 1269.25,
       "text": "los parámetros en el sistema.",
       "speaker": "James Pollack"
     },
     {
-      "id": 290,
+      "id": 260,
       "start": 1269.25,
       "end": 1271.99,
       "text": "Y además están los foros de gobernanza.",
       "speaker": "James Pollack"
     },
     {
-      "id": 291,
+      "id": 261,
       "start": 1271.99,
       "end": 1278.21,
-      "text": "Y supongo que se pueden modelar todas esas cosas basadas en agentes, dado un EBM y en este",
+      "text": "Y supongo que se pueden modelar todas esas cosas basadas en agentes, dado un ABM y en este",
       "speaker": "James Pollack"
     },
     {
-      "id": 292,
+      "id": 262,
       "start": 1278.21,
       "end": 1279.21,
       "text": "kit de herramientas.",
       "speaker": "James Pollack"
     },
     {
-      "id": 293,
+      "id": 263,
       "start": 1279.21,
       "end": 1280.73,
       "text": "Pero en cierto modo, ni siquiera puedes modelar el...",
       "speaker": "James Pollack"
     },
     {
-      "id": 294,
+      "id": 264,
       "start": 1280.73,
       "end": 1286.01,
       "text": "Ni siquiera se puede modelar el éxito de mercado de ese DAO sin modelar el resto del",
       "speaker": "James Pollack"
     },
     {
-      "id": 295,
+      "id": 265,
       "start": 1286.01,
       "end": 1287.01,
       "text": "Todo el ecosistema Web3.",
       "speaker": "James Pollack"
     },
     {
-      "id": 296,
+      "id": 266,
       "start": 1287.01,
       "end": 1288.01,
       "text": "También modelando el mercado.",
       "speaker": "James Pollack"
     },
     {
-      "id": 297,
+      "id": 267,
       "start": 1288.01,
       "end": 1289.01,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 298,
+      "id": 268,
       "start": 1289.01,
       "end": 1291.91,
       "text": "En ese momento, si tienes una simulación que simulará un DAO tan bueno, ¿por qué no simplemente",
       "speaker": "James Pollack"
     },
     {
-      "id": 299,
+      "id": 269,
       "start": 1291.91,
       "end": 1295.11,
       "text": "Simular todo el mercado de valores y dar por terminado el día, ¿verdad?",
       "speaker": "James Pollack"
     },
     {
-      "id": 300,
+      "id": 270,
       "start": 1295.11,
       "end": 1296.11,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 301,
+      "id": 271,
       "start": 1296.11,
       "end": 1297.11,
       "text": "Entonces, sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 302,
+      "id": 272,
       "start": 1297.11,
       "end": 1298.11,
       "text": "Solicitud de función, James.",
       "speaker": "James Pollack"
     },
     {
-      "id": 303,
+      "id": 273,
       "start": 1298.11,
       "end": 1304.61,
       "text": "¿Podemos simplemente simular todo Web3? Creo que es el mayor alcance de todo esto.",
       "speaker": "James Pollack"
     },
     {
-      "id": 304,
+      "id": 274,
       "start": 1304.61,
       "end": 1306.23,
       "text": "Absolutamente.",
       "speaker": "James Pollack"
     },
     {
-      "id": 305,
+      "id": 275,
       "start": 1306.23,
       "end": 1309.61,
       "text": "Con suficiente potencia informática, estoy seguro de que alguien podría hacerlo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 306,
+      "id": 276,
       "start": 1309.61,
       "end": 1310.61,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 307,
+      "id": 277,
       "start": 1310.61,
       "end": 1315.75,
       "text": "¿Puedo retomar algo que dijiste allí mismo y que pensé que era súper interesante?",
       "speaker": "James Pollack"
     },
     {
-      "id": 308,
+      "id": 278,
       "start": 1315.75,
       "end": 1321.19,
       "text": "Mencionaste que tal vez ejecutarías un EVM dentro de él, y eso no se me había ocurrido.",
       "speaker": "James Pollack"
     },
     {
-      "id": 309,
+      "id": 279,
       "start": 1321.19,
       "end": 1327.21,
       "text": "Entonces, este agente desarrollador que estamos creando, en realidad podrías configurarlo para que tuviera",
       "speaker": "James Pollack"
     },
     {
-      "id": 310,
+      "id": 280,
       "start": 1327.21,
       "end": 1333.07,
       "text": "un EVM al que tenía acceso, y tal vez le darías un LLM y le dejarías escribir código",
       "speaker": "James Pollack"
     },
     {
-      "id": 311,
+      "id": 281,
       "start": 1333.07,
       "end": 1334.73,
       "text": "de algún tipo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 312,
+      "id": 282,
       "start": 1334.73,
       "end": 1340.45,
       "text": "Me parece muy interesante la idea de tener algunos agentes que puedan ejecutar algunos...",
       "speaker": "James Pollack"
     },
     {
-      "id": 313,
+      "id": 283,
       "start": 1340.45,
       "end": 1345.59,
       "text": "Ejecute algo de código de Solidity, porque eso es lo que, en última instancia, es lo que hacen las personas en estos DAO.",
       "speaker": "James Pollack"
     },
     {
-      "id": 314,
+      "id": 284,
       "start": 1345.59,
       "end": 1350.73,
       "text": "Entonces, en un sistema de autocorrección lo suficientemente grande, ¿el LLM descubriría auditorías de código y reentrada?",
       "speaker": "James Pollack"
     },
     {
-      "id": 315,
+      "id": 285,
       "start": 1350.73,
       "end": 1353.83,
       "text": "¿Ataques y todo ese tipo de cosas?",
       "speaker": "James Pollack"
     },
     {
-      "id": 316,
+      "id": 286,
       "start": 1353.83,
       "end": 1357.69,
       "text": "Bueno, creo que los ataques de ingeniería social serían interesantes porque serán",
       "speaker": "James Pollack"
     },
     {
-      "id": 317,
+      "id": 287,
       "start": 1357.69,
       "end": 1362.49,
       "text": "obteniendo todas estas otras cosas del DAO también.",
       "speaker": "James Pollack"
     },
     {
-      "id": 318,
+      "id": 288,
       "start": 1362.49,
       "end": 1363.49,
       "text": "Eso es...",
       "speaker": "James Pollack"
     },
     {
-      "id": 319,
+      "id": 289,
       "start": 1363.49,
       "end": 1364.49,
       "text": "Déjame escribir una nota.",
       "speaker": "James Pollack"
     },
     {
-      "id": 320,
+      "id": 290,
       "start": 1364.49,
       "end": 1365.49,
       "text": "Esto es...",
       "speaker": "James Pollack"
     },
     {
-      "id": 321,
+      "id": 291,
       "start": 1365.49,
       "end": 1366.49,
       "text": "Buen material.",
       "speaker": "James Pollack"
     },
     {
-      "id": 322,
+      "id": 292,
       "start": 1366.49,
       "end": 1367.45,
       "text": "¿Cuál es el análogo en...?",
       "speaker": "James Pollack"
     },
     {
-      "id": 323,
+      "id": 293,
       "start": 1367.45,
       "end": 1368.45,
       "text": "Estaba viendo el programa DeepMind.",
       "speaker": "James Pollack"
     },
     {
-      "id": 324,
+      "id": 294,
       "start": 1368.45,
       "end": 1369.45,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 325,
+      "id": 295,
       "start": 1369.45,
       "end": 1370.45,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 326,
+      "id": 296,
       "start": 1370.45,
       "end": 1376.91,
       "text": "Estaba viendo el documental de DeepMind sobre Go y cómo existían estos jugadores humanos de Go.",
       "speaker": "James Pollack"
     },
     {
-      "id": 327,
+      "id": 297,
       "start": 1376.91,
       "end": 1383.79,
       "text": "que tienen un límite cognitivo sobre qué tan lejos pueden pensar, pero las IA no tenían eso",
       "speaker": "James Pollack"
     },
     {
-      "id": 328,
+      "id": 298,
       "start": 1383.79,
       "end": 1384.79,
       "text": "límite cognitivo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 329,
+      "id": 299,
       "start": 1384.79,
       "end": 1388.25,
       "text": "Y así pudieron explorar el espacio de posibilidades y fueron descubriendo nuevos movimientos.",
       "speaker": "James Pollack"
     },
     {
-      "id": 330,
+      "id": 300,
       "start": 1388.25,
       "end": 1391.13,
       "text": "que los jugadores humanos nunca habían pensado realmente.",
       "speaker": "James Pollack"
     },
     {
-      "id": 331,
+      "id": 301,
       "start": 1391.13,
       "end": 1395.59,
       "text": "Y creo que ahí es donde se vuelve interesante con estos sistemas basados ​​en IA.",
       "speaker": "James Pollack"
     },
     {
-      "id": 332,
+      "id": 302,
       "start": 1395.59,
       "end": 1397.07,
       "text": "Totalmente.",
       "speaker": "James Pollack"
     },
     {
-      "id": 333,
+      "id": 303,
       "start": 1397.07,
       "end": 1400.29,
       "text": "Estoy listo para presionar Ir a la simulación.",
       "speaker": "James Pollack"
     },
     {
-      "id": 334,
+      "id": 304,
       "start": 1400.29,
       "end": 1405.99,
       "text": "Siéntate, echa un vistazo a los gráficos o lee en voz alta y simplemente piensa: \"Mierda, ¿qué está pasando?\".",
       "speaker": "James Pollack"
     },
     {
-      "id": 335,
+      "id": 305,
       "start": 1405.99,
       "end": 1406.99,
       "text": "por aquí?",
       "speaker": "James Pollack"
     },
     {
-      "id": 336,
+      "id": 306,
       "start": 1406.99,
       "end": 1410.63,
       "text": "Creo que ese es el momento al que estoy apuntando, sin duda.",
       "speaker": "James Pollack"
     },
     {
-      "id": 337,
+      "id": 307,
       "start": 1410.63,
       "end": 1411.63,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 338,
+      "id": 308,
       "start": 1411.63,
       "end": 1420.23,
       "text": "Bueno, supongo que una de mis próximas preguntas para ti es ¿cómo quieres monetizar esto?",
       "speaker": "James Pollack"
     },
     {
-      "id": 339,
+      "id": 309,
       "start": 1420.23,
       "end": 1426.49,
       "text": "Puedo ver un modelo de negocio muy obvio para usted con esto sería ir a DAO X y",
       "speaker": "James Pollack"
     },
     {
-      "id": 340,
+      "id": 310,
       "start": 1426.49,
       "end": 1430.49,
       "text": "diciendo, oye, podría simular tu gobierno y podría simular un montón de cosas sobre",
       "speaker": "James Pollack"
     },
     {
-      "id": 341,
+      "id": 311,
       "start": 1430.49,
       "end": 1433.81,
       "text": "tu DAO.",
       "speaker": "James Pollack"
     },
     {
-      "id": 342,
+      "id": 312,
       "start": 1433.81,
       "end": 1439.25,
       "text": "Págame X número de tokens y simularé tu DAO y podremos hacer recomendaciones sobre",
       "speaker": "James Pollack"
     },
     {
-      "id": 343,
+      "id": 313,
       "start": 1439.25,
       "end": 1444.09,
       "text": "cómo debe evolucionar su DAO en función de lo que regresa el modelo de IA.",
       "speaker": "James Pollack"
     },
     {
-      "id": 344,
+      "id": 314,
       "start": 1444.09,
       "end": 1446.99,
       "text": "Pero también sé que es un código de código abierto, así que espero verlo en Gitcoin.",
       "speaker": "James Pollack"
     },
     {
-      "id": 345,
+      "id": 315,
       "start": 1446.99,
       "end": 1448.85,
       "text": "subvenciones en el futuro.",
       "speaker": "James Pollack"
     },
     {
-      "id": 346,
+      "id": 316,
       "start": 1448.85,
       "end": 1452.17,
       "text": "Se siente como si estuvieras construyendo un bien público para el espacio si esto alcanza algún nivel.",
       "speaker": "James Pollack"
     },
     {
-      "id": 347,
+      "id": 317,
       "start": 1452.17,
       "end": 1455.19,
       "text": "de utilidad para que los DAO puedan simular sus actualizaciones.",
       "speaker": "James Pollack"
     },
     {
-      "id": 348,
+      "id": 318,
       "start": 1455.19,
       "end": 1460.28,
       "text": "Hombre, sería genial si alguien me ayudara a construir algún tipo de módulo que te permitiera",
       "speaker": "James Pollack"
     },
     {
-      "id": 349,
+      "id": 319,
       "start": 1460.28,
       "end": 1464.52,
       "text": "ingrese su información DAO real en la parte superior de esto.",
       "speaker": "James Pollack"
     },
     {
-      "id": 350,
+      "id": 320,
       "start": 1464.52,
       "end": 1465.52,
       "text": "Eso sería asombroso.",
       "speaker": "James Pollack"
     },
     {
-      "id": 351,
+      "id": 321,
       "start": 1465.52,
       "end": 1468.02,
       "text": "Probablemente solo datos de entrenamiento.",
       "speaker": "James Pollack"
     },
     {
-      "id": 352,
+      "id": 322,
       "start": 1468.02,
       "end": 1470.24,
       "text": "Quiero decir, en mi nivel de abstracción, son solo datos de entrenamiento.",
       "speaker": "James Pollack"
     },
     {
-      "id": 353,
+      "id": 323,
       "start": 1470.24,
       "end": 1474.4,
       "text": "Sé que probablemente haya muchas cosas que tendrías que cambiar, pero...",
       "speaker": "James Pollack"
     },
     {
-      "id": 354,
+      "id": 324,
       "start": 1474.4,
       "end": 1475.4,
       "text": "Totalmente.",
       "speaker": "James Pollack"
     },
     {
-      "id": 355,
+      "id": 325,
       "start": 1475.4,
       "end": 1480.31,
       "text": "Entonces la monetización es interesante con un proyecto como este.",
       "speaker": "James Pollack"
     },
     {
-      "id": 356,
+      "id": 326,
       "start": 1480.31,
       "end": 1486.35,
       "text": "Sí, en la ruta de la consultoría, los DAO pagan mucho dinero a la gente para que venga y haga el trabajo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 357,
+      "id": 327,
       "start": 1486.35,
       "end": 1489.91,
       "text": "salarios o, a veces, como un millón de dólares para que alguien entre en su DAO y le ayude",
       "speaker": "James Pollack"
     },
     {
-      "id": 358,
+      "id": 328,
       "start": 1489.91,
       "end": 1492.59,
       "text": "tomas una decisión porque hay mucho dinero en juego.",
       "speaker": "James Pollack"
     },
     {
-      "id": 359,
+      "id": 329,
       "start": 1492.59,
       "end": 1498.63,
       "text": "Entonces tal vez no vamos a ofrecer, o a través de esta simulación, poder brindarle 100% de eficacia.",
       "speaker": "James Pollack"
     },
     {
-      "id": 360,
+      "id": 330,
       "start": 1498.63,
       "end": 1500.69,
       "text": "de lo que obtendrías de un consultor como ese.",
       "speaker": "James Pollack"
     },
     {
-      "id": 361,
+      "id": 331,
       "start": 1500.69,
       "end": 1509.13,
       "text": "Pero si podemos ofrecerle el 70% al 1% del costo, creo que es una compensación bastante buena.",
       "speaker": "James Pollack"
     },
     {
-      "id": 362,
+      "id": 332,
       "start": 1509.13,
       "end": 1515.45,
       "text": "Una cosa interesante que mencioné antes es este control deslizante entre la gamificación",
       "speaker": "James Pollack"
     },
     {
-      "id": 363,
+      "id": 333,
       "start": 1515.45,
       "end": 1516.45,
       "text": "O no.",
       "speaker": "James Pollack"
     },
     {
-      "id": 364,
+      "id": 334,
       "start": 1516.45,
       "end": 1518.15,
       "text": "De hecho, creo que es una forma genial de ganar algo de dinero con eso...",
       "speaker": "James Pollack"
     },
     {
-      "id": 365,
+      "id": 335,
       "start": 1518.15,
       "end": 1519.15,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 366,
+      "id": 336,
       "start": 1519.15,
       "end": 1523.85,
       "text": "Una forma de ganar algo de dinero con esto sería convertirlo en un juego.",
       "speaker": "James Pollack"
     },
     {
-      "id": 367,
+      "id": 337,
       "start": 1523.85,
       "end": 1529.83,
       "text": "Entonces, en cada paso, agregarías algunos objetivos, agregarías algunas opciones para lo que el jugador",
       "speaker": "James Pollack"
     },
     {
-      "id": 368,
+      "id": 338,
       "start": 1529.83,
       "end": 1531.05,
       "text": "puede hacer.",
       "speaker": "James Pollack"
     },
     {
-      "id": 369,
+      "id": 339,
       "start": 1531.05,
       "end": 1534.23,
       "text": "Y luego los juegos de simulación son un género bastante grande.",
       "speaker": "James Pollack"
     },
     {
-      "id": 370,
+      "id": 340,
       "start": 1534.23,
       "end": 1536.71,
       "text": "Hay mucha gente que ya los juega.",
       "speaker": "James Pollack"
     },
     {
-      "id": 371,
+      "id": 341,
       "start": 1536.71,
       "end": 1542.97,
       "text": "Y este sería otro genial juego de simulación avanzada centrado en Web3.",
       "speaker": "James Pollack"
     },
     {
-      "id": 372,
+      "id": 342,
       "start": 1542.97,
       "end": 1547.83,
       "text": "Y entonces, un juego centrado en blockchain que en realidad no está en blockchain.",
       "speaker": "James Pollack"
     },
     {
-      "id": 373,
+      "id": 343,
       "start": 1547.83,
       "end": 1548.83,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 374,
+      "id": 344,
       "start": 1548.83,
       "end": 1553.43,
       "text": "No en blockchain, pero creo que tratar temas de blockchain podría tener bastante éxito.",
       "speaker": "James Pollack"
     },
     {
-      "id": 375,
+      "id": 345,
       "start": 1553.43,
       "end": 1559.12,
       "text": "Creo que durante las últimas semanas todo el mundo ha estado enloquecido por este artículo que",
       "speaker": "James Pollack"
     },
     {
-      "id": 376,
+      "id": 346,
       "start": 1559.12,
       "end": 1564.44,
       "text": "salió donde algunos investigadores tomaron agentes de GPT de chat y los pusieron a todos en un pequeño",
       "speaker": "James Pollack"
     },
     {
-      "id": 377,
+      "id": 347,
       "start": 1564.44,
       "end": 1570.48,
       "text": "ciudad y organizaron una fiesta de cumpleaños para uno de los otros agentes.",
       "speaker": "James Pollack"
     },
     {
-      "id": 378,
+      "id": 348,
       "start": 1570.48,
       "end": 1573.7,
       "text": "Y la gente está muy entusiasmada con eso.",
       "speaker": "James Pollack"
     },
     {
-      "id": 379,
+      "id": 349,
       "start": 1573.7,
       "end": 1576.24,
       "text": "Y eso me parece muy arriesgado, como, oh...",
       "speaker": "James Pollack"
     },
     {
-      "id": 380,
+      "id": 350,
       "start": 1576.24,
       "end": 1578.24,
       "text": "Me sorprendió, supongo que es lo que debería decir.",
       "speaker": "James Pollack"
     },
     {
-      "id": 381,
+      "id": 351,
       "start": 1578.24,
       "end": 1579.24,
       "text": "Es como...",
       "speaker": "James Pollack"
     },
     {
-      "id": 382,
+      "id": 352,
       "start": 1579.24,
       "end": 1582.76,
       "text": "No me entusiasma mucho que estos agentes planeen fiestas de cumpleaños.",
       "speaker": "James Pollack"
     },
     {
-      "id": 383,
+      "id": 353,
       "start": 1582.76,
       "end": 1586.34,
       "text": "Creo que si pudieras darle a alguien la posibilidad de entrar y representar su",
       "speaker": "James Pollack"
     },
     {
-      "id": 384,
+      "id": 354,
       "start": 1586.34,
       "end": 1592.38,
       "text": "fantasía de, como, soy, ya sabes, el contribuyente número uno de un DAO o, como, soy un súper",
       "speaker": "James Pollack"
     },
     {
-      "id": 385,
+      "id": 355,
       "start": 1592.38,
       "end": 1597.5,
       "text": "inversionista inteligente de DAO o, soy un delegador increíble, sé exactamente a quién darle mis tokens",
       "speaker": "James Pollack"
     },
     {
-      "id": 386,
+      "id": 356,
       "start": 1597.5,
       "end": 1600.28,
       "text": "para, para hacer que las cosas sucedan.",
       "speaker": "James Pollack"
     },
     {
-      "id": 387,
+      "id": 357,
       "start": 1600.28,
       "end": 1602.84,
       "text": "Creo que hay una manera de monetizar eso.",
       "speaker": "James Pollack"
     },
     {
-      "id": 388,
+      "id": 358,
       "start": 1602.84,
       "end": 1604.67,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 389,
+      "id": 359,
       "start": 1604.67,
       "end": 1605.67,
       "text": "Algo diferente.",
       "speaker": "James Pollack"
     },
     {
-      "id": 390,
+      "id": 360,
       "start": 1605.67,
       "end": 1607.07,
       "text": "Creo que, ya sabes, lo que me viene a la mente es...",
       "speaker": "James Pollack"
     },
     {
-      "id": 391,
+      "id": 361,
       "start": 1607.07,
       "end": 1608.23,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 392,
+      "id": 362,
       "start": 1608.23,
       "end": 1609.23,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 393,
+      "id": 363,
       "start": 1609.23,
       "end": 1610.23,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 394,
+      "id": 364,
       "start": 1610.23,
       "end": 1613.95,
       "text": "Algo que me viene a la mente es que cuando era niño, solíamos ver este programa.",
       "speaker": "James Pollack"
     },
     {
-      "id": 395,
+      "id": 365,
       "start": 1613.95,
       "end": 1617.53,
       "text": "se llamaba BattleBots y eran simplemente personas que habían construido diferentes robots y",
       "speaker": "James Pollack"
     },
     {
-      "id": 396,
+      "id": 366,
       "start": 1617.53,
       "end": 1620.55,
       "text": "pelearían entre sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 397,
+      "id": 367,
       "start": 1620.55,
       "end": 1626.83,
       "text": "Y casi me estoy imaginando el valor de entretenimiento de que la gente pelee en el gobierno de DAO.",
       "speaker": "James Pollack"
     },
     {
-      "id": 398,
+      "id": 368,
       "start": 1626.83,
       "end": 1632.33,
       "text": "foro y son simplemente, como BattleBots, pero para la gobernanza de DAO, creo que sería todo,",
       "speaker": "James Pollack"
     },
     {
-      "id": 399,
+      "id": 369,
       "start": 1632.33,
       "end": 1633.33,
       "text": "como, interesante.",
       "speaker": "James Pollack"
     },
     {
-      "id": 400,
+      "id": 370,
       "start": 1633.33,
       "end": 1637.91,
       "text": "Y mi efecto emotivo de que mis amigos están peleando en el foro es muy diferente.",
       "speaker": "James Pollack"
     },
     {
-      "id": 401,
+      "id": 371,
       "start": 1637.91,
       "end": 1639.23,
       "text": "que, ya sabes, algo de lo que estoy emocionalmente desapegado.",
       "speaker": "James Pollack"
     },
     {
-      "id": 402,
+      "id": 372,
       "start": 1639.23,
       "end": 1646.99,
       "text": "Es como, oh, mira el meta de este robot de gobernanza de DAO, como una batalla de bots que está sucediendo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 403,
+      "id": 373,
       "start": 1646.99,
       "end": 1647.99,
       "text": "en el foro de gobernanza.",
       "speaker": "James Pollack"
     },
     {
-      "id": 404,
+      "id": 374,
       "start": 1647.99,
       "end": 1652.55,
       "text": "Hay casi como una monetización del entretenimiento o un punto de bombardeo de entretenimiento allí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 405,
+      "id": 375,
       "start": 1652.55,
       "end": 1658.68,
       "text": "Por ejemplo, si la gente se une para ver las fiestas de cumpleaños de los agentes, entonces estoy seguro de que",
       "speaker": "James Pollack"
     },
     {
-      "id": 406,
+      "id": 376,
       "start": 1658.68,
       "end": 1659.68,
       "text": "foro de gobernanza...",
       "speaker": "James Pollack"
     },
     {
-      "id": 407,
+      "id": 377,
       "start": 1659.68,
       "end": 1663.52,
       "text": "Bueno, sí, les gustarán las redadas corporativas y todas esas cosas raras que estos",
       "speaker": "James Pollack"
     },
     {
-      "id": 408,
+      "id": 378,
       "start": 1663.52,
       "end": 1666.12,
       "text": "Los agentes harán una vez que se pongan en marcha.",
       "speaker": "James Pollack"
     },
     {
-      "id": 409,
+      "id": 379,
       "start": 1666.12,
       "end": 1667.8,
       "text": "Ataques de vampiros a otras cadenas.",
       "speaker": "James Pollack"
     },
     {
-      "id": 410,
+      "id": 380,
       "start": 1667.8,
       "end": 1669.2,
       "text": "Creo que sería divertido verlo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 411,
+      "id": 381,
       "start": 1669.2,
       "end": 1673.58,
       "text": "Y ya sabes, estos modelos funcionan sin cabeza.",
       "speaker": "James Pollack"
     },
     {
-      "id": 412,
+      "id": 382,
       "start": 1673.58,
       "end": 1677.88,
       "text": "Estás, ya sabes, en Python, solo estás ejecutando un paso y estás generando algunos datos.",
       "speaker": "James Pollack"
     },
     {
-      "id": 413,
+      "id": 383,
       "start": 1677.88,
       "end": 1684.92,
       "text": "Y puede visualizar esos datos con gráficos de red y diferentes tipos de visualizaciones.",
       "speaker": "James Pollack"
     },
     {
-      "id": 414,
+      "id": 384,
       "start": 1684.92,
       "end": 1688.96,
       "text": "Pero algún tipo de elemento visual encima, algo así como los Sims, creo que podría hacer que",
       "speaker": "James Pollack"
     },
     {
-      "id": 415,
+      "id": 385,
       "start": 1688.96,
       "end": 1689.96,
       "text": "dinero de esa manera.",
       "speaker": "James Pollack"
     },
     {
-      "id": 416,
+      "id": 386,
       "start": 1689.96,
       "end": 1695.84,
       "text": "Obviamente, solo lo que yo aprendo y lo que aprenden otros que son grandes usuarios de un producto.",
       "speaker": "James Pollack"
     },
     {
-      "id": 417,
+      "id": 387,
       "start": 1695.84,
       "end": 1699.22,
       "text": "De esta manera, creo que muy rápidamente comenzarán a tener una experiencia intuitiva.",
       "speaker": "James Pollack"
     },
     {
-      "id": 418,
+      "id": 388,
       "start": 1699.22,
       "end": 1704.72,
       "text": "Y la intuición respaldada por, ya sabes, datos sintéticos, tal vez respaldada por, ya sabes, datos del mundo real.",
       "speaker": "James Pollack"
     },
     {
-      "id": 419,
+      "id": 389,
       "start": 1704.72,
       "end": 1708.78,
       "text": "datos también sobre lo que funciona.",
       "speaker": "James Pollack"
     },
     {
-      "id": 420,
+      "id": 390,
       "start": 1708.78,
       "end": 1714.12,
       "text": "Y creo que personas así se convertirán, ya sabes, en miembros valiosos de DAO, A. Como, este",
       "speaker": "James Pollack"
     },
     {
-      "id": 421,
+      "id": 391,
       "start": 1714.12,
       "end": 1719.34,
       "text": "La herramienta debería permitirle a nivel personal ingresar a un DAO, configurarlo, modelar un cambio que",
       "speaker": "James Pollack"
     },
     {
-      "id": 422,
+      "id": 392,
       "start": 1719.34,
       "end": 1723.36,
       "text": "quieres hacer, y venir a ese DAO con alguna evidencia que diga, oye, deberíamos",
       "speaker": "James Pollack"
     },
     {
-      "id": 423,
+      "id": 393,
       "start": 1723.36,
       "end": 1727.22,
       "text": "hacer este cambio porque cuando lo ejecuto a través de los modelos en todos estos escenarios diferentes,",
       "speaker": "James Pollack"
     },
     {
-      "id": 424,
+      "id": 394,
       "start": 1727.22,
       "end": 1728.6,
       "text": "nos muestra a todos duplicando nuestro dinero.",
       "speaker": "James Pollack"
     },
     {
-      "id": 425,
+      "id": 395,
       "start": 1728.6,
       "end": 1732.12,
       "text": "Creo que obtendrás más votos por algo así.",
       "speaker": "James Pollack"
     },
     {
-      "id": 426,
+      "id": 396,
       "start": 1732.12,
       "end": 1738.14,
       "text": "Entonces, a nivel personal, supongo que podría usarlo para hacer mi propia inversión en DAO,",
       "speaker": "James Pollack"
     },
     {
-      "id": 427,
+      "id": 397,
       "start": 1738.14,
       "end": 1742.86,
       "text": "realmente nítido y tratar de monetizarlo de esa manera.",
       "speaker": "James Pollack"
     },
     {
-      "id": 428,
+      "id": 398,
       "start": 1742.86,
       "end": 1746.76,
       "text": "Pero eso no me parece tan divertido como construir cosas.",
       "speaker": "James Pollack"
     },
     {
-      "id": 429,
+      "id": 399,
       "start": 1746.76,
       "end": 1747.76,
       "text": "Sí, totalmente.",
       "speaker": "James Pollack"
     },
     {
-      "id": 430,
+      "id": 400,
       "start": 1747.76,
       "end": 1748.76,
       "text": "Entonces no lo sé.",
       "speaker": "James Pollack"
     },
     {
-      "id": 431,
+      "id": 401,
       "start": 1748.76,
       "end": 1749.76,
       "text": "¿Tienes alguna idea?",
       "speaker": "James Pollack"
     },
     {
-      "id": 432,
+      "id": 402,
       "start": 1749.76,
       "end": 1750.76,
       "text": "¿Qué opinas?",
       "speaker": "James Pollack"
     },
     {
-      "id": 433,
+      "id": 403,
       "start": 1750.76,
       "end": 1753.36,
       "text": "Quiero decir, simplemente creo que hay...",
       "speaker": "James Pollack"
     },
     {
-      "id": 434,
+      "id": 404,
       "start": 1753.36,
       "end": 1759.38,
       "text": "Este es, ya sabes, un espacio de diseño muy interesante, novedoso e importante, creo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 435,
+      "id": 405,
       "start": 1759.38,
       "end": 1764.48,
       "text": "que hay muchas implicaciones y caminos que esto podría seguir.",
       "speaker": "James Pollack"
     },
     {
-      "id": 436,
+      "id": 406,
       "start": 1764.48,
       "end": 1772.94,
       "text": "Para mí espero que uno de los resultados de este podcast sea que tengamos 5.000 oyentes.",
       "speaker": "James Pollack"
     },
     {
-      "id": 437,
+      "id": 407,
       "start": 1772.94,
       "end": 1777.44,
       "text": "entre cinco y siete, dependiendo del episodio, y tengo la esperanza de que si solo el 1% de ellos marca",
       "speaker": "James Pollack"
     },
     {
-      "id": 438,
+      "id": 408,
       "start": 1777.44,
       "end": 1782.26,
       "text": "Sacas tu GitHub y dicen, oh, me gustaría conectarme con James y ejecutar una simulación.",
       "speaker": "James Pollack"
     },
     {
-      "id": 439,
+      "id": 409,
       "start": 1782.26,
       "end": 1789.57,
       "text": "contra mi DAO, creo que obtienes resultados más interesantes al asociarte con el existente",
       "speaker": "James Pollack"
     },
     {
-      "id": 440,
+      "id": 410,
       "start": 1789.57,
       "end": 1793.45,
       "text": "DAO y ayudarlos a resolver sus problemas en lugar de simplemente construir esto en abstracto.",
       "speaker": "James Pollack"
     },
     {
-      "id": 441,
+      "id": 411,
       "start": 1793.45,
       "end": 1795.67,
       "text": "Ya sabes, este es un espacio de diseño muy amplio.",
       "speaker": "James Pollack"
     },
     {
-      "id": 442,
+      "id": 412,
       "start": 1795.67,
       "end": 1799.59,
       "text": "Tal vez eventualmente sea generalizable a todos los DAO, pero al igual que conectarse con los existentes",
       "speaker": "James Pollack"
     },
     {
-      "id": 443,
+      "id": 413,
       "start": 1799.59,
       "end": 1803.67,
       "text": "DAO y ayudarlos con sus necesidades, creo que eso llevará esto a la siguiente etapa de",
       "speaker": "James Pollack"
     },
     {
-      "id": 444,
+      "id": 414,
       "start": 1803.67,
       "end": 1804.67,
       "text": "madurez.",
       "speaker": "James Pollack"
     },
     {
-      "id": 445,
+      "id": 415,
       "start": 1804.67,
       "end": 1805.67,
       "text": "Creo que eso es correcto.",
       "speaker": "James Pollack"
     },
     {
-      "id": 446,
+      "id": 416,
       "start": 1805.67,
       "end": 1808.21,
       "text": "He estado construyendo un poco en el desierto.",
       "speaker": "James Pollack"
     },
     {
-      "id": 447,
+      "id": 417,
       "start": 1808.21,
       "end": 1810.23,
       "text": "Es una abstracción, ¿verdad?",
       "speaker": "James Pollack"
     },
     {
-      "id": 448,
+      "id": 418,
       "start": 1810.23,
       "end": 1814.97,
       "text": "No soy un miembro activo de ningún DAO.",
       "speaker": "James Pollack"
     },
     {
-      "id": 449,
+      "id": 419,
       "start": 1814.97,
       "end": 1819.57,
       "text": "Mi amigo con quien hablé de la idea, quien me señaló tu tweet.",
       "speaker": "James Pollack"
     },
     {
-      "id": 450,
+      "id": 420,
       "start": 1819.57,
       "end": 1822.25,
       "text": "Su nombre es Dane Lund.",
       "speaker": "James Pollack"
     },
     {
-      "id": 451,
+      "id": 421,
       "start": 1822.25,
       "end": 1824.81,
       "text": "Fue el arquitecto DAO en Alliance DAO.",
       "speaker": "James Pollack"
     },
     {
-      "id": 452,
+      "id": 422,
       "start": 1824.81,
       "end": 1835.28,
       "text": "Ahora creo que él se encarga de la gestión de Optimism, pero no está en su junta directiva.",
       "speaker": "James Pollack"
     },
     {
-      "id": 453,
+      "id": 423,
       "start": 1835.28,
       "end": 1836.28,
       "text": "Esto fue hace aproximadamente un año.",
       "speaker": "James Pollack"
     },
     {
-      "id": 454,
+      "id": 424,
       "start": 1836.28,
       "end": 1837.28,
       "text": "Hablamos de ello.",
       "speaker": "James Pollack"
     },
     {
-      "id": 455,
+      "id": 425,
       "start": 1837.28,
       "end": 1840.94,
       "text": "Me dio mucha información sobre el lado DAO de las cosas, luego lo tomé y simplemente",
       "speaker": "James Pollack"
     },
     {
-      "id": 456,
+      "id": 426,
       "start": 1840.94,
       "end": 1841.94,
       "text": "estado construyendo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 457,
+      "id": 427,
       "start": 1841.94,
       "end": 1846.6,
       "text": "Sí, estoy totalmente en el punto ahora en el que me gusta, pero ¿qué significa esto en términos de",
       "speaker": "James Pollack"
     },
     {
-      "id": 458,
+      "id": 428,
       "start": 1846.6,
       "end": 1847.6,
       "text": "¿DAO?",
       "speaker": "James Pollack"
     },
     {
-      "id": 459,
+      "id": 429,
       "start": 1847.6,
       "end": 1848.6,
       "text": "¿Qué debo agregar?",
       "speaker": "James Pollack"
     },
     {
-      "id": 460,
+      "id": 430,
       "start": 1848.6,
       "end": 1855.32,
       "text": "Incluso los pasos que está siguiendo la DAO cuando digo que está redistribuyendo tokens o está haciendo",
       "speaker": "James Pollack"
     },
     {
-      "id": 461,
+      "id": 431,
       "start": 1855.32,
       "end": 1861.26,
       "text": "recompras o apuestas, algunas de esas cosas, no tengo una comprensión intelectual, pero",
       "speaker": "James Pollack"
     },
     {
-      "id": 462,
+      "id": 432,
       "start": 1861.26,
       "end": 1865.38,
       "text": "No tengo nada del nivel del suelo como, oh sí, implementamos apuestas.",
       "speaker": "James Pollack"
     },
     {
-      "id": 463,
+      "id": 433,
       "start": 1865.38,
       "end": 1866.38,
       "text": "Esto es lo que fue.",
       "speaker": "James Pollack"
     },
     {
-      "id": 464,
+      "id": 434,
       "start": 1866.38,
       "end": 1870.22,
       "text": "Ese es el tipo de cosas que me encantaría si tu comunidad nos las trajera y dijera:",
       "speaker": "James Pollack"
     },
     {
-      "id": 465,
+      "id": 435,
       "start": 1870.22,
       "end": 1873.76,
       "text": "Oh, sí, en este paso en el que planeas apostar, aquí tienes algunas otras cosas.",
       "speaker": "James Pollack"
     },
     {
-      "id": 466,
+      "id": 436,
       "start": 1873.76,
       "end": 1876.7,
       "text": "ni siquiera lo sabías.",
       "speaker": "James Pollack"
     },
     {
-      "id": 467,
+      "id": 437,
       "start": 1876.7,
       "end": 1877.7,
       "text": "Eso sería asombroso.",
       "speaker": "James Pollack"
     },
     {
-      "id": 468,
+      "id": 438,
       "start": 1877.7,
       "end": 1879.15,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 469,
+      "id": 439,
       "start": 1879.15,
       "end": 1880.15,
       "text": "Sí, seguro.",
       "speaker": "James Pollack"
     },
     {
-      "id": 470,
+      "id": 440,
       "start": 1880.15,
       "end": 1886.61,
       "text": "Hay apuestas y luego están las actualizaciones de protocolo y luego, quiero presentarles",
       "speaker": "James Pollack"
     },
     {
-      "id": 471,
+      "id": 441,
       "start": 1886.61,
       "end": 1890.11,
       "text": "financiación cuadrática a esta comunidad y ver cómo cambia las cosas.",
       "speaker": "James Pollack"
     },
     {
-      "id": 472,
+      "id": 442,
       "start": 1890.11,
       "end": 1893.93,
       "text": "Creo que hay muchas oportunidades para que las personas que están creando herramientas DAO vengan aquí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 473,
+      "id": 443,
       "start": 1893.93,
       "end": 1900.05,
       "text": "y conectarse y decir, oye, en cien simulaciones diferentes, nuestra herramienta aumenta la coordinación",
       "speaker": "James Pollack"
     },
     {
-      "id": 474,
+      "id": 444,
       "start": 1900.05,
       "end": 1904.57,
       "text": "capacidad de carga y el precio del token en el DAO el 97% del tiempo o algo así.",
       "speaker": "James Pollack"
     },
     {
-      "id": 475,
+      "id": 445,
       "start": 1904.57,
       "end": 1907.01,
       "text": "No hay nada para eso, ¿verdad?",
       "speaker": "James Pollack"
     },
     {
-      "id": 476,
+      "id": 446,
       "start": 1907.01,
       "end": 1908.87,
       "text": "No hay nada que te diga si una decisión que estás tomando...",
       "speaker": "James Pollack"
     },
     {
-      "id": 477,
+      "id": 447,
       "start": 1908.87,
       "end": 1914.43,
       "text": "Y no sé si llegaremos a ser totalmente buenos o malos, pero ¿cuáles son las implicaciones?",
       "speaker": "James Pollack"
     },
     {
-      "id": 478,
+      "id": 448,
       "start": 1914.43,
       "end": 1915.43,
       "text": "de ello son.",
       "speaker": "James Pollack"
     },
     {
-      "id": 479,
+      "id": 449,
       "start": 1915.43,
       "end": 1918.03,
       "text": "Y tengo la sensación de que eso es valioso.",
       "speaker": "James Pollack"
     },
     {
-      "id": 480,
+      "id": 450,
       "start": 1918.03,
       "end": 1919.65,
       "text": "Por eso pensé en la idea.",
       "speaker": "James Pollack"
     },
     {
-      "id": 481,
+      "id": 451,
       "start": 1919.65,
       "end": 1925.35,
       "text": "Por eso, cuando te escuché publicar sobre ello, quise ponerme en contacto.",
       "speaker": "James Pollack"
     },
     {
-      "id": 482,
+      "id": 452,
       "start": 1925.35,
       "end": 1933.83,
       "text": "No soy propietario de DAO ni nada por el estilo, miembro, supongo que eso sería mejor, activamente, ¿verdad?",
       "speaker": "James Pollack"
     },
     {
-      "id": 483,
+      "id": 453,
       "start": 1933.83,
       "end": 1934.83,
       "text": "ahora.",
       "speaker": "James Pollack"
     },
     {
-      "id": 484,
+      "id": 454,
       "start": 1934.83,
       "end": 1935.83,
       "text": "Así que en realidad no lo sé.",
       "speaker": "James Pollack"
     },
     {
-      "id": 485,
+      "id": 455,
       "start": 1935.83,
       "end": 1936.83,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 486,
+      "id": 456,
       "start": 1936.83,
       "end": 1937.87,
       "text": "Hay un cierto punto en el que necesito hablar contigo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 487,
+      "id": 457,
       "start": 1937.87,
       "end": 1938.87,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 488,
+      "id": 458,
       "start": 1938.87,
       "end": 1940.45,
       "text": "Creo que el punto que les está planteando a los usuarios sobre ese punto es ahora.",
       "speaker": "James Pollack"
     },
     {
-      "id": 489,
+      "id": 459,
       "start": 1940.45,
       "end": 1941.73,
       "text": "Eso es emocionante.",
       "speaker": "James Pollack"
     },
     {
-      "id": 490,
+      "id": 460,
       "start": 1941.73,
       "end": 1944.97,
       "text": "Cuando dices monetizarlo, uno...",
       "speaker": "James Pollack"
     },
     {
-      "id": 491,
+      "id": 461,
       "start": 1944.97,
       "end": 1947.38,
       "text": "Bueno.",
       "speaker": "James Pollack"
     },
     {
-      "id": 492,
+      "id": 462,
       "start": 1947.38,
       "end": 1951.92,
       "text": "No sé si es buena o mala idea, pero ¿y si alguna parte del modelo estuviera en cadena?",
       "speaker": "James Pollack"
     },
     {
-      "id": 493,
+      "id": 463,
       "start": 1951.92,
       "end": 1958.86,
       "text": "y supongo que estoy pensando más en si ibas a hacer un pago por uso o algo así,",
       "speaker": "James Pollack"
     },
     {
-      "id": 494,
+      "id": 464,
       "start": 1958.86,
       "end": 1960.58,
       "text": "tal vez sería interesante...",
       "speaker": "James Pollack"
     },
     {
-      "id": 495,
+      "id": 465,
       "start": 1960.58,
       "end": 1963.72,
       "text": "Podrías implementar este modelo en tu propia cadena de bloques o algo así.",
       "speaker": "James Pollack"
     },
     {
-      "id": 496,
+      "id": 466,
       "start": 1963.72,
       "end": 1964.72,
       "text": "Podría...",
       "speaker": "James Pollack"
     },
     {
-      "id": 497,
+      "id": 467,
       "start": 1964.72,
       "end": 1969.18,
       "text": "Depende de cuánta información la gente quiera revelar sobre sus propias cosas.",
       "speaker": "James Pollack"
     },
     {
-      "id": 498,
+      "id": 468,
       "start": 1969.18,
       "end": 1974.0,
       "text": "Tal vez tengas que usar ZK para que la gente no revele información privada de la empresa.",
       "speaker": "James Pollack"
     },
     {
-      "id": 499,
+      "id": 469,
       "start": 1974.0,
       "end": 1981.35,
       "text": "Pero sí, en la medida en que quisiera ejecutarlo como software como servicio o como juego, es",
       "speaker": "James Pollack"
     },
     {
-      "id": 500,
+      "id": 470,
       "start": 1981.35,
       "end": 1982.35,
       "text": "totalmente confuso.",
       "speaker": "James Pollack"
     },
     {
-      "id": 501,
+      "id": 471,
       "start": 1982.35,
       "end": 1989.57,
       "text": "El software como servicio me parece difícil y en cadena, pero eso fue solo una idea que surgió",
       "speaker": "James Pollack"
     },
     {
-      "id": 502,
+      "id": 472,
       "start": 1989.57,
       "end": 1990.57,
       "text": "a través de mi cabeza.",
       "speaker": "James Pollack"
     },
     {
-      "id": 503,
+      "id": 473,
       "start": 1990.57,
       "end": 1992.43,
       "text": "Pensé que debería tirarlo mientras hablamos.",
       "speaker": "James Pollack"
     },
     {
-      "id": 504,
+      "id": 474,
       "start": 1992.43,
       "end": 1993.43,
       "text": "Totalmente.",
       "speaker": "James Pollack"
     },
     {
-      "id": 505,
+      "id": 475,
       "start": 1993.43,
       "end": 1994.43,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 506,
+      "id": 476,
       "start": 1994.43,
       "end": 1995.43,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 507,
+      "id": 477,
       "start": 1995.43,
       "end": 1998.43,
       "text": "Quiero decir, supongo que ahí está el todo, abres el código para que la gente pueda desarrollarlo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 508,
+      "id": 478,
       "start": 1998.43,
       "end": 1999.43,
       "text": "encima de eso.",
       "speaker": "James Pollack"
     },
     {
-      "id": 509,
+      "id": 479,
       "start": 1999.43,
       "end": 2005.55,
       "text": "Creo que la red es valiosa, pero luego vendes una herramienta SaaS que está vinculada",
       "speaker": "James Pollack"
     },
     {
-      "id": 510,
+      "id": 480,
       "start": 2005.55,
       "end": 2006.55,
       "text": "lo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 511,
+      "id": 481,
       "start": 2006.55,
       "end": 2009.31,
       "text": "Pero para mí, la parte difícil de esto probablemente será simplemente...",
       "speaker": "James Pollack"
     },
     {
-      "id": 512,
+      "id": 482,
       "start": 2009.31,
       "end": 2014.93,
       "text": "Tengo una experiencia pasajera ejecutando agentes de IA, pero consumen mucha computación.",
       "speaker": "James Pollack"
     },
     {
-      "id": 513,
+      "id": 483,
       "start": 2014.93,
       "end": 2015.93,
       "text": "fuerza.",
       "speaker": "James Pollack"
     },
     {
-      "id": 514,
+      "id": 484,
       "start": 2015.93,
       "end": 2019.65,
       "text": "Y si vas a abstraer la necesidad de poner en marcha un montón de servidores en la nube detrás",
       "speaker": "James Pollack"
     },
     {
-      "id": 515,
+      "id": 485,
       "start": 2019.65,
       "end": 2024.77,
       "text": "una oferta SaaS, creo que la gente pagará por eso, pero depende de lo que estemos hablando",
       "speaker": "James Pollack"
     },
     {
-      "id": 516,
+      "id": 486,
       "start": 2024.77,
       "end": 2025.77,
       "text": "sobre aquí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 517,
+      "id": 487,
       "start": 2025.77,
       "end": 2028.25,
       "text": "¿Vamos a simular todo el ecosistema web tres o simplemente un DAO dentro de eso?",
       "speaker": "James Pollack"
     },
     {
-      "id": 518,
+      "id": 488,
       "start": 2028.25,
       "end": 2029.25,
       "text": "Bien.",
       "speaker": "James Pollack"
     },
     {
-      "id": 519,
+      "id": 489,
       "start": 2029.43,
       "end": 2033.39,
       "text": "Depende de si mi característica se arrastra o no al intentar que simule toda la web.",
       "speaker": "James Pollack"
     },
     {
-      "id": 520,
+      "id": 490,
       "start": 2033.39,
       "end": 2037.47,
       "text": "tres, mezclarlo con la base del código o no.",
       "speaker": "James Pollack"
     },
     {
-      "id": 521,
+      "id": 491,
       "start": 2037.47,
       "end": 2039.49,
       "text": "Creo que al menos tendremos que hacer...",
       "speaker": "James Pollack"
     },
     {
-      "id": 522,
+      "id": 492,
       "start": 2039.49,
       "end": 2041.85,
       "text": "El próximo agente que creo que crearemos es un foro.",
       "speaker": "James Pollack"
     },
     {
-      "id": 523,
+      "id": 493,
       "start": 2041.85,
       "end": 2047.31,
       "text": "Me parece muy interesante que la mayor parte de la comunicación que ocurre en estos DAO es",
       "speaker": "James Pollack"
     },
     {
-      "id": 524,
+      "id": 494,
       "start": 2047.31,
       "end": 2054.02,
       "text": "Conversaciones encadenadas basadas en foros, basadas en texto.",
       "speaker": "James Pollack"
     },
     {
-      "id": 525,
+      "id": 495,
       "start": 2054.02,
       "end": 2058.4,
       "text": "Entonces no sé si necesitaremos modelar todo, pero probablemente necesitaremos",
       "speaker": "James Pollack"
     },
     {
-      "id": 526,
+      "id": 496,
       "start": 2058.4,
       "end": 2058.78,
       "text": "un modelo bastante robusto.",
       "speaker": "James Pollack"
     },
     {
-      "id": 527,
+      "id": 497,
       "start": 2058.78,
       "end": 2065.98,
       "text": "Un modelo bastante robusto de foro de chat, que me parece interesante y no tengo ninguna",
       "speaker": "James Pollack"
     },
     {
-      "id": 528,
+      "id": 498,
       "start": 2065.98,
       "end": 2070.46,
       "text": "idea de lo que sucederá una vez que dejes que un grupo de bots conversen entre sí allí, pero será",
       "speaker": "James Pollack"
     },
     {
-      "id": 529,
+      "id": 499,
       "start": 2070.46,
       "end": 2071.46,
       "text": "sea ​​divertido.",
       "speaker": "James Pollack"
     },
     {
-      "id": 530,
+      "id": 500,
       "start": 2071.46,
       "end": 2077.02,
       "text": "Y me gusta la idea de que podamos extraer los titulares de sus publicaciones o lo que sea.",
       "speaker": "James Pollack"
     },
     {
-      "id": 531,
+      "id": 501,
       "start": 2077.02,
       "end": 2081.88,
       "text": "Verás que reciben 200 respuestas en una publicación, por ejemplo, deberíamos cambiar a cuadrática.",
       "speaker": "James Pollack"
     },
     {
-      "id": 532,
+      "id": 502,
       "start": 2081.88,
       "end": 2085.42,
       "text": "financiación o cosas así, quién sabe cómo van a escribir los bots, tal vez sea como cuadrático",
       "speaker": "James Pollack"
     },
     {
-      "id": 533,
+      "id": 503,
       "start": 2085.42,
       "end": 2087.56,
       "text": "financiación, montón de emojis.",
       "speaker": "James Pollack"
     },
     {
-      "id": 534,
+      "id": 504,
       "start": 2087.56,
       "end": 2089.5,
       "text": "Espero que sean raros y geniales.",
       "speaker": "James Pollack"
     },
     {
-      "id": 535,
+      "id": 505,
       "start": 2089.54,
       "end": 2090.77,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 536,
+      "id": 506,
       "start": 2090.77,
       "end": 2091.77,
       "text": "Estoy seguro de que serán raros.",
       "speaker": "James Pollack"
     },
     {
-      "id": 537,
+      "id": 507,
       "start": 2091.77,
       "end": 2098.61,
       "text": "Veremos si aprenden a ser geniales, pero sí, te surgen algunas preguntas sobre cómo sería",
       "speaker": "James Pollack"
     },
     {
-      "id": 538,
+      "id": 508,
       "start": 2098.61,
       "end": 2103.41,
       "text": "modelas un espacio social para un mundo digital...",
       "speaker": "James Pollack"
     },
     {
-      "id": 539,
+      "id": 509,
       "start": 2103.41,
       "end": 2106.69,
       "text": "Después de haber estado involucrado en DAO, creo que el foro de gobernanza es donde se reúnen las autoridades formales.",
       "speaker": "James Pollack"
     },
     {
-      "id": 540,
+      "id": 510,
       "start": 2106.69,
       "end": 2108.37,
       "text": "sucede la gobernanza.",
       "speaker": "James Pollack"
     },
     {
-      "id": 541,
+      "id": 511,
       "start": 2108.37,
       "end": 2113.43,
       "text": "Pero aprendí esto sobre las organizaciones, oh hombre, hace como 15 años, uno de mis mentores",
       "speaker": "James Pollack"
     },
     {
-      "id": 542,
+      "id": 512,
       "start": 2113.43,
       "end": 2117.41,
       "text": "me enseñó que, oye, la verdadera cultura de esto no está dentro de las reuniones, está en",
       "speaker": "James Pollack"
     },
     {
-      "id": 543,
+      "id": 513,
       "start": 2117.41,
       "end": 2118.77,
       "text": "los pasillos y como en las horas felices.",
       "speaker": "James Pollack"
     },
     {
-      "id": 544,
+      "id": 514,
       "start": 2118.77,
       "end": 2119.77,
       "text": "Y lo que la gente está haciendo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 545,
+      "id": 515,
       "start": 2119.77,
       "end": 2123.75,
       "text": "Lo que realmente se dicen las personas cuando no temen las represalias del jefe.",
       "speaker": "James Pollack"
     },
     {
-      "id": 546,
+      "id": 516,
       "start": 2123.75,
       "end": 2127.55,
       "text": "Y eso me hace pensar, oh, bueno, los DAO pueden luchar en el foro de gobernanza, pero ¿qué",
       "speaker": "James Pollack"
     },
     {
-      "id": 547,
+      "id": 517,
       "start": 2127.55,
       "end": 2131.33,
       "text": "¿Se envían mensajes de Discord entre sí y sobre qué twittean?",
       "speaker": "James Pollack"
     },
     {
-      "id": 548,
+      "id": 518,
       "start": 2131.33,
       "end": 2136.83,
       "text": "Entonces, simular esos espacios sociales parece complicado, pero con los LLM, en realidad",
       "speaker": "James Pollack"
     },
     {
-      "id": 549,
+      "id": 519,
       "start": 2136.83,
       "end": 2138.77,
       "text": "parece recién factible.",
       "speaker": "James Pollack"
     },
     {
-      "id": 550,
+      "id": 520,
       "start": 2138.77,
       "end": 2139.77,
       "text": "Recién más fácil.",
       "speaker": "James Pollack"
     },
     {
-      "id": 551,
+      "id": 521,
       "start": 2139.77,
       "end": 2140.77,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 552,
+      "id": 522,
       "start": 2140.77,
       "end": 2143.83,
       "text": "En el pasado, incluso cuando empezamos a hablar hace un par de meses, las cosas no habían cambiado.",
       "speaker": "James Pollack"
     },
     {
-      "id": 553,
+      "id": 523,
       "start": 2143.83,
       "end": 2145.97,
       "text": "tan lejos como lo han hecho ahora.",
       "speaker": "James Pollack"
     },
     {
-      "id": 554,
+      "id": 524,
       "start": 2145.97,
       "end": 2147.77,
       "text": "Eso parece más accesible para modelar.",
       "speaker": "James Pollack"
     },
     {
-      "id": 555,
+      "id": 525,
       "start": 2147.77,
       "end": 2148.77,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 556,
+      "id": 526,
       "start": 2148.77,
       "end": 2154.01,
       "text": "El tipo de espacios sociales más suaves como tú, sí, pienso, bueno, supongo que tengo que agregar",
       "speaker": "James Pollack"
     },
     {
-      "id": 557,
+      "id": 527,
       "start": 2154.01,
       "end": 2159.06,
       "text": "una simulación de Twitter y un poco parecida a la de Discord.",
       "speaker": "James Pollack"
     },
     {
-      "id": 558,
+      "id": 528,
       "start": 2159.06,
       "end": 2160.06,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 559,
+      "id": 529,
       "start": 2160.06,
       "end": 2167.14,
       "text": "Creo que hay muchas posibilidades aquí y tengo curiosidad por ver cómo funciona el proyecto.",
       "speaker": "James Pollack"
     },
     {
-      "id": 560,
+      "id": 530,
       "start": 2167.14,
       "end": 2168.14,
       "text": "evoluciona.",
       "speaker": "James Pollack"
     },
     {
-      "id": 561,
+      "id": 531,
       "start": 2168.14,
       "end": 2173.38,
       "text": "Y por eso hay grandes ambiciones de poder simular muchas cosas diferentes en Web3.",
       "speaker": "James Pollack"
     },
     {
-      "id": 562,
+      "id": 532,
       "start": 2173.38,
       "end": 2177.6,
       "text": "antes de que realmente pongamos nuestras fichas y nuestro tiempo en ellas, pero creo que comenzar poco a poco",
       "speaker": "James Pollack"
     },
     {
-      "id": 563,
+      "id": 533,
       "start": 2177.6,
       "end": 2179.04,
       "text": "y ojalá contestes.",
       "speaker": "James Pollack"
     },
     {
-      "id": 564,
+      "id": 534,
       "start": 2179.04,
       "end": 2184.88,
       "text": "Un par de relaciones interesantes con DAO de este episodio es donde veo esto",
       "speaker": "James Pollack"
     },
     {
-      "id": 565,
+      "id": 535,
       "start": 2184.88,
       "end": 2185.88,
       "text": "yendo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 566,
+      "id": 536,
       "start": 2185.88,
       "end": 2186.88,
       "text": "Y luego nos encantaría tenerte de vuelta.",
       "speaker": "James Pollack"
     },
     {
-      "id": 567,
+      "id": 537,
       "start": 2186.88,
       "end": 2191.72,
       "text": "Quiero decir, si esto continúa, nos encantaría tenerlo de regreso en el tercer o cuarto trimestre y simplemente",
       "speaker": "James Pollack"
     },
     {
-      "id": 568,
+      "id": 538,
       "start": 2191.72,
       "end": 2197.8,
       "text": "vea cómo la simulación DAO ha evolucionado como una categoría que está creando.",
       "speaker": "James Pollack"
     },
     {
-      "id": 569,
+      "id": 539,
       "start": 2197.8,
       "end": 2204.04,
       "text": "Entonces, al crear una categoría, se me dio un vuelco el estómago cuando dices eso, pero es así.",
       "speaker": "James Pollack"
     },
     {
-      "id": 570,
+      "id": 540,
       "start": 2204.04,
       "end": 2205.04,
       "text": "Frío.",
       "speaker": "James Pollack"
     },
     {
-      "id": 571,
+      "id": 541,
       "start": 2205.04,
       "end": 2206.1,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 572,
+      "id": 542,
       "start": 2206.1,
       "end": 2207.1,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 573,
+      "id": 543,
       "start": 2207.1,
       "end": 2212.78,
       "text": "Entonces mencionaste que empezaste a acumular gravedad hacia esta idea.",
       "speaker": "James Pollack"
     },
     {
-      "id": 574,
+      "id": 544,
       "start": 2212.78,
       "end": 2218.82,
       "text": "Es una idea que había tenido antes, pero estaba como flotando una vez que la conectabas a tierra y",
       "speaker": "James Pollack"
     },
     {
-      "id": 575,
+      "id": 545,
       "start": 2218.82,
       "end": 2219.82,
       "text": "ahora hay código.",
       "speaker": "James Pollack"
     },
     {
-      "id": 576,
+      "id": 546,
       "start": 2219.82,
       "end": 2221.04,
       "text": "Ahora tenemos esta discusión.",
       "speaker": "James Pollack"
     },
     {
-      "id": 577,
+      "id": 547,
       "start": 2221.04,
       "end": 2222.72,
       "text": "Hay algo que la gente puede mirar.",
       "speaker": "James Pollack"
     },
     {
-      "id": 578,
+      "id": 548,
       "start": 2222.72,
       "end": 2226.7,
       "text": "Estoy muy emocionado sobre hacia dónde irá.",
       "speaker": "James Pollack"
     },
     {
-      "id": 579,
+      "id": 549,
       "start": 2226.7,
       "end": 2232.78,
       "text": "Tenía un par de preguntas rápidas para usted, tal vez sobre cuáles son las características que",
       "speaker": "James Pollack"
     },
     {
-      "id": 580,
+      "id": 550,
       "start": 2232.78,
       "end": 2233.94,
       "text": "¿Quieres ver en un simulador DAO?",
       "speaker": "James Pollack"
     },
     {
-      "id": 581,
+      "id": 551,
       "start": 2233.94,
       "end": 2234.94,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 582,
+      "id": 552,
       "start": 2234.94,
       "end": 2235.94,
       "text": "¿O tienes preguntas específicas?",
       "speaker": "James Pollack"
     },
     {
-      "id": 583,
+      "id": 553,
       "start": 2235.94,
       "end": 2240.92,
       "text": "preguntas que le gustaría responder? ¿O simplemente te imaginas la frescura de llegar allí?",
       "speaker": "James Pollack"
     },
     {
-      "id": 584,
+      "id": 554,
       "start": 2240.92,
       "end": 2248.02,
       "text": "y jugar con eso? Sí. ¿Qué puedo hacer por ti? Así que la próxima vez que nos veamos, será algo",
       "speaker": "James Pollack"
     },
     {
-      "id": 585,
+      "id": 555,
       "start": 2248.02,
       "end": 2254.72,
       "text": "que te gustaría. Bueno, ya no estoy muy involucrado en ningún DAO desde que me desafilié",
       "speaker": "James Pollack"
     },
     {
-      "id": 586,
+      "id": 556,
       "start": 2254.72,
       "end": 2261.66,
       "text": "del liderazgo de Gitcoin DAO. Pero quiero decir, creo que el espacio problemático que veo a mi alrededor",
       "speaker": "James Pollack"
     },
     {
-      "id": 587,
+      "id": 557,
       "start": 2261.66,
       "end": 2267.82,
       "text": "DAOs ¿Cuáles son las condiciones iniciales iniciales en las que queremos configurar nuestro DAO? Y hay",
       "speaker": "James Pollack"
     },
     {
-      "id": 588,
+      "id": 558,
       "start": 2267.82,
       "end": 2273.02,
       "text": "como umbrales de propuesta de usted necesitaba al menos X cantidad de tokens para votar, o lo siento, X cantidad",
       "speaker": "James Pollack"
     },
     {
-      "id": 589,
+      "id": 559,
       "start": 2273.02,
       "end": 2281.6,
       "text": "de tokens para presentar una propuesta, Y cantidad de tokens para que se apruebe una propuesta. Sabes,",
       "speaker": "James Pollack"
     },
     {
-      "id": 590,
+      "id": 560,
       "start": 2281.6,
       "end": 2285.7,
       "text": "solo hay preguntas básicas sobre cuáles son las condiciones iniciales de mi DAO que la gente tiene",
       "speaker": "James Pollack"
     },
     {
-      "id": 591,
+      "id": 561,
       "start": 2285.7,
       "end": 2291.62,
       "text": "Creo que si puedes informarles, entonces creo que agregas mucho valor. Lo sé,",
       "speaker": "James Pollack"
     },
     {
-      "id": 592,
+      "id": 562,
       "start": 2291.66,
       "end": 2296.96,
       "text": "Mucha gente en el espacio de herramientas DAO dice: si integras mi herramienta X, funcionará.",
       "speaker": "James Pollack"
     },
     {
-      "id": 593,
+      "id": 563,
       "start": 2296.96,
       "end": 2302.58,
       "text": "ayudar a tu DAO Y de alguna manera. Y si pudieras demostrarlo en una simulación, creo que eso",
       "speaker": "James Pollack"
     },
     {
-      "id": 594,
+      "id": 564,
       "start": 2302.58,
       "end": 2310.21,
       "text": "se pone realmente interesante. Y luego está el puro entretenimiento.",
       "speaker": "James Pollack"
     },
     {
-      "id": 595,
+      "id": 565,
       "start": 2310.21,
       "end": 2315.65,
       "text": "aspecto de tener los robots de batalla y hacerlos pelear en los foros y ver cómo el meta de eso",
       "speaker": "James Pollack"
     },
     {
-      "id": 596,
+      "id": 566,
       "start": 2315.65,
       "end": 2321.17,
       "text": "evoluciona. Y entonces creo que esos son algunos hilos interesantes que puedes tirar.",
       "speaker": "James Pollack"
     },
     {
-      "id": 597,
+      "id": 567,
       "start": 2321.87,
       "end": 2321.97,
       "text": "Sí.",
       "speaker": "James Pollack"
     },
     {
-      "id": 598,
+      "id": 568,
       "start": 2322.01,
       "end": 2328.63,
       "text": "Gracias. Ese es el plan ahora mismo: seguirlo. Trabajo a tiempo completo como senior",
       "speaker": "James Pollack"
     },
     {
-      "id": 599,
+      "id": 569,
       "start": 2328.63,
       "end": 2334.55,
       "text": "artista técnico. En este momento estoy contratando con Meta. También trabajo en juegos en cadena con",
       "speaker": "James Pollack"
     },
     {
-      "id": 600,
+      "id": 570,
       "start": 2334.55,
       "end": 2338.19,
       "text": "algunos amigos míos. Tenemos una empresa, estamos creando juegos en cadena. deberíamos hablar de",
       "speaker": "James Pollack"
     },
     {
-      "id": 601,
+      "id": 571,
       "start": 2338.19,
       "end": 2345.58,
       "text": "eso por separado en algún momento, pero también ha sido un viaje realmente salvaje. Pero me voy, así que mi",
       "speaker": "James Pollack"
     },
     {
-      "id": 602,
+      "id": 572,
       "start": 2345.58,
       "end": 2351.26,
       "text": "El interés en esto surgió de una clase que tomé en el Instituto Santa Fe. Son así de geniales",
       "speaker": "James Pollack"
     },
     {
-      "id": 603,
+      "id": 573,
       "start": 2351.26,
       "end": 2357.7,
       "text": "think tank de complejidad con sede en Santa Fe. Y tomé su curso de modelado basado en agentes. ellos son",
       "speaker": "James Pollack"
     },
     {
-      "id": 604,
+      "id": 574,
       "start": 2357.7,
       "end": 2362.78,
       "text": "ellos tienen un tutorial sobre este lenguaje Python Mesa. Así es como quedé expuesto a cosas como,",
       "speaker": "James Pollack"
     },
     {
-      "id": 605,
+      "id": 575,
       "start": 2362.84,
       "end": 2368.04,
       "text": "oh, puedo construir estas cosas en Python. Pero en realidad voy a ir a una conferencia sobre",
       "speaker": "James Pollack"
     },
     {
-      "id": 606,
+      "id": 576,
       "start": 2368.04,
       "end": 2373.72,
       "text": "inteligencia colectiva en junio. Y voy a hablar, no como hablar oficialmente sobre el",
       "speaker": "James Pollack"
     },
     {
-      "id": 607,
+      "id": 577,
       "start": 2373.72,
       "end": 2380.2,
       "text": "simulador, pero poder discutir eso con personas que obtienen modelado basado en agentes y obtienen esto",
       "speaker": "James Pollack"
     },
     {
-      "id": 608,
+      "id": 578,
       "start": 2380.2,
       "end": 2381.14,
       "text": "cosas de complejidad.",
       "speaker": "James Pollack"
     },
     {
-      "id": 609,
+      "id": 579,
       "start": 2381.26,
       "end": 2391.08,
       "text": "Y estoy muy emocionado de traer eso allí y recibir comentarios y, en cierto modo, mucha gente está",
       "speaker": "James Pollack"
     },
     {
-      "id": 610,
+      "id": 580,
       "start": 2391.08,
       "end": 2398.0,
       "text": "muy concentrado. Las organizaciones son algo que la gente ha estudiado durante mucho tiempo, pero hay muchas",
       "speaker": "James Pollack"
     },
     {
-      "id": 611,
+      "id": 581,
       "start": 2398.0,
       "end": 2405.34,
       "text": "Todavía hay poca investigación sobre estas versiones digitales de ellos. Y creo que como el DAO, vino la A.",
       "speaker": "James Pollack"
     },
     {
-      "id": 612,
+      "id": 582,
       "start": 2405.34,
       "end": 2411.08,
       "text": "como autónomo. Y creo que eso desanimó a mucha gente al principio del DAO. Él",
       "speaker": "James Pollack"
     },
     {
-      "id": 613,
+      "id": 583,
       "start": 2411.84,
       "end": 2418.02,
       "text": "estaba totalmente separado de la gente y era todo código. Pero ahora creo que la parte importante",
       "speaker": "James Pollack"
     },
     {
-      "id": 614,
+      "id": 584,
       "start": 2418.02,
       "end": 2423.8,
       "text": "es el aspecto descentralizado de eso. Si piensa en esto como si fuera una empresa descentralizada,",
       "speaker": "James Pollack"
     },
     {
-      "id": 615,
+      "id": 585,
       "start": 2423.8,
       "end": 2427.72,
       "text": "Mire lo que sucedió durante la pandemia, cómo se han extendido las cosas, cómo ha trabajado todo el mundo.",
       "speaker": "James Pollack"
     },
     {
-      "id": 616,
+      "id": 586,
       "start": 2427.72,
       "end": 2434.27,
       "text": "desde casa ahora. Creo que es inevitable que la mayoría de estas cosas, llámese cinco años,",
       "speaker": "James Pollack"
     },
     {
-      "id": 617,
+      "id": 587,
       "start": 2434.39,
       "end": 2440.33,
       "text": "Dentro de 10, 20 años, la mayoría de las organizaciones estarán descentralizadas. Y entonces, ya sabes, tenemos una oportunidad.",
       "speaker": "James Pollack"
     },
     {
-      "id": 618,
+      "id": 588,
       "start": 2440.33,
       "end": 2441.85,
       "text": "para aprender sobre estas cosas. Y creo que esa es una parte realmente importante. Y creo que eso es",
       "speaker": "James Pollack"
     },
     {
-      "id": 619,
+      "id": 589,
       "start": 2441.87,
       "end": 2445.41,
       "text": "una parte realmente importante de esto ahora y sacarlo de la puerta con buen pie con",
       "speaker": "James Pollack"
     },
     {
-      "id": 620,
+      "id": 590,
       "start": 2445.41,
       "end": 2451.2,
       "text": "algunas herramientas que nos puedan gustar, tal vez evitar pegarnos un tiro en el pie tan gravemente como",
       "speaker": "James Pollack"
     },
     {
-      "id": 621,
+      "id": 591,
       "start": 2451.2,
       "end": 2458.16,
       "text": "Supongo que tengo con algunos otros bienes públicos. Sí, siento eso. Y fue un gran punto",
       "speaker": "James Pollack"
     },
     {
-      "id": 622,
+      "id": 592,
       "start": 2458.16,
       "end": 2463.76,
       "text": "sobre la presciencia de esta oportunidad en este momento. Pero también estoy en esto solo por el nerd.",
       "speaker": "James Pollack"
     },
     {
-      "id": 623,
+      "id": 593,
       "start": 2463.76,
       "end": 2471.5,
       "text": "La arrogancia de experimentar cómo la IA y las DAO encajan en organizaciones digitalmente nativas. Es",
       "speaker": "James Pollack"
     },
     {
-      "id": 624,
+      "id": 594,
       "start": 2472.06,
       "end": 2478.1,
       "text": "Un espacio de diseño para explorar. Y esto lo tiene todo. Tiene agentes, tiene LLM,",
       "speaker": "James Pollack"
     },
     {
-      "id": 625,
+      "id": 595,
       "start": 2478.4,
       "end": 2484.76,
       "text": "tienes generación de contenido procedimental y grandes modelos de lenguaje. Hay tantas cosas divertidas",
       "speaker": "James Pollack"
     },
     {
-      "id": 626,
+      "id": 596,
       "start": 2484.76,
       "end": 2491.44,
       "text": "aquí dentro. Lo echas todo junto en la sopa de pitón. Y creo que vamos a ver algunos realmente",
       "speaker": "James Pollack"
     },
     {
-      "id": 627,
+      "id": 597,
       "start": 2491.44,
       "end": 2495.76,
       "text": "cosas interesantes. Así que sí, si estás ahí afuera escuchando y tienes un DAO y te gustaría",
       "speaker": "James Pollack"
     },
     {
-      "id": 628,
+      "id": 598,
       "start": 2495.76,
       "end": 2500.8,
       "text": "para modelarlo o ayudarme a resolverlo, me encantaría que me contactaras.",
       "speaker": "James Pollack"
     },
     {
-      "id": 629,
+      "id": 599,
       "start": 2502.06,
       "end": 2503.8,
       "text": "Sí. Haga algunos comentarios en GitHub.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 630,
+      "id": 600,
       "start": 2504.93,
       "end": 2511.93,
       "text": "Absolutamente. Haga clic en el enlace de las notas del programa para el repositorio de GitHub y póngase en contacto con James.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 631,
+      "id": 601,
       "start": 2512.21,
       "end": 2515.25,
       "text": "¿Hay algo que no te pregunté y que quieras decirnos, James, antes de terminar?",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 632,
+      "id": 602,
       "start": 2517.9,
       "end": 2525.74,
       "text": "En tu hoja de preparación tenías una pregunta, un par de preguntas. Uno fue sobre un período de tiempo",
       "speaker": "James Pollack"
     },
     {
-      "id": 633,
+      "id": 603,
       "start": 2525.74,
       "end": 2532.76,
       "text": "que encontré interesante, como una especie de historia, la historia de Silicon Valley, tal vez. Y tuve un",
       "speaker": "James Pollack"
     },
     {
-      "id": 634,
+      "id": 604,
       "start": 2532.9,
       "end": 2537.16,
       "text": "Recientemente, me involucré en algo que pensé que podría ser algo interesante.",
       "speaker": "James Pollack"
     },
     {
-      "id": 635,
+      "id": 605,
       "start": 2537.16,
       "end": 2545.44,
       "text": "para compartir. Hago arte interactivo y un artista interactivo mayor se acercó a mí. Su nombre es",
       "speaker": "James Pollack"
     },
     {
-      "id": 636,
+      "id": 606,
       "start": 2545.44,
       "end": 2553.36,
       "text": "Larry Cuba. Fui a la escuela de posgrado en UC Santa Cruz. Él está afiliado a ellos y él en el",
       "speaker": "James Pollack"
     },
     {
-      "id": 637,
+      "id": 607,
       "start": 2553.36,
       "end": 2559.18,
       "text": "Star Wars original en 1977 hizo las imágenes para la Estrella de la Muerte que ves cuando son como",
       "speaker": "James Pollack"
     },
     {
-      "id": 638,
+      "id": 608,
       "start": 2559.18,
       "end": 2566.2,
       "text": "mostrándoselo a los pilotos rebeldes y lo hizo en ese momento, todo en tiempo real. Hizo esto como loco",
       "speaker": "James Pollack"
     },
     {
-      "id": 639,
+      "id": 609,
       "start": 2566.2,
       "end": 2571.2,
       "text": "cosa en la que le gustaría girar las perillas y le gustaría cambiar definitivamente algo así como",
       "speaker": "James Pollack"
     },
     {
-      "id": 640,
+      "id": 610,
       "start": 2571.2,
       "end": 2576.96,
       "text": "diseñado en exceso para lo que terminaron usando en la película, pero realmente increíble y él es",
       "speaker": "James Pollack"
     },
     {
-      "id": 641,
+      "id": 611,
       "start": 2576.96,
       "end": 2582.12,
       "text": "Ha estado haciendo arte procesal desde entonces. En lugar de seguir la ruta de los efectos visuales, se quedó más",
       "speaker": "James Pollack"
     },
     {
-      "id": 642,
+      "id": 612,
       "start": 2582.12,
       "end": 2588.96,
       "text": "Ya conoces la ruta de las bellas artes y él está trabajando en contenido nuevo como de procedimiento.",
       "speaker": "James Pollack"
     },
     {
-      "id": 643,
+      "id": 613,
       "start": 2589.18,
       "end": 2598.24,
       "text": "sistemas y necesitaba algo de ayuda y fue realmente genial conectarse a una generación anterior de programadores",
       "speaker": "James Pollack"
     },
     {
-      "id": 644,
+      "id": 614,
       "start": 2598.24,
       "end": 2604.12,
       "text": "e ingeniero y darme cuenta de que aquí hay una persona como un programador y codificador muy talentoso",
       "speaker": "James Pollack"
     },
     {
-      "id": 645,
+      "id": 615,
       "start": 2604.12,
       "end": 2608.7,
       "text": "simplemente no conocen los últimos trucos o no conocen la sintaxis de Blender",
       "speaker": "James Pollack"
     },
     {
-      "id": 646,
+      "id": 616,
       "start": 2608.7,
       "end": 2613.96,
       "text": "y por eso había estado bloqueado durante un par de años para hacer cosas y por eso he podido",
       "speaker": "James Pollack"
     },
     {
-      "id": 647,
+      "id": 617,
       "start": 2613.96,
       "end": 2618.14,
       "text": "trabajar con él, desbloquearlo, hacer que vuelva a construir cosas.",
       "speaker": "James Pollack"
     },
     {
-      "id": 648,
+      "id": 618,
       "start": 2619.18,
       "end": 2626.32,
       "text": "solo para mí, como artista e ingeniero de software, lo he encontrado muy satisfactorio y me conecta con",
       "speaker": "James Pollack"
     },
     {
-      "id": 649,
+      "id": 619,
       "start": 2626.32,
       "end": 2633.16,
       "text": "Esta historia de una manera interesante es que Larry Cuba, uno de sus mentores, fue este tipo, John.",
       "speaker": "James Pollack"
     },
     {
-      "id": 650,
+      "id": 620,
       "start": 2633.16,
       "end": 2639.82,
       "text": "Whitney senior, que es como una de las primeras personas en hacer animación en una computadora, así que ahora todos",
       "speaker": "James Pollack"
     },
     {
-      "id": 651,
+      "id": 621,
       "start": 2639.82,
       "end": 2645.04,
       "text": "De repente estoy como a dos pasos de la primera animación por computadora y eso me parece muy",
       "speaker": "James Pollack"
     },
     {
-      "id": 652,
+      "id": 622,
       "start": 2645.04,
       "end": 2649.12,
       "text": "emocionante así que si sus lectores tienen la oportunidad, búsquenlo Larry Cuba",
       "speaker": "James Pollack"
     },
     {
-      "id": 653,
+      "id": 623,
       "start": 2649.18,
       "end": 2655.18,
       "text": "tiene un arte genial que tal vez sea un poco diferente al material de Unix Bell Lab, pero",
       "speaker": "James Pollack"
     },
     {
-      "id": 654,
+      "id": 624,
       "start": 2655.18,
       "end": 2660.64,
       "text": "Era tan creativo que le pidieron que hiciera estas cosas en esta gran película y luego",
       "speaker": "James Pollack"
     },
     {
-      "id": 655,
+      "id": 625,
       "start": 2662.2,
       "end": 2667.12,
       "text": "Simplemente creo que tomarlo en lugar de la dirección de efectos visuales en la dirección de bellas artes fue realmente",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 656,
+      "id": 626,
       "start": 2667.12,
       "end": 2672.52,
       "text": "elección interesante y lo ha llevado a lugares muy diferentes a los de las personas que usted sabe que podría",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 657,
+      "id": 627,
       "start": 2672.52,
       "end": 2678.4,
       "text": "Supongo que comencé ILM o fui allí después, por lo que ILM es luz industrial y magia.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 658,
+      "id": 628,
       "start": 2679.18,
       "end": 2683.74,
       "text": "Sí, lo que surgió de eso fue que mucha gente terminó yendo y trabajando en eso.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 659,
+      "id": 629,
       "start": 2684.28,
       "end": 2688.66,
       "text": "Um, sí, fue una buena experiencia conectarse a la historia de las cosas.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 660,
+      "id": 630,
       "start": 2688.66,
       "end": 2694.06,
       "text": "y um, sucedió muy rápido, sabes, pasé de no tener conexión a que me gustara la historia de",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 661,
+      "id": 631,
       "start": 2694.06,
       "end": 2698.38,
       "text": "arte por computadora me gusta estar a un par de pasos del principio y simplemente",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 662,
+      "id": 632,
       "start": 2698.38,
       "end": 2704.68,
       "text": "Anime a las personas a estar disponibles para publicar sobre sus habilidades y lo que hace. Se acercó a él.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 663,
+      "id": 633,
       "start": 2704.68,
       "end": 2708.72,
       "text": "Yo porque en mi LinkedIn dije que hago algo de Python y Blender.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 664,
+      "id": 634,
       "start": 2709.18,
       "end": 2715.36,
       "text": "y otro profesor de allí lo vio y y esas cosas no pasan ya sabes la suerte la suerte llega",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 665,
+      "id": 635,
       "start": 2715.36,
       "end": 2721.12,
       "text": "y saluda a los preparados, supongo que, ya sabes, tuvimos una discusión, tuvimos una discusión sobre um",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 666,
+      "id": 636,
       "start": 2721.12,
       "end": 2726.96,
       "text": "Antes de que comenzara la llamada sobre si debía, estaba un poco nervioso sobre si debía abrir.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 667,
+      "id": 637,
       "start": 2726.96,
       "end": 2731.32,
       "text": "código fuente no debería y realmente me gusta a medida que avanzamos en esta conversación, creo que",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 668,
+      "id": 638,
       "start": 2731.32,
       "end": 2737.66,
       "text": "tomó la decisión correcta como si supiera que la preparación está ahí, está al aire libre ahora que la luz está encendida",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 669,
+      "id": 639,
       "start": 2737.66,
       "end": 2743.26,
       "text": "esperemos que traiga las luciérnagas adecuadas, ya sabes, sí, bueno, si estás escuchando esto, este es el",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 670,
+      "id": 640,
       "start": 2743.26,
       "end": 2749.04,
       "text": "uh, somos nosotros quienes contamos la historia de James abriendo el código cinco minutos antes de grabar.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 671,
+      "id": 641,
       "start": 2749.04,
       "end": 2754.84,
       "text": "para poder enviarle gente en las notas del programa, así que um, yolo, se lo diste al",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 672,
+      "id": 642,
       "start": 2754.84,
       "end": 2760.52,
       "text": "universo y espero que el universo universo corresponda con contribuciones de código y uh",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 673,
+      "id": 643,
       "start": 2760.52,
       "end": 2765.9,
       "text": "Amor memético y, con suerte, la gente también te contratará para simular tu dao, pero bueno, gracias.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 674,
+      "id": 644,
       "start": 2765.9,
       "end": 2767.64,
       "text": "si y um si",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 675,
+      "id": 645,
       "start": 2767.66,
       "end": 2770.86,
       "text": "Y más uno, quiero decir, creo que aquí todos estamos parados sobre los hombros de gigantes.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 676,
+      "id": 646,
       "start": 2770.86,
       "end": 2776.12,
       "text": "Uh, pienso en los cuatro antepasados ​​del software de código abierto y en cómo",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 677,
+      "id": 647,
       "start": 2776.12,
       "end": 2782.14,
       "text": "venció a Microsoft en los años 90 para hacer que todos los servidores web fueran de código abierto y sabes que podría haberlo hecho.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 678,
+      "id": 648,
       "start": 2782.14,
       "end": 2787.2,
       "text": "ido de manera tan diferente que todos podríamos usar teléfonos clippy y monedas clippy en lugar de bitcoins",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 679,
+      "id": 649,
       "start": 2787.2,
       "end": 2791.26,
       "text": "y cosas así para que todos estemos sobre los hombros de gigantes y me inspiro en",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 680,
+      "id": 650,
       "start": 2791.26,
       "end": 2797.26,
       "text": "el linaje de personas que me han inspirado, como parece que tú también lo haces y tal vez en",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 681,
+      "id": 651,
       "start": 2797.26,
       "end": 2797.64,
       "text": "tal vez en el futuro no lo sé no lo sé no lo sé no lo sé no lo sé",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 682,
+      "id": 652,
       "start": 2797.66,
       "end": 2802.54,
       "text": "otra generación, gente, gente, bueno, me conecté con James, el primer autor de un",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 683,
+      "id": 653,
       "start": 2802.54,
       "end": 2808.26,
       "text": "marco dao ai, así que eso es todo lo que podemos esperar, me hará sonrojar, sí, y tengo que decir",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 684,
+      "id": 654,
       "start": 2808.26,
       "end": 2813.7,
       "text": "como si fuera un producto de bienes públicos, soy el primero de mi familia en ir a la universidad, um mi",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 685,
+      "id": 655,
       "start": 2813.7,
       "end": 2819.18,
       "text": "La licenciatura fue privada pero fui a una escuela de posgrado pública. Aprendí, sabes, aprendí todo.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 686,
+      "id": 656,
       "start": 2819.18,
       "end": 2827.36,
       "text": "Lo sé por Internet porque nunca conocí a mi papá, así que me gusta cómo atar una corbata y cómo codificar, así que soy un",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 687,
+      "id": 657,
       "start": 2827.66,
       "end": 2833.52,
       "text": "desarrollador um en información y su deseo de ser libre y todas las cosas interesantes que la gente puede hacer",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 688,
+      "id": 658,
       "start": 2833.52,
       "end": 2839.7,
       "text": "con eso, así que gracias por la oportunidad de venir y contarle a la gente sobre en qué estoy trabajando y",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 689,
+      "id": 659,
       "start": 2839.7,
       "end": 2844.94,
       "text": "Ojalá atraiga gente nueva. Sí, bueno, gracias por convertir el meme de los simuladores de Ai Dao.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 690,
+      "id": 660,
       "start": 2844.94,
       "end": 2849.34,
       "text": "uh, de solo un meme a un código real, emocionado, eso es lo que quiero decir, lo publicaste y",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 691,
+      "id": 661,
       "start": 2849.34,
       "end": 2854.78,
       "text": "a veces a veces el mundo simplemente hace que suceda es genial, sí, bueno, ese es un gran lugar para terminarlo.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 692,
+      "id": 662,
       "start": 2854.78,
       "end": 2857.4,
       "text": "James, gracias, gracias por unirte y sigue con el gran trabajo.",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 693,
+      "id": 663,
       "start": 2857.66,
       "end": 2860.45,
       "text": "paz gracias kevin movimiento de paz",

@@ -2,131 +2,131 @@
   "chapters": [
     {
       "id": 0,
-      "title": "协调，怎么了？今天在 Pod 上，我们...",
+      "title": "What is up, Coordination? On the pod today, we are...",
       "startTime": 5.23,
       "endTime": 235.37,
       "startSegmentId": 0,
-      "endSegmentId": 49
+      "endSegmentId": 47
     },
     {
       "id": 1,
-      "title": "资金管理、代币定价、收入……",
+      "title": "treasury management, token pricing, revenue...",
       "startTime": 235.37,
       "endTime": 342.22,
-      "startSegmentId": 50,
-      "endSegmentId": 99
+      "startSegmentId": 48,
+      "endSegmentId": 71
     },
     {
       "id": 2,
-      "title": "所以我写了这篇文章，你和我建立了联系，然后......",
+      "title": "So I wrote this post, and you and I got connected, and...",
       "startTime": 342.22,
       "endTime": 699.76,
-      "startSegmentId": 100,
-      "endSegmentId": 158
+      "startSegmentId": 72,
+      "endSegmentId": 130
     },
     {
       "id": 3,
-      "title": "从某种基类开始，例如 DAO...",
+      "title": "started with just sort of a base class of, like, a DAO...",
       "startTime": 701.26,
       "endTime": 786.73,
-      "startSegmentId": 159,
-      "endSegmentId": 176
+      "startSegmentId": 131,
+      "endSegmentId": 147
     },
     {
       "id": 4,
-      "title": "我还有验证者呃仲裁者委托者......",
+      "title": "and i also have validators uh arbitrators delegators...",
       "startTime": 788.92,
       "endTime": 942.57,
-      "startSegmentId": 177,
-      "endSegmentId": 204
+      "startSegmentId": 148,
+      "endSegmentId": 174
     },
     {
       "id": 5,
-      "title": "生成式人工智能用于创建您可以......",
+      "title": "generative ai for creating those behaviors you could...",
       "startTime": 945.91,
       "endTime": 1139.91,
-      "startSegmentId": 205,
-      "endSegmentId": 254
+      "startSegmentId": 175,
+      "endSegmentId": 224
     },
     {
       "id": 6,
-      "title": "巴拉吉在《网络状态》一书中所说的是……",
+      "title": "What does Balaji say in the Network State book is that...",
       "startTime": 1139.91,
       "endTime": 1306.23,
-      "startSegmentId": 255,
-      "endSegmentId": 304
+      "startSegmentId": 225,
+      "endSegmentId": 274
     },
     {
       "id": 7,
-      "title": "有了足够的计算能力，我确信有人...",
+      "title": "With enough computing power, I'm sure that someone...",
       "startTime": 1306.23,
       "endTime": 1475.4,
-      "startSegmentId": 305,
-      "endSegmentId": 354
+      "startSegmentId": 275,
+      "endSegmentId": 324
     },
     {
       "id": 8,
-      "title": "因此，对于像这样的项目来说，货币化很有趣......",
+      "title": "So monetization is interesting with a project like...",
       "startTime": 1475.4,
       "endTime": 1652.55,
-      "startSegmentId": 355,
-      "endSegmentId": 404
+      "startSegmentId": 325,
+      "endSegmentId": 374
     },
     {
       "id": 9,
-      "title": "就像，如果人们加入来看经纪人……",
+      "title": "Like, if people are joining in to look at agent...",
       "startTime": 1652.55,
       "endTime": 1837.28,
-      "startSegmentId": 405,
-      "endSegmentId": 454
+      "startSegmentId": 375,
+      "endSegmentId": 424
     },
     {
       "id": 10,
-      "title": "他让我对 DAO 方面有了很多深入的了解……",
+      "title": "He gave me a lot of the insight into the DAO side of...",
       "startTime": 1837.28,
       "endTime": 1993.43,
-      "startSegmentId": 455,
-      "endSegmentId": 504
+      "startSegmentId": 425,
+      "endSegmentId": 474
     },
     {
       "id": 11,
-      "title": "是的。",
+      "title": "Yeah.",
       "startTime": 1993.43,
       "endTime": 2147.77,
-      "startSegmentId": 505,
-      "endSegmentId": 554
+      "startSegmentId": 475,
+      "endSegmentId": 524
     },
     {
       "id": 12,
-      "title": "是的。",
+      "title": "Yeah.",
       "startTime": 2147.77,
       "endTime": 2362.78,
-      "startSegmentId": 555,
-      "endSegmentId": 604
+      "startSegmentId": 525,
+      "endSegmentId": 574
     },
     {
       "id": 13,
-      "title": "哦，我可以用 Python 构建这个东西。但我其实...",
+      "title": "oh, I can build this stuff in Python. But I'm actually...",
       "startTime": 2362.84,
       "endTime": 2515.25,
-      "startSegmentId": 605,
-      "endSegmentId": 631
+      "startSegmentId": 575,
+      "endSegmentId": 601
     },
     {
       "id": 14,
-      "title": "在你的准备表上，你有一个问题，一个......",
+      "title": "On your, on the prep sheet, you had a question, a...",
       "startTime": 2517.9,
       "endTime": 2660.64,
-      "startSegmentId": 632,
-      "endSegmentId": 654
+      "startSegmentId": 602,
+      "endSegmentId": 624
     },
     {
       "id": 15,
-      "title": "我只是想用它来代替视觉特效......",
+      "title": "I just think like taking it instead of the VFX...",
       "startTime": 2662.2,
       "endTime": 2860.45,
-      "startSegmentId": 655,
-      "endSegmentId": 693
+      "startSegmentId": 625,
+      "endSegmentId": 663
     }
   ],
   "segments": [
@@ -148,7 +148,7 @@
       "id": 2,
       "start": 15.75,
       "end": 20.83,
-      "text": "今天我的嘉宾是 James Palak，他是一位艺术家和程序员，曾在多家初创公司工作过",
+      "text": "今天我的嘉宾是 James Pollack，他是一位艺术家和程序员，曾在多家初创公司工作过",
       "speaker": "Kevin Owocki"
     },
     {
@@ -434,4555 +434,4345 @@
     {
       "id": 43,
       "start": 205.25,
-      "end": 209.35,
+      "end": 211.1,
       "text": "模拟。所以有很多时间步骤。每一步，这些代理都会做出不同的贡献",
       "speaker": "Kevin Owocki"
     },
     {
       "id": 44,
-      "start": 209.35,
-      "end": 210.93,
-      "text": "关于他们应该做什么的决定。然后您运行一次模拟。所以有一个",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 45,
-      "start": 210.93,
-      "end": 211.09,
-      "text": "一堆时间步骤。每一步，这些代理都会就他们应该做什么做出不同的决定",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 46,
       "start": 211.09,
       "end": 216.23,
       "text": "基于您给他们的规则。我决定把这些",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 47,
+      "id": 45,
       "start": 216.23,
       "end": 223.85,
       "text": "角色的特点是他们都是去中心化自治组织的成员。所以DAO",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 48,
+      "id": 46,
       "start": 223.85,
       "end": 228.93,
       "text": "成员由不同的代理类别代表。他们可以提出提案并进行投票",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 49,
+      "id": 47,
       "start": 228.93,
       "end": 235.37,
       "text": "他们投资项目和其他一系列活动。并且模拟还包含",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 50,
+      "id": 48,
       "start": 235.37,
       "end": 240.91,
       "text": "资金管理、代币定价、收入分配、发生在",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 51,
+      "id": 49,
       "start": 240.93,
       "end": 246.97,
       "text": "发生在 DAO 本身（它是一个代理）的级别，然后发生在",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 52,
+      "id": 50,
       "start": 246.97,
       "end": 252.15,
       "text": "个人 DAO 成员是您的投资者、委托人和开发者。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 53,
+      "id": 51,
       "start": 252.15,
       "end": 253.5,
       "text": "是的。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 54,
+      "id": 52,
       "start": 253.5,
       "end": 258.66,
       "text": "我只是觉得这太酷了，我迫不及待地想在这里展开可能性空间。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 55,
+      "id": 53,
       "start": 258.66,
       "end": 265.42,
       "text": "所以我认为你和我联系的原因是2月2日，我",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 56,
+      "id": 54,
       "start": 265.42,
       "end": 271.14,
       "text": "在 Supermodular 社区论坛上撰写了有关 DAO AI 治理模拟的文章",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 57,
+      "id": 55,
       "start": 271.28,
       "end": 274.98,
       "text": "工具包，我将其称为 DAG，只是为了尝试模仿它。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 58,
+      "id": 56,
       "start": 274.98,
       "end": 279.72,
       "text": "但基本上我写的是我们可以构建一个 AI DAO 工具包，我可以在其中启动一个",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 59,
+      "id": 57,
       "start": 279.72,
       "end": 284.94,
       "text": "一百个不同的人工智能，给他们所有的代币并设置每个人工智能以最大化他们的代币余额，",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 60,
+      "id": 58,
       "start": 284.94,
       "end": 289.84,
       "text": "给他们一个治理论坛来争论，并让他们对快照和统计进行投票。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 61,
+      "id": 59,
       "start": 289.84,
       "end": 295.16,
       "text": "我想运行 10,000 个不同的 AI DAO，起始条件略有不同",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 62,
+      "id": 60,
       "start": 295.16,
       "end": 299.38,
       "text": "以及代理的参数，比如他们是友好的还是敌对的，看看这些如何",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 63,
+      "id": 61,
       "start": 299.38,
       "end": 301.28,
       "text": "DAO 的演变方式不同。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 64,
+      "id": 62,
       "start": 301.28,
       "end": 305.28,
       "text": "所以基本上我们正在对治理框架进行参数扫描。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 65,
+      "id": 63,
       "start": 305.28,
       "end": 309.98,
       "text": "然后你可以开始引入不同的治理规则，或者你可以引入",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 66,
+      "id": 64,
       "start": 309.98,
       "end": 316.82,
       "text": "向 DAO 提供二次方资金，您就会看到这如何影响代理的行为。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 67,
+      "id": 65,
       "start": 316.82,
       "end": 321.46,
       "text": "一旦完成了不同设置的扫描，您就可以找到最佳治理",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 68,
+      "id": 66,
       "start": 321.46,
       "end": 324.74,
       "text": "跨治理设计空间的设置。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 69,
+      "id": 67,
       "start": 324.74,
       "end": 330.68,
       "text": "对我来说，这是一个令人兴奋的想法，我的朋友们不必争论",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 70,
+      "id": 68,
       "start": 330.68,
       "end": 330.8,
       "text": "在治理论坛中。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 71,
+      "id": 69,
       "start": 330.8,
       "end": 330.82,
       "text": "是的。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 72,
-      "start": 330.82,
-      "end": 330.84,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 73,
-      "start": 330.84,
-      "end": 330.88,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 74,
-      "start": 330.88,
-      "end": 330.9,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 75,
-      "start": 330.9,
-      "end": 330.92,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 76,
-      "start": 330.92,
-      "end": 330.94,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 77,
-      "start": 330.94,
-      "end": 330.96,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 78,
-      "start": 330.96,
-      "end": 330.98,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 79,
-      "start": 330.98,
-      "end": 331.0,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 80,
-      "start": 331.0,
-      "end": 331.02,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 81,
-      "start": 331.02,
-      "end": 331.26,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 82,
-      "start": 331.28,
-      "end": 331.4,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 83,
-      "start": 331.4,
-      "end": 331.42,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 84,
-      "start": 331.42,
-      "end": 331.7,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 85,
-      "start": 331.7,
-      "end": 331.72,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 86,
-      "start": 331.72,
-      "end": 331.8,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 87,
-      "start": 331.8,
-      "end": 331.84,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 88,
-      "start": 331.84,
-      "end": 331.92,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 89,
-      "start": 331.92,
-      "end": 331.98,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 90,
-      "start": 331.98,
-      "end": 332.04,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 91,
-      "start": 332.04,
-      "end": 332.08,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 92,
-      "start": 332.08,
-      "end": 332.14,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 93,
-      "start": 332.14,
-      "end": 332.38,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 94,
-      "start": 332.38,
-      "end": 332.46,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 95,
-      "start": 332.46,
-      "end": 332.5,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 96,
-      "start": 332.5,
-      "end": 332.52,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 97,
-      "start": 332.52,
-      "end": 332.58,
-      "text": "是的。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 98,
+      "id": 70,
       "start": 332.58,
       "end": 337.22,
       "text": "在他们的 DAO 中，如果我们可以让一群 AI 进行模拟，然后找到",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 99,
+      "id": 71,
       "start": 337.22,
       "end": 342.22,
       "text": "我们的人类 DAO 的最佳治理设置，实际上就是以这种方式设置我们的人类 DAO。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 100,
+      "id": 72,
       "start": 342.22,
       "end": 348.8,
       "text": "所以我写了这篇文章，你和我建立了联系，然后就从那里开始了。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 101,
+      "id": 73,
       "start": 349.6,
       "end": 355.28,
       "text": "我想这是 A，向读者介绍我们如何建立联系的背景故事，但是 B，",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 102,
+      "id": 74,
       "start": 355.66,
       "end": 359.0,
       "text": "光是这个设计空间就让我觉得很兴奋。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 103,
+      "id": 75,
       "start": 359.68,
       "end": 361.22,
       "text": "我很好奇也许...",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 104,
+      "id": 76,
       "start": 361.22,
       "end": 369.53,
       "text": "瓦利，回到你身边。是什么让您对这个设计空间感到兴奋？我想我几乎完全一样",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 105,
+      "id": 77,
       "start": 369.53,
       "end": 375.39,
       "text": "和你有同样的认识，关于这个空间的数据实际上很少，",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 106,
+      "id": 78,
       "start": 375.39,
       "end": 382.35,
       "text": "在现实生活中，产生它需要时间和金钱。并在实际中进行实验",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 107,
+      "id": 79,
       "start": 382.35,
       "end": 391.71,
       "text": "DAO 中的人们对于这些人来说可能是非常痛苦的。并发现是否某种",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 108,
+      "id": 80,
       "start": 391.71,
       "end": 398.55,
       "text": "投票系统或对 DAO 内不同行为方式的处罚或奖励，或者",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 109,
+      "id": 81,
       "start": 398.55,
       "end": 402.81,
       "text": "它的结构本身，有多少成员，是否有原生令牌，这些都是",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 110,
+      "id": 82,
       "start": 402.81,
       "end": 410.13,
       "text": "都不容易改变吧？因此，如果您想测试您的 DAO 如何使用自己的代币运行，或者",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 111,
+      "id": 83,
       "start": 410.13,
       "end": 412.33,
       "text": "不，这很难做到。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 112,
+      "id": 84,
       "start": 413.11,
       "end": 420.74,
       "text": "所以我也认为这个探索设计空间的机会，我喜欢你称之为",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 113,
+      "id": 85,
       "start": 420.74,
       "end": 425.94,
       "text": "超参数扫描，我正在使用的一些 Python 中的技术术语称为批处理运行。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 114,
+      "id": 86,
       "start": 425.94,
       "end": 432.3,
       "text": "但绝对是同一件事。你想在这个选择的矩阵中看到这个选择",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 115,
+      "id": 87,
       "start": 432.3,
       "end": 436.38,
       "text": "你可以问，当你选择A和B时，效果如何？当你选择A和C时，效果如何？",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 116,
+      "id": 88,
       "start": 436.84,
       "end": 444.38,
       "text": "等等。我认为这可能有点不像你",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 117,
+      "id": 89,
       "start": 444.4,
       "end": 452.84,
       "text": "我不太确定我们是否能够找到 DAO 应该具备的完美柏拉图式理想",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 118,
+      "id": 90,
       "start": 452.84,
       "end": 462.54,
       "text": "是。我认为这很大程度上取决于您的具体目标是什么。那是因为",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 119,
+      "id": 91,
       "start": 462.54,
       "end": 470.8,
       "text": "基于代理的模型通常是生成合成数据的来源。所以我们是",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 120,
+      "id": 92,
       "start": 470.8,
       "end": 474.38,
       "text": "对系统进行建模。这不是真正的系统。这不会，你知道，这不会是",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 121,
+      "id": 93,
       "start": 474.4,
       "end": 480.62,
       "text": "必然具有预测特性，但这确实是一件非常有趣的事情，就像，",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 122,
+      "id": 94,
       "start": 480.62,
       "end": 487.08,
       "text": "我们的数据综合程度如何，您将滑块放在哪里？你提到也许",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 123,
+      "id": 95,
       "start": 487.08,
       "end": 493.58,
       "text": "让您的代理在论坛上讨论问题。好吧，你是否将该论坛建模为一个简单的，",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 124,
+      "id": 96,
       "start": 493.72,
       "end": 498.0,
       "text": "就像有人留下正面或负面评论一样？你是否可以更全面地构建它，以便",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 125,
+      "id": 97,
       "start": 498.0,
       "end": 504.38,
       "text": "代理人可以与法学硕士互相交谈吗？或者您实际上将其插入真正的论坛吗？",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 126,
+      "id": 98,
       "start": 504.4,
       "end": 510.46,
       "text": "让您的代理发布帖子并与真人互动？我认为你决定为此做什么",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 127,
+      "id": 99,
       "start": 510.46,
       "end": 518.56,
       "text": "取决于你的目标是什么。但能够改变这些事情真是令人兴奋。我已经",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 128,
+      "id": 100,
       "start": 518.56,
       "end": 525.38,
       "text": "看到 DAO 试图做到这些，人们做出这些重大决定，你知道，有数亿人",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 129,
+      "id": 101,
       "start": 525.38,
       "end": 533.66,
       "text": "管理的美元几乎没有洞察力。所以我只是希望，你知道，即使",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 130,
+      "id": 102,
       "start": 533.66,
       "end": 534.96,
       "text": "像这样的工具并不完全是",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 131,
+      "id": 103,
       "start": 535.16,
       "end": 540.06,
       "text": "预测性的，我希望它至少能给人们一些洞察力并帮助他们有更好的",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 132,
+      "id": 104,
       "start": 540.06,
       "end": 546.8,
       "text": "决策。是的，是的，完全如此。我的意思是，我可以想象一个未来，你知道，我是",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 133,
+      "id": 105,
       "start": 546.8,
       "end": 555.08,
       "text": "关于 DAO X 的治理或管理委员会。我正在想象这个工具的未来",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 134,
+      "id": 106,
       "start": 555.08,
       "end": 563.3,
       "text": "可用，您可以获取 DAO 设置的参数，并可能获取",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 135,
+      "id": 107,
       "start": 563.3,
       "end": 564.84,
       "text": "DAO 上的论坛帖子。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 136,
+      "id": 108,
       "start": 565.16,
       "end": 572.08,
       "text": "这为 DAO 治理框架本地化设定了起始条件",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 137,
+      "id": 109,
       "start": 572.08,
       "end": 578.56,
       "text": "DAO X 价值观和文化规范和设置是。也许你可以，而不是扫荡整个",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 138,
+      "id": 110,
       "start": 578.56,
       "end": 583.9,
       "text": "参数空间，你可以扫描它周围的空间，然后说，你知道，如果",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 139,
+      "id": 111,
       "start": 583.9,
       "end": 589.88,
       "text": "我们将提案门槛降低一半，或者如果我们改变我们的文化，让人们占 20%",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 140,
+      "id": 112,
       "start": 589.88,
       "end": 595.14,
       "text": "友好，或者我们引入了二次融资或类似的东西。对我来说，这就是它的意义所在",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 141,
+      "id": 113,
       "start": 595.16,
       "end": 600.4,
       "text": "真的很有趣。是的，你知道，也许这并不完全是预测性的，但它是一个",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 142,
+      "id": 114,
       "start": 600.4,
       "end": 606.14,
       "text": "这是一种在 YOLO 生效之前模拟 DAO 治理变化的有趣方法。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 143,
+      "id": 115,
       "start": 606.74,
       "end": 611.88,
       "text": "正确的。我认为你提出了一个很好的观点，即可能有两种不同的用户或",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 144,
+      "id": 116,
       "start": 611.88,
       "end": 616.82,
       "text": "不同的时间有人可能会尝试使用它。一是你有一个 DAO，它存在，你",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 145,
+      "id": 117,
       "start": 616.82,
       "end": 622.08,
       "text": "考虑做出改变。在那种情况下，是的，如果",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 146,
+      "id": 118,
       "start": 622.08,
       "end": 625.14,
       "text": "它已经在进行中。但也许人们会想，哦，是的，我要去",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 147,
+      "id": 119,
       "start": 625.16,
       "end": 630.22,
       "text": "建立一个新的 DAO。我认为在这种情况下，你的整个超参数扫描将是",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 148,
+      "id": 120,
       "start": 630.22,
       "end": 639.67,
       "text": "很有趣。是的，完全可以。那么你能带我们了解一下你所建造的东西吗？所以对于听众来说，",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 149,
+      "id": 121,
       "start": 639.91,
       "end": 646.35,
       "text": "如果你点击 GitHub，你可以看到 James 围绕 DAO 编写的代码",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 150,
+      "id": 122,
       "start": 646.35,
       "end": 651.99,
       "text": "模拟框架。我现在正在看自述文件。那么请带我们深入了解您所构建的内容。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 151,
+      "id": 123,
       "start": 651.99,
       "end": 655.39,
       "text": "一定。所以基于代理的模型，",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 152,
+      "id": 124,
       "start": 655.61,
       "end": 661.11,
       "text": "您可以构建各种框架。我以前用过的一个叫NetLogo。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 153,
+      "id": 125,
       "start": 661.37,
       "end": 666.97,
       "text": "这是人们在开始基于主体的建模时学到的一个重要知识。但它是基于",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 154,
+      "id": 126,
       "start": 666.97,
       "end": 672.69,
       "text": "Java 上的 JVM。所以它并不像你想要的那样具有互操作性。所以对于这个项目来说，",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 155,
+      "id": 127,
       "start": 672.69,
       "end": 679.07,
       "text": "我使用不同的基于代理的建模框架。这是基于 Python 的。它的名字叫梅萨，",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 156,
+      "id": 128,
       "start": 680.21,
       "end": 683.17,
       "text": "这太棒了。你想使用Python。这就是所有酷的地方",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 157,
+      "id": 129,
       "start": 685.96,
       "end": 691.12,
       "text": "事情和生成性的事情正在发生。所以能够使用 Python 并插入是非常棒的",
       "speaker": "James Pollack"
     },
     {
-      "id": 158,
+      "id": 130,
       "start": 691.12,
       "end": 699.76,
       "text": "令人兴奋。所以我之前构建过基于代理的模型。但也许没有这么大或这么复杂。所以",
       "speaker": "James Pollack"
     },
     {
-      "id": 159,
+      "id": 131,
       "start": 701.26,
       "end": 706.0,
       "text": "从某种基类开始，例如 DAO 成员。你知道，每个人都需要什么",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 160,
+      "id": 132,
       "start": 706.0,
       "end": 712.96,
       "text": "做什么？他们投票。他们对提案发表评论。他们持有代币。他们有声誉。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 161,
+      "id": 133,
       "start": 712.96,
       "end": 715.76,
       "text": "即使其中一些基本假设，",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 162,
+      "id": 134,
       "start": 715.76,
       "end": 720.48,
       "text": "就像，你已经在为 DAO 做出选择了，对吧？有名气了。我们正在追踪",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 163,
+      "id": 135,
       "start": 720.48,
       "end": 725.12,
       "text": "它与点。就像，我已经可以想出很多不同的方法来跟踪声誉。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 164,
+      "id": 136,
       "start": 725.96,
       "end": 731.6,
       "text": "这可能会让人感到瘫痪，因为你想给人们提供一切选择。但你确实",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 165,
+      "id": 137,
       "start": 731.6,
       "end": 736.34,
       "text": "只需要做出一些任意的选择即可开始，然后希望留下一些杠杆",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 166,
+      "id": 138,
       "start": 736.34,
       "end": 743.06,
       "text": "你可以稍后再回来调整这些东西。所以，从 DAO 成员那里，我，你知道，",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 167,
+      "id": 139,
       "start": 743.06,
       "end": 744.92,
       "text": "考虑过一些其他角色",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 168,
+      "id": 140,
       "start": 744.92,
       "end": 745.1,
       "text": "的人。所以，你知道，我对此做了很多研究。我认为这真的很酷。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 169,
-      "start": 745.1,
-      "end": 745.46,
-      "text": "我认为这真的很酷。我认为这真的很酷。我认为这真的很酷。我认为这真的很酷。",
-      "speaker": "Kevin Owocki"
-    },
-    {
-      "id": 170,
+      "id": 141,
       "start": 745.46,
       "end": 753.85,
       "text": "dao 中的人员以及他们可能做的事情，所以我们有像你认识的开发人员",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 171,
+      "id": 142,
       "start": 753.85,
       "end": 760.25,
       "text": "被引入来建设和维护项目，投资者投资提案和项目",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 172,
+      "id": 143,
       "start": 760.81,
       "end": 767.13,
       "text": "嗯，我什至模仿了喜欢持有代币的被动会员，他们可能会投票，但是",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 173,
+      "id": 144,
       "start": 767.13,
       "end": 772.89,
       "text": "他们不太喜欢参与项目之类的事情，嗯，提案创建者",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 174,
+      "id": 145,
       "start": 772.89,
       "end": 777.77,
       "text": "谁创建并提交提案 监管机构确保遵守外部法规",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 175,
+      "id": 146,
       "start": 777.77,
       "end": 782.97,
       "text": "和需求服务 服务提供商类似于开发人员，但它可能是",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 176,
+      "id": 147,
       "start": 782.97,
       "end": 786.73,
       "text": "像外部开发人员或者如果您需要翻译一些内容",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 177,
+      "id": 148,
       "start": 788.92,
       "end": 796.52,
       "text": "我还有验证者、仲裁员、委托人，你看看这个列表就知道了",
       "speaker": "James Pollack"
     },
     {
-      "id": 178,
+      "id": 149,
       "start": 796.52,
       "end": 802.54,
       "text": "我想回到过去，如果我重新开始，我会看到这个，我想我自己就像人们经常一样",
       "speaker": "James Pollack"
     },
     {
-      "id": 179,
+      "id": 150,
       "start": 803.5,
       "end": 809.42,
       "text": "就像哦，我是开发人员，我是仲裁员，我是开发人员，我是开发人员，我是开发人员",
       "speaker": "James Pollack"
     },
     {
-      "id": 180,
-      "start": 809.42,
-      "end": 814.54,
-      "text": "我是开发人员 我是开发人员 我是开发人员 我是开发人员 我是开发人员 我是开发人员 我是开发人员 我是开发人员",
-      "speaker": "James Pollack"
-    },
-    {
-      "id": 181,
+      "id": 151,
       "start": 814.54,
       "end": 818.7,
       "text": "也许人们的角色发生了变化，而这个模型还没有完全解释这一点，或者也许",
       "speaker": "James Pollack"
     },
     {
-      "id": 182,
+      "id": 152,
       "start": 818.7,
       "end": 825.02,
       "text": "人们扮演多种角色，所以从它开始有大约 10 个不同的类别",
       "speaker": "James Pollack"
     },
     {
-      "id": 183,
+      "id": 153,
       "start": 825.02,
       "end": 831.62,
       "text": "呃，所有的角色都是单独的角色，嗯，一旦你开始运行模型，它就会",
       "speaker": "James Pollack"
     },
     {
-      "id": 184,
+      "id": 154,
       "start": 831.62,
       "end": 834.02,
       "text": "有趣，因为你的开发人员会喜欢开发",
       "speaker": "James Pollack"
     },
     {
-      "id": 185,
+      "id": 155,
       "start": 834.1,
       "end": 837.38,
       "text": "他们不会投资某些东西，但我认为在现实世界中有人可以",
       "speaker": "James Pollack"
     },
     {
-      "id": 186,
+      "id": 156,
       "start": 837.38,
       "end": 844.26,
       "text": "既是投资者又是开发商，所以我看到了以后发展的一些潜力，所以如果",
       "speaker": "James Pollack"
     },
     {
-      "id": 187,
+      "id": 157,
       "start": 844.26,
       "end": 851.38,
       "text": "继续吧哦，抱歉，我想打断，嗯，我想说的是，嗯，我们正在进入",
       "speaker": "James Pollack"
     },
     {
-      "id": 188,
+      "id": 158,
       "start": 851.38,
       "end": 857.38,
       "text": "在对所有经济体都涉及的复杂系统进行建模时，需要进行一些基本的权衡",
       "speaker": "James Pollack"
     },
     {
-      "id": 189,
+      "id": 159,
       "start": 857.38,
       "end": 862.82,
       "text": "社交系统是呃，当你拥有这些基于代理的系统时，这真的很难",
       "speaker": "James Pollack"
     },
     {
-      "id": 190,
+      "id": 160,
       "start": 862.82,
       "end": 864.02,
       "text": "他们是聪明的特工",
       "speaker": "James Pollack"
     },
     {
-      "id": 191,
+      "id": 161,
       "start": 864.1,
       "end": 870.58,
       "text": "做出关于谁是什么以及他们的行为方式的富有成效的假设，嗯我认为",
       "speaker": "James Pollack"
     },
     {
-      "id": 192,
+      "id": 162,
       "start": 870.58,
       "end": 874.98,
       "text": "这就是这里的挑战之一是拥有正确的抽象级别，而不是",
       "speaker": "James Pollack"
     },
     {
-      "id": 193,
+      "id": 163,
       "start": 874.98,
       "end": 880.5,
       "text": "对这些都太简化了，你知道我从我的工作经验中知道说",
       "speaker": "James Pollack"
     },
     {
-      "id": 194,
+      "id": 164,
       "start": 880.5,
       "end": 884.58,
       "text": "说 gitcoin dow，你知道我现在已经脱离了它，但我看过它",
       "speaker": "James Pollack"
     },
     {
-      "id": 195,
+      "id": 165,
       "start": 884.58,
       "end": 888.34,
       "text": "从外部来看，您知道一些服务提供商是",
       "speaker": "James Pollack"
     },
     {
-      "id": 196,
+      "id": 166,
       "start": 888.34,
       "end": 893.06,
       "text": "提案创建者也是开发者也是委托者，",
       "speaker": "James Pollack"
     },
     {
-      "id": 197,
+      "id": 167,
       "start": 894.1,
       "end": 899.06,
       "text": "你几乎就像用不同的行为类型重载了一个超类",
       "speaker": "James Pollack"
     },
     {
-      "id": 198,
+      "id": 168,
       "start": 899.06,
       "end": 905.22,
       "text": "嗯，是的，只是关于那里复杂系统的元评论，而且是一个完全有效的评论",
       "speaker": "James Pollack"
     },
     {
-      "id": 199,
+      "id": 169,
       "start": 906.26,
       "end": 912.02,
       "text": "这让我意识到指出这些代理有点开箱即用是很重要的",
       "speaker": "James Pollack"
     },
     {
-      "id": 200,
+      "id": 170,
       "start": 912.02,
       "end": 916.98,
       "text": "他们不是人工智能，他们有类似的规则，他们会根据你所说的条件做出反应",
       "speaker": "James Pollack"
     },
     {
-      "id": 201,
+      "id": 171,
       "start": 916.98,
       "end": 923.86,
       "text": "你知道代币价格是否大于 x 则执行此操作 如果代币价格小于 x 则执行此操作",
       "speaker": "James Pollack"
     },
     {
-      "id": 202,
+      "id": 172,
       "start": 924.1,
       "end": 930.1,
       "text": "所以从这个意义上说，就像跳出盒子一样，他们不是很聪明，呆在盒子里有什么好处",
       "speaker": "James Pollack"
     },
     {
-      "id": 203,
+      "id": 173,
       "start": 930.1,
       "end": 935.46,
       "text": "这个环境以及实际上最近发生的所有很酷的复杂系统的东西就是",
       "speaker": "James Pollack"
     },
     {
-      "id": 204,
+      "id": 174,
       "start": 938.25,
       "end": 942.57,
       "text": "您的代理实际上可以插入这些系统，例如",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 205,
+      "id": 175,
       "start": 945.91,
       "end": 951.67,
       "text": "生成式人工智能，用于创建您可以生成的行为，您知道 200 种不同的行为",
       "speaker": "James Pollack"
     },
     {
-      "id": 206,
+      "id": 176,
       "start": 951.67,
       "end": 955.67,
       "text": "然后将它们插入并让代理从中选择或者您可以插入",
       "speaker": "James Pollack"
     },
     {
-      "id": 207,
+      "id": 177,
       "start": 955.83,
       "end": 961.59,
       "text": "强化学习并给你的代理一个你知道的奖励函数，这样他们实际上就可以",
       "speaker": "James Pollack"
     },
     {
-      "id": 208,
+      "id": 178,
       "start": 961.59,
       "end": 967.83,
       "text": "改变他们的行为，或者嗯，你知道让他们自我反思并实际改变",
       "speaker": "James Pollack"
     },
     {
-      "id": 209,
+      "id": 179,
       "start": 967.83,
       "end": 973.67,
       "text": "他们在运行此模拟时的行为尚不存在，但这就是我将其内置的原因",
       "speaker": "James Pollack"
     },
     {
-      "id": 210,
+      "id": 180,
       "start": 973.67,
       "end": 978.31,
       "text": "python ，这样每次你调用代理上的一个步骤时我们都有潜力，就是这样",
       "speaker": "James Pollack"
     },
     {
-      "id": 211,
+      "id": 181,
       "start": 978.31,
       "end": 983.67,
       "text": "作为一个时间步长，但是当我们步进开发人员时，我们不仅仅需要它们",
       "speaker": "James Pollack"
     },
     {
-      "id": 212,
+      "id": 182,
       "start": 983.67,
       "end": 985.75,
       "text": "你知道遵守我们一开始写的规则",
       "speaker": "James Pollack"
     },
     {
-      "id": 213,
+      "id": 183,
       "start": 985.75,
       "end": 991.03,
       "text": "在模拟开始时，如果我们插入他们生成新策略的能力，",
       "speaker": "James Pollack"
     },
     {
-      "id": 214,
+      "id": 184,
       "start": 991.03,
       "end": 995.99,
       "text": "尝试一下，杀死那些不起作用的，然后与那些起作用的一起骑行，是的，然后",
       "speaker": "James Pollack"
     },
     {
-      "id": 215,
+      "id": 185,
       "start": 995.99,
       "end": 997.39,
       "text": "事情会变得很奇怪。",
       "speaker": "James Pollack"
     },
     {
-      "id": 216,
+      "id": 186,
       "start": 997.39,
       "end": 1001.17,
       "text": "然后我们将在超参数空间中看到一些我们甚至不知道的东西",
       "speaker": "James Pollack"
     },
     {
-      "id": 217,
+      "id": 187,
       "start": 1001.17,
       "end": 1009.0,
       "text": "之所以存在，是因为他们将不断创建新的参数。",
       "speaker": "James Pollack"
     },
     {
-      "id": 218,
+      "id": 188,
       "start": 1009.0,
       "end": 1014.16,
       "text": "但是抽象级别对于任何类型的模拟都是一个巨大的问题，而我没有",
       "speaker": "James Pollack"
     },
     {
-      "id": 219,
+      "id": 189,
       "start": 1014.16,
       "end": 1019.64,
       "text": "一个很好的答案，除了一方面你可能有一场游戏，然后另一方面",
       "speaker": "James Pollack"
     },
     {
-      "id": 220,
+      "id": 190,
       "start": 1019.64,
       "end": 1022.62,
       "text": "一边你有你的真实数据。",
       "speaker": "James Pollack"
     },
     {
-      "id": 221,
+      "id": 191,
       "start": 1022.62,
       "end": 1023.62,
       "text": "我愿意...",
       "speaker": "James Pollack"
     },
     {
-      "id": 222,
+      "id": 192,
       "start": 1023.62,
       "end": 1024.72,
       "text": "不，继续吧。",
       "speaker": "James Pollack"
     },
     {
-      "id": 223,
+      "id": 193,
       "start": 1024.72,
       "end": 1033.74,
       "text": "我想说，我对 Web3 和人工智能如何互补的预感之一是",
       "speaker": "James Pollack"
     },
     {
-      "id": 224,
+      "id": 194,
       "start": 1033.74,
       "end": 1039.08,
       "text": "我大致认为 Web3 在某种程度上是关于启发式的，而我们都是启发式的",
       "speaker": "James Pollack"
     },
     {
-      "id": 225,
+      "id": 195,
       "start": 1039.08,
       "end": 1041.5,
       "text": "传统上训练的是我的银行账户余额。",
       "speaker": "James Pollack"
     },
     {
-      "id": 226,
+      "id": 196,
       "start": 1041.5,
       "end": 1043.58,
       "text": "我希望我的银行账户余额增加。",
       "speaker": "James Pollack"
     },
     {
-      "id": 227,
+      "id": 197,
       "start": 1043.58,
       "end": 1044.58,
       "text": "但在 Web3 中，我们现在......",
       "speaker": "James Pollack"
     },
     {
-      "id": 228,
+      "id": 198,
       "start": 1044.58,
       "end": 1048.26,
       "text": "我有一个互联网原生启发式，这是我的代币余额。",
       "speaker": "James Pollack"
     },
     {
-      "id": 229,
+      "id": 199,
       "start": 1048.26,
       "end": 1053.02,
       "text": "然后人工智能在某种程度上是关于启发式最大化，这就是我如何最大化",
       "speaker": "James Pollack"
     },
     {
-      "id": 230,
+      "id": 200,
       "start": 1053.02,
       "end": 1056.68,
       "text": "最大化启发式的智能策略？",
       "speaker": "James Pollack"
     },
     {
-      "id": 231,
+      "id": 201,
       "start": 1056.68,
       "end": 1065.16,
       "text": "所以我申请了这个项目，我的见解是如果你给一个法学硕士或人工智能一个代币余额",
       "speaker": "James Pollack"
     },
     {
-      "id": 232,
+      "id": 202,
       "start": 1065.16,
       "end": 1069.9,
       "text": "你只需说，让数字增加，无论是你自己的代币余额还是代币余额",
       "speaker": "James Pollack"
     },
     {
-      "id": 233,
+      "id": 203,
       "start": 1069.9,
       "end": 1073.04,
       "text": "反对我们称之为 ETH 或 USDC 或类似的东西。",
       "speaker": "James Pollack"
     },
     {
-      "id": 234,
+      "id": 204,
       "start": 1073.04,
       "end": 1074.04,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 235,
+      "id": 205,
       "start": 1074.04,
       "end": 1076.0,
       "text": "这是很多有趣的行为。",
       "speaker": "James Pollack"
     },
     {
-      "id": 236,
+      "id": 206,
       "start": 1076.0,
       "end": 1082.38,
       "text": "但这只是作为创建多智能体系统并迈向更高级的自反性的一种方式",
       "speaker": "James Pollack"
     },
     {
-      "id": 237,
+      "id": 207,
       "start": 1082.38,
       "end": 1088.52,
       "text": "行为与基于规则的行为相比，在现实性方面有一个阶梯。",
       "speaker": "James Pollack"
     },
     {
-      "id": 238,
+      "id": 208,
       "start": 1088.52,
       "end": 1094.3,
       "text": "所以，是的，只是启发式与启发式最大化的见解。",
       "speaker": "James Pollack"
     },
     {
-      "id": 239,
+      "id": 209,
       "start": 1094.3,
       "end": 1099.04,
       "text": "我认为这越来越成为 AI 和 Web3 结合在一起的方式。",
       "speaker": "James Pollack"
     },
     {
-      "id": 240,
+      "id": 210,
       "start": 1099.04,
       "end": 1102.72,
       "text": "您认为 DAO 本身可以实现启发式最大化吗？",
       "speaker": "James Pollack"
     },
     {
-      "id": 241,
+      "id": 211,
       "start": 1102.72,
       "end": 1103.72,
       "text": "我不知道。",
       "speaker": "James Pollack"
     },
     {
-      "id": 242,
+      "id": 212,
       "start": 1103.72,
       "end": 1107.58,
       "text": "您认为这是否是超越代币上涨的启发？",
       "speaker": "James Pollack"
     },
     {
-      "id": 243,
+      "id": 213,
       "start": 1107.58,
       "end": 1113.29,
       "text": "您认为这些组织的使命足够明确或者足够强大吗",
       "speaker": "James Pollack"
     },
     {
-      "id": 244,
+      "id": 214,
       "start": 1113.29,
       "end": 1118.67,
       "text": "这是你可以体现在实际规则中的东西吗？",
       "speaker": "James Pollack"
     },
     {
-      "id": 245,
+      "id": 215,
       "start": 1118.67,
       "end": 1124.19,
       "text": "例如，DAO 可以设置为最大化代币余额，或者可以设置为尝试",
       "speaker": "James Pollack"
     },
     {
-      "id": 246,
+      "id": 216,
       "start": 1124.19,
       "end": 1130.15,
       "text": "将大部分收入重新分配给其成员，而不关心自己的余额",
       "speaker": "James Pollack"
     },
     {
-      "id": 247,
+      "id": 217,
       "start": 1130.15,
       "end": 1131.15,
       "text": "很高。",
       "speaker": "James Pollack"
     },
     {
-      "id": 248,
+      "id": 218,
       "start": 1131.15,
       "end": 1131.87,
       "text": "或者它可能只是想生存。",
       "speaker": "James Pollack"
     },
     {
-      "id": 249,
+      "id": 219,
       "start": 1131.87,
       "end": 1132.87,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 250,
+      "id": 220,
       "start": 1132.87,
       "end": 1133.87,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 251,
+      "id": 221,
       "start": 1133.91,
       "end": 1136.91,
       "text": "DAO 本身有很多不同类型的目标。",
       "speaker": "James Pollack"
     },
     {
-      "id": 252,
+      "id": 222,
       "start": 1136.91,
       "end": 1137.91,
       "text": "我想知道你怎么想。",
       "speaker": "James Pollack"
     },
     {
-      "id": 253,
+      "id": 223,
       "start": 1137.91,
       "end": 1138.91,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 254,
+      "id": 224,
       "start": 1138.91,
       "end": 1139.91,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 255,
+      "id": 225,
       "start": 1139.91,
       "end": 1143.39,
       "text": "巴拉吉在《网络状态》一书中所说的是，所有这些网络状态都有",
       "speaker": "James Pollack"
     },
     {
-      "id": 256,
+      "id": 226,
       "start": 1143.39,
       "end": 1146.85,
       "text": "他们的一条戒律，就是他们认为世界上错误的事情，那就是",
       "speaker": "James Pollack"
     },
     {
-      "id": 257,
+      "id": 227,
       "start": 1146.85,
       "end": 1148.87,
       "text": "他们的网络正在尝试改变。",
       "speaker": "James Pollack"
     },
     {
-      "id": 258,
+      "id": 228,
       "start": 1148.87,
       "end": 1154.89,
       "text": "他给出的玩具例子是人们认为我们应该吃酮，所以会有",
       "speaker": "James Pollack"
     },
     {
-      "id": 259,
+      "id": 229,
       "start": 1154.89,
       "end": 1157.65,
       "text": "是酮网络状态。",
       "speaker": "James Pollack"
     },
     {
-      "id": 260,
+      "id": 230,
       "start": 1157.65,
       "end": 1162.67,
       "text": "我更熟悉的是 Gitcoin，他们的使命是为重要的事情提供资金。",
       "speaker": "James Pollack"
     },
     {
-      "id": 261,
+      "id": 231,
       "start": 1162.67,
       "end": 1165.91,
       "text": "所以基本上是创建协调工具来为重要的事情提供资金。",
       "speaker": "James Pollack"
     },
     {
-      "id": 262,
+      "id": 232,
       "start": 1165.91,
       "end": 1170.83,
       "text": "你在这里有点进入人工智能对齐，因为代币余额将被表达",
       "speaker": "James Pollack"
     },
     {
-      "id": 263,
+      "id": 233,
       "start": 1170.83,
       "end": 1175.73,
       "text": "以编程方式上链，但随后的使命只能通过社交方式表达，这几乎是",
       "speaker": "James Pollack"
     },
     {
-      "id": 264,
+      "id": 234,
       "start": 1175.73,
       "end": 1181.17,
       "text": "就像模仿的社会反射动力与象征性的经济反射动力一样。",
       "speaker": "James Pollack"
     },
     {
-      "id": 265,
+      "id": 235,
       "start": 1181.17,
       "end": 1185.99,
       "text": "你如何创建一个奇怪的吸引子来对齐这两个东西而不是",
       "speaker": "James Pollack"
     },
     {
-      "id": 266,
+      "id": 236,
       "start": 1185.99,
       "end": 1189.67,
       "text": "创造那些不能粘在一起的东西？",
       "speaker": "James Pollack"
     },
     {
-      "id": 267,
+      "id": 237,
       "start": 1189.67,
       "end": 1190.67,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 268,
+      "id": 238,
       "start": 1190.67,
       "end": 1191.67,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 269,
+      "id": 239,
       "start": 1191.67,
       "end": 1196.43,
       "text": "我认为你们的 DAO 可能有一条强有力的戒律，并且",
       "speaker": "James Pollack"
     },
     {
-      "id": 270,
+      "id": 240,
       "start": 1196.43,
       "end": 1201.21,
       "text": "你的 DAO 没有任何一条戒律或一条戒律较弱，并且代理",
       "speaker": "James Pollack"
     },
     {
-      "id": 271,
+      "id": 241,
       "start": 1201.21,
       "end": 1204.91,
       "text": "在此基础上进行不同的工作。",
       "speaker": "James Pollack"
     },
     {
-      "id": 272,
+      "id": 242,
       "start": 1204.91,
       "end": 1206.83,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 273,
+      "id": 243,
       "start": 1206.83,
       "end": 1208.31,
       "text": "这对我来说很有意义。",
       "speaker": "James Pollack"
     },
     {
-      "id": 274,
+      "id": 244,
       "start": 1208.31,
       "end": 1209.31,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 275,
+      "id": 245,
       "start": 1209.31,
       "end": 1215.23,
       "text": "我可以想象，例如，对于 Gitcoin，你会希望它尝试最大化其数量",
       "speaker": "James Pollack"
     },
     {
-      "id": 276,
+      "id": 246,
       "start": 1215.23,
       "end": 1219.59,
       "text": "项目，然后你可以对项目的影响力进行某种评级",
       "speaker": "James Pollack"
     },
     {
-      "id": 277,
+      "id": 247,
       "start": 1219.59,
       "end": 1221.23,
       "text": "并让它尝试最大化这一点。",
       "speaker": "James Pollack"
     },
     {
-      "id": 278,
+      "id": 248,
       "start": 1221.23,
       "end": 1226.69,
       "text": "我认为一旦我们启动并运行它就会非常酷。",
       "speaker": "James Pollack"
     },
     {
-      "id": 279,
+      "id": 249,
       "start": 1226.69,
       "end": 1230.11,
       "text": "我认为大多数人都在尝试最大化硬币。",
       "speaker": "James Pollack"
     },
     {
-      "id": 280,
+      "id": 250,
       "start": 1230.11,
       "end": 1232.99,
       "text": "然后我喜欢能够在这两者之间取得平衡的想法。",
       "speaker": "James Pollack"
     },
     {
-      "id": 281,
+      "id": 251,
       "start": 1232.99,
       "end": 1237.57,
       "text": "也许我们 80% 是由使命驱动，但 20% 是由货币驱动。",
       "speaker": "James Pollack"
     },
     {
-      "id": 282,
+      "id": 252,
       "start": 1237.57,
       "end": 1239.47,
       "text": "我认为这不是一个整体。",
       "speaker": "James Pollack"
     },
     {
-      "id": 283,
+      "id": 253,
       "start": 1239.47,
       "end": 1241.87,
       "text": "你可以混合使用它们。",
       "speaker": "James Pollack"
     },
     {
-      "id": 284,
+      "id": 254,
       "start": 1241.87,
       "end": 1249.99,
       "text": "嗯，我只是觉得元评论可能是关于基于代理的边界条件",
       "speaker": "James Pollack"
     },
     {
-      "id": 285,
+      "id": 255,
       "start": 1249.99,
       "end": 1251.19,
       "text": "系统。",
       "speaker": "James Pollack"
     },
     {
-      "id": 286,
+      "id": 256,
       "start": 1251.19,
       "end": 1254.07,
       "text": "因为假设您正在尝试对 MakerDAO 进行建模。",
       "speaker": "James Pollack"
     },
     {
-      "id": 287,
+      "id": 257,
       "start": 1254.07,
       "end": 1260.11,
       "text": "他们的主要产品是一种称为 DAI 的稳定币，而 MKR 是您可以使用的辅助代币。",
       "speaker": "James Pollack"
     },
     {
-      "id": 288,
+      "id": 258,
       "start": 1260.11,
       "end": 1267.83,
       "text": "可以投资或购买有助于创造 DAI 稳定性并允许您设置",
       "speaker": "James Pollack"
     },
     {
-      "id": 289,
+      "id": 259,
       "start": 1267.83,
       "end": 1269.25,
       "text": "系统上的参数。",
       "speaker": "James Pollack"
     },
     {
-      "id": 290,
+      "id": 260,
       "start": 1269.25,
       "end": 1271.99,
       "text": "除此之外还有治理论坛。",
       "speaker": "James Pollack"
     },
     {
-      "id": 291,
+      "id": 261,
       "start": 1271.99,
       "end": 1278.21,
-      "text": "我想，在给定 EBM 的情况下，您可以对所有这些事情进行基于代理的建模",
+      "text": "我想，在给定 ABM 的情况下，您可以对所有这些事情进行基于代理的建模",
       "speaker": "James Pollack"
     },
     {
-      "id": 292,
+      "id": 262,
       "start": 1278.21,
       "end": 1279.21,
       "text": "工具包。",
       "speaker": "James Pollack"
     },
     {
-      "id": 293,
+      "id": 263,
       "start": 1279.21,
       "end": 1280.73,
       "text": "但在某种程度上，你甚至无法建模......",
       "speaker": "James Pollack"
     },
     {
-      "id": 294,
+      "id": 264,
       "start": 1280.73,
       "end": 1286.01,
       "text": "如果不对 DAO 的其余部分进行建模，您甚至无法对其市场成功进行建模",
       "speaker": "James Pollack"
     },
     {
-      "id": 295,
+      "id": 265,
       "start": 1286.01,
       "end": 1287.01,
       "text": "整个Web3生态系统。",
       "speaker": "James Pollack"
     },
     {
-      "id": 296,
+      "id": 266,
       "start": 1287.01,
       "end": 1288.01,
       "text": "还对市场进行建模。",
       "speaker": "James Pollack"
     },
     {
-      "id": 297,
+      "id": 267,
       "start": 1288.01,
       "end": 1289.01,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 298,
+      "id": 268,
       "start": 1289.01,
       "end": 1291.91,
       "text": "此时，如果您有一个可以很好地模拟 DAO 的模拟，为什么不直接",
       "speaker": "James Pollack"
     },
     {
-      "id": 299,
+      "id": 269,
       "start": 1291.91,
       "end": 1295.11,
       "text": "模拟整个股市就到此为止吧？",
       "speaker": "James Pollack"
     },
     {
-      "id": 300,
+      "id": 270,
       "start": 1295.11,
       "end": 1296.11,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 301,
+      "id": 271,
       "start": 1296.11,
       "end": 1297.11,
       "text": "所以，是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 302,
+      "id": 272,
       "start": 1297.11,
       "end": 1298.11,
       "text": "功能请求，詹姆斯。",
       "speaker": "James Pollack"
     },
     {
-      "id": 303,
+      "id": 273,
       "start": 1298.11,
       "end": 1304.61,
       "text": "我认为，我们能否模拟所有 Web3 是这一切的最终范围。",
       "speaker": "James Pollack"
     },
     {
-      "id": 304,
+      "id": 274,
       "start": 1304.61,
       "end": 1306.23,
       "text": "绝对地。",
       "speaker": "James Pollack"
     },
     {
-      "id": 305,
+      "id": 275,
       "start": 1306.23,
       "end": 1309.61,
       "text": "只要有足够的计算能力，我相信有人可以。",
       "speaker": "James Pollack"
     },
     {
-      "id": 306,
+      "id": 276,
       "start": 1309.61,
       "end": 1310.61,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 307,
+      "id": 277,
       "start": 1310.61,
       "end": 1315.75,
       "text": "我可以听听你说的一些我认为非常有趣的事情吗？",
       "speaker": "James Pollack"
     },
     {
-      "id": 308,
+      "id": 278,
       "start": 1315.75,
       "end": 1321.19,
       "text": "您提到可能在其中运行 EVM，但我没有想到这一点。",
       "speaker": "James Pollack"
     },
     {
-      "id": 309,
+      "id": 279,
       "start": 1321.19,
       "end": 1327.21,
       "text": "因此，我们正在制作的这个开发代理，您实际上可以对其进行设置，以便它具有",
       "speaker": "James Pollack"
     },
     {
-      "id": 310,
+      "id": 280,
       "start": 1327.21,
       "end": 1333.07,
       "text": "它可以访问的 EVM，也许你给它一个 LLM，然后让它编写代码",
       "speaker": "James Pollack"
     },
     {
-      "id": 311,
+      "id": 281,
       "start": 1333.07,
       "end": 1334.73,
       "text": "某种。",
       "speaker": "James Pollack"
     },
     {
-      "id": 312,
+      "id": 282,
       "start": 1334.73,
       "end": 1340.45,
       "text": "我发现这非常有趣，实际上有一些代理可以运行一些......",
       "speaker": "James Pollack"
     },
     {
-      "id": 313,
+      "id": 283,
       "start": 1340.45,
       "end": 1345.59,
       "text": "运行一些 Solidity 代码，因为这就是这些 DAO 的人们最终正在做的事情。",
       "speaker": "James Pollack"
     },
     {
-      "id": 314,
+      "id": 284,
       "start": 1345.59,
       "end": 1350.73,
       "text": "那么在一个足够大的自我纠错系统中，LLM会发现代码审计和重入吗？",
       "speaker": "James Pollack"
     },
     {
-      "id": 315,
+      "id": 285,
       "start": 1350.73,
       "end": 1353.83,
       "text": "攻击和所有这些类型的事情？",
       "speaker": "James Pollack"
     },
     {
-      "id": 316,
+      "id": 286,
       "start": 1353.83,
       "end": 1357.69,
       "text": "嗯，我认为社会工程攻击会很有趣，因为它会",
       "speaker": "James Pollack"
     },
     {
-      "id": 317,
+      "id": 287,
       "start": 1357.69,
       "end": 1362.49,
       "text": "还可以从 DAO 获取所有其他内容。",
       "speaker": "James Pollack"
     },
     {
-      "id": 318,
+      "id": 288,
       "start": 1362.49,
       "end": 1363.49,
       "text": "那是...",
       "speaker": "James Pollack"
     },
     {
-      "id": 319,
+      "id": 289,
       "start": 1363.49,
       "end": 1364.49,
       "text": "让我记下来。",
       "speaker": "James Pollack"
     },
     {
-      "id": 320,
+      "id": 290,
       "start": 1364.49,
       "end": 1365.49,
       "text": "这是...",
       "speaker": "James Pollack"
     },
     {
-      "id": 321,
+      "id": 291,
       "start": 1365.49,
       "end": 1366.49,
       "text": "好东西。",
       "speaker": "James Pollack"
     },
     {
-      "id": 322,
+      "id": 292,
       "start": 1366.49,
       "end": 1367.45,
       "text": "类似物是什么...",
       "speaker": "James Pollack"
     },
     {
-      "id": 323,
+      "id": 293,
       "start": 1367.45,
       "end": 1368.45,
       "text": "我正在观看 DeepMind 节目。",
       "speaker": "James Pollack"
     },
     {
-      "id": 324,
+      "id": 294,
       "start": 1368.45,
       "end": 1369.45,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 325,
+      "id": 295,
       "start": 1369.45,
       "end": 1370.45,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 326,
+      "id": 296,
       "start": 1370.45,
       "end": 1376.91,
       "text": "我正在观看 DeepMind 关于围棋的纪录片，以及这些人类围棋棋手是如何出现的",
       "speaker": "James Pollack"
     },
     {
-      "id": 327,
+      "id": 297,
       "start": 1376.91,
       "end": 1383.79,
       "text": "他们的思维能力受到认知限制，但人工智能却没有这个能力",
       "speaker": "James Pollack"
     },
     {
-      "id": 328,
+      "id": 298,
       "start": 1383.79,
       "end": 1384.79,
       "text": "认知极限。",
       "speaker": "James Pollack"
     },
     {
-      "id": 329,
+      "id": 299,
       "start": 1384.79,
       "end": 1388.25,
       "text": "这样他们就可以探索可能性空间并发现新的动作",
       "speaker": "James Pollack"
     },
     {
-      "id": 330,
+      "id": 300,
       "start": 1388.25,
       "end": 1391.13,
       "text": "这是人类玩家从未真正想到过的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 331,
+      "id": 301,
       "start": 1391.13,
       "end": 1395.59,
       "text": "我认为这就是这些基于人工智能的系统的有趣之处。",
       "speaker": "James Pollack"
     },
     {
-      "id": 332,
+      "id": 302,
       "start": 1395.59,
       "end": 1397.07,
       "text": "完全。",
       "speaker": "James Pollack"
     },
     {
-      "id": 333,
+      "id": 303,
       "start": 1397.07,
       "end": 1400.29,
       "text": "我已准备好按“开始”进行模拟。",
       "speaker": "James Pollack"
     },
     {
-      "id": 334,
+      "id": 304,
       "start": 1400.29,
       "end": 1405.99,
       "text": "坐下来，看看图表或读出内容，然后想，天哪，发生了什么",
       "speaker": "James Pollack"
     },
     {
-      "id": 335,
+      "id": 305,
       "start": 1405.99,
       "end": 1406.99,
       "text": "在这里？",
       "speaker": "James Pollack"
     },
     {
-      "id": 336,
+      "id": 306,
       "start": 1406.99,
       "end": 1410.63,
       "text": "我认为这当然是我拍摄的时刻。",
       "speaker": "James Pollack"
     },
     {
-      "id": 337,
+      "id": 307,
       "start": 1410.63,
       "end": 1411.63,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 338,
+      "id": 308,
       "start": 1411.63,
       "end": 1420.23,
       "text": "好吧，我想我接下来要问你的问题之一是你想如何通过这个货币化？",
       "speaker": "James Pollack"
     },
     {
-      "id": 339,
+      "id": 309,
       "start": 1420.23,
       "end": 1426.49,
       "text": "我可以看到一个非常明显的商业模式，这将是 DAO X 和",
       "speaker": "James Pollack"
     },
     {
-      "id": 340,
+      "id": 310,
       "start": 1426.49,
       "end": 1430.49,
       "text": "说，嘿，我可以模拟你的治理，我可以模拟很多关于",
       "speaker": "James Pollack"
     },
     {
-      "id": 341,
+      "id": 311,
       "start": 1430.49,
       "end": 1433.81,
       "text": "你的 DAO。",
       "speaker": "James Pollack"
     },
     {
-      "id": 342,
+      "id": 312,
       "start": 1433.81,
       "end": 1439.25,
       "text": "付给我 X 数量的代币，我将模拟您的 DAO，我们可以就以下内容提出建议",
       "speaker": "James Pollack"
     },
     {
-      "id": 343,
+      "id": 313,
       "start": 1439.25,
       "end": 1444.09,
       "text": "你应该如何根据人工智能模型的反馈来发展你的 DAO。",
       "speaker": "James Pollack"
     },
     {
-      "id": 344,
+      "id": 314,
       "start": 1444.09,
       "end": 1446.99,
       "text": "但它也是，我知道这是一段开源代码，所以我希望在 Gitcoin 上看到它",
       "speaker": "James Pollack"
     },
     {
-      "id": 345,
+      "id": 315,
       "start": 1446.99,
       "end": 1448.85,
       "text": "未来的补助金。",
       "speaker": "James Pollack"
     },
     {
-      "id": 346,
+      "id": 316,
       "start": 1448.85,
       "end": 1452.17,
       "text": "如果这件事达到任何水平，感觉就像你正在为这个空间建立公共利益",
       "speaker": "James Pollack"
     },
     {
-      "id": 347,
+      "id": 317,
       "start": 1452.17,
       "end": 1455.19,
       "text": "DAO 能够模拟其升级非常有用。",
       "speaker": "James Pollack"
     },
     {
-      "id": 348,
+      "id": 318,
       "start": 1455.19,
       "end": 1460.28,
       "text": "伙计，如果有人帮助我构建某种让你可以使用的模块，那就太酷了",
       "speaker": "James Pollack"
     },
     {
-      "id": 349,
+      "id": 319,
       "start": 1460.28,
       "end": 1464.52,
       "text": "在其顶部插入您实际的 DAO 信息。",
       "speaker": "James Pollack"
     },
     {
-      "id": 350,
+      "id": 320,
       "start": 1464.52,
       "end": 1465.52,
       "text": "那真是太棒了。",
       "speaker": "James Pollack"
     },
     {
-      "id": 351,
+      "id": 321,
       "start": 1465.52,
       "end": 1468.02,
       "text": "可能只是训练数据。",
       "speaker": "James Pollack"
     },
     {
-      "id": 352,
+      "id": 322,
       "start": 1468.02,
       "end": 1470.24,
       "text": "我的意思是，在我的抽象层面，这只是训练数据。",
       "speaker": "James Pollack"
     },
     {
-      "id": 353,
+      "id": 323,
       "start": 1470.24,
       "end": 1474.4,
       "text": "我知道你可能需要改变很多事情，但是......",
       "speaker": "James Pollack"
     },
     {
-      "id": 354,
+      "id": 324,
       "start": 1474.4,
       "end": 1475.4,
       "text": "完全。",
       "speaker": "James Pollack"
     },
     {
-      "id": 355,
+      "id": 325,
       "start": 1475.4,
       "end": 1480.31,
       "text": "因此，对于这样的项目来说，货币化很有趣。",
       "speaker": "James Pollack"
     },
     {
-      "id": 356,
+      "id": 326,
       "start": 1480.31,
       "end": 1486.35,
       "text": "是的，在咨询路线上，DAO 确实支付了很多钱让人们进来做这些事情",
       "speaker": "James Pollack"
     },
     {
-      "id": 357,
+      "id": 327,
       "start": 1486.35,
       "end": 1489.91,
       "text": "薪水，有时甚至一百万美元，让某人进入你的 DAO 并提供帮助",
       "speaker": "James Pollack"
     },
     {
-      "id": 358,
+      "id": 328,
       "start": 1489.91,
       "end": 1492.59,
       "text": "你做出决定是因为这涉及到很多钱。",
       "speaker": "James Pollack"
     },
     {
-      "id": 359,
+      "id": 329,
       "start": 1492.59,
       "end": 1498.63,
       "text": "所以也许我们不会提供，或者通过这个模拟，能够给你100%的功效",
       "speaker": "James Pollack"
     },
     {
-      "id": 360,
+      "id": 330,
       "start": 1498.63,
       "end": 1500.69,
       "text": "你会从这样的顾问那里得到什么。",
       "speaker": "James Pollack"
     },
     {
-      "id": 361,
+      "id": 331,
       "start": 1500.69,
       "end": 1509.13,
       "text": "但如果我们能以 1% 的成本为您提供 70% 的收益，我认为这是一个相当不错的权衡。",
       "speaker": "James Pollack"
     },
     {
-      "id": 362,
+      "id": 332,
       "start": 1509.13,
       "end": 1515.45,
       "text": "所以我之前提到的一件有趣的事情是游戏化之间的滑块",
       "speaker": "James Pollack"
     },
     {
-      "id": 363,
+      "id": 333,
       "start": 1515.45,
       "end": 1516.45,
       "text": "或不。",
       "speaker": "James Pollack"
     },
     {
-      "id": 364,
+      "id": 334,
       "start": 1516.45,
       "end": 1518.15,
       "text": "我实际上认为有一个很酷的方法可以从中赚钱......",
       "speaker": "James Pollack"
     },
     {
-      "id": 365,
+      "id": 335,
       "start": 1518.15,
       "end": 1519.15,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 366,
+      "id": 336,
       "start": 1519.15,
       "end": 1523.85,
       "text": "从中赚钱的一种方法是将其变成游戏。",
       "speaker": "James Pollack"
     },
     {
-      "id": 367,
+      "id": 337,
       "start": 1523.85,
       "end": 1529.83,
       "text": "因此，在每个时间步骤中，您都会添加一些目标，为玩家添加一些选项",
       "speaker": "James Pollack"
     },
     {
-      "id": 368,
+      "id": 338,
       "start": 1529.83,
       "end": 1531.05,
       "text": "可以做。",
       "speaker": "James Pollack"
     },
     {
-      "id": 369,
+      "id": 339,
       "start": 1531.05,
       "end": 1534.23,
       "text": "模拟游戏是一个相当大的类型。",
       "speaker": "James Pollack"
     },
     {
-      "id": 370,
+      "id": 340,
       "start": 1534.23,
       "end": 1536.71,
       "text": "已经有很多人在玩这些了。",
       "speaker": "James Pollack"
     },
     {
-      "id": 371,
+      "id": 341,
       "start": 1536.71,
       "end": 1542.97,
       "text": "这将是另一款很酷的、专注于 Web3 的高级模拟游戏。",
       "speaker": "James Pollack"
     },
     {
-      "id": 372,
+      "id": 342,
       "start": 1542.97,
       "end": 1547.83,
       "text": "因此，一款以区块链为中心的游戏实际上并不在区块链上。",
       "speaker": "James Pollack"
     },
     {
-      "id": 373,
+      "id": 343,
       "start": 1547.83,
       "end": 1548.83,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 374,
+      "id": 344,
       "start": 1548.83,
       "end": 1553.43,
       "text": "不是在区块链上，但是处理区块链主题，我认为可能会相当成功。",
       "speaker": "James Pollack"
     },
     {
-      "id": 375,
+      "id": 345,
       "start": 1553.43,
       "end": 1559.12,
       "text": "我想过去几周每个人都对这篇论文感到害怕",
       "speaker": "James Pollack"
     },
     {
-      "id": 376,
+      "id": 346,
       "start": 1559.12,
       "end": 1564.44,
       "text": "一些研究人员使用了聊天 GPT 代理，并将它们全部放入了一个小版本中。",
       "speaker": "James Pollack"
     },
     {
-      "id": 377,
+      "id": 347,
       "start": 1564.44,
       "end": 1570.48,
       "text": "他们为其中一名特工举办了生日聚会。",
       "speaker": "James Pollack"
     },
     {
-      "id": 378,
+      "id": 348,
       "start": 1570.48,
       "end": 1573.7,
       "text": "人们对此感到非常兴奋。",
       "speaker": "James Pollack"
     },
     {
-      "id": 379,
+      "id": 349,
       "start": 1573.7,
       "end": 1576.24,
       "text": "这对我来说似乎是非常重要的赌注，就像，哦......",
       "speaker": "James Pollack"
     },
     {
-      "id": 380,
+      "id": 350,
       "start": 1576.24,
       "end": 1578.24,
       "text": "我很惊讶，我想这就是我应该说的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 381,
+      "id": 351,
       "start": 1578.24,
       "end": 1579.24,
       "text": "这就像...",
       "speaker": "James Pollack"
     },
     {
-      "id": 382,
+      "id": 352,
       "start": 1579.24,
       "end": 1582.76,
       "text": "我对这些特工筹办生日派对并不那么兴奋。",
       "speaker": "James Pollack"
     },
     {
-      "id": 383,
+      "id": 353,
       "start": 1582.76,
       "end": 1586.34,
       "text": "我想，如果你能让某人有能力进来并发挥他们的能力",
       "speaker": "James Pollack"
     },
     {
-      "id": 384,
+      "id": 354,
       "start": 1586.34,
       "end": 1592.38,
       "text": "幻想，比如，我是，你知道，DAO 的第一贡献者，或者，比如，我是一个超级",
       "speaker": "James Pollack"
     },
     {
-      "id": 385,
+      "id": 355,
       "start": 1592.38,
       "end": 1597.5,
       "text": "聪明的 DAO 投资者，或者，就像，我是一个令人难以置信的委托人，我知道该给谁我的代币",
       "speaker": "James Pollack"
     },
     {
-      "id": 386,
+      "id": 356,
       "start": 1597.5,
       "end": 1600.28,
       "text": "使事情发生。",
       "speaker": "James Pollack"
     },
     {
-      "id": 387,
+      "id": 357,
       "start": 1600.28,
       "end": 1602.84,
       "text": "我认为有一种方法可以将其货币化。",
       "speaker": "James Pollack"
     },
     {
-      "id": 388,
+      "id": 358,
       "start": 1602.84,
       "end": 1604.67,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 389,
+      "id": 359,
       "start": 1604.67,
       "end": 1605.67,
       "text": "有所不同。",
       "speaker": "James Pollack"
     },
     {
-      "id": 390,
+      "id": 360,
       "start": 1605.67,
       "end": 1607.07,
       "text": "我想，你知道，我想到的是......",
       "speaker": "James Pollack"
     },
     {
-      "id": 391,
+      "id": 361,
       "start": 1607.07,
       "end": 1608.23,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 392,
+      "id": 362,
       "start": 1608.23,
       "end": 1609.23,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 393,
+      "id": 363,
       "start": 1609.23,
       "end": 1610.23,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 394,
+      "id": 364,
       "start": 1610.23,
       "end": 1613.95,
       "text": "我想起了小时候我们经常看这个节目",
       "speaker": "James Pollack"
     },
     {
-      "id": 395,
+      "id": 365,
       "start": 1613.95,
       "end": 1617.53,
       "text": "被称为 BattleBots，就像人们建造了不同的机器人，",
       "speaker": "James Pollack"
     },
     {
-      "id": 396,
+      "id": 366,
       "start": 1617.53,
       "end": 1620.55,
       "text": "他们会互相争斗。",
       "speaker": "James Pollack"
     },
     {
-      "id": 397,
+      "id": 367,
       "start": 1620.55,
       "end": 1626.83,
       "text": "我几乎在想象让人们在 DAO 治理中战斗的娱乐价值",
       "speaker": "James Pollack"
     },
     {
-      "id": 398,
+      "id": 368,
       "start": 1626.83,
       "end": 1632.33,
       "text": "论坛，它们就像 BattleBots，但对于 DAO 治理，我认为就是全部，",
       "speaker": "James Pollack"
     },
     {
-      "id": 399,
+      "id": 369,
       "start": 1632.33,
       "end": 1633.33,
       "text": "喜欢，有趣。",
       "speaker": "James Pollack"
     },
     {
-      "id": 400,
+      "id": 370,
       "start": 1633.33,
       "end": 1637.91,
       "text": "我的朋友们在论坛里打架的情感效果是完全不同的",
       "speaker": "James Pollack"
     },
     {
-      "id": 401,
+      "id": 371,
       "start": 1637.91,
       "end": 1639.23,
       "text": "比，你知道，我在情感上是超然的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 402,
+      "id": 372,
       "start": 1639.23,
       "end": 1646.99,
       "text": "就像，哦，看看这个 DAO 治理机器人的元数据，就像正在发生的机器人之战",
       "speaker": "James Pollack"
     },
     {
-      "id": 403,
+      "id": 373,
       "start": 1646.99,
       "end": 1647.99,
       "text": "在治理论坛中。",
       "speaker": "James Pollack"
     },
     {
-      "id": 404,
+      "id": 374,
       "start": 1647.99,
       "end": 1652.55,
       "text": "那里几乎就像一个娱乐货币化或娱乐炮击点。",
       "speaker": "James Pollack"
     },
     {
-      "id": 405,
+      "id": 375,
       "start": 1652.55,
       "end": 1658.68,
       "text": "就像，如果人们参加经纪人的生日聚会，那么我确信",
       "speaker": "James Pollack"
     },
     {
-      "id": 406,
+      "id": 376,
       "start": 1658.68,
       "end": 1659.68,
       "text": "治理论坛...",
       "speaker": "James Pollack"
     },
     {
-      "id": 407,
+      "id": 377,
       "start": 1659.68,
       "end": 1663.52,
       "text": "嗯，是的，他们会参与，比如，公司袭击和所有这些奇怪的事情",
       "speaker": "James Pollack"
     },
     {
-      "id": 408,
+      "id": 378,
       "start": 1663.52,
       "end": 1666.12,
       "text": "特工们一旦开始行动就会做。",
       "speaker": "James Pollack"
     },
     {
-      "id": 409,
+      "id": 379,
       "start": 1666.12,
       "end": 1667.8,
       "text": "吸血鬼攻击其他连锁店。",
       "speaker": "James Pollack"
     },
     {
-      "id": 410,
+      "id": 380,
       "start": 1667.8,
       "end": 1669.2,
       "text": "就像，我认为观看会很有趣。",
       "speaker": "James Pollack"
     },
     {
-      "id": 411,
+      "id": 381,
       "start": 1669.2,
       "end": 1673.58,
       "text": "而且，你知道，这些模型是无头运行的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 412,
+      "id": 382,
       "start": 1673.58,
       "end": 1677.88,
       "text": "你知道，在 Python 中，你只是运行一个步骤，它会输出一些数据。",
       "speaker": "James Pollack"
     },
     {
-      "id": 413,
+      "id": 383,
       "start": 1677.88,
       "end": 1684.92,
       "text": "您可以使用网络图和不同类型的可视化等方式可视化这些数据。",
       "speaker": "James Pollack"
     },
     {
-      "id": 414,
+      "id": 384,
       "start": 1684.92,
       "end": 1688.96,
       "text": "但是某种东西，比如上面的视觉效果，一些模拟人生之类的东西，我认为它可以使",
       "speaker": "James Pollack"
     },
     {
-      "id": 415,
+      "id": 385,
       "start": 1688.96,
       "end": 1689.96,
       "text": "钱就这样。",
       "speaker": "James Pollack"
     },
     {
-      "id": 416,
+      "id": 386,
       "start": 1689.96,
       "end": 1695.84,
       "text": "显然，就像我学到的东西以及其他产品的重度用户所学到的东西",
       "speaker": "James Pollack"
     },
     {
-      "id": 417,
+      "id": 387,
       "start": 1695.84,
       "end": 1699.22,
       "text": "这样，我想他们很快就会开始有直观的体验。",
       "speaker": "James Pollack"
     },
     {
-      "id": 418,
+      "id": 388,
       "start": 1699.22,
       "end": 1704.72,
       "text": "直觉由合成数据支持，也许由现实世界支持",
       "speaker": "James Pollack"
     },
     {
-      "id": 419,
+      "id": 389,
       "start": 1704.72,
       "end": 1708.78,
       "text": "数据也能发挥作用。",
       "speaker": "James Pollack"
     },
     {
-      "id": 420,
+      "id": 390,
       "start": 1708.78,
       "end": 1714.12,
       "text": "我认为这样的人将会成为，你知道，有价值的 DAO 成员，A。就像，这个",
       "speaker": "James Pollack"
     },
     {
-      "id": 421,
+      "id": 391,
       "start": 1714.12,
       "end": 1719.34,
       "text": "工具应该让您在个人层面上进入 DAO，对其进行设置，对更改进行建模",
       "speaker": "James Pollack"
     },
     {
-      "id": 422,
+      "id": 392,
       "start": 1719.34,
       "end": 1723.36,
       "text": "你想要创建一个 DAO，并带着一些证据来证明，比如，嘿，我们应该",
       "speaker": "James Pollack"
     },
     {
-      "id": 423,
+      "id": 393,
       "start": 1723.36,
       "end": 1727.22,
       "text": "进行此更改是因为当我在所有这些不同场景中运行模型时，",
       "speaker": "James Pollack"
     },
     {
-      "id": 424,
+      "id": 394,
       "start": 1727.22,
       "end": 1728.6,
       "text": "它表明我们所有人的钱都加倍了。",
       "speaker": "James Pollack"
     },
     {
-      "id": 425,
+      "id": 395,
       "start": 1728.6,
       "end": 1732.12,
       "text": "就像，我认为这样的事情你会得到更多的选票。",
       "speaker": "James Pollack"
     },
     {
-      "id": 426,
+      "id": 396,
       "start": 1732.12,
       "end": 1738.14,
       "text": "所以在个人层面上，我想我可以用它来进行我自己的 DAO 投资，",
       "speaker": "James Pollack"
     },
     {
-      "id": 427,
+      "id": 397,
       "start": 1738.14,
       "end": 1742.86,
       "text": "就像，非常敏锐并尝试以这种方式货币化。",
       "speaker": "James Pollack"
     },
     {
-      "id": 428,
+      "id": 398,
       "start": 1742.86,
       "end": 1746.76,
       "text": "但对我来说，这似乎没有构建东西那么有趣。",
       "speaker": "James Pollack"
     },
     {
-      "id": 429,
+      "id": 399,
       "start": 1746.76,
       "end": 1747.76,
       "text": "是的，完全可以。",
       "speaker": "James Pollack"
     },
     {
-      "id": 430,
+      "id": 400,
       "start": 1747.76,
       "end": 1748.76,
       "text": "所以我不知道。",
       "speaker": "James Pollack"
     },
     {
-      "id": 431,
+      "id": 401,
       "start": 1748.76,
       "end": 1749.76,
       "text": "你有什么想法吗？",
       "speaker": "James Pollack"
     },
     {
-      "id": 432,
+      "id": 402,
       "start": 1749.76,
       "end": 1750.76,
       "text": "你怎么认为？",
       "speaker": "James Pollack"
     },
     {
-      "id": 433,
+      "id": 403,
       "start": 1750.76,
       "end": 1753.36,
       "text": "我的意思是，我只是认为有...",
       "speaker": "James Pollack"
     },
     {
-      "id": 434,
+      "id": 404,
       "start": 1753.36,
       "end": 1759.38,
       "text": "我认为，这就是一个如此有趣、新颖且重要的设计空间",
       "speaker": "James Pollack"
     },
     {
-      "id": 435,
+      "id": 405,
       "start": 1759.38,
       "end": 1764.48,
       "text": "这可能会产生很多影响和路径。",
       "speaker": "James Pollack"
     },
     {
-      "id": 436,
+      "id": 406,
       "start": 1764.48,
       "end": 1772.94,
       "text": "对我来说，我希望这个播客的结果之一是我们拥有 5,000 名听众",
       "speaker": "James Pollack"
     },
     {
-      "id": 437,
+      "id": 407,
       "start": 1772.94,
       "end": 1777.44,
       "text": "5 到 7 之间，具体取决于剧集，我希望只有 1% 的人会检查",
       "speaker": "James Pollack"
     },
     {
-      "id": 438,
+      "id": 408,
       "start": 1777.44,
       "end": 1782.26,
       "text": "出你的 GitHub，他们会说，哦，我想和 James 联系并运行一个模拟",
       "speaker": "James Pollack"
     },
     {
-      "id": 439,
+      "id": 409,
       "start": 1782.26,
       "end": 1789.57,
       "text": "反对我的 DAO，我认为，与现有的合作，你会得到更有趣的结果",
       "speaker": "James Pollack"
     },
     {
-      "id": 440,
+      "id": 410,
       "start": 1789.57,
       "end": 1793.45,
       "text": "DAO 并帮助他们解决问题，而不仅仅是抽象地构建它。",
       "speaker": "James Pollack"
     },
     {
-      "id": 441,
+      "id": 411,
       "start": 1793.45,
       "end": 1795.67,
       "text": "要知道，这是一个多么广阔的设计空间。",
       "speaker": "James Pollack"
     },
     {
-      "id": 442,
+      "id": 412,
       "start": 1795.67,
       "end": 1799.59,
       "text": "也许最终它会推广到所有 DAO，但就像与现有的连接一样",
       "speaker": "James Pollack"
     },
     {
-      "id": 443,
+      "id": 413,
       "start": 1799.59,
       "end": 1803.67,
       "text": "DAO 并帮助他们满足他们的需求，我认为这将进入下一阶段",
       "speaker": "James Pollack"
     },
     {
-      "id": 444,
+      "id": 414,
       "start": 1803.67,
       "end": 1804.67,
       "text": "到期。",
       "speaker": "James Pollack"
     },
     {
-      "id": 445,
+      "id": 415,
       "start": 1804.67,
       "end": 1805.67,
       "text": "我认为这是对的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 446,
+      "id": 416,
       "start": 1805.67,
       "end": 1808.21,
       "text": "我一直在荒野中建造过一些建筑。",
       "speaker": "James Pollack"
     },
     {
-      "id": 447,
+      "id": 417,
       "start": 1808.21,
       "end": 1810.23,
       "text": "这是一个抽象，对吧？",
       "speaker": "James Pollack"
     },
     {
-      "id": 448,
+      "id": 418,
       "start": 1810.23,
       "end": 1814.97,
       "text": "我不是 DAO 的活跃成员。",
       "speaker": "James Pollack"
     },
     {
-      "id": 449,
+      "id": 419,
       "start": 1814.97,
       "end": 1819.57,
       "text": "我和我谈论过这个想法的朋友向我指出了你的推文。",
       "speaker": "James Pollack"
     },
     {
-      "id": 450,
+      "id": 420,
       "start": 1819.57,
       "end": 1822.25,
       "text": "他的名字叫戴恩·隆德。",
       "speaker": "James Pollack"
     },
     {
-      "id": 451,
+      "id": 421,
       "start": 1822.25,
       "end": 1824.81,
       "text": "他是 Alliance DAO 的 DAO 架构师。",
       "speaker": "James Pollack"
     },
     {
-      "id": 452,
+      "id": 422,
       "start": 1824.81,
       "end": 1835.28,
       "text": "现在我认为他负责 Optimism 的治理工作，但他不在他们的董事会中。",
       "speaker": "James Pollack"
     },
     {
-      "id": 453,
+      "id": 423,
       "start": 1835.28,
       "end": 1836.28,
       "text": "这是大约一年前的事了。",
       "speaker": "James Pollack"
     },
     {
-      "id": 454,
+      "id": 424,
       "start": 1836.28,
       "end": 1837.28,
       "text": "我们讨论过。",
       "speaker": "James Pollack"
     },
     {
-      "id": 455,
+      "id": 425,
       "start": 1837.28,
       "end": 1840.94,
       "text": "他给了我很多关于 DAO 方面的见解，然后我接受了它，我只是",
       "speaker": "James Pollack"
     },
     {
-      "id": 456,
+      "id": 426,
       "start": 1840.94,
       "end": 1841.94,
       "text": "一直在建设。",
       "speaker": "James Pollack"
     },
     {
-      "id": 457,
+      "id": 427,
       "start": 1841.94,
       "end": 1846.6,
       "text": "是的，我现在完全处于这样的状态，但这意味着什么",
       "speaker": "James Pollack"
     },
     {
-      "id": 458,
+      "id": 428,
       "start": 1846.6,
       "end": 1847.6,
       "text": "DAO？",
       "speaker": "James Pollack"
     },
     {
-      "id": 459,
+      "id": 429,
       "start": 1847.6,
       "end": 1848.6,
       "text": "我应该添加什么？",
       "speaker": "James Pollack"
     },
     {
-      "id": 460,
+      "id": 430,
       "start": 1848.6,
       "end": 1855.32,
       "text": "甚至当我说 DAO 正在重新分配代币或它正在执行的操作时，它正在执行的步骤",
       "speaker": "James Pollack"
     },
     {
-      "id": 461,
+      "id": 431,
       "start": 1855.32,
       "end": 1861.26,
       "text": "回购或者质押，其中一些东西，我没有智力上的理解，但是",
       "speaker": "James Pollack"
     },
     {
-      "id": 462,
+      "id": 432,
       "start": 1861.26,
       "end": 1865.38,
       "text": "我没有任何地面层面的东西，比如，哦，是的，我们实施了质押。",
       "speaker": "James Pollack"
     },
     {
-      "id": 463,
+      "id": 433,
       "start": 1865.38,
       "end": 1866.38,
       "text": "事情是这样的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 464,
+      "id": 434,
       "start": 1866.38,
       "end": 1870.22,
       "text": "如果你们的社区把它带给我们并且像这样，我会喜欢这样的东西，",
       "speaker": "James Pollack"
     },
     {
-      "id": 465,
+      "id": 435,
       "start": 1870.22,
       "end": 1873.76,
       "text": "哦，是的，这一步是你计划进行质押的，这里还有其他一些事情",
       "speaker": "James Pollack"
     },
     {
-      "id": 466,
+      "id": 436,
       "start": 1873.76,
       "end": 1876.7,
       "text": "你甚至不知道。",
       "speaker": "James Pollack"
     },
     {
-      "id": 467,
+      "id": 437,
       "start": 1876.7,
       "end": 1877.7,
       "text": "那真是太棒了。",
       "speaker": "James Pollack"
     },
     {
-      "id": 468,
+      "id": 438,
       "start": 1877.7,
       "end": 1879.15,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 469,
+      "id": 439,
       "start": 1879.15,
       "end": 1880.15,
       "text": "是的，当然。",
       "speaker": "James Pollack"
     },
     {
-      "id": 470,
+      "id": 440,
       "start": 1880.15,
       "end": 1886.61,
       "text": "有质押，然后有协议升级，然后我想介绍一下",
       "speaker": "James Pollack"
     },
     {
-      "id": 471,
+      "id": 441,
       "start": 1886.61,
       "end": 1890.11,
       "text": "向这个社区提供二次方资金，看看它会如何改变事情。",
       "speaker": "James Pollack"
     },
     {
-      "id": 472,
+      "id": 442,
       "start": 1890.11,
       "end": 1893.93,
       "text": "我认为构建 DAO 工具的人们有很多机会来到这里",
       "speaker": "James Pollack"
     },
     {
-      "id": 473,
+      "id": 443,
       "start": 1893.93,
       "end": 1900.05,
       "text": "然后插上来说，嘿，在一百种不同的模拟中，我们的工具增强了协调性",
       "speaker": "James Pollack"
     },
     {
-      "id": 474,
+      "id": 444,
       "start": 1900.05,
       "end": 1904.57,
       "text": "97% 的情况下，DAO 中的承载能力和代币价格或类似的东西。",
       "speaker": "James Pollack"
     },
     {
-      "id": 475,
+      "id": 445,
       "start": 1904.57,
       "end": 1907.01,
       "text": "那里没有什么可以做的，对吧？",
       "speaker": "James Pollack"
     },
     {
-      "id": 476,
+      "id": 446,
       "start": 1907.01,
       "end": 1908.87,
       "text": "没有什么可以告诉你你正在做出的决定是否...",
       "speaker": "James Pollack"
     },
     {
-      "id": 477,
+      "id": 447,
       "start": 1908.87,
       "end": 1914.43,
       "text": "我不知道我们是否会完全变得好还是坏，但是这会带来什么影响",
       "speaker": "James Pollack"
     },
     {
-      "id": 478,
+      "id": 448,
       "start": 1914.43,
       "end": 1915.43,
       "text": "其中有。",
       "speaker": "James Pollack"
     },
     {
-      "id": 479,
+      "id": 449,
       "start": 1915.43,
       "end": 1918.03,
       "text": "我觉得这很有价值。",
       "speaker": "James Pollack"
     },
     {
-      "id": 480,
+      "id": 450,
       "start": 1918.03,
       "end": 1919.65,
       "text": "这就是我想到这个想法的原因。",
       "speaker": "James Pollack"
     },
     {
-      "id": 481,
+      "id": 451,
       "start": 1919.65,
       "end": 1925.35,
       "text": "这就是为什么当我听到你发帖时，我想联系你。",
       "speaker": "James Pollack"
     },
     {
-      "id": 482,
+      "id": 452,
       "start": 1925.35,
       "end": 1933.83,
       "text": "我不是 DAO 所有者或任何成员，我想那会更好，积极正确",
       "speaker": "James Pollack"
     },
     {
-      "id": 483,
+      "id": 453,
       "start": 1933.83,
       "end": 1934.83,
       "text": "现在。",
       "speaker": "James Pollack"
     },
     {
-      "id": 484,
+      "id": 454,
       "start": 1934.83,
       "end": 1935.83,
       "text": "所以我其实不知道。",
       "speaker": "James Pollack"
     },
     {
-      "id": 485,
+      "id": 455,
       "start": 1935.83,
       "end": 1936.83,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 486,
+      "id": 456,
       "start": 1936.83,
       "end": 1937.87,
       "text": "有件事我需要和你谈谈。",
       "speaker": "James Pollack"
     },
     {
-      "id": 487,
+      "id": 457,
       "start": 1937.87,
       "end": 1938.87,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 488,
+      "id": 458,
       "start": 1938.87,
       "end": 1940.45,
       "text": "我认为您在这一点上向用户提出的观点是现在。",
       "speaker": "James Pollack"
     },
     {
-      "id": 489,
+      "id": 459,
       "start": 1940.45,
       "end": 1941.73,
       "text": "所以这很令人兴奋。",
       "speaker": "James Pollack"
     },
     {
-      "id": 490,
+      "id": 460,
       "start": 1941.73,
       "end": 1944.97,
       "text": "当你说货币化时，一...",
       "speaker": "James Pollack"
     },
     {
-      "id": 491,
+      "id": 461,
       "start": 1944.97,
       "end": 1947.38,
       "text": "好的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 492,
+      "id": 462,
       "start": 1947.38,
       "end": 1951.92,
       "text": "我不知道这是一个好主意还是坏主意，但是如果模型的某些部分在链上怎么办",
       "speaker": "James Pollack"
     },
     {
-      "id": 493,
+      "id": 463,
       "start": 1951.92,
       "end": 1958.86,
       "text": "我想我更多地考虑的是如果你打算做按使用付费的事情或其他事情，",
       "speaker": "James Pollack"
     },
     {
-      "id": 494,
+      "id": 464,
       "start": 1958.86,
       "end": 1960.58,
       "text": "也许...会很有趣",
       "speaker": "James Pollack"
     },
     {
-      "id": 495,
+      "id": 465,
       "start": 1960.58,
       "end": 1963.72,
       "text": "您可以将此模型部署在您自己的区块链或其他东西上。",
       "speaker": "James Pollack"
     },
     {
-      "id": 496,
+      "id": 466,
       "start": 1963.72,
       "end": 1964.72,
       "text": "它可以...",
       "speaker": "James Pollack"
     },
     {
-      "id": 497,
+      "id": 467,
       "start": 1964.72,
       "end": 1969.18,
       "text": "这取决于人们想要透露多少关于自己的东西的信息。",
       "speaker": "James Pollack"
     },
     {
-      "id": 498,
+      "id": 468,
       "start": 1969.18,
       "end": 1974.0,
       "text": "也许您必须使用 ZK，这样人​​们就不会泄露公司的私人信息。",
       "speaker": "James Pollack"
     },
     {
-      "id": 499,
+      "id": 469,
       "start": 1974.0,
       "end": 1981.35,
       "text": "但是，是的，就我想将其作为软件即服务或游戏来运行而言，它是",
       "speaker": "James Pollack"
     },
     {
-      "id": 500,
+      "id": 470,
       "start": 1981.35,
       "end": 1982.35,
       "text": "完全不清楚。",
       "speaker": "James Pollack"
     },
     {
-      "id": 501,
+      "id": 471,
       "start": 1982.35,
       "end": 1989.57,
       "text": "对我来说，软件即服务似乎很难而且是链上的，但这只是一个想法",
       "speaker": "James Pollack"
     },
     {
-      "id": 502,
+      "id": 472,
       "start": 1989.57,
       "end": 1990.57,
       "text": "通过我的头脑。",
       "speaker": "James Pollack"
     },
     {
-      "id": 503,
+      "id": 473,
       "start": 1990.57,
       "end": 1992.43,
       "text": "我想我应该在我们谈话的时候把它扔出去。",
       "speaker": "James Pollack"
     },
     {
-      "id": 504,
+      "id": 474,
       "start": 1992.43,
       "end": 1993.43,
       "text": "完全。",
       "speaker": "James Pollack"
     },
     {
-      "id": 505,
+      "id": 475,
       "start": 1993.43,
       "end": 1994.43,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 506,
+      "id": 476,
       "start": 1994.43,
       "end": 1995.43,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 507,
+      "id": 477,
       "start": 1995.43,
       "end": 1998.43,
       "text": "我的意思是，我想这就是全部，你开源代码，以便人们可以开发",
       "speaker": "James Pollack"
     },
     {
-      "id": 508,
+      "id": 478,
       "start": 1998.43,
       "end": 1999.43,
       "text": "在它上面。",
       "speaker": "James Pollack"
     },
     {
-      "id": 509,
+      "id": 479,
       "start": 1999.43,
       "end": 2005.55,
       "text": "我认为这个网络很有价值，但是你出售一个链接的 SaaS 工具",
       "speaker": "James Pollack"
     },
     {
-      "id": 510,
+      "id": 480,
       "start": 2005.55,
       "end": 2006.55,
       "text": "到它。",
       "speaker": "James Pollack"
     },
     {
-      "id": 511,
+      "id": 481,
       "start": 2006.55,
       "end": 2009.31,
       "text": "但对我来说，最困难的部分可能只是......",
       "speaker": "James Pollack"
     },
     {
-      "id": 512,
+      "id": 482,
       "start": 2009.31,
       "end": 2014.93,
       "text": "我有运行人工智能代理的短暂经验，只是它们消耗大量计算",
       "speaker": "James Pollack"
     },
     {
-      "id": 513,
+      "id": 483,
       "start": 2014.93,
       "end": 2015.93,
       "text": "力量。",
       "speaker": "James Pollack"
     },
     {
-      "id": 514,
+      "id": 484,
       "start": 2015.93,
       "end": 2019.65,
       "text": "因此，如果您要抽象出在后面启动一堆云服务器的需要",
       "speaker": "James Pollack"
     },
     {
-      "id": 515,
+      "id": 485,
       "start": 2019.65,
       "end": 2024.77,
       "text": "SaaS 产品，我认为人们会为此付费，但这取决于我们在说什么",
       "speaker": "James Pollack"
     },
     {
-      "id": 516,
+      "id": 486,
       "start": 2024.77,
       "end": 2025.77,
       "text": "关于这里。",
       "speaker": "James Pollack"
     },
     {
-      "id": 517,
+      "id": 487,
       "start": 2025.77,
       "end": 2028.25,
       "text": "我们要模拟整个 Web 三生态系统还是只是其中的一个 DAO？",
       "speaker": "James Pollack"
     },
     {
-      "id": 518,
+      "id": 488,
       "start": 2028.25,
       "end": 2029.25,
       "text": "正确的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 519,
+      "id": 489,
       "start": 2029.43,
       "end": 2033.39,
       "text": "这取决于我的功能是否会试图让你模拟所有的网络",
       "speaker": "James Pollack"
     },
     {
-      "id": 520,
+      "id": 490,
       "start": 2033.39,
       "end": 2037.47,
       "text": "三、是否混入代码库。",
       "speaker": "James Pollack"
     },
     {
-      "id": 521,
+      "id": 491,
       "start": 2037.47,
       "end": 2039.49,
       "text": "我认为我们至少必须...",
       "speaker": "James Pollack"
     },
     {
-      "id": 522,
+      "id": 492,
       "start": 2039.49,
       "end": 2041.85,
       "text": "我认为我们要做的下一个代理是论坛。",
       "speaker": "James Pollack"
     },
     {
-      "id": 523,
+      "id": 493,
       "start": 2041.85,
       "end": 2047.31,
       "text": "我发现非常有趣的是，这些 DAO 中发生的大部分通信都是",
       "speaker": "James Pollack"
     },
     {
-      "id": 524,
+      "id": 494,
       "start": 2047.31,
       "end": 2054.02,
       "text": "基于论坛、基于文本、线程对话。",
       "speaker": "James Pollack"
     },
     {
-      "id": 525,
+      "id": 495,
       "start": 2054.02,
       "end": 2058.4,
       "text": "所以我不知道我们是否需要对所有东西进行建模，但我们可能需要",
       "speaker": "James Pollack"
     },
     {
-      "id": 526,
+      "id": 496,
       "start": 2058.4,
       "end": 2058.78,
       "text": "一个相当稳健的模型。",
       "speaker": "James Pollack"
     },
     {
-      "id": 527,
+      "id": 497,
       "start": 2058.78,
       "end": 2065.98,
       "text": "一个相当强大的聊天论坛模型，我觉得很有趣，而且我没有",
       "speaker": "James Pollack"
     },
     {
-      "id": 528,
+      "id": 498,
       "start": 2065.98,
       "end": 2070.46,
       "text": "想象一下一旦你让一群机器人在那里互相聊天会发生什么，但它会",
       "speaker": "James Pollack"
     },
     {
-      "id": 529,
+      "id": 499,
       "start": 2070.46,
       "end": 2071.46,
       "text": "有趣吧。",
       "speaker": "James Pollack"
     },
     {
-      "id": 530,
+      "id": 500,
       "start": 2071.46,
       "end": 2077.02,
       "text": "我喜欢这样的想法：我们将能够获得他们帖子的头条新闻或其他内容。",
       "speaker": "James Pollack"
     },
     {
-      "id": 531,
+      "id": 501,
       "start": 2077.02,
       "end": 2081.88,
       "text": "你会看到他们的帖子收到了 200 条回复，比如，我们应该改为二次",
       "speaker": "James Pollack"
     },
     {
-      "id": 532,
+      "id": 502,
       "start": 2081.88,
       "end": 2085.42,
       "text": "资金或类似的东西，谁知道机器人将如何编写，也许它会像二次方",
       "speaker": "James Pollack"
     },
     {
-      "id": 533,
+      "id": 503,
       "start": 2085.42,
       "end": 2087.56,
       "text": "资金，一堆表情符号。",
       "speaker": "James Pollack"
     },
     {
-      "id": 534,
+      "id": 504,
       "start": 2087.56,
       "end": 2089.5,
       "text": "我希望他们既奇怪又酷。",
       "speaker": "James Pollack"
     },
     {
-      "id": 535,
+      "id": 505,
       "start": 2089.54,
       "end": 2090.77,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 536,
+      "id": 506,
       "start": 2090.77,
       "end": 2091.77,
       "text": "我确信他们会很奇怪。",
       "speaker": "James Pollack"
     },
     {
-      "id": 537,
+      "id": 507,
       "start": 2091.77,
       "end": 2098.61,
       "text": "我们会看看他们是否学会了冷静，但是，是的，你会遇到一些问题：如何才能学会冷静？",
       "speaker": "James Pollack"
     },
     {
-      "id": 538,
+      "id": 508,
       "start": 2098.61,
       "end": 2103.41,
       "text": "你为数字化的社交空间建模......",
       "speaker": "James Pollack"
     },
     {
-      "id": 539,
+      "id": 509,
       "start": 2103.41,
       "end": 2106.69,
       "text": "刚刚参与 DAO，我认为治理论坛是正式的",
       "speaker": "James Pollack"
     },
     {
-      "id": 540,
+      "id": 510,
       "start": 2106.69,
       "end": 2108.37,
       "text": "治理发生。",
       "speaker": "James Pollack"
     },
     {
-      "id": 541,
+      "id": 511,
       "start": 2108.37,
       "end": 2113.43,
       "text": "但我学到了关于组织的这一点，天哪，就像 15 年前，我的一位导师",
       "speaker": "James Pollack"
     },
     {
-      "id": 542,
+      "id": 512,
       "start": 2113.43,
       "end": 2117.41,
       "text": "告诉我，嘿，真正的文化不在会议中，而在",
       "speaker": "James Pollack"
     },
     {
-      "id": 543,
+      "id": 513,
       "start": 2117.41,
       "end": 2118.77,
       "text": "走廊和欢乐时光。",
       "speaker": "James Pollack"
     },
     {
-      "id": 544,
+      "id": 514,
       "start": 2118.77,
       "end": 2119.77,
       "text": "以及人们在做什么。",
       "speaker": "James Pollack"
     },
     {
-      "id": 545,
+      "id": 515,
       "start": 2119.77,
       "end": 2123.75,
       "text": "当人们不害怕老板报复时，他们实际上会互相说些什么。",
       "speaker": "James Pollack"
     },
     {
-      "id": 546,
+      "id": 516,
       "start": 2123.75,
       "end": 2127.55,
       "text": "这让我想，哦，好吧，DAO 可以在治理论坛上进行斗争，但是什么",
       "speaker": "James Pollack"
     },
     {
-      "id": 547,
+      "id": 517,
       "start": 2127.55,
       "end": 2131.33,
       "text": "他们是否互相私聊？他们发推文的内容是什么？",
       "speaker": "James Pollack"
     },
     {
-      "id": 548,
+      "id": 518,
       "start": 2131.33,
       "end": 2136.83,
       "text": "因此，模拟这些社交空间似乎很复杂，但对于法学硕士来说，实际上",
       "speaker": "James Pollack"
     },
     {
-      "id": 549,
+      "id": 519,
       "start": 2136.83,
       "end": 2138.77,
       "text": "感觉新可行。",
       "speaker": "James Pollack"
     },
     {
-      "id": 550,
+      "id": 520,
       "start": 2138.77,
       "end": 2139.77,
       "text": "新更容易。",
       "speaker": "James Pollack"
     },
     {
-      "id": 551,
+      "id": 521,
       "start": 2139.77,
       "end": 2140.77,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 552,
+      "id": 522,
       "start": 2140.77,
       "end": 2143.83,
       "text": "过去，即使我们几个月前第一次开始谈话，事情也还没有发生转变",
       "speaker": "James Pollack"
     },
     {
-      "id": 553,
+      "id": 523,
       "start": 2143.83,
       "end": 2145.97,
       "text": "就目前而言。",
       "speaker": "James Pollack"
     },
     {
-      "id": 554,
+      "id": 524,
       "start": 2145.97,
       "end": 2147.77,
       "text": "这确实看起来更容易建模。",
       "speaker": "James Pollack"
     },
     {
-      "id": 555,
+      "id": 525,
       "start": 2147.77,
       "end": 2148.77,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 556,
+      "id": 526,
       "start": 2148.77,
       "end": 2154.01,
       "text": "像你这样的更柔和的社交空间，是的，我想，好吧，我想我必须添加",
       "speaker": "James Pollack"
     },
     {
-      "id": 557,
+      "id": 527,
       "start": 2154.01,
       "end": 2159.06,
       "text": "Twitter 模拟，有点像 Discord 模拟。",
       "speaker": "James Pollack"
     },
     {
-      "id": 558,
+      "id": 528,
       "start": 2159.06,
       "end": 2160.06,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 559,
+      "id": 529,
       "start": 2160.06,
       "end": 2167.14,
       "text": "我认为这里有很多可能性，我很好奇这个项目如何",
       "speaker": "James Pollack"
     },
     {
-      "id": 560,
+      "id": 530,
       "start": 2167.14,
       "end": 2168.14,
       "text": "进化。",
       "speaker": "James Pollack"
     },
     {
-      "id": 561,
+      "id": 531,
       "start": 2168.14,
       "end": 2173.38,
       "text": "因此，我们有很大的抱负，希望能够在 Web3 中模拟许多不同的事物",
       "speaker": "James Pollack"
     },
     {
-      "id": 562,
+      "id": 532,
       "start": 2173.38,
       "end": 2177.6,
       "text": "在我们真正投入代币和时间之前，但我认为从小事做起",
       "speaker": "James Pollack"
     },
     {
-      "id": 563,
+      "id": 533,
       "start": 2177.6,
       "end": 2179.04,
       "text": "希望你能接受。",
       "speaker": "James Pollack"
     },
     {
-      "id": 564,
+      "id": 534,
       "start": 2179.04,
       "end": 2184.88,
       "text": "我从这一集中看到了一些与 DAO 的有趣关系",
       "speaker": "James Pollack"
     },
     {
-      "id": 565,
+      "id": 535,
       "start": 2184.88,
       "end": 2185.88,
       "text": "去。",
       "speaker": "James Pollack"
     },
     {
-      "id": 566,
+      "id": 536,
       "start": 2185.88,
       "end": 2186.88,
       "text": "然后我们很乐意让你回来。",
       "speaker": "James Pollack"
     },
     {
-      "id": 567,
+      "id": 537,
       "start": 2186.88,
       "end": 2191.72,
       "text": "我的意思是，如果这种情况持续下去，那么我们很乐意让您回到第三季度或第四季度，然后",
       "speaker": "James Pollack"
     },
     {
-      "id": 568,
+      "id": 538,
       "start": 2191.72,
       "end": 2197.8,
       "text": "了解 DAO 模拟如何演变为您正在创建的类别。",
       "speaker": "James Pollack"
     },
     {
-      "id": 569,
+      "id": 539,
       "start": 2197.8,
       "end": 2204.04,
       "text": "所以创建一个类别，当你这么说时，我的胃有点下降，但它是",
       "speaker": "James Pollack"
     },
     {
-      "id": 570,
+      "id": 540,
       "start": 2204.04,
       "end": 2205.04,
       "text": "凉爽的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 571,
+      "id": 541,
       "start": 2205.04,
       "end": 2206.1,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 572,
+      "id": 542,
       "start": 2206.1,
       "end": 2207.1,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 573,
+      "id": 543,
       "start": 2207.1,
       "end": 2212.78,
       "text": "所以你提到你开始对这个想法积累吸引力。",
       "speaker": "James Pollack"
     },
     {
-      "id": 574,
+      "id": 544,
       "start": 2212.78,
       "end": 2218.82,
       "text": "这是我以前有过的一个想法，但一旦你把它扎根，它就有点漂浮了",
       "speaker": "James Pollack"
     },
     {
-      "id": 575,
+      "id": 545,
       "start": 2218.82,
       "end": 2219.82,
       "text": "现在有代码了。",
       "speaker": "James Pollack"
     },
     {
-      "id": 576,
+      "id": 546,
       "start": 2219.82,
       "end": 2221.04,
       "text": "现在我们进行这样的讨论。",
       "speaker": "James Pollack"
     },
     {
-      "id": 577,
+      "id": 547,
       "start": 2221.04,
       "end": 2222.72,
       "text": "人们有东西可以看。",
       "speaker": "James Pollack"
     },
     {
-      "id": 578,
+      "id": 548,
       "start": 2222.72,
       "end": 2226.7,
       "text": "我对它的发展方向感到非常兴奋。",
       "speaker": "James Pollack"
     },
     {
-      "id": 579,
+      "id": 549,
       "start": 2226.7,
       "end": 2232.78,
       "text": "我有几个简单的问题要问你，也许只是关于你想要的功能是什么",
       "speaker": "James Pollack"
     },
     {
-      "id": 580,
+      "id": 550,
       "start": 2232.78,
       "end": 2233.94,
       "text": "想在 DAO 模拟器中查看吗？",
       "speaker": "James Pollack"
     },
     {
-      "id": 581,
+      "id": 551,
       "start": 2233.94,
       "end": 2234.94,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 582,
+      "id": 552,
       "start": 2234.94,
       "end": 2235.94,
       "text": "或者您有类似的具体问题吗？",
       "speaker": "James Pollack"
     },
     {
-      "id": 583,
+      "id": 553,
       "start": 2235.94,
       "end": 2240.92,
       "text": "您想回答的问题？或者你只是想象到达那里的凉爽",
       "speaker": "James Pollack"
     },
     {
-      "id": 584,
+      "id": 554,
       "start": 2240.92,
       "end": 2248.02,
       "text": "并玩弄它？是的。我能为你做什么？所以下次我们见面时，有件事",
       "speaker": "James Pollack"
     },
     {
-      "id": 585,
+      "id": 555,
       "start": 2248.02,
       "end": 2254.72,
       "text": "你想要的。好吧，自从我退出以来，我不再超级参与任何 DAO",
       "speaker": "James Pollack"
     },
     {
-      "id": 586,
+      "id": 556,
       "start": 2254.72,
       "end": 2261.66,
       "text": "来自 Gitcoin DAO 的领导。但我的意思是，我确实认为我所看到的问题空间",
       "speaker": "James Pollack"
     },
     {
-      "id": 587,
+      "id": 557,
       "start": 2261.66,
       "end": 2267.82,
       "text": "DAOs 是我们要配置 DAO 的初始启动条件是什么？还有",
       "speaker": "James Pollack"
     },
     {
-      "id": 588,
+      "id": 558,
       "start": 2267.82,
       "end": 2273.02,
       "text": "就像您需要至少 X 数量的代币才能投票的提案阈值，或者抱歉，X 数量",
       "speaker": "James Pollack"
     },
     {
-      "id": 589,
+      "id": 559,
       "start": 2273.02,
       "end": 2281.6,
       "text": "提交提案的代币数量，Y 数量的代币才能让提案通过。你知道，",
       "speaker": "James Pollack"
     },
     {
-      "id": 590,
+      "id": 560,
       "start": 2281.6,
       "end": 2285.7,
       "text": "只是关于人们拥有的我的 DAO 的起始条件是什么的基本问题",
       "speaker": "James Pollack"
     },
     {
-      "id": 591,
+      "id": 561,
       "start": 2285.7,
       "end": 2291.62,
       "text": "我认为如果你能告知他们，那么我认为你会增加很多价值。我知道，",
       "speaker": "James Pollack"
     },
     {
-      "id": 592,
+      "id": 562,
       "start": 2291.66,
       "end": 2296.96,
       "text": "DAO 工具领域的很多人都在说，如果你集成我的工具 X，它将",
       "speaker": "James Pollack"
     },
     {
-      "id": 593,
+      "id": 563,
       "start": 2296.96,
       "end": 2302.58,
       "text": "以某种方式帮助你的 DAO Y。如果你能在模拟中证明这一点，我认为",
       "speaker": "James Pollack"
     },
     {
-      "id": 594,
+      "id": 564,
       "start": 2302.58,
       "end": 2310.21,
       "text": "变得非常有趣。然后就是纯粹的、纯粹的娱乐",
       "speaker": "James Pollack"
     },
     {
-      "id": 595,
+      "id": 565,
       "start": 2310.21,
       "end": 2315.65,
       "text": "拥有战斗机器人并让它们在论坛中战斗，看看其元数据如何",
       "speaker": "James Pollack"
     },
     {
-      "id": 596,
+      "id": 566,
       "start": 2315.65,
       "end": 2321.17,
       "text": "进化。所以我认为这些都是一些有趣的线索供你参考。",
       "speaker": "James Pollack"
     },
     {
-      "id": 597,
+      "id": 567,
       "start": 2321.87,
       "end": 2321.97,
       "text": "是的。",
       "speaker": "James Pollack"
     },
     {
-      "id": 598,
+      "id": 568,
       "start": 2322.01,
       "end": 2328.63,
       "text": "谢谢。这就是现在的计划，去追求它。作为一名大四学生，我有全职工作",
       "speaker": "James Pollack"
     },
     {
-      "id": 599,
+      "id": 569,
       "start": 2328.63,
       "end": 2334.55,
       "text": "技术艺术家。现在我正在与 Meta 签约。我也致力于链上游戏",
       "speaker": "James Pollack"
     },
     {
-      "id": 600,
+      "id": 570,
       "start": 2334.55,
       "end": 2338.19,
       "text": "我的一些朋友。我们有一家公司，我们正在开发链上游戏。我们应该谈谈",
       "speaker": "James Pollack"
     },
     {
-      "id": 601,
+      "id": 571,
       "start": 2338.19,
       "end": 2345.58,
       "text": "在某些时候是分开的，但这也是一次真正的疯狂之旅。但我要去，所以我的",
       "speaker": "James Pollack"
     },
     {
-      "id": 602,
+      "id": 572,
       "start": 2345.58,
       "end": 2351.26,
       "text": "我对此的兴趣来自于我在圣达菲研究所上的一门课。他们太酷了",
       "speaker": "James Pollack"
     },
     {
-      "id": 603,
+      "id": 573,
       "start": 2351.26,
       "end": 2357.7,
       "text": "位于圣达菲的复杂性智囊团。我参加了他们的基于代理的建模课程。他们是",
       "speaker": "James Pollack"
     },
     {
-      "id": 604,
+      "id": 574,
       "start": 2357.7,
       "end": 2362.78,
       "text": "他们有关于 Python Mesa 语言的教程。这就是我接触到喜欢的方式，",
       "speaker": "James Pollack"
     },
     {
-      "id": 605,
+      "id": 575,
       "start": 2362.84,
       "end": 2368.04,
       "text": "哦，我可以用 Python 构建这个东西。但我实际上要去那里参加一个关于",
       "speaker": "James Pollack"
     },
     {
-      "id": 606,
+      "id": 576,
       "start": 2368.04,
       "end": 2373.72,
       "text": "六月的集体智慧。我要谈论的，不是像正式谈论的那样",
       "speaker": "James Pollack"
     },
     {
-      "id": 607,
+      "id": 577,
       "start": 2373.72,
       "end": 2380.2,
       "text": "模拟器，但能够与获得基于代理的建模的人讨论并得到这个",
       "speaker": "James Pollack"
     },
     {
-      "id": 608,
+      "id": 578,
       "start": 2380.2,
       "end": 2381.14,
       "text": "复杂性的东西。",
       "speaker": "James Pollack"
     },
     {
-      "id": 609,
+      "id": 579,
       "start": 2381.26,
       "end": 2391.08,
       "text": "我真的很高兴能把它带到那里并获得反馈，很多人都",
       "speaker": "James Pollack"
     },
     {
-      "id": 610,
+      "id": 580,
       "start": 2391.08,
       "end": 2398.0,
       "text": "非常专注。组织是人们研究了很长时间的东西，但有很多",
       "speaker": "James Pollack"
     },
     {
-      "id": 611,
+      "id": 581,
       "start": 2398.0,
       "end": 2405.34,
       "text": "对这些数字版本的研究还很少。我认为就像 DAO 一样，A 来了",
       "speaker": "James Pollack"
     },
     {
-      "id": 612,
+      "id": 582,
       "start": 2405.34,
       "end": 2411.08,
       "text": "跨越自治。我认为这让很多人一开始就对 DAO 望而却步。它",
       "speaker": "James Pollack"
     },
     {
-      "id": 613,
+      "id": 583,
       "start": 2411.84,
       "end": 2418.02,
       "text": "与人完全分开，它只是所有代码。但现在我认为重要的部分",
       "speaker": "James Pollack"
     },
     {
-      "id": 614,
+      "id": 584,
       "start": 2418.02,
       "end": 2423.8,
       "text": "是去中心化的方面。如果您将其视为一家去中心化公司，那么您",
       "speaker": "James Pollack"
     },
     {
-      "id": 615,
+      "id": 585,
       "start": 2423.8,
       "end": 2427.72,
       "text": "看看大流行期间发生了什么，事情是如何传播的，每个人都是如何工作的",
       "speaker": "James Pollack"
     },
     {
-      "id": 616,
+      "id": 586,
       "start": 2427.72,
       "end": 2434.27,
       "text": "现在从家里。我认为这就像一个不可避免的事情，大多数事情都会，称之为五年，",
       "speaker": "James Pollack"
     },
     {
-      "id": 617,
+      "id": 587,
       "start": 2434.39,
       "end": 2440.33,
       "text": "10年、20年，大多数组织将是去中心化的。所以，你知道，我们有机会",
       "speaker": "James Pollack"
     },
     {
-      "id": 618,
+      "id": 588,
       "start": 2440.33,
       "end": 2441.85,
       "text": "来了解这个东西。我认为这是其中非常重要的一部分。我认为那就是",
       "speaker": "James Pollack"
     },
     {
-      "id": 619,
+      "id": 589,
       "start": 2441.87,
       "end": 2445.41,
       "text": "现在是这个东西的一个非常重要的部分，并且可以很好地把它走出大门",
       "speaker": "James Pollack"
     },
     {
-      "id": 620,
+      "id": 590,
       "start": 2445.41,
       "end": 2451.2,
       "text": "我们可以使用一些我们喜欢的工具，也许可以避免像我们一样搬起石头砸自己的脚",
       "speaker": "James Pollack"
     },
     {
-      "id": 621,
+      "id": 591,
       "start": 2451.2,
       "end": 2458.16,
       "text": "我想，还有其他一些公共产品。是的，我有这样的感觉。这是一个很好的观点",
       "speaker": "James Pollack"
     },
     {
-      "id": 622,
+      "id": 592,
       "start": 2458.16,
       "end": 2463.76,
       "text": "关于此时此刻这个机会的预见。但我也只是为了书呆子",
       "speaker": "James Pollack"
     },
     {
-      "id": 623,
+      "id": 593,
       "start": 2463.76,
       "end": 2471.5,
       "text": "尝试人工智能和 DAO 如何在数字原生组织中结合在一起。它是",
       "speaker": "James Pollack"
     },
     {
-      "id": 624,
+      "id": 594,
       "start": 2472.06,
       "end": 2478.1,
       "text": "一个值得探索的设计空间。这已经得到了所有的东西。它有代理人，有法学硕士，",
       "speaker": "James Pollack"
     },
     {
-      "id": 625,
+      "id": 595,
       "start": 2478.4,
       "end": 2484.76,
       "text": "你有程序化内容生成、大型语言模型。好像有很多有趣的事情",
       "speaker": "James Pollack"
     },
     {
-      "id": 626,
+      "id": 596,
       "start": 2484.76,
       "end": 2491.44,
       "text": "在这里。你把它们全部扔进蟒蛇汤里。我想我们真的会看到一些",
       "speaker": "James Pollack"
     },
     {
-      "id": 627,
+      "id": 597,
       "start": 2491.44,
       "end": 2495.76,
       "text": "有趣的事情。所以是的，如果你在外面倾听并且你有一个 DAO 并且你想要",
       "speaker": "James Pollack"
     },
     {
-      "id": 628,
+      "id": 598,
       "start": 2495.76,
       "end": 2500.8,
       "text": "如果您想对其进行建模或帮助我解决这个问题，我希望您能与我联系。",
       "speaker": "James Pollack"
     },
     {
-      "id": 629,
+      "id": 599,
       "start": 2502.06,
       "end": 2503.8,
       "text": "是的。在 GitHub 上发表一些评论。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 630,
+      "id": 600,
       "start": 2504.93,
       "end": 2511.93,
       "text": "绝对地。因此，请单击 GitHub 存储库的显示注释中的链接并与 James 联系。",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 631,
+      "id": 601,
       "start": 2512.21,
       "end": 2515.25,
       "text": "詹姆斯，在我们结束之前，还有什么我没有问到你想告诉我们的吗？",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 632,
+      "id": 602,
       "start": 2517.9,
       "end": 2525.74,
       "text": "在你的准备表上，你有一个问题，几个问题。一个是大约一段时间",
       "speaker": "James Pollack"
     },
     {
-      "id": 633,
+      "id": 603,
       "start": 2525.74,
       "end": 2532.76,
       "text": "我觉得很有趣，就像历史之类的东西，也许是硅谷的历史。我有一个",
       "speaker": "James Pollack"
     },
     {
-      "id": 634,
+      "id": 604,
       "start": 2532.9,
       "end": 2537.16,
       "text": "最近我有点接触到了我认为可能有点有趣的东西",
       "speaker": "James Pollack"
     },
     {
-      "id": 635,
+      "id": 605,
       "start": 2537.16,
       "end": 2545.44,
       "text": "分享。我制作互动艺术，一位年长的互动艺术家联系了我。他的名字是",
       "speaker": "James Pollack"
     },
     {
-      "id": 636,
+      "id": 606,
       "start": 2545.44,
       "end": 2553.36,
       "text": "拉里·古巴.我在加州大学圣克鲁斯分校读研究生。他与他们有联系，并且他在",
       "speaker": "James Pollack"
     },
     {
-      "id": 637,
+      "id": 607,
       "start": 2553.36,
       "end": 2559.18,
       "text": "1977 年的原版《星球大战》为死星制作了视觉效果，就像你看到的那样",
       "speaker": "James Pollack"
     },
     {
-      "id": 638,
+      "id": 608,
       "start": 2559.18,
       "end": 2566.2,
       "text": "向叛军飞行员展示了它，他当时就这么做了。他疯狂地做到了这一点",
       "speaker": "James Pollack"
     },
     {
-      "id": 639,
+      "id": 609,
       "start": 2566.2,
       "end": 2571.2,
       "text": "他可以转动旋钮，并且想要改变，就像肯定有点像",
       "speaker": "James Pollack"
     },
     {
-      "id": 640,
+      "id": 610,
       "start": 2571.2,
       "end": 2576.96,
       "text": "过度设计了他们最终在电影中使用的东西，但真的令人难以置信，他是",
       "speaker": "James Pollack"
     },
     {
-      "id": 641,
+      "id": 611,
       "start": 2576.96,
       "end": 2582.12,
       "text": "从那时起就开始制作程序艺术。他没有走视觉特效路线，而是停留得更久",
       "speaker": "James Pollack"
     },
     {
-      "id": 642,
+      "id": 612,
       "start": 2582.12,
       "end": 2588.96,
       "text": "你知道美术路线，他正在研究一些新的程序内容",
       "speaker": "James Pollack"
     },
     {
-      "id": 643,
+      "id": 613,
       "start": 2589.18,
       "end": 2598.24,
       "text": "系统并需要一些帮助，插入老一代程序员真是太酷了",
       "speaker": "James Pollack"
     },
     {
-      "id": 644,
+      "id": 614,
       "start": 2598.24,
       "end": 2604.12,
       "text": "和工程师，然后意识到这是一个非常有才华的程序员和编码员",
       "speaker": "James Pollack"
     },
     {
-      "id": 645,
+      "id": 615,
       "start": 2604.12,
       "end": 2608.7,
       "text": "他们只是不知道最新的技巧或者他们不知道 Blender 的语法",
       "speaker": "James Pollack"
     },
     {
-      "id": 646,
+      "id": 616,
       "start": 2608.7,
       "end": 2613.96,
       "text": "所以他在制作东西上被阻止了几年，所以我能够",
       "speaker": "James Pollack"
     },
     {
-      "id": 647,
+      "id": 617,
       "start": 2613.96,
       "end": 2618.14,
       "text": "和他一起工作 让他畅通无阻 让他再次建造东西",
       "speaker": "James Pollack"
     },
     {
-      "id": 648,
+      "id": 618,
       "start": 2619.18,
       "end": 2626.32,
       "text": "对于我来说，作为一名艺术家和软件工程师，我发现它非常令人满意，它让我融入其中",
       "speaker": "James Pollack"
     },
     {
-      "id": 649,
+      "id": 619,
       "start": 2626.32,
       "end": 2633.16,
       "text": "这段历史以一种有趣的方式，拉里·古巴（Larry Cuba）的导师之一是约翰（John）",
       "speaker": "James Pollack"
     },
     {
-      "id": 650,
+      "id": 620,
       "start": 2633.16,
       "end": 2639.82,
       "text": "老惠特尼是最早在电脑上制作动画的人之一，就像现在所有的人一样",
       "speaker": "James Pollack"
     },
     {
-      "id": 651,
+      "id": 621,
       "start": 2639.82,
       "end": 2645.04,
       "text": "突然之间，我距离第一个电脑动画只有两步之遥，我发现这非常像",
       "speaker": "James Pollack"
     },
     {
-      "id": 652,
+      "id": 622,
       "start": 2645.04,
       "end": 2649.12,
       "text": "令人兴奋，所以如果你的读者有机会查找他 Larry Cuba",
       "speaker": "James Pollack"
     },
     {
-      "id": 653,
+      "id": 623,
       "start": 2649.18,
       "end": 2655.18,
       "text": "他有超级酷的艺术，可能与 Unix 贝尔实验室的东西有点不同，但是",
       "speaker": "James Pollack"
     },
     {
-      "id": 654,
+      "id": 624,
       "start": 2655.18,
       "end": 2660.64,
       "text": "他非常有创意，以至于他们喜欢请他在这部大电影中做这些事情，然后",
       "speaker": "James Pollack"
     },
     {
-      "id": 655,
+      "id": 625,
       "start": 2662.2,
       "end": 2667.12,
       "text": "我只是认为在美术方向上采用它而不是视觉特效方向确实是一个很好的选择",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 656,
+      "id": 626,
       "start": 2667.12,
       "end": 2672.52,
       "text": "有趣的选择，这让他走向了一些与你认识的人截然不同的地方",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 657,
+      "id": 627,
       "start": 2672.52,
       "end": 2678.4,
       "text": "我猜已经开始了工业光魔，或者是在它之后就去了那里，所以工业光魔是工业光与魔法",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 658,
+      "id": 628,
       "start": 2679.18,
       "end": 2683.74,
       "text": "是的，这是很多人最终都致力于此的结果",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 659,
+      "id": 629,
       "start": 2684.28,
       "end": 2688.66,
       "text": "嗯，是的，这只是一次融入事物历史的美妙体验",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 660,
+      "id": 630,
       "start": 2688.66,
       "end": 2694.06,
       "text": "嗯，事情发生得很快，你知道，我从毫无联系到喜欢历史",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 661,
+      "id": 631,
       "start": 2694.06,
       "end": 2698.38,
       "text": "计算机艺术喜欢离起点只有几步之遥，我就",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 662,
+      "id": 632,
       "start": 2698.38,
       "end": 2704.68,
       "text": "鼓励人们发布关于你的技能和你所做的事情，就像他联系的那样",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 663,
+      "id": 633,
       "start": 2704.68,
       "end": 2708.72,
       "text": "我因为在 LinkedIn 上我说我做一些 python 和 Blender",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 664,
+      "id": 634,
       "start": 2709.18,
       "end": 2715.36,
       "text": "那里的另一位教授看到了，但那些事情并没有发生，你知道运气好运来了",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 665,
+      "id": 635,
       "start": 2715.36,
       "end": 2721.12,
       "text": "并向准备好的人打招呼，我想所以嗯你知道我们进行了讨论我们讨论了嗯",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 666,
+      "id": 636,
       "start": 2721.12,
       "end": 2726.96,
       "text": "在通话开始之前，我有点紧张，我是否应该打开",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 667,
+      "id": 637,
       "start": 2726.96,
       "end": 2731.32,
       "text": "源代码我不应该并且实际上喜欢，因为我们已经完成了这次对话，我想我",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 668,
+      "id": 638,
       "start": 2731.32,
       "end": 2737.66,
       "text": "做出了正确的决定，就像你知道准备工作就在那里，现在灯亮了",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 669,
+      "id": 639,
       "start": 2737.66,
       "end": 2743.26,
       "text": "希望它能带来你熟悉的萤火虫，如果你正在听的话，这就是",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 670,
+      "id": 640,
       "start": 2743.26,
       "end": 2749.04,
       "text": "呃，这是我们在录制前五分钟放弃詹姆斯开源代码的故事",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 671,
+      "id": 641,
       "start": 2749.04,
       "end": 2754.84,
       "text": "这样我就可以在演出笔记中派人去看它，所以嗯，你 yolo'd 你把它给了",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 672,
+      "id": 642,
       "start": 2754.84,
       "end": 2760.52,
       "text": "宇宙，我希望宇宙宇宙能够回报代码贡献，呃",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 673,
+      "id": 643,
       "start": 2760.52,
       "end": 2765.9,
       "text": "模因之爱，希望人们也雇佣你来模拟你的道，但是嗯，谢谢你",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 674,
+      "id": 644,
       "start": 2765.9,
       "end": 2767.64,
       "text": "是的，嗯，是的",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 675,
+      "id": 645,
       "start": 2767.66,
       "end": 2770.86,
       "text": "再加上一个，我的意思是我认为我们都站在巨人的肩膀上",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 676,
+      "id": 646,
       "start": 2770.86,
       "end": 2776.12,
       "text": "呃，我想到了开源软件的四位先驱以及他们如何",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 677,
+      "id": 647,
       "start": 2776.12,
       "end": 2782.14,
       "text": "在 90 年代击败微软，让每个 Web 服务器都开源，你知道它可以",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 678,
+      "id": 648,
       "start": 2782.14,
       "end": 2787.2,
       "text": "方式如此不同，我们都可以使用像 Clippy 手机和 Clippy 硬币这样的东西来代替比特币",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 679,
+      "id": 649,
       "start": 2787.2,
       "end": 2791.26,
       "text": "诸如此类的事情，所以我们都站在巨人的肩膀上，我从中汲取灵感",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 680,
+      "id": 650,
       "start": 2791.26,
       "end": 2797.26,
       "text": "那些启发了我的人的血统，看起来你也是如此，也许在",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 681,
+      "id": 651,
       "start": 2797.26,
       "end": 2797.64,
       "text": "也许将来我不知道我不知道我不知道我不知道我不知道",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 682,
+      "id": 652,
       "start": 2797.66,
       "end": 2802.54,
       "text": "另一代人的人们就像我和詹姆斯有联系一样，他是一本书的第一作者",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 683,
+      "id": 653,
       "start": 2802.54,
       "end": 2808.26,
       "text": "dao ai 框架，所以这就是我们所希望的让我脸红，嗯，是的，我不得不说",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 684,
+      "id": 654,
       "start": 2808.26,
       "end": 2813.7,
       "text": "就像我是一个公共产品的产品，我是我的家人第一个上大学的人，嗯，我的",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 685,
+      "id": 655,
       "start": 2813.7,
       "end": 2819.18,
       "text": "本科是私立的，但我去了公立研究生院，我了解到你知道我学到了我的一切",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 686,
+      "id": 656,
       "start": 2819.18,
       "end": 2827.36,
       "text": "从互联网上知道我从未见过我的父亲所以就像如何打领带嗯如何编码所以我是",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 687,
+      "id": 657,
       "start": 2827.66,
       "end": 2833.52,
       "text": "开发者嗯信息和它对自由的渴望以及人们可以做的所有很酷的事情",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 688,
+      "id": 658,
       "start": 2833.52,
       "end": 2839.7,
       "text": "非常感谢有机会来告诉人们我正在做的事情",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 689,
+      "id": 659,
       "start": 2839.7,
       "end": 2844.94,
       "text": "希望呃能吸引一些新人，是的，谢谢你改变了 ai dao 模拟器的模因",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 690,
+      "id": 660,
       "start": 2844.94,
       "end": 2849.34,
       "text": "呃，从一个模因到实际的代码，兴奋，这就是我的意思，你把它放在那里，然后",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 691,
+      "id": 661,
       "start": 2849.34,
       "end": 2854.78,
       "text": "有时候，有时候，世界只是让它发生，这很酷，是的，这是一个结束它的好地方",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 692,
+      "id": 662,
       "start": 2854.78,
       "end": 2857.4,
       "text": "詹姆斯感谢您的加入并继续努力",
       "speaker": "Kevin Owocki"
     },
     {
-      "id": 693,
+      "id": 663,
       "start": 2857.66,
       "end": 2860.45,
       "text": "和平谢谢你凯文和平行动",
