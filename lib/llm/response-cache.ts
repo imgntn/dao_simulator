@@ -6,7 +6,22 @@
  * Supports in-memory operation with optional disk persistence.
  */
 
-import { writeFileSync, readFileSync, existsSync } from 'fs';
+// Lazy fs loading - LLM cache disk ops are Node.js only.
+// Uses Function constructor to hide require() from bundler static analysis.
+let _fs: typeof import('fs') | null = null;
+function getFs(): typeof import('fs') | null {
+  if (_fs) return _fs;
+  try {
+    if (typeof window === 'undefined') {
+      // eslint-disable-next-line @typescript-eslint/no-implied-eval
+      _fs = new Function('return require("fs")')() as typeof import('fs');
+    }
+  } catch {
+    _fs = null;
+  }
+  return _fs;
+}
+
 import { logger } from '../utils/logger';
 
 export interface CacheEntry {
@@ -127,8 +142,14 @@ export class LLMResponseCache {
       data[key] = entry;
     }
 
+    const fs = getFs();
+    if (!fs) {
+      logger.warn('LLM cache disk save unavailable (no fs module)');
+      return;
+    }
+
     try {
-      writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
       logger.debug(`LLM cache saved: ${this.cache.size} entries to ${filePath}`);
     } catch (err) {
       logger.warn(`Failed to save LLM cache: ${err}`);
@@ -139,13 +160,19 @@ export class LLMResponseCache {
    * Load cache from disk
    */
   loadFromDisk(filePath: string): void {
-    if (!existsSync(filePath)) {
+    const fs = getFs();
+    if (!fs) {
+      logger.warn('LLM cache disk load unavailable (no fs module)');
+      return;
+    }
+
+    if (!fs.existsSync(filePath)) {
       logger.debug(`LLM cache file not found: ${filePath}`);
       return;
     }
 
     try {
-      const raw = readFileSync(filePath, 'utf-8');
+      const raw = fs.readFileSync(filePath, 'utf-8');
       const data = JSON.parse(raw) as Record<string, CacheEntry>;
 
       for (const [key, entry] of Object.entries(data)) {

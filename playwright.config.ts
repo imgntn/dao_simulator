@@ -117,6 +117,14 @@ export default defineConfig({
       timeout: 90000, // 90 seconds for WebGL rendering
     },
 
+    /* Simulate page tests - browser-side simulation with Web Worker + 3D */
+    {
+      name: 'simulate',
+      testMatch: /.*simulate\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 90000, // 90s — Web Worker init + simulation steps
+    },
+
     /* Default: run only example and tests without a specific project */
     {
       name: 'chromium',

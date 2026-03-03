@@ -5,11 +5,32 @@
  * and provides them to the simulation engine for historically-calibrated digital twins.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
 import type { SimulationSettings } from '../config/settings';
 import { logger } from '../utils/logger';
 import { getGovernanceMapping } from './governance-mapping';
+import type { CalibrationDataProvider } from './calibration-data-provider';
+
+// Lazy-load Node.js builtins to prevent bundlers from resolving them in browser contexts.
+// The browser code path uses CalibrationDataProvider (set via setProvider()) and never touches fs/path.
+// Using Function constructor hides the require() call from Turbopack/webpack static analysis.
+let _nodeFs: typeof import('fs') | undefined;
+let _nodePath: typeof import('path') | undefined;
+
+function nodeFs() {
+  if (!_nodeFs) {
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    _nodeFs = new Function('return require("fs")')() as typeof import('fs');
+  }
+  return _nodeFs;
+}
+
+function nodePath() {
+  if (!_nodePath) {
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    _nodePath = new Function('return require("path")')() as typeof import('path');
+  }
+  return _nodePath;
+}
 
 // =============================================================================
 // CALIBRATION PROFILE TYPES
@@ -91,11 +112,22 @@ export interface CalibrationProfile {
 // CALIBRATION LOADER
 // =============================================================================
 
-const CALIBRATION_DIR = path.join(process.cwd(), 'results', 'historical', 'calibration');
+function getDefaultCalibrationDir(): string {
+  return nodePath().join(process.cwd(), 'results', 'historical', 'calibration');
+}
 
 export class CalibrationLoader {
   private static cache: Map<string, CalibrationProfile> = new Map();
-  private static calibrationDir: string = CALIBRATION_DIR;
+  private static calibrationDir: string | null = null;
+  private static provider: CalibrationDataProvider | null = null;
+
+  /**
+   * Set an external data provider (e.g. for browser environments without fs access)
+   */
+  static setProvider(p: CalibrationDataProvider | null): void {
+    CalibrationLoader.provider = p;
+    CalibrationLoader.cache.clear();
+  }
 
   /**
    * Set the calibration directory (for testing or custom paths)
@@ -113,14 +145,22 @@ export class CalibrationLoader {
       return CalibrationLoader.cache.get(daoId)!;
     }
 
-    const filePath = path.join(CalibrationLoader.calibrationDir, `${daoId}_profile.json`);
+    // Use external provider if available (e.g. browser environment)
+    if (CalibrationLoader.provider) {
+      const profile = CalibrationLoader.provider.loadProfile(daoId);
+      if (profile) CalibrationLoader.cache.set(daoId, profile);
+      return profile;
+    }
+
+    const dir = CalibrationLoader.calibrationDir ?? getDefaultCalibrationDir();
+    const filePath = nodePath().join(dir, `${daoId}_profile.json`);
 
     try {
-      if (!fs.existsSync(filePath)) {
+      if (!nodeFs().existsSync(filePath)) {
         return null;
       }
 
-      const content = fs.readFileSync(filePath, 'utf-8');
+      const content = nodeFs().readFileSync(filePath, 'utf-8');
       const profile = JSON.parse(content) as CalibrationProfile;
 
       // Validate minimum required fields
@@ -142,12 +182,22 @@ export class CalibrationLoader {
   static loadAll(): Map<string, CalibrationProfile> {
     const profiles = new Map<string, CalibrationProfile>();
 
+    // Use external provider if available (e.g. browser environment)
+    if (CalibrationLoader.provider) {
+      for (const id of CalibrationLoader.provider.listAvailableIds()) {
+        const profile = CalibrationLoader.provider.loadProfile(id);
+        if (profile) profiles.set(id, profile);
+      }
+      return profiles;
+    }
+
+    const dir = CalibrationLoader.calibrationDir ?? getDefaultCalibrationDir();
     try {
-      if (!fs.existsSync(CalibrationLoader.calibrationDir)) {
+      if (!nodeFs().existsSync(dir)) {
         return profiles;
       }
 
-      const files = fs.readdirSync(CalibrationLoader.calibrationDir);
+      const files = nodeFs().readdirSync(dir);
       for (const file of files) {
         if (file.endsWith('_profile.json')) {
           const daoId = file.replace('_profile.json', '');
@@ -171,19 +221,29 @@ export class CalibrationLoader {
     if (CalibrationLoader.cache.has(daoId)) {
       return true;
     }
-    const filePath = path.join(CalibrationLoader.calibrationDir, `${daoId}_profile.json`);
-    return fs.existsSync(filePath);
+    // Use external provider if available (e.g. browser environment)
+    if (CalibrationLoader.provider) {
+      return CalibrationLoader.provider.hasProfile(daoId);
+    }
+    const dir = CalibrationLoader.calibrationDir ?? getDefaultCalibrationDir();
+    const filePath = nodePath().join(dir, `${daoId}_profile.json`);
+    return nodeFs().existsSync(filePath);
   }
 
   /**
    * Get list of available DAO IDs with calibration profiles
    */
   static getAvailableIds(): string[] {
+    // Use external provider if available (e.g. browser environment)
+    if (CalibrationLoader.provider) {
+      return CalibrationLoader.provider.listAvailableIds();
+    }
+    const dir = CalibrationLoader.calibrationDir ?? getDefaultCalibrationDir();
     try {
-      if (!fs.existsSync(CalibrationLoader.calibrationDir)) {
+      if (!nodeFs().existsSync(dir)) {
         return [];
       }
-      return fs.readdirSync(CalibrationLoader.calibrationDir)
+      return nodeFs().readdirSync(dir)
         .filter(f => f.endsWith('_profile.json'))
         .map(f => f.replace('_profile.json', ''));
     } catch (error) {

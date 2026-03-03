@@ -587,10 +587,12 @@ export class CheckpointManager {
     fs: typeof import('fs/promises');
     path: typeof import('path');
   }> {
-    const [fsModule, pathModule] = await Promise.all([
-      import('fs/promises'),
-      import('path'),
-    ]);
+    // Use Function constructor to hide require() from bundler static analysis.
+    // This code only runs in Node.js; in browser environments checkpoint persistence is a no-op.
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    const dynamicRequire = new Function('m', 'return require(m)') as (m: string) => unknown;
+    const fsModule = dynamicRequire('fs/promises') as typeof import('fs/promises');
+    const pathModule = dynamicRequire('path') as typeof import('path');
     const path = (pathModule as { default?: typeof import('path') }).default ?? pathModule;
     return { fs: fsModule, path };
   }
