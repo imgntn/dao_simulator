@@ -23,7 +23,7 @@ export function BriefCard({ id, label, title, question, curated, index, locale }
         {label}
       </p>
       <h3 className="mt-2 text-xl font-semibold leading-tight text-[var(--text-heading)]">{title}</h3>
-      <p className="mt-2 text-base font-medium leading-relaxed text-[#2b5064]">{question}</p>
+      <p className="mt-2 text-base font-medium leading-relaxed text-[var(--text-body)]">{question}</p>
       <p className="mt-3 text-[0.95rem] leading-relaxed text-[var(--text-body-secondary)]">{curated.summary}</p>
       <ul className="mt-3 space-y-2 text-[0.95rem] text-[var(--text-body-secondary)]">
         {curated.whatWeFound.length > 0

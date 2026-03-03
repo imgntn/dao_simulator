@@ -14,7 +14,7 @@ export function PaperCard({ label, description, currentPdf, currentTex, locale }
   const m = getMessages(locale);
 
   return (
-    <article className="rounded-2xl border border-[var(--border-default)] bg-white p-4">
+    <article className="rounded-2xl border border-[var(--border-default)] bg-[var(--surface-warm)] p-4">
       <h3 className="text-xl font-semibold text-[var(--text-heading)]">{label}</h3>
       <p className="mt-1 text-base text-[var(--text-muted)]">{description}</p>
       <div className="mt-3 flex flex-wrap gap-2">

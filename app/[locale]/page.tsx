@@ -137,7 +137,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
           {/* Right: hero chart + stat counters */}
           <div className="flex shrink-0 flex-col items-center gap-4 lg:w-[280px]">
-            <div className="chart-gallery-item w-full rounded-2xl border border-[var(--border-subtle)] bg-white p-4">
+            <div className="chart-gallery-item w-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4">
               <QuorumReachChart />
             </div>
             <div className="grid w-full grid-cols-3 gap-2 text-center">
@@ -188,28 +188,28 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
         {/* Page table of contents */}
         <nav aria-label="Page sections" className="mt-8 flex flex-wrap gap-2">
-          <a href="#podcast" className="rounded-full border border-[var(--border-default)] bg-white px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+          <a href="#podcast" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             {m.home?.podcastListen ?? 'Podcast'}
           </a>
-          <a href="#why" className="rounded-full border border-[var(--border-default)] bg-white px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+          <a href="#why" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             Why This Matters
           </a>
-          <a href="#digital-twins" className="rounded-full border border-[var(--border-default)] bg-white px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+          <a href="#digital-twins" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             Digital Twins
           </a>
-          <a href="#charts" className="rounded-full border border-[var(--border-default)] bg-white px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+          <a href="#charts" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             Results
           </a>
-          <a href="#research" className="rounded-full border border-[var(--border-default)] bg-white px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+          <a href="#research" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             Research
           </a>
-          <a href="#papers" className="rounded-full border border-[var(--border-default)] bg-white px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+          <a href="#papers" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             Papers
           </a>
-          <a href="#consulting" className="rounded-full border border-[var(--border-default)] bg-white px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+          <a href="#consulting" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             {m.home?.consultingHeading ?? 'Work With Me'}
           </a>
-          <a href="#advanced" className="rounded-full border border-[var(--border-default)] bg-white px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+          <a href="#advanced" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             Advanced
           </a>
         </nav>
@@ -242,7 +242,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 href="https://www.youtube.com/watch?v=zBP-CLlJIMU&list=PPSV"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-white px-5 py-3 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
+                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-3 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.546 12 3.546 12 3.546s-7.505 0-9.377.504A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.504 9.376.504 9.376.504s7.505 0 9.377-.504a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814ZM9.545 15.568V8.432L15.818 12l-6.273 3.568Z" />
@@ -253,7 +253,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 href="https://podcasts.apple.com/us/podcast/123-ai-dao-simulator-w-james-pollack/id1609313639?i=1000617149760"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-white px-5 py-3 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
+                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-3 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm3.436 14.58c-.18.3-.563.4-.862.22-.013-.007-1.484-.906-1.484-.906-.234-.144-.384-.394-.384-.663V9.5a.75.75 0 0 1 1.5 0v4.972l1.01.623a.64.64 0 0 1 .22.865v-.001ZM12 6.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Zm0 1.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" />
@@ -264,7 +264,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 href="https://open.spotify.com/episode/3hrMfrE0blYgZIvX6BRZ5j?si=CtWBClNWTw6KcAXcf3Q_-g"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-white px-5 py-3 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
+                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-3 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm4.586 14.424a.622.622 0 0 1-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.623.623 0 0 1-.277-1.215c3.81-.87 7.077-.496 9.713 1.115a.623.623 0 0 1 .206.857Zm1.224-2.719a.78.78 0 0 1-1.072.257c-2.687-1.652-6.786-2.13-9.965-1.166a.78.78 0 0 1-.452-1.493c3.632-1.102 8.147-.568 11.232 1.33a.78.78 0 0 1 .257 1.072Zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71a.935.935 0 0 1-.542-1.79c3.533-1.072 9.404-.865 13.115 1.338a.935.935 0 0 1-1.045 1.553l.09.06Z" />
@@ -328,19 +328,19 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </p>
 
             <div className="mt-5 grid gap-4 sm:grid-cols-3">
-              <div className="rounded-xl border border-[var(--border-subtle)] bg-white p-4">
+              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4">
                 <p className="text-sm font-semibold uppercase tracking-wide text-[var(--accent-teal)]">What</p>
                 <p className="mt-1.5 text-base leading-relaxed text-[var(--text-body-secondary)]">
                   {m.home?.digitalTwinsWhat ?? 'Each twin captures a DAO\u2019s actual governance stack: quorum thresholds, voting periods, proposal pipelines, treasury mechanics, and member archetypes.'}
                 </p>
               </div>
-              <div className="rounded-xl border border-[var(--border-subtle)] bg-white p-4">
+              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4">
                 <p className="text-sm font-semibold uppercase tracking-wide text-[var(--accent-gold)]">How</p>
                 <p className="mt-1.5 text-base leading-relaxed text-[var(--text-body-secondary)]">
                   {m.home?.digitalTwinsHow ?? 'Historical calibration profiles compiled from on-chain data drive agent behavior, proposal frequency, participation rates, and pass rates. Calibration scores average 0.85 across all 14 DAOs.'}
                 </p>
               </div>
-              <div className="rounded-xl border border-[var(--border-subtle)] bg-white p-4">
+              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4">
                 <p className="text-sm font-semibold uppercase tracking-wide text-[var(--text-heading)]">Why</p>
                 <p className="mt-1.5 text-base leading-relaxed text-[var(--text-body-secondary)]">
                   {m.home?.digitalTwinsWhy ?? 'Digital twins let researchers test counterfactual governance changes without risking real treasuries.'}
@@ -360,7 +360,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                   return (
                     <div
                       key={dao}
-                      className="rounded-lg border border-[var(--border-default)] bg-white p-3"
+                      className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-warm)] p-3"
                       title={score ? `Calibration score: ${score.toFixed(3)}` : undefined}
                     >
                       <div className="flex items-center justify-between gap-2">
@@ -533,7 +533,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 href="https://jamesbpollack.com"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-white px-5 py-3 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
+                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-3 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
               >
                 jamesbpollack.com
               </a>
@@ -541,7 +541,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 href="https://github.com/imgntn/dao_simulator"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-white px-5 py-3 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
+                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-3 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" />
@@ -563,7 +563,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             {m.home?.advancedDesc ?? 'Raw metrics, source files, and full technical artifacts.'}
           </p>
 
-          <div className="mt-5 rounded-2xl border border-[var(--border-warm)] bg-white p-4">
+          <div className="mt-5 rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-4">
             <h3 className="text-lg font-semibold text-[var(--text-heading)]">
               {m.home?.briefSourceFiles ?? 'Brief Source Files + Raw Metrics'}
             </h3>
@@ -582,7 +582,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     </p>
                   </div>
                   {section.takeaways.length > 0 && (
-                    <details className="mt-3 rounded-lg border border-[var(--border-subtle)] bg-white p-3">
+                    <details className="mt-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-3">
                       <summary className="cursor-pointer text-base font-semibold text-[var(--text-heading)]">
                         {m.home?.rawMetricTakeaways ?? 'Raw Metric Takeaways'}
                       </summary>
@@ -594,7 +594,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     </details>
                   )}
                   {section.notes.length > 0 && (
-                    <details className="mt-2 rounded-lg border border-[var(--border-subtle)] bg-white p-3">
+                    <details className="mt-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-3">
                       <summary className="cursor-pointer text-base font-semibold text-[var(--text-heading)]">
                         {m.home?.methodNotes ?? 'Method Notes'}
                       </summary>

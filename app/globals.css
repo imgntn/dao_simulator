@@ -42,8 +42,8 @@
   --panel: var(--surface-panel);
 }
 
-/* Console / dark theme variant */
-.theme-console {
+/* Dark theme variant */
+.theme-dark {
   --surface-page: #020617;
   --surface-panel: rgba(15, 23, 42, 0.40);
   --surface-warm: #0f172a;
@@ -110,9 +110,44 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.theme-console body,
-body:has(.theme-console) {
+.theme-dark body,
+body:has(.theme-dark) {
   background: var(--surface-page);
+}
+
+/* When dark mode is on <html>, override body directly */
+html.theme-dark body {
+  background: var(--surface-page);
+}
+
+/* Dark theme overrides for hardcoded colors */
+.theme-dark .hub-link {
+  color: var(--text-body-secondary);
+}
+
+.theme-dark .hub-link:hover {
+  border-color: var(--accent-gold);
+  background: var(--surface-warm);
+  color: var(--text-heading);
+}
+
+.theme-dark .markdown-surface {
+  color: var(--text-body-secondary);
+}
+
+.theme-dark .markdown-surface code {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: var(--border-default);
+  color: var(--accent-gold);
+}
+
+.theme-dark .markdown-surface blockquote {
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+}
+
+.theme-dark .chart-lightbox-dialog::backdrop {
+  background: rgba(2, 6, 23, 0.75);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

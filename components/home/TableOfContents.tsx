@@ -45,7 +45,7 @@ export function TableOfContents({ items }: TableOfContentsProps) {
           className={`rounded-full border px-4 py-2.5 text-sm font-semibold uppercase tracking-[0.11em] transition ${
             activeId === item.id
               ? 'border-[var(--accent-teal)] bg-[var(--accent-teal)]/10 text-[var(--accent-teal)]'
-              : 'border-[var(--border-default)] bg-white text-[#405468] hover:border-[#b49567] hover:bg-[#fff4e4]'
+              : 'border-[var(--border-default)] bg-[var(--surface-warm)] text-[var(--text-body)] hover:border-[var(--accent-gold)] hover:bg-[var(--surface-warm-deep)]'
           }`}
           style={{ animationDelay: `${index * 50}ms` }}
         >

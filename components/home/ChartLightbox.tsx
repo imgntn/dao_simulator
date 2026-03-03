@@ -47,7 +47,7 @@ export function ChartLightbox({ children }: ChartLightboxProps) {
       <button
         type="button"
         onClick={open}
-        className="group w-full cursor-zoom-in rounded-xl border border-[var(--border-subtle)] bg-white px-3 py-3 text-left transition-shadow hover:shadow-md"
+        className="group w-full cursor-zoom-in rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] px-3 py-3 text-left transition-shadow hover:shadow-md"
       >
         <div ref={sourceRef} className="pointer-events-none">{children}</div>
         <p className="mt-2 text-center text-sm text-[var(--text-muted)] opacity-70 transition-opacity group-hover:opacity-100">
@@ -61,7 +61,7 @@ export function ChartLightbox({ children }: ChartLightboxProps) {
         className="chart-lightbox-dialog"
         onClick={handleBackdropClick}
       >
-        <div className="relative w-full rounded-2xl border border-[var(--border-default)] bg-white p-4 shadow-xl sm:p-6">
+        <div className="relative w-full rounded-2xl border border-[var(--border-default)] bg-[var(--surface-warm)] p-4 shadow-xl sm:p-6">
           <button
             type="button"
             onClick={close}

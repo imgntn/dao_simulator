@@ -50,11 +50,11 @@ function formatTime(seconds: number): string {
 
 const SPEAKER_COLORS: Record<string, { bg: string; text: string }> = {
   'Kevin Owocki': { bg: 'bg-[var(--accent-teal)]/15', text: 'text-[var(--accent-teal)]' },
-  'James Pollack': { bg: 'bg-amber-100', text: 'text-amber-700' },
+  'James Pollack': { bg: 'bg-[var(--accent-gold)]/15', text: 'text-[var(--accent-gold)]' },
 };
 
 function getSpeakerStyle(name: string) {
-  return SPEAKER_COLORS[name] ?? { bg: 'bg-gray-100', text: 'text-gray-600' };
+  return SPEAKER_COLORS[name] ?? { bg: 'bg-[var(--surface-warm-deep)]', text: 'text-[var(--text-muted)]' };
 }
 
 function firstName(name: string) {
@@ -69,7 +69,7 @@ function highlightText(text: string, query: string): React.ReactNode {
   const parts = text.split(regex);
   return parts.map((part, i) =>
     regex.test(part) ? (
-      <mark key={i} className="rounded bg-amber-200 px-0.5">{part}</mark>
+      <mark key={i} className="rounded bg-[var(--accent-gold)]/25 text-[var(--text-heading)] px-0.5">{part}</mark>
     ) : (
       part
     ),

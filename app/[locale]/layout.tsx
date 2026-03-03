@@ -5,6 +5,7 @@ import '../globals.css';
 import { getMessages, isValidLocale, locales, defaultLocale, ogLocaleMap } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 import { LocaleProvider } from '@/lib/i18n/locale-context';
+import { ThemeProvider } from '@/lib/theme/theme-context';
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
@@ -114,7 +115,14 @@ export default async function LocaleLayout({
   const m = getMessages(locale);
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(t!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('theme-dark')}}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body
         className={`${spaceGrotesk.variable} ${ibmPlexMono.variable} ${sourceSerif.variable} antialiased`}
       >
@@ -124,11 +132,13 @@ export default async function LocaleLayout({
         >
           {m.a11y.skipToMain}
         </a>
-        <LocaleProvider locale={locale} messages={m}>
-          <div id="main-content" tabIndex={-1} className="outline-none">
-            {children}
-          </div>
-        </LocaleProvider>
+        <ThemeProvider>
+          <LocaleProvider locale={locale} messages={m}>
+            <div id="main-content" tabIndex={-1} className="outline-none">
+              {children}
+            </div>
+          </LocaleProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
