@@ -94,6 +94,12 @@
    Global styles
    ═══════════════════════════════════════════════════════════════════════════ */
 
+html {
+  font-size: clamp(106.25%, 100% + 0.25vw, 125%);
+  /* Fluid root: 17px @mobile → 20px @1600px+.
+     Every rem-based size (Tailwind text-sm, text-base, etc.) scales with this. */
+}
+
 body {
   min-height: 100vh;
   margin: 0;
@@ -102,7 +108,7 @@ body {
     linear-gradient(172deg, #fffefb 0%, #f8f2e8 56%, #efe7da 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
-  font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  font-size: clamp(1rem, 0.975rem + 0.15vw, 1.075rem);
   line-height: 1.72;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -214,7 +220,7 @@ html.theme-dark body {
   margin: 0 auto;
   color: #2d3f52;
   line-height: 1.84;
-  font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.2rem);
+  font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.15rem);
   text-wrap: pretty;
 }
 
@@ -409,16 +415,16 @@ html.theme-dark body {
   }
 }
 
-/* Scale up on very-high-DPI small screens (e.g. 4K laptops, 14" Retina) */
+/* HiDPI: ensure dense-pixel screens are at least as large as the fluid baseline */
 @media (min-resolution: 2dppx) and (max-width: 1800px) {
   html {
-    font-size: 112.5%; /* 18px base instead of 16px */
+    font-size: 118.75%; /* 19px — compensates for dense pixels */
   }
 }
 
 @media (min-resolution: 3dppx) {
   html {
-    font-size: 118.75%; /* 19px base for 3x screens */
+    font-size: 125%; /* 20px for 3× screens */
   }
 }
 
