@@ -1,0 +1,98 @@
+# Experiment 14: Black Swan Resilience
+# Measures how different governance mechanisms handle exogenous shocks
+
+name: Black Swan Resilience
+description: >
+  Compares governance mechanism resilience under varying intensities of
+  exogenous shocks (exploits, regulatory events, trust collapses, etc.).
+  Tests whether super-majority or conviction voting provides better
+  stability than simple majority during crises.
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - paper
+  - black-swan
+  - resilience
+  - governance
+
+baseConfig:
+  template: compound
+  population:
+    totalMembers: 200
+  overrides:
+    learning_enabled: false
+    forum_enabled: true
+    treasury_stabilization_enabled: true
+    treasury_target_reserve: 10000
+    treasury_target_reserve_fraction: 0.6
+    treasury_buffer_fraction: 0.2
+    treasury_buffer_fill_rate: 0.5
+    treasury_emergency_topup_rate: 0.25
+    treasury_max_spend_fraction: 0.15
+    voting_activity: 0.25
+    proposal_creation_probability: 0.004
+    proposal_duration_min_steps: 24
+    proposal_duration_max_steps: 96
+    black_swan_enabled: true
+    black_swan_severity_scale: 1.0
+
+sweep:
+  grid:
+    - parameter: black_swan_frequency
+      values: [0, 1, 3, 5]
+    - parameter: governance_rule
+      values: [majority, super-majority, conviction]
+
+execution:
+  runsPerConfig: 100
+  stepsPerRun: 720
+  seedStrategy: sequential
+  baseSeed: 1400
+  workers: 4
+
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Treasury Volatility
+    type: builtin
+    builtin: treasury_volatility
+  - name: Treasury Growth Rate
+    type: builtin
+    builtin: treasury_growth_rate
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+  - name: Final Member Count
+    type: builtin
+    builtin: final_member_count
+  - name: Member Growth Rate
+    type: builtin
+    builtin: member_growth_rate
+  - name: Governance Activity Index
+    type: builtin
+    builtin: governance_activity_index
+  - name: Final Token Price
+    type: builtin
+    builtin: final_token_price
+  - name: Token Concentration Gini
+    type: builtin
+    builtin: token_concentration_gini
+
+output:
+  directory: results/experiments/14-black-swan-resilience
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeManifest: true
+  includeTimeline: false

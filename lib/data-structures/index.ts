@@ -72,3 +72,14 @@ export {
   type ForumPost,
   type ForumPostType,
 } from './forum';
+
+// Black Swan Events
+export {
+  type BlackSwanCategory,
+  type BlackSwanEffects,
+  type BlackSwanEvent,
+  ALL_BLACK_SWAN_CATEGORIES,
+  CATEGORY_PROFILES,
+  CATEGORY_DURATION,
+  CATEGORY_NAMES,
+} from './black-swan';

@@ -39,4 +39,8 @@ export interface DAOModel extends IModel {
   eventBus: import('../utils/event-bus').EventBus;
   forumSimulation?: { getVotingBias(proposalId: string): number } | null;
   governanceRuleName?: string;
+  /** Aggregate belief shift from active black swan events (default 0) */
+  currentBeliefShift?: number;
+  /** Temporary participation drop from active black swan events (default 0) */
+  currentParticipationDrop?: number;
 }

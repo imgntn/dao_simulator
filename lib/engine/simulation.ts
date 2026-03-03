@@ -74,6 +74,8 @@ import type { DAOModel } from './model';
 import { type Proposal, isMultiStageProposal, type MultiStageFields } from '../data-structures/proposal';
 import { OllamaClient } from '../llm/ollama-client';
 import { LLMResponseCache } from '../llm/response-cache';
+import type { BlackSwanEvent } from '../data-structures/black-swan';
+import { generateBlackSwanSchedule } from '../utils/black-swan-generator';
 
 // Type for agent constructor classes - uses DAOModel since that's what agents accept
 type AgentClass = new (
@@ -268,6 +270,17 @@ export class DAOSimulation extends Model {
   llmCache: LLMResponseCache | null = null;
   /** Whether Ollama availability has been checked */
   private ollamaAvailabilityChecked: boolean = false;
+
+  /** Scheduled black swan events for this simulation */
+  blackSwanSchedule: BlackSwanEvent[] = [];
+  /** Currently active black swan events (within duration window) */
+  activeBlackSwans: BlackSwanEvent[] = [];
+  /** Cumulative count of black swan events that have fired */
+  private blackSwanFiredCount: number = 0;
+  /** Aggregate belief shift from active black swan events */
+  currentBeliefShift: number = 0;
+  /** Temporary participation drop from active black swan events */
+  currentParticipationDrop: number = 0;
 
   constructor(config: DAOSimulationConfig = {}) {
     super();
@@ -562,6 +575,18 @@ export class DAOSimulation extends Model {
       this.dataCollector.setForumState(this.forumState);
     }
 
+    // Wire black swan metrics supplier for data collection
+    if (config.black_swan_enabled ?? settings.black_swan_enabled) {
+      this.dataCollector.setBlackSwanMetricsSupplier(() => ({
+        active: this.activeBlackSwans.length > 0,
+        count: this.blackSwanFiredCount,
+        severity: this.activeBlackSwans.reduce((sum, e) => {
+          const decay = Math.max(0, 1 - (this.currentStep - e.step) / e.duration);
+          return sum + e.severity * decay;
+        }, 0),
+      }));
+    }
+
     // Initialize agent manager
     this.agentManager = new AgentManager(this);
 
@@ -583,6 +608,19 @@ export class DAOSimulation extends Model {
         this.eventEngine = new EventEngine();
         this.eventEngine.loadFromJson(config.eventsFile);
       }
+    }
+
+    // Initialize black swan event schedule
+    const bsEnabled = config.black_swan_enabled ?? settings.black_swan_enabled;
+    if (bsEnabled) {
+      const bsSettings = {
+        black_swan_frequency: config.black_swan_frequency ?? settings.black_swan_frequency,
+        black_swan_severity_scale: config.black_swan_severity_scale ?? settings.black_swan_severity_scale,
+        black_swan_categories: config.black_swan_categories ?? settings.black_swan_categories,
+        black_swan_scheduled_events: config.black_swan_scheduled_events ?? settings.black_swan_scheduled_events,
+      };
+      // Use a generous step budget so events can be generated for any run length
+      this.blackSwanSchedule = generateBlackSwanSchedule(10000, bsSettings);
     }
 
     // Create agents
@@ -1367,6 +1405,120 @@ export class DAOSimulation extends Model {
   }
 
   /**
+   * Process black swan / exogenous shock events for the current step.
+   * Triggers new events, applies their effects, and decays/removes expired ones.
+   */
+  processBlackSwanEvents(): void {
+    const step = this.currentStep;
+
+    // 1. Trigger new events scheduled for this step
+    for (const event of this.blackSwanSchedule) {
+      if (event.step === step) {
+        this.activeBlackSwans.push(event);
+        this.blackSwanFiredCount++;
+        this.applyBlackSwanImmediate(event);
+
+        this.eventBus.publish('black_swan', {
+          step,
+          event: event.id,
+          category: event.category,
+          name: event.name,
+          severity: event.severity,
+          duration: event.duration,
+          effects: event.effects,
+        });
+
+        logger.info(`Black swan event: ${event.name} (${event.category}) severity=${event.severity.toFixed(2)} at step ${step}`);
+      }
+    }
+
+    // 2. Compute aggregate belief shift and participation drop from all active events
+    let totalBeliefShift = 0;
+    let totalParticipationDrop = 0;
+
+    for (const event of this.activeBlackSwans) {
+      const elapsed = step - event.step;
+      // Linear decay over duration
+      const decay = Math.max(0, 1 - elapsed / event.duration);
+
+      if (event.effects.beliefShift) {
+        totalBeliefShift += event.effects.beliefShift * decay;
+      }
+      if (event.effects.participationDrop) {
+        totalParticipationDrop += event.effects.participationDrop * decay;
+      }
+    }
+
+    // Store on model for agent access in decideVote()
+    this.currentBeliefShift = totalBeliefShift;
+    this.currentParticipationDrop = Math.min(1, totalParticipationDrop);
+
+    // 3. Remove expired events
+    this.activeBlackSwans = this.activeBlackSwans.filter(
+      e => step - e.step < e.duration
+    );
+  }
+
+  /**
+   * Apply the immediate one-time effects of a black swan event.
+   */
+  private applyBlackSwanImmediate(event: BlackSwanEvent): void {
+    const effects = event.effects;
+
+    // Price shock
+    if (effects.priceShock) {
+      this.triggerMarketShock(effects.priceShock);
+    }
+
+    // Treasury drain
+    if (effects.treasuryDrain && effects.treasuryDrain > 0) {
+      const funds = this.dao.treasury.funds;
+      const drainAmount = funds * effects.treasuryDrain;
+      if (drainAmount > 0) {
+        this.dao.treasury.withdraw('DAO_TOKEN', drainAmount, this.currentStep);
+      }
+    }
+
+    // Fatigue spike — directly increase each member's voterFatigue
+    if (effects.fatigueSpike && effects.fatigueSpike > 0) {
+      for (const member of this.dao.members) {
+        member.voterFatigue = Math.min(1, member.voterFatigue + effects.fatigueSpike);
+      }
+    }
+
+    // Optimism damage — directly decrease each member's optimism
+    if (effects.optimismDamage && effects.optimismDamage > 0) {
+      for (const member of this.dao.members) {
+        member.optimism = Math.max(0, member.optimism - effects.optimismDamage);
+      }
+    }
+
+    // Forum sentiment shock — create a negative-sentiment topic
+    if (effects.forumSentimentShock && this.forumState) {
+      const topic = this.forumState.createTopic('system', 'governance', this.currentStep);
+      this.forumState.addPost(topic.id, 'system', effects.forumSentimentShock, this.currentStep, 'oppose');
+    }
+
+    // Member exit
+    if (effects.memberExitFraction && effects.memberExitFraction > 0) {
+      const exitCount = Math.floor(this.dao.members.length * effects.memberExitFraction);
+      if (exitCount > 0) {
+        // Randomly select members to remove (avoid removing all)
+        const candidates = [...this.dao.members];
+        for (let i = candidates.length - 1; i > 0; i--) {
+          const j = Math.floor(random() * (i + 1));
+          [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+        }
+        const toRemove = candidates.slice(0, Math.min(exitCount, candidates.length - 1));
+        for (const member of toRemove) {
+          this.dao.removeMember(member);
+          this.schedule.remove(member);
+        }
+      }
+    }
+  }
+
+  /**
    * Resolve basic proposals whose voting period has ended
    * Applies governance rules to determine pass/fail
    */
@@ -1866,6 +2018,11 @@ export class DAOSimulation extends Model {
     if (this.marketShockFrequency > 0 && random() < 1 / this.marketShockFrequency) {
       const severity = (random() - 0.5) * constants.MARKET_SHOCK_RANGE;
       this.triggerMarketShock(severity);
+    }
+
+    // Black swan / exogenous shock events
+    if (this.blackSwanSchedule.length > 0) {
+      this.processBlackSwanEvents();
     }
 
     // Token emission

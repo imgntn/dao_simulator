@@ -35,6 +35,10 @@ export interface ModelVarEntry {
   forumTopics?: number;
   forumPosts?: number;
   forumAvgSentiment?: number;
+  // Black swan metrics (optional, present when black swan events are enabled)
+  blackSwanActive?: boolean;
+  blackSwanCount?: number;
+  blackSwanSeverity?: number;
 }
 
 /**
@@ -158,11 +162,21 @@ export class SimpleDataCollector implements DataCollectorData {
   /** Optional forum state reference for forum metrics collection */
   private forumStateRef: ForumState | null = null;
 
+  /** Black swan metrics supplier (set by simulation when black swan is enabled) */
+  private blackSwanMetricsSupplier: (() => { active: boolean; count: number; severity: number }) | null = null;
+
   /**
    * Set forum state reference for metrics collection
    */
   setForumState(forumState: ForumState): void {
     this.forumStateRef = forumState;
+  }
+
+  /**
+   * Set black swan metrics supplier for metrics collection
+   */
+  setBlackSwanMetricsSupplier(supplier: () => { active: boolean; count: number; severity: number }): void {
+    this.blackSwanMetricsSupplier = supplier;
   }
 
   /**
@@ -274,6 +288,17 @@ export class SimpleDataCollector implements DataCollectorData {
       }
     }
 
+    // Collect black swan metrics if available
+    let blackSwanMetrics: { blackSwanActive?: boolean; blackSwanCount?: number; blackSwanSeverity?: number } = {};
+    if (this.blackSwanMetricsSupplier) {
+      const bs = this.blackSwanMetricsSupplier();
+      blackSwanMetrics = {
+        blackSwanActive: bs.active,
+        blackSwanCount: bs.count,
+        blackSwanSeverity: bs.severity,
+      };
+    }
+
     // Store model variables
     this._modelVars.push({
       step,
@@ -289,6 +314,7 @@ export class SimpleDataCollector implements DataCollectorData {
       proposalsExpired,
       avgParticipationRate,
       ...forumMetrics,
+      ...blackSwanMetrics,
     });
 
     // Store history entry (CircularBuffer handles automatic eviction)

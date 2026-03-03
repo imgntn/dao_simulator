@@ -186,6 +186,22 @@ export interface SimulationSettings {
   llm_max_tokens: number;
   /** Ollama seed for reproducibility (syncs with sim seed if unset) */
   llm_seed?: number;
+
+  // Black swan / exogenous shock system
+  /** Enable black swan events */
+  black_swan_enabled: boolean;
+  /** Expected events per 720 steps */
+  black_swan_frequency: number;
+  /** Multiplier on all severity values */
+  black_swan_severity_scale: number;
+  /** Which categories to include (default: all 6) */
+  black_swan_categories: string[];
+  /** Deterministic events for experiments (overrides random generation for these) */
+  black_swan_scheduled_events?: Array<{
+    step: number;
+    category: string;
+    severity: number;
+  }>;
 }
 
 /**
@@ -329,6 +345,13 @@ export const defaultSettings: SimulationSettings = {
   llm_forum_enabled: false,
   llm_max_tokens: 256,
   llm_seed: undefined,
+
+  // Black swan defaults
+  black_swan_enabled: false,
+  black_swan_frequency: 2,
+  black_swan_severity_scale: 1.0,
+  black_swan_categories: ['exploit', 'regulatory', 'key_person_exit', 'trust_collapse', 'market_contagion', 'social_attack'],
+  black_swan_scheduled_events: undefined,
 };
 
 /**

@@ -641,6 +641,11 @@ export class DAOMember implements Agent {
         belief -= this.oppositionBias * 0.3;
       }
 
+      // Apply black swan belief shift (exogenous shock pressure)
+      if (this.model.currentBeliefShift) {
+        belief += this.model.currentBeliefShift;
+      }
+
       belief = clamp(belief);
 
       return random() < belief ? 'yes' : 'no';
