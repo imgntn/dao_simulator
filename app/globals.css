@@ -341,6 +341,9 @@ html.theme-dark body {
   max-width: min(92vw, 960px);
   max-height: 90vh;
   overflow: visible;
+  margin: auto;
+  inset: 0;
+  position: fixed;
 }
 
 .chart-lightbox-dialog::backdrop {
