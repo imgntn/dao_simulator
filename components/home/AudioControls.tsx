@@ -184,13 +184,13 @@ export function AudioControls({ audioRef }: AudioControlsProps) {
         <button
           type="button"
           onClick={() => skip(-15)}
-          className="relative flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:bg-[var(--surface-warm-deep)] hover:text-[var(--text-heading)]"
+          className="flex items-center gap-0.5 rounded-full px-1.5 py-1 text-[var(--text-muted)] transition hover:bg-[var(--surface-warm-deep)] hover:text-[var(--text-heading)]"
           aria-label="Skip back 15 seconds"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 5V1L7 6l5 5V7a6 6 0 016 6 6 6 0 01-6 6 6 6 0 01-5.65-4" />
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M11 7L2 12l9 5V7z" />
           </svg>
-          <span className="absolute inset-0 flex items-center justify-center pt-1 text-[8px] font-bold leading-none" style={{ pointerEvents: 'none' }}>15</span>
+          <span className="text-[10px] font-semibold leading-none">15</span>
         </button>
 
         {/* Play/Pause */}
@@ -216,13 +216,13 @@ export function AudioControls({ audioRef }: AudioControlsProps) {
         <button
           type="button"
           onClick={() => skip(15)}
-          className="relative flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:bg-[var(--surface-warm-deep)] hover:text-[var(--text-heading)]"
+          className="flex items-center gap-0.5 rounded-full px-1.5 py-1 text-[var(--text-muted)] transition hover:bg-[var(--surface-warm-deep)] hover:text-[var(--text-heading)]"
           aria-label="Skip forward 15 seconds"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 5V1l5 5-5 5V7a6 6 0 00-6 6 6 6 0 006 6 6 6 0 005.65-4" />
+          <span className="text-[10px] font-semibold leading-none">15</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13 7l9 5-9 5V7z" />
           </svg>
-          <span className="absolute inset-0 flex items-center justify-center pt-1 text-[8px] font-bold leading-none" style={{ pointerEvents: 'none' }}>15</span>
         </button>
 
         {/* Time display */}
@@ -262,7 +262,7 @@ export function AudioControls({ audioRef }: AudioControlsProps) {
         </div>
 
         {/* Volume */}
-        <div className="hidden items-center gap-1 sm:flex">
+        <div className="hidden items-center gap-1 pr-1 sm:flex">
           <button
             type="button"
             onClick={toggleMute}
