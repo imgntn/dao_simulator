@@ -169,6 +169,13 @@ export interface DAOSimulationConfig extends Partial<SimulationSettings> {
 }
 
 export class DAOSimulation extends Model {
+  /** Browser override for market time series data (avoids fs dependency) */
+  private static marketDataOverride: Record<string, Array<{ step: number; price: number }>> | null = null;
+
+  static setMarketData(data: Record<string, Array<{ step: number; price: number }>> | null): void {
+    DAOSimulation.marketDataOverride = data;
+  }
+
   dao: DAO;
   eventBus: EventBus;
   exportCsv: boolean;
@@ -1056,6 +1063,11 @@ export class DAOSimulation extends Model {
    */
   private loadMarketTimeSeries(daoId?: string): Array<{ step: number; price: number }> {
     if (!daoId) return [];
+
+    // Browser override: use in-memory data if provided
+    if (DAOSimulation.marketDataOverride && daoId && DAOSimulation.marketDataOverride[daoId]) {
+      return DAOSimulation.marketDataOverride[daoId];
+    }
 
     try {
       const fs = require('fs');

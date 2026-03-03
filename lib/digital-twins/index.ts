@@ -96,6 +96,7 @@ export type { LoadResult } from './loader';
 
 // Calibration
 export { CalibrationLoader } from './calibration-loader';
+export type { CalibrationDataProvider } from './calibration-data-provider';
 
 // Governance Mapping
 export { getGovernanceMapping, getMappedDaoIds, GOVERNANCE_MAPPING } from './governance-mapping';
