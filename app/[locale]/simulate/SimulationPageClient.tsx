@@ -37,11 +37,11 @@ export default function SimulationPageClient() {
 
   if (status === 'idle' || status === 'initializing') {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-950 text-gray-300">
+      <div className="flex items-center justify-center h-screen bg-[var(--sim-bg)] text-[var(--sim-text-secondary)]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--sim-accent)] mx-auto mb-4" />
           <p className="text-lg font-mono">Initializing simulation engine...</p>
-          <p className="text-sm text-gray-500 mt-2">Loading calibration data for 14 DAOs</p>
+          <p className="text-sm text-[var(--sim-text-muted)] mt-2">Loading calibration data for 14 DAOs</p>
         </div>
       </div>
     );
@@ -49,13 +49,13 @@ export default function SimulationPageClient() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-950 text-red-400">
+      <div className="flex items-center justify-center h-screen bg-[var(--sim-bg)] text-red-400">
         <div className="text-center max-w-lg">
           <p className="text-lg font-mono mb-2">Simulation Error</p>
-          <p className="text-sm text-gray-400">{error}</p>
+          <p className="text-sm text-[var(--sim-text-muted)]">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 bg-gray-800 rounded hover:bg-gray-700 text-gray-300"
+            className="mt-4 px-4 py-2 bg-[var(--sim-border)] rounded hover:bg-[var(--sim-surface-hover)] text-[var(--sim-text-secondary)]"
           >
             Reload
           </button>
@@ -65,7 +65,7 @@ export default function SimulationPageClient() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-950 text-gray-200 overflow-hidden">
+    <div className="flex flex-col h-screen bg-[var(--sim-bg)] text-[var(--sim-text)] overflow-hidden">
       <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Interactive tab — hidden via CSS to keep 3D + worker alive */}
@@ -80,7 +80,7 @@ export default function SimulationPageClient() {
         </div>
 
         {/* Right: Controls + Dashboard */}
-        <div className="w-[420px] flex flex-col border-l border-gray-800 overflow-y-auto">
+        <div className="w-[420px] flex flex-col border-l border-[var(--sim-border)] overflow-y-auto">
           <ControlPanel />
           <MetricsDashboard />
         </div>

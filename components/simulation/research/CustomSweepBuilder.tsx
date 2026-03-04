@@ -96,11 +96,11 @@ export function CustomSweepBuilder() {
       <div className="grid grid-cols-2 gap-4">
         {/* DAO Preset */}
         <div>
-          <label className="block text-xs text-gray-400 mb-1">DAO Preset</label>
+          <label className="block text-xs text-[var(--sim-text-muted)] mb-1">DAO Preset</label>
           <select
             value={dao}
             onChange={e => setDao(e.target.value)}
-            className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm text-gray-200 focus:border-cyan-500 focus:outline-none"
+            className="w-full bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-3 py-1.5 text-sm text-[var(--sim-text)] focus:border-[var(--sim-accent-ring)] focus:outline-none"
           >
             {DAO_OPTIONS.map(id => (
               <option key={id} value={id}>{id}</option>
@@ -110,11 +110,11 @@ export function CustomSweepBuilder() {
 
         {/* Governance Rule */}
         <div>
-          <label className="block text-xs text-gray-400 mb-1">Governance Rule</label>
+          <label className="block text-xs text-[var(--sim-text-muted)] mb-1">Governance Rule</label>
           <select
             value={governance}
             onChange={e => setGovernance(e.target.value)}
-            className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm text-gray-200 focus:border-cyan-500 focus:outline-none"
+            className="w-full bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-3 py-1.5 text-sm text-[var(--sim-text)] focus:border-[var(--sim-accent-ring)] focus:outline-none"
           >
             {GOVERNANCE_OPTIONS.map(opt => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -125,11 +125,11 @@ export function CustomSweepBuilder() {
 
       {/* Sweep Parameter */}
       <div>
-        <label className="block text-xs text-gray-400 mb-1">Sweep Parameter</label>
+        <label className="block text-xs text-[var(--sim-text-muted)] mb-1">Sweep Parameter</label>
         <select
           value={sweepParam}
           onChange={e => setSweepParam(e.target.value)}
-          className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm text-gray-200 focus:border-cyan-500 focus:outline-none"
+          className="w-full bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-3 py-1.5 text-sm text-[var(--sim-text)] focus:border-[var(--sim-accent-ring)] focus:outline-none"
         >
           {SWEEP_PARAMS.map(p => (
             <option key={p.value} value={p.value}>{p.label}</option>
@@ -139,33 +139,33 @@ export function CustomSweepBuilder() {
 
       {/* Sweep Values */}
       <div>
-        <label className="block text-xs text-gray-400 mb-1">
-          Sweep Values <span className="text-gray-600">(comma-separated)</span>
+        <label className="block text-xs text-[var(--sim-text-muted)] mb-1">
+          Sweep Values <span className="text-[var(--sim-text-dim)]">(comma-separated)</span>
         </label>
         <input
           type="text"
           value={sweepValues}
           onChange={e => setSweepValues(e.target.value)}
           placeholder="e.g. majority, supermajority, quadratic"
-          className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm text-gray-200 font-mono focus:border-cyan-500 focus:outline-none"
+          className="w-full bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-3 py-1.5 text-sm text-[var(--sim-text)] font-mono focus:border-[var(--sim-accent-ring)] focus:outline-none"
         />
       </div>
 
       {/* Execution params */}
       <div className="grid grid-cols-3 gap-4">
         <div>
-          <label className="block text-xs text-gray-400 mb-1">Runs per Config</label>
+          <label className="block text-xs text-[var(--sim-text-muted)] mb-1">Runs per Config</label>
           <input
             type="number"
             min={1}
             max={200}
             value={runsPerConfig}
             onChange={e => setRunsPerConfig(parseInt(e.target.value) || 30)}
-            className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm text-gray-200 font-mono focus:border-cyan-500 focus:outline-none"
+            className="w-full bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-3 py-1.5 text-sm text-[var(--sim-text)] font-mono focus:border-[var(--sim-accent-ring)] focus:outline-none"
           />
         </div>
         <div>
-          <label className="block text-xs text-gray-400 mb-1">Steps per Run</label>
+          <label className="block text-xs text-[var(--sim-text-muted)] mb-1">Steps per Run</label>
           <input
             type="number"
             min={100}
@@ -173,18 +173,18 @@ export function CustomSweepBuilder() {
             step={100}
             value={stepsPerRun}
             onChange={e => setStepsPerRun(parseInt(e.target.value) || 720)}
-            className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm text-gray-200 font-mono focus:border-cyan-500 focus:outline-none"
+            className="w-full bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-3 py-1.5 text-sm text-[var(--sim-text)] font-mono focus:border-[var(--sim-accent-ring)] focus:outline-none"
           />
         </div>
         <div>
-          <label className="block text-xs text-gray-400 mb-1">Workers</label>
+          <label className="block text-xs text-[var(--sim-text-muted)] mb-1">Workers</label>
           <input
             type="number"
             min={1}
             max={8}
             value={workers}
             onChange={e => setWorkers(parseInt(e.target.value) || 2)}
-            className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm text-gray-200 font-mono focus:border-cyan-500 focus:outline-none"
+            className="w-full bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-3 py-1.5 text-sm text-[var(--sim-text)] font-mono focus:border-[var(--sim-accent-ring)] focus:outline-none"
           />
         </div>
       </div>
@@ -193,7 +193,7 @@ export function CustomSweepBuilder() {
       <button
         type="submit"
         disabled={submitting || !sweepValues.trim()}
-        className="px-6 py-2 text-sm font-medium rounded bg-cyan-600 hover:bg-cyan-500 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="px-6 py-2 text-sm font-medium rounded bg-[var(--sim-accent-bold)] hover:bg-[var(--sim-accent-hover)] text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         {submitting ? 'Launching...' : 'Launch Sweep'}
       </button>

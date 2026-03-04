@@ -14,20 +14,20 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
   ];
 
   return (
-    <div className="flex border-b border-gray-800 bg-gray-950 px-4">
+    <div className="flex border-b border-[var(--sim-border)] bg-[var(--sim-bg)] px-4">
       {tabs.map(tab => (
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
           className={`px-4 py-2.5 text-sm font-medium transition-colors relative ${
             activeTab === tab.id
-              ? 'text-cyan-400'
-              : 'text-gray-500 hover:text-gray-300'
+              ? 'text-[var(--sim-accent)]'
+              : 'text-[var(--sim-text-muted)] hover:text-[var(--sim-text-secondary)]'
           }`}
         >
           {tab.label}
           {activeTab === tab.id && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-cyan-400" />
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--sim-accent)]" />
           )}
         </button>
       ))}

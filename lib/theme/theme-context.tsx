@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -22,12 +22,39 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme(current);
   }, []);
 
-  function toggleTheme() {
-    const next: Theme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-    document.documentElement.classList.toggle('theme-dark', next === 'dark');
-    localStorage.setItem('theme', next);
-  }
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const next: Theme = prev === 'dark' ? 'light' : 'dark';
+
+      // Gate transitions behind a class so page-load has no flash
+      document.documentElement.classList.add('theme-transitioning');
+      document.documentElement.classList.toggle('theme-dark', next === 'dark');
+      localStorage.setItem('theme', next);
+
+      setTimeout(() => {
+        document.documentElement.classList.remove('theme-transitioning');
+      }, 350);
+
+      return next;
+    });
+  }, []);
+
+  // Keyboard shortcut: Ctrl/Cmd + Shift + D
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'D' && e.shiftKey && (e.ctrlKey || e.metaKey)) {
+        // Skip when focus is in a form field
+        const tag = (e.target as HTMLElement)?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if ((e.target as HTMLElement)?.isContentEditable) return;
+
+        e.preventDefault();
+        toggleTheme();
+      }
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [toggleTheme]);
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>

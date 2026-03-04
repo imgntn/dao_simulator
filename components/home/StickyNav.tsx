@@ -81,7 +81,7 @@ export function StickyNav({ sections }: StickyNavProps) {
       className="fixed left-0 right-0 top-0 z-40 border-b border-[var(--border-default)] bg-[var(--surface-page)]/90 backdrop-blur-md"
     >
       {/* Desktop layout (sm and above) — unchanged */}
-      <div className="mx-auto hidden max-w-6xl gap-1 overflow-x-auto px-4 py-2 sm:flex sm:justify-center sm:gap-2">
+      <div className="mx-auto hidden max-w-7xl gap-1 overflow-x-auto px-4 py-2 sm:flex sm:justify-center sm:gap-2">
         <a
           href="#"
           onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}

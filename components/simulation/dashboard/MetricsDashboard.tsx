@@ -13,7 +13,7 @@ export function MetricsDashboard() {
 
   if (!snapshot) {
     return (
-      <div className="p-4 text-center text-gray-500 text-sm">
+      <div className="p-4 text-center text-[var(--sim-text-muted)] text-sm">
         Press Play to start the simulation
       </div>
     );
@@ -44,9 +44,9 @@ export function MetricsDashboard() {
 
 function MetricCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-gray-900 rounded px-3 py-2 border border-gray-800">
-      <div className="text-[10px] text-gray-500 uppercase tracking-wider">{label}</div>
-      <div className="text-sm font-mono text-gray-200 mt-0.5">{value}</div>
+    <div className="bg-[var(--sim-surface)] rounded px-3 py-2 border border-[var(--sim-border)]">
+      <div className="text-[10px] text-[var(--sim-text-muted)] uppercase tracking-wider">{label}</div>
+      <div className="text-sm font-mono text-[var(--sim-text)] mt-0.5">{value}</div>
     </div>
   );
 }

@@ -41,12 +41,23 @@ export function SiteHeader() {
       aria-label={m.home?.nav ?? 'Main navigation'}
       className="sticky top-0 z-40 border-b border-[var(--border-default)] bg-[var(--surface-panel)] backdrop-blur-sm"
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link href={`/${locale}`} className="text-lg font-semibold tracking-wide text-[var(--text-heading)]">
           DAO Simulator
         </Link>
 
         <div className="flex items-center gap-2">
+          {/* Simulate link */}
+          <Link
+            href={`/${locale}/simulate`}
+            className="flex items-center gap-1.5 rounded-lg border border-[var(--border-default)] bg-[var(--surface-warm)] px-3 py-1.5 text-sm font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
+          >
+            <svg className="h-4 w-4 opacity-60" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+            </svg>
+            Simulate
+          </Link>
+
           {/* Theme toggle */}
           <button
             type="button"

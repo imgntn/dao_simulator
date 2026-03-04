@@ -15,8 +15,8 @@ export function SimulationCanvas() {
 
   if (!snapshot && status !== 'running') {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-950">
-        <p className="text-gray-600 text-sm font-mono">Press Play to begin</p>
+      <div className="w-full h-full flex items-center justify-center bg-[var(--sim-bg)]">
+        <p className="text-[var(--sim-text-dim)] text-sm font-mono">Press Play to begin</p>
       </div>
     );
   }
@@ -25,7 +25,7 @@ export function SimulationCanvas() {
     <Canvas
       camera={{ position: [0, 12, 20], fov: 50, near: 0.1, far: 500 }}
       dpr={[1, 2]}
-      className="bg-gray-950"
+      className="bg-[var(--sim-bg)]"
     >
       <Suspense fallback={null}>
         <Environment />

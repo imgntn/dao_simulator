@@ -11,11 +11,22 @@ interface CollapsibleBriefProps {
 
 export function CollapsibleBrief({ id, label, title, children }: CollapsibleBriefProps) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
+  const restoredFromStorage = useRef(false);
 
   useEffect(() => {
-    // Auto-open if URL hash matches this brief
+    const el = detailsRef.current;
+    if (!el) return;
+
+    // Hash match always wins
     if (window.location.hash === `#${id}`) {
-      if (detailsRef.current) detailsRef.current.open = true;
+      el.open = true;
+    } else {
+      // Restore from localStorage
+      const stored = localStorage.getItem(`brief-open-${id}`);
+      if (stored !== null) {
+        el.open = stored === 'true';
+        restoredFromStorage.current = true;
+      }
     }
 
     // Listen for hash changes (e.g. clicking a cross-link or gallery chart)
@@ -25,15 +36,26 @@ export function CollapsibleBrief({ id, label, title, children }: CollapsibleBrie
       }
     };
     window.addEventListener('hashchange', onHash);
-    return () => window.removeEventListener('hashchange', onHash);
+
+    // Persist toggle state
+    const onToggle = () => {
+      if (detailsRef.current) {
+        localStorage.setItem(`brief-open-${id}`, String(detailsRef.current.open));
+      }
+    };
+    el.addEventListener('toggle', onToggle);
+
+    return () => {
+      window.removeEventListener('hashchange', onHash);
+      el.removeEventListener('toggle', onToggle);
+    };
   }, [id]);
 
-  // On lg+ screens, use a media query to default open via CSS
-  // We start closed and let CSS/JS handle opening
+  // On lg+ screens, auto-open unless user explicitly closed (saved in storage)
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 1024px)');
     const apply = () => {
-      if (detailsRef.current && mq.matches) {
+      if (detailsRef.current && mq.matches && !restoredFromStorage.current) {
         detailsRef.current.open = true;
       }
     };

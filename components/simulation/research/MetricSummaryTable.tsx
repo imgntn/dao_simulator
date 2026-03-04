@@ -26,10 +26,10 @@ export function MetricSummaryTable({ rows }: Props) {
   };
 
   return (
-    <div className="bg-gray-900 rounded border border-gray-800 overflow-auto">
+    <div className="bg-[var(--sim-surface)] rounded border border-[var(--sim-border)] overflow-auto">
       <table className="min-w-full text-xs">
         <thead>
-          <tr className="text-[10px] uppercase text-gray-500 border-b border-gray-800">
+          <tr className="text-[10px] uppercase text-[var(--sim-text-muted)] border-b border-[var(--sim-border)]">
             <th className="text-left py-2 px-3">Sweep Value</th>
             <th className="text-right py-2 px-3">Mean</th>
             <th className="text-right py-2 px-3">Median</th>
@@ -42,17 +42,17 @@ export function MetricSummaryTable({ rows }: Props) {
         </thead>
         <tbody>
           {rows.map(row => (
-            <tr key={row.label} className="border-b border-gray-800/50 text-gray-300">
-              <td className="py-2 px-3 text-gray-200 font-medium">{row.label}</td>
+            <tr key={row.label} className="border-b border-[var(--sim-border)]/50 text-[var(--sim-text-secondary)]">
+              <td className="py-2 px-3 text-[var(--sim-text)] font-medium">{row.label}</td>
               <td className="py-2 px-3 text-right font-mono">{fmt(row.mean)}</td>
               <td className="py-2 px-3 text-right font-mono">{fmt(row.median)}</td>
               <td className="py-2 px-3 text-right font-mono">{fmt(row.std)}</td>
-              <td className="py-2 px-3 text-right font-mono text-gray-500">
+              <td className="py-2 px-3 text-right font-mono text-[var(--sim-text-muted)]">
                 [{fmt(row.ci95Lower)}, {fmt(row.ci95Upper)}]
               </td>
               <td className="py-2 px-3 text-right font-mono">{fmt(row.min)}</td>
               <td className="py-2 px-3 text-right font-mono">{fmt(row.max)}</td>
-              <td className="py-2 px-3 text-right font-mono text-gray-500">
+              <td className="py-2 px-3 text-right font-mono text-[var(--sim-text-muted)]">
                 {(row.cv * 100).toFixed(1)}%
               </td>
             </tr>

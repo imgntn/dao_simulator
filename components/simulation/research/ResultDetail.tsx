@@ -88,8 +88,8 @@ export function ResultDetail() {
 
   if (loading.detail) {
     return (
-      <div className="flex items-center justify-center py-12 text-gray-500">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-400 mr-3" />
+      <div className="flex items-center justify-center py-12 text-[var(--sim-text-muted)]">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--sim-accent)] mr-3" />
         Loading result details...
       </div>
     );
@@ -97,9 +97,9 @@ export function ResultDetail() {
 
   if (!selectedResult) {
     return (
-      <div className="text-center py-12 text-gray-600">
+      <div className="text-center py-12 text-[var(--sim-text-dim)]">
         No result selected.
-        <button onClick={() => setView('results')} className="ml-2 text-cyan-400 hover:text-cyan-300">
+        <button onClick={() => setView('results')} className="ml-2 text-[var(--sim-accent)] hover:text-[var(--sim-accent)]">
           Browse results
         </button>
       </div>
@@ -109,10 +109,10 @@ export function ResultDetail() {
   const stateBadge = (state?: string) => {
     const colors: Record<string, string> = {
       completed: 'bg-green-900/40 text-green-400',
-      running: 'bg-cyan-900/40 text-cyan-400',
+      running: 'bg-[var(--sim-accent-bg)] text-[var(--sim-accent)]',
       failed: 'bg-red-900/40 text-red-400',
     };
-    return colors[state ?? ''] ?? 'bg-gray-800 text-gray-400';
+    return colors[state ?? ''] ?? 'bg-[var(--sim-border)] text-[var(--sim-text-muted)]';
   };
 
   const durationStr = summary?.totalDurationMs
@@ -125,32 +125,32 @@ export function ResultDetail() {
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => setView('results')}
-          className="text-gray-500 hover:text-gray-300 text-sm"
+          className="text-[var(--sim-text-muted)] hover:text-[var(--sim-text-secondary)] text-sm"
         >
           &larr; Back
         </button>
-        <h3 className="text-sm font-semibold text-gray-200">
+        <h3 className="text-sm font-semibold text-[var(--sim-text)]">
           {summary?.experimentName ?? selectedResultPath ?? 'Result Detail'}
         </h3>
         <span className={`px-2 py-0.5 text-[10px] rounded ${stateBadge(status?.state)}`}>
           {status?.state ?? 'unknown'}
         </span>
         {summary?.totalRuns && (
-          <span className="text-xs text-gray-500">{summary.totalRuns} runs</span>
+          <span className="text-xs text-[var(--sim-text-muted)]">{summary.totalRuns} runs</span>
         )}
         {durationStr && (
-          <span className="text-xs text-gray-500">{durationStr}</span>
+          <span className="text-xs text-[var(--sim-text-muted)]">{durationStr}</span>
         )}
       </div>
 
       {/* Metric selector */}
       {metricNames.length > 0 && (
         <div className="mb-4">
-          <label className="block text-xs text-gray-400 mb-1">Metric</label>
+          <label className="block text-xs text-[var(--sim-text-muted)] mb-1">Metric</label>
           <select
             value={activeMetric}
             onChange={e => setSelectedMetric(e.target.value)}
-            className="bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm text-gray-200 focus:border-cyan-500 focus:outline-none"
+            className="bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-3 py-1.5 text-sm text-[var(--sim-text)] focus:border-[var(--sim-accent-ring)] focus:outline-none"
           >
             {metricNames.map(name => (
               <option key={name} value={name}>{name}</option>

@@ -13,17 +13,17 @@ export function ResultsBrowser() {
   const stateBadge = (state: string) => {
     const colors: Record<string, string> = {
       completed: 'bg-green-900/40 text-green-400',
-      running: 'bg-cyan-900/40 text-cyan-400',
+      running: 'bg-[var(--sim-accent-bg)] text-[var(--sim-accent)]',
       failed: 'bg-red-900/40 text-red-400',
-      unknown: 'bg-gray-800 text-gray-400',
+      unknown: 'bg-[var(--sim-border)] text-[var(--sim-text-muted)]',
     };
-    return colors[state] ?? 'bg-gray-800 text-gray-400';
+    return colors[state] ?? 'bg-[var(--sim-border)] text-[var(--sim-text-muted)]';
   };
 
   if (loading.results) {
     return (
-      <div className="flex items-center justify-center py-12 text-gray-500">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-400 mr-3" />
+      <div className="flex items-center justify-center py-12 text-[var(--sim-text-muted)]">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--sim-accent)] mr-3" />
         Loading results...
       </div>
     );
@@ -31,17 +31,17 @@ export function ResultsBrowser() {
 
   if (results.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-600">
+      <div className="text-center py-12 text-[var(--sim-text-dim)]">
         No results found. Run an experiment to get started.
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-900 rounded border border-gray-800 overflow-auto">
+    <div className="bg-[var(--sim-surface)] rounded border border-[var(--sim-border)] overflow-auto">
       <table className="min-w-full text-xs">
         <thead>
-          <tr className="text-[10px] uppercase text-gray-500 border-b border-gray-800">
+          <tr className="text-[10px] uppercase text-[var(--sim-text-muted)] border-b border-[var(--sim-border)]">
             <th className="text-left py-2 px-3">Name</th>
             <th className="text-left py-2 px-3">State</th>
             <th className="text-left py-2 px-3">Progress</th>
@@ -54,24 +54,24 @@ export function ResultsBrowser() {
             <tr
               key={result.id}
               onClick={() => result.hasSummary && fetchResultDetail(result.path)}
-              className={`border-b border-gray-800/50 ${
+              className={`border-b border-[var(--sim-border)]/50 ${
                 result.hasSummary
-                  ? 'cursor-pointer hover:bg-gray-800/50'
+                  ? 'cursor-pointer hover:bg-[var(--sim-border)]/50'
                   : 'opacity-60'
               }`}
             >
-              <td className="py-2 px-3 text-gray-200">{result.path}</td>
+              <td className="py-2 px-3 text-[var(--sim-text)]">{result.path}</td>
               <td className="py-2 px-3">
                 <span className={`px-2 py-0.5 text-[10px] rounded ${stateBadge(result.state)}`}>
                   {result.state}
                 </span>
               </td>
-              <td className="py-2 px-3 text-gray-400">
+              <td className="py-2 px-3 text-[var(--sim-text-muted)]">
                 {result.progress !== null ? (
                   <div className="flex items-center gap-2">
-                    <div className="w-16 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                    <div className="w-16 h-1.5 bg-[var(--sim-border)] rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-cyan-500 rounded-full"
+                        className="h-full bg-[var(--sim-accent-hover)] rounded-full"
                         style={{ width: `${Math.min(result.progress, 100)}%` }}
                       />
                     </div>
@@ -79,12 +79,12 @@ export function ResultsBrowser() {
                   </div>
                 ) : '-'}
               </td>
-              <td className="py-2 px-3 text-gray-400">
+              <td className="py-2 px-3 text-[var(--sim-text-muted)]">
                 {result.completedRuns !== null
                   ? `${result.completedRuns}/${result.totalRuns ?? '?'}`
                   : '-'}
               </td>
-              <td className="py-2 px-3 text-gray-500">
+              <td className="py-2 px-3 text-[var(--sim-text-muted)]">
                 {result.lastUpdate ?? '-'}
               </td>
             </tr>

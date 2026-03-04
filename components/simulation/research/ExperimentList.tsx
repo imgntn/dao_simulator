@@ -19,8 +19,8 @@ export function ExperimentList() {
 
   if (loading.experiments) {
     return (
-      <div className="flex items-center justify-center py-12 text-gray-500">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-400 mr-3" />
+      <div className="flex items-center justify-center py-12 text-[var(--sim-text-muted)]">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--sim-accent)] mr-3" />
         Loading experiments...
       </div>
     );
@@ -34,7 +34,7 @@ export function ExperimentList() {
           <button
             onClick={() => setTagFilter(null)}
             className={`px-2 py-1 text-xs rounded transition-colors ${
-              !tagFilter ? 'bg-cyan-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+              !tagFilter ? 'bg-[var(--sim-accent-bold)] text-white' : 'bg-[var(--sim-border)] text-[var(--sim-text-muted)] hover:bg-[var(--sim-surface-hover)]'
             }`}
           >
             All
@@ -44,7 +44,7 @@ export function ExperimentList() {
               key={tag}
               onClick={() => setTagFilter(tagFilter === tag ? null : tag)}
               className={`px-2 py-1 text-xs rounded transition-colors ${
-                tagFilter === tag ? 'bg-cyan-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                tagFilter === tag ? 'bg-[var(--sim-accent-bold)] text-white' : 'bg-[var(--sim-border)] text-[var(--sim-text-muted)] hover:bg-[var(--sim-surface-hover)]'
               }`}
             >
               {tag}
@@ -61,7 +61,7 @@ export function ExperimentList() {
       </div>
 
       {filtered.length === 0 && (
-        <p className="text-center text-gray-600 py-8">
+        <p className="text-center text-[var(--sim-text-dim)] py-8">
           {experiments.length === 0 ? 'No experiment configs found.' : 'No experiments match this filter.'}
         </p>
       )}

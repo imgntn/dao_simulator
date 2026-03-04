@@ -40,6 +40,23 @@
   --foreground: #1f2a36;
   --ink-soft: #4e5c6b;
   --panel: var(--surface-panel);
+
+  /* ── Simulate page tokens ── */
+  --sim-bg: #030712;
+  --sim-surface: #111827;
+  --sim-surface-hover: #1f2937;
+  --sim-border: #1f2937;
+  --sim-border-strong: #374151;
+  --sim-border-focus: #06b6d4;
+  --sim-text: #e5e7eb;
+  --sim-text-secondary: #d1d5db;
+  --sim-text-muted: #6b7280;
+  --sim-text-dim: #4b5563;
+  --sim-accent: #22d3ee;
+  --sim-accent-bold: #0891b2;
+  --sim-accent-hover: #06b6d4;
+  --sim-accent-bg: rgba(8, 145, 178, 0.15);
+  --sim-accent-ring: #06b6d4;
 }
 
 /* Dark theme variant */
@@ -166,6 +183,18 @@ html.theme-dark body {
 .theme-dark svg line[stroke="#d8cab4"] { stroke: var(--border-default); }
 .theme-dark svg [fill="#d8cab4"] { fill: var(--border-default); }
 .theme-dark svg [fill="#fff"] { fill: var(--surface-warm); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Smooth dark-mode transition (gated by JS-added class to prevent page-load flash)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.theme-transitioning,
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease,
+    box-shadow 300ms ease !important;
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Focus styles — global :focus-visible ring
@@ -436,5 +465,74 @@ html.theme-dark body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Print stylesheet
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media print {
+  /* Hide interactive / navigation elements */
+  nav,
+  button,
+  .back-to-top,
+  [role="progressbar"] {
+    display: none !important;
+  }
+
+  /* Reset to clean black-on-white */
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 12pt !important;
+  }
+
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Full-width content */
+  .mx-auto {
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Force text colors for readability */
+  h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+  }
+
+  p, li, span, td, th {
+    color: #222 !important;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+
+  /* Page break management */
+  section {
+    page-break-before: auto;
+  }
+
+  article, details {
+    break-inside: avoid;
+  }
+
+  h2, h3 {
+    break-after: avoid;
+  }
+
+  /* Show all details for print (JS handler opens them, this is a fallback) */
+  details {
+    display: block !important;
+  }
+
+  details > summary {
+    display: none !important;
   }
 }

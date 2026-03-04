@@ -21,8 +21,8 @@ import type { Locale } from '@/lib/i18n';
 import { PageShell } from '@/components/layout/PageShell';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { InfoCard } from '@/components/ui/InfoCard';
-import { TableOfContents } from '@/components/home/TableOfContents';
 import { BriefDetail } from '@/components/home/BriefDetail';
+import { ResearchSection } from '@/components/home/ResearchSection';
 import { PaperCard } from '@/components/home/PaperCard';
 import { generateResearchProjectJsonLd } from '@/lib/home/structured-data';
 import { StickyNav } from '@/components/home/StickyNav';
@@ -111,6 +111,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         { id: 'podcast', label: 'Podcast' },
         { id: 'why', label: 'Why It Matters' },
         { id: 'digital-twins', label: 'Digital Twins' },
+        { id: 'simulator', label: 'Simulator' },
         { id: 'charts', label: 'Results' },
         { id: 'research', label: 'Research' },
         { id: 'papers', label: 'Papers' },
@@ -196,6 +197,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </a>
           <a href="#digital-twins" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             Digital Twins
+          </a>
+          <a href="#simulator" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+            Simulator
           </a>
           <a href="#charts" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             Results
@@ -412,6 +416,60 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
+      {/* ── Interactive Simulator ── */}
+      <section id="simulator" aria-labelledby="simulator-heading" className="mt-10 rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-7 sm:p-9">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
+          {/* Icon */}
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[var(--surface-warm-deep)]">
+            <svg className="h-8 w-8 text-[var(--accent-teal)]" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+            </svg>
+          </div>
+
+          <div className="flex-1">
+            <h2 id="simulator-heading" className="font-serif-display text-3xl text-[var(--text-heading)] sm:text-4xl">
+              Interactive Simulator
+            </h2>
+            <p className="mt-3 max-w-3xl text-[1.12rem] leading-relaxed text-[var(--text-body)] sm:text-[1.22rem]">
+              Run your own governance experiments in real time. Pick any of the 14 calibrated DAOs, swap governance rules, toggle forum activity and black swan events, and watch the simulation unfold in an interactive 3D environment.
+            </p>
+
+            <div className="mt-5 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4">
+                <p className="text-sm font-semibold uppercase tracking-wide text-[var(--accent-teal)]">Real-Time 3D</p>
+                <p className="mt-1.5 text-base leading-relaxed text-[var(--text-body-secondary)]">
+                  Agents move, vote, and form delegations in a live 3D scene. Treasury, token price, and participation update every step.
+                </p>
+              </div>
+              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4">
+                <p className="text-sm font-semibold uppercase tracking-wide text-[var(--accent-gold)]">Counterfactual Testing</p>
+                <p className="mt-1.5 text-base leading-relaxed text-[var(--text-body-secondary)]">
+                  Switch between majority, quadratic, conviction, futarchy, and five other governance rules mid-run to see how outcomes change.
+                </p>
+              </div>
+              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4">
+                <p className="text-sm font-semibold uppercase tracking-wide text-[var(--text-heading)]">Research Console</p>
+                <p className="mt-1.5 text-base leading-relaxed text-[var(--text-body-secondary)]">
+                  Build parameter sweeps, launch batch experiments, and browse statistical results with confidence intervals &mdash; all from the browser.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <a
+                href={`/${locale}/simulate`}
+                className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-teal)] px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-[var(--accent-teal-hover)]"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                </svg>
+                Launch Simulator
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Chart Gallery ── */}
       <section id="charts" aria-labelledby="charts-heading" className="mt-12 space-y-6">
         <SectionHeading
@@ -452,9 +510,15 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           title={m.home?.researchHeading ?? 'Research'}
           subtitle={m.home?.researchSubtitle ?? 'Decision briefs across all research questions'}
         />
-        <TableOfContents items={tocItems} />
-
-        <div className="grid gap-5">
+        <ResearchSection
+          tocItems={tocItems}
+          briefs={sections.map((s) => ({
+            id: s.id,
+            title: s.title,
+            question: s.question,
+            summary: s.curated.summary ?? s.whyItMatters,
+          }))}
+        >
           {sections.map((section, index) => (
             <CollapsibleBrief
               key={section.id}
@@ -475,7 +539,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               />
             </CollapsibleBrief>
           ))}
-        </div>
+        </ResearchSection>
       </section>
 
       {/* ── Papers ── */}

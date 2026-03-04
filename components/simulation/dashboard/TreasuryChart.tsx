@@ -36,8 +36,8 @@ export function TreasuryChart({ history }: Props) {
 
 function ChartWrapper({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-gray-900 rounded border border-gray-800 p-3">
-      <h3 className="text-[10px] text-gray-500 uppercase tracking-wider mb-2">{title}</h3>
+    <div className="bg-[var(--sim-surface)] rounded border border-[var(--sim-border)] p-3">
+      <h3 className="text-[10px] text-[var(--sim-text-muted)] uppercase tracking-wider mb-2">{title}</h3>
       {children}
     </div>
   );

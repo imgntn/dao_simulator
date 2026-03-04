@@ -12,28 +12,28 @@ export function ExperimentCard({ experiment, onRun }: Props) {
   const [confirming, setConfirming] = useState(false);
 
   return (
-    <div className="rounded-lg border border-gray-800 bg-gray-900 p-4 flex flex-col">
-      <h3 className="text-sm font-semibold text-gray-200 truncate" title={experiment.name}>
+    <div className="rounded-lg border border-[var(--sim-border)] bg-[var(--sim-surface)] p-4 flex flex-col">
+      <h3 className="text-sm font-semibold text-[var(--sim-text)] truncate" title={experiment.name}>
         {experiment.name}
       </h3>
       {experiment.description && (
-        <p className="mt-1 text-xs text-gray-500 line-clamp-2">{experiment.description}</p>
+        <p className="mt-1 text-xs text-[var(--sim-text-muted)] line-clamp-2">{experiment.description}</p>
       )}
 
       <div className="mt-2 flex flex-wrap gap-1">
         {experiment.tags.map(tag => (
-          <span key={tag} className="px-1.5 py-0.5 text-[10px] bg-gray-800 text-gray-400 rounded">
+          <span key={tag} className="px-1.5 py-0.5 text-[10px] bg-[var(--sim-border)] text-[var(--sim-text-muted)] rounded">
             {tag}
           </span>
         ))}
       </div>
 
-      <div className="mt-2 text-[10px] text-gray-600 space-y-0.5">
+      <div className="mt-2 text-[10px] text-[var(--sim-text-dim)] space-y-0.5">
         {experiment.sweepParameter && (
-          <p>Sweep: <span className="text-gray-400">{experiment.sweepParameter}</span></p>
+          <p>Sweep: <span className="text-[var(--sim-text-muted)]">{experiment.sweepParameter}</span></p>
         )}
         {experiment.sweepType && experiment.sweepType !== 'none' && (
-          <p>Type: <span className="text-gray-400">{experiment.sweepType}</span></p>
+          <p>Type: <span className="text-[var(--sim-text-muted)]">{experiment.sweepType}</span></p>
         )}
         <p>
           {experiment.runsPerConfig ?? '?'} runs
@@ -47,13 +47,13 @@ export function ExperimentCard({ experiment, onRun }: Props) {
           <div className="flex gap-2">
             <button
               onClick={() => { onRun(experiment.path); setConfirming(false); }}
-              className="flex-1 px-3 py-1.5 text-xs font-medium rounded bg-cyan-600 hover:bg-cyan-500 text-white"
+              className="flex-1 px-3 py-1.5 text-xs font-medium rounded bg-[var(--sim-accent-bold)] hover:bg-[var(--sim-accent-hover)] text-white"
             >
               Confirm
             </button>
             <button
               onClick={() => setConfirming(false)}
-              className="px-3 py-1.5 text-xs font-medium rounded bg-gray-800 hover:bg-gray-700 text-gray-300"
+              className="px-3 py-1.5 text-xs font-medium rounded bg-[var(--sim-border)] hover:bg-[var(--sim-surface-hover)] text-[var(--sim-text-secondary)]"
             >
               Cancel
             </button>
@@ -61,7 +61,7 @@ export function ExperimentCard({ experiment, onRun }: Props) {
         ) : (
           <button
             onClick={() => setConfirming(true)}
-            className="w-full px-3 py-1.5 text-xs font-medium rounded bg-gray-800 hover:bg-gray-700 text-gray-300 transition-colors"
+            className="w-full px-3 py-1.5 text-xs font-medium rounded bg-[var(--sim-border)] hover:bg-[var(--sim-surface-hover)] text-[var(--sim-text-secondary)] transition-colors"
           >
             Run
           </button>

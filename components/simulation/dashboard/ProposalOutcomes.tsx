@@ -60,8 +60,8 @@ export function ProposalOutcomes({ snapshot }: Props) {
                 className="w-2.5 h-2.5 rounded-sm"
                 style={{ backgroundColor: COLORS[d.name as keyof typeof COLORS] }}
               />
-              <span className="text-gray-400">{d.name}</span>
-              <span className="font-mono text-gray-200">{d.value}</span>
+              <span className="text-[var(--sim-text-muted)]">{d.name}</span>
+              <span className="font-mono text-[var(--sim-text)]">{d.value}</span>
             </div>
           ))}
         </div>
