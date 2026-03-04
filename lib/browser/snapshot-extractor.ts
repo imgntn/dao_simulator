@@ -63,7 +63,7 @@ export function extractSnapshot(
   const lastEntry = getLastDataEntry(sim);
 
   // Token price
-  const tokenPrice = dao.treasury.tokenPrices.get(dao.tokenSymbol) ?? 1;
+  const tokenPrice = dao.treasury.tokenPrices.get(dao.getPrimaryTokenSymbol()) ?? 1;
   const treasuryFunds = dao.treasury.funds;
 
   return {
