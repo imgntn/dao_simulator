@@ -7,12 +7,15 @@ import { MetricsDashboard } from '@/components/simulation/dashboard/MetricsDashb
 import { EventFeed } from '@/components/simulation/dashboard/EventFeed';
 import { SimulationCanvas } from '@/components/simulation/SimulationCanvas';
 import { TabBar, type SimTab } from '@/components/simulation/TabBar';
+import { AgentGuide } from '@/components/simulation/AgentGuide';
+import { HelpOverlay } from '@/components/simulation/HelpOverlay';
 import { ResearchPanel } from '@/components/simulation/research/ResearchPanel';
 
 export default function SimulationPageClient() {
   const { status, error, initialize, dispose } = useSimulationStore();
   const initialized = useRef(false);
   const [activeTab, setActiveTab] = useState<SimTab>('interactive');
+  const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     if (initialized.current) return;
@@ -66,7 +69,18 @@ export default function SimulationPageClient() {
 
   return (
     <div className="flex flex-col h-screen bg-[var(--sim-bg)] text-[var(--sim-text)] overflow-hidden">
-      <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
+      <div className="flex items-center border-b border-[var(--sim-border)] bg-[var(--sim-bg)]">
+        <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
+        <div className="ml-auto pr-3">
+          <button
+            onClick={() => setShowHelp(true)}
+            className="w-7 h-7 rounded-full border border-[var(--sim-border)] text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] hover:border-[var(--sim-accent)] text-sm font-semibold transition-colors"
+            title="Help & Tutorial"
+          >
+            ?
+          </button>
+        </div>
+      </div>
 
       {/* Interactive tab — hidden via CSS to keep 3D + worker alive */}
       <div
@@ -82,6 +96,7 @@ export default function SimulationPageClient() {
         {/* Right: Controls + Dashboard */}
         <div className="w-[420px] flex flex-col border-l border-[var(--sim-border)] overflow-y-auto">
           <ControlPanel />
+          <AgentGuide />
           <MetricsDashboard />
         </div>
       </div>
@@ -92,6 +107,7 @@ export default function SimulationPageClient() {
           <ResearchPanel />
         </div>
       )}
+      {showHelp && <HelpOverlay onClose={() => setShowHelp(false)} />}
     </div>
   );
 }

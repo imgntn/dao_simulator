@@ -14,7 +14,7 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
   ];
 
   return (
-    <div className="flex border-b border-[var(--sim-border)] bg-[var(--sim-bg)] px-4">
+    <div className="flex px-4">
       {tabs.map(tab => (
         <button
           key={tab.id}

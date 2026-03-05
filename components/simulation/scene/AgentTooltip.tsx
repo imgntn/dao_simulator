@@ -3,7 +3,7 @@
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import type { AgentSnapshot } from '@/lib/browser/worker-protocol';
-import { TYPE_COLOR_MAP } from './constants';
+import { TYPE_COLOR_MAP, getDisplayName } from './constants';
 
 interface Props {
   agent: AgentSnapshot;
@@ -52,7 +52,7 @@ export function AgentTooltip({ agent, position, detailed, onClose }: Props) {
           }}
         >
           <span style={{ color, fontWeight: 700, fontSize: 12 }}>
-            {agent.type}
+            {getDisplayName(agent.type)}
           </span>
           {detailed && onClose && (
             <span
