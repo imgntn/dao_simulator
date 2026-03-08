@@ -40,6 +40,17 @@ export interface SimulationState {
   // Worker
   worker: Worker | null;
 
+  // Config change tracking
+  lastSentConfig: BrowserSimConfig | null;
+
+  // Time-travel
+  viewingStep: number | null;
+  setViewingStep: (step: number | null) => void;
+
+  // Camera navigation
+  targetFloor: string | null;
+  setTargetFloor: (floorId: string | null) => void;
+
   // Actions
   initialize: (
     calibrationProfiles: Record<string, CalibrationProfile>,
@@ -87,6 +98,12 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
   calibrationProfiles: null,
   marketData: null,
   worker: null,
+  lastSentConfig: null,
+  viewingStep: null,
+  targetFloor: null,
+
+  setViewingStep: (step) => set({ viewingStep: step }),
+  setTargetFloor: (floorId) => set({ targetFloor: floorId }),
 
   initialize: (calibrationProfiles, marketData) => {
     const state = get();
@@ -98,6 +115,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
 
     const availableDaos = Object.keys(calibrationProfiles).sort();
 
+    const currentConfig = get().config;
     set({
       status: 'initializing',
       calibrationProfiles,
@@ -106,6 +124,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
       error: null,
       history: [],
       snapshot: null,
+      lastSentConfig: { ...currentConfig },
     });
 
     // Create Web Worker
@@ -193,7 +212,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
     const { worker, config, calibrationProfiles, marketData } = get();
     if (!worker || !calibrationProfiles || !marketData) return;
 
-    set({ status: 'initializing', history: [], snapshot: null, error: null });
+    set({ status: 'initializing', history: [], snapshot: null, error: null, lastSentConfig: { ...config }, viewingStep: null });
     worker.postMessage({ type: 'reset', config });
   },
 
@@ -215,7 +234,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
 
     // Reset simulation with new DAO
     if (state.worker && state.calibrationProfiles && state.marketData) {
-      set({ status: 'initializing', history: [], snapshot: null, error: null });
+      set({ status: 'initializing', history: [], snapshot: null, error: null, lastSentConfig: { ...newConfig }, viewingStep: null });
       state.worker.postMessage({ type: 'reset', config: newConfig });
     }
   },

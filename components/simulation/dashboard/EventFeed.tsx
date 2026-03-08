@@ -1,6 +1,8 @@
 'use client';
 
-import { useSimulationStore } from '@/lib/browser/simulation-store';
+import { useState, useRef, useMemo, useEffect } from 'react';
+import { useActiveSnapshot } from '@/lib/browser/useActiveSnapshot';
+import type { SimulationEvent } from '@/lib/browser/worker-protocol';
 
 const EVENT_COLORS: Record<string, string> = {
   proposal_created: 'text-blue-400',
@@ -28,24 +30,115 @@ const EVENT_ICONS: Record<string, string> = {
   price_change: '~',
 };
 
+type EventCategory = 'governance' | 'market' | 'social' | 'system';
+
+const CATEGORY_MAP: Record<string, EventCategory> = {
+  proposal_created: 'governance',
+  proposal_approved: 'governance',
+  proposal_rejected: 'governance',
+  proposal_expired: 'governance',
+  vote_cast: 'governance',
+  delegation: 'governance',
+  treasury_change: 'market',
+  price_change: 'market',
+  forum_topic: 'social',
+  member_joined: 'social',
+  member_left: 'social',
+  black_swan: 'system',
+};
+
+const CATEGORY_COLORS: Record<EventCategory, string> = {
+  governance: '#8b5cf6',
+  market: '#f59e0b',
+  social: '#3b82f6',
+  system: '#ef4444',
+};
+
 interface Props {
   className?: string;
 }
 
 export function EventFeed({ className = '' }: Props) {
-  const snapshot = useSimulationStore(s => s.snapshot);
+  const snapshot = useActiveSnapshot();
   const events = snapshot?.recentEvents ?? [];
 
-  if (events.length === 0) return null;
+  const [activeCategories, setActiveCategories] = useState<Set<EventCategory>>(
+    new Set(['governance', 'market', 'social', 'system'])
+  );
+  const [paused, setPaused] = useState(false);
+  const frozenEvents = useRef<SimulationEvent[]>([]);
 
-  // Show last 8 events
-  const visible = events.slice(-8);
+  // Freeze events when paused
+  useEffect(() => {
+    if (!paused) {
+      frozenEvents.current = events;
+    }
+  }, [events, paused]);
+
+  const displayEvents = paused ? frozenEvents.current : events;
+
+  const filtered = useMemo(() => {
+    return displayEvents
+      .filter(evt => {
+        const cat = CATEGORY_MAP[evt.type];
+        return cat ? activeCategories.has(cat) : true;
+      })
+      .slice(-12);
+  }, [displayEvents, activeCategories]);
+
+  const toggleCategory = (cat: EventCategory) => {
+    setActiveCategories(prev => {
+      const next = new Set(prev);
+      if (next.has(cat)) {
+        if (next.size > 1) next.delete(cat);
+      } else {
+        next.add(cat);
+      }
+      return next;
+    });
+  };
+
+  if (events.length === 0 && !paused) return null;
 
   return (
     <div className={`bg-[var(--sim-bg)]/80 backdrop-blur-sm border-t border-[var(--sim-border)] p-3 ${className}`}>
-      <div className="space-y-0.5 max-h-[160px] overflow-y-auto">
-        {visible.map((evt, i) => (
-          <div key={`${evt.step}-${i}`} className="flex items-start gap-2 text-xs leading-relaxed">
+      {/* Filter bar */}
+      <div className="flex items-center gap-1.5 mb-2">
+        {(Object.keys(CATEGORY_COLORS) as EventCategory[]).map(cat => (
+          <button
+            key={cat}
+            onClick={() => toggleCategory(cat)}
+            className={`px-2 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all border ${
+              activeCategories.has(cat)
+                ? 'opacity-100'
+                : 'opacity-40'
+            }`}
+            style={{
+              borderColor: CATEGORY_COLORS[cat],
+              color: CATEGORY_COLORS[cat],
+              backgroundColor: activeCategories.has(cat) ? `${CATEGORY_COLORS[cat]}20` : 'transparent',
+            }}
+          >
+            {cat}
+          </button>
+        ))}
+        <div className="flex-1" />
+        <button
+          onClick={() => setPaused(!paused)}
+          className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase transition-colors ${
+            paused
+              ? 'bg-amber-600/30 text-amber-300 border border-amber-600/50'
+              : 'text-[var(--sim-text-muted)] hover:text-[var(--sim-text-secondary)] border border-transparent'
+          }`}
+        >
+          {paused ? 'Frozen' : 'Pause'}
+        </button>
+      </div>
+
+      {/* Events */}
+      <div className="space-y-0.5 max-h-[200px] overflow-y-auto">
+        {filtered.map((evt, i) => (
+          <div key={`${evt.step}-${evt.type}-${i}`} className="flex items-start gap-2 text-xs leading-relaxed">
             <span className="font-mono text-[var(--sim-text-dim)] min-w-[3ch] text-right">{evt.step}</span>
             <span className={`${EVENT_COLORS[evt.type] ?? 'text-[var(--sim-text-muted)]'} min-w-[1ch]`}>
               {EVENT_ICONS[evt.type] ?? '·'}

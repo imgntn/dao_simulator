@@ -37,6 +37,8 @@ export function extractSnapshot(
     oppositionBias: m.oppositionBias,
     lastVote: getLastVote(m),
     voterFatigue: m.voterFatigue,
+    lastVoteStep: m.lastVoteStep,
+    delegateTo: m.representative?.uniqueId ?? null,
   }));
 
   // Proposal snapshots
@@ -48,6 +50,7 @@ export function extractSnapshot(
     type: p.type,
     creationStep: p.creationTime,
     fundingGoal: p.fundingGoal,
+    totalVoters: p.votes.size,
   }));
 
   // Black swan state

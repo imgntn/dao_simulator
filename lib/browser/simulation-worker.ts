@@ -74,6 +74,10 @@ function toSimConfig(config: BrowserSimConfig, profile: CalibrationProfile | nul
   if (config.blackSwanFrequency !== undefined) {
     simConfig.black_swan_frequency = config.blackSwanFrequency;
   }
+  if (config.scheduledBlackSwans?.length) {
+    simConfig.black_swan_scheduled_events = config.scheduledBlackSwans;
+    simConfig.black_swan_enabled = true;
+  }
 
   return simConfig;
 }

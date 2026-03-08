@@ -8,6 +8,11 @@ import { EventFeed } from '@/components/simulation/dashboard/EventFeed';
 import { SimulationCanvas } from '@/components/simulation/SimulationCanvas';
 import { TabBar, type SimTab } from '@/components/simulation/TabBar';
 import { AgentGuide } from '@/components/simulation/AgentGuide';
+import { FloorNav } from '@/components/simulation/FloorNav';
+import { DelegationGraph } from '@/components/simulation/dashboard/DelegationGraph';
+import { TimeScrubber } from '@/components/simulation/TimeScrubber';
+import { ScenarioBuilder } from '@/components/simulation/ScenarioBuilder';
+import { ComparisonView } from '@/components/simulation/ComparisonView';
 import { HelpOverlay } from '@/components/simulation/HelpOverlay';
 import { ResearchPanel } from '@/components/simulation/research/ResearchPanel';
 
@@ -90,16 +95,29 @@ export default function SimulationPageClient() {
         {/* Left: 3D Scene */}
         <div className="flex-1 relative min-w-0">
           <SimulationCanvas />
-          <EventFeed className="absolute bottom-0 left-0 right-0" />
+          <div className="absolute bottom-0 left-0 right-0">
+            <TimeScrubber />
+            <EventFeed />
+          </div>
         </div>
 
         {/* Right: Controls + Dashboard */}
         <div className="w-[420px] flex flex-col border-l border-[var(--sim-border)] overflow-y-auto">
           <ControlPanel />
+          <FloorNav />
           <AgentGuide />
+          <DelegationGraph />
+          <ScenarioBuilder />
           <MetricsDashboard />
         </div>
       </div>
+
+      {/* Compare tab */}
+      {activeTab === 'compare' && (
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          <ComparisonView />
+        </div>
+      )}
 
       {/* Research tab */}
       {activeTab === 'research' && (

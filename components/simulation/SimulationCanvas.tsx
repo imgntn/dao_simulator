@@ -4,7 +4,8 @@ import { Suspense, useState, useCallback, useMemo, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
-import type { AgentSnapshot } from '@/lib/browser/worker-protocol';
+import { useActiveSnapshot } from '@/lib/browser/useActiveSnapshot';
+import type { AgentSnapshot, ProposalSnapshot } from '@/lib/browser/worker-protocol';
 import { Environment } from './scene/Environment';
 import { Building } from './scene/Building';
 import { TreasuryIndicator } from './scene/TreasuryIndicator';
@@ -12,13 +13,14 @@ import { TokenPriceIndicator } from './scene/TokenPriceIndicator';
 import { AgentGroups } from './scene/AgentGroups';
 import { AgentTooltip } from './scene/AgentTooltip';
 import { ProposalBoard } from './scene/ProposalBoard';
+import { ProposalDetail } from './scene/ProposalDetail';
 import { BlackSwanEffect } from './scene/BlackSwanEffect';
 import { FloorLabels } from './scene/FloorLabel';
 import { CameraController } from './scene/CameraController';
 import { AGENT_FLOOR_MAP } from './scene/constants';
 
 export function SimulationCanvas() {
-  const snapshot = useSimulationStore(s => s.snapshot);
+  const snapshot = useActiveSnapshot();
   const status = useSimulationStore(s => s.status);
 
   // Interaction state
@@ -26,6 +28,7 @@ export function SimulationCanvas() {
   const [hoveredPos, setHoveredPos] = useState<THREE.Vector3 | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<AgentSnapshot | null>(null);
   const [selectedPos, setSelectedPos] = useState<THREE.Vector3 | null>(null);
+  const [selectedProposal, setSelectedProposal] = useState<ProposalSnapshot | null>(null);
   const buildingRef = useRef<THREE.Group>(null);
 
   const handleHover = useCallback(
@@ -41,16 +44,15 @@ export function SimulationCanvas() {
   const handleSelect = useCallback(
     (agent: AgentSnapshot | null) => {
       if (agent && selectedAgent?.id === agent.id) {
-        // Deselect on re-click
         setSelectedAgent(null);
         setSelectedPos(null);
       } else if (agent) {
         setSelectedAgent(agent);
-        // Position tooltip above agent
         const floorId = AGENT_FLOOR_MAP[agent.type] ?? 'F1';
-        setSelectedPos(new THREE.Vector3(0, 6, 0)); // fallback
+        setSelectedPos(new THREE.Vector3(0, 6, 0));
         setHoveredAgent(null);
         setHoveredPos(null);
+        setSelectedProposal(null);
       } else {
         setSelectedAgent(null);
         setSelectedPos(null);
@@ -59,9 +61,14 @@ export function SimulationCanvas() {
     [selectedAgent]
   );
 
+  const handleSelectProposal = useCallback((proposal: ProposalSnapshot) => {
+    setSelectedProposal(prev => prev?.id === proposal.id ? null : proposal);
+    setSelectedAgent(null);
+    setSelectedPos(null);
+  }, []);
+
   const handleCanvasClick = useCallback(() => {
     // Clicking on empty space deselects
-    // (Agent clicks call stopPropagation, so this only fires on background)
   }, []);
 
   // Compute active floor IDs and floor counts
@@ -106,12 +113,16 @@ export function SimulationCanvas() {
               <FloorLabels floorCounts={floorCounts} />
               <AgentGroups
                 agents={snapshot.agents}
+                currentStep={snapshot.step}
                 onHover={handleHover}
                 onSelect={handleSelect}
               />
               <TreasuryIndicator treasuryFunds={snapshot.treasuryFunds} />
               <TokenPriceIndicator tokenPrice={snapshot.tokenPrice} />
-              <ProposalBoard proposals={snapshot.proposals} />
+              <ProposalBoard
+                proposals={snapshot.proposals}
+                onSelectProposal={handleSelectProposal}
+              />
             </group>
 
             {/* Black swan effect (outside building group so overlay isn't shaken) */}
@@ -119,6 +130,14 @@ export function SimulationCanvas() {
               blackSwan={snapshot.blackSwan}
               buildingRef={buildingRef}
             />
+
+            {/* Proposal detail overlay */}
+            {selectedProposal && (
+              <ProposalDetail
+                proposal={selectedProposal}
+                onClose={() => setSelectedProposal(null)}
+              />
+            )}
 
             {/* Hover tooltip */}
             {hoveredAgent && hoveredPos && !selectedAgent && (

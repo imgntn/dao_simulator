@@ -7,6 +7,7 @@ import { BUILDING } from './constants';
 
 interface Props {
   proposals: ProposalSnapshot[];
+  onSelectProposal?: (proposal: ProposalSnapshot) => void;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -19,7 +20,7 @@ const STATUS_COLORS: Record<string, string> = {
 /** Governance floor (F2) y position */
 const BOARD_Y = 4.5;
 
-export function ProposalBoard({ proposals }: Props) {
+export function ProposalBoard({ proposals, onSelectProposal }: Props) {
   // Show up to 6 most recent proposals, prioritizing open ones
   const displayed = useMemo(() => {
     const sorted = [...proposals].sort((a, b) => {
@@ -53,7 +54,7 @@ export function ProposalBoard({ proposals }: Props) {
         transform
         rotation={[0, -Math.PI / 2, 0]}
         distanceFactor={5}
-        style={{ pointerEvents: 'none' }}
+        style={{ pointerEvents: onSelectProposal ? 'auto' : 'none' }}
       >
         <div
           style={{
@@ -77,7 +78,11 @@ export function ProposalBoard({ proposals }: Props) {
             PROPOSALS
           </div>
           {displayed.map(p => (
-            <ProposalCard key={p.id} proposal={p} />
+            <ProposalCard
+              key={p.id}
+              proposal={p}
+              onClick={onSelectProposal ? () => onSelectProposal(p) : undefined}
+            />
           ))}
         </div>
       </Html>
@@ -85,18 +90,27 @@ export function ProposalBoard({ proposals }: Props) {
   );
 }
 
-function ProposalCard({ proposal }: { proposal: ProposalSnapshot }) {
+function ProposalCard({ proposal, onClick }: { proposal: ProposalSnapshot; onClick?: () => void }) {
   const borderColor = STATUS_COLORS[proposal.status] ?? '#6b7280';
   const total = proposal.votesFor + proposal.votesAgainst;
   const forPct = total > 0 ? (proposal.votesFor / total) * 100 : 0;
 
   return (
     <div
+      onClick={onClick}
       style={{
         background: 'rgba(15, 15, 30, 0.9)',
         border: `1px solid ${borderColor}`,
         borderRadius: 3,
         padding: '3px 5px',
+        cursor: onClick ? 'pointer' : 'default',
+        transition: 'border-width 0.15s',
+      }}
+      onMouseEnter={e => {
+        if (onClick) (e.currentTarget as HTMLDivElement).style.borderWidth = '2px';
+      }}
+      onMouseLeave={e => {
+        if (onClick) (e.currentTarget as HTMLDivElement).style.borderWidth = '1px';
       }}
     >
       <div

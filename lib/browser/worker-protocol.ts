@@ -21,6 +21,8 @@ export interface AgentSnapshot {
   oppositionBias: number;
   lastVote: boolean | null;
   voterFatigue: number;
+  lastVoteStep: number;
+  delegateTo: string | null;
 }
 
 export interface ProposalSnapshot {
@@ -31,6 +33,7 @@ export interface ProposalSnapshot {
   type: string;
   creationStep: number;
   fundingGoal: number;
+  totalVoters: number;
 }
 
 export interface BlackSwanSnapshot {
@@ -98,6 +101,7 @@ export interface BrowserSimConfig {
   forumEnabled?: boolean;
   blackSwanEnabled?: boolean;
   blackSwanFrequency?: number;
+  scheduledBlackSwans?: Array<{ step: number; category: string; severity: number }>;
 }
 
 // =============================================================================
