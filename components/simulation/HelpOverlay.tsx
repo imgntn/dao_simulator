@@ -1,10 +1,19 @@
 'use client';
 
+import { useTutorialStore } from '@/lib/browser/tutorial-store';
+
 interface Props {
   onClose: () => void;
 }
 
 export function HelpOverlay({ onClose }: Props) {
+  const startTutorial = useTutorialStore(s => s.start);
+
+  const handleTutorial = () => {
+    onClose();
+    startTutorial();
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
@@ -29,19 +38,28 @@ export function HelpOverlay({ onClose }: Props) {
 
         {/* Content */}
         <div className="px-5 py-4 space-y-5 text-sm text-[var(--sim-text-secondary)] leading-relaxed">
+          {/* Tutorial button */}
+          <button
+            onClick={handleTutorial}
+            className="w-full px-4 py-2 rounded bg-[var(--sim-accent-bold)] hover:bg-[var(--sim-accent-hover)] text-white text-sm font-medium"
+          >
+            Start Guided Tutorial
+          </button>
+
           <Section title="Getting Started">
             <ul className="list-disc ml-4 space-y-1">
               <li><b>Play / Pause</b> — start or stop the simulation clock</li>
               <li><b>Step</b> — advance exactly one tick while paused</li>
-              <li><b>Speed</b> — adjust how fast ticks execute (1&times; &ndash; 10&times;)</li>
+              <li><b>Speed</b> — adjust how fast ticks execute (1&times; &ndash; 60&times;)</li>
               <li><b>Reset</b> — restart with the current settings</li>
+              <li><b>Fork</b> — create a branch point for what-if analysis (when paused)</li>
             </ul>
           </Section>
 
           <Section title="The Building">
             <p>The skyscraper represents the DAO. Each floor houses a different category of agents:</p>
             <ul className="list-disc ml-4 space-y-1">
-              <li><b>B1 — Treasury Vault</b> — visualizes DAO funds; no agents</li>
+              <li><b>B1 — Treasury Vault</b> — visualizes DAO funds; pulses on large changes</li>
               <li><b>F1 — Trading Floor</b> — traders, investors, and market makers</li>
               <li><b>F2 — Governance Chamber</b> — proposal creators, voters, and delegates</li>
               <li><b>F3 — Workshop</b> — developers, artists, auditors, and service providers</li>
@@ -50,33 +68,47 @@ export function HelpOverlay({ onClose }: Props) {
             </ul>
           </Section>
 
-          <Section title="Agents">
-            <p>
-              Agents are autonomous participants that trade, vote, delegate, and create proposals.
-              Each type has distinct behaviors and incentives. Hover over any agent in the 3D scene to
-              see its stats; click to pin the tooltip.
-            </p>
-            <p>
-              Open the <b>Agent Guide</b> panel in the sidebar for a full list of types with descriptions.
-            </p>
+          <Section title="Visual Effects">
+            <ul className="list-disc ml-4 space-y-1">
+              <li><b>Delegation Beams</b> — purple lines connecting delegating agents to their delegates</li>
+              <li><b>Proposal Particles</b> — cyan/green/red bursts on proposal creation/approval/rejection</li>
+              <li><b>Treasury Pulse</b> — the vault floor glows on large fund changes</li>
+              <li><b>Black Swan Weather</b> — storm clouds, lightning, and rain during crisis events</li>
+              <li><b>Agent Trails</b> — fading lines behind moving agents</li>
+            </ul>
           </Section>
 
-          <Section title="Interacting with the Scene">
+          <Section title="Analytics">
             <ul className="list-disc ml-4 space-y-1">
-              <li><b>Hover</b> an agent to see a quick stat tooltip</li>
-              <li><b>Click</b> an agent to pin its detail panel</li>
-              <li><b>Orbit / Zoom</b> — drag to rotate, scroll to zoom</li>
-              <li><b>Proposals</b> appear as glowing orbs on F2 (Governance Chamber)</li>
+              <li><b>Export</b> — download simulation data as CSV, JSON, or events log</li>
+              <li><b>Annotations</b> — double-click timeline to add notes at specific steps</li>
+              <li><b>Metric Alerts</b> — set threshold alerts for any metric</li>
+              <li><b>Trend Lines</b> — toggle regression & moving average overlays on sparklines</li>
+              <li><b>Voting Heatmap</b> — visualize voting agreement between agent types</li>
             </ul>
+          </Section>
+
+          <Section title="Keyboard Shortcuts">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs font-mono">
+              <Shortcut keys="Space" action="Play / Pause" />
+              <Shortcut keys="&rarr; / ." action="Step forward" />
+              <Shortcut keys="R" action="Reset" />
+              <Shortcut keys="1-6" action="Navigate to floor" />
+              <Shortcut keys="Esc" action="Deselect / close" />
+              <Shortcut keys="L" action="Go to LIVE" />
+              <Shortcut keys="?" action="Toggle help" />
+            </div>
           </Section>
 
           <Section title="Controls">
             <ul className="list-disc ml-4 space-y-1">
               <li><b>DAO Preset</b> — switch between calibrated DAOs (Uniswap, Aave, etc.)</li>
               <li><b>Governance Rule</b> — change how proposals are decided</li>
+              <li><b>Apply Live</b> — inject governance changes without resetting</li>
               <li><b>Forum</b> — toggle the discussion forum that influences voting</li>
               <li><b>Black Swans</b> — inject market crashes, exploits, or regulatory events</li>
-              <li><b>Agent Count</b> — adjust total number of agents in the simulation</li>
+              <li><b>Custom Agent</b> — inject agents with custom parameters</li>
+              <li><b>Multi-Run</b> — run N simulations for statistical confidence intervals</li>
             </ul>
           </Section>
         </div>
@@ -91,5 +123,14 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <h3 className="text-sm font-semibold text-[var(--sim-text)] mb-1.5">{title}</h3>
       {children}
     </div>
+  );
+}
+
+function Shortcut({ keys, action }: { keys: string; action: string }) {
+  return (
+    <>
+      <span className="text-[var(--sim-accent)]" dangerouslySetInnerHTML={{ __html: keys }} />
+      <span className="text-[var(--sim-text-muted)]">{action}</span>
+    </>
   );
 }

@@ -21,6 +21,20 @@ import type { CalibrationProfile } from '../digital-twins/calibration-loader';
 
 export type SimulationStatus = 'idle' | 'initializing' | 'running' | 'paused' | 'error';
 
+export interface Annotation {
+  id: string;
+  step: number;
+  text: string;
+}
+
+export interface MetricAlert {
+  id: string;
+  metric: string;
+  operator: '>' | '<';
+  value: number;
+  triggered: boolean;
+}
+
 export interface SimulationState {
   // Core state
   status: SimulationStatus;
@@ -51,6 +65,25 @@ export interface SimulationState {
   targetFloor: string | null;
   setTargetFloor: (floorId: string | null) => void;
 
+  // Renderer info
+  rendererType: 'webgpu' | 'webgl' | null;
+  setRendererType: (type: 'webgpu' | 'webgl') => void;
+
+  // Annotations
+  annotations: Annotation[];
+  addAnnotation: (step: number, text: string) => void;
+  removeAnnotation: (id: string) => void;
+
+  // Metric Alerts
+  alerts: MetricAlert[];
+  addAlert: (alert: Omit<MetricAlert, 'id' | 'triggered'>) => void;
+  removeAlert: (id: string) => void;
+  checkAlerts: (snapshot: SimulationSnapshot) => MetricAlert[];
+
+  // Theme
+  simTheme: 'dark' | 'light';
+  setSimTheme: (theme: 'dark' | 'light') => void;
+
   // Actions
   initialize: (
     calibrationProfiles: Record<string, CalibrationProfile>,
@@ -64,6 +97,9 @@ export interface SimulationState {
   selectDao: (daoId: string) => void;
   updateConfig: (config: Partial<BrowserSimConfig>) => void;
   dispose: () => void;
+  injectConfig: (changes: Partial<BrowserSimConfig>) => void;
+  injectAgent: (profile: { type: string; tokens: number; optimism: number; oppositionBias: number; name?: string }) => void;
+  forkState: () => void;
 }
 
 // =============================================================================
@@ -101,9 +137,68 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
   lastSentConfig: null,
   viewingStep: null,
   targetFloor: null,
+  rendererType: null,
+  annotations: [],
+  alerts: [],
+  simTheme: 'dark',
 
   setViewingStep: (step) => set({ viewingStep: step }),
   setTargetFloor: (floorId) => set({ targetFloor: floorId }),
+  setRendererType: (type) => set({ rendererType: type }),
+  setSimTheme: (theme) => {
+    set({ simTheme: theme });
+    try { localStorage.setItem('sim-theme', theme); } catch { /* noop */ }
+  },
+
+  addAnnotation: (step, text) => {
+    const id = `ann-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    set(prev => ({
+      annotations: [...prev.annotations, { id, step, text }].slice(-50),
+    }));
+  },
+  removeAnnotation: (id) => {
+    set(prev => ({
+      annotations: prev.annotations.filter(a => a.id !== id),
+    }));
+  },
+
+  addAlert: (alert) => {
+    const id = `alert-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    set(prev => ({
+      alerts: [...prev.alerts, { ...alert, id, triggered: false }],
+    }));
+  },
+  removeAlert: (id) => {
+    set(prev => ({
+      alerts: prev.alerts.filter(a => a.id !== id),
+    }));
+  },
+  checkAlerts: (snapshot) => {
+    const triggered: MetricAlert[] = [];
+    const metricValues: Record<string, number> = {
+      Treasury: snapshot.treasuryFunds,
+      'Token Price': snapshot.tokenPrice,
+      Gini: snapshot.gini,
+      Participation: snapshot.avgParticipationRate,
+      Members: snapshot.memberCount,
+      Proposals: snapshot.proposalCount,
+    };
+
+    set(prev => ({
+      alerts: prev.alerts.map(alert => {
+        if (alert.triggered) return alert;
+        const val = metricValues[alert.metric];
+        if (val === undefined) return alert;
+        const shouldTrigger = alert.operator === '>' ? val > alert.value : val < alert.value;
+        if (shouldTrigger) {
+          triggered.push({ ...alert, triggered: true });
+          return { ...alert, triggered: true };
+        }
+        return alert;
+      }),
+    }));
+    return triggered;
+  },
 
   initialize: (calibrationProfiles, marketData) => {
     const state = get();
@@ -167,6 +262,10 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
         case 'error':
           set({ status: 'error', error: msg.message });
           console.error('[SimWorker]', msg.message, msg.stack);
+          break;
+
+        case 'forkedState':
+          // Handled by branch-store listener externally
           break;
 
         case 'disposed':
@@ -243,6 +342,26 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
     set(prev => ({
       config: { ...prev.config, ...partial },
     }));
+  },
+
+  injectConfig: (changes) => {
+    const { worker } = get();
+    if (!worker) return;
+    worker.postMessage({ type: 'injectConfig', changes });
+    // Also update local config
+    set(prev => ({ config: { ...prev.config, ...changes } }));
+  },
+
+  injectAgent: (profile) => {
+    const { worker } = get();
+    if (!worker) return;
+    worker.postMessage({ type: 'injectAgent', profile });
+  },
+
+  forkState: () => {
+    const { worker } = get();
+    if (!worker) return;
+    worker.postMessage({ type: 'forkState' });
   },
 
   dispose: () => {

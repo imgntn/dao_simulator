@@ -85,6 +85,8 @@ export function ControlPanel() {
     setSpeed,
     selectDao,
     updateConfig,
+    injectConfig,
+    forkState,
   } = useSimulationStore();
 
   const [agentsOpen, setAgentsOpen] = useState(false);
@@ -137,10 +139,32 @@ export function ControlPanel() {
         </span>
       </div>
 
-      {/* Config Changed Banner */}
+      {/* Config Changed Banner + Live Apply */}
       {dirty && (
-        <div className="bg-amber-900/40 border border-amber-600/50 rounded px-3 py-1.5 text-xs text-amber-300 text-center">
-          Config changed — reset to apply
+        <div className="bg-amber-900/40 border border-amber-600/50 rounded px-3 py-1.5 text-xs text-amber-300 flex items-center justify-between">
+          <span>Config changed</span>
+          <div className="flex gap-1.5">
+            {canInteract && (
+              <button
+                onClick={() => {
+                  const changes: Partial<BrowserSimConfig> = {};
+                  if (config.governanceRule !== lastSentConfig?.governanceRule) changes.governanceRule = config.governanceRule;
+                  if (config.forumEnabled !== lastSentConfig?.forumEnabled) changes.forumEnabled = config.forumEnabled;
+                  if (config.blackSwanEnabled !== lastSentConfig?.blackSwanEnabled) changes.blackSwanEnabled = config.blackSwanEnabled;
+                  if (Object.keys(changes).length > 0) injectConfig(changes);
+                }}
+                className="px-2 py-0.5 rounded text-[10px] bg-cyan-700 hover:bg-cyan-600 text-white"
+              >
+                Apply Live
+              </button>
+            )}
+            <button
+              onClick={reset}
+              className="px-2 py-0.5 rounded text-[10px] bg-amber-700 hover:bg-amber-600 text-white"
+            >
+              Reset
+            </button>
+          </div>
         </div>
       )}
 
@@ -170,6 +194,15 @@ export function ControlPanel() {
         >
           Reset
         </button>
+        {status === 'paused' && snapshot && (
+          <button
+            onClick={forkState}
+            className="px-3 py-2 rounded text-sm font-medium bg-purple-700 hover:bg-purple-600 text-white"
+            title="Fork current state for branching"
+          >
+            Fork
+          </button>
+        )}
       </div>
 
       {/* Speed Slider */}

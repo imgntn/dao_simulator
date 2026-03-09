@@ -17,11 +17,15 @@ import { ProposalDetail } from './scene/ProposalDetail';
 import { BlackSwanEffect } from './scene/BlackSwanEffect';
 import { FloorLabels } from './scene/FloorLabel';
 import { CameraController } from './scene/CameraController';
+import { DelegationBeams } from './scene/DelegationBeams';
+import { ProposalParticles } from './scene/ProposalParticles';
+import { AgentTrails } from './scene/AgentTrails';
 import { AGENT_FLOOR_MAP } from './scene/constants';
 
 export function SimulationCanvas() {
   const snapshot = useActiveSnapshot();
   const status = useSimulationStore(s => s.status);
+  const rendererType = useSimulationStore(s => s.rendererType);
 
   // Interaction state
   const [hoveredAgent, setHoveredAgent] = useState<AgentSnapshot | null>(null);
@@ -48,7 +52,6 @@ export function SimulationCanvas() {
         setSelectedPos(null);
       } else if (agent) {
         setSelectedAgent(agent);
-        const floorId = AGENT_FLOOR_MAP[agent.type] ?? 'F1';
         setSelectedPos(new THREE.Vector3(0, 6, 0));
         setHoveredAgent(null);
         setHoveredPos(null);
@@ -95,70 +98,89 @@ export function SimulationCanvas() {
   }
 
   return (
-    <Canvas
-      camera={{ position: [14, 10, 14], fov: 50, near: 0.1, far: 500 }}
-      dpr={[1, 2]}
-      className="bg-[var(--sim-bg)]"
-      onClick={handleCanvasClick}
-    >
-      <Suspense fallback={null}>
-        <Environment />
-        <CameraController />
+    <div className="relative w-full h-full">
+      <Canvas
+        camera={{ position: [14, 10, 14], fov: 50, near: 0.1, far: 500 }}
+        dpr={[1, 2]}
+        className="bg-[var(--sim-bg)]"
+        onClick={handleCanvasClick}
+      >
+        <Suspense fallback={null}>
+          <Environment />
+          <CameraController />
 
-        {snapshot && (
-          <>
-            {/* Building group (shakeable via ref) */}
-            <group ref={buildingRef}>
-              <Building activeFloorIds={activeFloorIds} />
-              <FloorLabels floorCounts={floorCounts} />
-              <AgentGroups
-                agents={snapshot.agents}
+          {snapshot && (
+            <>
+              {/* Building group (shakeable via ref) */}
+              <group ref={buildingRef}>
+                <Building activeFloorIds={activeFloorIds} />
+                <FloorLabels floorCounts={floorCounts} />
+                <AgentGroups
+                  agents={snapshot.agents}
+                  currentStep={snapshot.step}
+                  onHover={handleHover}
+                  onSelect={handleSelect}
+                />
+                <TreasuryIndicator treasuryFunds={snapshot.treasuryFunds} />
+                <TokenPriceIndicator tokenPrice={snapshot.tokenPrice} />
+                <ProposalBoard
+                  proposals={snapshot.proposals}
+                  onSelectProposal={handleSelectProposal}
+                />
+
+                {/* Delegation beams */}
+                <DelegationBeams agents={snapshot.agents} />
+
+                {/* Agent trails */}
+                <AgentTrails agents={snapshot.agents} />
+              </group>
+
+              {/* Proposal lifecycle particles */}
+              <ProposalParticles
+                events={snapshot.recentEvents}
                 currentStep={snapshot.step}
-                onHover={handleHover}
-                onSelect={handleSelect}
               />
-              <TreasuryIndicator treasuryFunds={snapshot.treasuryFunds} />
-              <TokenPriceIndicator tokenPrice={snapshot.tokenPrice} />
-              <ProposalBoard
-                proposals={snapshot.proposals}
-                onSelectProposal={handleSelectProposal}
+
+              {/* Black swan effect (outside building group so overlay isn't shaken) */}
+              <BlackSwanEffect
+                blackSwan={snapshot.blackSwan}
+                buildingRef={buildingRef}
               />
-            </group>
 
-            {/* Black swan effect (outside building group so overlay isn't shaken) */}
-            <BlackSwanEffect
-              blackSwan={snapshot.blackSwan}
-              buildingRef={buildingRef}
-            />
+              {/* Proposal detail overlay */}
+              {selectedProposal && (
+                <ProposalDetail
+                  proposal={selectedProposal}
+                  onClose={() => setSelectedProposal(null)}
+                />
+              )}
 
-            {/* Proposal detail overlay */}
-            {selectedProposal && (
-              <ProposalDetail
-                proposal={selectedProposal}
-                onClose={() => setSelectedProposal(null)}
-              />
-            )}
+              {/* Hover tooltip */}
+              {hoveredAgent && hoveredPos && !selectedAgent && (
+                <AgentTooltip agent={hoveredAgent} position={hoveredPos} />
+              )}
 
-            {/* Hover tooltip */}
-            {hoveredAgent && hoveredPos && !selectedAgent && (
-              <AgentTooltip agent={hoveredAgent} position={hoveredPos} />
-            )}
+              {/* Selected tooltip (detailed, persistent) */}
+              {selectedAgent && selectedPos && (
+                <AgentTooltip
+                  agent={selectedAgent}
+                  position={selectedPos}
+                  detailed
+                  onClose={() => {
+                    setSelectedAgent(null);
+                    setSelectedPos(null);
+                  }}
+                />
+              )}
+            </>
+          )}
+        </Suspense>
+      </Canvas>
 
-            {/* Selected tooltip (detailed, persistent) */}
-            {selectedAgent && selectedPos && (
-              <AgentTooltip
-                agent={selectedAgent}
-                position={selectedPos}
-                detailed
-                onClose={() => {
-                  setSelectedAgent(null);
-                  setSelectedPos(null);
-                }}
-              />
-            )}
-          </>
-        )}
-      </Suspense>
-    </Canvas>
+      {/* Renderer badge */}
+      <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded text-[9px] font-mono bg-black/40 text-white/50 pointer-events-none">
+        {rendererType === 'webgpu' ? 'WebGPU' : 'WebGL'}
+      </div>
+    </div>
   );
 }

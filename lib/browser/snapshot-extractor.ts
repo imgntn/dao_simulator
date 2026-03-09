@@ -6,6 +6,7 @@
  */
 
 import type { DAOSimulation } from '../engine/simulation';
+import type { DAOMember } from '../agents/base';
 import type {
   SimulationSnapshot,
   AgentSnapshot,
@@ -13,6 +14,28 @@ import type {
   BlackSwanSnapshot,
   SimulationEvent,
 } from './worker-protocol';
+
+/** Per-agent token history ring buffer (kept in worker scope) */
+const tokenHistories = new Map<string, number[]>();
+const TOKEN_HISTORY_SIZE = 20;
+
+export function recordTokenHistory(members: DAOMember[]): void {
+  for (const m of members) {
+    let hist = tokenHistories.get(m.uniqueId);
+    if (!hist) {
+      hist = [];
+      tokenHistories.set(m.uniqueId, hist);
+    }
+    hist.push(m.tokens);
+    if (hist.length > TOKEN_HISTORY_SIZE) {
+      hist.shift();
+    }
+  }
+}
+
+export function clearTokenHistories(): void {
+  tokenHistories.clear();
+}
 
 /**
  * Extract a snapshot from the current simulation state.
@@ -25,6 +48,9 @@ export function extractSnapshot(
   const dao = sim.dao;
   const members = dao.members;
   const proposals = dao.proposals;
+
+  // Record token histories
+  recordTokenHistory(members as unknown as DAOMember[]);
 
   // Agent snapshots
   const agents: AgentSnapshot[] = members.map(m => ({
@@ -39,6 +65,8 @@ export function extractSnapshot(
     voterFatigue: m.voterFatigue,
     lastVoteStep: m.lastVoteStep,
     delegateTo: m.representative?.uniqueId ?? null,
+    totalVotesCast: m.votes.size,
+    tokenHistory: tokenHistories.get(m.uniqueId) ?? [],
   }));
 
   // Proposal snapshots

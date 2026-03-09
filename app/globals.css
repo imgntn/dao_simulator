@@ -59,6 +59,25 @@
   --sim-accent-ring: #06b6d4;
 }
 
+/* ── Simulation light theme ── */
+.sim-theme-light {
+  --sim-bg: #f8fafc;
+  --sim-surface: #ffffff;
+  --sim-surface-hover: #f1f5f9;
+  --sim-border: #e2e8f0;
+  --sim-border-strong: #cbd5e1;
+  --sim-border-focus: #0891b2;
+  --sim-text: #1e293b;
+  --sim-text-secondary: #334155;
+  --sim-text-muted: #64748b;
+  --sim-text-dim: #94a3b8;
+  --sim-accent: #0891b2;
+  --sim-accent-bold: #0e7490;
+  --sim-accent-hover: #06b6d4;
+  --sim-accent-bg: rgba(8, 145, 178, 0.1);
+  --sim-accent-ring: #0891b2;
+}
+
 /* Dark theme variant */
 .theme-dark {
   --surface-page: #020617;

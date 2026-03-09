@@ -1,6 +1,6 @@
 'use client';
 
-export type SimTab = 'interactive' | 'research' | 'compare';
+export type SimTab = 'interactive' | 'research' | 'compare' | 'branch' | 'multirun';
 
 interface TabBarProps {
   activeTab: SimTab;
@@ -11,6 +11,8 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
   const tabs: { id: SimTab; label: string }[] = [
     { id: 'interactive', label: 'Interactive' },
     { id: 'compare', label: 'Compare' },
+    { id: 'branch', label: 'Branch' },
+    { id: 'multirun', label: 'Multi-Run' },
     { id: 'research', label: 'Research' },
   ];
 

@@ -23,6 +23,16 @@ export interface AgentSnapshot {
   voterFatigue: number;
   lastVoteStep: number;
   delegateTo: string | null;
+  totalVotesCast: number;
+  tokenHistory: number[];  // last 20 token balances (ring buffer)
+}
+
+export interface CustomAgentProfile {
+  type: string;
+  tokens: number;
+  optimism: number;
+  oppositionBias: number;
+  name?: string;
 }
 
 export interface ProposalSnapshot {
@@ -117,7 +127,10 @@ export type WorkerInMessage =
   | { type: 'setSpeed'; stepsPerSecond: number }
   | { type: 'updateConfig'; config: Partial<BrowserSimConfig> }
   | { type: 'reset'; config: BrowserSimConfig }
-  | { type: 'dispose' };
+  | { type: 'dispose' }
+  | { type: 'injectConfig'; changes: Partial<BrowserSimConfig> }
+  | { type: 'injectAgent'; profile: CustomAgentProfile }
+  | { type: 'forkState' };
 
 // =============================================================================
 // MESSAGES (Worker → Main)
@@ -128,4 +141,5 @@ export type WorkerOutMessage =
   | { type: 'initialized'; daoId: string; agentCount: number }
   | { type: 'stepComplete'; snapshot: SimulationSnapshot }
   | { type: 'error'; message: string; stack?: string }
-  | { type: 'disposed' };
+  | { type: 'disposed' }
+  | { type: 'forkedState'; snapshot: SimulationSnapshot; config: BrowserSimConfig; step: number };

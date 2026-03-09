@@ -12,13 +12,22 @@ import type { DAOSimulationConfig } from '../engine/simulation';
 import { CalibrationLoader } from '../digital-twins/calibration-loader';
 import type { CalibrationProfile } from '../digital-twins/calibration-loader';
 import { BrowserCalibrationProvider } from './browser-calibration-provider';
-import { extractSnapshot } from './snapshot-extractor';
+import { extractSnapshot, clearTokenHistories } from './snapshot-extractor';
 import type {
   WorkerInMessage,
   WorkerOutMessage,
   BrowserSimConfig,
   SimulationEvent,
 } from './worker-protocol';
+// Lazy-loaded to avoid pulling full dependency tree at startup
+let _getRule: typeof import('../utils/governance-plugins').getRule | null = null;
+async function lazyGetRule() {
+  if (!_getRule) {
+    const mod = await import('../utils/governance-plugins');
+    _getRule = mod.getRule;
+  }
+  return _getRule;
+}
 
 const ctx = self as unknown as DedicatedWorkerGlobalScope;
 
@@ -240,6 +249,7 @@ ctx.onmessage = async (event: MessageEvent<WorkerInMessage>) => {
         stopLoop();
         recentEvents = [];
         eventBuffer = [];
+        clearTokenHistories();
 
         const resetProfile = CalibrationLoader.load(msg.config.daoId);
         const resetSimConfig = toSimConfig(msg.config, resetProfile);
@@ -252,6 +262,68 @@ ctx.onmessage = async (event: MessageEvent<WorkerInMessage>) => {
           type: 'initialized',
           daoId: msg.config.daoId,
           agentCount: sim.dao.members.length,
+        });
+        break;
+      }
+
+      case 'injectConfig': {
+        if (!sim) break;
+        const changes = msg.changes;
+        // Apply governance rule change live
+        if (changes.governanceRule && changes.governanceRule !== '') {
+          try {
+            const getRuleFn = await lazyGetRule();
+            const rule = getRuleFn(changes.governanceRule, {});
+            if (rule) {
+              (sim as any).governanceRule = rule;
+              sim.dao.governanceRuleName = changes.governanceRule;
+            }
+          } catch { /* ignore invalid rule */ }
+        }
+        // Toggle forum
+        if (changes.forumEnabled !== undefined) {
+          (sim as any).forumEnabled = changes.forumEnabled;
+        }
+        // Toggle black swan
+        if (changes.blackSwanEnabled !== undefined) {
+          (sim as any).blackSwanEnabled = changes.blackSwanEnabled;
+        }
+        break;
+      }
+
+      case 'injectAgent': {
+        if (!sim) break;
+        // Get model from an existing member — all agents share the same model
+        const existingMember = sim.dao.members[0];
+        if (!existingMember) break;
+        const model = (existingMember as any).model;
+        if (!model) break;
+
+        const { DAOMember: MemberClass } = await import('../agents/base');
+        const p = msg.profile;
+        const member = new MemberClass(
+          p.name || `Custom_${p.type}_${Date.now()}`,
+          model,
+          p.tokens,
+          1.0, // reputation
+          'custom',
+          undefined,
+          sim.dao.daoId
+        );
+        member.optimism = p.optimism;
+        member.oppositionBias = p.oppositionBias;
+        sim.dao.members.push(member);
+        break;
+      }
+
+      case 'forkState': {
+        if (!sim) break;
+        const forkSnapshot = extractSnapshot(sim, recentEvents.slice(-20));
+        postOut({
+          type: 'forkedState',
+          snapshot: forkSnapshot,
+          config: { daoId: '', stepsPerSecond, totalSteps: 720 },
+          step: sim.currentStep,
         });
         break;
       }
