@@ -12,7 +12,7 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'lcov'],
     },
-    setupFiles: [],
+    setupFiles: ['tests/vitest-setup.ts'],
     typecheck: {
       enabled: true,
       checker: 'tsc',
