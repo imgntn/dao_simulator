@@ -9,6 +9,40 @@ import { Proposal } from '@/lib/data-structures/proposal';
 import { DelegationResolver } from '@/lib/delegation/delegation-resolver';
 import { setSeed, random } from '@/lib/utils/random';
 
+/** Zero out all agent types and voting power limits so only manually-added members exist */
+const EMPTY_AGENTS = {
+  num_developers: 0,
+  num_investors: 0,
+  num_traders: 0,
+  num_adaptive_investors: 0,
+  num_delegators: 0,
+  num_liquid_delegators: 0,
+  num_proposal_creators: 0,
+  num_validators: 0,
+  num_service_providers: 0,
+  num_arbitrators: 0,
+  num_regulators: 0,
+  num_auditors: 0,
+  num_bounty_hunters: 0,
+  num_external_partners: 0,
+  num_passive_members: 0,
+  num_artists: 0,
+  num_collectors: 0,
+  num_speculators: 0,
+  num_stakers: 0,
+  num_rl_traders: 0,
+  num_governance_experts: 0,
+  num_governance_whales: 0,
+  num_risk_managers: 0,
+  num_market_makers: 0,
+  num_whistleblowers: 0,
+  // Disable voting power caps/dampening so delegation weight isn't capped
+  vote_power_cap_fraction: 0,
+  vote_power_quadratic_threshold: 0,
+  vote_power_velocity_window: 0,
+  vote_power_velocity_penalty: 0,
+};
+
 describe('Delegation and Quorum Achievement', () => {
   beforeEach(() => {
     // Use fixed seed for reproducible tests
@@ -16,17 +50,7 @@ describe('Delegation and Quorum Achievement', () => {
   });
 
   it('should improve effective participation through token delegation', () => {
-    const simulation = new DAOSimulation({
-      num_developers: 0,
-      num_investors: 0,
-      num_validators: 0,
-      num_proposal_creators: 0,
-      num_passive_members: 0,
-      vote_power_cap_fraction: 0,
-      vote_power_quadratic_threshold: 0,
-      vote_power_velocity_window: 0,
-      vote_power_velocity_penalty: 0,
-    });
+    const simulation = new DAOSimulation({ ...EMPTY_AGENTS });
 
     // Create 10 members with varying activity levels
     const activeMembers: DAOMember[] = [];
@@ -73,17 +97,7 @@ describe('Delegation and Quorum Achievement', () => {
 
     // SCENARIO 2: With delegation - passive members delegate to active
     // Reset for second test
-    const simulation2 = new DAOSimulation({
-      num_developers: 0,
-      num_investors: 0,
-      num_validators: 0,
-      num_proposal_creators: 0,
-      num_passive_members: 0,
-      vote_power_cap_fraction: 0,
-      vote_power_quadratic_threshold: 0,
-      vote_power_velocity_window: 0,
-      vote_power_velocity_penalty: 0,
-    });
+    const simulation2 = new DAOSimulation({ ...EMPTY_AGENTS });
 
     const activeMembers2: DAOMember[] = [];
     const passiveMembers2: DAOMember[] = [];
@@ -136,22 +150,10 @@ describe('Delegation and Quorum Achievement', () => {
 
   it('should maintain cache isolation in multi-DAO scenarios', () => {
     // This tests the P0 fix for the static member cache bug
-    const simulation1 = new DAOSimulation({
-      num_developers: 0,
-      num_investors: 0,
-      num_validators: 0,
-      num_proposal_creators: 0,
-      num_passive_members: 0,
-    });
+    const simulation1 = new DAOSimulation({ ...EMPTY_AGENTS });
     simulation1.dao.daoId = 'dao_alpha';
 
-    const simulation2 = new DAOSimulation({
-      num_developers: 0,
-      num_investors: 0,
-      num_validators: 0,
-      num_proposal_creators: 0,
-      num_passive_members: 0,
-    });
+    const simulation2 = new DAOSimulation({ ...EMPTY_AGENTS });
     simulation2.dao.daoId = 'dao_beta';
 
     // Add members to both DAOs with same uniqueId prefix
@@ -191,13 +193,7 @@ describe('Delegation and Quorum Achievement', () => {
   });
 
   it('should support liquid delegation representative chains', () => {
-    const simulation = new DAOSimulation({
-      num_developers: 0,
-      num_investors: 0,
-      num_validators: 0,
-      num_proposal_creators: 0,
-      num_passive_members: 0,
-    });
+    const simulation = new DAOSimulation({ ...EMPTY_AGENTS });
 
     // Create a delegation chain: voter1 -> voter2 -> expert
     const voter1 = new LiquidDelegator('voter1', simulation, 100, 10, 'North America');
@@ -225,13 +221,7 @@ describe('Delegation and Quorum Achievement', () => {
   });
 
   it('should handle representative field being set via base class method', () => {
-    const simulation = new DAOSimulation({
-      num_developers: 0,
-      num_investors: 0,
-      num_validators: 0,
-      num_proposal_creators: 0,
-      num_passive_members: 0,
-    });
+    const simulation = new DAOSimulation({ ...EMPTY_AGENTS });
 
     const member = new DAOMember('member', simulation, 100, 10, 'North America');
     const rep = new DAOMember('rep', simulation, 100, 20, 'Europe');
@@ -263,13 +253,7 @@ describe('Multi-run Delegation Experiments', () => {
       setSeed(1000 + run);
 
       // Without delegation: 5 equal members, each votes with 30% probability
-      const simNoDel = new DAOSimulation({
-        num_developers: 0,
-        num_investors: 0,
-        num_validators: 0,
-        num_proposal_creators: 0,
-        num_passive_members: 0,
-      });
+      const simNoDel = new DAOSimulation({ ...EMPTY_AGENTS });
 
       for (let i = 0; i < 5; i++) {
         simNoDel.dao.addMember(new DAOMember(`m${i}`, simNoDel, 100, 10, 'NA'));
@@ -289,13 +273,7 @@ describe('Multi-run Delegation Experiments', () => {
 
       // With delegation: 1 active + 4 passive who delegate 80% to active
       setSeed(2000 + run);
-      const simWithDel = new DAOSimulation({
-        num_developers: 0,
-        num_investors: 0,
-        num_validators: 0,
-        num_proposal_creators: 0,
-        num_passive_members: 0,
-      });
+      const simWithDel = new DAOSimulation({ ...EMPTY_AGENTS });
 
       const activeM = new DAOMember('active', simWithDel, 100, 50, 'NA');
       simWithDel.dao.addMember(activeM);
