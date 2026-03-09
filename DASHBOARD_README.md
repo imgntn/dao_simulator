@@ -1,178 +1,110 @@
-# DAO Simulator Dashboard 🌐
+# DAO Simulator Dashboard
 
-A stunning real-time visualization dashboard for decentralized autonomous organization simulations.
+Real-time 3D visualization and analytics dashboard for decentralized governance simulations.
 
-## Features
+## Overview
 
-### 🎨 Visualizations
-
-All Python visualizations have been fully ported to modern React/Next.js:
-
-1. **Price Line Chart** - Real-time DAO token price tracking with interactive Recharts
-2. **3D Network Graph** - Stunning WebGL-powered network visualization using Three.js
-3. **Member Heatmap** - Scatter plot visualization of member reputation vs token balance
-4. **Choropleth Map** - Geographic distribution of DAO members
-5. **Comprehensive Report** - Statistics, leaderboards, and analytics dashboard
-
-### ⚡ Real-time Updates
-
-- WebSocket integration via Socket.IO for live data streaming
-- Automatic network graph updates with delta computation
-- Live price charts that update as simulation progresses
-- Real-time leaderboard tracking
-
-### 🛠️ Technology Stack
-
-- **Next.js 15** - React framework with App Router
-- **React 19** - Latest React with concurrent features
-- **Three.js** - 3D WebGL rendering
-- **React Three Fiber** - React renderer for Three.js
-- **Recharts** - Composable charting library
-- **Socket.IO** - Real-time bidirectional communication
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first styling
+The simulator runs at `/simulate` and provides a full 3D skyscraper DAO visualization with 32 interactive features. The simulation engine runs in a Web Worker off the main thread, communicating via structured clone postMessage.
 
 ## Getting Started
-
-### Development
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:7884](http://localhost:7884) to see the landing page.
-
-Navigate to [http://localhost:7884/dashboard](http://localhost:7884/dashboard) to view the dashboard.
-
-### Production Build
-
-```bash
-npm run build
-npm start
-```
+Open [http://localhost:7884/simulate](http://localhost:7884/simulate) to launch the 3D interactive simulator.
 
 ## Architecture
 
-### Component Structure
+### 3D Scene (`components/simulation/scene/`)
 
-```
-components/
-└── visualizations/
-    ├── PriceLineChart.tsx       # Recharts line chart for price history
-    ├── MemberHeatmap.tsx        # Scatter plot heatmap
-    ├── NetworkGraph3D.tsx       # Three.js 3D network graph
-    ├── ChoroplethMap.tsx        # Geographic distribution
-    ├── DAOReport.tsx            # Comprehensive analytics
-    └── index.ts                 # Barrel exports
-```
+| Component | Purpose |
+|-----------|---------|
+| `Building.tsx` | Glass skyscraper with 6 labeled floors |
+| `AgentGroups.tsx` | InstancedMesh rendering of all agents per floor |
+| `DelegationBeams.tsx` | Purple pulsing lines between delegates |
+| `ProposalParticles.tsx` | Lifecycle particle bursts (create/approve/reject) |
+| `AgentTrails.tsx` | Fading movement trails behind agents |
+| `TreasuryIndicator.tsx` | Vault with pulse glow on fund changes |
+| `BlackSwanEffect.tsx` | Storm clouds, lightning, rain during crises |
+| `FloorLabel.tsx` | Agent count badges on each floor |
+| `constants.ts` | Building dimensions, floor configs, agent-floor mapping |
 
-### Type Definitions
+### Dashboard (`components/simulation/dashboard/`)
 
-```
-lib/
-├── types/
-│   └── visualization.ts         # TypeScript interfaces
-└── hooks/
-    └── useSimulationSocket.ts   # WebSocket state management
-```
+| Component | Purpose |
+|-----------|---------|
+| `MetricsDashboard.tsx` | Metric cards with sparklines, trend overlays |
+| `EventFeed.tsx` | Real-time event log overlay |
+| `DelegationGraph.tsx` | SVG delegation relationship graph |
+| `VotingHeatmap.tsx` | Canvas agent type voting correlation matrix |
 
-### Pages
+### Controls & UX (`components/simulation/`)
 
-```
-app/
-├── page.tsx                     # Landing page
-└── dashboard/
-    └── page.tsx                 # Main dashboard
-```
+| Component | Purpose |
+|-----------|---------|
+| `ControlPanel.tsx` | Transport (play/pause/step/reset), speed, DAO selector, governance |
+| `FloorNav.tsx` | Click-to-zoom floor navigation |
+| `AgentGuide.tsx` | Expandable guide to all 27 agent types |
+| `CustomAgentForm.tsx` | Inject custom agents mid-simulation |
+| `ScenarioBuilder.tsx` | Schedule black swan events at specific steps |
+| `MetricAlerts.tsx` | Set threshold alerts with toast notifications |
+| `AgentInspector.tsx` | Detailed agent drill-down with token history |
+| `Annotations.tsx` | Timeline annotations with diamond markers |
+| `ExportButton.tsx` | CSV/JSON/Events data export |
+| `ShareButton.tsx` | Permalink URL sharing |
+| `ThemeToggle.tsx` | Light/dark theme toggle |
+| `HelpOverlay.tsx` | Help dialog with keyboard shortcuts |
+| `Tutorial.tsx` | 7-step guided tutorial with spotlights |
+| `TabBar.tsx` | Tab navigation (Interactive, Compare, Branch, Multi-Run, Research) |
+| `ComparisonView.tsx` | Side-by-side dual-config comparison |
+| `BranchView.tsx` | What-if divergence analysis from fork points |
+| `MultiRunPanel.tsx` | Parallel N-run statistics with confidence intervals |
 
-## WebSocket Events
+### State Management (`lib/browser/`)
 
-The dashboard listens for these events from the Python backend:
+| Module | Purpose |
+|--------|---------|
+| `simulation-store.ts` | Zustand store — config, status, history, annotations, alerts, theme |
+| `simulation-worker.ts` | Web Worker entry point running DAOSimulation engine |
+| `worker-protocol.ts` | Typed message protocol (init, step, inject, fork, dispose) |
+| `snapshot-extractor.ts` | Builds serializable DTOs from simulation state |
+| `branch-store.ts` | What-if branching state (fork, run, compare) |
+| `multi-run-store.ts` | Parallel worker management with stats computation |
+| `tutorial-store.ts` | Tutorial step progression with localStorage persistence |
+| `useKeyboardShortcuts.ts` | Keyboard shortcut bindings |
+| `useActiveSnapshot.ts` | Snapshot selector with time-travel support |
 
-- `simulation_step` - New simulation step data
-- `network_update` - Network graph updates (nodes/edges)
-- `members_update` - Member list updates
-- `proposals_update` - Proposal list updates
-- `leaderboard_update` - Token/influence rankings
-- `market_shock` - Market shock events
+## Technology Stack
 
-## Port Mapping
+- **Next.js 16** — React framework with App Router
+- **React Three Fiber** — React renderer for Three.js
+- **Three.js** — 3D WebGL rendering
+- **Zustand** — Lightweight state management
+- **Web Workers** — Off-main-thread simulation engine
+- **TypeScript** — Type-safe development
+- **Tailwind CSS 4** — Utility-first styling
 
-| Python Visualization | React Component | Technology |
-|---------------------|-----------------|------------|
-| `line_chart.py` | `PriceLineChart.tsx` | Recharts |
-| `interactive_line_chart.py` | `PriceLineChart.tsx` | Recharts (interactive mode) |
-| `network_graph.py` | `NetworkGraph3D.tsx` | Three.js |
-| `interactive_network.py` | `NetworkGraph3D.tsx` | R3F + OrbitControls |
-| `heatmap.py` | `MemberHeatmap.tsx` | Recharts ScatterChart |
-| `choropleth_map.py` | `ChoroplethMap.tsx` | Recharts BarChart |
-| `report.py` | `DAOReport.tsx` | Recharts + custom UI |
+## Keyboard Shortcuts
 
-## Features by Component
+| Key | Action |
+|-----|--------|
+| `Space` | Play / Pause |
+| `→` or `.` | Step forward |
+| `R` | Reset simulation |
+| `1`-`6` | Navigate to floor |
+| `Esc` | Close overlays, deselect |
+| `L` | Go to live (exit time-travel) |
+| `?` | Toggle help overlay |
 
-### PriceLineChart
-- Responsive design
-- Dark mode support
-- Customizable interactive mode
-- Smooth animations
-- Tooltip on hover
+## Worker Protocol
 
-### NetworkGraph3D
-- Interactive 3D camera controls
-- Auto-rotation when not interactive
-- Node clustering for large graphs (LOD)
-- Color-coded node types (members, proposals, clusters)
-- Edge type visualization (delegation, representative, created)
-- Hover effects and scaling
-- Optional label display
+The main thread communicates with the simulation Web Worker via typed messages:
 
-### MemberHeatmap
-- Normalized reputation/token scatter plot
-- Color gradient based on composite score
-- Interactive tooltips showing raw values
-- Responsive layout
+**Inbound (to worker):** `init`, `start`, `pause`, `resume`, `step`, `setSpeed`, `updateConfig`, `reset`, `injectConfig`, `injectAgent`, `forkState`, `dispose`
 
-### ChoroplethMap
-- Horizontal bar chart by location
-- Gradient coloring by member count
-- Sorted by population
+**Outbound (from worker):** `ready`, `initialized`, `stepComplete`, `forkedState`, `disposed`, `error`
 
-### DAOReport
-- Statistics overview cards
-- Treasury balance chart
-- Top token holders leaderboard
-- Most influential members
-- Market shock history
+## Themes
 
-## Performance Optimizations
-
-- Memoized chart data transformations
-- Delta-based network updates
-- WebSocket connection pooling
-- Lazy loading of 3D components
-- Turbopack for fast builds
-
-## Styling
-
-The dashboard uses a dark theme with gradient accents:
-- **Primary**: Blue-Purple gradient
-- **Backgrounds**: Gray-900 with transparency
-- **Accents**: Blue, Purple, Pink, Green
-- **Effects**: Backdrop blur, shadows, animations
-
-## Future Enhancements
-
-- [ ] Additional chart types (radar, sankey, treemap)
-- [ ] Export visualizations as PNG/SVG
-- [ ] Customizable dashboard layouts
-- [ ] Historical data comparison
-- [ ] Advanced filtering and search
-- [ ] Mobile-optimized views
-
-## Contributing
-
-Built with vision by incredible technologists and artists.
-
-## License
-
-Part of the DAO Simulator project.
+The simulator supports light and dark themes via CSS custom properties (`--sim-*`). Toggle with the sun/moon button in the tab bar. Theme persists to localStorage.

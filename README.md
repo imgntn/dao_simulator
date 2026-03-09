@@ -1,29 +1,30 @@
 # DAO Simulator
 
-Modern TypeScript/Next.js environment for experimenting with decentralized governance. The repository contains a headless simulation engine, WebSocket broadcaster, interactive dashboard, REST API, and a suite of runnable examples that map one-to-one with the Python legacy model.
+Modern TypeScript/Next.js environment for experimenting with decentralized governance. The repository contains a headless simulation engine, a 3D interactive browser simulator, WebSocket broadcaster, REST API, a research experiment framework, and historical calibration against 14 real-world DAOs.
 
 ## Quick Start
 
 ```bash
 npm install
-npm run dev        # Next.js dashboard on http://localhost:7884
+npm run dev        # Next.js app on http://localhost:7884
 npm run server     # Socket.IO simulation stream on http://localhost:8003
 ```
 
 Requires Node.js 22+ (Next.js 16).
 
-For production, set `NEXT_PUBLIC_SOCKET_URL` on the dashboard service to your deployed socket server (Railway socket service URL/port). If `API_KEY` is set on the socket server, set `NEXT_PUBLIC_SOCKET_API_KEY` on the dashboard as well.
-
-Open [http://localhost:7884](http://localhost:7884) and launch the dashboard. Use the control deck (start/stop/step/reset plus speed selector) to drive the simulation in real-time; the UI syncs with the Socket.IO status events and now mirrors the CLI workflow.
+Open [http://localhost:7884/simulate](http://localhost:7884/simulate) to launch the 3D interactive simulator. Use play/pause/step/reset to drive the simulation in real-time with the skyscraper DAO visualization.
 
 ## Highlights
 
-- **Full DAO sandbox** - 20+ agent archetypes, governance plugins, liquidity pools, NFTs, violations/disputes, proposal lifecycle, and stochastic market shocks.
-- **Research framework** - 8,700+ simulation runs across 11 experiments investigating participation dynamics, governance capture, proposal pipelines, treasury resilience, and inter-DAO cooperation.
-- **Data pipeline** - Deterministic schedulers, seeded RNG, IndexedDB/Redis persistence, CSV/JSON exports, and a telemetry collector that now keeps a rolling history for analytics/downloads.
-- **Dashboard widgets** - 3D network (React Three Fiber), price history, heatmaps, choropleth, and a DAO report card that tracks open/approved proposal stats.
-- **APIs & automations** - `/api/simulation` endpoints with auth middleware, Socket.IO command channel for dashboards, and an example runner for scripted experiments.
-- **Academic paper** - 35-page research paper with comprehensive results, statistical analysis, and reproducibility documentation.
+- **Full DAO sandbox** — 27 agent archetypes, 15 governance plugins, liquidity pools, NFTs, violations/disputes, proposal lifecycle, and stochastic market shocks.
+- **3D interactive simulator** — WebGL skyscraper visualization with 32 interactive features including delegation beams, proposal particles, treasury pulse, black swan weather, agent trails, voting heatmap, and more.
+- **Research framework** — 8,700+ simulation runs across 12 experiments investigating participation dynamics, governance capture, proposal pipelines, treasury resilience, inter-DAO cooperation, and LLM agent reasoning.
+- **Historical calibration** — Digital twin calibration against 14 real DAOs (Aave, Uniswap, Compound, MakerDAO, Lido, ENS, Gitcoin, Arbitrum, Optimism, Nouns, Curve, Balancer, dYdX, SushiSwap) with average accuracy scores of 0.85+.
+- **Advanced voting** — Ranked choice (IRV), futarchy with LMSR prediction markets, liquid delegation with decay, plus 12 standard governance rules.
+- **Multi-tier RL** — Tabular Q-learning, DQN with target networks, policy gradient (REINFORCE), hierarchical options framework, and federated shared learning.
+- **LLM-powered agents** — Ollama-backed agents with prompt templates, response caching, agent memory, and hybrid/full LLM voting modes.
+- **Data pipeline** — Deterministic schedulers, seeded RNG, CSV/JSON exports, and in-browser data export with annotations and alerts.
+- **Academic paper** — 35-page research paper with comprehensive results, statistical analysis, and reproducibility documentation.
 
 ## Research Experiments
 
@@ -72,20 +73,42 @@ See `docs/EXAMPLES.md` for full details on each scenario, output expectations, a
 - **E2E tests**: `npm run test:e2e` spins up the dashboard, ensures the landing page renders, basic a11y guarantees, and that the REST API responds deterministically. The Playwright server now reuses the dev server on port 7884 to avoid port mismatches.
 - **Linting**: `npm run lint` (ESLint + Next core web vitals). Coverage artifacts are ignored to keep the tree clean.
 
+## 3D Interactive Simulator
+
+The `/simulate` page features a full 3D skyscraper DAO visualization with 32 interactive features:
+
+**Visual Effects** — Delegation beams (purple lines connecting delegates), proposal lifecycle particles (cyan/green/red bursts), treasury vault pulse on large fund changes, black swan weather system (storm clouds, lightning, rain), agent movement trails.
+
+**Analytics** — CSV/JSON/events export, timeline annotations (double-click to add), metric threshold alerts with toast notifications, linear regression + moving average trend overlays, agent type voting correlation heatmap.
+
+**Simulation Depth** — Live parameter injection (change governance mid-run), agent inspector drill-down with token history sparkline, what-if branching from fork points, multi-run statistics with 95% confidence intervals (3/5/10 parallel workers), custom agent injection with configurable parameters.
+
+**UX** — Keyboard shortcuts (Space=play/pause, R=reset, 1-6=floor nav, ?=help), 7-step guided tutorial, mobile-responsive bottom sheet layout, permalink URL sharing, light/dark theme toggle, split-screen comparison mode.
+
 ## Architecture Overview
 
 ```
-app/                Next.js (App Router) pages, including dashboard UI
-components/         Visualization widgets (Recharts, R3F, UI primitives)
-lib/                Simulation engine, agents, treasury, marketing, events
-  |- engine/        Scheduler, simulation orchestration, collectors
+app/                Next.js (App Router) pages + API routes
+  |- [locale]/simulate/  3D interactive simulator (SimulationPageClient)
+components/
+  |- simulation/    3D simulator UI (32 features)
+  |  |- scene/      Three.js scene components (Building, AgentGroups, effects)
+  |  |- dashboard/  Metrics, charts, heatmap, delegation graph
+  |  `- research/   Batch experiment UI
+  `- visualizations/ Legacy dashboard widgets
+lib/
+  |- engine/        Simulation orchestration, data collector
+  |- agents/        27 agent types + learning infrastructure
+  |  `- learning/   RL tiers 1-3 (Q-learning, DQN, policy gradient, hierarchical)
+  |- browser/       Web Worker simulation, Zustand stores, protocols
   |- data-structures/ DAO, proposals, treasury, NFTs, etc.
-  `- utils/         Auth, redis-store, event bus, random utilities
-app/api/            REST endpoints (`/simulation`, `/simulation/data`, NextAuth)
-server.ts           Standalone Socket.IO server (start/stop/step/reset commands)
-examples/           Runnable scenario scripts + CLI runner
-tests/              Vitest suites
-legacy-python/      Archived Python implementation for reference
+  |- digital-twins/ Calibration loader, governance mapping
+  |- research/      Experiment runner, backtest runner, counterfactual runner
+  |- llm/           Ollama client, prompt templates, response cache, agent memory
+  `- utils/         Governance plugins, voting strategies, event bus, RNG
+experiments/paper/  12 YAML experiment configs for reproducible research
+tests/              784 Vitest unit tests
+python/             Calibration data ingestion scripts
 ```
 
 ## Deployment Notes
