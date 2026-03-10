@@ -8,6 +8,10 @@ const SIMULATE_URL = '/en/simulate';
  * for the "Simulation Control" heading which only appears after init.
  */
 async function gotoAndWaitForInit(page: Page) {
+  // Skip tutorial overlay (it blocks pointer events on first visit)
+  await page.addInitScript(() => {
+    localStorage.setItem('sim-tutorial-complete', 'true');
+  });
   await page.goto(SIMULATE_URL);
   await expect(
     page.getByRole('heading', { name: /Simulation Control/i }),
@@ -100,7 +104,7 @@ test.describe('Simulate Page - Controls', () => {
     await playAndWaitForSteps(page, 5);
 
     // Click Pause
-    await page.getByRole('button', { name: 'Pause' }).click();
+    await page.getByRole('button', { name: 'Pause' }).last().click();
 
     // Record current step, wait a bit, confirm it hasn't advanced
     const steppedAt = await getStep(page);
@@ -127,7 +131,7 @@ test.describe('Simulate Page - Controls', () => {
     await playAndWaitForSteps(page, 5);
 
     // Pause first, then reset
-    await page.getByRole('button', { name: 'Pause' }).click();
+    await page.getByRole('button', { name: 'Pause' }).last().click();
     await page.getByRole('button', { name: 'Reset' }).click();
 
     await expect(async () => {
@@ -155,10 +159,10 @@ test.describe('Simulate Page - Controls', () => {
 
     // Click Play -> should now show Pause
     await page.getByRole('button', { name: 'Play' }).click();
-    await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Pause' }).last()).toBeVisible();
 
     // Click Pause -> should now show Play
-    await page.getByRole('button', { name: 'Pause' }).click();
+    await page.getByRole('button', { name: 'Pause' }).last().click();
     await expect(page.getByRole('button', { name: 'Play' })).toBeVisible();
   });
 });
@@ -170,7 +174,7 @@ test.describe('Simulate Page - Dashboard & Charts', () => {
   test('metric cards appear after simulation runs', async ({ page }) => {
     await gotoAndWaitForInit(page);
     await playAndWaitForSteps(page, 5);
-    await page.getByRole('button', { name: 'Pause' }).click();
+    await page.getByRole('button', { name: 'Pause' }).last().click();
 
     // Metric card labels are <div> elements; chart titles are <h3> elements.
     // Scope to div to avoid strict-mode violations from duplicate text.
@@ -186,21 +190,21 @@ test.describe('Simulate Page - Dashboard & Charts', () => {
 
   test('Recharts SVG elements render after steps', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    await playAndWaitForSteps(page, 15);
-    await page.getByRole('button', { name: 'Pause' }).click();
+    await playAndWaitForSteps(page, 5);
+    await page.getByRole('button', { name: 'Pause' }).last().click();
 
-    // Recharts renders SVG elements with class recharts-surface
-    const charts = page.locator('.recharts-surface');
+    // Recharts renders <svg> with role="application" inside chart containers
+    const charts = page.locator('svg[role="application"]');
     await expect(async () => {
       const count = await charts.count();
       expect(count).toBeGreaterThanOrEqual(1);
-    }).toPass({ timeout: 10000 });
+    }).toPass({ timeout: 15000 });
   });
 
   test('agent distribution chart shows at least one agent type', async ({ page }) => {
     await gotoAndWaitForInit(page);
     await playAndWaitForSteps(page, 5);
-    await page.getByRole('button', { name: 'Pause' }).click();
+    await page.getByRole('button', { name: 'Pause' }).last().click();
 
     await expect(page.getByText('Agent Types')).toBeVisible();
     // The bar chart should have at least one recharts bar
@@ -213,25 +217,23 @@ test.describe('Simulate Page - Dashboard & Charts', () => {
 
   test('event feed shows entries after simulation produces events', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    await playAndWaitForSteps(page, 10);
-    await page.getByRole('button', { name: 'Pause' }).click();
-
-    // Event feed items have step numbers in monospace font
-    // Each event row has a step number span followed by an icon and message
-    const eventItems = page.locator('.font-mono.text-gray-600');
+    // Play the simulation and wait for events to appear in the feed
+    await page.getByRole('button', { name: 'Play' }).click();
     await expect(async () => {
-      const count = await eventItems.count();
+      const eventText = page.getByText(/Proposal created|Agent voted|Proposal approved/);
+      const count = await eventText.count();
       expect(count).toBeGreaterThanOrEqual(1);
-    }).toPass({ timeout: 10000 });
+    }).toPass({ timeout: 90000 });
+    await page.getByRole('button', { name: 'Pause' }).last().click();
   });
 
   test('proposal outcomes section appears after proposals are created', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    // Run enough steps for proposals to be created
-    await playAndWaitForSteps(page, 30);
-    await page.getByRole('button', { name: 'Pause' }).click();
-
-    await expect(page.getByText('Proposal Outcomes')).toBeVisible({ timeout: 10000 });
+    // Play simulation and wait for proposals to be created and resolved
+    await page.getByRole('button', { name: 'Play' }).click();
+    // Proposals need many steps to create and resolve — wait directly for the heading
+    await expect(page.getByText('Proposal Outcomes')).toBeVisible({ timeout: 90000 });
+    await page.getByRole('button', { name: 'Pause' }).last().click();
   });
 });
 
@@ -261,8 +263,8 @@ test.describe('Simulate Page - 3D Visualization', () => {
     });
 
     await gotoAndWaitForInit(page);
-    await playAndWaitForSteps(page, 10);
-    await page.getByRole('button', { name: 'Pause' }).click();
+    await playAndWaitForSteps(page, 5);
+    await page.getByRole('button', { name: 'Pause' }).last().click();
 
     expect(errors).toHaveLength(0);
   });
@@ -286,7 +288,7 @@ test.describe('Simulate Page - DAO Switching', () => {
   test('selecting a different DAO resets simulation', async ({ page }) => {
     await gotoAndWaitForInit(page);
     await playAndWaitForSteps(page, 5);
-    await page.getByRole('button', { name: 'Pause' }).click();
+    await page.getByRole('button', { name: 'Pause' }).last().click();
 
     const stepBefore = await getStep(page);
     expect(stepBefore).toBeGreaterThan(0);

@@ -17,7 +17,6 @@ const { spawn } = require('child_process');
 const http = require('http');
 
 const DEV_URL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:7884';
-const WS_URL = 'http://localhost:8003/health';
 const MAX_WAIT_MS = 120000; // 2 minutes max wait for servers
 
 const processes = [];
@@ -105,26 +104,14 @@ async function main() {
   process.on('exit', cleanup);
 
   try {
-    // Check if servers are already running
+    // Check if dev server is already running
     const devReady = await checkUrl(DEV_URL);
-    const wsReady = await checkUrl(WS_URL);
 
-    if (devReady && wsReady) {
-      log('Servers already running, skipping startup');
+    if (devReady) {
+      log('Dev server already running, skipping startup');
     } else {
-      // Start servers
-      if (!devReady) {
-        startProcess('npm', ['run', 'dev'], 'next-dev');
-      }
-      if (!wsReady) {
-        startProcess('npm', ['run', 'server'], 'websocket');
-      }
-
-      // Wait for servers to be ready
-      await Promise.all([
-        devReady ? Promise.resolve() : waitForServer(DEV_URL, 'Next.js dev server'),
-        wsReady ? Promise.resolve() : waitForServer(WS_URL, 'WebSocket server'),
-      ]);
+      startProcess('npm', ['run', 'dev'], 'next-dev');
+      await waitForServer(DEV_URL, 'Next.js dev server');
     }
 
     log('Running Playwright tests...');

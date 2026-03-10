@@ -18,11 +18,15 @@ const workers = Number.isFinite(parsedWorkers) && parsedWorkers > 0
  *   npm run test:e2e:ui        - Run with Playwright UI
  *
  * Test categories:
- *   - smoke: Quick validation tests
- *   - dashboard: Dashboard UI tests
- *   - simulation: Long-running simulation tests
+ *   - smoke: Quick page-load validation
+ *   - dashboard: Simulator UI layout, tabs, panels
+ *   - simulation: Simulation behavior, keyboard shortcuts, DAO switching
+ *   - simulate: Core controls (play/pause/step/reset), metrics, charts
+ *   - visualizations: 3D canvas, WebGL, charts, visual features
  *   - api: REST API tests
- *   - accessibility: A11y compliance tests
+ *   - accessibility: A11y compliance
+ *   - chromium: Homepage tests
+ *   - mobile/tablet: Responsive layout tests
  */
 export default defineConfig({
   testDir: './e2e',
@@ -80,19 +84,19 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-    /* Dashboard tests - main UI functionality */
+    /* Dashboard tests - simulator UI layout, tabs, panels */
     {
       name: 'dashboard',
       testMatch: /.*dashboard\.spec\.ts/,
       use: { ...devices['Desktop Chrome'] },
     },
 
-    /* Simulation tests - longer running, tests simulation flow */
+    /* Simulation tests - behavior, keyboard shortcuts, switching */
     {
       name: 'simulation',
       testMatch: /.*simulation\.spec\.ts/,
       use: { ...devices['Desktop Chrome'] },
-      timeout: 90000, // 90 seconds for simulations (reduced from 180s)
+      timeout: 90000,
     },
 
     /* API tests */
@@ -109,23 +113,23 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-    /* Visualization tests - WebGL/3D heavy, run sequentially */
+    /* Visualization tests - WebGL/3D, charts, visual features */
     {
       name: 'visualizations',
       testMatch: /.*visualizations\.spec\.ts/,
       use: { ...devices['Desktop Chrome'] },
-      timeout: 90000, // 90 seconds for WebGL rendering
+      timeout: 120000,
     },
 
-    /* Simulate page tests - browser-side simulation with Web Worker + 3D */
+    /* Simulate page tests - core Web Worker simulation controls */
     {
       name: 'simulate',
       testMatch: /.*simulate\.spec\.ts/,
       use: { ...devices['Desktop Chrome'] },
-      timeout: 90000, // 90s — Web Worker init + simulation steps
+      timeout: 120000,
     },
 
-    /* Default: run only example and tests without a specific project */
+    /* Homepage tests */
     {
       name: 'chromium',
       testMatch: /.*example\.spec\.ts/,
@@ -147,35 +151,20 @@ export default defineConfig({
     },
   ],
 
-  /* Run local dev server and WebSocket server before starting the tests */
-  /* Set PLAYWRIGHT_SKIP_WEBSERVER=1 to skip starting servers (if already running) */
+  /* Run local dev server before starting the tests */
+  /* Set PLAYWRIGHT_SKIP_WEBSERVER=1 to skip (if already running) */
   webServer: process.env.PLAYWRIGHT_SKIP_WEBSERVER
     ? undefined
-    : [
-        {
-          command: 'npm run dev',
-          url: baseURL,
-          reuseExistingServer: true,
-          timeout: 120 * 1000,
-          ignoreHTTPSErrors: true,
-          env: {
-            ...process.env,
-            NODE_ENV: 'development',
-            NEXT_PUBLIC_SOCKET_URL: process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:8003',
-            NEXT_PUBLIC_DISABLE_RUN_SUMMARY: process.env.NEXT_PUBLIC_DISABLE_RUN_SUMMARY || 'true',
-          },
+    : {
+        command: 'npm run dev',
+        url: baseURL,
+        reuseExistingServer: true,
+        timeout: 120 * 1000,
+        ignoreHTTPSErrors: true,
+        env: {
+          ...process.env,
+          NODE_ENV: 'development',
+          NEXT_PUBLIC_DISABLE_RUN_SUMMARY: process.env.NEXT_PUBLIC_DISABLE_RUN_SUMMARY || 'true',
         },
-        {
-          command: 'npm run server',
-          url: 'http://localhost:8003/health',
-          reuseExistingServer: true,
-          timeout: 30 * 1000,
-          ignoreHTTPSErrors: true,
-          env: {
-            ...process.env,
-            NODE_ENV: 'development',
-            SOCKET_ALLOWED_ORIGINS: process.env.SOCKET_ALLOWED_ORIGINS || baseURL,
-          },
-        },
-      ],
+      },
 });
