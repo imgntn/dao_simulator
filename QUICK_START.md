@@ -2,107 +2,135 @@
 
 ## Running the DAO Simulator
 
-The DAO Simulator consists of two parts:
-1. **Next.js Dashboard** - Web interface (port 7884)
-2. **WebSocket Server** - Real-time simulation engine (port 8003)
+The DAO Simulator is a single Next.js application. The simulation engine runs entirely in the browser via a Web Worker — no separate server process is needed.
 
-### Option 1: Run Both Services (Recommended)
+### Start the App
 
-Open **two terminal windows**:
-
-**Terminal 1 - Next.js Dashboard:**
 ```bash
+npm install
 npm run dev
 ```
-This starts the dashboard at http://localhost:7884
 
-**Terminal 2 - WebSocket Server:**
-```bash
-npm run server              # starts the WebSocket server only
-# Optional: AUTO_START_SIMULATION=true npm run server  # auto-start the sim loop
-```
-By default the server waits for a start command (from the dashboard controls or a Socket.IO client). Use the `AUTO_START_SIMULATION` flag or `--auto-start` CLI flag if you want it running immediately in local dev. The server listens on http://localhost:8003. When Redis is configured (`USE_REDIS=true`), the server will rehydrate the last saved run on startup (`SOCKET_SIM_ID`, default `socket_sim`).
-
-### Option 2: Use the Dashboard Without WebSocket
-
-If you just want to explore the UI without real-time updates:
-```bash
-npm run dev
-```
 Visit http://localhost:7884
 
-The dashboard will show "Disconnected" but you can still explore the interface.
+> Requires Node.js 22+ (Next.js 16).
 
-## What Changed
+### Launch the 3D Simulator
 
-### Port Changes
-- **Dashboard**: Changed from port 3000 to **7884** (more unique)
-- **WebSocket Server**: Runs on port **8003** (matches dashboard expectation)
+1. Visit http://localhost:7884
+2. Click **"Launch Simulator"** (or go directly to http://localhost:7884/simulate)
+3. Use the transport controls: **Play / Pause / Step / Reset**
+4. Select a DAO preset (14 real-world DAOs) and governance rule
+5. Watch agents vote, propose, and trade in the 3D skyscraper visualization
 
-### UI Changes
-- Removed technologies list from front page
-- Moved API docs link to dashboard header (for logged-in users)
-- Cleaner landing page
+The simulation runs in a Web Worker off the main thread — the 3D visualization stays responsive while the engine processes steps in the background.
 
-### New Files
-- `server.ts` - WebSocket server for real-time simulation updates
-- `QUICK_START.md` - This file
+## What You'll See
 
-## Troubleshooting
+- **3D Skyscraper** — agents organized by type across floors, with delegation beams, proposal particles, treasury pulse, and black swan weather effects
+- **Metrics Dashboard** — real-time treasury, token price, members, proposals, Gini coefficient, and participation rate
+- **Charts** — sparklines with trend overlays, agent type distribution, proposal outcomes
+- **Event Feed** — live stream of proposals created, votes cast, and outcomes
+- **Controls** — speed slider, DAO preset selector, governance rule dropdown, forum/black swan toggles
 
-### "Disconnected" status on dashboard
-- Make sure the WebSocket server is running: `npm run server`
-- Check that port 8003 is not blocked by firewall
-- Verify the server is running: look for "WebSocket server running on port 8003"
+## Configuration
 
-### Simulation not starting
-- The server now waits for a start command; click **Start** in the dashboard or run with `AUTO_START_SIMULATION=true npm run server`
-- You should see updates every 0.5 seconds (2 steps per second) once running
-- Check the terminal running `npm run server` for error messages
+| Setting | Description |
+|---------|-------------|
+| DAO Preset | Choose from 14 calibrated DAOs (Aave, Uniswap, Compound, etc.) |
+| Governance Rule | Simple Majority, Quadratic Voting, Conviction, and more |
+| Forum | Toggle forum simulation for sentiment effects |
+| Black Swans | Enable stochastic crisis events |
+| Speed | 1-60 steps/sec |
 
-### Port already in use
-- Dashboard (7884): Change port in `package.json` scripts
-- WebSocket (8003): Run with custom port: `npx tsx server.ts --port 8004`
+## Keyboard Shortcuts
 
-## API Endpoints
+| Key | Action |
+|-----|--------|
+| `Space` | Play / Pause |
+| `→` or `.` | Step forward |
+| `R` | Reset |
+| `1-6` | Navigate to floor |
+| `?` | Toggle help overlay |
+| `Esc` | Clear time-travel |
 
-The REST API is still available at http://localhost:7884/api/simulation
+## Example Scenarios
 
-See the API docs link in the dashboard header for details.
-
-## Architecture
-
-```
-Browser (Dashboard)
-    |-- HTTP --> Next.js (port 7884)
-    |            \__ REST API
-    |
-    \-- WebSocket --> server.ts (port 8003) --> DAO Simulation Engine
-```
-
-## Next Steps
-
-1. Start both servers (dashboard + websocket)
-2. Visit http://localhost:7884
-3. Click "Launch Dashboard"
-4. Start the simulation (dashboard controls or `AUTO_START_SIMULATION=true npm run server`)
-
-The simulation will:
-- Create agents (developers, investors, validators, etc.)
-- Generate proposals
-- Process votes
-- Update token prices
-- Broadcast updates to the dashboard
-
-## Example Suite
-
-Run any of the TypeScript demos with:
+Run headless simulations from the command line:
 
 ```bash
 npm run examples -- --scenario=basic
 npm run examples -- --scenario=market-shock
 npm run examples -- --scenario=governance
-npm run examples -- --scenario=all   # sequentially
+npm run examples -- --scenario=all
 ```
 
-See `docs/EXAMPLES.md` for details on what each scenario prints and how to author new ones.
+See `docs/EXAMPLES.md` for details on each scenario.
+
+## Research Experiments
+
+Run reproducible governance experiments:
+
+```bash
+npm run experiment -- experiments/paper/00-academic-baseline.yaml --runs 100
+npm run experiment -- experiments/paper/04-governance-capture-mitigations.yaml --runs 100 -c 4
+```
+
+See `experiments/paper/` for all 12 experiment configurations.
+
+## Testing
+
+```bash
+npm run test         # 784 Vitest unit tests
+npm run test:e2e     # 138 Playwright e2e tests (10 projects)
+npm run lint         # ESLint
+```
+
+## API Endpoints
+
+The REST API is available at http://localhost:7884/api/simulation
+
+```bash
+# List simulations
+curl http://localhost:7884/api/simulation
+
+# Create simulation (requires API key)
+curl -X POST http://localhost:7884/api/simulation \
+  -H "X-API-Key: your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{"num_developers": 10, "num_investors": 5}'
+```
+
+## Architecture
+
+```
+Browser
+    |-- HTTP --> Next.js (port 7884)
+    |            \__ REST API (/api/simulation)
+    |            \__ App pages (/, /simulate)
+    |
+    \-- Web Worker --> Simulation Engine (client-side, off main thread)
+```
+
+## Troubleshooting
+
+### Simulation not starting
+- Make sure the dev server is running: `npm run dev`
+- Check that http://localhost:7884 loads
+- Open browser console for error messages
+
+### Port already in use
+- Change port in `package.json` scripts or use: `PORT=7885 npm run dev`
+
+### 3D scene not rendering
+- Ensure your browser supports WebGL (all modern browsers do)
+- Check browser console for WebGL context errors
+- Try a hard refresh (Ctrl+Shift+R)
+
+## Next Steps
+
+1. Explore the 3D simulator at `/simulate`
+2. Try different DAO presets and governance rules
+3. Run research experiments from the CLI
+4. Check `paper/` for the full research paper
+5. See `DEPLOYMENT.md` for production deployment

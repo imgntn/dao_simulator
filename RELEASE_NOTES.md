@@ -1,5 +1,34 @@
 # Release Notes
 
+## 2025-10-21
+
+### E2E Test Suite Rewrite (138 Tests)
+
+Rewrote the entire Playwright e2e test suite to match the current 3D simulator UI architecture. Tests now target the Web Worker-based `/en/simulate` page instead of the defunct Socket.IO dashboard.
+
+**10 Test Projects:**
+- `smoke` — page load validation (homepage + simulate page)
+- `dashboard` — simulator UI layout, tabs, panels, sidebar
+- `simulation` — behavior, keyboard shortcuts, DAO switching, time-travel
+- `simulate` — core controls (play/pause/step/reset), metrics, charts, event feed, proposal outcomes
+- `visualizations` — 3D canvas, WebGL, renderer badge, charts, delegation graph, theme toggle
+- `api` — REST API endpoints (GET/POST/deterministic seeding)
+- `accessibility` — ARIA landmarks, heading hierarchy, color contrast, form labels, focus management
+- `chromium` — homepage tests
+- `mobile` — responsive layout (375px, 320px viewports)
+- `tablet` — responsive layout (768px viewport)
+
+**Key fixes:**
+- Tutorial overlay bypass via `localStorage.setItem('sim-tutorial-complete', 'true')` in `addInitScript`
+- Pause button strict-mode fix (`.last()` to disambiguate transport vs EventFeed Pause)
+- Canvas lazy rendering — R3F `<Canvas>` only mounts after simulation produces snapshots
+- Mobile step counter — not visible at 375px, uses timeout-based wait instead of step counting
+- Recharts selector — `svg[role="application"]` instead of `.recharts-surface`
+- Event feed selector — text-based matching instead of old CSS class selectors
+- DelegationGraph conditional render — component returns null without snapshot data
+
+**Files changed:** 10 e2e spec files, `playwright.config.ts`, `scripts/test-e2e.js`
+
 ## 2025-10-20
 
 ### 20 Interactive Simulator Features

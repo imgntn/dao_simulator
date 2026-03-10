@@ -98,8 +98,9 @@ New `.env.example` file created with:
 
 ## Testing Status
 
-- **E2E Tests**: Updated to match actual application
-- **Linting**: 5 acceptable warnings (interface parameters)
+- **Unit Tests**: 784 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, and LLM integration
+- **E2E Tests**: 138 Playwright tests across 10 projects (smoke, dashboard, simulation, controls, visualizations, API, accessibility, responsive, homepage) — all targeting the Web Worker-based 3D simulator at `/en/simulate`
+- **Linting**: Clean ESLint runs (flat config + Next core web vitals)
 - **Build**: Ready for production
 
 ## Production Deployment Checklist

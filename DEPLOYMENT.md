@@ -116,17 +116,6 @@ services:
 docker-compose up -d
 ```
 
-## Running `server.ts` (Socket.IO) in Production
-
-The WebSocket broadcaster is a separate process from Next.js. Pick one of these approaches:
-
-- **Keep `tsx` available**: install it in production or keep dev deps (`npm install --production=false`) and run `node --loader tsx server.ts --port 8003`.
-- **Precompile (recommended)**: `npm run server:build` (uses `tsconfig.server.json`) then start with `npm run server:start -- --port 8003`.
-
-Run it under a supervisor (pm2/systemd/Railway worker) alongside the Next.js app. If you use a custom `PORT` for Next.js, keep the Socket.IO port separate (default 8003).
-
-If `API_KEY` is set, pass it to the dashboard via `NEXT_PUBLIC_SOCKET_API_KEY`. Set `SOCKET_ALLOWED_ORIGINS` (comma-separated) or `NEXTAUTH_URL` so browser connections are limited to trusted origins.
-
 ## 🔑 Generating Secure Keys
 
 ```bash
@@ -240,16 +229,15 @@ redis-cli KEYS "dao-sim:*"
 | API_KEY | Yes* | - | API authentication key |
 | NEXTAUTH_SECRET | Yes | - | NextAuth JWT secret |
 | NEXTAUTH_URL | Yes | - | App URL for OAuth |
-| NEXT_PUBLIC_SOCKET_URL | Yes | - | Dashboard Socket.IO URL |
-| NEXT_PUBLIC_SOCKET_API_KEY | Yes* | - | Dashboard Socket.IO auth key |
-| SOCKET_ALLOWED_ORIGINS | Yes | - | Socket.IO CORS allowlist |
 | ADMIN_USERNAME | No | admin | Admin login username |
 | ADMIN_PASSWORD | Yes | - | Admin login password |
 | REDIS_URL | No | - | Redis connection string |
 | USE_REDIS | No | false | Enable Redis storage |
 | NODE_ENV | No | development | Environment mode |
 
-*In development, API_KEY is optional (bypassed). When API_KEY is set, NEXT_PUBLIC_SOCKET_API_KEY should match it for the dashboard.
+*In development, API_KEY is optional (bypassed).
+
+> **Note:** The simulation engine runs entirely client-side in a Web Worker. No separate server process or Socket.IO configuration is needed.
 
 ## 🎉 Success!
 

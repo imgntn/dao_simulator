@@ -1,18 +1,17 @@
 # DAO Simulator
 
-Modern TypeScript/Next.js environment for experimenting with decentralized governance. The repository contains a headless simulation engine, a 3D interactive browser simulator, WebSocket broadcaster, REST API, a research experiment framework, and historical calibration against 14 real-world DAOs.
+Modern TypeScript/Next.js environment for experimenting with decentralized governance. The repository contains a headless simulation engine, a 3D interactive browser simulator, REST API, a research experiment framework, and historical calibration against 14 real-world DAOs.
 
 ## Quick Start
 
 ```bash
 npm install
 npm run dev        # Next.js app on http://localhost:7884
-npm run server     # Socket.IO simulation stream on http://localhost:8003
 ```
 
 Requires Node.js 22+ (Next.js 16).
 
-Open [http://localhost:7884/simulate](http://localhost:7884/simulate) to launch the 3D interactive simulator. Use play/pause/step/reset to drive the simulation in real-time with the skyscraper DAO visualization.
+Open [http://localhost:7884/simulate](http://localhost:7884/simulate) to launch the 3D interactive simulator. The simulation engine runs in a Web Worker off the main thread — use play/pause/step/reset to drive it in real-time with the skyscraper DAO visualization.
 
 ## Highlights
 
@@ -47,10 +46,9 @@ See `paper/` for the full research paper and `experiments/paper/` for all experi
 
 | Script | Description |
 | --- | --- |
-| `npm run dev` | Next.js dashboard (Turbopack) on port **7884** |
-| `npm run server` | Standalone Socket.IO simulation broadcaster on port **8003** (send start command from dashboard, or set `AUTO_START_SIMULATION=true` to auto-run) |
-| `npm run test` | Vitest unit suite with coverage (data collector + in-memory store) |
-| `npm run test:e2e` | Playwright UI/API smoke tests (Chromium) |
+| `npm run dev` | Next.js app (Turbopack) on port **7884** |
+| `npm run test` | Vitest unit suite with coverage (784 tests) |
+| `npm run test:e2e` | Playwright e2e suite — 138 tests across 10 projects (smoke, dashboard, simulation, controls, visualizations, API, accessibility, responsive, homepage) |
 | `npm run lint` | ESLint (flat config) |
 | `npm run examples -- --scenario=<name>` | Run a TypeScript example (`basic`, `market-shock`, `governance`, or `all`) via `tsx` |
 | `npm run experiment -- <config.yaml>` | Run research experiment with specified configuration |
@@ -69,8 +67,8 @@ See `docs/EXAMPLES.md` for full details on each scenario, output expectations, a
 
 ## Testing & Quality
 
-- **Unit tests**: `npm run test` exercises the data collector's rolling history plus the in-memory simulation store; Vitest runs in Node with coverage via V8.
-- **E2E tests**: `npm run test:e2e` spins up the dashboard, ensures the landing page renders, basic a11y guarantees, and that the REST API responds deterministically. The Playwright server now reuses the dev server on port 7884 to avoid port mismatches.
+- **Unit tests**: `npm run test` — 784 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, and LLM integration. V8 coverage enabled.
+- **E2E tests**: `npm run test:e2e` — 138 Playwright tests across 10 projects: smoke (page load), dashboard (UI layout/tabs/panels), simulation (behavior/keyboard shortcuts/DAO switching), simulate (play/pause/step/reset/metrics/charts), visualizations (3D canvas/WebGL/charts/delegation graph/theme), API (REST endpoints), accessibility (a11y compliance), responsive (mobile/tablet/orientation/touch), and homepage tests. Reuses the dev server on port 7884.
 - **Linting**: `npm run lint` (ESLint + Next core web vitals). Coverage artifacts are ignored to keep the tree clean.
 
 ## 3D Interactive Simulator
@@ -115,8 +113,7 @@ python/             Calibration data ingestion scripts
 
 - Set `NEXTAUTH_SECRET`, `API_KEY`, and `ADMIN_*` creds before deploying.
 - Use `REDIS_URL` + `USE_REDIS=true` to persist simulations/checkpoints server-side; otherwise the system falls back to the in-memory store (suitable for local dev only).
-- `AUTO_START_SIMULATION` controls whether the Socket.IO server starts the loop immediately; `REHYDRATE_ON_START` (default true) attempts to reload the last stored simulation (`SOCKET_SIM_ID`, default `socket_sim`) from Redis on boot so stepping can resume after restarts.
-- Set `SOCKET_ALLOWED_ORIGINS` (comma-separated) or `NEXTAUTH_URL` so the Socket.IO server only accepts browser connections from trusted origins.
+- The simulation engine runs entirely client-side in a Web Worker — no separate server process is needed.
 - See `DEPLOYMENT.md` for Railway/Vercel/docker instructions plus the security checklist.
 
 ## Development

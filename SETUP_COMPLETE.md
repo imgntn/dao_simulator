@@ -42,8 +42,8 @@ Your DAO Simulator is now **production-ready** with all 8 recommendations fully 
 - 5 acceptable warnings (intentional interface params)
 
 #### 7. **Testing** ✅
-- Updated E2E tests for actual landing page
-- Removed temporary CSV files
+- 784 Vitest unit tests (simulation engine, agents, learning, calibration, voting, LLM)
+- 138 Playwright e2e tests across 10 projects (smoke, dashboard, simulation, controls, visualizations, API, accessibility, responsive, homepage)
 - All endpoints tested and verified
 
 ### 🚀 Quick Start
@@ -67,10 +67,8 @@ curl http://localhost:7884/api/simulation/data?id=sim_xxx&format=csv
 
 #### Access the Dashboard:
 1. Visit http://localhost:7884
-2. Click "Launch Dashboard"
-3. Login with:
-   - **Username**: `admin`
-   - **Password**: `daosim2024!`
+2. Click **"Launch Simulator"** (or go to http://localhost:7884/simulate)
+3. Use Play/Pause/Step/Reset to drive the simulation
 
 ### 📁 Files Added/Modified
 
@@ -127,9 +125,10 @@ Your `.env.local` is configured with:
 
 #### For Development:
 ```bash
-npm run dev          # Already running!
-npm run test:e2e     # Run Playwright tests
-npm run lint         # Check code quality
+npm run dev          # Next.js app on http://localhost:7884
+npm run test         # 784 Vitest unit tests
+npm run test:e2e     # 138 Playwright e2e tests
+npm run lint         # ESLint
 ```
 
 #### For Production:
