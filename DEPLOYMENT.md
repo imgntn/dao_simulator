@@ -56,6 +56,11 @@ railway variables set NODE_ENV=production
    - Copy REDIS_URL from plugin
    - Set `USE_REDIS=true`
 
+4. **Add PostgreSQL** (optional, for analytics):
+   - `railway add -d postgres` or add via dashboard
+   - `DATABASE_URL` is set automatically
+   - Analytics runs without it (graceful no-op)
+
 4. **Deploy**:
 ```bash
 railway up
@@ -233,6 +238,7 @@ redis-cli KEYS "dao-sim:*"
 | ADMIN_PASSWORD | Yes | - | Admin login password |
 | REDIS_URL | No | - | Redis connection string |
 | USE_REDIS | No | false | Enable Redis storage |
+| DATABASE_URL | No | - | PostgreSQL connection string (analytics) |
 | NODE_ENV | No | development | Environment mode |
 
 *In development, API_KEY is optional (bypassed).

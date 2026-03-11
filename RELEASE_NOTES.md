@@ -1,5 +1,29 @@
 # Release Notes
 
+## 2026-03-10
+
+### Local GDPR-Friendly Analytics
+
+Added fully local, privacy-first analytics to the DAO Simulator. No cookies, no PII, no IP logging, no third-party analytics services. All data is aggregate daily counters stored in self-hosted PostgreSQL.
+
+**New files:**
+- `lib/analytics/events.ts` — 12 event name constants
+- `lib/analytics/store.ts` — PostgreSQL-backed store with auto-table creation, upsert, stats query, and retention cleanup
+- `app/api/analytics/route.ts` — POST (record event, 204) and GET (auth-protected stats)
+- `components/analytics/AnalyticsProvider.tsx` — Client provider with pageview tracking, referrer extraction, device detection, and `useAnalytics()` hook
+
+**Tracked events:**
+- Page views (path, referrer domain, device category)
+- Simulation started, reset
+- DAO preset selected, governance rule changed
+- CSV/JSON export
+
+**Infrastructure:**
+- `pg` (node-postgres) dependency added
+- `DATABASE_URL` env var — analytics gracefully disabled when not set
+- `AnalyticsProvider` wired into `app/[locale]/layout.tsx`
+- Event tracking wired into `ControlPanel.tsx` and `ExportButton.tsx`
+
 ## 2025-10-21
 
 ### E2E Test Suite Rewrite (138 Tests)

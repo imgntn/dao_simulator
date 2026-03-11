@@ -143,6 +143,19 @@
 | **3** | Hierarchical RL | Options framework (meta-policy + sub-policies) |
 | **3** | Opponent Modeling | Action frequency tracking + adjusted Q-values |
 
+## Local Analytics (GDPR-Friendly)
+
+| Feature | Description | File |
+|---------|-------------|------|
+| **Page View Tracking** | Aggregate daily counters per path, no PII | `AnalyticsProvider.tsx` |
+| **Event Tracking** | Simulation actions (play, reset, DAO select, export) | `ControlPanel.tsx`, `ExportButton.tsx` |
+| **Referrer Domains** | First-load referrer hostname only | `AnalyticsProvider.tsx` |
+| **Device Categories** | desktop/tablet/mobile from viewport width | `AnalyticsProvider.tsx` |
+| **Postgres Store** | Upsert counters per day/category/key | `lib/analytics/store.ts` |
+| **Stats API** | Auth-protected GET, public POST (no auth) | `app/api/analytics/route.ts` |
+
+Privacy: No cookies, no IP logging, no fingerprinting, no third-party services. All data is aggregate counters stored in self-hosted PostgreSQL.
+
 ## Historical Calibration
 
 | DAO | Accuracy Score | Key Metrics Calibrated |

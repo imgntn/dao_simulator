@@ -3,6 +3,8 @@
 import { useState, useMemo } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
 import type { BrowserSimConfig } from '@/lib/browser/worker-protocol';
+import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
+import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 import { AGENT_FLOORS, TYPE_COLOR_MAP, AGENT_TYPE_INFO, AGENT_FLOOR_MAP } from './scene/constants';
 
 const DAO_DISPLAY_NAMES: Record<string, string> = {
@@ -89,6 +91,7 @@ export function ControlPanel() {
     forkState,
   } = useSimulationStore();
 
+  const { trackEvent } = useAnalytics();
   const [agentsOpen, setAgentsOpen] = useState(false);
 
   const isRunning = status === 'running';
@@ -171,7 +174,14 @@ export function ControlPanel() {
       {/* Transport Controls */}
       <div className="flex gap-2">
         <button
-          onClick={isRunning ? pause : start}
+          onClick={() => {
+            if (isRunning) {
+              pause();
+            } else {
+              start();
+              trackEvent(ANALYTICS_EVENTS.SIMULATION_STARTED);
+            }
+          }}
           className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${
             isRunning
               ? 'bg-yellow-600 hover:bg-yellow-500 text-white'
@@ -188,7 +198,7 @@ export function ControlPanel() {
           Step
         </button>
         <button
-          onClick={reset}
+          onClick={() => { reset(); trackEvent(ANALYTICS_EVENTS.SIMULATION_RESET); }}
           disabled={!canInteract}
           className="px-3 py-2 rounded text-sm font-medium bg-[var(--sim-border)] hover:bg-[var(--sim-surface-hover)] disabled:opacity-40 disabled:cursor-not-allowed"
         >
@@ -226,7 +236,7 @@ export function ControlPanel() {
         <label className="block text-xs text-[var(--sim-text-muted)] mb-1">DAO Preset</label>
         <select
           value={selectedDao}
-          onChange={e => selectDao(e.target.value)}
+          onChange={e => { selectDao(e.target.value); trackEvent(`${ANALYTICS_EVENTS.DAO_SELECTED}:${e.target.value}`); }}
           className="w-full bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-3 py-1.5 text-sm focus:border-[var(--sim-accent-ring)] focus:outline-none"
         >
           {availableDaos.map(id => (
@@ -242,9 +252,10 @@ export function ControlPanel() {
         <label className="block text-xs text-[var(--sim-text-muted)] mb-1">Governance Rule</label>
         <select
           value={config.governanceRule ?? ''}
-          onChange={e =>
-            updateConfig({ governanceRule: e.target.value || undefined })
-          }
+          onChange={e => {
+            updateConfig({ governanceRule: e.target.value || undefined });
+            trackEvent(`${ANALYTICS_EVENTS.GOV_RULE_CHANGED}:${e.target.value || 'default'}`);
+          }}
           className="w-full bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-3 py-1.5 text-sm focus:border-[var(--sim-accent-ring)] focus:outline-none"
         >
           {GOVERNANCE_RULES.map(r => (

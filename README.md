@@ -23,6 +23,7 @@ Open [http://localhost:7884/simulate](http://localhost:7884/simulate) to launch 
 - **Multi-tier RL** — Tabular Q-learning, DQN with target networks, policy gradient (REINFORCE), hierarchical options framework, and federated shared learning.
 - **LLM-powered agents** — Ollama-backed agents with prompt templates, response caching, agent memory, and hybrid/full LLM voting modes.
 - **Data pipeline** — Deterministic schedulers, seeded RNG, CSV/JSON exports, and in-browser data export with annotations and alerts.
+- **Local analytics** — GDPR-friendly aggregate counters (page views, events, referrers, devices) stored in self-hosted PostgreSQL. No cookies, no PII, no third-party services.
 - **Academic paper** — 35-page research paper with comprehensive results, statistical analysis, and reproducibility documentation.
 
 ## Research Experiments
@@ -100,6 +101,7 @@ lib/
   |  `- learning/   RL tiers 1-3 (Q-learning, DQN, policy gradient, hierarchical)
   |- browser/       Web Worker simulation, Zustand stores, protocols
   |- data-structures/ DAO, proposals, treasury, NFTs, etc.
+  |- analytics/     GDPR-friendly local analytics (Postgres store, events)
   |- digital-twins/ Calibration loader, governance mapping
   |- research/      Experiment runner, backtest runner, counterfactual runner
   |- llm/           Ollama client, prompt templates, response cache, agent memory
@@ -113,6 +115,7 @@ python/             Calibration data ingestion scripts
 
 - Set `NEXTAUTH_SECRET`, `API_KEY`, and `ADMIN_*` creds before deploying.
 - Use `REDIS_URL` + `USE_REDIS=true` to persist simulations/checkpoints server-side; otherwise the system falls back to the in-memory store (suitable for local dev only).
+- Set `DATABASE_URL` for PostgreSQL analytics (optional — analytics is a no-op without it).
 - The simulation engine runs entirely client-side in a Web Worker — no separate server process is needed.
 - See `DEPLOYMENT.md` for Railway/Vercel/docker instructions plus the security checklist.
 

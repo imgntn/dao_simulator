@@ -6,6 +6,7 @@ import { getMessages, isValidLocale, locales, defaultLocale, ogLocaleMap } from 
 import type { Locale } from '@/lib/i18n';
 import { LocaleProvider } from '@/lib/i18n/locale-context';
 import { ThemeProvider } from '@/lib/theme/theme-context';
+import { AnalyticsProvider } from '@/components/analytics/AnalyticsProvider';
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
@@ -134,9 +135,11 @@ export default async function LocaleLayout({
         </a>
         <ThemeProvider>
           <LocaleProvider locale={locale} messages={m}>
-            <div id="main-content" tabIndex={-1} className="outline-none">
-              {children}
-            </div>
+            <AnalyticsProvider>
+              <div id="main-content" tabIndex={-1} className="outline-none">
+                {children}
+              </div>
+            </AnalyticsProvider>
           </LocaleProvider>
         </ThemeProvider>
       </body>

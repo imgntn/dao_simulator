@@ -2,9 +2,12 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
+import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
+import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 
 export function ExportButton() {
   const { history, config, annotations } = useSimulationStore();
+  const { trackEvent } = useAnalytics();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -46,7 +49,8 @@ export function ExportButton() {
 
     const csv = [headers.join(','), ...rows].join('\n');
     downloadBlob(csv, `sim-export-${config.daoId}-${Date.now()}.csv`, 'text/csv');
-  }, [history, config.daoId, downloadBlob]);
+    trackEvent(ANALYTICS_EVENTS.EXPORT_CSV);
+  }, [history, config.daoId, downloadBlob, trackEvent]);
 
   const exportJSON = useCallback(() => {
     if (history.length === 0) return;
@@ -70,7 +74,8 @@ export function ExportButton() {
       })),
     };
     downloadBlob(JSON.stringify(data, null, 2), `sim-export-${config.daoId}-${Date.now()}.json`, 'application/json');
-  }, [history, config, annotations, downloadBlob]);
+    trackEvent(ANALYTICS_EVENTS.EXPORT_JSON);
+  }, [history, config, annotations, downloadBlob, trackEvent]);
 
   const exportEvents = useCallback(() => {
     // Collect all events from history snapshots
