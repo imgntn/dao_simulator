@@ -24,6 +24,16 @@ Added fully local, privacy-first analytics to the DAO Simulator. No cookies, no 
 - `AnalyticsProvider` wired into `app/[locale]/layout.tsx`
 - Event tracking wired into `ControlPanel.tsx` and `ExportButton.tsx`
 
+### Daily Analytics Email Report
+
+Added daily email report via Zoho SMTP (Nodemailer). Summarizes page views, events, referrers, and devices over the last 7 days in a clean HTML table layout.
+
+- `lib/analytics/report.ts` — builds HTML email, sends via Nodemailer/Zoho SMTP
+- `app/api/analytics/report/route.ts` — auth-protected POST endpoint to trigger report
+- Default recipients: `hello@daosimulator.com`, `james@jamesbpollack.com`, `hello@playablefuture.com`
+- Env vars: `SMTP_USER`, `SMTP_PASS` (required), `SMTP_HOST`, `SMTP_PORT`, `REPORT_RECIPIENTS` (optional overrides)
+- Trigger via cron: `curl -X POST https://your-domain/api/analytics/report -H "X-API-Key: ..."`
+
 ## 2025-10-21
 
 ### E2E Test Suite Rewrite (138 Tests)

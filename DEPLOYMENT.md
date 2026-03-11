@@ -239,6 +239,8 @@ redis-cli KEYS "dao-sim:*"
 | REDIS_URL | No | - | Redis connection string |
 | USE_REDIS | No | false | Enable Redis storage |
 | DATABASE_URL | No | - | PostgreSQL connection string (analytics) |
+| SMTP_USER | No | - | Zoho SMTP email for analytics reports |
+| SMTP_PASS | No | - | Zoho SMTP password / app password |
 | NODE_ENV | No | development | Environment mode |
 
 *In development, API_KEY is optional (bypassed).
