@@ -8,15 +8,14 @@
 import fs from 'fs';
 import path from 'path';
 import type { ParsedBrief } from './content';
-
-const ROOT_DIR = process.cwd();
+import { projectPath } from '@/lib/utils/server-paths';
 
 // ---------------------------------------------------------------------------
 // File-system helpers
 // ---------------------------------------------------------------------------
 
 export function toPath(relativePath: string): string {
-  return path.join(ROOT_DIR, ...relativePath.split('/'));
+  return projectPath(...relativePath.split('/'));
 }
 
 export function readText(relativePath: string): string | null {

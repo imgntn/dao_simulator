@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import { NextResponse } from 'next/server';
+import { projectRoot, projectResolve } from '@/lib/utils/server-paths';
 
 export const runtime = 'nodejs';
 
-const ROOT_DIR = process.cwd();
 const ALLOWED_BASES = ['paper', 'results', 'docs'];
 
 const MIME_MAP: Record<string, string> = {
@@ -22,7 +22,7 @@ const MIME_MAP: Record<string, string> = {
 
 function isInsideAllowedRoots(absolutePath: string): boolean {
   return ALLOWED_BASES.some((baseDir) => {
-    const allowedRoot = path.resolve(ROOT_DIR, baseDir);
+    const allowedRoot = projectResolve(baseDir);
     return absolutePath === allowedRoot || absolutePath.startsWith(`${allowedRoot}${path.sep}`);
   });
 }
@@ -34,7 +34,7 @@ function resolveSafePath(slug: string[]): string | null {
     .filter((segment) => segment.length > 0);
 
   if (decoded.length === 0) return null;
-  const absolutePath = path.resolve(ROOT_DIR, ...decoded);
+  const absolutePath = projectResolve(...decoded);
   if (!isInsideAllowedRoots(absolutePath)) return null;
   return absolutePath;
 }

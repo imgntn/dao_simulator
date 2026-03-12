@@ -5,9 +5,8 @@ import { notFound } from 'next/navigation';
 import { PageShell } from '@/components/layout/PageShell';
 import { getMessages, isValidLocale, defaultLocale } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
+import { projectPath } from '@/lib/utils/server-paths';
 
-const ROOT_DIR = process.cwd();
-const RESULTS_DIR = path.join(ROOT_DIR, 'results');
 const MAX_FILE_BYTES = 200_000;
 
 function listResultFiles(dir: string): string[] {
@@ -53,7 +52,7 @@ export default async function ResultPage({
   const m = getMessages(locale);
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
 
-  const resultDir = path.join(RESULTS_DIR, name);
+  const resultDir = projectPath('results', name);
   if (!fs.existsSync(resultDir)) {
     notFound();
   }

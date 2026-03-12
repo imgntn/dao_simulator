@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { projectPath } from '@/lib/utils/server-paths';
 
 export const runtime = 'nodejs';
-
-const ROOT_DIR = process.cwd();
-const RESULTS_DIR = path.join(ROOT_DIR, 'results');
 
 export async function GET(
   _request: NextRequest,
@@ -16,8 +14,8 @@ export async function GET(
     const relativePath = id.join('/');
 
     // Path traversal protection
-    const resolved = path.resolve(RESULTS_DIR, relativePath);
-    if (!resolved.startsWith(path.resolve(RESULTS_DIR))) {
+    const resolved = path.resolve(projectPath('results'), relativePath);
+    if (!resolved.startsWith(path.resolve(projectPath('results')))) {
       return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
     }
 

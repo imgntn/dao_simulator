@@ -3,14 +3,9 @@ import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'yaml';
+import { projectRoot, projectPath } from '@/lib/utils/server-paths';
 
 export const runtime = 'nodejs';
-
-const ROOT_DIR = process.cwd();
-const EXPERIMENTS_DIR = path.join(ROOT_DIR, 'experiments');
-const RESULTS_DIR = path.join(ROOT_DIR, 'results');
-const LOG_DIR = path.join(ROOT_DIR, 'logs', 'research-ui');
-const CUSTOM_DIR = path.join(EXPERIMENTS_DIR, 'custom');
 
 function ensureDir(dir: string): void {
   if (!fs.existsSync(dir)) {
@@ -19,7 +14,7 @@ function ensureDir(dir: string): void {
 }
 
 function normalizePath(baseDir: string, relativePath: string): string {
-  const resolved = path.resolve(ROOT_DIR, relativePath);
+  const resolved = path.resolve(projectRoot(), relativePath);
   const base = path.resolve(baseDir);
   if (!resolved.startsWith(base)) {
     throw new Error(`Path is outside allowed directory: ${relativePath}`);
@@ -32,7 +27,7 @@ function normalizePath(baseDir: string, relativePath: string): string {
 
 function getTsxBinary(): string | null {
   const bin = path.join(
-    ROOT_DIR,
+    projectRoot(),
     'node_modules',
     '.bin',
     process.platform === 'win32' ? 'tsx.cmd' : 'tsx'
@@ -50,14 +45,14 @@ function spawnTsx(scriptPath: string, args: string[], logFile: string): number |
 
   if (tsxBin) {
     child = spawn(tsxBin, [scriptPath, ...args], {
-      cwd: ROOT_DIR,
+      cwd: projectRoot(),
       detached: true,
       stdio: ['ignore', logStream, logStream],
     });
   } else {
     const command = `npx tsx "${scriptPath}" ${args.map((arg) => `"${arg}"`).join(' ')}`;
     child = spawn(command, {
-      cwd: ROOT_DIR,
+      cwd: projectRoot(),
       detached: true,
       stdio: ['ignore', logStream, logStream],
       shell: true,
@@ -122,84 +117,84 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case 'run': {
-        const resolvedConfig = normalizePath(EXPERIMENTS_DIR, configPath);
-        const logFile = path.join(LOG_DIR, `run-${Date.now()}.log`);
+        const resolvedConfig = normalizePath(projectPath('experiments'), configPath);
+        const logFile = path.join(projectPath('logs', 'research-ui'), `run-${Date.now()}.log`);
         const pid = spawnTsx('scripts/experiment-manager.ts', ['run', resolvedConfig], logFile);
         return respond({
           action,
           target: configPath,
           pid: pid ? String(pid) : '',
-          log: path.relative(ROOT_DIR, logFile).replace(/\\/g, '/'),
+          log: path.relative(projectRoot(), logFile).replace(/\\/g, '/'),
         });
       }
       case 'run-custom': {
         if (!inlineConfig) {
           return NextResponse.json({ error: 'inlineConfig required for run-custom' }, { status: 400 });
         }
-        ensureDir(CUSTOM_DIR);
+        ensureDir(projectPath('experiments', 'custom'));
         const filename = `custom-${Date.now()}.yaml`;
-        const customPath = path.join(CUSTOM_DIR, filename);
+        const customPath = path.join(projectPath('experiments', 'custom'), filename);
         fs.writeFileSync(customPath, yaml.stringify(inlineConfig), 'utf8');
-        const logFile = path.join(LOG_DIR, `run-custom-${Date.now()}.log`);
+        const logFile = path.join(projectPath('logs', 'research-ui'), `run-custom-${Date.now()}.log`);
         const pid = spawnTsx('scripts/experiment-manager.ts', ['run', customPath], logFile);
         return respond({
           action,
           target: `experiments/custom/${filename}`,
           pid: pid ? String(pid) : '',
-          log: path.relative(ROOT_DIR, logFile).replace(/\\/g, '/'),
+          log: path.relative(projectRoot(), logFile).replace(/\\/g, '/'),
         });
       }
       case 'resume': {
-        const resolvedConfig = normalizePath(EXPERIMENTS_DIR, configPath);
-        const logFile = path.join(LOG_DIR, `resume-${Date.now()}.log`);
+        const resolvedConfig = normalizePath(projectPath('experiments'), configPath);
+        const logFile = path.join(projectPath('logs', 'research-ui'), `resume-${Date.now()}.log`);
         const pid = spawnTsx('scripts/experiment-manager.ts', ['resume', resolvedConfig], logFile);
         return respond({
           action,
           target: configPath,
           pid: pid ? String(pid) : '',
-          log: path.relative(ROOT_DIR, logFile).replace(/\\/g, '/'),
+          log: path.relative(projectRoot(), logFile).replace(/\\/g, '/'),
         });
       }
       case 'report': {
-        const resolvedResults = normalizePath(RESULTS_DIR, resultsDir);
-        const logFile = path.join(LOG_DIR, `report-${Date.now()}.log`);
+        const resolvedResults = normalizePath(projectPath('results'), resultsDir);
+        const logFile = path.join(projectPath('logs', 'research-ui'), `report-${Date.now()}.log`);
         const pid = spawnTsx('scripts/generate-research-quality-report.ts', [resolvedResults], logFile);
         return respond({
           action,
           target: resultsDir,
           pid: pid ? String(pid) : '',
-          log: path.relative(ROOT_DIR, logFile).replace(/\\/g, '/'),
+          log: path.relative(projectRoot(), logFile).replace(/\\/g, '/'),
         });
       }
       case 'paper-update': {
-        const logFile = path.join(LOG_DIR, `paper-update-${Date.now()}.log`);
+        const logFile = path.join(projectPath('logs', 'research-ui'), `paper-update-${Date.now()}.log`);
         const updateArgs = ['--paper-dir', 'paper', '--profile', 'full'];
         const pid = spawnTsx('scripts/paper-update.ts', updateArgs, logFile);
         return respond({
           action,
           target: `profile:${normalizedProfile}`,
           pid: pid ? String(pid) : '',
-          log: path.relative(ROOT_DIR, logFile).replace(/\\/g, '/'),
+          log: path.relative(projectRoot(), logFile).replace(/\\/g, '/'),
         });
       }
       case 'paper-compile': {
-        const logFile = path.join(LOG_DIR, `paper-compile-${Date.now()}.log`);
+        const logFile = path.join(projectPath('logs', 'research-ui'), `paper-compile-${Date.now()}.log`);
         const pid = spawnTsx('scripts/paper-compile.ts', ['--profile', normalizedProfile], logFile);
         return respond({
           action,
           target: `profile:${normalizedProfile}`,
           pid: pid ? String(pid) : '',
-          log: path.relative(ROOT_DIR, logFile).replace(/\\/g, '/'),
+          log: path.relative(projectRoot(), logFile).replace(/\\/g, '/'),
         });
       }
       case 'paper-archive': {
-        const logFile = path.join(LOG_DIR, `paper-archive-${Date.now()}.log`);
+        const logFile = path.join(projectPath('logs', 'research-ui'), `paper-archive-${Date.now()}.log`);
         const pid = spawnTsx('scripts/paper-archive.ts', ['--profile', normalizedProfile], logFile);
         return respond({
           action,
           target: `profile:${normalizedProfile}`,
           pid: pid ? String(pid) : '',
-          log: path.relative(ROOT_DIR, logFile).replace(/\\/g, '/'),
+          log: path.relative(projectRoot(), logFile).replace(/\\/g, '/'),
         });
       }
       default:

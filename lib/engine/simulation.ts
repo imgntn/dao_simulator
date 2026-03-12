@@ -1070,8 +1070,11 @@ export class DAOSimulation extends Model {
     }
 
     try {
-      const fs = require('fs');
-      const path = require('path');
+      // Use globalThis to hide require from bundler static analysis (server-only path)
+      const _require = globalThis['require' as keyof typeof globalThis] as NodeRequire;
+      if (!_require) return [];
+      const fs = _require('fs');
+      const path = _require('path');
       const csvPath = path.resolve(__dirname, '../../results/historical/market/market_daily.csv');
       if (!fs.existsSync(csvPath)) return [];
 

@@ -5,10 +5,7 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'yaml';
-
-const ROOT_DIR = process.cwd();
-const EXPERIMENTS_DIR = path.join(ROOT_DIR, 'experiments');
-const RESULTS_DIR = path.join(ROOT_DIR, 'results');
+import { projectRoot, projectPath } from '@/lib/utils/server-paths';
 
 export interface ExperimentConfigSummary {
   id: string;
@@ -54,7 +51,7 @@ export function parseExperimentConfig(filePath: string): ExperimentConfigSummary
   const sweepValue = parsed['sweep'];
   const executionValue = parsed['execution'] as Record<string, unknown> | undefined;
 
-  const relativePath = path.relative(ROOT_DIR, filePath).replace(/\\/g, '/');
+  const relativePath = path.relative(projectRoot(), filePath).replace(/\\/g, '/');
   const name = typeof nameValue === 'string' ? nameValue : path.basename(filePath);
   const description = typeof descriptionValue === 'string' ? descriptionValue : '';
   const tags = Array.isArray(tagsValue) ? tagsValue.filter((tag): tag is string => typeof tag === 'string') : [];
@@ -88,10 +85,10 @@ export function parseExperimentConfig(filePath: string): ExperimentConfigSummary
 }
 
 export function listExperimentConfigs(): ExperimentConfigSummary[] {
-  if (!fs.existsSync(EXPERIMENTS_DIR)) return [];
+  if (!fs.existsSync(projectPath('experiments'))) return [];
 
   const configs: ExperimentConfigSummary[] = [];
-  const stack = [EXPERIMENTS_DIR];
+  const stack = [projectPath('experiments')];
 
   while (stack.length > 0) {
     const current = stack.pop();
@@ -115,7 +112,7 @@ export function listExperimentConfigs(): ExperimentConfigSummary[] {
 }
 
 export function listResults(stateFilter?: string): ResultSummary[] {
-  if (!fs.existsSync(RESULTS_DIR)) return [];
+  if (!fs.existsSync(projectPath('results'))) return [];
 
   function collectResultDirs(baseDir: string, relativeDir = '', depth = 0): string[] {
     if (depth > 4) return [];
@@ -139,10 +136,10 @@ export function listResults(stateFilter?: string): ResultSummary[] {
     return found;
   }
 
-  const dirs = collectResultDirs(RESULTS_DIR);
+  const dirs = collectResultDirs(projectPath('results'));
 
   const results = dirs.map((relativePath) => {
-    const resultDir = path.join(RESULTS_DIR, relativePath);
+    const resultDir = path.join(projectPath('results'), relativePath);
     const statusPath = path.join(resultDir, 'status.json');
     const summaryPath = path.join(resultDir, 'summary.json');
     const reportPath = path.join(resultDir, 'report.md');
