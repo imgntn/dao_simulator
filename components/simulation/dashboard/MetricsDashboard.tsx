@@ -92,7 +92,7 @@ export function MetricsDashboard() {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2 metrics-grid-responsive">
         <MetricCard label="Treasury" value={formatCompact(snapshot.treasuryFunds)} data={sparklineData.treasury} color={SPARKLINE_COLORS.Treasury} showTrend={showTrend} />
         <MetricCard label="Token Price" value={`$${snapshot.tokenPrice.toFixed(2)}`} data={sparklineData.tokenPrice} color={SPARKLINE_COLORS['Token Price']} showTrend={showTrend} />
         <MetricCard label="Members" value={snapshot.memberCount.toString()} data={sparklineData.members} color={SPARKLINE_COLORS.Members} showTrend={showTrend} />

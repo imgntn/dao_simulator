@@ -99,7 +99,6 @@ function shortName(type: string): string {
 }
 
 export function VotingHeatmap({ agents, proposals }: Props) {
-  const [open, setOpen] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hoveredCell, setHoveredCell] = useState<{ row: number; col: number; value: number } | null>(null);
 
@@ -111,7 +110,7 @@ export function VotingHeatmap({ agents, proposals }: Props) {
 
   // Draw heatmap to canvas
   useEffect(() => {
-    if (!open || !canvasRef.current || types.length === 0) return;
+    if (!canvasRef.current || types.length === 0) return;
     const ctx = canvasRef.current.getContext('2d');
     if (!ctx) return;
 
@@ -158,7 +157,7 @@ export function VotingHeatmap({ agents, proposals }: Props) {
       ctx.fillText(shortName(types[j]), 0, 0);
       ctx.restore();
     }
-  }, [open, types, matrix, size]);
+  }, [types, matrix, size]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current) return;
@@ -184,17 +183,9 @@ export function VotingHeatmap({ agents, proposals }: Props) {
   }, [types, matrix, size]);
 
   return (
-    <div className="border-t border-[var(--sim-border)]">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center justify-between w-full px-4 py-2 text-xs text-[var(--sim-text-muted)] hover:text-[var(--sim-text-secondary)] transition-colors"
-      >
-        <span className="uppercase tracking-wider font-medium">Voting Heatmap</span>
-        <span className="text-sm">{open ? '▾' : '▸'}</span>
-      </button>
-
-      {open && types.length > 0 && (
-        <div className="px-4 pb-3 relative">
+    <div className="px-4 pb-3 relative">
+      {types.length > 0 ? (
+        <>
           <canvas
             ref={canvasRef}
             style={{ width: Math.min(size, 320), height: Math.min(size, 320) }}
@@ -211,11 +202,9 @@ export function VotingHeatmap({ agents, proposals }: Props) {
             <span>Disagree</span>
             <span>Agree</span>
           </div>
-        </div>
-      )}
-
-      {open && types.length === 0 && (
-        <div className="px-4 pb-3 text-[10px] text-[var(--sim-text-muted)] text-center">
+        </>
+      ) : (
+        <div className="text-[10px] text-[var(--sim-text-muted)] text-center">
           No voting data yet
         </div>
       )}

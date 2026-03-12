@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
 import { TYPE_COLOR_MAP } from '../scene/constants';
 
@@ -25,7 +25,6 @@ const NODE_RADIUS_MIN = 4;
 const NODE_RADIUS_MAX = 12;
 
 export function DelegationGraph() {
-  const [open, setOpen] = useState(false);
   const snapshot = useSimulationStore(s => s.snapshot);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const nodesRef = useRef<Node[]>([]);
@@ -68,7 +67,6 @@ export function DelegationGraph() {
   // Sync initial positions
   useEffect(() => {
     if (nodes.length > 0) {
-      // Preserve existing positions if IDs match, otherwise reset
       const existing = new Map(nodesRef.current.map(n => [n.id, n]));
       nodesRef.current = nodes.map(n => {
         const prev = existing.get(n.id);
@@ -81,7 +79,7 @@ export function DelegationGraph() {
 
   // Force-directed layout animation
   useEffect(() => {
-    if (!open || nodes.length === 0) return;
+    if (nodes.length === 0) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -191,38 +189,27 @@ export function DelegationGraph() {
 
     animRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animRef.current);
-  }, [open, nodes, edges, maxTokens]);
+  }, [nodes, edges, maxTokens]);
 
   if (!snapshot) return null;
 
   return (
-    <div className="border-b border-[var(--sim-border)]">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center justify-between w-full px-4 py-2 text-xs text-[var(--sim-text-muted)] hover:text-[var(--sim-text-secondary)] transition-colors"
-      >
-        <span className="uppercase tracking-wider font-medium">Delegation Graph</span>
-        <span className="text-sm">{open ? '▾' : '▸'}</span>
-      </button>
-      {open && (
-        <div className="px-4 pb-3">
-          {edges.length === 0 ? (
-            <div className="text-xs text-[var(--sim-text-dim)] text-center py-4">
-              No active delegations
-            </div>
-          ) : (
-            <div className="border border-[var(--sim-border)] rounded bg-[var(--sim-surface)]">
-              <canvas
-                ref={canvasRef}
-                width={WIDTH}
-                height={HEIGHT}
-                style={{ width: WIDTH, height: HEIGHT }}
-              />
-              <div className="text-[9px] text-[var(--sim-text-dim)] text-center py-1">
-                {nodes.length} agents · {edges.length} delegations
-              </div>
-            </div>
-          )}
+    <div className="px-4 pb-3">
+      {edges.length === 0 ? (
+        <div className="text-xs text-[var(--sim-text-dim)] text-center py-4">
+          No active delegations
+        </div>
+      ) : (
+        <div className="border border-[var(--sim-border)] rounded bg-[var(--sim-surface)]">
+          <canvas
+            ref={canvasRef}
+            width={WIDTH}
+            height={HEIGHT}
+            style={{ width: WIDTH, height: HEIGHT }}
+          />
+          <div className="text-[9px] text-[var(--sim-text-dim)] text-center py-1">
+            {nodes.length} agents · {edges.length} delegations
+          </div>
         </div>
       )}
     </div>

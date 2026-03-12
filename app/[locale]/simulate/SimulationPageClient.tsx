@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
+import { useLayoutStore } from '@/lib/browser/layout-store';
+import { useBreakpointTier } from '@/components/simulation/panels/useBreakpointTier';
 import { useKeyboardShortcuts } from '@/lib/browser/useKeyboardShortcuts';
 import { decodeConfigFromURL } from '@/components/simulation/ShareButton';
 import { ControlPanel } from '@/components/simulation/ControlPanel';
@@ -27,6 +29,10 @@ import { ShareButton } from '@/components/simulation/ShareButton';
 import { ThemeToggle } from '@/components/simulation/ThemeToggle';
 import { Tutorial } from '@/components/simulation/Tutorial';
 import { useActiveSnapshot } from '@/lib/browser/useActiveSnapshot';
+import { Sidebar } from '@/components/simulation/panels/Sidebar';
+import { MobileDrawer } from '@/components/simulation/panels/MobileDrawer';
+import { SidebarResizeHandle } from '@/components/simulation/panels/SidebarResizeHandle';
+import { CollapsiblePanel } from '@/components/simulation/panels/CollapsiblePanel';
 
 export default function SimulationPageClient() {
   const { status, error, initialize, dispose, updateConfig, selectDao } = useSimulationStore();
@@ -35,6 +41,9 @@ export default function SimulationPageClient() {
   const [activeTab, setActiveTab] = useState<SimTab>('interactive');
   const [showHelp, setShowHelp] = useState(false);
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
+
+  const tier = useBreakpointTier();
+  const sidebarWidth = useLayoutStore(s => s.sidebarWidth);
 
   // Keyboard shortcuts
   const shortcutCallbacks = useCallback(() => ({
@@ -77,16 +86,12 @@ export default function SimulationPageClient() {
     };
   }, [initialize, dispose, updateConfig, selectDao]);
 
-  // Mobile detection
-  const [isMobile, setIsMobile] = useState(false);
-  const [sheetExpanded, setSheetExpanded] = useState(false);
+  // Build panel content map for the Sidebar
+  const panelContent = buildPanelContent(snapshot, activeTab);
 
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
+  // Determine if we use sidebar or mobile drawer
+  const useSidebar = tier === 'tablet' || tier === 'desktop' || tier === 'ultrawide';
+  const useMobileDrawer = tier === 'compact' || tier === 'handheld';
 
   if (status === 'idle' || status === 'initializing') {
     return (
@@ -118,7 +123,11 @@ export default function SimulationPageClient() {
   }
 
   return (
-    <div data-sim-root className="flex flex-col h-screen bg-[var(--sim-bg)] text-[var(--sim-text)] overflow-hidden">
+    <div
+      data-sim-root
+      className="sim-layout bg-[var(--sim-bg)] text-[var(--sim-text)]"
+    >
+      {/* Top bar: tabs + actions */}
       <div className="flex items-center border-b border-[var(--sim-border)] bg-[var(--sim-bg)]">
         <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
         <div className="ml-auto pr-3 flex items-center gap-1.5">
@@ -134,106 +143,141 @@ export default function SimulationPageClient() {
         </div>
       </div>
 
-      {/* Interactive tab — hidden via CSS to keep 3D + worker alive */}
+      {/* Main content area */}
       <div
-        className="flex flex-1 min-h-0"
-        style={{ display: activeTab === 'interactive' ? 'flex' : 'none' }}
+        className="sim-layout-body"
+        style={useSidebar ? { '--sidebar-width': `${sidebarWidth}px` } as React.CSSProperties : undefined}
       >
-        {/* Left: 3D Scene */}
-        <div className="flex-1 relative min-w-0">
-          <SimulationCanvas />
-          <div className="absolute bottom-0 left-0 right-0" data-tutorial="timeline">
-            <AnnotatedTimeScrubber />
-            <EventFeed />
+        {/* 3D Canvas — always visible regardless of active tab */}
+        <div className="relative min-w-0 min-h-0 overflow-hidden">
+          {/* Canvas stays mounted, other tabs overlay it */}
+          <div style={{ display: activeTab === 'interactive' ? 'contents' : 'none' }}>
+            <div className="absolute inset-0">
+              <SimulationCanvas />
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 z-10" data-tutorial="timeline">
+              <AnnotatedTimeScrubber />
+              <EventFeed />
+            </div>
+
+            {/* Agent Inspector overlay */}
+            {selectedAgent && (
+              <div className="absolute top-4 right-4 z-40">
+                <AgentInspector
+                  agent={selectedAgent}
+                  onClose={() => setSelectedAgentId(null)}
+                />
+              </div>
+            )}
           </div>
 
-          {/* Agent Inspector overlay */}
-          {selectedAgent && (
-            <div className="absolute top-4 right-4 z-40">
-              <AgentInspector
-                agent={selectedAgent}
-                onClose={() => setSelectedAgentId(null)}
-              />
+          {/* Non-interactive tabs render as overlay over canvas area */}
+          {activeTab === 'compare' && (
+            <div className="absolute inset-0 overflow-y-auto bg-[var(--sim-bg)]">
+              <ComparisonView />
+            </div>
+          )}
+          {activeTab === 'branch' && (
+            <div className="absolute inset-0 overflow-y-auto bg-[var(--sim-bg)]">
+              <BranchView />
+            </div>
+          )}
+          {activeTab === 'multirun' && (
+            <div className="absolute inset-0 overflow-y-auto bg-[var(--sim-bg)]">
+              <MultiRunPanel />
+            </div>
+          )}
+          {activeTab === 'research' && (
+            <div className="absolute inset-0 overflow-y-auto bg-[var(--sim-bg)]">
+              <ResearchPanel />
             </div>
           )}
         </div>
 
-        {/* Right: Controls + Dashboard */}
-        {isMobile ? (
-          /* Mobile bottom sheet */
-          <div
-            className={`fixed bottom-0 left-0 right-0 bg-[var(--sim-bg)] border-t border-[var(--sim-border)] transition-all duration-300 z-30 ${
-              sheetExpanded ? 'h-[70vh]' : 'h-[60px]'
-            }`}
-          >
-            {/* Handle */}
-            <button
-              onClick={() => setSheetExpanded(!sheetExpanded)}
-              className="w-full flex justify-center py-2"
-            >
-              <div className="w-10 h-1 rounded-full bg-[var(--sim-border-strong)]" />
-            </button>
-            <div className="overflow-y-auto h-full pb-16">
-              <div data-tutorial="controls">
-                <ControlPanel />
-              </div>
-              <div data-tutorial="metrics">
-                <MetricsDashboard />
-              </div>
-            </div>
-          </div>
-        ) : (
-          /* Desktop sidebar */
-          <div className="w-[420px] flex flex-col border-l border-[var(--sim-border)] overflow-y-auto" data-tutorial="controls">
-            <div data-tutorial="transport">
-              <ControlPanel />
-            </div>
-            <FloorNav />
-            <AgentGuide />
-            <DelegationGraph />
-            <ScenarioBuilder />
-            <CustomAgentForm />
-            <MetricAlerts />
-            {snapshot && (
-              <VotingHeatmap agents={snapshot.agents} proposals={snapshot.proposals} />
-            )}
-            <div data-tutorial="metrics">
-              <MetricsDashboard />
-            </div>
+        {/* Sidebar (tablet/desktop/ultrawide) */}
+        {useSidebar && (
+          <div className="flex min-h-0">
+            <SidebarResizeHandle />
+            <Sidebar panelContent={panelContent} />
           </div>
         )}
       </div>
 
-      {/* Compare tab */}
-      {activeTab === 'compare' && (
-        <div className="flex-1 min-h-0 overflow-y-auto">
-          <ComparisonView />
-        </div>
-      )}
-
-      {/* Branch tab */}
-      {activeTab === 'branch' && (
-        <div className="flex-1 min-h-0 overflow-y-auto">
-          <BranchView />
-        </div>
-      )}
-
-      {/* Multi-Run tab */}
-      {activeTab === 'multirun' && (
-        <div className="flex-1 min-h-0 overflow-y-auto">
-          <MultiRunPanel />
-        </div>
-      )}
-
-      {/* Research tab */}
-      {activeTab === 'research' && (
-        <div className="flex-1 min-h-0 overflow-y-auto">
-          <ResearchPanel />
-        </div>
+      {/* Mobile drawer (compact/handheld) */}
+      {useMobileDrawer && (
+        <MobileDrawer tier={tier}>
+          <div data-tutorial="controls">
+            <ControlPanel />
+          </div>
+          <FloorNav />
+          <CollapsiblePanel id="agent-guide" title="Agent Guide">
+            <AgentGuide />
+          </CollapsiblePanel>
+          <CollapsiblePanel id="metrics-dashboard" title="Metrics">
+            <MetricsDashboard />
+          </CollapsiblePanel>
+        </MobileDrawer>
       )}
 
       {showHelp && <HelpOverlay onClose={() => setShowHelp(false)} />}
       <Tutorial />
     </div>
   );
+}
+
+/** Build a record mapping panel IDs to their rendered JSX */
+function buildPanelContent(
+  snapshot: ReturnType<typeof useActiveSnapshot>,
+  activeTab: SimTab
+): Record<string, React.ReactNode> {
+  return {
+    transport: (
+      <div data-tutorial="transport">
+        <ControlPanel />
+      </div>
+    ),
+    'floor-nav': <FloorNav />,
+    'agent-guide': (
+      <CollapsiblePanel id="agent-guide" title="Agent Guide">
+        <AgentGuide />
+      </CollapsiblePanel>
+    ),
+    'delegation-graph': (
+      <CollapsiblePanel id="delegation-graph" title="Delegation Graph">
+        <DelegationGraph />
+      </CollapsiblePanel>
+    ),
+    'scenario-builder': (
+      <CollapsiblePanel id="scenario-builder" title="Scenario Builder">
+        <ScenarioBuilder />
+      </CollapsiblePanel>
+    ),
+    'custom-agent': (
+      <CollapsiblePanel id="custom-agent" title="Custom Agent">
+        <CustomAgentForm />
+      </CollapsiblePanel>
+    ),
+    'metric-alerts': (
+      <CollapsiblePanel id="metric-alerts" title="Alerts">
+        <MetricAlerts />
+      </CollapsiblePanel>
+    ),
+    'voting-heatmap': snapshot ? (
+      <CollapsiblePanel id="voting-heatmap" title="Voting Heatmap">
+        <VotingHeatmap agents={snapshot.agents} proposals={snapshot.proposals} />
+      </CollapsiblePanel>
+    ) : null,
+    'metrics-dashboard': (
+      <CollapsiblePanel id="metrics-dashboard" title="Metrics Dashboard">
+        <div data-tutorial="metrics" className="metrics-grid-container">
+          <MetricsDashboard />
+        </div>
+      </CollapsiblePanel>
+    ),
+    // Mode-specific panels
+    comparison: activeTab === 'compare' ? <ComparisonView /> : null,
+    branch: activeTab === 'branch' ? <BranchView /> : null,
+    multirun: activeTab === 'multirun' ? <MultiRunPanel /> : null,
+    research: activeTab === 'research' ? <ResearchPanel /> : null,
+  };
 }

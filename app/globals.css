@@ -430,6 +430,94 @@ html.theme-dark body {
    Animations
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   Simulation layout — CSS Grid with responsive sidebar
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.sim-layout {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sim-layout-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (min-width: 900px) {
+  .sim-layout-body {
+    grid-template-columns: 1fr var(--sidebar-width, 320px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .sim-layout-body {
+    grid-template-columns: 1fr var(--sidebar-width, 380px);
+  }
+}
+
+@media (min-width: 1920px) {
+  .sim-layout-body {
+    grid-template-columns: 1fr var(--sidebar-width, 420px);
+  }
+}
+
+/* Panel collapse animation */
+.panel-collapse-grid {
+  display: grid;
+  transition: grid-template-rows 200ms ease-out;
+}
+
+.panel-collapse-grid[data-collapsed="true"] {
+  grid-template-rows: 0fr;
+}
+
+.panel-collapse-grid[data-collapsed="false"] {
+  grid-template-rows: 1fr;
+}
+
+.panel-collapse-grid > div {
+  overflow: hidden;
+}
+
+/* Drag indicator */
+.panel-drag-indicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--sim-accent);
+  z-index: 50;
+  pointer-events: none;
+  transition: top 60ms ease-out;
+}
+
+/* Metrics dashboard container query wrapper */
+.metrics-grid-container {
+  container-type: inline-size;
+}
+
+@container (min-width: 400px) {
+  .metrics-grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@container (max-width: 399px) {
+  .metrics-grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Animations
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 @keyframes rise {
   from {
     opacity: 0;

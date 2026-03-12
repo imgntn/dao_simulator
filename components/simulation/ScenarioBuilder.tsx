@@ -13,7 +13,6 @@ const EVENT_CATEGORIES = [
 ];
 
 export function ScenarioBuilder() {
-  const [open, setOpen] = useState(false);
   const config = useSimulationStore(s => s.config);
   const updateConfig = useSimulationStore(s => s.updateConfig);
 
@@ -43,126 +42,112 @@ export function ScenarioBuilder() {
     EVENT_CATEGORIES.find(c => c.value === cat) ?? EVENT_CATEGORIES[0];
 
   return (
-    <div className="border-b border-[var(--sim-border)]">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center justify-between w-full px-4 py-2 text-xs text-[var(--sim-text-muted)] hover:text-[var(--sim-text-secondary)] transition-colors"
-      >
-        <span className="uppercase tracking-wider font-medium">
-          Scenario Builder {events.length > 0 && `(${events.length})`}
-        </span>
-        <span className="text-sm">{open ? '▾' : '▸'}</span>
-      </button>
+    <div className="px-4 pb-3 space-y-3">
+      {/* Timeline visualization */}
+      <div className="relative h-8 bg-[var(--sim-surface)] rounded border border-[var(--sim-border)]">
+        {/* Step markers */}
+        {events.map((evt, i) => {
+          const left = (evt.step / totalSteps) * 100;
+          const info = getCategoryInfo(evt.category);
+          return (
+            <button
+              key={i}
+              onClick={() => removeEvent(i)}
+              className="absolute top-1 -translate-x-1/2 group"
+              style={{ left: `${left}%` }}
+              title={`${info.label} at step ${evt.step} (severity ${evt.severity}) — click to remove`}
+            >
+              <div
+                className="w-3 h-5 rounded-sm group-hover:scale-125 transition-transform"
+                style={{ backgroundColor: info.color, opacity: 0.4 + evt.severity * 0.06 }}
+              />
+            </button>
+          );
+        })}
+        {/* Step labels */}
+        <div className="absolute bottom-0 left-1 text-[8px] text-[var(--sim-text-dim)]">0</div>
+        <div className="absolute bottom-0 right-1 text-[8px] text-[var(--sim-text-dim)]">{totalSteps}</div>
+      </div>
 
-      {open && (
-        <div className="px-4 pb-3 space-y-3">
-          {/* Timeline visualization */}
-          <div className="relative h-8 bg-[var(--sim-surface)] rounded border border-[var(--sim-border)]">
-            {/* Step markers */}
-            {events.map((evt, i) => {
-              const left = (evt.step / totalSteps) * 100;
-              const info = getCategoryInfo(evt.category);
-              return (
+      {/* Add Event Form */}
+      <div className="space-y-2">
+        <div className="flex gap-2 items-end">
+          <div className="flex-1">
+            <label className="block text-[10px] text-[var(--sim-text-dim)] mb-0.5">Step</label>
+            <input
+              type="range"
+              min={1}
+              max={totalSteps - 1}
+              value={newStep}
+              onChange={e => setNewStep(parseInt(e.target.value))}
+              className="w-full h-1 bg-[var(--sim-border-strong)] rounded-lg appearance-none cursor-pointer accent-[var(--sim-accent-ring)]"
+            />
+            <div className="text-[9px] text-[var(--sim-text-dim)] text-right font-mono">{newStep}</div>
+          </div>
+          <div className="flex-1">
+            <label className="block text-[10px] text-[var(--sim-text-dim)] mb-0.5">Severity</label>
+            <input
+              type="range"
+              min={1}
+              max={10}
+              value={newSeverity}
+              onChange={e => setNewSeverity(parseInt(e.target.value))}
+              className="w-full h-1 bg-[var(--sim-border-strong)] rounded-lg appearance-none cursor-pointer accent-[var(--sim-accent-ring)]"
+            />
+            <div className="text-[9px] text-[var(--sim-text-dim)] text-right font-mono">{newSeverity}/10</div>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <select
+            value={newCategory}
+            onChange={e => setNewCategory(e.target.value)}
+            className="flex-1 bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-2 py-1 text-xs focus:border-[var(--sim-accent-ring)] focus:outline-none"
+          >
+            {EVENT_CATEGORIES.map(c => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={addEvent}
+            className="px-3 py-1 rounded text-xs font-medium bg-[var(--sim-accent-bold)] hover:bg-[var(--sim-accent-hover)] text-white transition-colors"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+
+      {/* Event list */}
+      {events.length > 0 && (
+        <div className="space-y-1">
+          {events.map((evt, i) => {
+            const info = getCategoryInfo(evt.category);
+            return (
+              <div
+                key={i}
+                className="flex items-center gap-2 text-xs text-[var(--sim-text-muted)]"
+              >
+                <span
+                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: info.color }}
+                />
+                <span className="font-mono text-[var(--sim-text-dim)]">
+                  @{evt.step}
+                </span>
+                <span className="truncate">{info.label}</span>
+                <span className="text-[var(--sim-text-dim)]">
+                  sev:{evt.severity}
+                </span>
                 <button
-                  key={i}
                   onClick={() => removeEvent(i)}
-                  className="absolute top-1 -translate-x-1/2 group"
-                  style={{ left: `${left}%` }}
-                  title={`${info.label} at step ${evt.step} (severity ${evt.severity}) — click to remove`}
+                  className="ml-auto text-[var(--sim-text-dim)] hover:text-red-400 transition-colors"
                 >
-                  <div
-                    className="w-3 h-5 rounded-sm group-hover:scale-125 transition-transform"
-                    style={{ backgroundColor: info.color, opacity: 0.4 + evt.severity * 0.06 }}
-                  />
+                  ✕
                 </button>
-              );
-            })}
-            {/* Step labels */}
-            <div className="absolute bottom-0 left-1 text-[8px] text-[var(--sim-text-dim)]">0</div>
-            <div className="absolute bottom-0 right-1 text-[8px] text-[var(--sim-text-dim)]">{totalSteps}</div>
-          </div>
-
-          {/* Add Event Form */}
-          <div className="space-y-2">
-            <div className="flex gap-2 items-end">
-              <div className="flex-1">
-                <label className="block text-[10px] text-[var(--sim-text-dim)] mb-0.5">Step</label>
-                <input
-                  type="range"
-                  min={1}
-                  max={totalSteps - 1}
-                  value={newStep}
-                  onChange={e => setNewStep(parseInt(e.target.value))}
-                  className="w-full h-1 bg-[var(--sim-border-strong)] rounded-lg appearance-none cursor-pointer accent-[var(--sim-accent-ring)]"
-                />
-                <div className="text-[9px] text-[var(--sim-text-dim)] text-right font-mono">{newStep}</div>
               </div>
-              <div className="flex-1">
-                <label className="block text-[10px] text-[var(--sim-text-dim)] mb-0.5">Severity</label>
-                <input
-                  type="range"
-                  min={1}
-                  max={10}
-                  value={newSeverity}
-                  onChange={e => setNewSeverity(parseInt(e.target.value))}
-                  className="w-full h-1 bg-[var(--sim-border-strong)] rounded-lg appearance-none cursor-pointer accent-[var(--sim-accent-ring)]"
-                />
-                <div className="text-[9px] text-[var(--sim-text-dim)] text-right font-mono">{newSeverity}/10</div>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <select
-                value={newCategory}
-                onChange={e => setNewCategory(e.target.value)}
-                className="flex-1 bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-2 py-1 text-xs focus:border-[var(--sim-accent-ring)] focus:outline-none"
-              >
-                {EVENT_CATEGORIES.map(c => (
-                  <option key={c.value} value={c.value}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
-              <button
-                onClick={addEvent}
-                className="px-3 py-1 rounded text-xs font-medium bg-[var(--sim-accent-bold)] hover:bg-[var(--sim-accent-hover)] text-white transition-colors"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-
-          {/* Event list */}
-          {events.length > 0 && (
-            <div className="space-y-1">
-              {events.map((evt, i) => {
-                const info = getCategoryInfo(evt.category);
-                return (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2 text-xs text-[var(--sim-text-muted)]"
-                  >
-                    <span
-                      className="w-2 h-2 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: info.color }}
-                    />
-                    <span className="font-mono text-[var(--sim-text-dim)]">
-                      @{evt.step}
-                    </span>
-                    <span className="truncate">{info.label}</span>
-                    <span className="text-[var(--sim-text-dim)]">
-                      sev:{evt.severity}
-                    </span>
-                    <button
-                      onClick={() => removeEvent(i)}
-                      className="ml-auto text-[var(--sim-text-dim)] hover:text-red-400 transition-colors"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+            );
+          })}
         </div>
       )}
     </div>

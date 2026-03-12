@@ -3,7 +3,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
 import type { MetricAlert } from '@/lib/browser/simulation-store';
-import type { SimulationSnapshot } from '@/lib/browser/worker-protocol';
 
 const ALERT_METRICS = ['Treasury', 'Token Price', 'Gini', 'Participation', 'Members', 'Proposals'];
 
@@ -39,7 +38,6 @@ function AlertToast({ alert, onDismiss }: ToastProps) {
 
 export function MetricAlerts() {
   const { alerts, addAlert, removeAlert, checkAlerts, snapshot } = useSimulationStore();
-  const [open, setOpen] = useState(false);
   const [toasts, setToasts] = useState<MetricAlert[]>([]);
 
   // Form state
@@ -65,8 +63,6 @@ export function MetricAlerts() {
     setValue('');
   }, [metric, operator, value, addAlert]);
 
-  const activeCount = alerts.filter(a => !a.triggered).length;
-
   return (
     <>
       {/* Toast notifications */}
@@ -80,91 +76,72 @@ export function MetricAlerts() {
         ))}
       </div>
 
-      {/* Alerts panel */}
-      <div className="border-t border-[var(--sim-border)]">
-        <button
-          onClick={() => setOpen(!open)}
-          className="flex items-center justify-between w-full px-4 py-2 text-xs text-[var(--sim-text-muted)] hover:text-[var(--sim-text-secondary)] transition-colors"
-        >
-          <span className="uppercase tracking-wider font-medium flex items-center gap-1.5">
-            Alerts
-            {activeCount > 0 && (
-              <span className="bg-amber-600/30 text-amber-400 px-1.5 rounded-full text-[10px]">
-                {activeCount}
-              </span>
-            )}
-          </span>
-          <span className="text-sm">{open ? '▾' : '▸'}</span>
-        </button>
+      {/* Alerts content */}
+      <div className="px-4 pb-3 space-y-2">
+        {/* Add alert form */}
+        <div className="flex gap-1.5 items-center">
+          <select
+            value={metric}
+            onChange={e => setMetric(e.target.value)}
+            className="flex-1 bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-2 py-1 text-xs focus:outline-none"
+          >
+            {ALERT_METRICS.map(m => (
+              <option key={m} value={m}>{m}</option>
+            ))}
+          </select>
+          <select
+            value={operator}
+            onChange={e => setOperator(e.target.value as '>' | '<')}
+            className="w-10 bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-1 py-1 text-xs text-center focus:outline-none"
+          >
+            <option value=">">&gt;</option>
+            <option value="<">&lt;</option>
+          </select>
+          <input
+            type="number"
+            value={value}
+            onChange={e => setValue(e.target.value)}
+            placeholder="value"
+            className="w-16 bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-2 py-1 text-xs font-mono focus:outline-none focus:border-[var(--sim-accent-ring)]"
+          />
+          <button
+            onClick={handleAdd}
+            className="px-2 py-1 text-xs rounded bg-[var(--sim-accent-bold)] text-white hover:bg-[var(--sim-accent-hover)]"
+          >
+            +
+          </button>
+        </div>
 
-        {open && (
-          <div className="px-4 pb-3 space-y-2">
-            {/* Add alert form */}
-            <div className="flex gap-1.5 items-center">
-              <select
-                value={metric}
-                onChange={e => setMetric(e.target.value)}
-                className="flex-1 bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-2 py-1 text-xs focus:outline-none"
+        {/* Active alerts */}
+        {alerts.length > 0 && (
+          <div className="space-y-1">
+            {alerts.map(alert => (
+              <div
+                key={alert.id}
+                className={`flex items-center justify-between px-2 py-1 rounded text-xs ${
+                  alert.triggered
+                    ? 'bg-amber-900/20 border border-amber-600/30 text-amber-300'
+                    : 'bg-[var(--sim-border)]/50 text-[var(--sim-text-muted)]'
+                }`}
               >
-                {ALERT_METRICS.map(m => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
-              </select>
-              <select
-                value={operator}
-                onChange={e => setOperator(e.target.value as '>' | '<')}
-                className="w-10 bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-1 py-1 text-xs text-center focus:outline-none"
-              >
-                <option value=">">&gt;</option>
-                <option value="<">&lt;</option>
-              </select>
-              <input
-                type="number"
-                value={value}
-                onChange={e => setValue(e.target.value)}
-                placeholder="value"
-                className="w-16 bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-2 py-1 text-xs font-mono focus:outline-none focus:border-[var(--sim-accent-ring)]"
-              />
-              <button
-                onClick={handleAdd}
-                className="px-2 py-1 text-xs rounded bg-[var(--sim-accent-bold)] text-white hover:bg-[var(--sim-accent-hover)]"
-              >
-                +
-              </button>
-            </div>
-
-            {/* Active alerts */}
-            {alerts.length > 0 && (
-              <div className="space-y-1">
-                {alerts.map(alert => (
-                  <div
-                    key={alert.id}
-                    className={`flex items-center justify-between px-2 py-1 rounded text-xs ${
-                      alert.triggered
-                        ? 'bg-amber-900/20 border border-amber-600/30 text-amber-300'
-                        : 'bg-[var(--sim-border)]/50 text-[var(--sim-text-muted)]'
-                    }`}
-                  >
-                    <span>
-                      {alert.metric} {alert.operator} {alert.value}
-                      {alert.triggered && ' (triggered)'}
-                    </span>
-                    <button
-                      onClick={() => removeAlert(alert.id)}
-                      className="text-[var(--sim-text-muted)] hover:text-red-400 ml-2"
-                    >
-                      &times;
-                    </button>
-                  </div>
-                ))}
+                <span>
+                  {alert.metric} {alert.operator} {alert.value}
+                  {alert.triggered && ' (triggered)'}
+                </span>
+                <button
+                  onClick={() => removeAlert(alert.id)}
+                  className="text-[var(--sim-text-muted)] hover:text-red-400 ml-2"
+                >
+                  &times;
+                </button>
               </div>
-            )}
+            ))}
+          </div>
+        )}
 
-            {alerts.length === 0 && (
-              <div className="text-[10px] text-[var(--sim-text-muted)] text-center py-1">
-                No alerts configured
-              </div>
-            )}
+        {alerts.length === 0 && (
+          <div className="text-[10px] text-[var(--sim-text-muted)] text-center py-1">
+            No alerts configured
           </div>
         )}
       </div>

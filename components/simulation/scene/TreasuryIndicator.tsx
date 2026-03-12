@@ -2,7 +2,7 @@
 
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Text } from '@react-three/drei';
+import { Text, Billboard } from '@react-three/drei';
 import * as THREE from 'three';
 import { BUILDING } from './constants';
 
@@ -114,27 +114,29 @@ export function TreasuryIndicator({ treasuryFunds }: Props) {
       {/* Gold bar stacks */}
       <GoldBars count={barCount} />
 
-      {/* Value label */}
-      <Text
-        position={[0, 0.8, 0]}
-        fontSize={0.4}
-        color={glowColor}
-        anchorX="center"
-        anchorY="bottom"
-        font={undefined}
-      >
-        {label}
-      </Text>
-      <Text
-        position={[0, 1.2, 0]}
-        fontSize={0.2}
-        color="#9ca3af"
-        anchorX="center"
-        anchorY="bottom"
-        font={undefined}
-      >
-        Treasury Vault
-      </Text>
+      {/* Value label — Billboard keeps text facing camera */}
+      <Billboard position={[0, 1.0, 0]}>
+        <Text
+          position={[0, -0.2, 0]}
+          fontSize={0.4}
+          color={glowColor}
+          anchorX="center"
+          anchorY="bottom"
+          font={undefined}
+        >
+          {label}
+        </Text>
+        <Text
+          position={[0, 0.2, 0]}
+          fontSize={0.2}
+          color="#9ca3af"
+          anchorX="center"
+          anchorY="bottom"
+          font={undefined}
+        >
+          Treasury Vault
+        </Text>
+      </Billboard>
     </group>
   );
 }

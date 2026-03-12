@@ -1,7 +1,7 @@
 'use client';
 
-import { Text } from '@react-three/drei';
-import { FLOORS, BUILDING } from './constants';
+import { Text, Billboard } from '@react-three/drei';
+import { FLOORS } from './constants';
 
 interface Props {
   /** Optionally show agent count per floor */
@@ -19,10 +19,8 @@ export function FloorLabels({ floorCounts }: Props) {
           : `${floor.id}: ${floor.name}`;
 
         return (
-          <group key={floor.id}>
-            {/* Label on the front face */}
+          <Billboard key={floor.id} position={[0, y, 0]} lockX lockZ>
             <Text
-              position={[0, y, BUILDING.depth / 2 + 0.2]}
               fontSize={0.25}
               color={floor.color}
               anchorX="center"
@@ -31,20 +29,7 @@ export function FloorLabels({ floorCounts }: Props) {
             >
               {label}
             </Text>
-
-            {/* Label on the back face */}
-            <Text
-              position={[0, y, -(BUILDING.depth / 2 + 0.2)]}
-              fontSize={0.25}
-              color={floor.color}
-              anchorX="center"
-              anchorY="middle"
-              rotation={[0, Math.PI, 0]}
-              font={undefined}
-            >
-              {label}
-            </Text>
-          </group>
+          </Billboard>
         );
       })}
     </group>
