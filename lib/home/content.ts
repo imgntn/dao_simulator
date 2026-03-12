@@ -21,7 +21,7 @@ export type BriefSection = {
 };
 
 export type PaperProfile = {
-  id: 'paper' | 'paper_p1' | 'paper_p2' | 'paper_llm';
+  id: 'paper';
   label: string;
   description: string;
   directory: string;
@@ -257,7 +257,7 @@ export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
     question: 'What if your DAO used a different governance rule?',
     whyItMatters: 'We ran 5 real DAOs under alternative voting rules. One mechanism consistently destroys governance.',
     filePath: 'paper/plain-english/rq7-counterfactual-governance.md',
-    relatedPaperPath: 'paper/rq7/main.pdf',
+    relatedPaperPath: 'paper/main.pdf',
   },
 ];
 

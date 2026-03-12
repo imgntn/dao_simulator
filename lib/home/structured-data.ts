@@ -36,7 +36,7 @@ function personSchema() {
       'prediction markets',
     ],
     sameAs: [
-      'https://github.com/jamesbpollack',
+      'https://github.com/imgntn',
       'https://jamesbpollack.com',
     ],
   };
@@ -53,9 +53,8 @@ function webSiteSchema() {
     name: 'DAO Simulator',
     url: BASE_URL,
     potentialAction: {
-      '@type': 'SearchAction',
-      target: `${BASE_URL}/en?q={search_term_string}`,
-      'query-input': 'required name=search_term_string',
+      '@type': 'ReadAction',
+      target: `${BASE_URL}/en`,
     },
   };
 }
@@ -81,7 +80,7 @@ const BRIEF_META: BriefMeta[] = [
       'Agent-based simulation of voter participation across 16,370 runs reveals a quorum cliff: at 5% quorum 99.9% of proposals pass, but at 20% only 25.4% reach quorum. Practical quorum should be set at roughly 80% of observed natural turnout.',
     keywords: ['DAO participation', 'quorum design', 'voter turnout', 'agent-based modeling', 'governance simulation'],
     datePublished: '2025-05-01',
-    pdfUrl: `${BASE_URL}/paper/rq1/main.pdf`,
+    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
   {
     id: 'rq2',
@@ -90,7 +89,7 @@ const BRIEF_META: BriefMeta[] = [
       'Quadratic voting with a 250-token threshold cut whale influence 43% (0.449 to 0.256) and capture risk 42% (0.464 to 0.269) while governance throughput improved from 92.7% to 98.5% pass rate. Power-distribution rules outperform activity-only throttles.',
     keywords: ['governance capture', 'quadratic voting', 'whale influence', 'delegation caps', 'DAO security'],
     datePublished: '2025-05-01',
-    pdfUrl: `${BASE_URL}/paper/rq2/main.pdf`,
+    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
   {
     id: 'rq3',
@@ -99,34 +98,43 @@ const BRIEF_META: BriefMeta[] = [
       'Moderate temp-check filtering (5% to 50% pressure) raised pass rate from 96.4% to 98.5%. Fast-tracking with a 12-day minimum window kept quorum reach above 99% while accelerating consensus proposals. Zero abandonment across core runs.',
     keywords: ['proposal pipeline', 'temp-check', 'fast-track governance', 'time-to-decision', 'DAO operations'],
     datePublished: '2025-05-01',
-    pdfUrl: `${BASE_URL}/paper/rq3/main.pdf`,
+    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
   {
     id: 'rq4',
     headline: 'Treasury Resilience Under Governance Stress',
     abstract:
-      'Stabilization mechanisms cut treasury volatility roughly in half (0.45–0.50 to 0.24–0.27). Reserve buffers of 15–20% with spending caps of 2–5% per period and emergency triggers produced final treasury values of $10,048–$13,147.',
+      'Stabilization mechanisms cut treasury volatility roughly in half (0.45\u20130.50 to 0.24\u20130.27). Reserve buffers of 15\u201320% with spending caps of 2\u20135% per period and emergency triggers produced final treasury values of $10,048\u2013$13,147.',
     keywords: ['treasury management', 'DAO treasury', 'reserve buffers', 'spending limits', 'volatility'],
     datePublished: '2025-05-01',
-    pdfUrl: `${BASE_URL}/paper/rq4/main.pdf`,
+    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
   {
     id: 'rq5',
     headline: 'Inter-DAO Cooperation Patterns and Outcomes',
     abstract:
-      'Cross-DAO cooperation achieved a 21–23% success rate with designed coordination versus 0% in isolation. Specialized topology generated more inter-DAO proposals (75.8 vs 50.3) and higher ecosystem treasury ($26,107 vs $24,071).',
+      'Cross-DAO cooperation achieved a 21\u201323% success rate with designed coordination versus 0% in isolation. Specialized topology generated more inter-DAO proposals (75.8 vs 50.3) and higher ecosystem treasury ($26,107 vs $24,071).',
     keywords: ['inter-DAO cooperation', 'cross-DAO coordination', 'cooperation topology', 'DAO ecosystem'],
     datePublished: '2025-05-01',
-    pdfUrl: `${BASE_URL}/paper/rq5/main.pdf`,
+    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
   {
     id: 'rq6',
     headline: 'LLM Agent Reasoning in DAO Governance',
     abstract:
-      'Hybrid LLM governance halved decision latency (808 ms vs 1,381 ms all-LLM) while matching pass rate (50%). All-LLM mode peaked engagement at 31.2% participation and 74.7% vote consistency. Hybrid mode is the recommended default.',
+      'Across 52 runs, hybrid LLM governance (30% AI agents) matched baseline participation and pass rates while preserving decision quality. All-LLM mode collapsed participation to 8.8% and pass rates to 23%. Hybrid mode is the recommended default.',
     keywords: ['LLM governance', 'AI voting agents', 'hybrid AI governance', 'large language models', 'DAO automation'],
     datePublished: '2025-05-01',
-    pdfUrl: `${BASE_URL}/paper_llm/main.pdf`,
+    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
+  },
+  {
+    id: 'rq7',
+    headline: 'Counterfactual Governance Rule Comparison',
+    abstract:
+      'Five calibrated DAO digital twins tested under alternative voting rules. Conviction voting universally collapsed pass rates (0\u201320% vs 47\u2013100% baseline). Majority, quadratic, and token-quorum rules were largely interchangeable. Quadratic voting gave a small edge only to the most contentious DAO (Nouns).',
+    keywords: ['counterfactual governance', 'conviction voting', 'governance rules', 'digital twins', 'voting mechanisms'],
+    datePublished: '2025-05-01',
+    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
 ];
 
@@ -195,11 +203,15 @@ function faqPageSchema() {
     },
     {
       q: 'Can AI agents improve DAO governance decision-making?',
-      a: 'Hybrid LLM governance — where some agents use AI reasoning and others use rule-based logic — halved decision latency to 808 ms versus 1,381 ms in all-LLM mode while matching the 50% pass rate. All-LLM mode peaked engagement at 31.2% participation and 74.7% vote consistency. Hybrid mode is recommended as the default, with deeper LLM reasoning escalated only where needed. These findings are directional from an 8-run benchmark; larger run budgets are needed before converting findings to hard policy.',
+      a: 'Across 52 runs (13 per config), hybrid LLM governance with 30% AI agents matched baseline participation (20%) and pass rates (43%) while preserving decision quality. All-LLM mode collapsed participation to 8.8% and pass rates to 23%, showing that AI governance needs human anchoring. LLM vote consistency was 46% in hybrid mode but only 22% in all-LLM mode. Hybrid mode is recommended as the default deployment.',
     },
     {
       q: 'What is a DAO digital twin and how accurate are they?',
       a: 'A DAO digital twin is an agent-based simulation model calibrated against a real DAO\'s on-chain governance data, Snapshot votes, forum activity, and token prices. The DAO Simulator built digital twins of 14 major DAOs including Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, and SushiSwap. Each twin captures the DAO\'s actual governance stack: quorum thresholds, voting periods, proposal pipelines, and member archetypes. Calibration scores average 0.85, with Gitcoin highest at 0.922.',
+    },
+    {
+      q: 'What happens if you change a DAO\'s governance rule?',
+      a: 'Counterfactual experiments across 5 calibrated DAOs (Optimism, Uniswap, Compound, Nouns, Lido) show that conviction voting universally collapsed pass rates to 0\u201320% versus 47\u2013100% baseline. Majority, quadratic, token-quorum, and bicameral rules were largely interchangeable within each DAO. Only Nouns \u2014 the most contentious DAO with a 45% baseline pass rate \u2014 showed measurable improvement under quadratic voting. The governance rule matters less than the participation and opposition dynamics underneath.',
     },
     {
       q: 'Does cross-DAO cooperation actually work?',

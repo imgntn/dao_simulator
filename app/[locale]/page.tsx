@@ -151,7 +151,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 <p className="text-xs uppercase tracking-wide text-[var(--text-muted)]">DAOs</p>
               </div>
               <div className="rounded-xl bg-[var(--surface-warm)] p-2.5">
-                <p className="text-xl font-bold text-[var(--accent-gold)]">6</p>
+                <p className="text-xl font-bold text-[var(--accent-gold)]">{sections.length}</p>
                 <p className="text-xs uppercase tracking-wide text-[var(--text-muted)]">Briefs</p>
               </div>
             </div>
@@ -160,7 +160,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
         <div className="mt-7 grid gap-3 sm:grid-cols-3">
           <InfoCard label={m.home?.briefsLabel ?? 'Decision Briefs'}>
-            {sections.length} {m.home?.briefsCount ?? 'briefs covering participation, capture, operations, treasury, coordination, and LLM governance.'}
+            {sections.length} {m.home?.briefsCount ?? 'briefs covering participation, capture, operations, treasury, coordination, LLM governance, and counterfactual rule comparison.'}
           </InfoCard>
           <InfoCard label={m.home?.evidenceLabel ?? 'Evidence Base'}>
             {m.home?.evidenceDesc ?? '21 experiment configurations with calibrated digital twins averaging 0.85 accuracy.'}
@@ -193,7 +193,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             {m.home?.podcastListen ?? 'Podcast'}
           </a>
           <a href="#why" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
-            Why This Matters
+            {m.home?.methodologyHeading ?? 'Why This Work Is Important'}
           </a>
           <a href="#digital-twins" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             Digital Twins

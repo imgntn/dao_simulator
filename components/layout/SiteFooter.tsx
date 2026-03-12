@@ -31,6 +31,15 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         >
           GitHub
         </a>
+        {' · '}
+        <a
+          href={`${GITHUB_REPO_URL}/blob/main/LICENSE`}
+          target="_blank"
+          rel="noreferrer"
+          className="text-[var(--text-muted)] hover:text-[var(--accent-teal)]"
+        >
+          AGPL-3.0
+        </a>
       </p>
     </footer>
   );
