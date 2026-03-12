@@ -2,16 +2,10 @@ import nodemailer from 'nodemailer';
 import type { AnalyticsRow } from './store';
 import { getStats } from './store';
 
-const DEFAULT_RECIPIENTS = [
-  'hello@daosimulator.com',
-  'james@jamesbpollack.com',
-  'hello@playablefuture.com',
-];
-
 function getRecipients(): string[] {
   const env = process.env.REPORT_RECIPIENTS;
-  if (env) return env.split(',').map(e => e.trim()).filter(Boolean);
-  return DEFAULT_RECIPIENTS;
+  if (!env) throw new Error('REPORT_RECIPIENTS env var is required');
+  return env.split(',').map(e => e.trim()).filter(Boolean);
 }
 
 function createTransport() {
@@ -79,6 +73,9 @@ export async function sendDailyReport(days = 7): Promise<{ sent: boolean; error?
   const pass = process.env.SMTP_PASS;
   if (!user || !pass) {
     return { sent: false, error: 'SMTP_USER and SMTP_PASS are required' };
+  }
+  if (!process.env.REPORT_RECIPIENTS) {
+    return { sent: false, error: 'REPORT_RECIPIENTS env var is required' };
   }
 
   const rows = await getStats(days);
