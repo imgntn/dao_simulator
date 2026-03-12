@@ -1,7 +1,0 @@
-⚠️ Low sample size (3 runs per config). Recommend at least 10 runs, ideally 30+ for robust statistical power.
-
-High variability in "Proposal Pass Rate" (CV=173.2%). Consider longer simulation runs or more controlled initial conditions.
-
-Non-normal distribution detected for "Proposal Pass Rate" (skewness=1.73). Bootstrap CIs are included in stats export.
-
-No parameter sweep configured. Add sweep values to compare configurations.

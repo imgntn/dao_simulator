@@ -37,7 +37,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# experiment results
+# experiment results (archived to R2: dao-research-media bucket)
 /results/
 !/results/historical/
 /results/historical/*
@@ -52,12 +52,6 @@ next-env.d.ts
 # logs
 *.log
 *.err
-dev.log
-dev.err
-server.log
-server.err
-playwright-*.log
-playwright-*.err
 
 # temp files
 tmpclaude-*
@@ -65,27 +59,22 @@ debug-*.ts
 output.txt
 nul
 
-# LaTeX tools
+# PDFs (generated artifacts — upload to R2, not tracked)
+*.pdf
+
+# LaTeX build artifacts
 tools/
-paper/*.pdf
-paper/*.aux
-paper/*.log
-paper/*.bbl
-paper/*.blg
-paper/*.out
-paper/*.toc
+*.aux
+*.bbl
+*.blg
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
 
 # Paper generated files (temp)
 paper/generated/
-paper_p1/generated/*
-paper_p2/generated/*
-paper_llm/generated/*
-!paper_p1/generated/.gitkeep
-!paper_p2/generated/.gitkeep
-!paper_llm/generated/.gitkeep
-
-# Track archived paper versions as zips
-!paper/archive/*.zip
 
 # Simulation checkpoints
 .checkpoints/
@@ -105,3 +94,10 @@ podcast_media/
 
 # Wrangler local state
 .wrangler/
+
+# Archived directories (backed up to R2: dao-research-media bucket)
+/archive/
+/legacy-python/
+/paper_p1/
+/paper_p2/
+/paper_llm/

@@ -1,6 +1,0 @@
-- description: Submit a proposal
-  metric: proposal_count
-  threshold: 1
-- description: Approve one proposal
-  metric: approved_proposals
-  threshold: 1
