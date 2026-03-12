@@ -49,18 +49,6 @@ export function findLatestFile(relativeDir: string, matcher: RegExp): string | n
   );
 }
 
-export function findLatestBundle(): string | null {
-  const absolute = toPath('archive');
-  if (!fs.existsSync(absolute)) return null;
-  return (
-    fs
-      .readdirSync(absolute, { withFileTypes: true })
-      .filter((entry) => entry.isDirectory() && entry.name.startsWith('paper-consolidated-'))
-      .map((entry) => entry.name)
-      .sort((a, b) => b.localeCompare(a))[0] ?? null
-  );
-}
-
 // ---------------------------------------------------------------------------
 // Markdown utilities
 // ---------------------------------------------------------------------------

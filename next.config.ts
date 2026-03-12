@@ -9,22 +9,14 @@ const nextConfig: NextConfig = {
   outputFileTracingExcludes: {
     "/": [
       "./results/**/*",
-      "./archive/**/*",
       "./paper/archive/**/*",
-      "./paper_p1/archive/**/*",
-      "./paper_p2/archive/**/*",
-      "./paper_llm/archive/**/*",
     ],
     "/console": ["./results/**/*", "./experiments/**/*"],
     "/results/\\[name\\]": ["./results/**/*"],
     "/api/research": ["./results/**/*", "./experiments/**/*", "./logs/**/*"],
     "/api/artifacts/\\[\\.\\.\\.slug\\]": [
       "./results/**/*",
-      "./archive/**/*",
       "./paper/**/*",
-      "./paper_p1/**/*",
-      "./paper_p2/**/*",
-      "./paper_llm/**/*",
       "./docs/**/*",
     ],
   },

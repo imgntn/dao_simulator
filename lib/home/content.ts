@@ -209,7 +209,7 @@ export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
     question: 'Where are the hidden cliffs in quorum design?',
     whyItMatters: 'Most DAOs set quorum by gut feel. A 5-point miscalibration can silently kill governance.',
     filePath: 'paper/plain-english/rq1-participation.md',
-    relatedPaperPath: 'paper/rq1/main.pdf',
+    relatedPaperPath: 'paper/main.pdf',
   },
   {
     id: 'rq2',
@@ -217,7 +217,7 @@ export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
     question: 'Can you reduce whale dominance without killing governance speed?',
     whyItMatters: 'The conventional wisdom says fairness costs efficiency. The data says otherwise.',
     filePath: 'paper/plain-english/rq2-governance-capture.md',
-    relatedPaperPath: 'paper/rq2/main.pdf',
+    relatedPaperPath: 'paper/main.pdf',
   },
   {
     id: 'rq3',
@@ -225,7 +225,7 @@ export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
     question: 'Is the speed-vs-quality tradeoff in governance real?',
     whyItMatters: 'Everyone assumes faster governance means worse decisions. Filtering mechanics break that assumption.',
     filePath: 'paper/plain-english/rq3-proposal-pipeline.md',
-    relatedPaperPath: 'paper/rq3/main.pdf',
+    relatedPaperPath: 'paper/main.pdf',
   },
   {
     id: 'rq4',
@@ -233,7 +233,7 @@ export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
     question: 'What does treasury stability actually cost in growth?',
     whyItMatters: 'Stabilization halves volatility \u2014 but nothing is free. The growth tradeoff is real and quantifiable.',
     filePath: 'paper/plain-english/rq4-treasury.md',
-    relatedPaperPath: 'paper/rq4/main.pdf',
+    relatedPaperPath: 'paper/main.pdf',
   },
   {
     id: 'rq5',
@@ -241,7 +241,7 @@ export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
     question: 'Why does specialization beat scale in cross-DAO partnerships?',
     whyItMatters: 'Generic partnerships fail. The structure of collaboration matters more than the intent.',
     filePath: 'paper/plain-english/rq5-cooperation.md',
-    relatedPaperPath: 'paper/rq5/main.pdf',
+    relatedPaperPath: 'paper/main.pdf',
   },
   {
     id: 'rq6',
@@ -249,7 +249,7 @@ export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
     question: 'What happens when AI agents participate in governance votes?',
     whyItMatters: '52-run experiment. Hybrid AI governance preserves participation; pure-LLM mode does not.',
     filePath: 'paper/plain-english/rq6-llm-agent-reasoning.md',
-    relatedPaperPath: 'paper_llm/main.pdf',
+    relatedPaperPath: 'paper/main.pdf',
   },
   {
     id: 'rq7',
@@ -621,26 +621,5 @@ export const PAPER_PROFILES: PaperProfile[] = [
     description: 'Full synthesis across the complete research program.',
     directory: 'paper',
     archivePrefix: 'dao-governance-paper',
-  },
-  {
-    id: 'paper_p1',
-    label: 'Part I: Participation + Capture',
-    description: 'Focus on fairness, participation quality, and anti-capture design.',
-    directory: 'paper_p1',
-    archivePrefix: 'dao-governance-paper_p1',
-  },
-  {
-    id: 'paper_p2',
-    label: 'Part II: Operations + Treasury',
-    description: 'Focus on proposal flow, treasury resilience, and inter-DAO outcomes.',
-    directory: 'paper_p2',
-    archivePrefix: 'dao-governance-paper_p2',
-  },
-  {
-    id: 'paper_llm',
-    label: 'LLM Governance Paper',
-    description: 'Dedicated analysis of LLM and hybrid governance modes.',
-    directory: 'paper_llm',
-    archivePrefix: 'dao-governance-paper_llm',
   },
 ];

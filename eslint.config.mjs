@@ -16,7 +16,6 @@ export default tseslint.config(
       "build/**",
       "coverage/**",
       "next-env.d.ts",
-      "legacy-python/**",
       "*.config.js",
       "*.config.mjs",
     ],

@@ -87,7 +87,7 @@ export async function generateMetadata({
       'citation_title': 'DAO Simulator: Governance Findings from 16,370 Agent-Based Simulation Runs',
       'citation_author': 'James B. Pollack',
       'citation_publication_date': '2025/05/01',
-      'citation_pdf_url': `${BASE_URL}/paper/main.pdf`,
+      'citation_pdf_url': `${BASE_URL}/api/artifacts/paper/main.pdf`,
       'citation_language': locale,
     },
   };

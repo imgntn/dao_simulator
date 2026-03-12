@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 
 const ROOT_DIR = process.cwd();
-const ALLOWED_BASES = ['paper', 'paper_p1', 'paper_p2', 'paper_llm', 'archive', 'results', 'docs'];
+const ALLOWED_BASES = ['paper', 'results', 'docs'];
 
 const MIME_MAP: Record<string, string> = {
   '.pdf': 'application/pdf',

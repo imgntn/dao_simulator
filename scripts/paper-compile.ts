@@ -6,6 +6,7 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { uploadPaperArtifacts } from './r2-upload';
 
 type ProfileArg = 'full' | 'p1' | 'p2' | 'llm' | 'both' | 'all';
 
@@ -62,20 +63,7 @@ function resolvePaperDirs(parsed: ParsedArgs): string[] {
     ));
   }
 
-  const dirs: string[] = [];
-  if (parsed.profile === 'full' || parsed.profile === 'all') {
-    dirs.push(path.join(ROOT_DIR, 'paper'));
-  }
-  if (parsed.profile === 'p1' || parsed.profile === 'both' || parsed.profile === 'all') {
-    dirs.push(path.join(ROOT_DIR, 'paper_p1'));
-  }
-  if (parsed.profile === 'p2' || parsed.profile === 'both' || parsed.profile === 'all') {
-    dirs.push(path.join(ROOT_DIR, 'paper_p2'));
-  }
-  if (parsed.profile === 'llm' || parsed.profile === 'all') {
-    dirs.push(path.join(ROOT_DIR, 'paper_llm'));
-  }
-  return dirs;
+  return [path.join(ROOT_DIR, 'paper')];
 }
 
 function checkTectonic(): boolean {
@@ -122,6 +110,13 @@ function compilePaperDir(paperDir: string): void {
   const stats = fs.statSync(pdfPath);
   const sizeKB = Math.round(stats.size / 1024);
   console.log(`[${paperId}] PDF generated: ${pdfPath} (${sizeKB}KB)`);
+
+  // Upload PDF and figures to R2
+  try {
+    uploadPaperArtifacts(paperDir);
+  } catch (err) {
+    console.warn(`[${paperId}] R2 upload failed (non-fatal):`, err);
+  }
 }
 
 function main(): void {

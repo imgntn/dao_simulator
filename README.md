@@ -41,7 +41,7 @@ npm run experiment -- experiments/paper/04-governance-capture-mitigations.yaml -
 - Larger DAOs (N>200) achieve higher pass rates but face declining participation
 - Inter-DAO proposals face 22% success rate vs 73% for intra-DAO proposals
 
-See `paper/` for the full research paper and `experiments/paper/` for all experiment configurations.
+See `paper/` for the LaTeX source and `experiments/paper/` for all experiment configurations. Generated PDFs are uploaded to R2 (see `ARCHIVES.md`).
 
 ## Scripts
 

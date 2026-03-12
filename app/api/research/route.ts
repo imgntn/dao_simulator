@@ -105,12 +105,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const normalizedProfile = (() => {
-      if (paperProfile === 'p1' || paperProfile === 'p2' || paperProfile === 'llm' || paperProfile === 'full' || paperProfile === 'both' || paperProfile === 'all') {
-        return paperProfile;
-      }
-      return 'full';
-    })();
+    const normalizedProfile = 'full';
 
     function respond(params: Record<string, string>) {
       if (isJson) {
@@ -178,13 +173,7 @@ export async function POST(request: NextRequest) {
       }
       case 'paper-update': {
         const logFile = path.join(LOG_DIR, `paper-update-${Date.now()}.log`);
-        const argsByProfile: Record<string, string[]> = {
-          p1: ['--paper-dir', 'paper_p1', '--profile', 'p1'],
-          p2: ['--paper-dir', 'paper_p2', '--profile', 'p2'],
-          llm: ['--paper-dir', 'paper_llm', '--profile', 'llm'],
-          full: ['--paper-dir', 'paper', '--profile', 'full'],
-        };
-        const updateArgs = argsByProfile[normalizedProfile] || argsByProfile.full;
+        const updateArgs = ['--paper-dir', 'paper', '--profile', 'full'];
         const pid = spawnTsx('scripts/paper-update.ts', updateArgs, logFile);
         return respond({
           action,

@@ -221,22 +221,9 @@ export default async function ConsolePage({
           {m.console?.paperPipelineDesc ?? 'Update the academic paper from the latest results, compile PDFs, and archive releases.'}
         </p>
         <div className="flex flex-wrap items-end gap-4">
-          <label className="block text-xs uppercase tracking-wide text-[var(--text-faint)]">
-            Paper Profile
-            <select
-              name="paperProfile"
-              form="paper-update-form"
-              defaultValue="full"
-              className="mt-2 w-full rounded-md border border-[var(--border-default)] bg-[var(--surface-warm-deep)] px-3 py-2 text-sm text-[var(--text-body-secondary)]"
-            >
-              <option value="full">full (paper/)</option>
-              <option value="p1">p1 (paper_p1/)</option>
-              <option value="p2">p2 (paper_p2/)</option>
-              <option value="llm">llm (paper_llm/)</option>
-            </select>
-          </label>
-          <form id="paper-update-form" action="/api/research" method="post">
+          <form action="/api/research" method="post">
             <input type="hidden" name="action" value="paper-update" />
+            <input type="hidden" name="paperProfile" value="full" />
             <button
               type="submit"
               className="px-4 py-2 text-sm font-medium rounded-md bg-[var(--text-heading)] text-[var(--surface-page)] hover:opacity-90"
@@ -244,26 +231,24 @@ export default async function ConsolePage({
               {m.console?.updatePaper ?? 'Update Paper'}
             </button>
           </form>
-          {['full', 'p1', 'p2', 'llm'].map((profile) => (
-            <form key={profile} action="/api/research" method="post">
-              <input type="hidden" name="action" value="paper-compile" />
-              <input type="hidden" name="paperProfile" value={profile} />
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium rounded-md border border-[var(--border-strong)] text-[var(--text-body-secondary)] hover:border-[var(--accent-teal)]"
-              >
-                {m.console?.compileLabel ?? 'Compile'} {profile.toUpperCase()}
-              </button>
-            </form>
-          ))}
           <form action="/api/research" method="post">
-            <input type="hidden" name="action" value="paper-archive" />
-            <input type="hidden" name="paperProfile" value="all" />
+            <input type="hidden" name="action" value="paper-compile" />
+            <input type="hidden" name="paperProfile" value="full" />
             <button
               type="submit"
               className="px-4 py-2 text-sm font-medium rounded-md border border-[var(--border-strong)] text-[var(--text-body-secondary)] hover:border-[var(--accent-teal)]"
             >
-              {m.console?.archiveAll ?? 'Archive All'}
+              {m.console?.compileLabel ?? 'Compile'}
+            </button>
+          </form>
+          <form action="/api/research" method="post">
+            <input type="hidden" name="action" value="paper-archive" />
+            <input type="hidden" name="paperProfile" value="full" />
+            <button
+              type="submit"
+              className="px-4 py-2 text-sm font-medium rounded-md border border-[var(--border-strong)] text-[var(--text-body-secondary)] hover:border-[var(--accent-teal)]"
+            >
+              {m.console?.archiveAll ?? 'Archive'}
             </button>
           </form>
         </div>

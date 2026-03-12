@@ -64,10 +64,7 @@ Six decision briefs summarize findings in plain language:
 
 ## Papers
 
-- [Core Governance Paper (PDF)](https://daosimulator.com/paper/main.pdf) — Full synthesis across all research questions
-- [Part I: Participation + Capture (PDF)](https://daosimulator.com/paper_p1/main.pdf)
-- [Part II: Operations + Treasury (PDF)](https://daosimulator.com/paper_p2/main.pdf)
-- [LLM Governance Paper (PDF)](https://daosimulator.com/paper_llm/main.pdf)
+- [Core Governance Paper (PDF)](https://daosimulator.com/api/artifacts/paper/main.pdf) — Full synthesis across all research questions
 
 ## Digital Twins
 

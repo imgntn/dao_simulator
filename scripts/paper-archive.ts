@@ -5,6 +5,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { uploadToR2 } from './r2-upload';
 
 type ProfileArg = 'full' | 'p1' | 'p2' | 'llm' | 'both' | 'all';
 
@@ -68,20 +69,7 @@ function resolvePaperDirs(rootDir: string, parsed: ParsedArgs): string[] {
     ));
   }
 
-  const candidates: string[] = [];
-  if (parsed.profile === 'full' || parsed.profile === 'all') {
-    candidates.push(path.join(rootDir, 'paper'));
-  }
-  if (parsed.profile === 'p1' || parsed.profile === 'both' || parsed.profile === 'all') {
-    candidates.push(path.join(rootDir, 'paper_p1'));
-  }
-  if (parsed.profile === 'p2' || parsed.profile === 'both' || parsed.profile === 'all') {
-    candidates.push(path.join(rootDir, 'paper_p2'));
-  }
-  if (parsed.profile === 'llm' || parsed.profile === 'all') {
-    candidates.push(path.join(rootDir, 'paper_llm'));
-  }
-  return candidates;
+  return [path.join(rootDir, 'paper')];
 }
 
 function ensureArchiveDir(archiveDir: string): void {
@@ -124,6 +112,19 @@ function archivePDF(paperDir: string): void {
   const sizeKB = Math.round(stats.size / 1024);
 
   console.log(`[${paperId}] Archived: ${archiveName} (${sizeKB}KB)`);
+
+  // Upload archived version to R2
+  try {
+    const r2Key = `dao-simulator-papers/${paperId}/archive/${archiveName}`;
+    const result = uploadToR2(archivePath, r2Key);
+    if (result.success) {
+      console.log(`[${paperId}] Uploaded archive to R2: ${r2Key}`);
+    } else {
+      console.warn(`[${paperId}] R2 upload failed (non-fatal): ${result.error}`);
+    }
+  } catch {
+    // Non-fatal — local archive is the primary copy
+  }
 }
 
 function archiveSourceBundle(paperDir: string): void {
