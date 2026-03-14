@@ -7,7 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { uploadToR2 } from './r2-upload';
 
-type ProfileArg = 'full' | 'p1' | 'p2' | 'llm' | 'both' | 'all';
+type ProfileArg = 'full' | 'p1' | 'p2' | 'llm';
 
 interface ParsedArgs {
   list: boolean;
@@ -24,6 +24,8 @@ function getTimestamp(): string {
     .slice(0, 19);
 }
 
+const VALID_PROFILES: ProfileArg[] = ['full', 'p1', 'p2', 'llm'];
+
 function parseArgs(args: string[]): ParsedArgs {
   const parsed: ParsedArgs = {
     list: false,
@@ -39,15 +41,19 @@ function parseArgs(args: string[]): ParsedArgs {
     } else if (arg === '--with-source') {
       parsed.withSource = true;
     } else if (arg === '--profile') {
-      const value = args[i + 1] as ProfileArg | undefined;
-      if (value && ['full', 'p1', 'p2', 'llm', 'both', 'all'].includes(value)) {
-        parsed.profile = value;
+      const value = args[i + 1] as string | undefined;
+      if (value && (VALID_PROFILES as string[]).includes(value)) {
+        parsed.profile = value as ProfileArg;
+      } else if (value) {
+        console.warn(`[paper-archive] Unknown profile '${value}', using default 'full'. Valid: ${VALID_PROFILES.join(', ')}`);
       }
       i++;
     } else if (arg.startsWith('--profile=')) {
-      const value = arg.split('=')[1] as ProfileArg | undefined;
-      if (value && ['full', 'p1', 'p2', 'llm', 'both', 'all'].includes(value)) {
-        parsed.profile = value;
+      const value = arg.split('=')[1] as string | undefined;
+      if (value && (VALID_PROFILES as string[]).includes(value)) {
+        parsed.profile = value as ProfileArg;
+      } else if (value) {
+        console.warn(`[paper-archive] Unknown profile '${value}', using default 'full'. Valid: ${VALID_PROFILES.join(', ')}`);
       }
     } else if (arg === '--paper-dir') {
       const value = args[i + 1];
@@ -89,14 +95,18 @@ function getVersionNumber(archiveDir: string): number {
   return pdfFiles.length + 1;
 }
 
-function archivePDF(paperDir: string): void {
+/**
+ * Archive a paper PDF and optionally its source bundle.
+ * Returns the version number used so the source bundle can share it.
+ */
+function archivePDF(paperDir: string): number {
   const archiveDir = path.join(paperDir, 'archive');
   const pdfPath = path.join(paperDir, 'main.pdf');
   const paperId = path.basename(paperDir);
 
   if (!fs.existsSync(pdfPath)) {
     console.log(`[${paperId}] No existing PDF to archive`);
-    return;
+    return 0;
   }
 
   ensureArchiveDir(archiveDir);
@@ -125,15 +135,15 @@ function archivePDF(paperDir: string): void {
   } catch {
     // Non-fatal — local archive is the primary copy
   }
+
+  return version;
 }
 
-function archiveSourceBundle(paperDir: string): void {
+function archiveSourceBundle(paperDir: string, version: number): void {
   const archiveDir = path.join(paperDir, 'archive');
   const paperId = path.basename(paperDir);
 
-  // Optionally create a snapshot of the .tex sources
   const timestamp = getTimestamp();
-  const version = getVersionNumber(archiveDir);
   const bundleDir = path.join(archiveDir, `source_${paperId}_v${version.toString().padStart(3, '0')}_${timestamp}`);
 
   ensureArchiveDir(archiveDir);
@@ -209,9 +219,9 @@ if (parsed.list) {
 } else {
   console.log('=== Archiving Previous Paper Version(s) ===\n');
   for (const paperDir of paperDirs) {
-    archivePDF(paperDir);
-    if (parsed.withSource) {
-      archiveSourceBundle(paperDir);
+    const version = archivePDF(paperDir);
+    if (parsed.withSource && version > 0) {
+      archiveSourceBundle(paperDir, version);
     }
   }
 }

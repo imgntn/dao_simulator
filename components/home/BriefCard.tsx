@@ -35,7 +35,7 @@ export function BriefCard({ id, label, title, question, curated, index, locale }
               {item.detail}
             </li>
           ))
-          : [m.home?.openFullBrief ?? 'Open brief for outcome details.'].map((text, itemIndex) => (
+          : [m.home?.openFullBrief ?? 'Open full brief'].map((text, itemIndex) => (
             <li
               key={`${id}-takeaway-${itemIndex}`}
               className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] px-3 py-2"

@@ -152,7 +152,7 @@ export function BriefDetail({
               </ul>
             ) : (
               <p className="mt-3 text-base text-[var(--text-muted)]">
-                No extracted outcome points found for this brief.
+                {m.home?.noOutcomePoints ?? 'No extracted outcome points found for this brief.'}
               </p>
             )}
           </div>
@@ -163,7 +163,7 @@ export function BriefDetail({
       {/* ── Cross-links to related briefs ── */}
       {BRIEF_CROSS_LINKS[id] && BRIEF_CROSS_LINKS[id].length > 0 && (
         <div className="mt-5 flex flex-wrap items-center gap-2">
-          <span className="text-sm font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">See also:</span>
+          <span className="text-sm font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">{m.home?.seeAlso ?? 'See also:'}</span>
           {BRIEF_CROSS_LINKS[id].map((link) => {
             const target = DECISION_BRIEF_SECTIONS.find((s) => s.id === link.id);
             if (!target) return null;

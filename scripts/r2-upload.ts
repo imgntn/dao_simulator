@@ -8,9 +8,13 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { pathToFileURL } from 'url';
 
 const R2_BUCKET = 'dao-research-media';
 const R2_PREFIX = 'dao-simulator-papers';
+
+/** Supported figure file extensions for upload. */
+const FIGURE_EXTENSIONS = ['.png', '.svg', '.pdf'];
 
 export interface UploadResult {
   localPath: string;
@@ -54,13 +58,16 @@ export function uploadPdf(pdfPath: string, paperDir: string): UploadResult {
 
   // Also upload as "latest" (no date suffix)
   const latestKey = `${R2_PREFIX}/${paperId}/${fileName}.pdf`;
-  uploadToR2(pdfPath, latestKey);
+  const latestResult = uploadToR2(pdfPath, latestKey);
+  if (!latestResult.success) {
+    console.warn(`Latest-key upload failed: ${latestResult.error}`);
+  }
 
   return result;
 }
 
 /**
- * Upload all PNG figures from a directory to R2.
+ * Upload all figure files (PNG, SVG, PDF) from a directory to R2.
  */
 export function uploadFigures(figuresDir: string, paperDir: string): UploadResult[] {
   if (!fs.existsSync(figuresDir)) return [];
@@ -68,7 +75,10 @@ export function uploadFigures(figuresDir: string, paperDir: string): UploadResul
   const paperId = path.basename(paperDir);
   const results: UploadResult[] = [];
 
-  const files = fs.readdirSync(figuresDir).filter((f) => f.endsWith('.png'));
+  const files = fs.readdirSync(figuresDir).filter((f) => {
+    const ext = path.extname(f).toLowerCase();
+    return FIGURE_EXTENSIONS.includes(ext);
+  });
   if (files.length === 0) return [];
 
   console.log(`Uploading ${files.length} figures from ${figuresDir}...`);
@@ -104,8 +114,13 @@ export function uploadPaperArtifacts(paperDir: string): void {
   }
 }
 
-// CLI entry point
-if (require.main === module) {
+// CLI entry point (ESM-compatible)
+const isMain = (() => {
+  if (!process.argv[1]) return false;
+  return import.meta.url === pathToFileURL(process.argv[1]).href;
+})();
+
+if (isMain) {
   const args = process.argv.slice(2);
   if (args.length === 0) {
     console.log('Usage: tsx scripts/r2-upload.ts <file-or-dir> [r2-key-prefix]');

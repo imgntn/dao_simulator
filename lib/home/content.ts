@@ -21,7 +21,7 @@ export type BriefSection = {
 };
 
 export type PaperProfile = {
-  id: 'paper';
+  id: string;
   label: string;
   description: string;
   directory: string;
@@ -621,5 +621,40 @@ export const PAPER_PROFILES: PaperProfile[] = [
     description: 'Full synthesis across the complete research program.',
     directory: 'paper',
     archivePrefix: 'dao-governance-paper',
+  },
+  {
+    id: 'rq1',
+    label: 'RQ1: Quorum Design & Governance Cliffs',
+    description: 'Participation dynamics and the quorum cliff — 2,300 runs.',
+    directory: 'paper/rq1',
+    archivePrefix: 'dao-governance-rq1',
+  },
+  {
+    id: 'rq2',
+    label: 'RQ2: Governance Capture Mitigation',
+    description: 'Quadratic voting, delegation caps, and whale influence — 2,700 runs.',
+    directory: 'paper/rq2',
+    archivePrefix: 'dao-governance-rq2',
+  },
+  {
+    id: 'rq3',
+    label: 'RQ3: Governance Throughput',
+    description: 'Proposal pipeline filtering and the speed-quality tradeoff — 900 runs.',
+    directory: 'paper/rq3',
+    archivePrefix: 'dao-governance-rq3',
+  },
+  {
+    id: 'rq4',
+    label: 'RQ4: The Cost of Stability',
+    description: 'Treasury resilience under governance stress — 1,200 runs.',
+    directory: 'paper/rq4',
+    archivePrefix: 'dao-governance-rq4',
+  },
+  {
+    id: 'rq5',
+    label: 'RQ5: Inter-DAO Cooperation',
+    description: 'Cross-DAO coordination and specialization topology — 500 runs.',
+    directory: 'paper/rq5',
+    archivePrefix: 'dao-governance-rq5',
   },
 ];

@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useRef, type ReactNode } from 'react';
+import { useLocale } from '@/lib/i18n/locale-context';
+import { getMessages } from '@/lib/i18n';
 
 interface CollapsibleBriefProps {
   id: string;
@@ -12,6 +14,8 @@ interface CollapsibleBriefProps {
 export function CollapsibleBrief({ id, label, title, children }: CollapsibleBriefProps) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
   const restoredFromStorage = useRef(false);
+  const { locale } = useLocale();
+  const m = getMessages(locale);
 
   useEffect(() => {
     const el = detailsRef.current;
@@ -74,7 +78,7 @@ export function CollapsibleBrief({ id, label, title, children }: CollapsibleBrie
           <h3 className="mt-1 text-xl font-semibold leading-tight text-[var(--text-heading)]">
             {title}
           </h3>
-          <p className="mt-2 text-sm text-[var(--text-muted)]">Tap to expand</p>
+          <p className="mt-2 text-sm text-[var(--text-muted)]">{m.home?.tapToExpand ?? 'Tap to expand'}</p>
         </div>
       </summary>
       {children}

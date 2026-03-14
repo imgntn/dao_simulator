@@ -2,7 +2,7 @@
  * Structured Data (JSON-LD) for SEO & AI Discoverability
  *
  * Generates a rich @graph with ResearchProject, Person, WebSite,
- * ScholarlyArticle (×6), Dataset, and FAQPage schemas.
+ * ScholarlyArticle (×7), Dataset, and FAQPage schemas.
  */
 
 import { intlLocaleMap } from '@/lib/i18n';
@@ -124,7 +124,7 @@ const BRIEF_META: BriefMeta[] = [
     abstract:
       'Across 52 runs, hybrid LLM governance (30% AI agents) matched baseline participation and pass rates while preserving decision quality. All-LLM mode collapsed participation to 8.8% and pass rates to 23%. Hybrid mode is the recommended default.',
     keywords: ['LLM governance', 'AI voting agents', 'hybrid AI governance', 'large language models', 'DAO automation'],
-    datePublished: '2025-05-01',
+    datePublished: '2025-09-01',
     pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
   {
@@ -133,7 +133,7 @@ const BRIEF_META: BriefMeta[] = [
     abstract:
       'Five calibrated DAO digital twins tested under alternative voting rules. Conviction voting universally collapsed pass rates (0\u201320% vs 47\u2013100% baseline). Majority, quadratic, and token-quorum rules were largely interchangeable. Quadratic voting gave a small edge only to the most contentious DAO (Nouns).',
     keywords: ['counterfactual governance', 'conviction voting', 'governance rules', 'digital twins', 'voting mechanisms'],
-    datePublished: '2025-05-01',
+    datePublished: '2026-01-15',
     pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
 ];
@@ -164,7 +164,7 @@ function datasetSchema() {
     description:
       '14 real DAO digital twins calibrated against on-chain governance votes, Snapshot data, forum activity, and token prices. Average calibration accuracy 0.85 across all DAOs.',
     creator: { '@id': AUTHOR_ID },
-    temporalCoverage: '2021/2025',
+    temporalCoverage: '2021/2026',
     spatialCoverage: 'Ethereum, Arbitrum, Optimism',
     variableMeasured: [
       'proposal frequency',

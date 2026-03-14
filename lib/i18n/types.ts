@@ -612,6 +612,9 @@ export interface Messages {
     digitalTwinsWhy: string;
     digitalTwinsDaos: string;
     digitalTwinsCategories: string;
+    tapToExpand: string;
+    noOutcomePoints: string;
+    seeAlso: string;
     consultingHeading: string;
     consultingDesc: string;
     consultingCta: string;

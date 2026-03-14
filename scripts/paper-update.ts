@@ -89,7 +89,7 @@ const CONFIG = {
 
   claude: {
     apiKey: process.env.ANTHROPIC_API_KEY || '',
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-5-20241022',
     // Claude-specific parameters mapped to task types
     parameters: {
       default: {
@@ -1226,7 +1226,7 @@ async function generateAllCharts(
         }
       ),
     });
-  } else {
+  } else if (profile === 'llm') {
     const llmResult = findResult(results, '12-llm-reasoning') || findResult(results, 'llm-agent-reasoning');
     tasks.push({
       file: 'llm_vote_consistency.png',
@@ -1285,6 +1285,8 @@ async function generateAllCharts(
         }
       ),
     });
+  } else {
+    console.warn(`[paper-update] Unknown profile '${profile}', no charts will be generated. Valid profiles: full, p1, p2, llm`);
   }
 
   for (const task of tasks) {
