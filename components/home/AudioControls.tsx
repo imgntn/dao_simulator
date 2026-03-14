@@ -140,6 +140,66 @@ export function AudioControls({ audioRef }: AudioControlsProps) {
     setMuted(audio.muted);
   }, [audioRef]);
 
+  // Media Session API — lock screen / notification controls + background playback
+  useEffect(() => {
+    if (!('mediaSession' in navigator)) return;
+
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: 'Green Pill #123: AI DAO Simulator',
+      artist: 'James Pollack',
+      album: 'Green Pill Podcast',
+      artwork: [
+        { src: '/icon.svg', sizes: '512x512', type: 'image/svg+xml' },
+      ],
+    });
+
+    navigator.mediaSession.setActionHandler('play', () => {
+      audioRef.current?.play();
+    });
+    navigator.mediaSession.setActionHandler('pause', () => {
+      audioRef.current?.pause();
+    });
+    navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+      skip(-(details.seekOffset ?? 15));
+    });
+    navigator.mediaSession.setActionHandler('seekforward', (details) => {
+      skip(details.seekOffset ?? 15);
+    });
+    navigator.mediaSession.setActionHandler('seekto', (details) => {
+      const audio = audioRef.current;
+      if (audio && details.seekTime != null) {
+        audio.currentTime = details.seekTime;
+        setCurrentTime(details.seekTime);
+      }
+    });
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+      skip(-15);
+    });
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+      skip(15);
+    });
+
+    return () => {
+      // Clean up handlers
+      const actions: MediaSessionAction[] = ['play', 'pause', 'seekbackward', 'seekforward', 'seekto', 'previoustrack', 'nexttrack'];
+      for (const action of actions) {
+        try { navigator.mediaSession.setActionHandler(action, null); } catch {}
+      }
+    };
+  }, [audioRef, skip]);
+
+  // Keep Media Session position state in sync
+  useEffect(() => {
+    if (!('mediaSession' in navigator) || !duration) return;
+    try {
+      navigator.mediaSession.setPositionState({
+        duration,
+        playbackRate: speed,
+        position: Math.min(currentTime, duration),
+      });
+    } catch {}
+  }, [currentTime, duration, speed]);
+
   const progress = duration > 0 ? currentTime / duration : 0;
   const bufferedProgress = duration > 0 ? buffered / duration : 0;
 
@@ -178,120 +238,121 @@ export function AudioControls({ audioRef }: AudioControlsProps) {
         />
       </div>
 
-      {/* Controls row */}
-      <div className="flex items-center gap-3">
-        {/* Skip back 15s */}
-        <button
-          type="button"
-          onClick={() => skip(-15)}
-          className="flex items-center gap-0.5 rounded-full px-1.5 py-1 text-[var(--text-muted)] transition hover:bg-[var(--surface-warm-deep)] hover:text-[var(--text-heading)]"
-          aria-label="Skip back 15 seconds"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M11 7L2 12l9 5V7z" />
-          </svg>
-          <span className="text-[10px] font-semibold leading-none">15</span>
-        </button>
-
-        {/* Play/Pause */}
-        <button
-          type="button"
-          onClick={togglePlay}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent-teal)] text-white shadow transition hover:opacity-90"
-          aria-label={playing ? 'Pause' : 'Play'}
-        >
-          {playing ? (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <rect x="6" y="4" width="4" height="16" rx="1" />
-              <rect x="14" y="4" width="4" height="16" rx="1" />
-            </svg>
-          ) : (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          )}
-        </button>
-
-        {/* Skip forward 15s */}
-        <button
-          type="button"
-          onClick={() => skip(15)}
-          className="flex items-center gap-0.5 rounded-full px-1.5 py-1 text-[var(--text-muted)] transition hover:bg-[var(--surface-warm-deep)] hover:text-[var(--text-heading)]"
-          aria-label="Skip forward 15 seconds"
-        >
-          <span className="text-[10px] font-semibold leading-none">15</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M13 7l9 5-9 5V7z" />
-          </svg>
-        </button>
-
-        {/* Time display */}
-        <span className="min-w-[5rem] text-center font-mono text-xs text-[var(--text-muted)]">
-          {formatTime(currentTime)} / {formatTime(duration)}
-        </span>
-
-        {/* Spacer */}
-        <div className="flex-1" />
-
-        {/* Speed selector */}
-        <div className="relative">
+      {/* Controls — two rows on mobile, single row on desktop */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+        {/* Transport: skip / play / skip — centered on mobile */}
+        <div className="flex items-center justify-center gap-4 sm:gap-2">
           <button
             type="button"
-            onClick={() => setShowSpeedMenu((v) => !v)}
-            className="rounded-full border border-[var(--border-default)] px-2 py-0.5 font-mono text-xs text-[var(--text-muted)] transition hover:bg-[var(--surface-warm-deep)] hover:text-[var(--text-heading)]"
-            aria-label="Playback speed"
+            onClick={() => skip(-15)}
+            className="flex h-10 w-10 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:bg-[var(--surface-warm-deep)] hover:text-[var(--text-heading)] sm:h-auto sm:w-auto sm:gap-0.5 sm:px-1.5 sm:py-1"
+            aria-label="Skip back 15 seconds"
           >
-            {speed}x
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="sm:h-3.5 sm:w-3.5">
+              <path d="M11 7L2 12l9 5V7z" />
+            </svg>
+            <span className="hidden text-[10px] font-semibold leading-none sm:inline">15</span>
           </button>
-          {showSpeedMenu && (
-            <div className="absolute bottom-full right-0 mb-1 flex flex-col rounded-lg border border-[var(--border-default)] bg-[var(--surface-warm)] py-1 shadow-lg">
-              {SPEEDS.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => changeSpeed(s)}
-                  className={`px-4 py-1 text-left font-mono text-xs transition hover:bg-[var(--surface-warm-deep)] ${
-                    s === speed ? 'text-[var(--accent-teal)] font-bold' : 'text-[var(--text-muted)]'
-                  }`}
-                >
-                  {s}x
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
 
-        {/* Volume */}
-        <div className="hidden items-center gap-1 pr-1 sm:flex">
           <button
             type="button"
-            onClick={toggleMute}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:bg-[var(--surface-warm-deep)] hover:text-[var(--text-heading)]"
-            aria-label={muted ? 'Unmute' : 'Mute'}
+            onClick={togglePlay}
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--accent-teal)] text-white shadow transition hover:opacity-90 sm:h-10 sm:w-10"
+            aria-label={playing ? 'Pause' : 'Play'}
           >
-            {muted || volume === 0 ? (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M11 5L6 9H2v6h4l5 4V5z" />
-                <line x1="23" y1="9" x2="17" y2="15" />
-                <line x1="17" y1="9" x2="23" y2="15" />
+            {playing ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="sm:h-[18px] sm:w-[18px]">
+                <rect x="6" y="4" width="4" height="16" rx="1" />
+                <rect x="14" y="4" width="4" height="16" rx="1" />
               </svg>
             ) : (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M11 5L6 9H2v6h4l5 4V5z" />
-                <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" />
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="sm:h-[18px] sm:w-[18px]">
+                <path d="M8 5v14l11-7z" />
               </svg>
             )}
           </button>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            value={muted ? 0 : volume}
-            onChange={(e) => changeVolume(Number(e.target.value))}
-            className="h-1 w-16 cursor-pointer appearance-none rounded-full bg-[var(--surface-warm-deep)] accent-[var(--accent-teal)]"
-            aria-label="Volume"
-          />
+
+          <button
+            type="button"
+            onClick={() => skip(15)}
+            className="flex h-10 w-10 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:bg-[var(--surface-warm-deep)] hover:text-[var(--text-heading)] sm:h-auto sm:w-auto sm:gap-0.5 sm:px-1.5 sm:py-1"
+            aria-label="Skip forward 15 seconds"
+          >
+            <span className="hidden text-[10px] font-semibold leading-none sm:inline">15</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="sm:h-3.5 sm:w-3.5">
+              <path d="M13 7l9 5-9 5V7z" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Time + speed — second row on mobile, inline on desktop */}
+        <div className="flex items-center justify-between sm:flex-1 sm:justify-start sm:gap-3">
+          <span className="font-mono text-xs text-[var(--text-muted)]">
+            {formatTime(currentTime)} / {formatTime(duration)}
+          </span>
+
+          <div className="hidden sm:block sm:flex-1" />
+
+          {/* Speed selector */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowSpeedMenu((v) => !v)}
+              className="rounded-full border border-[var(--border-default)] px-2.5 py-1 font-mono text-xs text-[var(--text-muted)] transition hover:bg-[var(--surface-warm-deep)] hover:text-[var(--text-heading)] sm:px-2 sm:py-0.5"
+              aria-label="Playback speed"
+            >
+              {speed}x
+            </button>
+            {showSpeedMenu && (
+              <div className="absolute bottom-full right-0 mb-1 flex flex-col rounded-lg border border-[var(--border-default)] bg-[var(--surface-warm)] py-1 shadow-lg">
+                {SPEEDS.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => changeSpeed(s)}
+                    className={`px-4 py-1.5 text-left font-mono text-xs transition hover:bg-[var(--surface-warm-deep)] sm:py-1 ${
+                      s === speed ? 'text-[var(--accent-teal)] font-bold' : 'text-[var(--text-muted)]'
+                    }`}
+                  >
+                    {s}x
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Volume — desktop only */}
+          <div className="hidden items-center gap-1 pr-1 sm:flex">
+            <button
+              type="button"
+              onClick={toggleMute}
+              className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:bg-[var(--surface-warm-deep)] hover:text-[var(--text-heading)]"
+              aria-label={muted ? 'Unmute' : 'Mute'}
+            >
+              {muted || volume === 0 ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 5L6 9H2v6h4l5 4V5z" />
+                  <line x1="23" y1="9" x2="17" y2="15" />
+                  <line x1="17" y1="9" x2="23" y2="15" />
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 5L6 9H2v6h4l5 4V5z" />
+                  <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" />
+                </svg>
+              )}
+            </button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={muted ? 0 : volume}
+              onChange={(e) => changeVolume(Number(e.target.value))}
+              className="h-1 w-16 cursor-pointer appearance-none rounded-full bg-[var(--surface-warm-deep)] accent-[var(--accent-teal)]"
+              aria-label="Volume"
+            />
+          </div>
         </div>
       </div>
     </div>
