@@ -108,8 +108,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       />
 
       <StickyNav sections={[
+        { id: 'why', label: 'Key Findings' },
         { id: 'podcast', label: 'Podcast' },
-        { id: 'why', label: 'Why It Matters' },
         { id: 'digital-twins', label: 'Digital Twins' },
         { id: 'simulator', label: 'Simulator' },
         { id: 'charts', label: 'Results' },
@@ -134,6 +134,33 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               {m.home?.heroDescription ??
                 'Actionable governance findings from 16,370 simulation runs across 14 calibrated DAO digital twins. Start with any research question below.'}
             </p>
+
+            {/* TL;DR */}
+            <div className="mt-5 rounded-xl border border-[var(--accent-teal)]/30 bg-[var(--accent-teal)]/5 px-5 py-3">
+              <p className="text-sm font-semibold text-[var(--accent-teal)]">TL;DR</p>
+              <p className="mt-1 text-[1.05rem] leading-relaxed text-[var(--text-body)]">
+                Small quorum changes cause governance cliffs. Quadratic voting fixes whale capture without sacrificing efficiency. Structure beats scale in cross-DAO cooperation.
+              </p>
+            </div>
+
+            {/* Primary CTA */}
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <a
+                href={`/${locale}/simulate`}
+                className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-teal)] px-7 py-3.5 text-lg font-semibold text-white shadow-md transition hover:bg-[var(--accent-teal-hover)] hover:shadow-lg"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                </svg>
+                Explore the Simulator
+              </a>
+              <a
+                href="#research"
+                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-warm)] px-6 py-3.5 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
+              >
+                Read the Research
+              </a>
+            </div>
           </div>
 
           {/* Right: hero chart + stat counters */}
@@ -189,11 +216,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
         {/* Page table of contents */}
         <nav aria-label="Page sections" className="mt-8 flex flex-wrap gap-2">
+          <a href="#why" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
+            Key Findings
+          </a>
           <a href="#podcast" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             {m.home?.podcastListen ?? 'Podcast'}
-          </a>
-          <a href="#why" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
-            {m.home?.methodologyHeading ?? 'Why This Work Is Important'}
           </a>
           <a href="#digital-twins" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
             Digital Twins
@@ -219,6 +246,47 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </nav>
       </header>
 
+      {/* ── Social Proof ── */}
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] px-6 py-3 text-sm text-[var(--text-muted)]">
+        <span>Featured on <strong className="text-[var(--text-heading)]">Green Pill Podcast</strong></span>
+        <span className="hidden sm:inline text-[var(--border-default)]">|</span>
+        <span><strong className="text-[var(--accent-teal)]">14</strong> DAOs calibrated to real data</span>
+        <span className="hidden sm:inline text-[var(--border-default)]">|</span>
+        <span><strong className="text-[var(--accent-teal)]">16,370</strong> simulation runs</span>
+        <span className="hidden sm:inline text-[var(--border-default)]">|</span>
+        <a href="https://github.com/imgntn/dao_simulator" target="_blank" rel="noreferrer" className="font-semibold text-[var(--text-heading)] hover:text-[var(--accent-teal)]">Open Source</a>
+      </div>
+
+      {/* ── Key Findings ── */}
+      <section id="why" aria-labelledby="why-heading" className="mt-8 rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-7 sm:p-9">
+        <h2 id="why-heading" className="font-serif-display text-3xl text-[var(--text-heading)] sm:text-4xl">
+          Three Numbers That Should Change How You Design Governance
+        </h2>
+        <div className="mt-6 grid gap-4 sm:grid-cols-3">
+          <a href="#rq1" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-6 transition hover:border-[var(--accent-teal)] hover:shadow-md">
+            <p className="font-serif-display text-4xl font-bold text-[var(--accent-teal)] sm:text-5xl">99%&rarr;0%</p>
+            <p className="mt-2 text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Hidden Governance Cliff</p>
+            <p className="mt-1 text-base leading-relaxed text-[var(--text-body-secondary)]">
+              A 5-point quorum change collapses proposal passage from near-certain to zero. The drop is a cliff, not a slope.
+            </p>
+          </a>
+          <a href="#rq2" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-6 transition hover:border-[var(--accent-teal)] hover:shadow-md">
+            <p className="font-serif-display text-4xl font-bold text-[var(--accent-teal)] sm:text-5xl">43%</p>
+            <p className="mt-2 text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Fairness Improved Speed</p>
+            <p className="mt-1 text-base leading-relaxed text-[var(--text-body-secondary)]">
+              Quadratic voting cut whale influence 43% while pass rate rose from 93% to 99%. The fairness-efficiency tradeoff didn&rsquo;t exist.
+            </p>
+          </a>
+          <a href="#rq5" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-6 transition hover:border-[var(--accent-teal)] hover:shadow-md">
+            <p className="font-serif-display text-4xl font-bold text-[var(--accent-gold)] sm:text-5xl">50%</p>
+            <p className="mt-2 text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Structure Beats Scale</p>
+            <p className="mt-1 text-base leading-relaxed text-[var(--text-body-secondary)]">
+              Specialized cross-DAO partnerships generated 50% more proposals and higher treasury outcomes than generic connections.
+            </p>
+          </a>
+        </div>
+      </section>
+
       {/* ── Podcast ── */}
       <section id="podcast" aria-labelledby="podcast-heading" className="mt-10 rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-7 sm:p-9">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
@@ -236,6 +304,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <p className="mt-3 max-w-3xl text-[1.12rem] leading-relaxed text-[var(--text-body)] sm:text-[1.22rem]">
               {m.home?.podcastEpisode ?? 'Green Pill #123: AI DAO Simulator'}
             </p>
+            <p className="mt-1 text-sm font-medium text-[var(--text-muted)]">June 15, 2023</p>
             <p className="mt-2 max-w-3xl text-base leading-relaxed text-[var(--text-body-secondary)]">
               {m.home?.podcastDesc ??
                 'James Pollack joined the Green Pill podcast to explore whether a DAO can be run by AI \u2014 the dynamics of agent-based models, what it looks like to put governance on-chain, and the research that became this project.'}
@@ -283,36 +352,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
-      {/* ── Why This Work Is Important ── */}
-      <section id="why" aria-labelledby="why-heading" className="mt-10 rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-7 sm:p-9">
-        <h2 id="why-heading" className="font-serif-display text-3xl text-[var(--text-heading)] sm:text-4xl">
-          {m.home?.methodologyHeading ?? 'Why This Work Is Important'}
-        </h2>
-        <div className="mt-6 grid gap-4 sm:grid-cols-3">
-          <a href="#rq1" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-6 transition hover:border-[var(--accent-teal)] hover:shadow-md">
-            <p className="font-serif-display text-4xl font-bold text-[var(--accent-teal)] sm:text-5xl">99%&rarr;0%</p>
-            <p className="mt-2 text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Hidden Governance Cliff</p>
-            <p className="mt-1 text-base leading-relaxed text-[var(--text-body-secondary)]">
-              A 5-point quorum change collapses proposal passage from near-certain to zero. The drop is a cliff, not a slope.
-            </p>
-          </a>
-          <a href="#rq2" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-6 transition hover:border-[var(--accent-teal)] hover:shadow-md">
-            <p className="font-serif-display text-4xl font-bold text-[var(--accent-teal)] sm:text-5xl">43%</p>
-            <p className="mt-2 text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Fairness Improved Speed</p>
-            <p className="mt-1 text-base leading-relaxed text-[var(--text-body-secondary)]">
-              Quadratic voting cut whale influence 43% while pass rate rose from 93% to 99%. The fairness-efficiency tradeoff didn&rsquo;t exist.
-            </p>
-          </a>
-          <a href="#rq5" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-6 transition hover:border-[var(--accent-teal)] hover:shadow-md">
-            <p className="font-serif-display text-4xl font-bold text-[var(--accent-gold)] sm:text-5xl">50%</p>
-            <p className="mt-2 text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">Structure Beats Scale</p>
-            <p className="mt-1 text-base leading-relaxed text-[var(--text-body-secondary)]">
-              Specialized cross-DAO partnerships generated 50% more proposals and higher treasury outcomes than generic connections.
-            </p>
-          </a>
-        </div>
-      </section>
-
       {/* ── Digital Twins ── */}
       <section id="digital-twins" aria-labelledby="digital-twins-heading" className="mt-10 rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-7 sm:p-9">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
@@ -352,69 +391,99 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               </div>
             </div>
 
-            {/* DAO twin feature cards */}
+            {/* DAO twin cards — sorted by calibration score */}
             <div className="mt-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm-deep)] p-4">
-              <p className="text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-                {m.home?.digitalTwinsCategories ?? 'DeFi, Layer 2, Public Goods, Staking, Lending, Identity, Stablecoin, DEX'}
-              </p>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {(m.home?.digitalTwinsDaos ?? 'Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, SushiSwap').split(', ').map((dao) => {
-                  const score = CALIBRATION_SCORES[dao];
-                  const twin = DAO_TWIN_FEATURES[dao];
-                  return (
-                    <div
-                      key={dao}
-                      className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-warm)] p-3"
-                      title={score ? `Calibration score: ${score.toFixed(3)}` : undefined}
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        {DAO_URLS[dao] ? (
-                          <a
-                            href={DAO_URLS[dao]}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-sm font-semibold text-[var(--text-heading)] underline decoration-[var(--border-default)] underline-offset-2 hover:text-[var(--accent-teal)] hover:decoration-[var(--accent-teal)]"
-                          >
-                            {dao}
-                          </a>
-                        ) : (
-                          <span className="text-sm font-semibold text-[var(--text-heading)]">{dao}</span>
-                        )}
-                        <div className="flex items-center gap-1.5">
-                          {twin && (
-                            <span className="rounded px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide bg-[var(--surface-warm)] text-[var(--text-body-secondary)]">
-                              {twin.governance}
-                            </span>
-                          )}
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+                  {m.home?.digitalTwinsCategories ?? 'DeFi, Layer 2, Public Goods, Staking, Lending, Identity, Stablecoin, DEX'}
+                </p>
+                <p className="text-xs text-[var(--text-muted)]">Sorted by accuracy</p>
+              </div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {(m.home?.digitalTwinsDaos ?? 'Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, SushiSwap')
+                  .split(', ')
+                  .sort((a, b) => (CALIBRATION_SCORES[b] ?? 0) - (CALIBRATION_SCORES[a] ?? 0))
+                  .map((dao) => {
+                    const score = CALIBRATION_SCORES[dao];
+                    const twin = DAO_TWIN_FEATURES[dao];
+                    return (
+                      <details
+                        key={dao}
+                        className="group rounded-lg border border-[var(--border-default)] bg-[var(--surface-warm)] overflow-hidden"
+                      >
+                        <summary className="flex cursor-pointer items-center justify-between gap-2 px-3 py-2 select-none">
+                          <div className="flex items-center gap-2">
+                            {DAO_URLS[dao] ? (
+                              <a
+                                href={DAO_URLS[dao]}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-sm font-semibold text-[var(--text-heading)] underline decoration-[var(--border-default)] underline-offset-2 hover:text-[var(--accent-teal)] hover:decoration-[var(--accent-teal)]"
+                              >
+                                {dao}
+                              </a>
+                            ) : (
+                              <span className="text-sm font-semibold text-[var(--text-heading)]">{dao}</span>
+                            )}
+                            {twin && (
+                              <span className="rounded px-1.5 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide bg-[var(--surface-warm-deep)] text-[var(--text-muted)]">
+                                {twin.governance}
+                              </span>
+                            )}
+                          </div>
                           {score != null && (
-                            <span className={`rounded px-1.5 py-0.5 text-xs font-bold ${
+                            <span className={`rounded px-1.5 py-0.5 text-xs font-bold tabular-nums ${
                               score >= 0.88 ? 'bg-[var(--accent-teal)]/15 text-[var(--accent-teal)]'
                                 : score >= 0.85 ? 'bg-[var(--accent-gold)]/15 text-[var(--accent-gold)]'
                                 : 'bg-[var(--border-subtle)] text-[var(--text-muted)]'
                             }`}>
-                              {(score * 100).toFixed(0)}
+                              {(score * 100).toFixed(0)}%
                             </span>
                           )}
-                        </div>
-                      </div>
-                      {twin && (
-                        <ul className="mt-2 space-y-0.5">
-                          {twin.features.map((f, i) => (
-                            <li key={i} className="flex items-start gap-1.5 text-xs leading-relaxed text-[var(--text-body-secondary)]">
-                              <span className="mt-[0.35em] h-1 w-1 shrink-0 rounded-full bg-[var(--accent-teal)]" aria-hidden="true" />
-                              {f}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  );
-                })}
+                        </summary>
+                        {twin && (
+                          <div className="border-t border-[var(--border-subtle)] px-3 py-2">
+                            <ul className="space-y-0.5">
+                              {twin.features.map((f, i) => (
+                                <li key={i} className="flex items-start gap-1.5 text-xs leading-relaxed text-[var(--text-body-secondary)]">
+                                  <span className="mt-[0.35em] h-1 w-1 shrink-0 rounded-full bg-[var(--accent-teal)]" aria-hidden="true" />
+                                  {f}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </details>
+                    );
+                  })}
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* ── Transition Zone: Bridge to Simulator ── */}
+      <div className="mt-12 overflow-hidden rounded-3xl bg-gradient-to-b from-[var(--surface-page)] via-[#1a1f2e] to-[#030712] px-7 py-12 text-center sm:px-10 sm:py-16">
+        <p className="text-sm font-semibold uppercase tracking-[0.26em] text-cyan-400">
+          Ready to explore?
+        </p>
+        <h2 className="mt-3 font-serif-display text-3xl text-white sm:text-4xl">
+          See Governance in Motion
+        </h2>
+        <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-400 sm:text-lg">
+          14 real DAOs. 25 agent types. Every governance rule you can think of.
+          Watch agents vote, delegate, and shape treasuries in real-time 3D.
+        </p>
+        <a
+          href={`/${locale}/simulate`}
+          className="mt-8 inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-cyan-500/25 transition hover:bg-cyan-400 hover:shadow-cyan-400/30"
+        >
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+          </svg>
+          Launch Simulator
+        </a>
+      </div>
 
       {/* ── Interactive Simulator ── */}
       <section id="simulator" aria-labelledby="simulator-heading" className="mt-10 rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-7 sm:p-9">
@@ -495,6 +564,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 {headline && (
                   <p className="mt-1 text-center text-sm text-[var(--text-muted)]">
                     {headline}
+                  </p>
+                )}
+                {section.curated.whatWeFound[0]?.detail && (
+                  <p className="mt-2 border-t border-[var(--border-subtle)] pt-2 text-center text-xs leading-relaxed text-[var(--text-body-secondary)]">
+                    <span className="font-semibold text-[var(--accent-teal)]">So what?</span>{' '}
+                    {section.curated.whatWeFound[0].detail}
                   </p>
                 )}
               </a>
