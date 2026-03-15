@@ -2,16 +2,19 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useTutorialStore } from '@/lib/browser/tutorial-store';
+import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
+import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 
 export function Tutorial() {
   const { active, currentStep, steps, next, prev, skip, start, completed } = useTutorialStore();
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
+  const { trackEvent } = useAnalytics();
 
   // Auto-start on first visit
   useEffect(() => {
     if (!completed && !active) {
       // Small delay so the page renders first
-      const timer = setTimeout(start, 1500);
+      const timer = setTimeout(() => { start(); trackEvent(ANALYTICS_EVENTS.TUTORIAL_STARTED); }, 1500);
       return () => clearTimeout(timer);
     }
   }, [completed, active, start]);
@@ -130,7 +133,7 @@ export function Tutorial() {
 
         <div className="flex items-center justify-between">
           <button
-            onClick={skip}
+            onClick={() => { skip(); trackEvent(ANALYTICS_EVENTS.TUTORIAL_SKIPPED); }}
             className="text-[10px] text-[var(--sim-text-muted)] hover:text-[var(--sim-text-secondary)]"
           >
             Skip tutorial
@@ -145,7 +148,7 @@ export function Tutorial() {
               </button>
             )}
             <button
-              onClick={next}
+              onClick={() => { if (currentStep >= steps.length - 1) trackEvent(ANALYTICS_EVENTS.TUTORIAL_COMPLETED); next(); }}
               className="px-2.5 py-1 text-xs rounded bg-[var(--sim-accent-bold)] hover:bg-[var(--sim-accent-hover)] text-white"
             >
               {currentStep < steps.length - 1 ? 'Next' : 'Done'}

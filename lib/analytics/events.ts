@@ -11,4 +11,12 @@ export const ANALYTICS_EVENTS = {
   THEME_TOGGLED: 'theme_toggled',
   TUTORIAL_STARTED: 'tutorial_started',
   TUTORIAL_COMPLETED: 'tutorial_completed',
+  TAB_CHANGED: 'tab_changed',
+  SCENARIO_EVENT_ADDED: 'scenario_event_added',
+  CUSTOM_AGENT_INJECTED: 'custom_agent_injected',
+  SHARE_CONFIG: 'share_config',
+  TUTORIAL_SKIPPED: 'tutorial_skipped',
+  RESEARCH_SWEEP_SUBMITTED: 'research_sweep_submitted',
+  RESEARCH_EXPERIMENT_RUN: 'research_experiment_run',
+  BOOKING_SUBMITTED: 'booking_submitted',
 } as const;

@@ -659,4 +659,46 @@ export interface Messages {
     noFiles: string;
     noStatus: string;
   };
+
+  // Simulation UI
+  simulation: {
+    controlPanel: string;
+    configChanged: string;
+    applyLive: string;
+    daoPreset: string;
+    governanceRule: string;
+    forum: string;
+    blackSwans: string;
+    randomSeed: string;
+    agentCounts: string;
+    speed: string;
+    stepsPerSec: string;
+    fork: string;
+    tabInteractive: string;
+    tabCompare: string;
+    tabBranch: string;
+    tabMultiRun: string;
+    tabResearch: string;
+    scenarioStep: string;
+    scenarioSeverity: string;
+    scenarioAdd: string;
+    multiRunStats: string;
+    multiRunClear: string;
+    multiRunRuns: string;
+    govDefault: string;
+    govMajority: string;
+    govSupermajority: string;
+    govQuadratic: string;
+    govConviction: string;
+    govOptimistic: string;
+    govIRV: string;
+    govFutarchy: string;
+    eventExploit: string;
+    eventRegulatory: string;
+    eventMarketCrash: string;
+    eventWhaleExit: string;
+    eventContagion: string;
+    eventOracle: string;
+    skipTutorial: string;
+  };
 }

@@ -1,0 +1,122 @@
+name: Counterfactual Governance Expansion (RQ7)
+description: >
+  Comprehensive counterfactual governance analysis across all 14 calibrated
+  DAOs. Tests what happens when each DAO switches to a different governance rule
+  while preserving its calibrated agent dynamics. N=30 runs per configuration
+  for statistical power with confidence intervals.
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - paper
+  - counterfactual
+  - governance
+  - rq7
+  - digital-twins
+  - comprehensive
+
+baseConfig:
+  template: compound
+  overrides:
+    forum_enabled: true
+    forum_influence_weight: 0.3
+    oracle_type: calibrated_gbm
+    learning_enabled: false
+
+sweep:
+  type: grid
+  grid:
+    - parameter: calibration_dao_id
+      values:
+        - aave
+        - uniswap
+        - compound
+        - arbitrum
+        - optimism
+        - ens
+        - lido
+        - gitcoin
+        - maker_sky
+        - curve
+        - nouns
+        - balancer
+        - dydx
+        - sushiswap
+    - parameter: governance_rule
+      values:
+        - majority
+        - supermajority
+        - quadratic
+        - conviction
+        - optimistic
+        - instant-runoff
+        - futarchy
+
+execution:
+  runsPerConfig: 30
+  stepsPerRun: 720
+  seedStrategy: sequential
+  baseSeed: 700
+  workers: 4
+  runTimeoutMs: 300000
+
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "% of resolved proposals that passed"
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+    description: Token-weighted voter participation
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+    description: Treasury balance at simulation end
+  - name: Final Token Price
+    type: builtin
+    builtin: final_token_price
+    description: Token price at simulation end
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% of proposals meeting quorum"
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% holders"
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+    description: Concentration of proposal creation
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+    description: How decisive votes are (0=tied, 1=unanimous)
+  - name: Voter Concentration Gini
+    type: builtin
+    builtin: voter_concentration_gini
+    description: Inequality of voting activity
+  - name: Treasury Volatility
+    type: builtin
+    builtin: treasury_volatility
+    description: Coefficient of variation of treasury
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who ever voted"
+  - name: Collusion Threshold
+    type: builtin
+    builtin: collusion_threshold
+    description: Min % of members for majority control
+  - name: Total Proposals
+    type: builtin
+    builtin: total_proposals
+    description: Number of proposals created
+
+output:
+  directory: results/paper/15-counterfactual-expansion
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeManifest: true

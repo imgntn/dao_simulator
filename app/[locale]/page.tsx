@@ -28,6 +28,7 @@ import { generateResearchProjectJsonLd } from '@/lib/home/structured-data';
 import { StickyNav } from '@/components/home/StickyNav';
 import { CollapsibleBrief } from '@/components/home/CollapsibleBrief';
 import { PodcastPlayer } from '@/components/home/PodcastPlayer';
+import { BookingWidget } from '@/components/home/BookingWidget';
 import { QuorumReachChart } from '@/components/home/infographics/QuorumReachChart';
 import { WhaleInfluenceChart } from '@/components/home/infographics/WhaleInfluenceChart';
 import { PipelineFlowChart } from '@/components/home/infographics/PipelineFlowChart';
@@ -409,6 +410,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     return (
                       <details
                         key={dao}
+                        open
                         className="group rounded-lg border border-[var(--border-default)] bg-[var(--surface-warm)] overflow-hidden"
                       >
                         <summary className="flex cursor-pointer items-center justify-between gap-2 px-3 py-2 select-none">
@@ -688,6 +690,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 GitHub
               </a>
             </div>
+
+            <BookingWidget />
           </div>
         </div>
       </section>

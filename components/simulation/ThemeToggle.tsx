@@ -2,10 +2,13 @@
 
 import { useEffect } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
+import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
+import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 
 export function ThemeToggle() {
   const simTheme = useSimulationStore(s => s.simTheme);
   const setSimTheme = useSimulationStore(s => s.setSimTheme);
+  const { trackEvent } = useAnalytics();
 
   // Load saved preference on mount
   useEffect(() => {
@@ -31,7 +34,7 @@ export function ThemeToggle() {
 
   return (
     <button
-      onClick={() => setSimTheme(simTheme === 'dark' ? 'light' : 'dark')}
+      onClick={() => { setSimTheme(simTheme === 'dark' ? 'light' : 'dark'); trackEvent(ANALYTICS_EVENTS.THEME_TOGGLED); }}
       className="w-7 h-7 rounded-full border border-[var(--sim-border)] text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] hover:border-[var(--sim-accent)] text-sm transition-colors"
       title={`Switch to ${simTheme === 'dark' ? 'light' : 'dark'} theme`}
     >

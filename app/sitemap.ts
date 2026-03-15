@@ -5,7 +5,7 @@ const baseUrl = 'https://daosimulator.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Core pages (localized)
-  const corePages = ['', '/console'];
+  const corePages = ['', '/console', '/simulate', '/health'];
 
   const localizedEntries = corePages.flatMap((page) =>
     locales.map((locale) => ({
@@ -22,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
 
   // Research brief anchors (English only — briefs are section anchors on the homepage)
-  const briefIds = ['rq1', 'rq2', 'rq3', 'rq4', 'rq5', 'rq6'];
+  const briefIds = ['rq1', 'rq2', 'rq3', 'rq4', 'rq5', 'rq6', 'rq7'];
   const briefEntries = briefIds.map((id) => ({
     url: `${baseUrl}/en#${id}`,
     lastModified: new Date(),

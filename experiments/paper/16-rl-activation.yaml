@@ -1,0 +1,100 @@
+name: RL Activation Analysis
+description: >
+  Measures the impact of reinforcement learning on agent behavior across
+  calibrated DAOs. Compares baseline (RL disabled) against progressive RL
+  activation: tabular Q-learning, experience replay, shared learning, and
+  full DQN. Tests whether RL agents converge on different governance outcomes.
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - paper
+  - reinforcement-learning
+  - q-learning
+  - dqn
+  - agent-adaptation
+  - convergence
+
+baseConfig:
+  template: compound
+  overrides:
+    forum_enabled: true
+    oracle_type: calibrated_gbm
+    learning_persist_q_tables: true
+
+sweep:
+  type: zip
+  grid:
+    # RL mode labels (matched by index)
+    - parameter: learning_enabled
+      values: [false, true, true, true, true]
+    - parameter: learning_experience_replay
+      values: [false, false, true, true, true]
+    - parameter: learning_shared_experience
+      values: [false, false, false, true, true]
+    - parameter: learning_use_dqn
+      values: [false, false, false, false, true]
+    # All configs run on 4 representative DAOs
+    # (run as separate sweep dimension with grid)
+
+execution:
+  runsPerConfig: 30
+  stepsPerRun: 1440
+  seedStrategy: sequential
+  baseSeed: 1600
+  workers: 4
+  runTimeoutMs: 600000
+
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "% of resolved proposals that passed"
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+    description: Token-weighted voter participation
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+    description: Treasury balance at simulation end
+  - name: Final Token Price
+    type: builtin
+    builtin: final_token_price
+    description: Token price at simulation end
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+    description: "% of members who ever voted"
+  - name: Governance Capture Risk
+    type: builtin
+    builtin: governance_capture_risk
+    description: Concentration of proposal creation
+  - name: Whale Influence
+    type: builtin
+    builtin: whale_influence
+    description: "% of votes from top 10% holders"
+  - name: Voter Concentration Gini
+    type: builtin
+    builtin: voter_concentration_gini
+    description: Inequality of voting activity
+  - name: Final Gini
+    type: builtin
+    builtin: final_gini
+    description: Token distribution Gini coefficient
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% of proposals meeting quorum"
+  - name: Treasury Volatility
+    type: builtin
+    builtin: treasury_volatility
+    description: Coefficient of variation of treasury
+
+output:
+  directory: results/paper/16-rl-activation
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeManifest: true
+  includeTimeline: true

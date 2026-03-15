@@ -2,6 +2,8 @@
 
 import { useState, useCallback } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
+import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
+import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 
 const EVENT_CATEGORIES = [
   { value: 'exploit', label: 'Smart Contract Exploit', color: '#ef4444' },
@@ -15,6 +17,7 @@ const EVENT_CATEGORIES = [
 export function ScenarioBuilder() {
   const config = useSimulationStore(s => s.config);
   const updateConfig = useSimulationStore(s => s.updateConfig);
+  const { trackEvent } = useAnalytics();
 
   const totalSteps = config.totalSteps;
   const events = config.scheduledBlackSwans ?? [];
@@ -28,7 +31,8 @@ export function ScenarioBuilder() {
     const updated = [...events, { step: newStep, category: newCategory, severity: newSeverity }];
     updated.sort((a, b) => a.step - b.step);
     updateConfig({ scheduledBlackSwans: updated, blackSwanEnabled: true });
-  }, [events, newStep, newCategory, newSeverity, updateConfig]);
+    trackEvent(`${ANALYTICS_EVENTS.SCENARIO_EVENT_ADDED}:${newCategory}`);
+  }, [events, newStep, newCategory, newSeverity, updateConfig, trackEvent]);
 
   const removeEvent = useCallback(
     (index: number) => {

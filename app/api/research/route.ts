@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'yaml';
 import { projectRoot, projectPath } from '@/lib/utils/server-paths';
+import { requireAuth } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 
@@ -74,6 +75,9 @@ function buildRedirect(request: NextRequest, params: Record<string, string>): Ne
 }
 
 export async function POST(request: NextRequest) {
+  const authError = await requireAuth(request);
+  if (authError) return authError;
+
   const contentType = request.headers.get('content-type') ?? '';
   const isJson = contentType.includes('application/json');
   let action = '';

@@ -3,6 +3,8 @@
 import { useState, useCallback } from 'react';
 import { useMultiRunStore } from '@/lib/browser/multi-run-store';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
+import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
+import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 
 const RUN_COUNTS = [3, 5, 10];
 
@@ -10,11 +12,13 @@ export function MultiRunPanel() {
   const { running, totalRuns, completedRuns, stats, startRuns, cancelRuns, reset: resetMulti } = useMultiRunStore();
   const { config, calibrationProfiles, marketData } = useSimulationStore();
   const [numRuns, setNumRuns] = useState(5);
+  const { trackEvent } = useAnalytics();
 
   const handleStart = useCallback(() => {
     if (!calibrationProfiles || !marketData) return;
     startRuns(config, numRuns, calibrationProfiles as Record<string, unknown>, marketData as Record<string, unknown>);
-  }, [config, numRuns, calibrationProfiles, marketData, startRuns]);
+    trackEvent(`${ANALYTICS_EVENTS.MULTI_RUN_STARTED}:${numRuns}`);
+  }, [config, numRuns, calibrationProfiles, marketData, startRuns, trackEvent]);
 
   const progress = totalRuns > 0 ? (completedRuns / totalRuns) * 100 : 0;
 

@@ -2,6 +2,8 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
+import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
+import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 import type { BrowserSimConfig } from '@/lib/browser/worker-protocol';
 
 const DEFAULT_CONFIG: Partial<BrowserSimConfig> = {
@@ -65,8 +67,10 @@ export function decodeConfigFromURL(): Partial<BrowserSimConfig> {
 export function ShareButton() {
   const config = useSimulationStore(s => s.config);
   const [copied, setCopied] = useState(false);
+  const { trackEvent } = useAnalytics();
 
   const handleShare = useCallback(() => {
+    trackEvent(ANALYTICS_EVENTS.SHARE_CONFIG);
     const queryString = encodeConfig(config);
     const url = queryString
       ? `${window.location.origin}${window.location.pathname}?${queryString}`

@@ -2,6 +2,8 @@
 
 import type { SimMode } from '@/components/simulation/panels/panel-registry';
 import { useLayoutStore } from '@/lib/browser/layout-store';
+import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
+import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 
 // Re-export for backwards compat
 export type SimTab = SimMode;
@@ -21,10 +23,12 @@ const tabs: { id: SimTab; label: string }[] = [
 
 export function TabBar({ activeTab, onTabChange }: TabBarProps) {
   const setMode = useLayoutStore(s => s.setMode);
+  const { trackEvent } = useAnalytics();
 
   const handleTabChange = (tab: SimTab) => {
     onTabChange(tab);
     setMode(tab);
+    trackEvent(`${ANALYTICS_EVENTS.TAB_CHANGED}:${tab}`);
   };
 
   return (
