@@ -7,9 +7,5 @@ buildCommand = "npm run build"
 startCommand = "npm run start"
 
 [[services]]
-name = "socket-server"
-dockerfilePath = "Dockerfile.socket"
-
-[[services]]
 name = "analytics-cron-job"
 cronSchedule = "0 8 * * *"
