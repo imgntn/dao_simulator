@@ -41,7 +41,7 @@ sweep:
     - parameter: black_swan_frequency
       values: [0, 1, 3, 5]
     - parameter: governance_rule
-      values: [majority, super-majority, conviction]
+      values: [majority, supermajority, conviction]
 
 execution:
   runsPerConfig: 100
@@ -89,7 +89,7 @@ metrics:
     builtin: token_concentration_gini
 
 output:
-  directory: results/experiments/14-black-swan-resilience
+  directory: results/paper/14-black-swan-resilience
   formats:
     - json
     - csv

@@ -135,7 +135,7 @@ metrics:
     builtin: llm_avg_latency_ms
 
 output:
-  directory: results/experiments/12-llm-reasoning-v5
+  directory: results/paper/12-llm-agent-reasoning
   formats:
     - json
     - csv

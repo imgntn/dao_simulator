@@ -29,6 +29,15 @@ profiles:
       - 06-treasury-resilience.yaml
       - 07-inter-dao-cooperation.yaml
 
+  p3:
+    mode: manual
+    include:
+      - 10-calibration-validation.yaml
+      - 13-cross-dao-governance-comparison.yaml
+      - 14-black-swan-resilience.yaml
+      - 15-counterfactual-expansion.yaml
+      - 16-rl-activation.yaml
+
   llm:
     mode: manual
     include:
