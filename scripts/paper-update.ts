@@ -1286,7 +1286,7 @@ async function generateAllCharts(
       ),
     });
   } else {
-    console.warn(`[paper-update] Unknown profile '${profile}', no charts will be generated. Valid profiles: full, p1, p2, llm`);
+    console.warn(`[paper-update] Unknown profile '${profile}', no charts will be generated. Valid profiles: full, p1, p2, p3, llm`);
   }
 
   for (const task of tasks) {

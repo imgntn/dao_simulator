@@ -55,11 +55,11 @@ export function parseArgs(args: string[]) {
       i++;
     } else if (arg === '--profile' || arg === '--paper') {
       const profile = args[i + 1] as PaperProfile | undefined;
-      result.profile = profile === 'p1' || profile === 'p2' || profile === 'llm' || profile === 'full' ? profile : 'full';
+      result.profile = profile === 'p1' || profile === 'p2' || profile === 'p3' || profile === 'llm' || profile === 'full' ? profile : 'full';
       i++;
     } else if (arg.startsWith('--profile=')) {
       const profile = arg.split('=')[1] as PaperProfile | undefined;
-      result.profile = profile === 'p1' || profile === 'p2' || profile === 'llm' || profile === 'full' ? profile : 'full';
+      result.profile = profile === 'p1' || profile === 'p2' || profile === 'p3' || profile === 'llm' || profile === 'full' ? profile : 'full';
     } else if (arg === '--allow-stale' || arg === '--skip-freshness-check') {
       result.strictFreshness = false;
     }

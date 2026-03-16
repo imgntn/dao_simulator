@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'yaml';
 
-export type PaperProfile = 'full' | 'p1' | 'p2' | 'llm';
+export type PaperProfile = 'full' | 'p1' | 'p2' | 'p3' | 'llm';
 
 export interface PipelineProfileDefinition {
   mode?: 'discovered' | 'manual';
