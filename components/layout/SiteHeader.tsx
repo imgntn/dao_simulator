@@ -30,6 +30,8 @@ export function SiteHeader() {
   }, [open]);
 
   function switchLocale(newLocale: Locale) {
+    // Persist choice so middleware uses it on future visits
+    document.cookie = `NEXT_LOCALE=${newLocale};path=/;max-age=${365 * 24 * 60 * 60};samesite=lax`;
     // Replace the current locale prefix in the pathname
     const rest = pathname.replace(new RegExp(`^/${locale}`), '') || '/';
     router.push(`/${newLocale}${rest === '/' ? '' : rest}`);

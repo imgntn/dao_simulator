@@ -1,30 +1,34 @@
-# Experiment 12: LLM Agent Reasoning (runner-compatible schema)
-# v5: N=100 runs, 720 steps, multi-model sweep (qwen3:8b, llama3.1:8b, gemma3:4b)
+# Experiment 12: LLM Agent Reasoning (Multi-Model, Two Tiers)
 #
-# 10 configs × 100 runs = 1,000 total runs
+# Big tier (~8-12B): qwen3:8b, llama3.1:latest, gemma3:12b
+# Small tier (~1-4B): qwen3:4b, llama3.2:3b, gemma3:4b, gemma3:1b
+#
+# Modes: disabled (baseline), hybrid (30% LLM), all-LLM
+# 22 configs × 100 runs = 2,200 total runs
+#
 # Config layout:
-#   0: disabled (no LLM, model irrelevant — run once as baseline)
-#   1-3: hybrid × 3 models
-#   4-6: all-LLM × 3 models
-#   7-9: hybrid+reporter × 3 models
-#
-# NOTE: When results are collected, update RQ6 confidence note in lib/home/content.ts
-# from "13 runs per config... limited to a single LLM model" to reflect
-# "100 runs per config across 3 LLM architectures (qwen3:8b, llama3.1:8b, gemma3:4b)"
+#   0: disabled (baseline)
+#   1-3: hybrid × big tier (qwen3:8b, llama3.1, gemma3:12b)
+#   4-6: all-LLM × big tier
+#   7-9: hybrid+reporter × big tier
+#   10-13: hybrid × small tier (qwen3:4b, llama3.2:3b, gemma3:4b, gemma3:1b)
+#   14-17: all-LLM × small tier
+#   18-21: hybrid+reporter × small tier
 
-name: LLM Agent Reasoning Modes (Multi-Model)
+name: LLM Agent Reasoning (Two-Tier Multi-Model)
 description: >
   Compares governance outcomes across rule-based, hybrid, all-LLM, and
-  hybrid-with-reporter modes across multiple LLM architectures (qwen3, llama3.1,
-  gemma3) while tracking LLM consistency, cache behavior, and latency.
-  Extended to N=100 runs at 720 steps for statistical power.
-version: 2.0.0
+  hybrid-with-reporter modes using two model tiers: big (8-12B params)
+  and small (1-4B params). Tests whether model scale affects governance
+  quality, voting consistency, and decision speed.
+version: 3.0.0
 author: DAO Simulator Research Framework
 tags:
   - paper
   - llm
   - governance
   - multi-model
+  - model-scale
 
 baseConfig:
   template: compound
@@ -33,7 +37,6 @@ baseConfig:
     learning_enabled: false
     forum_enabled: true
 
-    # Baseline population mix
     num_developers: 4
     num_investors: 2
     num_traders: 1
@@ -44,7 +47,6 @@ baseConfig:
     num_governance_experts: 1
     num_risk_managers: 1
 
-    # LLM runtime settings
     llm_base_url: http://localhost:11434
     llm_max_concurrent: 4
     llm_timeout_ms: 5000
@@ -55,44 +57,45 @@ baseConfig:
 sweep:
   type: zip
   grid:
-    # Config index:      0          1          2          3          4       5       6       7          8          9
-    # Mode:           disabled    hybrid     hybrid     hybrid      all     all     all   hybrid+rpt hybrid+rpt hybrid+rpt
-    # Model:            n/a      qwen3    llama3.1    gemma3      qwen3  llama3.1 gemma3    qwen3    llama3.1    gemma3
+    # Index:              0         1         2         3         4         5         6         7         8         9         10        11        12        13        14        15        16        17        18        19        20        21
+    # Mode:            disabled  hybrid    hybrid    hybrid    all       all       all       hyb+rpt   hyb+rpt   hyb+rpt   hybrid    hybrid    hybrid    hybrid    all       all       all       all       hyb+rpt   hyb+rpt   hyb+rpt   hyb+rpt
+    # Tier:              n/a      big       big       big       big       big       big       big       big       big       small     small     small     small     small     small     small     small     small     small     small     small
+    # Model:             n/a      qwen3:8b  llama3.1  gemma3:12 qwen3:8b  llama3.1  gemma3:12 qwen3:8b  llama3.1  gemma3:12 qwen3:4b  llama3.2  gemma3:4b gemma3:1b qwen3:4b  llama3.2  gemma3:4b gemma3:1b qwen3:4b  llama3.2  gemma3:4b gemma3:1b
 
     - parameter: llm_agent_mode
-      values: [disabled,  hybrid,    hybrid,    hybrid,    all,    all,    all,    hybrid,    hybrid,    hybrid]
+      values:   [disabled, hybrid,   hybrid,       hybrid,       all,      all,          all,          hybrid,   hybrid,       hybrid,       hybrid,   hybrid,       hybrid,   hybrid,       all,      all,          all,      all,          hybrid,   hybrid,       hybrid,   hybrid]
     - parameter: llm_enabled
-      values: [false,     true,      true,      true,      true,   true,   true,   true,      true,      true]
+      values:   [false,    true,     true,         true,         true,     true,         true,         true,     true,         true,         true,     true,         true,     true,         true,     true,         true,     true,         true,     true,         true,     true]
     - parameter: llm_default_model
-      values: [qwen3:8b,  qwen3:8b,  llama3.1:8b, gemma3:4b, qwen3:8b, llama3.1:8b, gemma3:4b, qwen3:8b, llama3.1:8b, gemma3:4b]
+      values:   [qwen3:8b, qwen3:8b, llama3.1:latest, gemma3:12b, qwen3:8b, llama3.1:latest, gemma3:12b, qwen3:8b, llama3.1:latest, gemma3:12b, qwen3:4b, llama3.2:3b, gemma3:4b, gemma3:1b, qwen3:4b, llama3.2:3b, gemma3:4b, gemma3:1b, qwen3:4b, llama3.2:3b, gemma3:4b, gemma3:1b]
     - parameter: llm_premium_model
-      values: [qwen3:8b,  qwen3:8b,  llama3.1:8b, gemma3:4b, qwen3:8b, llama3.1:8b, gemma3:4b, qwen3:8b, llama3.1:8b, gemma3:4b]
+      values:   [qwen3:8b, qwen3:8b, llama3.1:latest, gemma3:12b, qwen3:8b, llama3.1:latest, gemma3:12b, qwen3:8b, llama3.1:latest, gemma3:12b, qwen3:4b, llama3.2:3b, gemma3:4b, gemma3:1b, qwen3:4b, llama3.2:3b, gemma3:4b, gemma3:1b, qwen3:4b, llama3.2:3b, gemma3:4b, gemma3:1b]
     - parameter: llm_hybrid_fraction
-      values: [0.0,       0.3,       0.3,       0.3,       1.0,    1.0,    1.0,    0.3,       0.3,       0.3]
+      values:   [0.0,      0.3,      0.3,          0.3,          1.0,      1.0,          1.0,          0.3,      0.3,          0.3,          0.3,      0.3,          0.3,      0.3,          1.0,      1.0,          1.0,      1.0,          0.3,      0.3,          0.3,      0.3]
     - parameter: num_llm_agents
-      values: [0,         4,         4,         4,         8,      8,      8,      4,         4,         4]
+      values:   [0,        4,        4,            4,            8,        8,            8,            4,        4,            4,            4,        4,            4,        4,            8,        8,            8,        8,            4,        4,            4,        4]
     - parameter: num_llm_reporters
-      values: [0,         0,         0,         0,         0,      0,      0,      1,         1,         1]
+      values:   [0,        0,        0,            0,            0,        0,            0,            1,        1,            1,            0,        0,            0,        0,            0,        0,            0,        0,            1,        1,            1,        1]
 
-    # Force non-LLM roles to zero for all-LLM mode only (indices 4-6)
+    # Force non-LLM roles to zero for all-LLM mode only (indices 4-6, 14-17)
     - parameter: num_developers
-      values: [4,         4,         4,         4,         0,      0,      0,      4,         4,         4]
+      values:   [4,        4,        4,            4,            0,        0,            0,            4,        4,            4,            4,        4,            4,        4,            0,        0,            0,        0,            4,        4,            4,        4]
     - parameter: num_investors
-      values: [2,         2,         2,         2,         0,      0,      0,      2,         2,         2]
+      values:   [2,        2,        2,            2,            0,        0,            0,            2,        2,            2,            2,        2,            2,        2,            0,        0,            0,        0,            2,        2,            2,        2]
     - parameter: num_traders
-      values: [1,         1,         1,         1,         0,      0,      0,      1,         1,         1]
+      values:   [1,        1,        1,            1,            0,        0,            0,            1,        1,            1,            1,        1,            1,        1,            0,        0,            0,        0,            1,        1,            1,        1]
     - parameter: num_passive_members
-      values: [4,         4,         4,         4,         0,      0,      0,      4,         4,         4]
+      values:   [4,        4,        4,            4,            0,        0,            0,            4,        4,            4,            4,        4,            4,        4,            0,        0,            0,        0,            4,        4,            4,        4]
     - parameter: num_proposal_creators
-      values: [2,         2,         2,         2,         0,      0,      0,      2,         2,         2]
+      values:   [2,        2,        2,            2,            0,        0,            0,            2,        2,            2,            2,        2,            2,        2,            0,        0,            0,        0,            2,        2,            2,        2]
     - parameter: num_validators
-      values: [1,         1,         1,         1,         0,      0,      0,      1,         1,         1]
+      values:   [1,        1,        1,            1,            0,        0,            0,            1,        1,            1,            1,        1,            1,        1,            0,        0,            0,        0,            1,        1,            1,        1]
     - parameter: num_delegators
-      values: [2,         2,         2,         2,         0,      0,      0,      2,         2,         2]
+      values:   [2,        2,        2,            2,            0,        0,            0,            2,        2,            2,            2,        2,            2,        2,            0,        0,            0,        0,            2,        2,            2,        2]
     - parameter: num_governance_experts
-      values: [1,         1,         1,         1,         0,      0,      0,      1,         1,         1]
+      values:   [1,        1,        1,            1,            0,        0,            0,            1,        1,            1,            1,        1,            1,        1,            0,        0,            0,        0,            1,        1,            1,        1]
     - parameter: num_risk_managers
-      values: [1,         1,         1,         1,         0,      0,      0,      1,         1,         1]
+      values:   [1,        1,        1,            1,            0,        0,            0,            1,        1,            1,            1,        1,            1,        1,            0,        0,            0,        0,            1,        1,            1,        1]
 
 execution:
   runsPerConfig: 100

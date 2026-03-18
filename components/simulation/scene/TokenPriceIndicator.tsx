@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -11,7 +11,7 @@ interface Props {
   initialPrice?: number;
 }
 
-/** LED billboard mounted on the building exterior */
+/** Freestanding LED billboard near the building */
 export function TokenPriceIndicator({ tokenPrice, initialPrice = 1.0 }: Props) {
   const pulseRef = useRef<THREE.MeshStandardMaterial>(null);
 
@@ -29,14 +29,15 @@ export function TokenPriceIndicator({ tokenPrice, initialPrice = 1.0 }: Props) {
     }
   });
 
-  // Billboard position: right side of building, mid-height
-  const billboardY = 8;
+  // Freestanding position: offset from building, standing on ground
+  const billboardX = -BUILDING.width / 2 - 3;
+  const billboardY = 4;
 
   return (
-    <group position={[-BUILDING.width / 2 - 0.15, billboardY, 0]}>
-      {/* Billboard backing */}
+    <group position={[billboardX, billboardY, 0]}>
+      {/* Billboard backing — tall freestanding sign */}
       <mesh>
-        <boxGeometry args={[0.1, 2.0, 2.5]} />
+        <boxGeometry args={[2.5, 2.5, 0.15]} />
         <meshStandardMaterial
           ref={pulseRef}
           color="#0a0a1a"
@@ -47,17 +48,22 @@ export function TokenPriceIndicator({ tokenPrice, initialPrice = 1.0 }: Props) {
         />
       </mesh>
 
-      {/* LED frame border */}
+      {/* Frame border */}
       <lineSegments>
-        <edgesGeometry args={[new THREE.BoxGeometry(0.12, 2.0, 2.5)]} />
+        <edgesGeometry args={[new THREE.BoxGeometry(2.5, 2.5, 0.17)]} />
         <lineBasicMaterial color={color} transparent opacity={0.6} />
       </lineSegments>
 
+      {/* Support pole */}
+      <mesh position={[0, -2.8, 0]}>
+        <cylinderGeometry args={[0.06, 0.08, 3.2, 8]} />
+        <meshStandardMaterial color="#1a1a2e" metalness={0.7} roughness={0.3} />
+      </mesh>
+
       {/* Price display */}
       <Html
-        position={[-0.08, 0, 0]}
+        position={[0, 0, 0.1]}
         transform
-        rotation={[0, Math.PI / 2, 0]}
         distanceFactor={4}
         style={{ pointerEvents: 'none' }}
       >

@@ -122,11 +122,6 @@ export function SimulationCanvas() {
                   onSelect={handleSelect}
                 />
                 <TreasuryIndicator treasuryFunds={snapshot.treasuryFunds} />
-                <TokenPriceIndicator tokenPrice={snapshot.tokenPrice} />
-                <ProposalBoard
-                  proposals={snapshot.proposals}
-                  onSelectProposal={handleSelectProposal}
-                />
 
                 {/* Delegation beams */}
                 <DelegationBeams agents={snapshot.agents} />
@@ -134,6 +129,13 @@ export function SimulationCanvas() {
                 {/* Agent trails */}
                 <AgentTrails agents={snapshot.agents} />
               </group>
+
+              {/* Freestanding billboards around the building */}
+              <TokenPriceIndicator tokenPrice={snapshot.tokenPrice} />
+              <ProposalBoard
+                proposals={snapshot.proposals}
+                onSelectProposal={handleSelectProposal}
+              />
 
               {/* Proposal lifecycle particles */}
               <ProposalParticles

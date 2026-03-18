@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { Html } from '@react-three/drei';
+import * as THREE from 'three';
 import type { ProposalSnapshot } from '@/lib/browser/worker-protocol';
 import { BUILDING } from './constants';
 
@@ -17,9 +18,7 @@ const STATUS_COLORS: Record<string, string> = {
   expired: '#6b7280',
 };
 
-/** Governance floor (F2) y position */
-const BOARD_Y = 4.5;
-
+/** Freestanding proposal billboard near the building */
 export function ProposalBoard({ proposals, onSelectProposal }: Props) {
   // Show up to 6 most recent proposals, prioritizing open ones
   const displayed = useMemo(() => {
@@ -34,25 +33,40 @@ export function ProposalBoard({ proposals, onSelectProposal }: Props) {
 
   if (displayed.length === 0) return null;
 
+  // Freestanding position: offset from building right side
+  const billboardX = BUILDING.width / 2 + 3;
+  const billboardY = 4;
+
   return (
-    <group position={[BUILDING.width / 2 + 0.3, BOARD_Y, 0]}>
-      {/* Board backing */}
-      <mesh position={[0.5, 0, 0]}>
-        <boxGeometry args={[0.05, 2.4, 3.2]} />
+    <group position={[billboardX, billboardY, 0]}>
+      {/* Board backing — freestanding sign */}
+      <mesh>
+        <boxGeometry args={[2.8, 3.2, 0.12]} />
         <meshStandardMaterial
           color="#1e1b4b"
           transparent
-          opacity={0.8}
+          opacity={0.85}
           roughness={0.3}
           metalness={0.5}
         />
       </mesh>
 
+      {/* Frame border */}
+      <lineSegments>
+        <edgesGeometry args={[new THREE.BoxGeometry(2.8, 3.2, 0.14)]} />
+        <lineBasicMaterial color="#8b5cf6" transparent opacity={0.4} />
+      </lineSegments>
+
+      {/* Support pole */}
+      <mesh position={[0, -3.0, 0]}>
+        <cylinderGeometry args={[0.06, 0.08, 3.6, 8]} />
+        <meshStandardMaterial color="#1a1a2e" metalness={0.7} roughness={0.3} />
+      </mesh>
+
       {/* Proposal cards via Html */}
       <Html
-        position={[0.6, 0, 0]}
+        position={[0, 0, 0.1]}
         transform
-        rotation={[0, -Math.PI / 2, 0]}
         distanceFactor={5}
         style={{ pointerEvents: onSelectProposal ? 'auto' : 'none' }}
       >

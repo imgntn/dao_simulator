@@ -30,14 +30,18 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Detect preferred locale from Accept-Language header
+  // Check cookie first (set when user manually switches locale)
+  const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
+  const savedLocale = cookieLocale && locales.includes(cookieLocale) ? cookieLocale : null;
+
+  // Fall back to Accept-Language header detection
   const acceptLang = request.headers.get('accept-language') ?? '';
   const preferred = acceptLang
     .split(',')
     .map((part) => part.split(';')[0].trim().substring(0, 2).toLowerCase())
     .find((lang) => locales.includes(lang));
 
-  const locale = preferred ?? defaultLocale;
+  const locale = savedLocale ?? preferred ?? defaultLocale;
 
   // Redirect to locale-prefixed path
   const url = request.nextUrl.clone();
