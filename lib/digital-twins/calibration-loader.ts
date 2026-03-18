@@ -12,22 +12,31 @@ import type { CalibrationDataProvider } from './calibration-data-provider';
 
 // Lazy-load Node.js builtins to prevent bundlers from resolving them in browser contexts.
 // The browser code path uses CalibrationDataProvider (set via setProvider()) and never touches fs/path.
-// Using Function constructor hides the require() call from Turbopack/webpack static analysis.
+// Uses Function constructor to hide require() from Turbopack/webpack static analysis.
+// globalThis.__nodeRequire is set by fork-worker.ts for ESM compatibility.
 let _nodeFs: typeof import('fs') | undefined;
 let _nodePath: typeof import('path') | undefined;
 
+function nodeRequire(id: string): any {
+  // Use globalThis.__nodeRequire if available (set by fork-worker for ESM compat)
+  if ((globalThis as any).__nodeRequire) {
+    return (globalThis as any).__nodeRequire(id);
+  }
+  // CJS fallback — hide from bundler
+  // eslint-disable-next-line @typescript-eslint/no-implied-eval
+  return new Function('id', 'return require(id)')(id);
+}
+
 function nodeFs() {
   if (!_nodeFs) {
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
-    _nodeFs = new Function('return require("fs")')() as typeof import('fs');
+    _nodeFs = nodeRequire('fs') as typeof import('fs');
   }
   return _nodeFs;
 }
 
 function nodePath() {
   if (!_nodePath) {
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
-    _nodePath = new Function('return require("path")')() as typeof import('path');
+    _nodePath = nodeRequire('path') as typeof import('path');
   }
   return _nodePath;
 }

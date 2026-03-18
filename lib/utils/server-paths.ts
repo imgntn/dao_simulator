@@ -13,7 +13,7 @@
 
 // Indirect references defeat Turbopack's static path tracing.
 const _process = globalThis['process' as keyof typeof globalThis] as NodeJS.Process;
-const _path = require('path') as typeof import('path');
+const _path = ((globalThis as any).__nodeRequire ?? require)('path') as typeof import('path');
 
 let _root: string | undefined;
 

@@ -570,7 +570,7 @@ export class DAO {
     if (!DAO.GuildClass) {
       // Fallback to require if class not preloaded
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { Guild } = require('./guild');
+      const { Guild } = ((globalThis as any).__nodeRequire ?? require)('./guild');
       DAO.GuildClass = Guild;
     }
 

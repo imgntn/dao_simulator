@@ -7,6 +7,12 @@
  * Includes comprehensive metric extraction for academic research validity.
  */
 
+// ESM compatibility: set up globalThis.__nodeRequire before any imports that need it.
+// When forked with --import tsx, we're in ESM where require() doesn't exist.
+// createRequire from 'module' gives us a CJS-compatible require function.
+import { createRequire } from 'module';
+(globalThis as any).__nodeRequire = createRequire(import.meta.url);
+
 import { DAOSimulation } from '../engine/simulation';
 import { resolveSimulationConfig } from './config-resolver';
 import { setSeed } from '../utils/random';
@@ -863,7 +869,7 @@ function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricTy
     // =========================================================================
 
     case 'llm_vote_consistency': {
-      const { LLMAgent } = require('../agents/llm-agent');
+      const { LLMAgent } = (globalThis as any).__nodeRequire('../agents/llm-agent');
       const llmAgents = members.filter((m: any) => m instanceof LLMAgent && m.llmVoting);
       if (llmAgents.length === 0) return 0;
 

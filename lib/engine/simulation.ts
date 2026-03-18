@@ -1070,8 +1070,8 @@ export class DAOSimulation extends Model {
     }
 
     try {
-      // Use globalThis to hide require from bundler static analysis (server-only path)
-      const _require = globalThis['require' as keyof typeof globalThis] as NodeRequire;
+      // Use globalThis.__nodeRequire (set by fork-worker for ESM compat) or native require
+      const _require = ((globalThis as any).__nodeRequire ?? globalThis['require' as keyof typeof globalThis]) as NodeRequire | undefined;
       if (!_require) return [];
       const fs = _require('fs');
       const path = _require('path');

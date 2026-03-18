@@ -261,8 +261,8 @@ function createBatchProgressCallback(quiet: boolean): ((progress: BatchProgress)
 
 function createProgressBar(percent: number): string {
   const width = 30;
-  const filled = Math.round((percent / 100) * width);
-  const empty = width - filled;
+  const filled = Math.max(0, Math.min(width, Math.round((percent / 100) * width)));
+  const empty = Math.max(0, width - filled);
   return `[${'='.repeat(filled)}${' '.repeat(empty)}]`;
 }
 

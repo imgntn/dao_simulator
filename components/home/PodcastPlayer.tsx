@@ -3,12 +3,15 @@
 import { Suspense } from 'react';
 import { PodcastEmbed } from './PodcastEmbed';
 import { BasicPodcastPlayer } from './BasicPodcastPlayer';
+import { useLocale } from '@/lib/i18n/locale-context';
 
 const PODCAST_EMBED_URL = process.env.NEXT_PUBLIC_PODCAST_EMBED_URL;
 
 function PodcastPlayerInner() {
+  const { locale } = useLocale();
+
   if (PODCAST_EMBED_URL) {
-    return <PodcastEmbed url={PODCAST_EMBED_URL} />;
+    return <PodcastEmbed url={PODCAST_EMBED_URL} lang={locale} />;
   }
 
   return <BasicPodcastPlayer />;
