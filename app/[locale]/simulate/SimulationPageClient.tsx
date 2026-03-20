@@ -27,6 +27,7 @@ import { BranchView } from '@/components/simulation/BranchView';
 import { MultiRunPanel } from '@/components/simulation/MultiRunPanel';
 import { ShareButton } from '@/components/simulation/ShareButton';
 import { ThemeToggle } from '@/components/simulation/ThemeToggle';
+import { FeedbackButton } from '@/components/simulation/FeedbackForm';
 import { Tutorial } from '@/components/simulation/Tutorial';
 import { useActiveSnapshot } from '@/lib/browser/useActiveSnapshot';
 import { Sidebar } from '@/components/simulation/panels/Sidebar';
@@ -133,6 +134,7 @@ export default function SimulationPageClient() {
         <div className="ml-auto pr-3 flex items-center gap-1.5">
           <ThemeToggle />
           <ShareButton />
+          <FeedbackButton />
           <button
             onClick={() => setShowHelp(true)}
             className="w-7 h-7 rounded-full border border-[var(--sim-border)] text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] hover:border-[var(--sim-accent)] text-sm font-semibold transition-colors"
