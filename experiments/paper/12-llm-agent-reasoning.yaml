@@ -129,6 +129,6 @@ output:
   formats:
     - json
     - csv
-  includeRawRuns: true
+  includeRawRuns: false
   includeManifest: true
   includeTimeline: false

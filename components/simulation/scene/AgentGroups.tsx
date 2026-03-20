@@ -135,14 +135,16 @@ function FloorCluster({
     targetPositions.current = posArray;
   }, [posArray]);
 
+  // Pre-allocate reusable objects outside render loop
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const tempColor = useMemo(() => new THREE.Color(), []);
+
   useFrame(({ clock }) => {
     if (!meshRef.current || !prevPositions.current || !targetPositions.current) return;
     const mesh = meshRef.current;
     const prev = prevPositions.current;
     const target = targetPositions.current;
-    const dummy = new THREE.Object3D();
     const time = clock.getElapsedTime();
-    const tempColor = new THREE.Color();
 
     for (let i = 0; i < floor.agents.length; i++) {
       const idx = i * 3;

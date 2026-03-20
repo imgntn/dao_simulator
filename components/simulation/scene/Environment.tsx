@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 
 export function Environment() {
@@ -26,7 +26,7 @@ export function Environment() {
       {/* Ground plane */}
       <GroundPlane />
 
-      {/* City skyline backdrop */}
+      {/* City skyline backdrop — instanced for performance */}
       <Skyline />
 
       {/* Streetlights */}
@@ -59,37 +59,53 @@ function GroundPlane() {
   );
 }
 
-function Skyline() {
-  const buildings = useMemo(() => {
-    const result: { x: number; z: number; w: number; h: number; d: number; color: string }[] = [];
-    const rng = mulberry32(42);
+const SKYLINE_COUNT = 40;
 
-    for (let i = 0; i < 40; i++) {
-      const angle = (rng() * Math.PI * 2);
+function Skyline() {
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+
+  const { matrices, colors } = useMemo(() => {
+    const rng = mulberry32(42);
+    const dummy = new THREE.Object3D();
+    const mats: THREE.Matrix4[] = [];
+    const cols: THREE.Color[] = [];
+
+    for (let i = 0; i < SKYLINE_COUNT; i++) {
+      const angle = rng() * Math.PI * 2;
       const dist = 25 + rng() * 30;
       const x = Math.cos(angle) * dist;
       const z = Math.sin(angle) * dist;
       const w = 1.5 + rng() * 3;
       const h = 3 + rng() * 15;
       const d = 1.5 + rng() * 3;
+
+      dummy.position.set(x, h / 2 - 2, z);
+      dummy.scale.set(w, h, d);
+      dummy.updateMatrix();
+      mats.push(dummy.matrix.clone());
+
       const brightness = 0.04 + rng() * 0.06;
-      const r = Math.floor(brightness * 180);
-      const g = Math.floor(brightness * 200);
-      const b = Math.floor(brightness * 255);
-      result.push({ x, z, w, h, d, color: `rgb(${r},${g},${b})` });
+      cols.push(new THREE.Color(brightness * 0.7, brightness * 0.78, brightness));
     }
-    return result;
+    return { matrices: mats, colors: cols };
   }, []);
 
+  useEffect(() => {
+    if (!meshRef.current) return;
+    const mesh = meshRef.current;
+    for (let i = 0; i < SKYLINE_COUNT; i++) {
+      mesh.setMatrixAt(i, matrices[i]);
+      mesh.setColorAt(i, colors[i]);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+  }, [matrices, colors]);
+
   return (
-    <group>
-      {buildings.map((b, i) => (
-        <mesh key={i} position={[b.x, b.h / 2 - 2, b.z]}>
-          <boxGeometry args={[b.w, b.h, b.d]} />
-          <meshStandardMaterial color={b.color} roughness={0.8} metalness={0.3} />
-        </mesh>
-      ))}
-    </group>
+    <instancedMesh ref={meshRef} args={[undefined, undefined, SKYLINE_COUNT]} frustumCulled>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial roughness={0.8} metalness={0.3} />
+    </instancedMesh>
   );
 }
 

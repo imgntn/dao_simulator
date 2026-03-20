@@ -23,6 +23,8 @@ export function TreasuryIndicator({ treasuryFunds }: Props) {
   const pulseColor = useRef<'cyan' | 'red'>('cyan');
   const floorRef = useRef<THREE.Mesh>(null);
   const lightRef = useRef<THREE.PointLight>(null);
+  const lastTargetColor = useRef('');
+  const tmpColor = useMemo(() => new THREE.Color(), []);
 
   const health = useMemo(
     () => Math.min(1, treasuryFunds / 500_000),
@@ -67,24 +69,30 @@ export function TreasuryIndicator({ treasuryFunds }: Props) {
     const breathe = 0.8 + 0.2 * Math.sin(t * 0.5);
     const totalEmissive = Math.max(0.2 * breathe, pulseIntensity.current);
 
-    // Update floor glow
+    // Update floor glow — only set color when it changes
     if (floorRef.current) {
       const mat = floorRef.current.material as THREE.MeshStandardMaterial;
       const targetColor = pulseIntensity.current > 0.1
         ? (pulseColor.current === 'cyan' ? '#22d3ee' : '#ef4444')
         : glowColor;
-      mat.color.set(targetColor);
-      mat.emissive.set(targetColor);
+      if (targetColor !== lastTargetColor.current) {
+        tmpColor.set(targetColor);
+        mat.color.copy(tmpColor);
+        mat.emissive.copy(tmpColor);
+        lastTargetColor.current = targetColor;
+      }
       mat.emissiveIntensity = totalEmissive;
       mat.opacity = 0.15 + pulseIntensity.current * 0.3;
     }
 
-    // Update point light
-    if (lightRef.current) {
+    // Update point light — skip when pulse is zero
+    if (lightRef.current && pulseIntensity.current > 0.01) {
       lightRef.current.intensity = pulseIntensity.current * 3;
       lightRef.current.color.set(
         pulseColor.current === 'cyan' ? '#22d3ee' : '#ef4444'
       );
+    } else if (lightRef.current) {
+      lightRef.current.intensity = 0;
     }
   });
 

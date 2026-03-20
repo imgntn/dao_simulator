@@ -1,0 +1,134 @@
+# Experiment 12b: LLM Agent Reasoning (Big Models)
+#
+# Models: qwen3:8b, llama3.1:latest (~8B), gemma3:12b
+# Modes: disabled (baseline), hybrid (30% LLM), all-LLM, hybrid+reporter
+# 10 configs × 30 runs = 300 total runs
+
+name: LLM Agent Reasoning (Big Models)
+description: >
+  Compares governance outcomes across rule-based, hybrid, all-LLM, and
+  hybrid-with-reporter modes using three big LLMs (qwen3:8b, llama3.1:latest,
+  gemma3:12b). Paired with experiment 12 (small models) to measure the effect
+  of model scale on governance quality.
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - paper
+  - llm
+  - governance
+  - big-models
+
+baseConfig:
+  template: compound
+  overrides:
+    governance_rule: majority
+    learning_enabled: false
+    forum_enabled: true
+
+    num_developers: 4
+    num_investors: 2
+    num_traders: 1
+    num_passive_members: 4
+    num_proposal_creators: 2
+    num_validators: 1
+    num_delegators: 2
+    num_governance_experts: 1
+    num_risk_managers: 1
+
+    llm_base_url: http://localhost:11434
+    llm_max_concurrent: 4
+    llm_timeout_ms: 10000
+    llm_temperature: 0.3
+    llm_cache_enabled: true
+    llm_max_tokens: 256
+
+sweep:
+  type: zip
+  grid:
+    # Index:              0         1         2         3         4         5         6         7         8         9
+    # Mode:            disabled  hybrid    hybrid    hybrid    all       all       all       hyb+rpt   hyb+rpt   hyb+rpt
+    # Model:             n/a      qwen3:8b  llama3.1  gemma3:12 qwen3:8b  llama3.1  gemma3:12 qwen3:8b  llama3.1  gemma3:12
+
+    - parameter: llm_agent_mode
+      values:   [disabled, hybrid,   hybrid,           hybrid,   all,      all,              all,      hybrid,   hybrid,           hybrid]
+    - parameter: llm_enabled
+      values:   [false,    true,     true,             true,     true,     true,             true,     true,     true,             true]
+    - parameter: llm_default_model
+      values:   [qwen3:8b, qwen3:8b, llama3.1:latest, gemma3:12b, qwen3:8b, llama3.1:latest, gemma3:12b, qwen3:8b, llama3.1:latest, gemma3:12b]
+    - parameter: llm_premium_model
+      values:   [qwen3:8b, qwen3:8b, llama3.1:latest, gemma3:12b, qwen3:8b, llama3.1:latest, gemma3:12b, qwen3:8b, llama3.1:latest, gemma3:12b]
+    - parameter: llm_hybrid_fraction
+      values:   [0.0,      0.3,      0.3,             0.3,      1.0,      1.0,              1.0,      0.3,      0.3,              0.3]
+    - parameter: num_llm_agents
+      values:   [0,        4,        4,               4,        8,        8,                8,        4,        4,                4]
+    - parameter: num_llm_reporters
+      values:   [0,        0,        0,               0,        0,        0,                0,        1,        1,                1]
+
+    # Force non-LLM roles to zero for all-LLM mode only (indices 4-6)
+    - parameter: num_developers
+      values:   [4,        4,        4,               4,        0,        0,                0,        4,        4,                4]
+    - parameter: num_investors
+      values:   [2,        2,        2,               2,        0,        0,                0,        2,        2,                2]
+    - parameter: num_traders
+      values:   [1,        1,        1,               1,        0,        0,                0,        1,        1,                1]
+    - parameter: num_passive_members
+      values:   [4,        4,        4,               4,        0,        0,                0,        4,        4,                4]
+    - parameter: num_proposal_creators
+      values:   [2,        2,        2,               2,        0,        0,                0,        2,        2,                2]
+    - parameter: num_validators
+      values:   [1,        1,        1,               1,        0,        0,                0,        1,        1,                1]
+    - parameter: num_delegators
+      values:   [2,        2,        2,               2,        0,        0,                0,        2,        2,                2]
+    - parameter: num_governance_experts
+      values:   [1,        1,        1,               1,        0,        0,                0,        1,        1,                1]
+    - parameter: num_risk_managers
+      values:   [1,        1,        1,               1,        0,        0,                0,        1,        1,                1]
+
+execution:
+  runsPerConfig: 30
+  stepsPerRun: 720
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 6
+  runTimeoutMs: 3600000
+
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+  - name: Governance Activity Index
+    type: builtin
+    builtin: governance_activity_index
+  - name: LLM Vote Consistency
+    type: builtin
+    builtin: llm_vote_consistency
+  - name: LLM Cache Hit Rate
+    type: builtin
+    builtin: llm_cache_hit_rate
+  - name: LLM Avg Latency
+    type: builtin
+    builtin: llm_avg_latency_ms
+
+output:
+  directory: results/paper/12b-llm-big-models
+  formats:
+    - json
+    - csv
+  includeRawRuns: false
+  includeManifest: true
+  includeTimeline: false

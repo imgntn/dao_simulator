@@ -48,6 +48,14 @@ function FloorPlate({
 }) {
   const edgeColor = useMemo(() => new THREE.Color(color), [color]);
 
+  // Cache edge geometry to avoid recreating BoxGeometry on every render
+  const edgeGeom = useMemo(() => {
+    const box = new THREE.BoxGeometry(BUILDING.width, height, BUILDING.depth);
+    const edges = new THREE.EdgesGeometry(box);
+    box.dispose(); // Dispose the source box immediately
+    return edges;
+  }, [height]);
+
   return (
     <group position={[0, yBase + height / 2, 0]}>
       {/* Glass panel */}
@@ -64,10 +72,7 @@ function FloorPlate({
       </mesh>
 
       {/* Wireframe edges */}
-      <lineSegments>
-        <edgesGeometry
-          args={[new THREE.BoxGeometry(BUILDING.width, height, BUILDING.depth)]}
-        />
+      <lineSegments geometry={edgeGeom}>
         <lineBasicMaterial color={edgeColor} transparent opacity={0.4} />
       </lineSegments>
 

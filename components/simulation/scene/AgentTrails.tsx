@@ -13,12 +13,14 @@ interface Props {
 const TRAIL_LENGTH = 8;
 const MAX_TRAILS = 50;
 const MOVE_THRESHOLD = 0.01;
+// Max segments: each trail can produce TRAIL_LENGTH-1 segments, each segment = 2 vertices
+const MAX_VERTICES = MAX_TRAILS * (TRAIL_LENGTH - 1) * 2;
 
 /** Compute grid position for an agent */
-function agentPosition(agent: AgentSnapshot, indexInFloor: number, floorAgentCount: number): THREE.Vector3 {
+function agentPosition(agent: AgentSnapshot, indexInFloor: number, floorAgentCount: number, out: THREE.Vector3): void {
   const floorId = AGENT_FLOOR_MAP[agent.type] ?? 'F1';
   const floor = AGENT_FLOORS.find(f => f.id === floorId);
-  if (!floor) return new THREE.Vector3(0, 3, 0);
+  if (!floor) { out.set(0, 3, 0); return; }
 
   const cols = Math.ceil(Math.sqrt(floorAgentCount));
   const spacing = 0.55;
@@ -33,19 +35,38 @@ function agentPosition(agent: AgentSnapshot, indexInFloor: number, floorAgentCou
   ox = Math.max(-floorWidth / 2, Math.min(floorWidth / 2, ox));
   oz = Math.max(-floorDepth / 2, Math.min(floorDepth / 2, oz));
 
-  const y = floor.yBase + floor.height * 0.3;
-  return new THREE.Vector3(ox, y, oz);
+  out.set(ox, floor.yBase + floor.height * 0.3, oz);
 }
 
 interface TrailData {
   positions: THREE.Vector3[];
-  color: string;
+  color: THREE.Color;
 }
 
 /** Agent trails — fading line segments behind moving agents */
 export function AgentTrails({ agents }: Props) {
   const trailsRef = useRef<Map<string, TrailData>>(new Map());
   const lineRef = useRef<THREE.LineSegments>(null);
+
+  // Pre-allocate buffer attributes once — reuse by updating data in place
+  const { posAttr, colAttr } = useMemo(() => {
+    const posArr = new Float32Array(MAX_VERTICES * 3);
+    const colArr = new Float32Array(MAX_VERTICES * 3);
+    return {
+      posAttr: new THREE.BufferAttribute(posArr, 3),
+      colAttr: new THREE.BufferAttribute(colArr, 3),
+    };
+  }, []);
+
+  // Pre-allocate reusable vector
+  const tmpVec = useMemo(() => new THREE.Vector3(), []);
+
+  // Build agent index map to avoid indexOf in loop
+  const agentIndexMap = useMemo(() => {
+    const map = new Map<string, number>();
+    agents.forEach((a, i) => map.set(a.id, i));
+    return map;
+  }, [agents]);
 
   // Compute current positions
   const currentPositions = useMemo(() => {
@@ -60,7 +81,9 @@ export function AgentTrails({ agents }: Props) {
 
     for (const [, floorAgents] of floorGroups) {
       for (let i = 0; i < floorAgents.length; i++) {
-        posMap.set(floorAgents[i].id, agentPosition(floorAgents[i], i, floorAgents.length));
+        const v = new THREE.Vector3();
+        agentPosition(floorAgents[i], i, floorAgents.length, v);
+        posMap.set(floorAgents[i].id, v);
       }
     }
 
@@ -70,6 +93,7 @@ export function AgentTrails({ agents }: Props) {
   // Update trails
   useFrame(({ clock }) => {
     const trails = trailsRef.current;
+    const t = clock.elapsedTime;
 
     // Update existing trails with new positions
     let trailCount = 0;
@@ -79,23 +103,23 @@ export function AgentTrails({ agents }: Props) {
       const pos = currentPositions.get(a.id);
       if (!pos) continue;
 
-      // Add bob animation
-      const bobPhase = agents.indexOf(a) * 0.7;
-      const t = clock.elapsedTime;
+      // Add bob animation using pre-built index
+      const idx = agentIndexMap.get(a.id) ?? 0;
+      const bobPhase = idx * 0.7;
       const bobY = Math.sin(t * 1.2 + bobPhase) * 0.03;
       const bobX = Math.cos(t * 0.8 + bobPhase * 1.3) * 0.01;
-      const currentPos = new THREE.Vector3(pos.x + bobX, pos.y + bobY, pos.z);
+      tmpVec.set(pos.x + bobX, pos.y + bobY, pos.z);
 
       let trail = trails.get(a.id);
       if (!trail) {
-        trail = { positions: [], color: TYPE_COLOR_MAP[a.type] ?? '#888888' };
+        trail = { positions: [], color: new THREE.Color(TYPE_COLOR_MAP[a.type] ?? '#888888') };
         trails.set(a.id, trail);
       }
 
       // Check if position changed enough
       const last = trail.positions[trail.positions.length - 1];
-      if (!last || last.distanceTo(currentPos) > MOVE_THRESHOLD) {
-        trail.positions.push(currentPos.clone());
+      if (!last || last.distanceTo(tmpVec) > MOVE_THRESHOLD) {
+        trail.positions.push(tmpVec.clone());
         if (trail.positions.length > TRAIL_LENGTH) {
           trail.positions.shift();
         }
@@ -110,38 +134,59 @@ export function AgentTrails({ agents }: Props) {
       }
     }
 
-    // Update line geometry
+    // Update line geometry in place
     if (!lineRef.current) return;
-    const segments: number[] = [];
-    const colors: number[] = [];
+
+    const posArr = posAttr.array as Float32Array;
+    const colArr = colAttr.array as Float32Array;
+    let vertexIdx = 0;
 
     for (const [, trail] of trails) {
       const pts = trail.positions;
       if (pts.length < 2) continue;
 
-      const col = new THREE.Color(trail.color);
+      const col = trail.color;
       for (let i = 0; i < pts.length - 1; i++) {
-        const alpha = i / pts.length; // 0=oldest, 1=newest
-        segments.push(pts[i].x, pts[i].y, pts[i].z);
-        segments.push(pts[i + 1].x, pts[i + 1].y, pts[i + 1].z);
-        // Vertex colors with alpha fading
+        if (vertexIdx >= MAX_VERTICES) break;
+        const alpha = i / pts.length;
         const fade = alpha * 0.4;
-        colors.push(col.r * fade, col.g * fade, col.b * fade);
-        colors.push(col.r * (fade + 0.1), col.g * (fade + 0.1), col.b * (fade + 0.1));
+
+        // Vertex 1
+        const vi = vertexIdx * 3;
+        posArr[vi] = pts[i].x;
+        posArr[vi + 1] = pts[i].y;
+        posArr[vi + 2] = pts[i].z;
+        colArr[vi] = col.r * fade;
+        colArr[vi + 1] = col.g * fade;
+        colArr[vi + 2] = col.b * fade;
+        vertexIdx++;
+
+        // Vertex 2
+        const vi2 = vertexIdx * 3;
+        posArr[vi2] = pts[i + 1].x;
+        posArr[vi2 + 1] = pts[i + 1].y;
+        posArr[vi2 + 2] = pts[i + 1].z;
+        colArr[vi2] = col.r * (fade + 0.1);
+        colArr[vi2 + 1] = col.g * (fade + 0.1);
+        colArr[vi2 + 2] = col.b * (fade + 0.1);
+        vertexIdx++;
       }
     }
 
+    // Zero out remaining vertices
+    for (let i = vertexIdx * 3; i < posArr.length; i++) {
+      posArr[i] = 0;
+      colArr[i] = 0;
+    }
+
     const geom = lineRef.current.geometry;
-    geom.setAttribute(
-      'position',
-      new THREE.Float32BufferAttribute(segments, 3)
-    );
-    geom.setAttribute(
-      'color',
-      new THREE.Float32BufferAttribute(colors, 3)
-    );
-    geom.attributes.position.needsUpdate = true;
-    geom.attributes.color.needsUpdate = true;
+    if (!geom.attributes.position) {
+      geom.setAttribute('position', posAttr);
+      geom.setAttribute('color', colAttr);
+    }
+    posAttr.needsUpdate = true;
+    colAttr.needsUpdate = true;
+    geom.setDrawRange(0, vertexIdx);
   });
 
   return (

@@ -46,8 +46,9 @@ export function ProposalParticles({ events, currentStep }: Props) {
     }
   }, [events, currentStep]);
 
-  // Pre-allocate dummy for matrix updates
+  // Pre-allocate reusable objects outside render loop
   const dummy = useMemo(() => new THREE.Object3D(), []);
+  const tempColor = useMemo(() => new THREE.Color(), []);
 
   useFrame((_, delta) => {
     if (!meshRef.current) return;
@@ -82,8 +83,9 @@ export function ProposalParticles({ events, currentStep }: Props) {
       dummy.updateMatrix();
       mesh.setMatrixAt(i, dummy.matrix);
 
-      const col = p.color.clone();
-      mesh.setColorAt(i, col);
+      // Reuse tempColor instead of cloning
+      tempColor.copy(p.color);
+      mesh.setColorAt(i, tempColor);
     }
 
     if (count > 0) {
