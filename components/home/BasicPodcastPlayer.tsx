@@ -1,9 +1,7 @@
 'use client';
 
-import { useRef } from 'react';
+import { type RefObject } from 'react';
 import { AudioControls } from './AudioControls';
-
-const PODCAST_SRC = 'https://pub-5203989d31a346d288f97e48812ab2e0.r2.dev/greenpill-123-james-pollack.mp3';
 
 const PODCAST_CHAPTERS = [
   { time: 0, label: 'Intro' },
@@ -26,21 +24,13 @@ function formatChapterTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-export function BasicPodcastPlayer() {
-  const audioRef = useRef<HTMLAudioElement>(null);
+interface BasicPodcastPlayerProps {
+  audioRef: RefObject<HTMLAudioElement | null>;
+}
 
+export function BasicPodcastPlayer({ audioRef }: BasicPodcastPlayerProps) {
   return (
-    <div className="mt-5 space-y-3">
-      {/* Hidden native audio element — AudioControls provides the UI */}
-      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-      <audio
-        ref={audioRef}
-        preload="none"
-        className="hidden"
-      >
-        <source src={PODCAST_SRC} type="audio/mpeg" />
-      </audio>
-
+    <div className="space-y-3">
       <AudioControls audioRef={audioRef} />
 
       {/* Chapter list */}
