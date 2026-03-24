@@ -52,10 +52,105 @@ const AGENT_CONFIG_KEYS: Record<string, keyof BrowserSimConfig> = {
 };
 
 const CONFIG_COMPARE_KEYS: (keyof BrowserSimConfig)[] = [
-  'governanceRule', 'forumEnabled', 'blackSwanEnabled', 'blackSwanFrequency', 'seed',
+  'governanceRule', 'governanceQuorumPercentage', 'votePowerQuadraticThreshold',
+  'forumEnabled', 'blackSwanEnabled', 'blackSwanFrequency', 'blackSwanSeverityScale',
+  'learningEnabled', 'seed',
   'numDevelopers', 'numInvestors', 'numTraders', 'numDelegators', 'numProposalCreators',
   'numValidators', 'numPassiveMembers', 'numGovernanceExperts', 'numGovernanceWhales',
   'numRiskManagers', 'numSpeculators', 'numStakers', 'scheduledBlackSwans',
+];
+
+// =============================================================================
+// SCENARIO PRESETS
+// =============================================================================
+
+interface ScenarioPreset {
+  id: string;
+  label: string;
+  description: string;
+  config: Partial<BrowserSimConfig>;
+}
+
+const SCENARIO_PRESETS: ScenarioPreset[] = [
+  {
+    id: '',
+    label: 'None (manual config)',
+    description: 'Configure all settings manually.',
+    config: {},
+  },
+  {
+    id: 'quadratic-vs-majority',
+    label: 'Quadratic vs Majority',
+    description: 'Quadratic voting reduces whale influence by 43%. Threshold at 250 tokens.',
+    config: {
+      governanceRule: 'quadratic',
+      votePowerQuadraticThreshold: 250,
+    },
+  },
+  {
+    id: 'black-swan-stress',
+    label: 'Black Swan Stress Test',
+    description: 'High crisis frequency (5 events/720 steps) at 0.8x severity to test resilience.',
+    config: {
+      blackSwanEnabled: true,
+      blackSwanFrequency: 5,
+      blackSwanSeverityScale: 0.8,
+    },
+  },
+  {
+    id: 'scale-small',
+    label: 'Scale Effect: Small DAO',
+    description: '50 members — exposes governance vulnerability from low participation.',
+    config: {
+      numDevelopers: 8,
+      numInvestors: 5,
+      numTraders: 2,
+      numDelegators: 5,
+      numProposalCreators: 5,
+      numValidators: 5,
+      numPassiveMembers: 10,
+      numGovernanceExperts: 2,
+      numGovernanceWhales: 2,
+      numRiskManagers: 2,
+      numSpeculators: 2,
+      numStakers: 2,
+    },
+  },
+  {
+    id: 'scale-large',
+    label: 'Scale Effect: Large DAO',
+    description: '500 members — demonstrates governance safety at scale.',
+    config: {
+      numDevelopers: 80,
+      numInvestors: 50,
+      numTraders: 30,
+      numDelegators: 50,
+      numProposalCreators: 30,
+      numValidators: 40,
+      numPassiveMembers: 100,
+      numGovernanceExperts: 20,
+      numGovernanceWhales: 20,
+      numRiskManagers: 20,
+      numSpeculators: 30,
+      numStakers: 30,
+    },
+  },
+  {
+    id: 'rl-learning',
+    label: 'RL Learning Enabled',
+    description: 'Q-learning agents adapt over time, showing +8pt pass rate improvement.',
+    config: {
+      learningEnabled: true,
+    },
+  },
+  {
+    id: 'high-quorum-cliff',
+    label: 'High Quorum Cliff',
+    description: '20% quorum threshold demonstrates the governance cliff effect.',
+    config: {
+      governanceQuorumPercentage: 0.20,
+    },
+  },
 ];
 
 function isConfigDirty(config: BrowserSimConfig, lastSent: BrowserSimConfig | null): boolean {
@@ -93,6 +188,7 @@ export function ControlPanel() {
 
   const { trackEvent } = useAnalytics();
   const [agentsOpen, setAgentsOpen] = useState(false);
+  const [activeScenario, setActiveScenario] = useState('');
 
   const isRunning = status === 'running';
   const canInteract = status === 'running' || status === 'paused';
@@ -245,6 +341,56 @@ export function ControlPanel() {
             </option>
           ))}
         </select>
+      </div>
+
+      {/* Scenario Preset */}
+      <div>
+        <label className="block text-xs text-[var(--sim-text-muted)] mb-1">Scenario Preset</label>
+        <select
+          value={activeScenario}
+          onChange={e => {
+            const preset = SCENARIO_PRESETS.find(p => p.id === e.target.value);
+            setActiveScenario(e.target.value);
+            if (preset && preset.id !== '') {
+              // Clear scenario-specific fields before applying new preset
+              updateConfig({
+                governanceRule: undefined,
+                governanceQuorumPercentage: undefined,
+                votePowerQuadraticThreshold: undefined,
+                blackSwanEnabled: undefined,
+                blackSwanFrequency: undefined,
+                blackSwanSeverityScale: undefined,
+                learningEnabled: undefined,
+                numDevelopers: undefined,
+                numInvestors: undefined,
+                numTraders: undefined,
+                numDelegators: undefined,
+                numProposalCreators: undefined,
+                numValidators: undefined,
+                numPassiveMembers: undefined,
+                numGovernanceExperts: undefined,
+                numGovernanceWhales: undefined,
+                numRiskManagers: undefined,
+                numSpeculators: undefined,
+                numStakers: undefined,
+                ...preset.config,
+              });
+              trackEvent(`${ANALYTICS_EVENTS.SCENARIO_EVENT_ADDED}:preset:${preset.id}`);
+            }
+          }}
+          className="w-full bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-3 py-1.5 text-sm focus:border-[var(--sim-accent-ring)] focus:outline-none"
+        >
+          {SCENARIO_PRESETS.map(p => (
+            <option key={p.id} value={p.id}>
+              {p.label}
+            </option>
+          ))}
+        </select>
+        {activeScenario !== '' && (
+          <p className="mt-1 text-[10px] text-[var(--sim-text-dim)] leading-tight">
+            {SCENARIO_PRESETS.find(p => p.id === activeScenario)?.description}
+          </p>
+        )}
       </div>
 
       {/* Governance Rule */}

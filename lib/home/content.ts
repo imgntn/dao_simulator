@@ -195,6 +195,23 @@ export const BRIEF_CROSS_LINKS: Record<string, { id: string; reason: string }[]>
   rq7: [
     { id: 'rq1', reason: 'Alternative rules change quorum dynamics' },
     { id: 'rq2', reason: 'Governance rule choice shapes capture resistance' },
+    { id: 'mechanisms', reason: 'Extended mechanism comparison across more voting systems' },
+  ],
+  scale: [
+    { id: 'rq1', reason: 'Scale changes quorum dynamics' },
+    { id: 'rq2', reason: 'Larger populations dilute whale concentration' },
+  ],
+  mechanisms: [
+    { id: 'rq7', reason: 'Counterfactual governance tested the same mechanisms on real DAOs' },
+    { id: 'blackswan', reason: 'Conviction voting fails normally but excels under stress' },
+  ],
+  blackswan: [
+    { id: 'mechanisms', reason: 'Conviction voting behaves oppositely under normal conditions' },
+    { id: 'rq7', reason: 'Governance rule choice determines shock resilience' },
+  ],
+  rl: [
+    { id: 'rq1', reason: 'RL agents learn cooperative voting that affects participation' },
+    { id: 'rq2', reason: 'DQN reduces inequality and capture risk' },
   ],
 };
 
@@ -257,6 +274,38 @@ export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
     question: 'What if your DAO used a different governance rule?',
     whyItMatters: 'We ran 5 real DAOs under alternative voting rules. One mechanism consistently destroys governance.',
     filePath: 'paper/plain-english/rq7-counterfactual-governance.md',
+    relatedPaperPath: 'paper/main.pdf',
+  },
+  {
+    id: 'scale',
+    title: 'Scale Is the #1 Governance Factor',
+    question: 'Does DAO size affect governance quality?',
+    whyItMatters: 'Moving from 50 to 500 members cuts capture risk by 18% and single entity control by 60%. No mechanism change produces effects of this magnitude.',
+    filePath: 'paper/plain-english/scale-population.md',
+    relatedPaperPath: 'paper/main.pdf',
+  },
+  {
+    id: 'mechanisms',
+    title: 'Advanced Voting Mechanisms: A Null Result',
+    question: 'Do IRV, futarchy, and liquid democracy improve governance?',
+    whyItMatters: 'No. IRV, futarchy, and liquid democracy produce statistically identical governance outcomes to simple majority rule.',
+    filePath: 'paper/plain-english/mechanisms-comparison.md',
+    relatedPaperPath: 'paper/main.pdf',
+  },
+  {
+    id: 'blackswan',
+    title: 'Black Swan Resilience: The Conviction Paradox',
+    question: 'Which governance rules survive external shocks?',
+    whyItMatters: 'Conviction voting — the mechanism that fails completely under normal conditions — is the most resilient to black swan events.',
+    filePath: 'paper/plain-english/blackswan-resilience.md',
+    relatedPaperPath: 'paper/main.pdf',
+  },
+  {
+    id: 'rl',
+    title: 'Reinforcement Learning: Diminishing Returns',
+    question: 'Can agents learn better governance strategies?',
+    whyItMatters: 'Yes, but basic Q-learning captures 95% of the benefit. Adding experience replay, shared learning, and DQN provides marginal improvement.',
+    filePath: 'paper/plain-english/rl-activation.md',
     relatedPaperPath: 'paper/main.pdf',
   },
 ];
@@ -605,6 +654,200 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
         term: 'Baseline',
         definition:
           'The DAO\'s real-world governance rule, used as the control condition. Alternatives are compared against this baseline to measure the counterfactual effect.',
+      },
+    ],
+  },
+  scale: {
+    summary:
+      'Moving from 50 to 500 members cuts capture risk by 18% and single entity control by 60%. No mechanism change produces effects of this magnitude.',
+    whatWeFound: [
+      { headline: '60% Single Entity Control Reduction', detail: 'At 50 members, one entity can control 2.8% of votes. At 500, just 1.1%. Scale dilutes concentrated power more effectively than any voting mechanism.' },
+      { headline: 'Pass Rates Scale With Size', detail: '50 members: 92.8% pass rate. 500 members: 99.7%. Larger voter pools produce more decisive outcomes.' },
+      { headline: 'Participation Holds Steady', detail: 'Voter retention stays at 91-93% across all scales. Bigger DAOs don\'t suffer engagement death.' },
+    ],
+    whatToDo: [
+      'Prioritize growing membership before optimizing governance mechanisms \u2014 scale is the strongest lever.',
+      'Monitor single-entity control percentage as you grow; expect it to drop naturally with size.',
+      'Don\'t assume larger DAOs will lose engagement \u2014 participation rates are resilient across scales.',
+    ],
+    evidence: 'Scale sweep experiments (Experiment 08), 500 runs across 5 population sizes.',
+    keyTerms: [
+      {
+        term: 'Single Entity Control',
+        definition:
+          'The maximum percentage of total voting power that any one participant can wield. Lower values mean more distributed governance.',
+      },
+      {
+        term: 'Capture Risk',
+        definition:
+          'A metric (0\u20131) estimating the likelihood that governance is or could be captured by a small group of actors, combining voting-power concentration and outcome predictability.',
+      },
+      {
+        term: 'Population Size',
+        definition:
+          'The total number of voting-eligible members in a DAO. Tested sizes ranged from 50 to 500 members.',
+      },
+      {
+        term: 'Voter Retention',
+        definition:
+          'The fraction of voters who continue participating over consecutive voting rounds. High retention means voters are engaged long-term.',
+      },
+      {
+        term: 'Power Dilution',
+        definition:
+          'The natural reduction in any single actor\'s influence as more participants join, even without changes to voting rules.',
+      },
+    ],
+  },
+  mechanisms: {
+    summary:
+      'No. IRV, futarchy, and liquid democracy produce statistically identical governance outcomes to simple majority rule. The mechanism matters far less than structural factors like scale and quadratic thresholds.',
+    whatWeFound: [
+      { headline: 'All Four Mechanisms Identical', detail: 'Pass rates within 0.7pt, whale influence within 0.4pt, capture risk within 0.4pt. No statistically significant difference across 1,100 runs.' },
+      { headline: 'Conviction Voting Breaks Everything', detail: '0% pass rate across all 14 calibrated DAOs. Its continuous-signal design is fundamentally incompatible with discrete proposal governance.' },
+      { headline: 'Quadratic Thresholds Are the Only Lever', detail: 'The only mechanism change that measurably improves governance is applying a quadratic voting threshold \u2014 and that\'s a parameter tweak, not a mechanism swap.' },
+    ],
+    whatToDo: [
+      'Don\'t expect a voting mechanism swap to fix governance problems \u2014 the data shows no meaningful difference between majority, IRV, futarchy, and liquid democracy.',
+      'If you want measurable improvement, apply quadratic vote weighting to your existing mechanism rather than replacing it.',
+      'Avoid conviction voting for discrete proposal governance entirely; it was designed for continuous budget allocation.',
+    ],
+    evidence: 'Voting mechanism comparison (Experiment 09, 600 runs) + Advanced mechanisms (Experiment 11, 500 runs).',
+    confidence: 'Strong: 1,100 total runs across 6 voting mechanisms and 14 calibrated DAOs. Null result is consistent and statistically robust.',
+    keyTerms: [
+      {
+        term: 'Instant Runoff Voting (IRV)',
+        definition:
+          'A ranked-choice system where voters rank candidates in order of preference. The candidate with the fewest first-choice votes is eliminated each round until one achieves a majority.',
+      },
+      {
+        term: 'Futarchy',
+        definition:
+          'A governance mechanism where decisions are made based on prediction market prices. Voters trade on predicted outcomes, and the option with the higher predicted value wins.',
+      },
+      {
+        term: 'Liquid Democracy',
+        definition:
+          'A hybrid of direct and representative democracy where voters can either vote directly or delegate their vote to a trusted proxy, who can further re-delegate.',
+      },
+      {
+        term: 'Majority Rule',
+        definition:
+          'The simplest voting mechanism: a proposal passes if more than 50% of cast votes are in favor.',
+      },
+      {
+        term: 'Conviction Voting',
+        definition:
+          'A mechanism where voters signal support continuously over time, and proposals pass when accumulated conviction exceeds a dynamic threshold. Designed for budget allocation, not discrete proposals.',
+      },
+      {
+        term: 'Null Result',
+        definition:
+          'A finding where the tested intervention produces no statistically significant effect. In science, null results are valuable because they narrow the search space for what actually matters.',
+      },
+      {
+        term: 'Quadratic Voting',
+        definition:
+          'A mechanism where voting power scales with the square root of tokens held, compressing large-holder advantage while preserving small-holder voice.',
+      },
+    ],
+  },
+  blackswan: {
+    summary:
+      'Conviction voting \u2014 the mechanism that fails completely under normal conditions \u2014 is the most resilient to black swan events. The mechanism best for crises is worst for daily governance.',
+    whatWeFound: [
+      { headline: 'Conviction Stays Highest Under Stress', detail: 'At 5 black swans, conviction retains 81.3% pass rate vs majority 74.7% and supermajority 68.2%. Its gradual signal accumulation absorbs shocks.' },
+      { headline: 'Supermajority Collapses Fastest', detail: 'Supermajority drops 12.8pt at highest shock frequency vs 8.0pt for majority. Higher thresholds amplify disruption.' },
+      { headline: 'Growth Takes the Biggest Hit', detail: 'Black swans reduce member growth by 54% (0.333\u21920.153). The real damage is to recruitment, not governance quality directly.' },
+    ],
+    whatToDo: [
+      'Design crisis governance protocols separately from day-to-day rules \u2014 what works normally fails under stress, and vice versa.',
+      'Avoid supermajority requirements during crisis periods; they amplify the disruption rather than providing stability.',
+      'Monitor member growth as the leading indicator of black swan damage \u2014 governance metrics recover faster than recruitment.',
+    ],
+    evidence: 'Black swan resilience experiments (Experiment 14), 1,200 runs across 12 configurations.',
+    keyTerms: [
+      {
+        term: 'Black Swan Event',
+        definition:
+          'A rare, high-impact external shock that disrupts normal governance operations \u2014 market crashes, protocol exploits, regulatory actions, or coordinated attacks.',
+      },
+      {
+        term: 'Shock Frequency',
+        definition:
+          'The number of black swan events injected per simulation episode. Higher frequency tests resilience under sustained crisis conditions.',
+      },
+      {
+        term: 'Signal Accumulation',
+        definition:
+          'In conviction voting, the process by which support builds gradually over time rather than being counted at a single snapshot. This smoothing effect absorbs sudden disruptions.',
+      },
+      {
+        term: 'Supermajority',
+        definition:
+          'A voting threshold requiring significantly more than 50% approval (typically 66% or 75%) to pass a proposal. Intended to ensure broad consensus but vulnerable to disruption.',
+      },
+      {
+        term: 'Member Growth Rate',
+        definition:
+          'The net rate of new members joining the DAO minus departures. Black swan events disproportionately suppress recruitment of new members.',
+      },
+      {
+        term: 'Governance Resilience',
+        definition:
+          'A system\'s ability to maintain functional governance outcomes (proposal passage, participation, decision quality) under external stress or crisis conditions.',
+      },
+    ],
+  },
+  rl: {
+    summary:
+      'Yes, but basic Q-learning captures 95% of the benefit. Adding experience replay, shared learning, and DQN provides marginal improvement while reducing inequality.',
+    whatWeFound: [
+      { headline: '+8.1pt From Basic Q-Learning', detail: 'Pass rate jumps from 87.5% to 95.6% with simple tabular Q-learning. Agents learn cooperative voting patterns within episodes.' },
+      { headline: 'Tiers 2-4 Add Only +0.2pt', detail: 'Experience replay, shared experience, and DQN combined add just 0.2pt to pass rate. The complexity isn\'t worth it for governance quality alone.' },
+      { headline: 'DQN Reduces Inequality', detail: 'Token Gini drops from 0.523 to 0.467 with the full DQN stack \u2014 a 5.6pt reduction. RL agents learn to redistribute, even if governance metrics plateau.' },
+    ],
+    whatToDo: [
+      'Start with basic Q-learning if implementing adaptive governance agents \u2014 it captures nearly all the benefit at minimal complexity.',
+      'Use advanced RL (DQN, shared experience) only if reducing token inequality is a design goal, not for pass rate improvement.',
+      'Monitor the Gini coefficient alongside governance metrics to detect whether learning agents are reshaping wealth distribution.',
+    ],
+    evidence: 'RL activation experiments (Experiment 16), 150 runs across 5 learning tiers.',
+    keyTerms: [
+      {
+        term: 'Q-Learning',
+        definition:
+          'A reinforcement learning algorithm where agents maintain a table of expected rewards (Q-values) for each state-action pair, updating estimates after each action based on observed outcomes.',
+      },
+      {
+        term: 'Experience Replay',
+        definition:
+          'A technique where past experiences are stored in a buffer and randomly sampled for additional learning, improving data efficiency and breaking temporal correlations.',
+      },
+      {
+        term: 'DQN (Deep Q-Network)',
+        definition:
+          'An extension of Q-learning that uses a neural network to approximate Q-values instead of a lookup table, enabling generalization across similar states.',
+      },
+      {
+        term: 'Token Gini Coefficient',
+        definition:
+          'A measure of inequality (0\u20131) in token distribution across DAO members. 0 means perfectly equal holdings; 1 means one member holds everything.',
+      },
+      {
+        term: 'Shared Learning',
+        definition:
+          'A multi-agent technique where agents periodically share their learned Q-values via federated averaging, allowing collective knowledge to propagate across the population.',
+      },
+      {
+        term: 'Epsilon-Greedy Exploration',
+        definition:
+          'A strategy where agents usually pick their best-known action but occasionally (with probability epsilon) try a random action to discover potentially better strategies.',
+      },
+      {
+        term: 'Cooperative Voting Patterns',
+        definition:
+          'Emergent behavior where RL agents learn to vote in ways that increase collective governance outcomes (higher pass rates, lower capture risk) rather than purely self-interested strategies.',
       },
     ],
   },

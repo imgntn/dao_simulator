@@ -133,7 +133,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </h1>
             <p className="mt-5 max-w-3xl text-[1.2rem] leading-relaxed text-[var(--text-body)] sm:text-[1.35rem]">
               {m.home?.heroDescription ??
-                'Actionable governance findings from 16,370 simulation runs across 14 calibrated DAO digital twins. Start with any research question below.'}
+                'Actionable governance findings from 21,869 simulation runs across 14 calibrated DAO digital twins. Start with any research question below.'}
             </p>
 
             {/* TL;DR */}
@@ -171,7 +171,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </div>
             <div className="grid w-full grid-cols-3 gap-2 text-center">
               <div className="rounded-xl bg-[var(--surface-warm)] p-2.5">
-                <p className="text-xl font-bold text-[var(--accent-teal)]">16,370</p>
+                <p className="text-xl font-bold text-[var(--accent-teal)]">21,869</p>
                 <p className="text-xs uppercase tracking-wide text-[var(--text-muted)]">Runs</p>
               </div>
               <div className="rounded-xl bg-[var(--surface-warm)] p-2.5">
@@ -191,7 +191,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             {sections.length} {m.home?.briefsCount ?? 'briefs covering participation, capture, operations, treasury, coordination, LLM governance, and counterfactual rule comparison.'}
           </InfoCard>
           <InfoCard label={m.home?.evidenceLabel ?? 'Evidence Base'}>
-            {m.home?.evidenceDesc ?? '21 experiment configurations with calibrated digital twins averaging 0.85 accuracy.'}
+            {m.home?.evidenceDesc ?? '17 experiment configurations with calibrated digital twins averaging 0.85 accuracy.'}
           </InfoCard>
           <InfoCard label={m.home?.authorLabel ?? 'Author'}>
             {m.home?.authorDesc ?? 'Research direction and systems thinking by'}{' '}
@@ -253,7 +253,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <span className="hidden sm:inline text-[var(--border-default)]">|</span>
         <span><strong className="text-[var(--accent-teal)]">14</strong> DAOs calibrated to real data</span>
         <span className="hidden sm:inline text-[var(--border-default)]">|</span>
-        <span><strong className="text-[var(--accent-teal)]">16,370</strong> simulation runs</span>
+        <span><strong className="text-[var(--accent-teal)]">21,869</strong> simulation runs</span>
         <span className="hidden sm:inline text-[var(--border-default)]">|</span>
         <a href="https://github.com/imgntn/dao_simulator" target="_blank" rel="noreferrer" className="font-semibold text-[var(--text-heading)] hover:text-[var(--accent-teal)]">Open Source</a>
       </div>

@@ -611,7 +611,7 @@ export const messages: Messages = {
   home: {
     tagline: 'Investigaci\u00f3n DAO, hecha accionable',
     heroTitle: 'DAO Simulator',
-    heroDescription: 'Hallazgos de gobernanza accionables de 16,370 ejecuciones de simulaci\u00f3n en 21 configuraciones experimentales. Comienza con cualquier pregunta de investigaci\u00f3n a continuaci\u00f3n.',
+    heroDescription: 'Hallazgos de gobernanza accionables de 21,869 ejecuciones de simulaci\u00f3n en 17 configuraciones experimentales. Comienza con cualquier pregunta de investigaci\u00f3n a continuaci\u00f3n.',
     heroCta: 'Explorar investigaci\u00f3n',
     nav: 'Navegaci\u00f3n principal',
     consoleLink: 'Consola',
@@ -626,7 +626,7 @@ export const messages: Messages = {
     whatToDo: 'Qu\u00e9 hacer',
     whyItMatters: 'Por qu\u00e9 es importante:',
     evidenceLabel: 'Base de evidencia',
-    evidenceDesc: 'El art\u00edculo principal de gobernanza reporta 16,370 ejecuciones en 21 configuraciones experimentales.',
+    evidenceDesc: 'El art\u00edculo principal de gobernanza reporta 21,869 ejecuciones en 17 configuraciones experimentales.',
     briefsLabel: 'Informes de decisi\u00f3n',
     briefsCount: 'informes que cubren participaci\u00f3n, captura, operaciones, tesorer\u00eda, coordinaci\u00f3n y gobernanza LLM.',
     authorLabel: 'Autor',

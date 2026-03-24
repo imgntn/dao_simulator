@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'DAO Simulator — Actionable governance findings from 16,370 simulation runs';
+export const alt = 'DAO Simulator — Actionable governance findings from 21,869 simulation runs';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -16,7 +16,7 @@ export default function OGImage() {
   ];
 
   const stats = [
-    { value: '16,370', label: 'Simulation Runs' },
+    { value: '21,869', label: 'Simulation Runs' },
     { value: '14', label: 'DAO Digital Twins' },
     { value: '6', label: 'Decision Briefs' },
   ];
@@ -67,7 +67,7 @@ export default function OGImage() {
               maxWidth: '480px',
             }}
           >
-            Actionable governance findings from 16,370 simulation runs across 21 experiment configurations.
+            Actionable governance findings from 21,869 simulation runs across 17 experiment configurations.
           </div>
 
           {/* Stats row */}

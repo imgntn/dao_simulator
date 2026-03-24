@@ -615,7 +615,7 @@ export const messages: Messages = {
     title: 'DAO Simulator',
     titleTemplate: '%s | DAO Simulator',
     description:
-      'Governance research from 16,370 agent-based simulation runs across 14 calibrated DAO digital twins. Covers participation dynamics, capture mitigation (quadratic voting cut whale power 43%), treasury resilience, proposal pipelines, inter-DAO cooperation, and LLM-augmented governance. By James B. Pollack.',
+      'Governance research from 21,869 agent-based simulation runs across 14 calibrated DAO digital twins. Covers participation dynamics, capture mitigation (quadratic voting cut whale power 43%), treasury resilience, proposal pipelines, inter-DAO cooperation, LLM-augmented governance, and counterfactual rule comparison. Key findings: quadratic voting 43% whale reduction, scale as #1 governance factor, advanced mechanisms null result, LLM agents decrease quality. By James B. Pollack.',
     keywords: [
       'DAO',
       'governance',
@@ -639,11 +639,11 @@ export const messages: Messages = {
       'blockchain governance',
     ],
     author: 'James B. Pollack',
-    ogTitle: 'DAO Simulator — Governance Findings from 16,370 Simulation Runs',
+    ogTitle: 'DAO Simulator — Governance Findings from 21,869 Simulation Runs',
     ogDescription:
       'Agent-based simulation research covering participation, capture, treasury, cooperation, and LLM governance across 14 calibrated DAO digital twins.',
     ogSiteName: 'DAO Simulator',
-    twitterTitle: 'DAO Simulator — 16,370 Simulation Runs',
+    twitterTitle: 'DAO Simulator — 21,869 Simulation Runs',
     twitterDescription:
       'Actionable DAO governance findings: quadratic voting cuts whale power 43%, quorum cliff at 10%, treasury stabilization halves volatility. 14 calibrated digital twins.',
   },
@@ -654,7 +654,7 @@ export const messages: Messages = {
   home: {
     tagline: 'DAO Research, Made Actionable',
     heroTitle: 'DAO Simulator',
-    heroDescription: 'Actionable governance findings from 16,370 simulation runs across 21 experiment configurations. Start with any research question below.',
+    heroDescription: 'Actionable governance findings from 21,869 simulation runs across 17 experiment configurations. Start with any research question below.',
     heroCta: 'Explore Research',
     nav: 'Main navigation',
     consoleLink: 'Console',
@@ -669,7 +669,7 @@ export const messages: Messages = {
     whatToDo: 'What To Do',
     whyItMatters: 'Why this matters:',
     evidenceLabel: 'Evidence Base',
-    evidenceDesc: 'Core governance paper reports 16,370 runs across 21 experiment configurations.',
+    evidenceDesc: 'Core governance paper reports 21,869 runs across 17 experiment configurations.',
     briefsLabel: 'Decision Briefs',
     briefsCount: 'briefs covering participation, capture, operations, treasury, coordination, and LLM governance.',
     authorLabel: 'Author',

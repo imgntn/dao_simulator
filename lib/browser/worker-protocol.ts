@@ -107,10 +107,14 @@ export interface BrowserSimConfig {
   numStakers?: number;
   // Governance
   governanceRule?: string;
+  governanceQuorumPercentage?: number;
+  votePowerQuadraticThreshold?: number;
   // Features
   forumEnabled?: boolean;
   blackSwanEnabled?: boolean;
   blackSwanFrequency?: number;
+  blackSwanSeverityScale?: number;
+  learningEnabled?: boolean;
   scheduledBlackSwans?: Array<{ step: number; category: string; severity: number }>;
 }
 

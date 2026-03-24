@@ -13,7 +13,7 @@ import { NextResponse } from 'next/server';
 
 const CONTENT = `# DAO Simulator
 
-> Actionable governance findings from 16,370 simulation runs across 21 experiment configurations.
+> Actionable governance findings from 21,869 simulation runs across 17 experiment configurations.
 
 ## Author
 
@@ -46,7 +46,7 @@ and SushiSwap — are calibrated against on-chain data with an average accuracy 
 ### Methodology
 
 - **Engine**: TypeScript agent-based simulator with Q-learning, policy gradient, and DQN agents
-- **Scale**: 16,370 simulation runs, 21 experiment configurations, N=100 per config
+- **Scale**: 21,869 simulation runs, 17 experiment configurations, N=100 per config
 - **Calibration**: 14 digital twins calibrated against on-chain governance data, Snapshot votes, forum activity, and token prices
 - **Voting mechanisms tested**: Majority, token-weighted, quadratic, instant-runoff (IRV), futarchy (LMSR prediction markets), liquid democracy with decay
 - **Governance rules**: 15 real governance rules modeled including dual governance, bicameral, category quorum, and approval voting

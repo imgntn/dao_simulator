@@ -84,7 +84,7 @@ export async function generateMetadata({
     },
     other: {
       // Highwire Press citation tags for Google Scholar indexing
-      'citation_title': 'DAO Simulator: Governance Findings from 16,370 Agent-Based Simulation Runs',
+      'citation_title': 'DAO Simulator: Governance Findings from 21,869 Agent-Based Simulation Runs',
       'citation_author': 'James B. Pollack',
       'citation_publication_date': '2025/05/01',
       'citation_pdf_url': `${BASE_URL}/api/artifacts/paper/main.pdf`,

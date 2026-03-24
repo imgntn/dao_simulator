@@ -77,7 +77,7 @@ const BRIEF_META: BriefMeta[] = [
     id: 'rq1',
     headline: 'Participation Dynamics in DAO Governance',
     abstract:
-      'Agent-based simulation of voter participation across 16,370 runs reveals a quorum cliff: at 5% quorum 99.9% of proposals pass, but at 20% only 25.4% reach quorum. Practical quorum should be set at roughly 80% of observed natural turnout.',
+      'Agent-based simulation of voter participation across 21,869 runs reveals a quorum cliff: at 5% quorum 99.9% of proposals pass, but at 20% only 25.4% reach quorum. Practical quorum should be set at roughly 80% of observed natural turnout.',
     keywords: ['DAO participation', 'quorum design', 'voter turnout', 'agent-based modeling', 'governance simulation'],
     datePublished: '2025-05-01',
     pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
@@ -191,7 +191,7 @@ function faqPageSchema() {
   const qaPairs: { q: string; a: string }[] = [
     {
       q: 'What is the optimal quorum setting for a DAO?',
-      a: 'Research from 16,370 simulation runs shows quorum should be set at approximately 80% of observed natural turnout. At 5% quorum, 99.9% of proposals reached quorum. At 10% quorum, 82% reached it. At 20%, only 25.4% did — creating a "quorum cliff" where governance stalls. The pass rate among proposals that reached quorum stayed high (97.6–98.5%) regardless of quorum level, proving the bottleneck is reaching the threshold, not voter disagreement. Set quorum from observed behavior, not aspiration.',
+      a: 'Research from 21,869 simulation runs shows quorum should be set at approximately 80% of observed natural turnout. At 5% quorum, 99.9% of proposals reached quorum. At 10% quorum, 82% reached it. At 20%, only 25.4% did — creating a "quorum cliff" where governance stalls. The pass rate among proposals that reached quorum stayed high (97.6–98.5%) regardless of quorum level, proving the bottleneck is reaching the threshold, not voter disagreement. Set quorum from observed behavior, not aspiration.',
     },
     {
       q: 'How effective is quadratic voting at preventing governance capture?',
@@ -242,7 +242,7 @@ function researchProjectSchema(locale: Locale) {
     '@id': `${BASE_URL}/#research`,
     name: 'DAO Simulator',
     description:
-      'Actionable governance findings from 16,370 simulation runs across 21 experiment configurations covering participation, capture, treasury, cooperation, and LLM governance.',
+      'Actionable governance findings from 21,869 simulation runs across 17 experiment configurations covering participation, capture, treasury, cooperation, LLM governance, and counterfactual rule comparison.',
     url: `${BASE_URL}/${locale}`,
     inLanguage: intlLocaleMap[locale] ?? 'en-US',
     author: { '@id': AUTHOR_ID },

@@ -75,6 +75,20 @@ function toSimConfig(config: BrowserSimConfig, profile: CalibrationProfile | nul
   if (config.governanceRule) {
     simConfig.governance_rule = config.governanceRule;
   }
+  if (config.governanceQuorumPercentage !== undefined) {
+    simConfig.governance_config = {
+      ...simConfig.governance_config,
+      quorumPercentage: config.governanceQuorumPercentage,
+    };
+  }
+  if (config.votePowerQuadraticThreshold !== undefined) {
+    simConfig.vote_power_quadratic_threshold = config.votePowerQuadraticThreshold;
+  }
+
+  // Learning
+  if (config.learningEnabled !== undefined) {
+    simConfig.learning_enabled = config.learningEnabled;
+  }
 
   // Black swan
   if (config.blackSwanEnabled !== undefined) {
@@ -82,6 +96,9 @@ function toSimConfig(config: BrowserSimConfig, profile: CalibrationProfile | nul
   }
   if (config.blackSwanFrequency !== undefined) {
     simConfig.black_swan_frequency = config.blackSwanFrequency;
+  }
+  if (config.blackSwanSeverityScale !== undefined) {
+    simConfig.black_swan_severity_scale = config.blackSwanSeverityScale;
   }
   if (config.scheduledBlackSwans?.length) {
     simConfig.black_swan_scheduled_events = config.scheduledBlackSwans;
