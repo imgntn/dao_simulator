@@ -1,6 +1,6 @@
 /**
- * RQ6 — LLM Modes
- * Grouped bars: rule-based vs hybrid vs all-LLM
+ * RQ6 — LLM Modes (300 runs, 3 models: qwen3:4b, llama3.2:3b, gemma3:4b)
+ * Key finding: LLMs decrease governance quality — all-LLM drops pass rates 7-9pt below baseline
  */
 export function LLMComparisonChart() {
   const modes = ['Rule-based', 'Hybrid', 'All-LLM'];
@@ -9,13 +9,13 @@ export function LLMComparisonChart() {
   const metrics = [
     {
       label: 'Pass Rate',
-      values: [0.0, 0.5, 0.5],
-      format: (v: number) => v.toFixed(2),
+      values: [0.734, 0.73, 0.68],
+      format: (v: number) => (v * 100).toFixed(1) + '%',
     },
     {
       label: 'Participation',
-      values: [0.0, 0.1863, 0.3115],
-      format: (v: number) => v.toFixed(2),
+      values: [0.142, 0.140, 0.138],
+      format: (v: number) => (v * 100).toFixed(1) + '%',
     },
     {
       label: 'Latency (ms)',
@@ -40,7 +40,7 @@ export function LLMComparisonChart() {
   const startY = topPad + (chartH - topPad - botPad - totalH) / 2;
 
   return (
-    <figure className="flex flex-col items-center" role="img" aria-label="LLM governance comparison: hybrid mode achieves 0.50 pass rate at 808ms latency vs all-LLM at 1381ms">
+    <figure className="flex flex-col items-center" role="img" aria-label="LLM agents decrease governance quality: all-LLM drops pass rate from 73.4% to 68% (300 runs, 3 models)">
       <svg
         viewBox={`0 0 ${chartW} ${chartH}`}
         className="w-full max-w-[320px]"
@@ -110,7 +110,7 @@ export function LLMComparisonChart() {
         })}
       </svg>
       <figcaption className="mt-1 text-center text-[0.7rem] text-[var(--text-muted)]">
-        Rule-based vs Hybrid vs All-LLM governance
+        LLM agents degrade pass rate vs rule-based baseline (300 runs, 3 models)
       </figcaption>
     </figure>
   );

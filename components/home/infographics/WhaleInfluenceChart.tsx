@@ -1,20 +1,21 @@
 /**
- * RQ2 — Whale Power Reduction
- * Before/after grouped bars: influence & capture risk
+ * RQ2 — Whale Power Reduction (2,700 runs)
+ * Quadratic voting threshold=250 is the only effective anti-capture tool.
+ * Vote power caps and velocity penalties have zero measurable effect.
  */
 export function WhaleInfluenceChart() {
   const metrics = [
     {
       label: 'Whale Influence',
-      before: 0.449,
-      after: 0.256,
+      before: 0.445,
+      after: 0.257,
       delta: '−43%',
     },
     {
       label: 'Capture Risk',
-      before: 0.464,
-      after: 0.269,
-      delta: '−42%',
+      before: 0.453,
+      after: 0.270,
+      delta: '−40%',
     },
   ];
 

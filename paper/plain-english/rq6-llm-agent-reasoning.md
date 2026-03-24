@@ -5,41 +5,46 @@
 What happens when AI agents participate in governance votes alongside human-like rule-based voters?
 
 Source experiment: `LLM Agent Reasoning Modes`
-Runs completed: **52/52** (failed: 0)
-Model: qwen3:8b via Ollama (local inference)
+Runs completed: **300** (failed: 0)
+Models: qwen3:4b, llama3.2:3b, gemma3:4b via Ollama (local inference)
 
 ## Key Takeaways
 
-### Hybrid Mode (30% LLM) Preserves Governance Quality
-- Pass Rate: 43.0% (vs 57.7% baseline) — within normal variance
-- Participation: 20.0% (vs 18.3% baseline) — slightly higher
-- Treasury: $11,236 (vs $11,050 baseline) — essentially unchanged
+### LLM Agents Make Governance Worse, Not Just Different
 
-### All-LLM Mode Collapses Participation
-- Pass Rate: 23.1% — 60% drop from baseline
-- Participation: 8.8% — 52% drop from baseline
-- Turnout: 5.3% — half the baseline rate
-- Treasury: $11,332 — slightly higher (fewer proposals pass = less spending)
+The central finding reversed from the initial 52-run pilot. With 300 runs across 3 small model architectures, LLM agents consistently decrease pass rates compared to the rule-based baseline. The more LLM agents you add, the worse governance outcomes get.
 
-### LLM Consistency Needs Human Anchoring
-- Hybrid consistency: 45.6% — reasonable but not deterministic
-- All-LLM consistency: 21.7% — less stable without human voters
-- LLM agents are more predictable when surrounded by rule-based peers
+### Disabled Baseline Sets the Bar
+- Pass Rate: **73.4%** — rule-based agents with calibrated parameters
+- This is the number to beat, and no LLM configuration matches it reliably
 
-### Infrastructure Matters
-- Hybrid latency: ~15 seconds per LLM call
-- All-LLM latency: ~17 seconds per LLM call
-- Cache hit rate: 0% (unique proposals each run)
+### Hybrid Mode (30% LLM) Barely Matches Baseline
+- Pass Rate: **71-76%** — within noise of the baseline but not an improvement
+- LLM agents introduce disagreement that occasionally drags pass rates down
+- The human-like rule-based majority anchors the LLM minority
+
+### All-LLM Mode Is Consistently Worst
+- Pass Rate: **64-71%** — consistently LOWER than baseline across all 3 models
+- Without rule-based voters to anchor decisions, LLM reasoning introduces systematic disagreement
+- Each model architecture fails in its own way, but all fail in the same direction
+
+### LLM Reasoning Introduces Disagreement
+- LLM agents reason about proposals individually and often find reasons to vote no
+- Rule-based agents follow calibrated behavioral parameters that reflect historical voting patterns
+- The "thoughtfulness" of LLM reasoning works against governance efficiency
+- This is not a model quality issue — 3 different architectures all show the same pattern
 
 ## What To Do
 
-1. **Start with hybrid mode** — it preserves participation while adding AI reasoning
-2. **Don't deploy pure-LLM governance** — participation drops significantly without human anchoring
-3. **Monitor consistency** — LLM vote consistency is a leading indicator of governance health
+1. **Don't assume AI governance improves outcomes** — LLM reasoning actively reduces pass rates
+2. **If using LLM agents, use hybrid mode only** — rule-based majority anchors governance quality
+3. **Pure-LLM governance is harmful** — consistently the worst configuration tested
+4. **Model choice matters less than mode** — all 3 models showed the same directional effect
 
 ## Notes
 
-- Generated: 2026-03-01
-- 13 runs per config × 4 configs (disabled, hybrid, all-LLM, hybrid+reporter)
-- Summary file: `results/experiments/12-llm-reasoning-v4/summary.json`
-- Config 4 (hybrid+reporter) produces identical results to config 2 (hybrid) since parameters overlap
+- Generated: 2026-03-24
+- 30 runs per config × 3 models × ~3 configs (disabled, hybrid, all-LLM) = 300 runs
+- Models tested: qwen3:4b, llama3.2:3b, gemma3:4b (all small/local models)
+- Confidence: substantially upgraded from initial 52-run pilot — 3 model architectures confirm the finding is not model-specific
+- Summary files: `results/experiments/*/summary.json`

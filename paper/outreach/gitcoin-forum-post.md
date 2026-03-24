@@ -8,9 +8,9 @@
 
 ## Summary
 
-We built a calibrated digital twin of Gitcoin's governance system and ran 1,000+ simulation episodes to understand how your governance parameters interact. Gitcoin's twin achieved the highest calibration accuracy (92.2%) of all 14 DAOs in our study, which means the findings below closely reflect real Gitcoin dynamics.
+We built a calibrated digital twin of Gitcoin's governance system as part of a larger study comprising 21,869 simulation runs across 17 experiments and 14 DAOs. Gitcoin's twin achieved the highest calibration accuracy (92.2%) of all 14 DAOs in our study, which means the findings below closely reflect real Gitcoin dynamics.
 
-This post shares three actionable findings specific to Gitcoin and invites feedback from stewards and delegates.
+This post shares actionable findings specific to Gitcoin and invites feedback from stewards and delegates.
 
 ## Key Findings
 
@@ -29,9 +29,17 @@ When we swapped Gitcoin's quorum rule for quadratic voting in our counterfactual
 - Whale influence dropped 38%
 - Participation increased slightly due to reduced voter apathy
 
-Gitcoin's relatively balanced token distribution (compared to, say, Compound or dYdX) means quadratic voting works particularly well here — it amplifies the already-healthy participation patterns.
+Gitcoin's relatively balanced token distribution (compared to, say, Compound or dYdX) means quadratic voting works particularly well here — it amplifies the already-healthy participation patterns. Across all 14 DAOs, quadratic voting consistently reduces whale influence by 43%.
 
-### 3. Steward Clusters Drive Gitcoin's Governance Quality
+### 3. Scale Is the #1 Factor in Governance Resilience
+
+Our scale experiments (RQ3) found that growing active membership from 50 to 500 members reduces capture risk by 18% and single-entity control by 60%. For Gitcoin, this reinforces that growing the active delegate/steward base is the single most impactful governance intervention — more so than any rule change.
+
+### 4. Advanced Voting Mechanisms Are a Null Result
+
+When we tested instant-runoff voting (IRV), futarchy (prediction-market-based governance), and liquid democracy with delegation decay against simple majority voting across all 14 DAOs, none produced statistically significant improvements in governance quality. This suggests that Gitcoin's governance energy is better spent on participation and scale than on mechanism complexity.
+
+### 5. Steward Clusters Drive Gitcoin's Governance Quality
 
 Our calibration process identified 4 distinct voter clusters in Gitcoin's historical data. The "active steward" cluster (about 11.5% of members) drives the vast majority of governance activity. This is a strength — but it also means governance quality is fragile if this cohort experiences burnout.
 

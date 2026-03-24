@@ -17,7 +17,7 @@ Open [http://localhost:7884/simulate](http://localhost:7884/simulate) to launch 
 
 - **Full DAO sandbox** — 27 agent archetypes, 15 governance plugins, liquidity pools, NFTs, violations/disputes, proposal lifecycle, and stochastic market shocks.
 - **3D interactive simulator** — WebGL skyscraper visualization with 32 interactive features including delegation beams, proposal particles, treasury pulse, black swan weather, agent trails, voting heatmap, and more.
-- **Research framework** — 8,700+ simulation runs across 12 experiments investigating participation dynamics, governance capture, proposal pipelines, treasury resilience, inter-DAO cooperation, and LLM agent reasoning.
+- **Research framework** — 21,800+ simulation runs across 17 experiments investigating participation dynamics, governance capture, proposal pipelines, treasury resilience, inter-DAO cooperation, LLM agent reasoning, counterfactual governance, black swan resilience, scale effects, and voting mechanisms.
 - **Historical calibration** — Digital twin calibration against 14 real DAOs (Aave, Uniswap, Compound, MakerDAO, Lido, ENS, Gitcoin, Arbitrum, Optimism, Nouns, Curve, Balancer, dYdX, SushiSwap) with average accuracy scores of 0.85+.
 - **Advanced voting** — Ranked choice (IRV), futarchy with LMSR prediction markets, liquid delegation with decay, plus 12 standard governance rules.
 - **Multi-tier RL** — Tabular Q-learning, DQN with target networks, policy gradient (REINFORCE), hierarchical options framework, and federated shared learning.
@@ -35,11 +35,12 @@ npm run experiment -- experiments/paper/00-academic-baseline.yaml --runs 100
 npm run experiment -- experiments/paper/04-governance-capture-mitigations.yaml --runs 100 -c 4
 ```
 
-**Key findings from 8,701 simulation runs:**
-- Vote power caps (10-20%) reduce whale influence by 40% while improving governance throughput
-- Temp-check stages are critical for proposal pipeline health
-- Larger DAOs (N>200) achieve higher pass rates but face declining participation
-- Inter-DAO proposals face 22% success rate vs 73% for intra-DAO proposals
+**Key findings from 21,869 simulation runs:**
+- Quadratic voting threshold=250 reduces whale influence by 43% — the only effective anti-capture mechanism (vote caps and velocity penalties have zero effect)
+- Scale is the #1 governance factor: 50→500 members cuts capture risk 18% and single entity control 60%
+- Advanced voting mechanisms (IRV, futarchy, liquid democracy) produce null results vs simple majority rule
+- LLM agents decrease governance quality: all-LLM mode drops pass rates 7-9 points below baseline
+- Conviction voting universally fails under calibrated DAO conditions (0% pass rate for all 14 DAOs)
 
 See `paper/` for the LaTeX source and `experiments/paper/` for all experiment configurations. Generated PDFs are uploaded to R2 (see `ARCHIVES.md`).
 

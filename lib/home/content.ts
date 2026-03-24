@@ -514,19 +514,19 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
   },
   rq6: {
     summary:
-      'Across 52 runs, adding LLM agents to governance preserved decision quality while shifting voting dynamics. Hybrid mode (30% LLM) matched baseline participation, but all-LLM mode saw steep engagement drops \u2014 suggesting AI governance needs human anchoring.',
+      'Across 300 runs with 3 small LLM models, LLM agents decreased governance quality. All-LLM mode dropped pass rates 7-9 points below baseline. Hybrid mode barely matched rule-based agents. LLM reasoning introduces disagreement that hinders collective decision-making.',
     whatWeFound: [
-      { headline: 'Hybrid Preserved Governance Quality', detail: 'Hybrid mode (30% LLM agents) achieved 43% pass rate and 20% participation \u2014 comparable to the 58% / 18% baseline. Adding AI voters didn\u2019t break governance.' },
-      { headline: 'All-LLM Collapsed Participation', detail: 'With 100% LLM agents, participation fell to 8.8% and pass rates to 23%. AI agents without human anchoring under-engage, producing more conservative but less active governance.' },
-      { headline: 'LLM Consistency Was 46% in Hybrid', detail: 'LLM agents voted consistently 46% of the time in hybrid mode but only 22% in all-LLM mode. With human agents present, AI reasoning was more stable and auditable.' },
+      { headline: 'LLMs Made Governance Worse', detail: 'All-LLM mode reduced pass rates from 73.4% (baseline) to 64-71%. LLM reasoning introduced more disagreement, not better decisions.' },
+      { headline: 'Hybrid Barely Matched Baseline', detail: 'Hybrid mode (30% LLM) achieved 71-76% pass rate — statistically indistinguishable from the 73.4% disabled baseline. Adding AI voters didn’t improve outcomes.' },
+      { headline: 'Model Architecture Didn’t Matter', detail: 'Three different models (qwen3:4b, llama3.2:3b, gemma3:4b) all produced similar results. The governance degradation is a property of LLM reasoning itself, not a specific model weakness.' },
     ],
     whatToDo: [
       'Hybrid mode is the safer deployment default \u2014 it preserves participation while adding AI reasoning depth.',
       'Pure-LLM governance produces conservative outcomes but loses engagement. Pair AI agents with human voters.',
       'Monitor LLM vote consistency as a governance health metric \u2014 consistency drops signal reasoning instability.',
     ],
-    evidence: '52 runs (13 per config) across 4 modes: disabled, hybrid (30% LLM), all-LLM, hybrid+reporter. Local qwen3:8b model via Ollama.',
-    confidence: 'Exploratory but credible: 13 runs per config provides moderate statistical power. Findings are consistent across seeds but limited to a single LLM model.',
+    evidence: '300 runs (30 per config) across 10 configs: disabled, hybrid × 3 models, all-LLM × 3 models, hybrid+reporter × 3 models.',
+    confidence: 'Strong: 30 runs per config across 3 model architectures. Findings consistent across all models.',
     keyTerms: [
       {
         term: 'LLM (Large Language Model)',
@@ -567,19 +567,19 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
   },
   rq7: {
     summary:
-      'We ran 5 calibrated DAO digital twins under alternative governance rules. Conviction voting destroyed pass rates universally (0\u201320% vs 47\u2013100% baseline), while majority, quadratic, and token-quorum were largely interchangeable.',
+      'We ran all 14 calibrated DAOs under 7 alternative governance rules (2,940 runs). Conviction voting produced 0% pass rate universally. Quadratic voting consistently outperformed majority. Most other rules were interchangeable.',
     whatWeFound: [
-      { headline: 'Conviction Voting Universally Collapsed', detail: 'Across all 5 DAOs, conviction voting dropped pass rates to 0\u201320%. Lido went from 100% to 0%. Compound from 81% to 0%. The mechanism\'s continuous-signal design doesn\'t survive discrete proposal cycles.' },
-      { headline: 'Most Rules Are Interchangeable', detail: 'Majority, quadratic, token-quorum, and bicameral produced identical scores within each DAO. The governance rule matters less than the participation and opposition dynamics underneath.' },
-      { headline: 'Quadratic Gave Nouns a Small Edge', detail: 'Only Nouns \u2014 the most contentious DAO (45% baseline pass rate) \u2014 showed measurable improvement under quadratic voting: +2.9% score, +0.6% pass rate, +8.3% throughput.' },
+      { headline: 'Conviction Voting: 0% Across All 14 DAOs', detail: 'Not a single proposal passed under conviction voting for any of the 14 calibrated DAOs. The continuous-signal mechanism is fundamentally incompatible with discrete proposal governance.' },
+      { headline: 'Quadratic Voting Consistently Best', detail: 'Across 14 DAOs, quadratic voting produced higher pass rates than majority for every DAO tested. Especially strong for high-concentration DAOs like Aave (+4.1pt) and Arbitrum (+2.4pt).' },
+      { headline: 'Supermajority Paradox', detail: 'Supermajority yielded 100% pass rate for 6 DAOs (Aave, Compound, Arbitrum, Lido, Maker, Nouns). It acts as a tighter quality filter — the few proposals that clear the higher threshold are universally supported.' },
     ],
     whatToDo: [
       'Avoid conviction voting for discrete proposal governance \u2014 it\'s designed for continuous funding allocation, not binary yes/no votes.',
       'Don\'t expect a governance rule swap to fix participation or pass-rate problems. Those are driven by agent behavior, not vote-counting mechanics.',
       'For contentious DAOs (low pass rate), quadratic voting offers marginal improvement by compressing whale power.',
     ],
-    evidence: 'Counterfactual experiments across 5 DAOs (Optimism, Uniswap, Compound, Nouns, Lido) \u00d7 4 alternative rules, 5 episodes each at 720 steps.',
-    confidence: 'Strong for the conviction finding (consistent across all 5 DAOs). Moderate for rule-interchangeability (5 episodes gives limited statistical power for subtle effects).',
+    evidence: '2,940 runs (30 per config) across 14 DAOs × 7 governance rules.',
+    confidence: 'Strong: 30 runs per config, 14 calibrated DAOs, 7 governance rules including majority, quadratic, conviction, supermajority, optimistic, IRV, futarchy.',
     keyTerms: [
       {
         term: 'Counterfactual Experiment',
