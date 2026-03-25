@@ -31,7 +31,7 @@ import { FeedbackButton } from '@/components/simulation/FeedbackForm';
 import { Tutorial } from '@/components/simulation/Tutorial';
 import { useActiveSnapshot } from '@/lib/browser/useActiveSnapshot';
 import { Sidebar } from '@/components/simulation/panels/Sidebar';
-import { MobileDrawer } from '@/components/simulation/panels/MobileDrawer';
+import { MobileSimView } from '@/components/simulation/MobileSimView';
 import { SidebarResizeHandle } from '@/components/simulation/panels/SidebarResizeHandle';
 import { CollapsiblePanel } from '@/components/simulation/panels/CollapsiblePanel';
 
@@ -90,9 +90,9 @@ export default function SimulationPageClient() {
   // Build panel content map for the Sidebar
   const panelContent = buildPanelContent(snapshot, activeTab);
 
-  // Determine if we use sidebar or mobile drawer
-  const useSidebar = tier === 'tablet' || tier === 'desktop' || tier === 'ultrawide';
-  const useMobileDrawer = tier === 'compact' || tier === 'handheld';
+  // Mobile gets a 2D-only UI, desktop/tablet gets full 3D
+  const isMobile = tier === 'compact' || tier === 'handheld';
+  const useSidebar = !isMobile;
 
   if (status === 'idle' || status === 'initializing') {
     return (
@@ -123,6 +123,11 @@ export default function SimulationPageClient() {
     );
   }
 
+  // Mobile: render 2D-only UI (no canvas, no 3D)
+  if (isMobile) {
+    return <MobileSimView />;
+  }
+
   return (
     <div
       data-sim-root
@@ -148,7 +153,7 @@ export default function SimulationPageClient() {
       {/* Main content area */}
       <div
         className="sim-layout-body"
-        style={useSidebar ? { '--sidebar-width': `${sidebarWidth}px` } as React.CSSProperties : undefined}
+        style={{ '--sidebar-width': `${sidebarWidth}px` } as React.CSSProperties}
       >
         {/* 3D Canvas — always visible regardless of active tab */}
         <div className="relative min-w-0 min-h-0 overflow-hidden">
@@ -197,29 +202,11 @@ export default function SimulationPageClient() {
         </div>
 
         {/* Sidebar (tablet/desktop/ultrawide) */}
-        {useSidebar && (
-          <div className="flex min-h-0">
-            <SidebarResizeHandle />
-            <Sidebar panelContent={panelContent} />
-          </div>
-        )}
+        <div className="flex min-h-0">
+          <SidebarResizeHandle />
+          <Sidebar panelContent={panelContent} />
+        </div>
       </div>
-
-      {/* Mobile drawer (compact/handheld) */}
-      {useMobileDrawer && (
-        <MobileDrawer tier={tier}>
-          <div data-tutorial="controls">
-            <ControlPanel />
-          </div>
-          <FloorNav />
-          <CollapsiblePanel id="agent-guide" title="Agent Guide">
-            <AgentGuide />
-          </CollapsiblePanel>
-          <CollapsiblePanel id="metrics-dashboard" title="Metrics">
-            <MetricsDashboard />
-          </CollapsiblePanel>
-        </MobileDrawer>
-      )}
 
       {showHelp && <HelpOverlay onClose={() => setShowHelp(false)} />}
       <Tutorial />
