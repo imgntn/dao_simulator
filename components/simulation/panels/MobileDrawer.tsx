@@ -19,6 +19,7 @@ const SNAP_HEIGHTS: Record<SnapPoint, string> = {
 export function MobileDrawer({ tier, children }: MobileDrawerProps) {
   const [snap, setSnap] = useState<SnapPoint>('collapsed');
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const dragStartY = useRef(0);
   const dragStartHeight = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -47,7 +48,7 @@ export function MobileDrawer({ tier, children }: MobileDrawerProps) {
 
         {/* Drawer */}
         <div
-          className={`fixed top-0 right-0 h-full w-[380px] max-w-[85vw] bg-[var(--sim-bg)] border-l border-[var(--sim-border)] z-40 overflow-y-auto transition-transform duration-300 ${
+          className={`fixed top-0 right-0 h-full w-[380px] max-w-[85vw] bg-[var(--sim-bg)] border-l border-[var(--sim-border)] z-40 overflow-y-auto transition-transform duration-300 pb-[env(safe-area-inset-bottom)] ${
             drawerOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
@@ -71,6 +72,7 @@ export function MobileDrawer({ tier, children }: MobileDrawerProps) {
     dragStartY.current = e.clientY;
     const el = containerRef.current;
     if (el) dragStartHeight.current = el.getBoundingClientRect().height;
+    setIsDragging(true);
 
     const onMove = (ev: PointerEvent) => {
       const delta = dragStartY.current - ev.clientY;
@@ -86,6 +88,7 @@ export function MobileDrawer({ tier, children }: MobileDrawerProps) {
       if (containerRef.current) {
         containerRef.current.style.transition = '';
       }
+      setIsDragging(false);
 
       // Determine snap point from swipe direction & threshold
       if (delta > 80) {
@@ -118,15 +121,15 @@ export function MobileDrawer({ tier, children }: MobileDrawerProps) {
   return (
     <div
       ref={containerRef}
-      className="fixed bottom-0 left-0 right-0 bg-[var(--sim-bg)] border-t border-[var(--sim-border)] z-30 transition-[height] duration-300 ease-out"
+      className="fixed bottom-0 left-0 right-0 bg-[var(--sim-bg)] border-t border-[var(--sim-border)] z-30 transition-[height] duration-300 ease-out pb-[env(safe-area-inset-bottom)]"
       style={{ height: SNAP_HEIGHTS[snap] }}
     >
       {/* Drag handle */}
       <div
-        className="flex justify-center py-2 cursor-grab active:cursor-grabbing touch-none"
+        className={`flex justify-center py-2 cursor-grab active:cursor-grabbing touch-none transition-colors duration-150 ${isDragging ? 'bg-[var(--sim-surface-hover)]' : ''}`}
         onPointerDown={onPointerDown}
       >
-        <div className="w-10 h-1 rounded-full bg-[var(--sim-border-strong)]" />
+        <div className={`w-10 h-1 rounded-full transition-colors duration-150 ${isDragging ? 'bg-[var(--sim-accent)]' : 'bg-[var(--sim-border-strong)]'}`} />
       </div>
 
       {/* Content */}

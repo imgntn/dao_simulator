@@ -17,7 +17,7 @@ export function FeedbackButton() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="w-7 h-7 rounded-full border border-[var(--sim-border)] text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] hover:border-[var(--sim-accent)] text-sm transition-colors flex items-center justify-center"
+        className="w-9 h-9 rounded-full border border-[var(--sim-border)] text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] hover:border-[var(--sim-accent)] text-sm transition-colors flex items-center justify-center"
         title="Send Feedback"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

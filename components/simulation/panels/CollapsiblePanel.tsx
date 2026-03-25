@@ -33,7 +33,7 @@ export function CollapsiblePanel({ id, title, badge, children, dragHandleProps }
               ⠿
             </span>
           )}
-          <span className="uppercase tracking-wider font-medium">{title}</span>
+          <span className="uppercase tracking-wider font-medium truncate">{title}</span>
           {badge !== undefined && badge !== '' && (
             <span className="bg-[var(--sim-accent-bg)] text-[var(--sim-accent)] px-1.5 rounded-full text-[10px]">
               {badge}
@@ -50,8 +50,8 @@ export function CollapsiblePanel({ id, title, badge, children, dragHandleProps }
 
       {/* Content with CSS grid animation */}
       <div
-        className="grid transition-[grid-template-rows] duration-200 ease-out"
-        style={{ gridTemplateRows: collapsed ? '0fr' : '1fr' }}
+        className="grid transition-[grid-template-rows] duration-200"
+        style={{ gridTemplateRows: collapsed ? '0fr' : '1fr', transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
       >
         <div className="overflow-hidden">
           {children}

@@ -95,6 +95,7 @@ export function ShareButton() {
     <button
       onClick={handleShare}
       className="w-7 h-7 rounded-full border border-[var(--sim-border)] text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] hover:border-[var(--sim-accent)] text-sm transition-colors"
+      aria-label={copied ? 'Link copied to clipboard' : 'Share simulation config URL'}
       title={copied ? 'Copied!' : 'Share config URL'}
     >
       {copied ? (

@@ -95,7 +95,7 @@ export function Tutorial() {
     : undefined;
 
   return (
-    <div className="fixed inset-0 z-[200]">
+    <div className="fixed inset-0 z-[200]" role="dialog" aria-modal="true" aria-label="Tutorial">
       {/* Dark overlay with cutout */}
       <div
         className="absolute inset-0 bg-black/60"

@@ -252,9 +252,9 @@ export function ControlPanel() {
                   if (config.blackSwanEnabled !== lastSentConfig?.blackSwanEnabled) changes.blackSwanEnabled = config.blackSwanEnabled;
                   if (Object.keys(changes).length > 0) injectConfig(changes);
                 }}
-                className="px-2 py-0.5 rounded text-[10px] bg-cyan-700 hover:bg-cyan-600 text-white"
+                className="px-2 py-0.5 rounded text-[10px] bg-[var(--sim-accent-bold)] hover:bg-[var(--sim-accent-hover)] text-white"
               >
-                Apply Live
+                Apply Changes
               </button>
             )}
             <button
@@ -278,9 +278,10 @@ export function ControlPanel() {
               trackEvent(ANALYTICS_EVENTS.SIMULATION_STARTED);
             }
           }}
+          aria-label={isRunning ? 'Pause simulation' : 'Play simulation'}
           className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${
             isRunning
-              ? 'bg-yellow-600 hover:bg-yellow-500 text-white'
+              ? 'bg-[var(--sim-accent-pause)] hover:brightness-110 text-white'
               : 'bg-[var(--sim-accent-bold)] hover:bg-[var(--sim-accent-hover)] text-white'
           }`}
         >
@@ -289,14 +290,16 @@ export function ControlPanel() {
         <button
           onClick={step}
           disabled={status === 'initializing'}
-          className="px-3 py-2 rounded text-sm font-medium bg-[var(--sim-border)] hover:bg-[var(--sim-surface-hover)] disabled:opacity-40 disabled:cursor-not-allowed"
+          aria-label="Step simulation forward"
+          className="px-3 py-2 rounded text-sm font-medium transition-colors bg-[var(--sim-border)] hover:bg-[var(--sim-surface-hover)] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Step
         </button>
         <button
-          onClick={() => { reset(); trackEvent(ANALYTICS_EVENTS.SIMULATION_RESET); }}
+          onClick={() => { if (window.confirm('Reset simulation? This will lose current state.')) { reset(); trackEvent(ANALYTICS_EVENTS.SIMULATION_RESET); } }}
           disabled={!canInteract}
-          className="px-3 py-2 rounded text-sm font-medium bg-[var(--sim-border)] hover:bg-[var(--sim-surface-hover)] disabled:opacity-40 disabled:cursor-not-allowed"
+          aria-label="Reset simulation"
+          className="px-3 py-2 rounded text-sm font-medium transition-colors bg-[var(--sim-border)] hover:bg-[var(--sim-surface-hover)] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Reset
         </button>
@@ -323,6 +326,8 @@ export function ControlPanel() {
           max={60}
           value={config.stepsPerSecond}
           onChange={e => setSpeed(parseInt(e.target.value))}
+          aria-label="Simulation speed"
+          aria-valuetext={`${config.stepsPerSecond} steps per second`}
           className="w-full h-1.5 bg-[var(--sim-border-strong)] rounded-lg appearance-none cursor-pointer accent-[var(--sim-accent-ring)]"
         />
       </div>
@@ -449,6 +454,7 @@ export function ControlPanel() {
       <div>
         <button
           onClick={() => setAgentsOpen(!agentsOpen)}
+          aria-label={agentsOpen ? 'Collapse agent counts' : 'Expand agent counts'}
           className="flex items-center justify-between w-full text-xs text-[var(--sim-text-muted)] hover:text-[var(--sim-text-secondary)] transition-colors"
         >
           <span className="uppercase tracking-wider font-medium">Agent Counts</span>

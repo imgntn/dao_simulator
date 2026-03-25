@@ -108,7 +108,8 @@ export function EventFeed({ className = '' }: Props) {
           <button
             key={cat}
             onClick={() => toggleCategory(cat)}
-            className={`px-2 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all border ${
+            aria-pressed={activeCategories.has(cat)}
+            className={`px-3 py-1.5 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all border ${
               activeCategories.has(cat)
                 ? 'opacity-100'
                 : 'opacity-40'
@@ -136,16 +137,21 @@ export function EventFeed({ className = '' }: Props) {
       </div>
 
       {/* Events */}
-      <div className="space-y-0.5 max-h-[200px] overflow-y-auto">
-        {filtered.map((evt, i) => (
-          <div key={`${evt.step}-${evt.type}-${i}`} className="flex items-start gap-2 text-xs leading-relaxed">
-            <span className="font-mono text-[var(--sim-text-dim)] min-w-[3ch] text-right">{evt.step}</span>
-            <span className={`${EVENT_COLORS[evt.type] ?? 'text-[var(--sim-text-muted)]'} min-w-[1ch]`}>
-              {EVENT_ICONS[evt.type] ?? '·'}
-            </span>
-            <span className="text-[var(--sim-text-muted)] truncate">{evt.message}</span>
-          </div>
-        ))}
+      <div
+        className="max-h-[200px] overflow-y-auto"
+        style={{ maskImage: 'linear-gradient(to bottom, transparent 0%, black 8px, black calc(100% - 8px), transparent 100%)' }}
+      >
+        <div className="space-y-0.5">
+          {filtered.map((evt, i) => (
+            <div key={`${evt.step}-${evt.type}-${i}`} className="flex items-start gap-2 text-xs leading-relaxed rounded px-1 py-0.5 cursor-pointer hover:bg-white/5 transition-colors">
+              <span className="font-mono text-[var(--sim-text-dim)] min-w-[3ch] text-right">{evt.step}</span>
+              <span className={`${EVENT_COLORS[evt.type] ?? 'text-[var(--sim-text-muted)]'} min-w-[1ch]`}>
+                {EVENT_ICONS[evt.type] ?? '·'}
+              </span>
+              <span className="text-[var(--sim-text-muted)] truncate">{evt.message}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

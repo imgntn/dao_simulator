@@ -32,10 +32,13 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
   };
 
   return (
-    <div className="flex px-4 overflow-x-auto scrollbar-none -mb-px">
+    <div className="flex px-4 overflow-x-auto scrollbar-none -mb-px" role="tablist">
       {tabs.map(tab => (
         <button
           key={tab.id}
+          role="tab"
+          aria-selected={activeTab === tab.id}
+          tabIndex={activeTab === tab.id ? 0 : -1}
           onClick={() => handleTabChange(tab.id)}
           className={`px-4 py-2.5 text-sm font-medium transition-colors relative whitespace-nowrap flex-shrink-0 ${
             activeTab === tab.id

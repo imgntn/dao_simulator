@@ -34,9 +34,15 @@ export function SidebarResizeHandle() {
 
   return (
     <div
-      className="w-1 hover:w-1.5 bg-transparent hover:bg-[var(--sim-accent)]/30 cursor-col-resize transition-all flex-shrink-0 active:bg-[var(--sim-accent)]/50"
+      className="w-1.5 hover:w-2 bg-transparent hover:bg-[var(--sim-accent)]/30 cursor-col-resize transition-all flex-shrink-0 active:bg-[var(--sim-accent)]/50 relative flex items-center justify-center"
       onPointerDown={onPointerDown}
       title="Drag to resize sidebar"
-    />
+    >
+      <span className="flex flex-col gap-1 pointer-events-none">
+        <span className="block w-1 h-1 rounded-full bg-[var(--sim-text-dim)]/50" />
+        <span className="block w-1 h-1 rounded-full bg-[var(--sim-text-dim)]/50" />
+        <span className="block w-1 h-1 rounded-full bg-[var(--sim-text-dim)]/50" />
+      </span>
+    </div>
   );
 }

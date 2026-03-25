@@ -51,12 +51,13 @@
   --sim-text: #e5e7eb;
   --sim-text-secondary: #d1d5db;
   --sim-text-muted: #6b7280;
-  --sim-text-dim: #4b5563;
+  --sim-text-dim: #6b7280;
   --sim-accent: #22d3ee;
   --sim-accent-bold: #0891b2;
   --sim-accent-hover: #06b6d4;
   --sim-accent-bg: rgba(8, 145, 178, 0.15);
   --sim-accent-ring: #06b6d4;
+  --sim-accent-pause: #ca8a04;
 }
 
 /* ── Simulation light theme ── */
@@ -75,6 +76,7 @@
   --sim-accent-bold: #0e7490;
   --sim-accent-hover: #06b6d4;
   --sim-accent-bg: rgba(8, 145, 178, 0.1);
+  --sim-accent-pause: #a16207;
   --sim-accent-ring: #0891b2;
 }
 
@@ -641,5 +643,33 @@ html.theme-dark body {
 
   details > summary {
     display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Simulation scrollbar styling
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.sim-layout ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.sim-layout ::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sim-layout ::-webkit-scrollbar-thumb {
+  background: var(--sim-border-strong, #374151);
+  border-radius: 3px;
+}
+.sim-layout ::-webkit-scrollbar-thumb:hover {
+  background: var(--sim-text-dim, #6b7280);
+}
+
+/* Respect reduced motion within simulation layout */
+@media (prefers-reduced-motion: reduce) {
+  .sim-layout * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

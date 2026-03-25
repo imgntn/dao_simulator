@@ -18,7 +18,7 @@ function AlertToast({ alert, onDismiss }: ToastProps) {
   }, [onDismiss]);
 
   return (
-    <div className="bg-amber-900/80 border border-amber-500/50 rounded px-3 py-2 shadow-lg animate-rise">
+    <div className="bg-[var(--sim-surface)]/95 border border-[var(--sim-border)] rounded px-3 py-2 shadow-lg animate-rise">
       <div className="flex items-center gap-2">
         <span className="text-amber-400 text-sm">&#x1F514;</span>
         <div className="text-xs text-amber-200">
@@ -106,7 +106,7 @@ export function MetricAlerts() {
           />
           <button
             onClick={handleAdd}
-            className="px-2 py-1 text-xs rounded bg-[var(--sim-accent-bold)] text-white hover:bg-[var(--sim-accent-hover)]"
+            className="px-3 py-1.5 text-xs rounded bg-[var(--sim-accent-bold)] text-white hover:bg-[var(--sim-accent-hover)]"
           >
             +
           </button>

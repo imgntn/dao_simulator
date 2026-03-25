@@ -183,7 +183,7 @@ function Sparkline({ data, color, width = 80, height = 24, showTrend = false }: 
 
 function MetricCard({ label, value, data, color, showTrend }: { label: string; value: string; data?: number[]; color?: string; showTrend?: boolean }) {
   return (
-    <div className="bg-[var(--sim-surface)] rounded px-3 py-2 border border-[var(--sim-border)]">
+    <div className="bg-[var(--sim-surface)] rounded px-3 py-2 border border-[var(--sim-border)] transition-colors hover:bg-[var(--sim-surface-hover,rgba(255,255,255,0.03))]">
       <div className="text-[10px] text-[var(--sim-text-muted)] uppercase tracking-wider">{label}</div>
       <div className="text-sm font-mono text-[var(--sim-text)] mt-0.5">{value}</div>
       {data && color && <Sparkline data={data} color={color} showTrend={showTrend} />}

@@ -35,7 +35,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={() => { setSimTheme(simTheme === 'dark' ? 'light' : 'dark'); trackEvent(ANALYTICS_EVENTS.THEME_TOGGLED); }}
-      className="w-7 h-7 rounded-full border border-[var(--sim-border)] text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] hover:border-[var(--sim-accent)] text-sm transition-colors"
+      className="w-9 h-9 rounded-full border border-[var(--sim-border)] text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] hover:border-[var(--sim-accent)] text-sm transition-colors"
       title={`Switch to ${simTheme === 'dark' ? 'light' : 'dark'} theme`}
     >
       {simTheme === 'dark' ? (

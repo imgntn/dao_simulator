@@ -98,7 +98,7 @@ export function SimulationCanvas() {
   }
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full cursor-grab active:cursor-grabbing">
       <Canvas
         camera={{ position: [14, 10, 14], fov: 50, near: 0.1, far: 500 }}
         dpr={[1, 2]}
