@@ -226,9 +226,22 @@ function buildPanelContent(
       </div>
     ),
     'floor-nav': <FloorNav />,
-    'agent-guide': (
-      <CollapsiblePanel id="agent-guide" title="Agent Guide">
-        <AgentGuide />
+    // --- Charts & Metrics ---
+    'metrics-dashboard': (
+      <CollapsiblePanel id="metrics-dashboard" title="Metrics">
+        <div data-tutorial="metrics" className="metrics-grid-container">
+          <MetricsDashboard />
+        </div>
+      </CollapsiblePanel>
+    ),
+    'voting-heatmap': snapshot ? (
+      <CollapsiblePanel id="voting-heatmap" title="Voting Heatmap">
+        <VotingHeatmap agents={snapshot.agents} proposals={snapshot.proposals} />
+      </CollapsiblePanel>
+    ) : null,
+    'metric-alerts': (
+      <CollapsiblePanel id="metric-alerts" title="Alerts">
+        <MetricAlerts />
       </CollapsiblePanel>
     ),
     'delegation-graph': (
@@ -236,6 +249,7 @@ function buildPanelContent(
         <DelegationGraph />
       </CollapsiblePanel>
     ),
+    // --- Configuration ---
     'scenario-builder': (
       <CollapsiblePanel id="scenario-builder" title="Scenario Builder">
         <ScenarioBuilder />
@@ -246,21 +260,10 @@ function buildPanelContent(
         <CustomAgentForm />
       </CollapsiblePanel>
     ),
-    'metric-alerts': (
-      <CollapsiblePanel id="metric-alerts" title="Alerts">
-        <MetricAlerts />
-      </CollapsiblePanel>
-    ),
-    'voting-heatmap': snapshot ? (
-      <CollapsiblePanel id="voting-heatmap" title="Voting Heatmap">
-        <VotingHeatmap agents={snapshot.agents} proposals={snapshot.proposals} />
-      </CollapsiblePanel>
-    ) : null,
-    'metrics-dashboard': (
-      <CollapsiblePanel id="metrics-dashboard" title="Metrics Dashboard">
-        <div data-tutorial="metrics" className="metrics-grid-container">
-          <MetricsDashboard />
-        </div>
+    // --- Reference ---
+    'agent-guide': (
+      <CollapsiblePanel id="agent-guide" title="Agent Guide">
+        <AgentGuide />
       </CollapsiblePanel>
     ),
     // Mode-specific panels

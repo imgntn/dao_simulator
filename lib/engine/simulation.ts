@@ -1491,6 +1491,12 @@ export class DAOSimulation extends Model {
       const drainAmount = funds * effects.treasuryDrain;
       if (drainAmount > 0) {
         this.dao.treasury.withdraw('DAO_TOKEN', drainAmount, this.currentStep);
+        this.eventBus.publish('treasury_change', {
+          step: this.currentStep,
+          amount: -drainAmount,
+          reason: 'black_swan_drain',
+          newBalance: this.dao.treasury.funds,
+        });
       }
     }
 
@@ -1528,6 +1534,11 @@ export class DAOSimulation extends Model {
         for (const member of toRemove) {
           this.dao.removeMember(member);
           this.schedule.remove(member);
+          this.eventBus.publish('member_left', {
+            step: this.currentStep,
+            memberId: member.uniqueId,
+            reason: 'black_swan_exit',
+          });
         }
       }
     }
@@ -1978,6 +1989,12 @@ export class DAOSimulation extends Model {
               member.tokens += perVoter;
             }
           }
+          this.eventBus.publish('treasury_change', {
+            step: this.currentStep,
+            amount: -payout,
+            reason: 'participation_rewards',
+            newBalance: this.dao.treasury.funds,
+          });
         }
       }
     }
@@ -2104,11 +2121,24 @@ export class DAOSimulation extends Model {
 
     // Forum simulation step (before agent actions so sentiment is available)
     if (this.forumSimulation) {
+      const topicCountBefore = this.forumState?.topics.length ?? 0;
       const agentIds = this.dao.members.map(m => m.uniqueId);
       const openProposalIds = this.dao.proposals
         .filter(p => p.status === 'open')
         .map(p => p.uniqueId);
       this.forumSimulation.step(agentIds, this.currentStep, openProposalIds);
+      // Publish events for newly created forum topics
+      const topics = this.forumState?.topics ?? [];
+      for (let i = topicCountBefore; i < topics.length; i++) {
+        const topic = topics[i];
+        this.eventBus.publish('forum_topic', {
+          step: this.currentStep,
+          title: topic.title,
+          category: topic.category,
+          author: topic.author,
+          sentiment: this.forumState?.getTopicSentiment(topic.id) ?? 0,
+        });
+      }
     }
 
     // Pre-compute LLM agent decisions (async batch) before agent step
@@ -2122,9 +2152,31 @@ export class DAOSimulation extends Model {
       await result;
     }
 
-    // Agent lifecycle management
+    // Agent lifecycle management — track before/after to emit join/leave events
+    const membersBefore = new Set(this.dao.members.map(m => m.uniqueId));
     this.agentManager.addNewMembers();
+    // Detect newly joined members
+    for (const m of this.dao.members) {
+      if (!membersBefore.has(m.uniqueId)) {
+        this.eventBus.publish('member_joined', {
+          step: this.currentStep,
+          memberId: m.uniqueId,
+          type: m.constructor.name,
+        });
+      }
+    }
+    const membersAfterAdd = new Set(this.dao.members.map(m => m.uniqueId));
     this.agentManager.cullMembers();
+    // Detect culled members
+    for (const id of membersAfterAdd) {
+      if (!this.dao.members.some(m => m.uniqueId === id)) {
+        this.eventBus.publish('member_left', {
+          step: this.currentStep,
+          memberId: id,
+          reason: 'negative_reputation',
+        });
+      }
+    }
 
     this.applyParticipationPolicy();
     this.updateTokenVelocityForMembers();
@@ -2141,7 +2193,21 @@ export class DAOSimulation extends Model {
     }
 
     // Update token prices with market dynamics
+    const priceBeforeUpdate = this.dao.treasury.getTokenPrice('DAO_TOKEN');
     this.dao.treasury.updatePrices(this.currentStep, this.priceVolatility);
+    // Publish price_change event every 10 steps or on >5% change
+    const priceAfterUpdate = this.dao.treasury.getTokenPrice('DAO_TOKEN');
+    if (priceBeforeUpdate > 0) {
+      const priceChangeRatio = (priceAfterUpdate - priceBeforeUpdate) / priceBeforeUpdate;
+      if (this.currentStep % 10 === 0 || Math.abs(priceChangeRatio) > 0.05) {
+        this.eventBus.publish('price_change', {
+          step: this.currentStep,
+          price: priceAfterUpdate,
+          previousPrice: priceBeforeUpdate,
+          change: priceChangeRatio,
+        });
+      }
+    }
 
     // Treasury buybacks
     this.performBuybacks();

@@ -33,17 +33,17 @@ export function getPanelsByCategory(category: PanelDefinition['category']): Pane
   return getAllPanels().filter(p => p.category === category);
 }
 
-/** Default panel IDs and their order */
+/** Default panel IDs and their order — metrics/charts first, reference last */
 export const DEFAULT_PANEL_ORDER = [
   'transport',
   'floor-nav',
-  'agent-guide',
+  'metrics-dashboard',
+  'voting-heatmap',
+  'metric-alerts',
   'delegation-graph',
   'scenario-builder',
   'custom-agent',
-  'metric-alerts',
-  'voting-heatmap',
-  'metrics-dashboard',
+  'agent-guide',
   'event-feed',
   'time-scrubber',
 ] as const;

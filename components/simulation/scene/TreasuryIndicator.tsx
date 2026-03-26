@@ -48,26 +48,32 @@ export function TreasuryIndicator({ treasuryFunds }: Props) {
   const vaultY = -1;
 
   // Detect large treasury changes and trigger pulse
+  // Use a debounce to prevent flickering from rapid small changes
+  const lastPulseTime = useRef(0);
+
   useFrame(({ clock }) => {
     const delta = treasuryFunds - prevTreasury.current;
-    const threshold = prevTreasury.current * 0.01; // 1% change
+    const threshold = prevTreasury.current * 0.05; // 5% change (was 1% — too sensitive)
+    const now = clock.elapsedTime;
 
-    if (Math.abs(delta) > Math.max(threshold, 100)) {
-      pulseIntensity.current = 0.8;
+    // Only pulse if significant change AND at least 1s since last pulse
+    if (Math.abs(delta) > Math.max(threshold, 500) && now - lastPulseTime.current > 1.0) {
+      pulseIntensity.current = 0.6; // Softer pulse (was 0.8)
       pulseColor.current = delta > 0 ? 'cyan' : 'red';
+      lastPulseTime.current = now;
     }
     prevTreasury.current = treasuryFunds;
 
-    // Decay pulse
+    // Decay pulse — slower decay for smoother transitions
     if (pulseIntensity.current > 0) {
-      pulseIntensity.current *= 0.93; // ~30 frame decay
+      pulseIntensity.current *= 0.96; // ~50 frame decay (was 0.93 = ~30 frames)
       if (pulseIntensity.current < 0.01) pulseIntensity.current = 0;
     }
 
     const t = clock.elapsedTime;
-    // Continuous gentle breathing
-    const breathe = 0.8 + 0.2 * Math.sin(t * 0.5);
-    const totalEmissive = Math.max(0.2 * breathe, pulseIntensity.current);
+    // Continuous gentle breathing — very subtle
+    const breathe = 0.85 + 0.15 * Math.sin(t * 0.3); // Slower, narrower range
+    const totalEmissive = Math.max(0.15 * breathe, pulseIntensity.current);
 
     // Update floor glow — only set color when it changes
     if (floorRef.current) {

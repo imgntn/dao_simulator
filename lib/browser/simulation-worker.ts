@@ -111,6 +111,7 @@ function toSimConfig(config: BrowserSimConfig, profile: CalibrationProfile | nul
 /** Wire up event bus to capture events for the snapshot */
 function wireEvents(simulation: DAOSimulation): void {
   const bus = simulation.eventBus;
+  let voteCount = 0;
 
   bus.subscribe('proposal_created', (data: Record<string, unknown>) => {
     pushEvent('proposal_created', `Proposal created: ${data.title || data.proposalId || 'unknown'}`);
@@ -128,8 +129,12 @@ function wireEvents(simulation: DAOSimulation): void {
     pushEvent('proposal_expired', `Proposal expired: ${data.proposalId || 'unknown'}`);
   });
 
+  // Throttle vote_cast: only push every 5th vote to avoid flooding the feed
   bus.subscribe('vote_cast', (data: Record<string, unknown>) => {
-    pushEvent('vote_cast', `${data.voterId || 'Agent'} voted ${data.vote ? 'FOR' : 'AGAINST'}`);
+    voteCount++;
+    if (voteCount % 5 === 0) {
+      pushEvent('vote_cast', `${data.voterId || 'Agent'} voted ${data.vote ? 'FOR' : 'AGAINST'} (+${Math.min(voteCount, 5) - 1} more)`);
+    }
   });
 
   bus.subscribe('black_swan', (data: Record<string, unknown>) => {
@@ -138,6 +143,50 @@ function wireEvents(simulation: DAOSimulation): void {
 
   bus.subscribe('market_shock', (data: Record<string, unknown>) => {
     pushEvent('price_change', `Market shock: ${data.magnitude || 'unknown'}`);
+  });
+
+  // Treasury change events (spending, drains, etc.)
+  bus.subscribe('treasury_change', (data: Record<string, unknown>) => {
+    const amt = Number(data.amount ?? 0);
+    const sign = amt >= 0 ? '+' : '';
+    pushEvent('treasury_change', `Treasury ${sign}${amt.toFixed(0)}: ${data.reason || 'transfer'}`);
+  });
+
+  // Treasury revenue
+  bus.subscribe('treasury_revenue', (data: Record<string, unknown>) => {
+    pushEvent('treasury_change', `Revenue: +${Number(data.total ?? data.amount ?? 0).toFixed(0)}`);
+  });
+
+  // Treasury buffer filled
+  bus.subscribe('treasury_buffer_filled', (data: Record<string, unknown>) => {
+    pushEvent('treasury_change', `Buffer filled: ${Number(data.amount ?? 0).toFixed(0)}`);
+  });
+
+  // Treasury emergency topup
+  bus.subscribe('treasury_emergency_topup', (data: Record<string, unknown>) => {
+    pushEvent('treasury_change', `Emergency topup: +${Number(data.amount ?? 0).toFixed(0)}`);
+  });
+
+  // Member lifecycle events
+  bus.subscribe('member_joined', (data: Record<string, unknown>) => {
+    pushEvent('member_joined', `${data.type || 'Member'} joined the DAO`);
+  });
+
+  bus.subscribe('member_left', (data: Record<string, unknown>) => {
+    pushEvent('member_left', `Member left: ${data.reason || 'departed'}`);
+  });
+
+  // Token price changes
+  bus.subscribe('price_change', (data: Record<string, unknown>) => {
+    const price = Number(data.price ?? 0);
+    const change = Number(data.change ?? 0);
+    const sign = change >= 0 ? '+' : '';
+    pushEvent('price_change', `Token $${price.toFixed(3)} (${sign}${(change * 100).toFixed(1)}%)`);
+  });
+
+  // Forum topic creation
+  bus.subscribe('forum_topic', (data: Record<string, unknown>) => {
+    pushEvent('forum_topic', `Forum: ${data.title || 'New topic'} [${data.category || ''}]`);
   });
 }
 
