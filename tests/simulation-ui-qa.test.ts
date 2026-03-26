@@ -17,16 +17,16 @@ describe('Simulation event publishing', () => {
     const events: Array<{ type: string; data: Record<string, unknown> }> = [];
 
     const sim = new DAOSimulation({
-      numDevelopers: 3,
-      numInvestors: 1,
-      numTraders: 1,
-      numPassiveMembers: 2,
-      numProposalCreators: 1,
-      numValidators: 0,
-      numDelegators: 0,
-      numGovernanceExperts: 0,
-      numRiskManagers: 0,
-      governanceRule: 'majority',
+      num_developers: 3,
+      num_investors: 1,
+      num_traders: 1,
+      num_passive_members: 2,
+      num_proposal_creators: 1,
+      num_validators: 0,
+      num_delegators: 0,
+      num_governance_experts: 0,
+      num_risk_managers: 0,
+      governance_rule: 'majority',
     });
 
     sim.eventBus.subscribe('treasury_change', (data: Record<string, unknown>) => {
@@ -45,16 +45,16 @@ describe('Simulation event publishing', () => {
     const events: Array<{ type: string; data: Record<string, unknown> }> = [];
 
     const sim = new DAOSimulation({
-      numDevelopers: 3,
-      numInvestors: 1,
-      numTraders: 1,
-      numPassiveMembers: 2,
-      numProposalCreators: 1,
-      numValidators: 0,
-      numDelegators: 0,
-      numGovernanceExperts: 0,
-      numRiskManagers: 0,
-      governanceRule: 'majority',
+      num_developers: 3,
+      num_investors: 1,
+      num_traders: 1,
+      num_passive_members: 2,
+      num_proposal_creators: 1,
+      num_validators: 0,
+      num_delegators: 0,
+      num_governance_experts: 0,
+      num_risk_managers: 0,
+      governance_rule: 'majority',
     });
 
     sim.eventBus.subscribe('member_joined', (data: Record<string, unknown>) => {
@@ -75,16 +75,16 @@ describe('Simulation event publishing', () => {
     const events: Array<{ type: string; data: Record<string, unknown> }> = [];
 
     const sim = new DAOSimulation({
-      numDevelopers: 3,
-      numInvestors: 1,
-      numTraders: 1,
-      numPassiveMembers: 2,
-      numProposalCreators: 1,
-      numValidators: 0,
-      numDelegators: 0,
-      numGovernanceExperts: 0,
-      numRiskManagers: 0,
-      governanceRule: 'majority',
+      num_developers: 3,
+      num_investors: 1,
+      num_traders: 1,
+      num_passive_members: 2,
+      num_proposal_creators: 1,
+      num_validators: 0,
+      num_delegators: 0,
+      num_governance_experts: 0,
+      num_risk_managers: 0,
+      governance_rule: 'majority',
     });
 
     sim.eventBus.subscribe('price_change', (data: Record<string, unknown>) => {
@@ -109,17 +109,17 @@ describe('Simulation event publishing', () => {
     const events: Array<{ type: string; data: Record<string, unknown> }> = [];
 
     const sim = new DAOSimulation({
-      numDevelopers: 3,
-      numInvestors: 1,
-      numTraders: 1,
-      numPassiveMembers: 2,
-      numProposalCreators: 1,
-      numValidators: 0,
-      numDelegators: 0,
-      numGovernanceExperts: 0,
-      numRiskManagers: 0,
-      governanceRule: 'majority',
-      forumEnabled: true,
+      num_developers: 3,
+      num_investors: 1,
+      num_traders: 1,
+      num_passive_members: 2,
+      num_proposal_creators: 1,
+      num_validators: 0,
+      num_delegators: 0,
+      num_governance_experts: 0,
+      num_risk_managers: 0,
+      governance_rule: 'majority',
+      forum_enabled: true,
     });
 
     sim.eventBus.subscribe('forum_topic', (data: Record<string, unknown>) => {
@@ -144,16 +144,16 @@ describe('Simulation snapshot structure', () => {
     const { DAOSimulation } = await import('../lib/engine/simulation');
 
     const sim = new DAOSimulation({
-      numDevelopers: 3,
-      numInvestors: 1,
-      numTraders: 1,
-      numPassiveMembers: 2,
-      numProposalCreators: 1,
-      numValidators: 0,
-      numDelegators: 0,
-      numGovernanceExperts: 0,
-      numRiskManagers: 0,
-      governanceRule: 'majority',
+      num_developers: 3,
+      num_investors: 1,
+      num_traders: 1,
+      num_passive_members: 2,
+      num_proposal_creators: 1,
+      num_validators: 0,
+      num_delegators: 0,
+      num_governance_experts: 0,
+      num_risk_managers: 0,
+      governance_rule: 'majority',
     });
 
     await sim.run(10);
@@ -173,16 +173,16 @@ describe('Simulation snapshot structure', () => {
     const { DAOSimulation } = await import('../lib/engine/simulation');
 
     const sim = new DAOSimulation({
-      numDevelopers: 5,
-      numInvestors: 2,
-      numTraders: 1,
-      numPassiveMembers: 5,
-      numProposalCreators: 3,
-      numValidators: 1,
-      numDelegators: 0,
-      numGovernanceExperts: 1,
-      numRiskManagers: 0,
-      governanceRule: 'majority',
+      num_developers: 5,
+      num_investors: 2,
+      num_traders: 1,
+      num_passive_members: 5,
+      num_proposal_creators: 3,
+      num_validators: 1,
+      num_delegators: 0,
+      num_governance_experts: 1,
+      num_risk_managers: 0,
+      governance_rule: 'majority',
     });
 
     await sim.run(200);
@@ -203,16 +203,16 @@ describe('Simulation snapshot structure', () => {
     const { DAOSimulation } = await import('../lib/engine/simulation');
 
     const sim = new DAOSimulation({
-      numDevelopers: 2,
-      numInvestors: 1,
-      numTraders: 1,
-      numPassiveMembers: 2,
-      numProposalCreators: 1,
-      numValidators: 0,
-      numDelegators: 0,
-      numGovernanceExperts: 0,
-      numRiskManagers: 0,
-      governanceRule: 'majority',
+      num_developers: 2,
+      num_investors: 1,
+      num_traders: 1,
+      num_passive_members: 2,
+      num_proposal_creators: 1,
+      num_validators: 0,
+      num_delegators: 0,
+      num_governance_experts: 0,
+      num_risk_managers: 0,
+      governance_rule: 'majority',
     });
 
     await sim.run(5);
@@ -238,16 +238,16 @@ describe('Governance rule simulation QA', () => {
       const { DAOSimulation } = await import('../lib/engine/simulation');
 
       const sim = new DAOSimulation({
-        numDevelopers: 3,
-        numInvestors: 1,
-        numTraders: 1,
-        numPassiveMembers: 3,
-        numProposalCreators: 1,
-        numValidators: 0,
-        numDelegators: 0,
-        numGovernanceExperts: 0,
-        numRiskManagers: 0,
-        governanceRule: rule,
+        num_developers: 3,
+        num_investors: 1,
+        num_traders: 1,
+        num_passive_members: 3,
+        num_proposal_creators: 1,
+        num_validators: 0,
+        num_delegators: 0,
+        num_governance_experts: 0,
+        num_risk_managers: 0,
+        governance_rule: rule,
       });
 
       // Should not throw
@@ -275,16 +275,16 @@ describe('Scale QA', () => {
       const { DAOSimulation } = await import('../lib/engine/simulation');
 
       const sim = new DAOSimulation({
-        numDevelopers: scale.devs,
-        numInvestors: scale.investors,
-        numTraders: scale.traders,
-        numPassiveMembers: scale.passive,
-        numProposalCreators: scale.creators,
-        numValidators: scale.validators,
-        numDelegators: 0,
-        numGovernanceExperts: 0,
-        numRiskManagers: 0,
-        governanceRule: 'majority',
+        num_developers: scale.devs,
+        num_investors: scale.investors,
+        num_traders: scale.traders,
+        num_passive_members: scale.passive,
+        num_proposal_creators: scale.creators,
+        num_validators: scale.validators,
+        num_delegators: 0,
+        num_governance_experts: 0,
+        num_risk_managers: 0,
+        governance_rule: 'majority',
       });
 
       await sim.run(30);
@@ -302,18 +302,18 @@ describe('Black swan QA', () => {
     const { DAOSimulation } = await import('../lib/engine/simulation');
 
     const sim = new DAOSimulation({
-      numDevelopers: 5,
-      numInvestors: 2,
-      numTraders: 1,
-      numPassiveMembers: 5,
-      numProposalCreators: 2,
-      numValidators: 1,
-      numDelegators: 0,
-      numGovernanceExperts: 0,
-      numRiskManagers: 0,
-      governanceRule: 'majority',
-      blackSwanEnabled: true,
-      blackSwanFrequency: 5,
+      num_developers: 5,
+      num_investors: 2,
+      num_traders: 1,
+      num_passive_members: 5,
+      num_proposal_creators: 2,
+      num_validators: 1,
+      num_delegators: 0,
+      num_governance_experts: 0,
+      num_risk_managers: 0,
+      governance_rule: 'majority',
+      black_swan_enabled: true,
+      black_swan_frequency: 5,
     });
 
     // Should not throw even under heavy black swan load
@@ -332,17 +332,17 @@ describe('RL activation QA', () => {
     const { DAOSimulation } = await import('../lib/engine/simulation');
 
     const sim = new DAOSimulation({
-      numDevelopers: 3,
-      numInvestors: 1,
-      numTraders: 1,
-      numPassiveMembers: 3,
-      numProposalCreators: 1,
-      numValidators: 0,
-      numDelegators: 0,
-      numGovernanceExperts: 0,
-      numRiskManagers: 0,
-      governanceRule: 'majority',
-      learningEnabled: true,
+      num_developers: 3,
+      num_investors: 1,
+      num_traders: 1,
+      num_passive_members: 3,
+      num_proposal_creators: 1,
+      num_validators: 0,
+      num_delegators: 0,
+      num_governance_experts: 0,
+      num_risk_managers: 0,
+      governance_rule: 'majority',
+      learning_enabled: true,
     });
 
     await sim.run(50);
@@ -359,17 +359,17 @@ describe('Forum QA', () => {
     const { DAOSimulation } = await import('../lib/engine/simulation');
 
     const sim = new DAOSimulation({
-      numDevelopers: 3,
-      numInvestors: 1,
-      numTraders: 1,
-      numPassiveMembers: 3,
-      numProposalCreators: 1,
-      numValidators: 0,
-      numDelegators: 0,
-      numGovernanceExperts: 0,
-      numRiskManagers: 0,
-      governanceRule: 'majority',
-      forumEnabled: true,
+      num_developers: 3,
+      num_investors: 1,
+      num_traders: 1,
+      num_passive_members: 3,
+      num_proposal_creators: 1,
+      num_validators: 0,
+      num_delegators: 0,
+      num_governance_experts: 0,
+      num_risk_managers: 0,
+      governance_rule: 'majority',
+      forum_enabled: true,
     });
 
     await sim.run(50);

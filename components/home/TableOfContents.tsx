@@ -37,19 +37,20 @@ export function TableOfContents({ items }: TableOfContentsProps) {
   }, [items]);
 
   return (
-    <nav aria-label="Table of contents" className="flex flex-wrap gap-2">
+    <nav aria-label="Table of contents" className="flex flex-wrap gap-1.5">
       {items.map((item, index) => (
         <a
           key={item.id}
           href={`#${item.id}`}
-          className={`rounded-full border px-4 py-2.5 text-sm font-semibold uppercase tracking-[0.11em] transition ${
+          title={item.title}
+          className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition ${
             activeId === item.id
               ? 'border-[var(--accent-teal)] bg-[var(--accent-teal)]/10 text-[var(--accent-teal)]'
-              : 'border-[var(--border-default)] bg-[var(--surface-warm)] text-[var(--text-body)] hover:border-[var(--accent-gold)] hover:bg-[var(--surface-warm-deep)]'
+              : 'border-[var(--border-default)] bg-[var(--surface-warm)] text-[var(--text-muted)] hover:border-[var(--accent-gold)] hover:text-[var(--text-body)]'
           }`}
           style={{ animationDelay: `${index * 50}ms` }}
         >
-          {item.label} {item.title}
+          {item.label}
         </a>
       ))}
     </nav>
