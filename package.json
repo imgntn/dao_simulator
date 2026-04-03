@@ -58,9 +58,9 @@
     "@types/pg": "^8.18.0",
     "@types/three": "^0.180.0",
     "ioredis": "^5.8.0",
-    "next": "^16.1.7",
+    "next": "^16.2.2",
     "next-auth": "^5.0.0-beta.30",
-    "nodemailer": "^7.0.13",
+    "nodemailer": "^8.0.4",
     "pg": "^8.20.0",
     "postprocessing": "^6.37.8",
     "react": "^19.2.0",
@@ -69,22 +69,22 @@
     "recharts": "^3.2.1",
     "remark-gfm": "^4.0.1",
     "three": "^0.180.0",
-    "yaml": "^2.8.2",
+    "yaml": "^2.8.3",
     "zod": "^3.24.0",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@eslint/js": "^9.39.2",
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^9.39.4",
     "@playwright/test": "^1.55.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@vitest/coverage-v8": "^4.0.8",
+    "@vitest/coverage-v8": "^4.1.2",
     "baseline-browser-mapping": "^2.10.0",
-    "eslint": "^9",
-    "eslint-config-next": "^16.0.10",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "flatted": "^3.4.2",
@@ -92,7 +92,11 @@
     "tailwindcss": "^4",
     "tsx": "^4.20.6",
     "typescript": "^5",
-    "typescript-eslint": "^8.52.0",
-    "vitest": "^4.0.8"
+    "typescript-eslint": "^8.58.0",
+    "vitest": "^4.1.2"
+  },
+  "overrides": {
+    "brace-expansion@^1.1.7": "1.1.13",
+    "picomatch@^4.0.3": "4.0.4"
   }
 }
