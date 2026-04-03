@@ -23,7 +23,6 @@ function nodeRequire(id: string): any {
     return (globalThis as any).__nodeRequire(id);
   }
   // CJS fallback — hide from bundler
-  // eslint-disable-next-line @typescript-eslint/no-implied-eval
   return new Function('id', 'return require(id)')(id);
 }
 

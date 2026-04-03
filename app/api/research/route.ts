@@ -83,7 +83,6 @@ export async function POST(request: NextRequest) {
   let action = '';
   let configPath = '';
   let resultsDir = '';
-  let paperProfile = '';
   let inlineConfig: Record<string, unknown> | null = null;
 
   if (isJson) {
@@ -91,7 +90,6 @@ export async function POST(request: NextRequest) {
     action = String(body.action || '');
     configPath = String(body.configPath || '');
     resultsDir = String(body.resultsDir || '');
-    paperProfile = String(body.paperProfile || '');
     if (body.inlineConfig && typeof body.inlineConfig === 'object') {
       inlineConfig = body.inlineConfig as Record<string, unknown>;
     }
@@ -100,7 +98,6 @@ export async function POST(request: NextRequest) {
     action = String(formData.get('action') || '');
     configPath = String(formData.get('configPath') || '');
     resultsDir = String(formData.get('resultsDir') || '');
-    paperProfile = String(formData.get('paperProfile') || '');
   }
 
   try {

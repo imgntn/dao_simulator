@@ -13,7 +13,6 @@ function getFs(): typeof import('fs') | null {
   if (_fs) return _fs;
   try {
     if (typeof window === 'undefined') {
-      // eslint-disable-next-line @typescript-eslint/no-implied-eval
       const _req = (globalThis as any).__nodeRequire;
       _fs = _req ? _req('fs') as typeof import('fs') : new Function('return require("fs")')() as typeof import('fs');
     }

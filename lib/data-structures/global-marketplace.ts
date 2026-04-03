@@ -186,7 +186,7 @@ export class GlobalMarketplace {
     step: number
   ): { amountOut: number; priceImpact: number } {
     const poolKey = this.getPoolKey(fromToken, toToken);
-    let pool = this.pools.get(poolKey);
+    const pool = this.pools.get(poolKey);
 
     if (!pool) {
       // Try routing through base token

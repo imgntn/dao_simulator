@@ -589,7 +589,6 @@ export class CheckpointManager {
   }> {
     // Use Function constructor to hide require() from bundler static analysis.
     // This code only runs in Node.js; in browser environments checkpoint persistence is a no-op.
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
     const dynamicRequire = ((globalThis as any).__nodeRequire ?? new Function('m', 'return require(m)')) as (m: string) => unknown;
     const fsModule = dynamicRequire('fs/promises') as typeof import('fs/promises');
     const pathModule = dynamicRequire('path') as typeof import('path');

@@ -96,13 +96,8 @@ async function profileSimulation(steps: number, numMembers: number) {
   };
 
   // Wrap key methods for profiling
-  const originalStep = sim.step.bind(sim);
   const originalResolve = sim.resolveBasicProposals.bind(sim);
   const originalCollect = sim.dataCollector.collect.bind(sim.dataCollector);
-
-  // Track agent step times
-  let agentStepTotal = 0;
-  let agentStepCount = 0;
 
   // Run simulation with timing
   console.log('Running simulation...\n');

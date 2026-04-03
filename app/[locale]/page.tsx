@@ -11,7 +11,6 @@ import {
 import {
   readText,
   exists,
-  artifactHref,
   countWords,
   parseBriefMarkdown,
   sectionLabel,

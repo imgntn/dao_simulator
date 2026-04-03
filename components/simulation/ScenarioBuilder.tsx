@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
 import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
 import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
@@ -20,7 +20,7 @@ export function ScenarioBuilder() {
   const { trackEvent } = useAnalytics();
 
   const totalSteps = config.totalSteps;
-  const events = config.scheduledBlackSwans ?? [];
+  const events = useMemo(() => config.scheduledBlackSwans ?? [], [config.scheduledBlackSwans]);
 
   // Add event form state
   const [newStep, setNewStep] = useState(Math.round(totalSteps / 2));

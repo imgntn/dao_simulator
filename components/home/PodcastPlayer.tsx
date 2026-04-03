@@ -21,7 +21,6 @@ function PodcastPlayerInner() {
   return (
     <>
       {/* Hidden native audio element */}
-      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <audio ref={audioRef} preload="none" className="hidden">
         <source src={PODCAST_SRC} type="audio/mpeg" />
       </audio>

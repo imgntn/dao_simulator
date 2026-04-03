@@ -237,7 +237,7 @@ function parseSignificanceCSV(content: string): { significance: SignificanceResu
 
   let significance: SignificanceResult[] = [];
   let anova: AnovaResult[] = [];
-  let power: PowerAnalysisResult = {
+  const power: PowerAnalysisResult = {
     currentRunsPerConfig: 0,
     recommendedRuns: 0,
     currentPower: 0,

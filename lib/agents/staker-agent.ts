@@ -223,12 +223,13 @@ export class StakerAgent extends DAOMember {
         reward = this.executeVetoAction();
         break;
 
-      case 'hold':
+      case 'hold': {
         // Passive reward from staking
         const passiveReward = this.stakedTokens * (this.model.dao?.stakingInterestRate || 0) * 0.01;
         this.pendingRewards += passiveReward;
         reward = passiveReward * 0.1;
         break;
+      }
     }
 
     return reward;

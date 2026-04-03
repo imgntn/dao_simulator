@@ -446,7 +446,7 @@ function validateHomogeneousVoting(): ValidationResult {
 
   // Check strict monotonicity (each value >= previous)
   let monotonic = true;
-  let violations: string[] = [];
+  const violations: string[] = [];
   for (let i = 1; i < turnouts.length; i++) {
     if (turnouts[i] < turnouts[i - 1] - 0.001) { // Allow tiny floating point errors
       monotonic = false;

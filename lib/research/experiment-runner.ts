@@ -2045,7 +2045,6 @@ export class ExperimentRunner {
       const members = dao.members;
 
       // Use Function constructor to evaluate expression
-      // eslint-disable-next-line no-new-func
       const fn = new Function('dao', 'dataCollector', 'proposals', 'members', `return ${expression}`);
       const result = fn(dao, dataCollector, proposals, members);
 

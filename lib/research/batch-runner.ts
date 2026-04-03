@@ -237,7 +237,8 @@ export class BatchRunner {
    * Uses Worker Threads for true CPU parallelism when concurrency > 1
    */
   private async runTasksWithConcurrency(tasks: RunTask[], totalRuns: number): Promise<void> {
-    let { concurrency, checkpointInterval } = this.batchConfig;
+    let { concurrency } = this.batchConfig;
+    const { checkpointInterval } = this.batchConfig;
 
     if (this.experimentConfig.mode === 'city' && concurrency > 1) {
       concurrency = 1;

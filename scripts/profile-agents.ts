@@ -44,7 +44,7 @@ async function profileAgentSteps(steps: number, numMembers: number) {
     delegationOperations: 0,
     other: 0,
   };
-  let operationCounts = {
+  const operationCounts = {
     voteOnRandomProposal: 0,
     createProposal: 0,
     stakeOperations: 0,

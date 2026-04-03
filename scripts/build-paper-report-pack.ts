@@ -47,7 +47,7 @@ function resolveOutputDir(configPath: string): { name: string; dir: string; step
   const name = parsed?.name || path.basename(configPath, path.extname(configPath));
   const outputDir = parsed?.output?.directory
     ? String(parsed.output.directory)
-    : path.join('results', String(name).replace(/[^\w\-]+/g, '_').toLowerCase());
+    : path.join('results', String(name).replace(/[^\w-]+/g, '_').toLowerCase());
 
   const steps = parsed?.execution?.stepsPerRun;
   const runs = parsed?.execution?.runsPerConfig;

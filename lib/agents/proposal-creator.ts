@@ -269,7 +269,7 @@ export class ProposalCreator extends DAOMember {
       }
 
       // Calculate reward
-      let reward = passed ? 5 : -2;
+      const reward = passed ? 5 : -2;
 
       // Update Q-value for the action that created this topic
       const actionForTopic = this.getActionForTopic(outcome.topic);

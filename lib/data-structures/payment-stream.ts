@@ -196,7 +196,7 @@ export class PaymentStreamController {
         }
         break;
 
-      case 'cliff':
+      case 'cliff': {
         // Nothing until cliff, then linear
         const cliffSteps = stream.schedule.cliffSteps || 0;
         if (elapsed < cliffSteps) {
@@ -209,14 +209,16 @@ export class PaymentStreamController {
           streamed = (stream.totalAmount * postCliffElapsed) / postCliffDuration;
         }
         break;
+      }
 
-      case 'stepped':
+      case 'stepped': {
         // Release in discrete chunks
         const stepInterval = stream.schedule.stepInterval || Math.floor(totalDuration / 10);
         const completedSteps = Math.floor(elapsed / stepInterval);
         const totalSteps = Math.ceil(totalDuration / stepInterval);
         streamed = (stream.totalAmount * Math.min(completedSteps, totalSteps)) / totalSteps;
         break;
+      }
 
       case 'custom':
         // Sum up all releases that have passed

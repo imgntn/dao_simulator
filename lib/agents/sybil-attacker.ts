@@ -377,11 +377,12 @@ export class SybilAttacker extends DAOMember {
       case 'random':
         tokensForPuppet = this.tokens * (0.05 + random() * 0.15);
         break;
-      case 'weighted':
+      case 'weighted': {
         // More tokens to earlier puppets
         const weight = 1 / (this.puppetCounter + 1);
         tokensForPuppet = this.tokens * weight * 0.3;
         break;
+      }
       default:
         tokensForPuppet = this.tokens * 0.1;
     }

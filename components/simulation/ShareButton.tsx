@@ -82,7 +82,7 @@ export function ShareButton() {
       // Fallback: select the URL
       prompt('Copy this URL:', url);
     });
-  }, [config]);
+  }, [config, trackEvent]);
 
   useEffect(() => {
     if (copied) {

@@ -41,7 +41,6 @@ function agentPosition(agent: AgentSnapshot, indexInFloor: number, floorAgentCou
 /** Purple delegation beams connecting delegating agents to their delegates */
 export function DelegationBeams({ agents }: Props) {
   const lineRef = useRef<THREE.LineSegments>(null);
-  const opacityRef = useRef(0.3);
 
   // Build position map and edge list
   const { edges, positions } = useMemo(() => {

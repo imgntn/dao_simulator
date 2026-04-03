@@ -3,6 +3,8 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
 import { useActiveSnapshot } from '@/lib/browser/useActiveSnapshot';
 import type { SimulationEvent } from '@/lib/browser/worker-protocol';
+import { PRETEXT_FONTS } from '@/lib/ui/pretext';
+import { usePretextText } from '@/lib/ui/usePretextText';
 
 const EVENT_COLORS: Record<string, string> = {
   proposal_created: 'text-blue-400',
@@ -21,11 +23,11 @@ const EVENT_COLORS: Record<string, string> = {
 
 const EVENT_ICONS: Record<string, string> = {
   proposal_created: '+',
-  proposal_approved: '✓',
-  proposal_rejected: '✗',
-  proposal_expired: '○',
-  vote_cast: '→',
-  black_swan: '⚡',
+  proposal_approved: 'OK',
+  proposal_rejected: 'x',
+  proposal_expired: 'o',
+  vote_cast: '->',
+  black_swan: '!',
   treasury_change: '$',
   price_change: '~',
 };
@@ -60,7 +62,8 @@ interface Props {
 
 export function EventFeed({ className = '' }: Props) {
   const snapshot = useActiveSnapshot();
-  const events = snapshot?.recentEvents ?? [];
+  const recentEvents = snapshot?.recentEvents;
+  const events = useMemo(() => recentEvents ?? [], [recentEvents]);
 
   const [activeCategories, setActiveCategories] = useState<Set<EventCategory>>(
     new Set(['governance', 'market', 'social', 'system'])
@@ -68,7 +71,6 @@ export function EventFeed({ className = '' }: Props) {
   const [paused, setPaused] = useState(false);
   const frozenEvents = useRef<SimulationEvent[]>([]);
 
-  // Freeze events when paused
   useEffect(() => {
     if (!paused) {
       frozenEvents.current = events;
@@ -102,7 +104,6 @@ export function EventFeed({ className = '' }: Props) {
 
   return (
     <div className={`bg-[var(--sim-bg)]/80 backdrop-blur-sm border-t border-[var(--sim-border)] p-3 ${className}`}>
-      {/* Filter bar */}
       <div className="flex items-center gap-1.5 mb-2">
         {(Object.keys(CATEGORY_COLORS) as EventCategory[]).map(cat => (
           <button
@@ -136,23 +137,45 @@ export function EventFeed({ className = '' }: Props) {
         </button>
       </div>
 
-      {/* Events */}
       <div
         className="max-h-[200px] overflow-y-auto"
         style={{ maskImage: 'linear-gradient(to bottom, transparent 0%, black 8px, black calc(100% - 8px), transparent 100%)' }}
       >
         <div className="space-y-0.5">
           {filtered.map((evt, i) => (
-            <div key={`${evt.step}-${evt.type}-${i}`} className="flex items-start gap-2 text-xs leading-relaxed rounded px-1 py-0.5 cursor-pointer hover:bg-white/5 transition-colors">
+            <div
+              key={`${evt.step}-${evt.type}-${i}`}
+              className="flex items-start gap-2 text-xs leading-relaxed rounded px-1 py-0.5 cursor-pointer hover:bg-white/5 transition-colors"
+            >
               <span className="font-mono text-[var(--sim-text-dim)] min-w-[3ch] text-right">{evt.step}</span>
               <span className={`${EVENT_COLORS[evt.type] ?? 'text-[var(--sim-text-muted)]'} min-w-[1ch]`}>
-                {EVENT_ICONS[evt.type] ?? '·'}
+                {EVENT_ICONS[evt.type] ?? '.'}
               </span>
-              <span className="text-[var(--sim-text-muted)] truncate">{evt.message}</span>
+              <EventMessage text={evt.message} />
             </div>
           ))}
         </div>
       </div>
     </div>
+  );
+}
+
+function EventMessage({ text }: { text: string }) {
+  const { ref, displayText, ready, truncated } = usePretextText<HTMLSpanElement>({
+    text,
+    font: PRETEXT_FONTS.simSans12,
+    lineHeight: 18,
+    maxLines: 2,
+  });
+
+  return (
+    <span
+      ref={ref}
+      className={`block min-w-0 flex-1 text-[var(--sim-text-muted)] ${ready ? '' : 'truncate'}`}
+      style={ready ? { whiteSpace: 'pre-line' } : undefined}
+      title={truncated ? text : undefined}
+    >
+      {displayText}
+    </span>
   );
 }

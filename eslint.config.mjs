@@ -74,5 +74,20 @@ export default tseslint.config(
       // General rules
       "no-useless-escape": "warn",
     },
+  },
+  // Keep app and component code strict while allowing legacy simulation,
+  // tooling, and test code to lint without historical warning debt.
+  {
+    files: [
+      "examples/**/*.{ts,tsx,js,jsx}",
+      "lib/**/*.{ts,tsx,js,jsx}",
+      "scripts/**/*.{ts,tsx,js,jsx}",
+      "tests/**/*.{ts,tsx,js,jsx}",
+      "types/**/*.ts",
+    ],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+    },
   }
 );

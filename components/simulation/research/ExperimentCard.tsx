@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import type { ExperimentConfigSummary } from '@/lib/research/experiment-listing';
+import { PRETEXT_FONTS } from '@/lib/ui/pretext';
+import { usePretextText } from '@/lib/ui/usePretextText';
 
 interface Props {
   experiment: ExperimentConfigSummary;
@@ -10,14 +12,38 @@ interface Props {
 
 export function ExperimentCard({ experiment, onRun }: Props) {
   const [confirming, setConfirming] = useState(false);
+  const titleText = usePretextText<HTMLHeadingElement>({
+    text: experiment.name,
+    font: PRETEXT_FONTS.simSans14,
+    lineHeight: 18,
+    maxLines: 2,
+  });
+  const descriptionText = usePretextText<HTMLParagraphElement>({
+    text: experiment.description ?? '',
+    font: PRETEXT_FONTS.simSans12,
+    lineHeight: 16,
+    maxLines: 2,
+  });
 
   return (
     <div className="rounded-lg border border-[var(--sim-border)] bg-[var(--sim-surface)] p-4 flex flex-col">
-      <h3 className="text-sm font-semibold text-[var(--sim-text)] truncate" title={experiment.name}>
-        {experiment.name}
+      <h3
+        ref={titleText.ref}
+        className={`text-sm font-semibold text-[var(--sim-text)] ${titleText.ready ? '' : 'truncate'}`}
+        style={titleText.ready ? { whiteSpace: 'pre-line' } : undefined}
+        title={titleText.truncated ? experiment.name : undefined}
+      >
+        {titleText.displayText}
       </h3>
       {experiment.description && (
-        <p className="mt-1 text-xs text-[var(--sim-text-muted)] line-clamp-2">{experiment.description}</p>
+        <p
+          ref={descriptionText.ref}
+          className={`mt-1 text-xs text-[var(--sim-text-muted)] ${descriptionText.ready ? '' : 'line-clamp-2'}`}
+          style={descriptionText.ready ? { whiteSpace: 'pre-line' } : undefined}
+          title={descriptionText.truncated ? experiment.description : undefined}
+        >
+          {descriptionText.displayText}
+        </p>
       )}
 
       <div className="mt-2 flex flex-wrap gap-1">

@@ -72,7 +72,8 @@ export default function SimulationPageClient() {
         if (urlConfig.daoId) {
           selectDao(urlConfig.daoId);
         }
-        const { daoId, ...otherConfig } = urlConfig;
+        const otherConfig = { ...urlConfig };
+        delete otherConfig.daoId;
         if (Object.keys(otherConfig).length > 0) {
           updateConfig(otherConfig);
         }
@@ -92,8 +93,6 @@ export default function SimulationPageClient() {
 
   // Mobile gets a 2D-only UI, desktop/tablet gets full 3D
   const isMobile = tier === 'compact' || tier === 'handheld';
-  const useSidebar = !isMobile;
-
   if (status === 'idle' || status === 'initializing') {
     return (
       <div className="flex items-center justify-center h-screen bg-[var(--sim-bg)] text-[var(--sim-text-secondary)]">

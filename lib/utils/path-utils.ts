@@ -47,7 +47,7 @@ export function validateFile(
 export function sanitizeFilename(filename: string): string {
   // Remove or replace unsafe characters
   return filename
-    .replace(/[^a-zA-Z0-9_\-\.]/g, '_')
+    .replace(/[^a-zA-Z0-9_.-]/g, '_')
     .replace(/\.{2,}/g, '.')
     .substring(0, 255); // Limit length
 }

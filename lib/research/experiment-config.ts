@@ -113,8 +113,7 @@ export interface CityDAOConfig extends DAOConfig {
   tokenDistribution?: Record<string, unknown>;
 }
 
-export interface BaseConfigOverrides extends Partial<DAOSimulationConfig> {
-}
+export type BaseConfigOverrides = Partial<DAOSimulationConfig>;
 
 /**
  * Simulation-level overrides not part of the base config

@@ -68,7 +68,7 @@ export function StickyNav({ sections }: StickyNavProps) {
     return () => document.removeEventListener('mousedown', onClick);
   }, [menuOpen]);
 
-  const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleNavClick = useCallback(() => {
     setMenuOpen(false);
   }, []);
 

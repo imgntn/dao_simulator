@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useCallback, useMemo } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
 import { useComparisonStore } from '@/lib/browser/comparison-store';
-import type { SimulationSnapshot, BrowserSimConfig } from '@/lib/browser/worker-protocol';
+import type { BrowserSimConfig } from '@/lib/browser/worker-protocol';
 
 const DAO_DISPLAY_NAMES: Record<string, string> = {
   aave: 'Aave', arbitrum: 'Arbitrum', balancer: 'Balancer', compound: 'Compound',
@@ -50,79 +50,99 @@ function DeltaIndicator({ a, b }: { a: number; b: number }) {
 }
 
 export function ComparisonView() {
-  const mainStore = useSimulationStore();
-  const compStore = useComparisonStore();
-  const compInitialized = useRef(false);
+  const mainStatus = useSimulationStore(s => s.status);
+  const mainSnap = useSimulationStore(s => s.snapshot);
+  const mainConfig = useSimulationStore(s => s.config);
+  const mainAvailableDaos = useSimulationStore(s => s.availableDaos);
+  const mainCalibrationProfiles = useSimulationStore(s => s.calibrationProfiles);
+  const mainMarketData = useSimulationStore(s => s.marketData);
+  const mainStart = useSimulationStore(s => s.start);
+  const mainPause = useSimulationStore(s => s.pause);
+  const mainStep = useSimulationStore(s => s.step);
+  const mainReset = useSimulationStore(s => s.reset);
 
-  const mainSnap = mainStore.snapshot;
-  const compSnap = compStore.snapshot;
+  const compStatus = useComparisonStore(s => s.status);
+  const compSnap = useComparisonStore(s => s.snapshot);
+  const compConfig = useComparisonStore(s => s.config);
+  const compInitialize = useComparisonStore(s => s.initialize);
+  const compStart = useComparisonStore(s => s.start);
+  const compPause = useComparisonStore(s => s.pause);
+  const compStep = useComparisonStore(s => s.step);
+  const compReset = useComparisonStore(s => s.reset);
+  const compDispose = useComparisonStore(s => s.dispose);
+  const compInitialized = useRef(false);
+  const mainConfigRef = useRef(mainConfig);
+
+  useEffect(() => {
+    mainConfigRef.current = mainConfig;
+  }, [mainConfig]);
 
   // Initialize comparison worker with same data
   useEffect(() => {
     if (compInitialized.current) return;
-    if (!mainStore.calibrationProfiles || !mainStore.marketData) return;
+    if (!mainCalibrationProfiles || !mainMarketData) return;
     compInitialized.current = true;
 
-    const compConfig: BrowserSimConfig = {
-      ...mainStore.config,
+    const initialCompConfig: BrowserSimConfig = {
+      ...mainConfigRef.current,
       // Default to a different DAO for comparison
-      daoId: mainStore.config.daoId === 'aave' ? 'uniswap' : 'aave',
+      daoId: mainConfigRef.current.daoId === 'aave' ? 'uniswap' : 'aave',
     };
 
-    compStore.initialize(compConfig, mainStore.calibrationProfiles, mainStore.marketData);
+    compInitialize(initialCompConfig, mainCalibrationProfiles, mainMarketData);
 
     return () => {
-      compStore.dispose();
+      compDispose();
       compInitialized.current = false;
     };
-  }, [mainStore.calibrationProfiles, mainStore.marketData]);
+  }, [mainCalibrationProfiles, mainMarketData, compInitialize, compDispose]);
 
   // Synced transport controls
   const syncedStart = useCallback(() => {
-    mainStore.start();
-    compStore.start();
-  }, []);
+    mainStart();
+    compStart();
+  }, [mainStart, compStart]);
 
   const syncedPause = useCallback(() => {
-    mainStore.pause();
-    compStore.pause();
-  }, []);
+    mainPause();
+    compPause();
+  }, [mainPause, compPause]);
 
   const syncedStep = useCallback(() => {
-    mainStore.step();
-    compStore.step();
-  }, []);
+    mainStep();
+    compStep();
+  }, [mainStep, compStep]);
 
   const syncedReset = useCallback(() => {
-    mainStore.reset();
-    compStore.reset(compStore.config);
-  }, []);
+    mainReset();
+    compReset(compConfig);
+  }, [mainReset, compReset, compConfig]);
 
-  const isRunning = mainStore.status === 'running' || compStore.status === 'running';
-  const canInteract = (mainStore.status === 'running' || mainStore.status === 'paused') &&
-    (compStore.status === 'running' || compStore.status === 'paused');
+  const isRunning = mainStatus === 'running' || compStatus === 'running';
+  const canInteract = (mainStatus === 'running' || mainStatus === 'paused') &&
+    (compStatus === 'running' || compStatus === 'paused');
 
   const handleCompDaoChange = useCallback((daoId: string) => {
-    if (!mainStore.calibrationProfiles || !mainStore.marketData) return;
-    const newConfig = { ...compStore.config, daoId };
-    compStore.dispose();
+    if (!mainCalibrationProfiles || !mainMarketData) return;
+    const newConfig = { ...compConfig, daoId };
+    compDispose();
     compInitialized.current = false;
     setTimeout(() => {
-      compStore.initialize(newConfig, mainStore.calibrationProfiles!, mainStore.marketData!);
+      compInitialize(newConfig, mainCalibrationProfiles, mainMarketData);
       compInitialized.current = true;
     }, 100);
-  }, [mainStore.calibrationProfiles, mainStore.marketData]);
+  }, [compConfig, compDispose, compInitialize, mainCalibrationProfiles, mainMarketData]);
 
   const handleCompGovChange = useCallback((rule: string) => {
-    if (!mainStore.calibrationProfiles || !mainStore.marketData) return;
-    const newConfig = { ...compStore.config, governanceRule: rule || undefined };
-    compStore.dispose();
+    if (!mainCalibrationProfiles || !mainMarketData) return;
+    const newConfig = { ...compConfig, governanceRule: rule || undefined };
+    compDispose();
     compInitialized.current = false;
     setTimeout(() => {
-      compStore.initialize(newConfig, mainStore.calibrationProfiles!, mainStore.marketData!);
+      compInitialize(newConfig, mainCalibrationProfiles, mainMarketData);
       compInitialized.current = true;
     }, 100);
-  }, [mainStore.calibrationProfiles, mainStore.marketData]);
+  }, [compConfig, compDispose, compInitialize, mainCalibrationProfiles, mainMarketData]);
 
   return (
     <div className="flex flex-col h-full">
@@ -162,8 +182,8 @@ export function ComparisonView() {
         <div className="flex-1 p-3 border-r border-[var(--sim-border)]">
           <div className="text-[10px] text-[var(--sim-accent)] uppercase tracking-wider font-semibold mb-1">Config A (Main)</div>
           <div className="text-xs text-[var(--sim-text-muted)]">
-            {DAO_DISPLAY_NAMES[mainStore.config.daoId] ?? mainStore.config.daoId}
-            {mainStore.config.governanceRule ? ` · ${mainStore.config.governanceRule}` : ' · default'}
+            {DAO_DISPLAY_NAMES[mainConfig.daoId] ?? mainConfig.daoId}
+            {mainConfig.governanceRule ? ` · ${mainConfig.governanceRule}` : ' · default'}
           </div>
         </div>
         {/* Config B (Comparison — editable) */}
@@ -171,16 +191,16 @@ export function ComparisonView() {
           <div className="text-[10px] text-purple-400 uppercase tracking-wider font-semibold mb-1">Config B (Compare)</div>
           <div className="flex gap-2">
             <select
-              value={compStore.config.daoId}
+              value={compConfig.daoId}
               onChange={e => handleCompDaoChange(e.target.value)}
               className="flex-1 bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-2 py-1 text-xs focus:outline-none"
             >
-              {mainStore.availableDaos.map(id => (
+              {mainAvailableDaos.map(id => (
                 <option key={id} value={id}>{DAO_DISPLAY_NAMES[id] || id}</option>
               ))}
             </select>
             <select
-              value={compStore.config.governanceRule ?? ''}
+              value={compConfig.governanceRule ?? ''}
               onChange={e => handleCompGovChange(e.target.value)}
               className="flex-1 bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-2 py-1 text-xs focus:outline-none"
             >

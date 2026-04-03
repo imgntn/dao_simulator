@@ -183,7 +183,11 @@ export function AudioControls({ audioRef }: AudioControlsProps) {
       // Clean up handlers
       const actions: MediaSessionAction[] = ['play', 'pause', 'seekbackward', 'seekforward', 'seekto', 'previoustrack', 'nexttrack'];
       for (const action of actions) {
-        try { navigator.mediaSession.setActionHandler(action, null); } catch {}
+        try {
+          navigator.mediaSession.setActionHandler(action, null);
+        } catch {
+          // Media Session cleanup is best-effort across browsers.
+        }
       }
     };
   }, [audioRef, skip]);
@@ -197,7 +201,9 @@ export function AudioControls({ audioRef }: AudioControlsProps) {
         playbackRate: speed,
         position: Math.min(currentTime, duration),
       });
-    } catch {}
+    } catch {
+      // Position state updates are not supported consistently.
+    }
   }, [currentTime, duration, speed]);
 
   const progress = duration > 0 ? currentTime / duration : 0;

@@ -4,6 +4,8 @@ import { useMemo } from 'react';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import type { ProposalSnapshot } from '@/lib/browser/worker-protocol';
+import { PRETEXT_FONTS } from '@/lib/ui/pretext';
+import { usePretextText } from '@/lib/ui/usePretextText';
 import { BUILDING } from './constants';
 
 interface Props {
@@ -18,12 +20,9 @@ const STATUS_COLORS: Record<string, string> = {
   expired: '#6b7280',
 };
 
-/** Freestanding proposal billboard near the building */
 export function ProposalBoard({ proposals, onSelectProposal }: Props) {
-  // Show up to 6 most recent proposals, prioritizing open ones
   const displayed = useMemo(() => {
     const sorted = [...proposals].sort((a, b) => {
-      // Open first, then by creation step desc
       if (a.status === 'open' && b.status !== 'open') return -1;
       if (b.status === 'open' && a.status !== 'open') return 1;
       return b.creationStep - a.creationStep;
@@ -33,13 +32,11 @@ export function ProposalBoard({ proposals, onSelectProposal }: Props) {
 
   if (displayed.length === 0) return null;
 
-  // Freestanding position: offset from building right side
   const billboardX = BUILDING.width / 2 + 3;
   const billboardY = 4;
 
   return (
     <group position={[billboardX, billboardY, 0]}>
-      {/* Board backing — freestanding sign */}
       <mesh>
         <boxGeometry args={[2.8, 3.2, 0.12]} />
         <meshStandardMaterial
@@ -51,19 +48,16 @@ export function ProposalBoard({ proposals, onSelectProposal }: Props) {
         />
       </mesh>
 
-      {/* Frame border */}
       <lineSegments>
         <edgesGeometry args={[new THREE.BoxGeometry(2.8, 3.2, 0.14)]} />
         <lineBasicMaterial color="#8b5cf6" transparent opacity={0.4} />
       </lineSegments>
 
-      {/* Support pole */}
       <mesh position={[0, -3.0, 0]}>
         <cylinderGeometry args={[0.06, 0.08, 3.6, 8]} />
         <meshStandardMaterial color="#1a1a2e" metalness={0.7} roughness={0.3} />
       </mesh>
 
-      {/* Proposal cards via Html */}
       <Html
         position={[0, 0, 0.1]}
         transform
@@ -75,7 +69,7 @@ export function ProposalBoard({ proposals, onSelectProposal }: Props) {
             display: 'flex',
             flexDirection: 'column',
             gap: 4,
-            fontFamily: 'monospace',
+            fontFamily: '"IBM Plex Mono", "Courier New", Courier, monospace',
             fontSize: 9,
             width: 180,
           }}
@@ -91,11 +85,11 @@ export function ProposalBoard({ proposals, onSelectProposal }: Props) {
           >
             PROPOSALS
           </div>
-          {displayed.map(p => (
+          {displayed.map((proposal) => (
             <ProposalCard
-              key={p.id}
-              proposal={p}
-              onClick={onSelectProposal ? () => onSelectProposal(p) : undefined}
+              key={proposal.id}
+              proposal={proposal}
+              onClick={onSelectProposal ? () => onSelectProposal(proposal) : undefined}
             />
           ))}
         </div>
@@ -108,6 +102,13 @@ function ProposalCard({ proposal, onClick }: { proposal: ProposalSnapshot; onCli
   const borderColor = STATUS_COLORS[proposal.status] ?? '#6b7280';
   const total = proposal.votesFor + proposal.votesAgainst;
   const forPct = total > 0 ? (proposal.votesFor / total) * 100 : 0;
+  const typeText = usePretextText<HTMLSpanElement>({
+    text: proposal.type,
+    font: PRETEXT_FONTS.simMono10,
+    lineHeight: 10,
+    maxLines: 2,
+    width: 108,
+  });
 
   return (
     <div
@@ -131,11 +132,24 @@ function ProposalCard({ proposal, onClick }: { proposal: ProposalSnapshot; onCli
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center',
+          alignItems: 'flex-start',
+          gap: 6,
         }}
       >
-        <span style={{ color: '#e2e8f0', fontWeight: 600 }}>
-          {proposal.type}
+        <span
+          ref={typeText.ref}
+          style={{
+            color: '#e2e8f0',
+            fontWeight: 600,
+            display: 'block',
+            minWidth: 0,
+            flex: 1,
+            lineHeight: '10px',
+            whiteSpace: typeText.ready ? 'pre-line' : undefined,
+          }}
+          title={typeText.truncated ? proposal.type : undefined}
+        >
+          {typeText.displayText}
         </span>
         <span
           style={{
@@ -143,13 +157,14 @@ function ProposalCard({ proposal, onClick }: { proposal: ProposalSnapshot; onCli
             fontSize: 8,
             textTransform: 'uppercase',
             fontWeight: 700,
+            flexShrink: 0,
+            marginTop: 1,
           }}
         >
           {proposal.status}
         </span>
       </div>
 
-      {/* Vote bar */}
       {total > 0 && (
         <div
           style={{

@@ -31,7 +31,6 @@ export class RandomWalkOracle extends BasePriceOracle {
     this.volatility = volatility;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   updatePrice(token: string, _step?: number, volatilityOverride?: number): void {
     // _step parameter reserved for future time-based price modeling
     const currentPrice = this.getPrice(token);
@@ -56,7 +55,6 @@ export class GeometricBrownianOracle extends BasePriceOracle {
     this.volatility = volatility;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   updatePrice(token: string, _step?: number, volatilityOverride?: number): void {
     // _step parameter reserved for advanced time-series modeling
     const currentPrice = this.getPrice(token);
@@ -84,7 +82,6 @@ export class GeometricBrownianOracle extends BasePriceOracle {
  * Fixed Price Oracle - price never changes
  */
 export class FixedPriceOracle extends BasePriceOracle {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   updatePrice(_token?: string, _step?: number, _volatility?: number): void {
     // Price stays constant - no parameters needed
   }

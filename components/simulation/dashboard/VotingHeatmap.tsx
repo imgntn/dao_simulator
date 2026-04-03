@@ -2,18 +2,26 @@
 
 import { useMemo, useRef, useEffect, useState, useCallback } from 'react';
 import type { AgentSnapshot, ProposalSnapshot } from '@/lib/browser/worker-protocol';
+import { getDisplayName } from '../scene/constants';
+import { PRETEXT_FONTS, getPretextTextLayout } from '@/lib/ui/pretext';
+import { usePretextReady } from '@/lib/ui/usePretextText';
 
 interface Props {
   agents: AgentSnapshot[];
   proposals: ProposalSnapshot[];
 }
 
+const CELL_SIZE = 36;
+const SIDE_LABEL_MAX_WIDTH = 86;
+const TOP_LABEL_MAX_WIDTH = 94;
+const SIDE_LABEL_LINE_HEIGHT = 10;
+const TOP_LABEL_LINE_HEIGHT = 11;
+
 /** Compute voting agreement matrix between agent types */
 function computeAgreementMatrix(agents: AgentSnapshot[]): {
   types: string[];
   matrix: number[][]; // agreement percentage [row][col]
 } {
-  // Group agents by type, track their lastVote
   const typeVotes = new Map<string, boolean[]>();
   for (const a of agents) {
     if (a.lastVote === null) continue;
@@ -34,7 +42,6 @@ function computeAgreementMatrix(agents: AgentSnapshot[]): {
       const votesI = typeVotes.get(types[i])!;
       const votesJ = typeVotes.get(types[j])!;
 
-      // Compare all pairs
       let agree = 0;
       let total = 0;
       for (const vi of votesI) {
@@ -50,7 +57,7 @@ function computeAgreementMatrix(agents: AgentSnapshot[]): {
   return { types, matrix };
 }
 
-/** Color interpolation: red → gray → green */
+/** Color interpolation: red to gray to green */
 function agreementColor(value: number): string {
   if (value < 0.5) {
     const t = value / 0.5;
@@ -66,7 +73,7 @@ function agreementColor(value: number): string {
   return `rgb(${r},${g},${b})`;
 }
 
-/** Short type name for axes */
+/** Compact fallback label while fonts load */
 function shortName(type: string): string {
   const abbrev: Record<string, string> = {
     Developer: 'Dev',
@@ -98,79 +105,100 @@ function shortName(type: string): string {
   return abbrev[type] ?? type.slice(0, 4);
 }
 
-export function VotingHeatmap({ agents, proposals }: Props) {
+export function VotingHeatmap({ agents, proposals: _proposals }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pretextReady = usePretextReady();
   const [hoveredCell, setHoveredCell] = useState<{ row: number; col: number; value: number } | null>(null);
 
   const { types, matrix } = useMemo(() => computeAgreementMatrix(agents), [agents]);
+  const gridSize = types.length * CELL_SIZE;
 
-  const CELL_SIZE = 28;
-  const LABEL_WIDTH = 40;
-  const size = types.length * CELL_SIZE + LABEL_WIDTH;
+  const labelLayouts = useMemo(() => {
+    if (!pretextReady) return [];
 
-  // Draw heatmap to canvas
+    return types.map((type) => {
+      const label = getDisplayName(type);
+      return {
+        type,
+        fullLabel: label,
+        side: getPretextTextLayout({
+          text: label,
+          font: PRETEXT_FONTS.simMono10,
+          maxWidth: SIDE_LABEL_MAX_WIDTH,
+          lineHeight: SIDE_LABEL_LINE_HEIGHT,
+          maxLines: 2,
+        }),
+        top: getPretextTextLayout({
+          text: label,
+          font: PRETEXT_FONTS.simMono10,
+          maxWidth: TOP_LABEL_MAX_WIDTH,
+          lineHeight: TOP_LABEL_LINE_HEIGHT,
+          maxLines: 2,
+        }),
+      };
+    });
+  }, [pretextReady, types]);
+
+  const sideLabelWidth = useMemo(() => {
+    const maxMeasured = labelLayouts.reduce((max, layout) => Math.max(max, layout.side.maxLineWidth), 0);
+    return Math.max(72, Math.ceil(maxMeasured) + 14);
+  }, [labelLayouts]);
+
+  const topLabelHeight = useMemo(() => {
+    const maxLabelHeight = labelLayouts.reduce((max, layout) => Math.max(max, layout.top.height), 0);
+    return Math.max(44, Math.ceil(maxLabelHeight) + 18);
+  }, [labelLayouts]);
+  const fullWidth = sideLabelWidth + gridSize;
+  const fullHeight = topLabelHeight + gridSize;
+  const displayScale = gridSize > 0 ? Math.min(1, 320 / gridSize) : 1;
+
   useEffect(() => {
     if (!canvasRef.current || types.length === 0) return;
     const ctx = canvasRef.current.getContext('2d');
     if (!ctx) return;
 
     const dpr = window.devicePixelRatio || 1;
-    canvasRef.current.width = size * dpr;
-    canvasRef.current.height = size * dpr;
+    canvasRef.current.width = gridSize * dpr;
+    canvasRef.current.height = gridSize * dpr;
     ctx.scale(dpr, dpr);
 
-    ctx.clearRect(0, 0, size, size);
+    ctx.clearRect(0, 0, gridSize, gridSize);
 
-    // Draw cells
     for (let i = 0; i < types.length; i++) {
       for (let j = 0; j < types.length; j++) {
         ctx.fillStyle = agreementColor(matrix[i][j]);
         ctx.fillRect(
-          LABEL_WIDTH + j * CELL_SIZE,
-          LABEL_WIDTH + i * CELL_SIZE,
+          j * CELL_SIZE,
+          i * CELL_SIZE,
           CELL_SIZE - 1,
           CELL_SIZE - 1
         );
       }
     }
 
-    // Draw labels
-    ctx.fillStyle = '#9ca3af';
-    ctx.font = '9px monospace';
-    ctx.textAlign = 'right';
-    for (let i = 0; i < types.length; i++) {
-      ctx.fillText(
-        shortName(types[i]),
-        LABEL_WIDTH - 3,
-        LABEL_WIDTH + i * CELL_SIZE + CELL_SIZE / 2 + 3
-      );
-    }
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= types.length; i++) {
+      const offset = i * CELL_SIZE + 0.5;
+      ctx.beginPath();
+      ctx.moveTo(0, offset);
+      ctx.lineTo(gridSize, offset);
+      ctx.stroke();
 
-    ctx.textAlign = 'center';
-    for (let j = 0; j < types.length; j++) {
-      ctx.save();
-      ctx.translate(
-        LABEL_WIDTH + j * CELL_SIZE + CELL_SIZE / 2,
-        LABEL_WIDTH - 3
-      );
-      ctx.rotate(-Math.PI / 4);
-      ctx.fillText(shortName(types[j]), 0, 0);
-      ctx.restore();
+      ctx.beginPath();
+      ctx.moveTo(offset, 0);
+      ctx.lineTo(offset, gridSize);
+      ctx.stroke();
     }
-  }, [types, matrix, size]);
+  }, [types, matrix, gridSize]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();
-    const scaleX = size / rect.width;
-    const scaleY = size / rect.height;
-    const x = (e.clientX - rect.left) * scaleX - LABEL_WIDTH;
-    const y = (e.clientY - rect.top) * scaleY - LABEL_WIDTH;
-
-    if (x < 0 || y < 0) {
-      setHoveredCell(null);
-      return;
-    }
+    const scaleX = gridSize / rect.width;
+    const scaleY = gridSize / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
 
     const col = Math.floor(x / CELL_SIZE);
     const row = Math.floor(y / CELL_SIZE);
@@ -180,22 +208,90 @@ export function VotingHeatmap({ agents, proposals }: Props) {
     } else {
       setHoveredCell(null);
     }
-  }, [types, matrix, size]);
+  }, [gridSize, matrix, types]);
 
   return (
     <div className="px-4 pb-3 relative">
       {types.length > 0 ? (
         <>
-          <canvas
-            ref={canvasRef}
-            style={{ width: Math.min(size, 320), height: Math.min(size, 320) }}
-            className="cursor-crosshair"
-            onMouseMove={handleMouseMove}
-            onMouseLeave={() => setHoveredCell(null)}
-          />
+          <div
+            className="relative inline-block"
+            style={{ width: fullWidth * displayScale, height: fullHeight * displayScale }}
+          >
+            <div
+              className="relative"
+              style={{
+                width: fullWidth,
+                height: fullHeight,
+                transform: `scale(${displayScale})`,
+                transformOrigin: 'top left',
+              }}
+            >
+              {types.map((type, i) => {
+                const layout = labelLayouts[i];
+                const sideText = layout?.side.displayText ?? shortName(type);
+
+                return (
+                  <div
+                    key={`${type}-side`}
+                    className="absolute flex items-center justify-end pr-2 text-right font-mono text-[9px] leading-tight text-[var(--sim-text-muted)]"
+                    style={{
+                      top: topLabelHeight + i * CELL_SIZE,
+                      left: 0,
+                      width: sideLabelWidth,
+                      height: CELL_SIZE,
+                      whiteSpace: 'pre-line',
+                    }}
+                    title={layout?.side.truncated ? layout.fullLabel : undefined}
+                  >
+                    {sideText}
+                  </div>
+                );
+              })}
+
+              {types.map((type, j) => {
+                const layout = labelLayouts[j];
+                const topText = layout?.top.displayText ?? shortName(type);
+
+                return (
+                  <div
+                    key={`${type}-top`}
+                    className="absolute font-mono text-[9px] leading-tight text-[var(--sim-text-muted)]"
+                    style={{
+                      left: sideLabelWidth + j * CELL_SIZE + CELL_SIZE / 2,
+                      top: topLabelHeight - 4,
+                      width: TOP_LABEL_MAX_WIDTH,
+                      transform: 'translate(-50%, -100%) rotate(-45deg)',
+                      transformOrigin: 'bottom center',
+                      textAlign: 'center',
+                      whiteSpace: 'pre-line',
+                    }}
+                    title={layout?.top.truncated ? layout.fullLabel : undefined}
+                  >
+                    {topText}
+                  </div>
+                );
+              })}
+
+              <canvas
+                ref={canvasRef}
+                style={{
+                  position: 'absolute',
+                  left: sideLabelWidth,
+                  top: topLabelHeight,
+                  width: gridSize,
+                  height: gridSize,
+                }}
+                className="cursor-crosshair"
+                onMouseMove={handleMouseMove}
+                onMouseLeave={() => setHoveredCell(null)}
+              />
+            </div>
+          </div>
+
           {hoveredCell && (
             <div className="absolute top-2 right-4 bg-[var(--sim-surface)] border border-[var(--sim-border)] rounded px-2 py-1 text-[10px] text-[var(--sim-text-secondary)]">
-              {shortName(types[hoveredCell.row])} vs {shortName(types[hoveredCell.col])}: {(hoveredCell.value * 100).toFixed(0)}%
+              {getDisplayName(types[hoveredCell.row])} vs {getDisplayName(types[hoveredCell.col])}: {(hoveredCell.value * 100).toFixed(0)}%
             </div>
           )}
           <div className="flex justify-between text-[9px] text-[var(--sim-text-muted)] mt-1">

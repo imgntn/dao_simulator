@@ -2,6 +2,8 @@
 
 import { type RefObject } from 'react';
 import { AudioControls } from './AudioControls';
+import { PRETEXT_FONTS } from '@/lib/ui/pretext';
+import { usePretextText } from '@/lib/ui/usePretextText';
 
 const PODCAST_CHAPTERS = [
   { time: 0, label: 'Intro' },
@@ -33,29 +35,57 @@ export function BasicPodcastPlayer({ audioRef }: BasicPodcastPlayerProps) {
     <div className="space-y-3">
       <AudioControls audioRef={audioRef} />
 
-      {/* Chapter list */}
       <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm-deep)] p-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">Chapters</p>
         <div className="mt-2 grid gap-1">
-          {PODCAST_CHAPTERS.map((ch, i) => (
-            <button
-              key={i}
-              type="button"
+          {PODCAST_CHAPTERS.map((chapter, index) => (
+            <ChapterButton
+              key={index}
+              chapter={chapter}
               onClick={() => {
                 const audio = audioRef.current;
                 if (audio) {
-                  audio.currentTime = ch.time;
+                  audio.currentTime = chapter.time;
                   if (audio.paused) audio.play();
                 }
               }}
-              className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-left text-sm transition hover:bg-[var(--surface-warm)]"
-            >
-              <span className="shrink-0 font-mono text-xs text-[var(--accent-teal)]">{formatChapterTime(ch.time)}</span>
-              <span className="text-[var(--text-body-secondary)]">{ch.label}</span>
-            </button>
+            />
           ))}
         </div>
       </div>
     </div>
+  );
+}
+
+function ChapterButton({
+  chapter,
+  onClick,
+}: {
+  chapter: { time: number; label: string };
+  onClick: () => void;
+}) {
+  const labelText = usePretextText<HTMLSpanElement>({
+    text: chapter.label,
+    font: PRETEXT_FONTS.body14,
+    lineHeight: 18,
+    maxLines: 2,
+  });
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-left text-sm transition hover:bg-[var(--surface-warm)]"
+    >
+      <span className="shrink-0 font-mono text-xs text-[var(--accent-teal)]">{formatChapterTime(chapter.time)}</span>
+      <span
+        ref={labelText.ref}
+        className="block min-w-0 flex-1 text-[var(--text-body-secondary)]"
+        style={labelText.ready ? { whiteSpace: 'pre-line' } : undefined}
+        title={labelText.truncated ? chapter.label : undefined}
+      >
+        {labelText.displayText}
+      </span>
+    </button>
   );
 }

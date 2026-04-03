@@ -5,7 +5,7 @@ import { useSimulationStore } from '@/lib/browser/simulation-store';
 import type { BrowserSimConfig } from '@/lib/browser/worker-protocol';
 import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
 import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
-import { AGENT_FLOORS, TYPE_COLOR_MAP, AGENT_TYPE_INFO, AGENT_FLOOR_MAP } from './scene/constants';
+import { AGENT_FLOORS, TYPE_COLOR_MAP, AGENT_TYPE_INFO } from './scene/constants';
 
 const DAO_DISPLAY_NAMES: Record<string, string> = {
   aave: 'Aave',

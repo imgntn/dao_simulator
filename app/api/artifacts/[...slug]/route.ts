@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { NextResponse } from 'next/server';
-import { projectRoot, projectResolve } from '@/lib/utils/server-paths';
+import { projectResolve } from '@/lib/utils/server-paths';
 
 export const runtime = 'nodejs';
 

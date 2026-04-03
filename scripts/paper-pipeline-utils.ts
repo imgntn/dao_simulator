@@ -168,7 +168,7 @@ export function resolveProfileConfigPaths(
 }
 
 export function sanitizeExperimentName(name: string): string {
-  return String(name).replace(/[^\w\-]+/g, '_').toLowerCase();
+  return String(name).replace(/[^\w-]+/g, '_').toLowerCase();
 }
 
 export function resolveOutputDir(rootDir: string, configPath: string): string {

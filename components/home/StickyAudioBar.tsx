@@ -2,10 +2,11 @@
 
 import { useEffect, useRef, useState, useCallback, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
+import { PRETEXT_FONTS } from '@/lib/ui/pretext';
+import { usePretextText } from '@/lib/ui/usePretextText';
 
 interface StickyAudioBarProps {
   audioRef: RefObject<HTMLAudioElement | null>;
-  /** Ref to the main player container — sticky bar shows when this is out of view */
   playerRef: RefObject<HTMLDivElement | null>;
 }
 
@@ -24,7 +25,6 @@ export function StickyAudioBar({ audioRef, playerRef }: StickyAudioBarProps) {
   const [hasInteracted, setHasInteracted] = useState(false);
   const rafRef = useRef<number>(0);
 
-  // Track whether user has started playback at least once
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -33,7 +33,6 @@ export function StickyAudioBar({ audioRef, playerRef }: StickyAudioBarProps) {
     return () => audio.removeEventListener('play', onPlay);
   }, [audioRef]);
 
-  // Show sticky bar when main player is scrolled out of view AND user has interacted
   useEffect(() => {
     const player = playerRef.current;
     if (!player) return;
@@ -49,7 +48,6 @@ export function StickyAudioBar({ audioRef, playerRef }: StickyAudioBarProps) {
     return () => observer.disconnect();
   }, [playerRef, hasInteracted]);
 
-  // Sync playback state
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -77,7 +75,6 @@ export function StickyAudioBar({ audioRef, playerRef }: StickyAudioBarProps) {
     };
   }, [audioRef]);
 
-  // RAF time tracking
   useEffect(() => {
     if (!visible) return;
     const audio = audioRef.current;
@@ -120,7 +117,6 @@ export function StickyAudioBar({ audioRef, playerRef }: StickyAudioBarProps) {
 
   const bar = (
     <div className="fixed top-[var(--nav-height,49px)] left-0 right-0 z-30 border-b border-[var(--border-default)] bg-[var(--surface-warm)]/95 backdrop-blur-sm">
-      {/* Progress bar — thin line at top */}
       <div
         className="h-1 cursor-pointer bg-[var(--surface-warm-deep)]"
         onClick={seekTo}
@@ -132,7 +128,6 @@ export function StickyAudioBar({ audioRef, playerRef }: StickyAudioBarProps) {
       </div>
 
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 pt-2.5 pb-1.5 sm:px-6">
-        {/* Skip back */}
         <button
           type="button"
           onClick={() => skip(-15)}
@@ -144,7 +139,6 @@ export function StickyAudioBar({ audioRef, playerRef }: StickyAudioBarProps) {
           </svg>
         </button>
 
-        {/* Play/Pause */}
         <button
           type="button"
           onClick={togglePlay}
@@ -163,7 +157,6 @@ export function StickyAudioBar({ audioRef, playerRef }: StickyAudioBarProps) {
           )}
         </button>
 
-        {/* Skip forward */}
         <button
           type="button"
           onClick={() => skip(15)}
@@ -175,15 +168,9 @@ export function StickyAudioBar({ audioRef, playerRef }: StickyAudioBarProps) {
           </svg>
         </button>
 
-        {/* Title */}
-        <span className="hidden truncate text-xs font-medium text-[var(--text-body-secondary)] sm:block">
-          Green Pill #123: AI DAO Simulator
-        </span>
+        <StickyTitle />
+        <div className="flex-1 sm:hidden" />
 
-        {/* Spacer */}
-        <div className="flex-1" />
-
-        {/* Time */}
         <span className="shrink-0 font-mono text-[10px] text-[var(--text-muted)]">
           {formatTime(currentTime)} / {formatTime(duration)}
         </span>
@@ -192,4 +179,26 @@ export function StickyAudioBar({ audioRef, playerRef }: StickyAudioBarProps) {
   );
 
   return createPortal(bar, document.body);
+}
+
+function StickyTitle() {
+  const titleText = usePretextText<HTMLSpanElement>({
+    text: 'Green Pill #123: AI DAO Simulator',
+    font: PRETEXT_FONTS.body12,
+    lineHeight: 14,
+    maxLines: 1,
+  });
+
+  return (
+    <span
+      ref={titleText.ref}
+      className={`hidden min-w-0 text-xs font-medium text-[var(--text-body-secondary)] sm:block sm:flex-1 ${
+        titleText.ready ? '' : 'truncate'
+      }`}
+      style={titleText.ready ? { whiteSpace: 'pre-line' } : undefined}
+      title={titleText.truncated ? 'Green Pill #123: AI DAO Simulator' : undefined}
+    >
+      {titleText.displayText}
+    </span>
+  );
 }

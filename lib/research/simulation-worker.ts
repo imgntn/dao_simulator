@@ -878,7 +878,6 @@ function extractCustomMetric(simulation: DAOSimulation, expression: string): num
     const proposals = dao.proposals;
     const members = dao.members;
 
-    // eslint-disable-next-line no-new-func
     const fn = new Function('dao', 'dataCollector', 'proposals', 'members', `return ${expression}`);
     const result = fn(dao, dataCollector, proposals, members);
 

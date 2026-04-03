@@ -4,11 +4,12 @@ import { useRef, useEffect } from 'react';
 import { OrbitControls } from '@react-three/drei';
 import { useThree, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { BUILDING, FLOORS } from './constants';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
 
 export function CameraController() {
-  const controlsRef = useRef<any>(null);
+  const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const { camera } = useThree();
   const targetFloor = useSimulationStore(s => s.targetFloor);
   const setTargetFloor = useSimulationStore(s => s.setTargetFloor);
