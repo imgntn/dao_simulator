@@ -183,6 +183,10 @@ describe('Simulation snapshot structure', () => {
       num_governance_experts: 1,
       num_risk_managers: 0,
       governance_rule: 'majority',
+      seed: 12345,
+      proposal_creation_probability: 0.15,
+      proposal_duration_min_steps: 6,
+      proposal_duration_max_steps: 12,
     });
 
     await sim.run(200);
