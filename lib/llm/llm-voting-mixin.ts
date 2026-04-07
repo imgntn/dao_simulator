@@ -34,6 +34,8 @@ export class LLMVotingBehavior {
   private temperature: number;
   private seed?: number;
   private maxTokens: number;
+  private think: boolean;
+  private contextSize: number;
 
   /** Pre-computed decisions for the current step */
   private decisions: Map<string, VoteDecision> = new Map();
@@ -53,7 +55,9 @@ export class LLMVotingBehavior {
     model: string,
     temperature: number = 0.3,
     maxTokens: number = 256,
-    seed?: number
+    seed?: number,
+    think: boolean = false,
+    contextSize: number = 0
   ) {
     this.client = client;
     this.cache = cache;
@@ -61,6 +65,8 @@ export class LLMVotingBehavior {
     this.temperature = temperature;
     this.maxTokens = maxTokens;
     this.seed = seed;
+    this.think = think;
+    this.contextSize = contextSize;
   }
 
   /**
@@ -118,7 +124,11 @@ export class LLMVotingBehavior {
           temperature: this.temperature,
           seed: this.seed,
           format: 'json',
-          options: { num_predict: this.maxTokens },
+          think: this.think,
+          options: {
+            num_predict: this.maxTokens,
+            ...(this.contextSize > 0 ? { num_ctx: this.contextSize } : {}),
+          },
         });
 
         const decision = parseVoteResponse(response.response);

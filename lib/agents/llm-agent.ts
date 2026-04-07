@@ -16,14 +16,14 @@ import { LLMResponseCache } from '../llm/response-cache';
 import { LLMVotingBehavior } from '../llm/llm-voting-mixin';
 import { AgentMemory } from '../llm/agent-memory';
 import type { PromptContext, ProposalGenerationContext, ProposalIdea } from '../llm/prompt-templates';
-import { buildProposalPrompt, parseProposalResponse } from '../llm/prompt-templates';
+import { buildProposalPrompt, parseProposalResponse, describeGovernanceRule } from '../llm/prompt-templates';
 import { createRandomProposal } from '../utils/proposal-utils';
 import { random } from '../utils/random';
 import { logger } from '../utils/logger';
 import { settings } from '../config/settings';
 
 /** Minimum confidence to use LLM decision instead of rule-based fallback */
-const MIN_LLM_CONFIDENCE = 0.2;
+const MIN_LLM_CONFIDENCE = 0.4;
 
 export class LLMAgent extends DAOMember {
   /** LLM voting behavior (initialized via initLLM) */
@@ -53,6 +53,10 @@ export class LLMAgent extends DAOMember {
   private llmMaxTokens: number = 256;
   /** Seed for reproducibility */
   private llmSeed?: number;
+  /** Whether to enable thinking/chain-of-thought mode */
+  private llmThink: boolean = false;
+  /** Ollama context window size */
+  private llmContextSize: number = 0;
 
   /** How many proposals this agent has created */
   proposalsCreated: number = 0;
@@ -77,7 +81,9 @@ export class LLMAgent extends DAOMember {
     model: string,
     temperature: number = 0.3,
     maxTokens: number = 256,
-    seed?: number
+    seed?: number,
+    think: boolean = false,
+    contextSize: number = 0
   ): void {
     this.llmVoting = new LLMVotingBehavior(
       client,
@@ -85,7 +91,9 @@ export class LLMAgent extends DAOMember {
       model,
       temperature,
       maxTokens,
-      seed
+      seed,
+      think,
+      contextSize
     );
     this.client = client;
     this.cache = cache;
@@ -93,6 +101,8 @@ export class LLMAgent extends DAOMember {
     this.llmTemperature = temperature;
     this.llmMaxTokens = maxTokens;
     this.llmSeed = seed;
+    this.llmThink = think;
+    this.llmContextSize = contextSize;
     this.llmReady = true;
   }
 
@@ -261,7 +271,11 @@ export class LLMAgent extends DAOMember {
           temperature: this.llmTemperature,
           seed: this.llmSeed,
           format: 'json',
-          options: { num_predict: this.llmMaxTokens },
+          think: this.llmThink,
+          options: {
+            num_predict: this.llmMaxTokens,
+            ...(this.llmContextSize > 0 ? { num_ctx: this.llmContextSize } : {}),
+          },
         });
         responseText = response.response;
 
@@ -367,7 +381,8 @@ export class LLMAgent extends DAOMember {
   }
 
   /**
-   * Build a PromptContext from the agent's current state and a proposal
+   * Build a full DAO briefing PromptContext from the agent's current state
+   * and a proposal. Populates all available context for LLM reasoning.
    */
   private buildPromptContext(proposal: Proposal): PromptContext {
     const dao = this.model.dao;
@@ -380,6 +395,79 @@ export class LLMAgent extends DAOMember {
       proposal.creationTime + proposal.votingPeriod - this.model.currentStep
     );
 
+    const treasuryFunds = dao?.treasury?.funds ?? 0;
+
+    // === Treasury analysis ===
+    const treasuryPctRequested = treasuryFunds > 0
+      ? proposal.fundingGoal / treasuryFunds
+      : 0;
+
+    // === Recent pass rate (last 20 resolved proposals) ===
+    const resolved = dao
+      ? dao.proposals.filter(p => p.status === 'approved' || p.status === 'rejected')
+      : [];
+    const recentResolved = resolved.slice(-20);
+    const recentPassRate = recentResolved.length > 0
+      ? recentResolved.filter(p => p.status === 'approved').length / recentResolved.length
+      : undefined;
+
+    // === Other open proposals (for portfolio reasoning) ===
+    const openProposals = dao ? dao.getOpenProposals() : [];
+    const otherOpen = openProposals
+      .filter(p => p.uniqueId !== proposal.uniqueId)
+      .slice(0, 5);
+    const otherOpenProposals = otherOpen.length > 0
+      ? otherOpen.map(p => {
+          const tv = p.votesFor + p.votesAgainst;
+          const support = tv > 0 ? `${((p.votesFor / tv) * 100).toFixed(0)}%` : 'no votes';
+          return {
+            title: p.topic || p.title || `Proposal ${p.uniqueId}`,
+            topic: p.topic || 'General',
+            support,
+            fundingPct: treasuryFunds > 0 ? p.fundingGoal / treasuryFunds : 0,
+          };
+        })
+      : undefined;
+
+    // === Proposal comments (last 5) ===
+    const proposalComments = proposal.comments.length > 0
+      ? proposal.comments.slice(-5)
+      : undefined;
+
+    // === Forum sentiment ===
+    const forumSentiment = this.model.forumSimulation
+      ? this.model.forumSimulation.getVotingBias(proposal.uniqueId)
+      : undefined;
+
+    // === Black swan context ===
+    const beliefShift = this.model.currentBeliefShift ?? 0;
+    const blackSwanActive = beliefShift !== 0;
+    const blackSwanDescription = blackSwanActive
+      ? `Market shock is shifting voter sentiment by ${beliefShift > 0 ? '+' : ''}${(beliefShift * 100).toFixed(0)}%`
+      : undefined;
+
+    // === Agent's vote track record (last 10) ===
+    const recentVoteHistory: Array<{ proposal: string; vote: string; outcome: string }> = [];
+    if (dao) {
+      const resolvedProposals = dao.proposals.filter(
+        p => p.status === 'approved' || p.status === 'rejected' || p.status === 'expired'
+      ).slice(-10);
+      for (const p of resolvedProposals) {
+        const myVote = this.votes.get(p.uniqueId);
+        if (myVote) {
+          recentVoteHistory.push({
+            proposal: p.topic || p.title || p.uniqueId,
+            vote: myVote.vote ? 'yes' : 'no',
+            outcome: p.status,
+          });
+        }
+      }
+    }
+
+    // === Governance rule explanation ===
+    const ruleName = dao?.governanceRuleName || 'majority';
+    const governanceRuleExplanation = describeGovernanceRule(ruleName);
+
     return {
       agentType: this.constructor.name,
       agentId: this.uniqueId,
@@ -388,7 +476,7 @@ export class LLMAgent extends DAOMember {
       reputation: this.reputation,
       optimism: this.optimism,
       totalMembers: dao?.members.length ?? 0,
-      governanceRuleName: dao?.governanceRuleName || 'majority',
+      governanceRuleName: ruleName,
       proposal: {
         id: proposal.uniqueId,
         title: proposal.topic || `Proposal ${proposal.uniqueId}`,
@@ -400,8 +488,20 @@ export class LLMAgent extends DAOMember {
         status: proposal.status,
         stepsRemaining,
       },
-      treasuryFunds: dao?.treasury?.funds ?? 0,
+      treasuryFunds,
       tokenPrice: dao?.treasury?.getTokenPrice('DAO_TOKEN') ?? 1,
+      // DAO briefing fields
+      proposalDescription: proposal.description || undefined,
+      proposalComments,
+      treasuryPctRequested,
+      recentPassRate,
+      governanceRuleExplanation,
+      activeProposalCount: openProposals.length,
+      otherOpenProposals,
+      forumSentiment: forumSentiment !== undefined && forumSentiment !== 0 ? forumSentiment : undefined,
+      blackSwanActive: blackSwanActive || undefined,
+      blackSwanDescription,
+      recentVoteHistory: recentVoteHistory.length > 0 ? recentVoteHistory : undefined,
     };
   }
 }

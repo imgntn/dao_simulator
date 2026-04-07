@@ -29,6 +29,21 @@ export interface PromptContext {
   treasuryFunds: number;
   tokenPrice: number;
   memoryContext?: string;
+
+  // DAO briefing fields (all optional for backward compat)
+  proposalDescription?: string;
+  proposalComments?: Array<{ member: string; sentiment: string }>;
+  treasuryPctRequested?: number;
+  treasuryTrend?: string;
+  recentPassRate?: number;
+  governanceRuleExplanation?: string;
+  activeProposalCount?: number;
+  otherOpenProposals?: Array<{ title: string; topic: string; support: string; fundingPct: number }>;
+  forumSentiment?: number;
+  forumThreadSummary?: string;
+  blackSwanActive?: boolean;
+  blackSwanDescription?: string;
+  recentVoteHistory?: Array<{ proposal: string; vote: string; outcome: string }>;
 }
 
 export interface VoteDecision {
@@ -110,17 +125,39 @@ function buildSystemPrompt(ctx: PromptContext): string {
       ? ((ctx.tokens / ctx.totalSupply) * 100).toFixed(2)
       : '0.00';
 
-  return `You are ${describeRole(ctx.agentType)} in a DAO with ${ctx.totalMembers} members.
+  let prompt = `You are ${describeRole(ctx.agentType)} in a DAO with ${ctx.totalMembers} members.
 Holdings: ${Math.round(ctx.tokens)} tokens (${pctSupply}% of supply). Reputation: ${Math.round(ctx.reputation)}.
 Disposition: ${describeOptimism(ctx.optimism)}. Governance rule: ${ctx.governanceRuleName}.
-Treasury: ${Math.round(ctx.treasuryFunds)} tokens. Token price: $${ctx.tokenPrice.toFixed(2)}.
+Treasury: ${Math.round(ctx.treasuryFunds)} tokens. Token price: $${ctx.tokenPrice.toFixed(2)}.`;
 
-Evaluate the proposal and respond with JSON only:
-{"vote": "yes" or "no", "reasoning": "1-2 sentences", "confidence": 0.0-1.0}`;
+  if (ctx.governanceRuleExplanation) {
+    prompt += `\n\nGOVERNANCE CONTEXT: ${ctx.governanceRuleExplanation}`;
+  }
+
+  prompt += `
+
+DECISION FRAMEWORK:
+- Consider whether the proposal benefits the DAO and aligns with its goals
+- Evaluate treasury impact: can the DAO afford this? Is the requested amount reasonable?
+- Factor in community sentiment, current support levels, and competing proposals
+- Consider your role-specific perspective and risk tolerance
+- If a crisis or market shock is active, weigh its impact on proposal viability
+
+CONFIDENCE CALIBRATION:
+- Below 0.4: You are uncertain — your vote will be deferred to default behavior
+- 0.4 to 0.7: Moderate conviction — you have a reasoned position but acknowledge uncertainty
+- Above 0.7: Strong conviction — you have clear, well-supported reasoning
+
+Respond with JSON only. Example:
+{"vote": "yes", "reasoning": "Treasury is healthy and this funds core development at a reasonable cost.", "confidence": 0.72}`;
+
+  return prompt;
 }
 
 /**
- * Build the user prompt (proposal details + memory context)
+ * Build the user prompt as a full DAO briefing document.
+ * Each section is conditional — only appears when data is available.
+ * Estimated ~2,000-3,000 tokens fully populated (vs ~350 previously).
  */
 function buildUserPrompt(ctx: PromptContext): string {
   const p = ctx.proposal;
@@ -134,14 +171,88 @@ function buildUserPrompt(ctx: PromptContext): string {
       ? ((p.votesFor / totalVotes) * 100).toFixed(0)
       : 'no votes yet';
 
-  let prompt = `PROPOSAL: "${p.title}"
+  // === PROPOSAL UNDER REVIEW ===
+  let prompt = `=== PROPOSAL UNDER REVIEW ===
+Title: "${p.title}"
 Topic: ${p.topic || 'General'}
 Funding: ${Math.round(p.currentFunding)}/${Math.round(p.fundingGoal)} (${fundingPct}%)
 Current votes: ${p.votesFor} for / ${p.votesAgainst} against (${supportPct}% support)
 Steps remaining: ${p.stepsRemaining}`;
 
+  if (ctx.proposalDescription) {
+    prompt += `\nDescription: ${ctx.proposalDescription}`;
+  }
+
+  if (ctx.proposalComments && ctx.proposalComments.length > 0) {
+    const commentLines = ctx.proposalComments.slice(0, 5)
+      .map(c => `  ${c.member}: ${c.sentiment}`)
+      .join('\n');
+    prompt += `\nComments:\n${commentLines}`;
+  }
+
+  // === TREASURY HEALTH ===
+  if (ctx.treasuryPctRequested !== undefined) {
+    const pctLabel = (ctx.treasuryPctRequested * 100).toFixed(1);
+    const impact = ctx.treasuryPctRequested > 0.15
+      ? 'HIGH — significant treasury impact'
+      : ctx.treasuryPctRequested > 0.05
+        ? 'MODERATE — notable treasury impact'
+        : 'LOW — minor treasury impact';
+    prompt += `\n\n=== TREASURY HEALTH ===
+Balance: ${Math.round(ctx.treasuryFunds)} tokens
+This proposal requests: ${pctLabel}% of treasury (${impact})`;
+    if (ctx.treasuryTrend) {
+      prompt += `\nTrend: treasury is ${ctx.treasuryTrend}`;
+    }
+  }
+
+  // === GOVERNANCE LANDSCAPE ===
+  if (ctx.recentPassRate !== undefined || (ctx.otherOpenProposals && ctx.otherOpenProposals.length > 0)) {
+    prompt += '\n\n=== GOVERNANCE LANDSCAPE ===';
+    if (ctx.recentPassRate !== undefined) {
+      prompt += `\nRecent pass rate: ${(ctx.recentPassRate * 100).toFixed(0)}% of proposals have passed`;
+    }
+    if (ctx.activeProposalCount !== undefined && ctx.activeProposalCount > 1) {
+      prompt += `\nActive proposals: ${ctx.activeProposalCount} proposals competing for funds`;
+    }
+    if (ctx.otherOpenProposals && ctx.otherOpenProposals.length > 0) {
+      prompt += '\nOther open proposals:';
+      for (const op of ctx.otherOpenProposals.slice(0, 5)) {
+        prompt += `\n  - "${op.title}" (${op.topic}) — ${op.support} support, requesting ${(op.fundingPct * 100).toFixed(1)}% of treasury`;
+      }
+    }
+  }
+
+  // === COMMUNITY DISCUSSION ===
+  if (ctx.forumSentiment !== undefined || ctx.forumThreadSummary) {
+    prompt += '\n\n=== COMMUNITY DISCUSSION ===';
+    if (ctx.forumSentiment !== undefined) {
+      const sentimentLabel = ctx.forumSentiment > 0.3 ? 'positive'
+        : ctx.forumSentiment < -0.3 ? 'negative' : 'mixed';
+      prompt += `\nForum sentiment: ${sentimentLabel} (${ctx.forumSentiment.toFixed(2)})`;
+    }
+    if (ctx.forumThreadSummary) {
+      prompt += `\nDiscussion:\n${ctx.forumThreadSummary}`;
+    }
+  }
+
+  // === MARKET CONDITIONS ===
+  if (ctx.blackSwanActive) {
+    prompt += '\n\n=== MARKET CONDITIONS ===';
+    prompt += `\nCRISIS ACTIVE: ${ctx.blackSwanDescription || 'An exogenous shock is affecting the market.'}`;
+  }
+
+  // === YOUR TRACK RECORD ===
+  if (ctx.recentVoteHistory && ctx.recentVoteHistory.length > 0) {
+    prompt += '\n\n=== YOUR TRACK RECORD ===';
+    for (const v of ctx.recentVoteHistory.slice(0, 10)) {
+      prompt += `\n  - Voted ${v.vote} on "${v.proposal}" → ${v.outcome}`;
+    }
+  }
+
+  // === YOUR RECENT EXPERIENCE ===
   if (ctx.memoryContext) {
-    prompt += `\n\nYOUR RECENT EXPERIENCE:\n${ctx.memoryContext}`;
+    prompt += `\n\n=== YOUR RECENT EXPERIENCE ===\n${ctx.memoryContext}`;
   }
 
   return prompt;
@@ -348,6 +459,29 @@ export function parseForumPostResponse(raw: string): ForumPostResult {
 }
 
 // ==========================================================================
+// PUBLIC HELPERS
+// ==========================================================================
+
+/** Map governance rule names to plain-English explanations for LLM context */
+export function describeGovernanceRule(ruleName: string): string {
+  const descriptions: Record<string, string> = {
+    majority: 'Simple majority: a proposal passes if more than 50% of votes are in favor.',
+    supermajority: 'Supermajority: a proposal needs at least 66% support to pass.',
+    tokenquorum: 'Token-weighted quorum: a minimum percentage of total token supply must vote, and simple majority wins.',
+    quadratic: 'Quadratic voting: voting power is the square root of tokens held, reducing whale influence. Majority of quadratic-weighted votes wins.',
+    conviction: 'Conviction voting: votes accumulate weight over time. Sustained support is rewarded over brief surges.',
+    optimistic: 'Optimistic approval: proposals pass by default unless enough members actively veto them.',
+    bicameral: 'Bicameral governance: two chambers must both approve a proposal. Either chamber can veto.',
+    dualgovernance: 'Dual governance: proposals require approval from two separate bodies, with veto and rage-quit mechanisms.',
+    categoryquorum: 'Category-based quorum: constitutional proposals require higher quorum than standard proposals.',
+    'instant-runoff': 'Instant-runoff voting: members rank choices, lowest-ranked options are eliminated in rounds until one wins.',
+    futarchy: 'Futarchy: decisions are made through prediction markets. The outcome that traders bet will produce better results wins.',
+  };
+
+  return descriptions[ruleName] || `${ruleName} governance: proposals are evaluated and voted on by DAO members.`;
+}
+
+// ==========================================================================
 // PRIVATE HELPERS
 // ==========================================================================
 
@@ -377,7 +511,9 @@ function parseVoteRegex(raw: string): VoteDecision {
 
   // Look for confidence
   const confMatch = lower.match(/confidence[:\s]+(\d*\.?\d+)/);
-  const confidence = confMatch ? clampConfidence(confMatch[1]) : 0.5;
+  // Default 0.3 for regex fallback — below MIN_LLM_CONFIDENCE (0.4),
+  // so malformed JSON responses safely fall back to rule-based voting
+  const confidence = confMatch ? clampConfidence(confMatch[1]) : 0.3;
 
   // Use first sentence as reasoning
   const reasoning = raw.split(/[.!?\n]/).filter((s) => s.trim().length > 5)[0]?.trim() || '';

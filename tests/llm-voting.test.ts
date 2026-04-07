@@ -8,6 +8,7 @@ import {
   parseForumPostResponse,
   parseProposalResponse,
   buildForumPostPrompt,
+  describeGovernanceRule,
 } from '@/lib/llm/prompt-templates';
 import type { PromptContext } from '@/lib/llm/prompt-templates';
 import { LLMResponseCache } from '@/lib/llm/response-cache';
@@ -179,6 +180,144 @@ describe('Prompt Templates', () => {
       expect(prompt).toContain('Treasury Management');
       expect(prompt).toContain('positive');
     });
+  });
+});
+
+// =============================================================================
+// DAO Briefing & Enriched Prompts
+// =============================================================================
+
+describe('DAO Briefing Prompts', () => {
+  it('includes decision framework in system prompt', () => {
+    const ctx = makeContext();
+    const { system } = buildVotingPrompt(ctx);
+    expect(system).toContain('DECISION FRAMEWORK');
+    expect(system).toContain('CONFIDENCE CALIBRATION');
+    expect(system).toContain('0.4');
+  });
+
+  it('includes governance rule explanation when provided', () => {
+    const ctx = makeContext({
+      governanceRuleExplanation: 'Simple majority: a proposal passes if more than 50% of votes are in favor.',
+    });
+    const { system } = buildVotingPrompt(ctx);
+    expect(system).toContain('GOVERNANCE CONTEXT');
+    expect(system).toContain('50% of votes');
+  });
+
+  it('includes proposal description in user prompt', () => {
+    const ctx = makeContext({ proposalDescription: 'Build a new DEX integration for cross-chain swaps' });
+    const { prompt } = buildVotingPrompt(ctx);
+    expect(prompt).toContain('Build a new DEX integration');
+  });
+
+  it('includes treasury impact analysis', () => {
+    const ctx = makeContext({ treasuryPctRequested: 0.20, treasuryTrend: 'depleting' });
+    const { prompt } = buildVotingPrompt(ctx);
+    expect(prompt).toContain('TREASURY HEALTH');
+    expect(prompt).toContain('20.0%');
+    expect(prompt).toContain('HIGH');
+    expect(prompt).toContain('depleting');
+  });
+
+  it('includes other open proposals for portfolio reasoning', () => {
+    const ctx = makeContext({
+      otherOpenProposals: [
+        { title: 'Marketing Budget', topic: 'Marketing', support: '75%', fundingPct: 0.05 },
+        { title: 'Security Audit', topic: 'Infrastructure', support: '90%', fundingPct: 0.03 },
+      ],
+      activeProposalCount: 3,
+      recentPassRate: 0.65,
+    });
+    const { prompt } = buildVotingPrompt(ctx);
+    expect(prompt).toContain('GOVERNANCE LANDSCAPE');
+    expect(prompt).toContain('Marketing Budget');
+    expect(prompt).toContain('Security Audit');
+    expect(prompt).toContain('3 proposals competing');
+    expect(prompt).toContain('65%');
+  });
+
+  it('includes forum sentiment', () => {
+    const ctx = makeContext({ forumSentiment: -0.45 });
+    const { prompt } = buildVotingPrompt(ctx);
+    expect(prompt).toContain('COMMUNITY DISCUSSION');
+    expect(prompt).toContain('negative');
+  });
+
+  it('includes black swan context', () => {
+    const ctx = makeContext({
+      blackSwanActive: true,
+      blackSwanDescription: 'Market shock is shifting voter sentiment by -30%',
+    });
+    const { prompt } = buildVotingPrompt(ctx);
+    expect(prompt).toContain('MARKET CONDITIONS');
+    expect(prompt).toContain('CRISIS ACTIVE');
+    expect(prompt).toContain('-30%');
+  });
+
+  it('includes vote track record', () => {
+    const ctx = makeContext({
+      recentVoteHistory: [
+        { proposal: 'Treasury Proposal', vote: 'yes', outcome: 'approved' },
+        { proposal: 'Marketing Budget', vote: 'no', outcome: 'rejected' },
+      ],
+    });
+    const { prompt } = buildVotingPrompt(ctx);
+    expect(prompt).toContain('YOUR TRACK RECORD');
+    expect(prompt).toContain('Treasury Proposal');
+    expect(prompt).toContain('approved');
+  });
+
+  it('includes proposal comments', () => {
+    const ctx = makeContext({
+      proposalComments: [
+        { member: 'whale_0', sentiment: 'support' },
+        { member: 'dev_1', sentiment: 'oppose' },
+      ],
+    });
+    const { prompt } = buildVotingPrompt(ctx);
+    expect(prompt).toContain('whale_0');
+    expect(prompt).toContain('support');
+  });
+
+  it('omits sections when data is not available', () => {
+    const ctx = makeContext(); // no enriched fields
+    const { prompt } = buildVotingPrompt(ctx);
+    expect(prompt).not.toContain('TREASURY HEALTH');
+    expect(prompt).not.toContain('GOVERNANCE LANDSCAPE');
+    expect(prompt).not.toContain('COMMUNITY DISCUSSION');
+    expect(prompt).not.toContain('MARKET CONDITIONS');
+    expect(prompt).not.toContain('YOUR TRACK RECORD');
+  });
+});
+
+describe('describeGovernanceRule', () => {
+  it('describes known governance rules', () => {
+    expect(describeGovernanceRule('majority')).toContain('50%');
+    expect(describeGovernanceRule('quadratic')).toContain('square root');
+    expect(describeGovernanceRule('conviction')).toContain('Sustained');
+    expect(describeGovernanceRule('optimistic')).toContain('veto');
+    expect(describeGovernanceRule('bicameral')).toContain('two chambers');
+  });
+
+  it('provides generic description for unknown rules', () => {
+    const desc = describeGovernanceRule('exotic_rule');
+    expect(desc).toContain('exotic_rule');
+    expect(desc).toContain('governance');
+  });
+});
+
+describe('Confidence threshold safety', () => {
+  it('regex fallback default confidence is below MIN_LLM_CONFIDENCE (0.4)', () => {
+    // No explicit confidence in text → should default to 0.3
+    const result = parseVoteResponse('I support this proposal wholeheartedly.');
+    expect(result.confidence).toBe(0.3);
+    // 0.3 < 0.4 (MIN_LLM_CONFIDENCE), so this would fall back to rule-based voting
+  });
+
+  it('explicit confidence in regex still parses correctly', () => {
+    const result = parseVoteResponse('I oppose this. Confidence: 0.85');
+    expect(result.confidence).toBe(0.85);
   });
 });
 

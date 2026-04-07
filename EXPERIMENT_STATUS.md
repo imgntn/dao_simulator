@@ -1,14 +1,14 @@
 # Experiment Status
 
-**Last Updated:** 2026-03-25
+**Last Updated:** 2026-04-07
 
 ## Summary
 
 | Status | Count |
 |--------|-------|
-| Complete | 17 |
+| Complete | 18 |
 | Paused | 1 (12b big-tier LLM, 50%) |
-| Total Runs Completed | 21,869 |
+| Total Runs Completed | 21,919 |
 
 ## Experiment Details
 
@@ -32,13 +32,14 @@
 | 14 | Black Swan Resilience | 1,200 | COMPLETE |
 | 15 | Counterfactual Expansion | 2,940 | COMPLETE |
 | 16 | RL Activation | 150 | COMPLETE |
+| 17 | Gemma4 E4B Enriched LLM | 50 | COMPLETE |
 
 ## Key Findings
 
 1. **Scale is #1** — 50→500 members: -18% capture risk, -60% single entity control
 2. **Quadratic voting only anti-whale tool** — threshold=250 cuts whale influence 43%; vote caps and velocity penalties have zero effect
 3. **Advanced mechanisms null result** — IRV, futarchy, liquid democracy identical to majority
-4. **LLMs decrease governance** — all-LLM drops pass rates 7-9pt below baseline
+4. **LLM thinking mode improves governance** — all-LLM+thinking boosts pass rates +6.7pt above baseline (reverses prior finding from exp 12/12b where impoverished prompts caused -7-9pt degradation)
 5. **Conviction voting broken** — 0% pass rate for ALL 14 calibrated DAOs
 6. **Black swan paradox** — conviction most resilient to shocks despite failing normally
 7. **RL diminishing returns** — basic Q-learning +8.1pt, tiers 2-4 add only +0.2pt
@@ -62,4 +63,4 @@ npm run paper:update
 
 ## Testing
 
-914 tests passing across 42 test files (0 failures, 0 type errors).
+928 tests passing across 42 test files (0 failures, 0 type errors).

@@ -615,7 +615,7 @@ export const messages: Messages = {
     title: 'DAO Simulator',
     titleTemplate: '%s | DAO Simulator',
     description:
-      'Governance research from 21,869 agent-based simulation runs across 14 calibrated DAO digital twins. Covers participation dynamics, capture mitigation (quadratic voting cut whale power 43%), treasury resilience, proposal pipelines, inter-DAO cooperation, LLM-augmented governance, and counterfactual rule comparison. Key findings: quadratic voting 43% whale reduction, scale as #1 governance factor, advanced mechanisms null result, LLM agents decrease quality. By James B. Pollack.',
+      'Governance research from 21,919 agent-based simulation runs across 14 calibrated DAO digital twins. Covers participation dynamics, capture mitigation (quadratic voting cut whale power 43%), treasury resilience, proposal pipelines, inter-DAO cooperation, LLM-augmented governance, and counterfactual rule comparison. Key findings: quadratic voting 43% whale reduction, scale as #1 governance factor, advanced mechanisms null result, LLM thinking mode improves governance +6.7pt. By James B. Pollack.',
     keywords: [
       'DAO',
       'governance',

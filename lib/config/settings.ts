@@ -186,6 +186,10 @@ export interface SimulationSettings {
   llm_max_tokens: number;
   /** Ollama seed for reproducibility (syncs with sim seed if unset) */
   llm_seed?: number;
+  /** Enable thinking/chain-of-thought mode for models that support it (e.g. gemma4, qwen3) */
+  llm_enable_thinking: boolean;
+  /** Ollama context window size (num_ctx). Lower = faster + less VRAM. 0 = model default. */
+  llm_context_size: number;
 
   // Black swan / exogenous shock system
   /** Enable black swan events */
@@ -345,6 +349,8 @@ export const defaultSettings: SimulationSettings = {
   llm_forum_enabled: false,
   llm_max_tokens: 256,
   llm_seed: undefined,
+  llm_enable_thinking: false,
+  llm_context_size: 8192,
 
   // Black swan defaults
   black_swan_enabled: false,

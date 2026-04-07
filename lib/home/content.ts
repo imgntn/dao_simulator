@@ -262,9 +262,9 @@ export const DECISION_BRIEF_SECTIONS: BriefSection[] = [
   },
   {
     id: 'rq6',
-    title: 'LLM Governance (Exploratory)',
+    title: 'LLM Governance & Thinking Mode',
     question: 'What happens when AI agents participate in governance votes?',
-    whyItMatters: '52-run experiment. Hybrid AI governance preserves participation; pure-LLM mode does not.',
+    whyItMatters: 'LLM thinking mode reverses prior findings: all-LLM+thinking boosts pass rates +6.7pt above baseline.',
     filePath: 'paper/plain-english/rq6-llm-agent-reasoning.md',
     relatedPaperPath: 'paper/main.pdf',
   },
@@ -563,19 +563,19 @@ export const CURATED_BRIEF_COPY: Record<string, CuratedBriefCopy> = {
   },
   rq6: {
     summary:
-      'Across 300 runs with 3 small LLM models, LLM agents decreased governance quality. All-LLM mode dropped pass rates 7-9 points below baseline. Hybrid mode barely matched rule-based agents. LLM reasoning introduces disagreement that hinders collective decision-making.',
+      'LLM thinking mode reverses governance degradation. With enriched DAO briefing prompts and chain-of-thought reasoning, all-LLM+thinking boosts pass rates +6.7pt above baseline. Without thinking, LLMs still hurt governance. The key is information parity and structured reasoning, not model size alone.',
     whatWeFound: [
-      { headline: 'LLMs Made Governance Worse', detail: 'All-LLM mode reduced pass rates from 73.4% (baseline) to 64-71%. LLM reasoning introduced more disagreement, not better decisions.' },
-      { headline: 'Hybrid Barely Matched Baseline', detail: 'Hybrid mode (30% LLM) achieved 71-76% pass rate — statistically indistinguishable from the 73.4% disabled baseline. Adding AI voters didn’t improve outcomes.' },
-      { headline: 'Model Architecture Didn’t Matter', detail: 'Three different models (qwen3:4b, llama3.2:3b, gemma3:4b) all produced similar results. The governance degradation is a property of LLM reasoning itself, not a specific model weakness.' },
+      { headline: 'Thinking Mode Is the Game Changer', detail: 'All-LLM+thinking achieved 79.6% pass rate \u2014 +6.7pt above the 72.9% rule-based baseline. Without thinking, all-LLM dropped to 57.7% (-15.2pt). Same model, same prompts, opposite outcomes.' },
+      { headline: 'Information Parity Matters', detail: 'Enriched prompts (~2-3K tokens) give LLMs the same context rule-based agents use: treasury health, competing proposals, forum sentiment, vote history. The old 350-token prompts were asking the model to vote blind.' },
+      { headline: 'Prior Finding Was Prompt Quality', detail: 'Experiment 12 (300 runs, 3 small models) found LLMs degrade governance. Experiment 17 (Gemma 4 E4B) shows this was caused by impoverished prompts and missing thinking mode, not a fundamental limitation.' },
     ],
     whatToDo: [
-      'Hybrid mode is the safer deployment default \u2014 it preserves participation while adding AI reasoning depth.',
-      'Pure-LLM governance produces conservative outcomes but loses engagement. Pair AI agents with human voters.',
-      'Monitor LLM vote consistency as a governance health metric \u2014 consistency drops signal reasoning instability.',
+      'Enable thinking/chain-of-thought mode for LLM governance agents \u2014 it is the critical capability.',
+      'Give LLM agents full context: proposal details, treasury health, competing proposals, forum discussion, vote history.',
+      'All-LLM+thinking is the best config tested \u2014 79.6% pass rate outperforms both hybrid and rule-based modes.',
     ],
-    evidence: '300 runs (30 per config) across 10 configs: disabled, hybrid × 3 models, all-LLM × 3 models, hybrid+reporter × 3 models.',
-    confidence: 'Strong: 30 runs per config across 3 model architectures. Findings consistent across all models.',
+    evidence: '350 total runs: 300 (exp 12, 3 small models) + 50 (exp 17, Gemma 4 E4B with enriched prompts). Exp 17: 10 runs/config, 5 configs.',
+    confidence: 'Moderate-strong: 10 runs per config in exp 17 (pilot). Effect size is large (+6.7pt). Full 30-run confirmation pending.',
     keyTerms: [
       {
         term: 'LLM (Large Language Model)',

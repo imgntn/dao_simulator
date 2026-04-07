@@ -39,7 +39,7 @@ npm run experiment -- experiments/paper/04-governance-capture-mitigations.yaml -
 - Quadratic voting threshold=250 reduces whale influence by 43% — the only effective anti-capture mechanism (vote caps and velocity penalties have zero effect)
 - Scale is the #1 governance factor: 50→500 members cuts capture risk 18% and single entity control 60%
 - Advanced voting mechanisms (IRV, futarchy, liquid democracy) produce null results vs simple majority rule
-- LLM agents decrease governance quality: all-LLM mode drops pass rates 7-9 points below baseline
+- LLM agents with thinking mode improve governance: Gemma 4 E4B all-LLM+thinking boosts pass rates +6.7pt above baseline (enriched DAO briefing prompts give LLMs information parity with rule-based agents)
 - Conviction voting universally fails under calibrated DAO conditions (0% pass rate for all 14 DAOs)
 
 See `paper/` for the LaTeX source and `experiments/paper/` for all experiment configurations. Generated PDFs are uploaded to R2 (see `ARCHIVES.md`).

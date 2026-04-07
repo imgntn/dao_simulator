@@ -1189,6 +1189,8 @@ export class DAOSimulation extends Model {
     const temperature = config.llm_temperature ?? settings.llm_temperature;
     const maxTokens = config.llm_max_tokens ?? settings.llm_max_tokens;
     const llmSeed = config.llm_seed ?? settings.llm_seed ?? this.seed;
+    const enableThinking = config.llm_enable_thinking ?? settings.llm_enable_thinking;
+    const contextSize = config.llm_context_size ?? settings.llm_context_size;
 
     // Determine which LLMAgent instances get LLM capabilities
     const members = [...this.dao.members];
@@ -1212,7 +1214,7 @@ export class DAOSimulation extends Model {
         config.llm_default_model ?? settings.llm_default_model,
         config.llm_premium_model ?? settings.llm_premium_model
       );
-      agent.initLLM(this.ollamaClient!, this.llmCache, model, temperature, maxTokens, llmSeed);
+      agent.initLLM(this.ollamaClient!, this.llmCache, model, temperature, maxTokens, llmSeed, enableThinking, contextSize);
     }
 
     // Also initialize any LLMReporter agents (always get LLM, regardless of mode)

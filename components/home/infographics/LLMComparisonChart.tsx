@@ -1,27 +1,27 @@
 /**
- * RQ6 — LLM Modes (300 runs, 3 models: qwen3:4b, llama3.2:3b, gemma3:4b)
- * Key finding: LLMs decrease governance quality — all-LLM drops pass rates 7-9pt below baseline
+ * RQ6 — LLM Governance (Exp 17: Gemma 4 E4B, 50 runs)
+ * Key finding: Thinking mode reverses LLM governance degradation — all-LLM+thinking boosts pass rate +6.7pt
  */
 export function LLMComparisonChart() {
-  const modes = ['Rule-based', 'Hybrid', 'All-LLM'];
+  const modes = ['Rule-based', 'Hybrid+Think', 'All-LLM+Think'];
   const modeColors = ['#c4a06a', '#5ba3b0', '#1f7a8c'];
 
   const metrics = [
     {
       label: 'Pass Rate',
-      values: [0.734, 0.73, 0.68],
+      values: [0.729, 0.769, 0.796],
       format: (v: number) => (v * 100).toFixed(1) + '%',
     },
     {
       label: 'Participation',
-      values: [0.142, 0.140, 0.138],
+      values: [0.286, 0.275, 0.278],
       format: (v: number) => (v * 100).toFixed(1) + '%',
     },
     {
       label: 'Latency (ms)',
-      values: [0, 808, 1381],
-      format: (v: number) => (v === 0 ? '—' : v.toFixed(0)),
-      maxOverride: 1500,
+      values: [0, 3566, 3908],
+      format: (v: number) => (v === 0 ? '\u2014' : v.toFixed(0)),
+      maxOverride: 4500,
     },
   ];
 
@@ -40,7 +40,7 @@ export function LLMComparisonChart() {
   const startY = topPad + (chartH - topPad - botPad - totalH) / 2;
 
   return (
-    <figure className="flex flex-col items-center" role="img" aria-label="LLM agents decrease governance quality: all-LLM drops pass rate from 73.4% to 68% (300 runs, 3 models)">
+    <figure className="flex flex-col items-center" role="img" aria-label="LLM thinking mode improves governance: all-LLM+thinking boosts pass rate from 72.9% to 79.6% (50 runs, Gemma 4 E4B)">
       <svg
         viewBox={`0 0 ${chartW} ${chartH}`}
         className="w-full max-w-[320px]"
@@ -110,7 +110,7 @@ export function LLMComparisonChart() {
         })}
       </svg>
       <figcaption className="mt-1 text-center text-[0.7rem] text-[var(--text-muted)]">
-        LLM agents degrade pass rate vs rule-based baseline (300 runs, 3 models)
+        Thinking mode boosts LLM pass rate above rule-based baseline (50 runs, Gemma 4 E4B)
       </figcaption>
     </figure>
   );
