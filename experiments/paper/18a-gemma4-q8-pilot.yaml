@@ -1,0 +1,127 @@
+# Experiment 18a: Gemma4 E4B q8_0 Quantization Pilot
+#
+# Gated pilot — configs 1 (hybrid) and 3 (hybrid+think) only.
+# Config 0 (disabled baseline) omitted: identical to exp 17 config 0
+# (llm_enabled: false ⇒ model field is dead code, same baseSeed=42).
+#
+# 2 configs x 10 runs = 20 total runs (~10-15 min)
+# Compare directly to exp 17 configs 1 and 3 (bf16).
+# If hybrid+think preserves the +6.7pt governance gain → run full exp 18.
+
+name: LLM Governance - Gemma4 E4B q8_0 Pilot (hybrid + hybrid+think)
+description: >
+  Gated pilot for experiment 18. Tests gemma4:e4b-it-q8_0 at the two
+  scientifically critical configs (hybrid and hybrid+thinking) to determine
+  whether 8-bit quantization preserves the governance improvement found
+  in experiment 17 (bf16). Uses identical baseSeed, agent mix, and sweep
+  structure to enable direct per-config comparison.
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - paper
+  - llm
+  - governance
+  - gemma4
+  - thinking
+  - quantization
+  - ablation
+  - pilot
+
+baseConfig:
+  template: compound
+  overrides:
+    governance_rule: majority
+    learning_enabled: false
+    forum_enabled: true
+
+    num_developers: 4
+    num_investors: 2
+    num_traders: 1
+    num_passive_members: 4
+    num_proposal_creators: 2
+    num_validators: 1
+    num_delegators: 2
+    num_governance_experts: 1
+    num_risk_managers: 1
+
+    llm_base_url: http://localhost:11434
+    llm_max_concurrent: 1
+    llm_timeout_ms: 120000
+    llm_temperature: 0.7
+    llm_cache_enabled: true
+    llm_context_size: 8192
+
+sweep:
+  type: zip
+  grid:
+    # Index:           0            1
+    # Mode:         hybrid       hybrid+think
+    # Exp 17 ref:   config 1     config 3
+
+    - parameter: llm_agent_mode
+      values:   [hybrid,        hybrid]
+    - parameter: llm_enabled
+      values:   [true,          true]
+    - parameter: llm_default_model
+      values:   [gemma4:e4b-it-q8_0,   gemma4:e4b-it-q8_0]
+    - parameter: llm_premium_model
+      values:   [gemma4:e4b-it-q8_0,   gemma4:e4b-it-q8_0]
+    - parameter: llm_hybrid_fraction
+      values:   [0.3,           0.3]
+    - parameter: num_llm_agents
+      values:   [4,             4]
+    - parameter: num_llm_reporters
+      values:   [0,             0]
+    - parameter: llm_enable_thinking
+      values:   [false,         true]
+    - parameter: llm_max_tokens
+      values:   [1024,          4096]
+
+execution:
+  runsPerConfig: 10
+  stepsPerRun: 720
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 2
+  runTimeoutMs: 7200000
+
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+  - name: Governance Activity Index
+    type: builtin
+    builtin: governance_activity_index
+  - name: LLM Vote Consistency
+    type: builtin
+    builtin: llm_vote_consistency
+  - name: LLM Cache Hit Rate
+    type: builtin
+    builtin: llm_cache_hit_rate
+  - name: LLM Avg Latency
+    type: builtin
+    builtin: llm_avg_latency_ms
+
+output:
+  directory: results/paper/18a-llm-gemma4-q8-pilot
+  formats:
+    - json
+    - csv
+  includeRawRuns: false
+  includeManifest: true
+  includeTimeline: false

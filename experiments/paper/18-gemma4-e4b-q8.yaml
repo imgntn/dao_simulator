@@ -1,0 +1,146 @@
+# Experiment 18: LLM Governance Quality — Gemma 4 E4B q8_0 (vs bf16)
+#
+# gemma4:e4b-it-q8_0 (8-bit quantized, ~12GB)
+# Enriched DAO briefing prompts + thinking mode
+# 5 configs x 10 runs = 50 total runs
+#
+# Direct comparison to experiment 17 (bf16 baseline).
+# Uses identical baseSeed (42), identical sweep structure, identical agent
+# mix — only llm_default_model / llm_premium_model differ. Results at
+# matching config indices are directly comparable to 17's output.
+
+name: LLM Governance - Gemma4 E4B q8_0 Quantization Ablation
+description: >
+  Quantization robustness test for experiment 17. Re-runs the same 5-config
+  sweep (disabled / hybrid / all / hybrid+think / all+think) using
+  gemma4:e4b-it-q8_0 instead of bf16. Validates whether the +6.7pt governance
+  improvement from thinking mode survives 8-bit weight quantization.
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - paper
+  - llm
+  - governance
+  - gemma4
+  - thinking
+  - dao-briefing
+  - quantization
+  - ablation
+
+baseConfig:
+  template: compound
+  overrides:
+    governance_rule: majority
+    learning_enabled: false
+    forum_enabled: true
+
+    num_developers: 4
+    num_investors: 2
+    num_traders: 1
+    num_passive_members: 4
+    num_proposal_creators: 2
+    num_validators: 1
+    num_delegators: 2
+    num_governance_experts: 1
+    num_risk_managers: 1
+
+    llm_base_url: http://localhost:11434
+    llm_max_concurrent: 1
+    llm_timeout_ms: 120000
+    llm_temperature: 0.7
+    llm_cache_enabled: true
+    llm_context_size: 8192
+
+sweep:
+  type: zip
+  grid:
+    # Index:           0          1            2          3              4
+    # Mode:         disabled   hybrid       all        hybrid+think   all+think
+
+    - parameter: llm_agent_mode
+      values:   [disabled,   hybrid,      all,       hybrid,        all]
+    - parameter: llm_enabled
+      values:   [false,      true,        true,      true,          true]
+    - parameter: llm_default_model
+      values:   [gemma4:e4b-it-q8_0,   gemma4:e4b-it-q8_0,    gemma4:e4b-it-q8_0,  gemma4:e4b-it-q8_0,      gemma4:e4b-it-q8_0]
+    - parameter: llm_premium_model
+      values:   [gemma4:e4b-it-q8_0,   gemma4:e4b-it-q8_0,    gemma4:e4b-it-q8_0,  gemma4:e4b-it-q8_0,      gemma4:e4b-it-q8_0]
+    - parameter: llm_hybrid_fraction
+      values:   [0.0,        0.3,         1.0,       0.3,           1.0]
+    - parameter: num_llm_agents
+      values:   [0,          4,           8,         4,             8]
+    - parameter: num_llm_reporters
+      values:   [0,          0,           0,         0,             0]
+    - parameter: llm_enable_thinking
+      values:   [false,      false,       false,     true,          true]
+    - parameter: llm_max_tokens
+      values:   [1024,       1024,        1024,      4096,          4096]
+
+    # Force non-LLM roles to zero for all-LLM mode only (indices 2, 4)
+    - parameter: num_developers
+      values:   [4,          4,           0,         4,             0]
+    - parameter: num_investors
+      values:   [2,          2,           0,         2,             0]
+    - parameter: num_traders
+      values:   [1,          1,           0,         1,             0]
+    - parameter: num_passive_members
+      values:   [4,          4,           0,         4,             0]
+    - parameter: num_proposal_creators
+      values:   [2,          2,           0,         2,             0]
+    - parameter: num_validators
+      values:   [1,          1,           0,         1,             0]
+    - parameter: num_delegators
+      values:   [2,          2,           0,         2,             0]
+    - parameter: num_governance_experts
+      values:   [1,          1,           0,         1,             0]
+    - parameter: num_risk_managers
+      values:   [1,          1,           0,         1,             0]
+
+execution:
+  runsPerConfig: 10
+  stepsPerRun: 720
+  seedStrategy: sequential
+  baseSeed: 42
+  workers: 2
+  runTimeoutMs: 7200000
+
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Voter Participation Rate
+    type: builtin
+    builtin: voter_participation_rate
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+  - name: Governance Activity Index
+    type: builtin
+    builtin: governance_activity_index
+  - name: LLM Vote Consistency
+    type: builtin
+    builtin: llm_vote_consistency
+  - name: LLM Cache Hit Rate
+    type: builtin
+    builtin: llm_cache_hit_rate
+  - name: LLM Avg Latency
+    type: builtin
+    builtin: llm_avg_latency_ms
+
+output:
+  directory: results/paper/18-llm-gemma4-q8-ablation
+  formats:
+    - json
+    - csv
+  includeRawRuns: false
+  includeManifest: true
+  includeTimeline: false
