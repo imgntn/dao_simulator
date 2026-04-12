@@ -4,8 +4,8 @@
  * Tooltip — lightweight, portal-based, hover-intent tooltip.
  *
  * Zero dependencies. Keyboard-accessible (focus shows it). Auto-flips
- * vertical placement if it would overflow. Follows the Living Archive
- * aesthetic: parchment body, stone border, serif.
+ * vertical placement if it would overflow. Clamps horizontal position
+ * so it never exits the viewport. Follows the Living Archive aesthetic.
  */
 
 import { createPortal } from 'react-dom';
@@ -37,9 +37,13 @@ export function Tooltip({
       if (!el) return;
       const rect = el.getBoundingClientRect();
       // Flip up if near bottom of viewport
-      const flipUp = rect.bottom + 60 > window.innerHeight;
+      const flipUp = rect.bottom + 80 > window.innerHeight;
+      // Clamp x so tooltip never exits left or right edge
+      const halfW = maxWidth / 2 + 12;
+      const rawX = rect.left + rect.width / 2;
+      const x = Math.max(halfW, Math.min(window.innerWidth - halfW, rawX));
       setPos({
-        x: rect.left + rect.width / 2,
+        x,
         y: flipUp ? rect.top - 6 : rect.bottom + 6,
         flipUp,
       });

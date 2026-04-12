@@ -11,6 +11,13 @@
  *
  * All shapes are drawn in a compact 60x80 viewBox so they compose cleanly
  * into the isometric scene.
+ *
+ * Animation:
+ *  - Idle breathing via CSS class (staggered per-creature delay)
+ *  - Walking via CSS class when `inCeremony` or `isShelving` is true
+ *  - Beaver shows book-carrying pose when `isShelving`
+ *  - Highlighted ring when `highlighted` (inspector open)
+ *  - Click fires `onInspect` for the detail panel
  */
 
 import type { AgentSnapshot } from '@/lib/browser/worker-protocol';
@@ -19,10 +26,15 @@ import { getRole } from './roles';
 
 export interface CreatureProps {
   agent: AgentSnapshot;
-  x: number;               // iso screen x
-  y: number;               // iso screen y
+  x: number;               // iso screen x (SVG user units)
+  y: number;               // iso screen y (SVG user units)
   currentStep: number;
   idx: number;             // for stagger
+  ribbonOffsetY?: number;  // vertical stagger for label overlap avoidance
+  onInspect?: () => void;  // click to open inspector
+  inCeremony?: boolean;    // currently walking to lectern for vote
+  isShelving?: boolean;    // beaver currently carrying a book to the shelf
+  highlighted?: boolean;   // inspector is showing this creature
 }
 
 /**
@@ -30,7 +42,18 @@ export interface CreatureProps {
  * positioned at (x, y) in the scene's SVG coordinate space. Includes
  * name ribbon + vote banner.
  */
-export function Creature({ agent, x, y, currentStep, idx }: CreatureProps) {
+export function Creature({
+  agent,
+  x,
+  y,
+  currentStep,
+  idx,
+  ribbonOffsetY = 0,
+  onInspect,
+  inCeremony = false,
+  isShelving = false,
+  highlighted = false,
+}: CreatureProps) {
   const role = getRole(agent.type);
   const archetype = getArchetype(agent.type);
   const hasVote = agent.lastVote !== null;
@@ -44,60 +67,97 @@ export function Creature({ agent, x, y, currentStep, idx }: CreatureProps) {
   // Stagger breathing so creatures don't pulse in unison
   const breathDelay = `${(idx % 9) * -0.7}s`;
 
-  // Name ribbon width scales with name length (rough approximation)
-  const ribbonW = Math.max(48, Math.min(120, role.name.length * 5.2));
+  // Walk animation class: plays whenever the creature is moving
+  const isMoving = inCeremony || isShelving;
+
+  // Name ribbon
+  const ribbonW = Math.max(46, Math.min(110, role.name.length * 5.0));
   const ribbonH = 11;
-  const ribbonY = -16;
+  const ribbonY = -18 + ribbonOffsetY;
 
   return (
-    <g transform={`translate(${x} ${y})`}>
-      {/* Soft shadow on ground */}
+    <g
+      transform={`translate(${x} ${y})`}
+      onClick={onInspect}
+      style={{ cursor: onInspect ? 'pointer' : 'default' }}
+      role={onInspect ? 'button' : undefined}
+      aria-label={onInspect ? `Inspect ${role.name}` : undefined}
+    >
+      {/* Selected highlight ring */}
+      {highlighted && (
+        <circle
+          cx="0" cy="20" r="30"
+          fill="none"
+          stroke={PALETTE.honey}
+          strokeWidth="2"
+          opacity="0.9"
+          style={{ filter: `drop-shadow(0 0 4px ${PALETTE.gold})` }}
+        />
+      )}
+
+      {/* Ground shadow */}
       <ellipse
         cx="0" cy="44" rx="14" ry="3.5"
-        fill={PALETTE.ink} opacity="0.25"
+        fill={PALETTE.ink} opacity={highlighted ? 0.35 : 0.22}
       />
 
       {/* Recent-vote glow */}
-      {isRecent && (
+      {isRecent && !inCeremony && (
         <circle
           cx="0" cy="15" r="26"
-          fill={PALETTE.lampBloom} opacity="0.4"
+          fill={PALETTE.lampBloom} opacity="0.38"
           style={{ filter: 'blur(4px)' }}
         />
       )}
 
-      {/* The creature body — animated by CSS breathing */}
-      <g className="creature-breath" style={{ animationDelay: breathDelay, transformOrigin: '0 40px' }}>
-        <CreatureBody archetype={archetype} />
+      {/* Ceremony glow — brighter, pulsing */}
+      {inCeremony && (
+        <circle
+          cx="0" cy="15" r="30"
+          fill={PALETTE.voteForGlow} opacity="0.45"
+          style={{ filter: 'blur(6px)' }}
+          className="ceremony-glow"
+        />
+      )}
+
+      {/* The creature body — animated by CSS */}
+      <g
+        className={isMoving ? 'creature-walk' : 'creature-breath'}
+        style={{
+          animationDelay: isMoving ? '0s' : breathDelay,
+          transformOrigin: '0px 40px',
+        }}
+      >
+        <CreatureBody archetype={archetype} isShelving={isShelving} />
         {/* Vote banner in the paw */}
-        {flagColor && <VoteFlag color={flagColor} isRecent={isRecent} />}
+        {flagColor && <VoteFlag color={flagColor} isRecent={isRecent || inCeremony} />}
       </g>
 
       {/* Always-visible name ribbon */}
       <g transform={`translate(0 ${ribbonY})`}>
-        {/* Ribbon shape */}
+        {/* Ribbon shape — pennant cuts on both sides */}
         <path
-          d={`M${-ribbonW/2 - 4} 0 L${-ribbonW/2} ${-ribbonH/2} L${ribbonW/2} ${-ribbonH/2} L${ribbonW/2 + 4} 0 L${ribbonW/2} ${ribbonH/2} L${-ribbonW/2} ${ribbonH/2} Z`}
-          fill={PALETTE.parchment}
-          stroke={PALETTE.stone}
-          strokeWidth="0.7"
+          d={`M${-ribbonW / 2 - 3} 0 L${-ribbonW / 2} ${-ribbonH / 2} L${ribbonW / 2} ${-ribbonH / 2} L${ribbonW / 2 + 3} 0 L${ribbonW / 2} ${ribbonH / 2} L${-ribbonW / 2} ${ribbonH / 2} Z`}
+          fill={highlighted ? PALETTE.parchmentWarm : PALETTE.parchment}
+          stroke={highlighted ? PALETTE.honey : PALETTE.stone}
+          strokeWidth={highlighted ? '1' : '0.7'}
           strokeLinejoin="round"
         />
         <text
           x="0" y="0.5"
           textAnchor="middle"
           dominantBaseline="central"
-          fontSize="6.5"
+          fontSize="6"
           fontWeight="600"
           fill={PALETTE.stone}
-          style={{ fontFamily: 'Georgia, "Iowan Old Style", serif' }}
+          style={{ fontFamily: 'Georgia, "Iowan Old Style", serif', pointerEvents: 'none' }}
         >
           {role.name}
         </text>
       </g>
 
-      {/* Accessible title for hover — native browser tooltip */}
-      <title>{`${role.name} (${agent.type}) · ${role.flavor} · ${hasVote ? (agent.lastVote ? 'raised FOR' : 'raised AGAINST') : 'not voted'}`}</title>
+      {/* Accessible title for native tooltip */}
+      <title>{`${role.name} (${agent.type}) · ${role.flavor} · ${hasVote ? (agent.lastVote ? 'voted FOR' : 'voted AGAINST') : 'not yet voted'}`}</title>
     </g>
   );
 }
@@ -106,12 +166,12 @@ export function Creature({ agent, x, y, currentStep, idx }: CreatureProps) {
 //   Species dispatch
 // ═════════════════════════════════════════════════════════════════════════
 
-function CreatureBody({ archetype }: { archetype: Archetype }) {
+function CreatureBody({ archetype, isShelving }: { archetype: Archetype; isShelving?: boolean }) {
   switch (archetype) {
     case 'governance': return <Owl />;
     case 'council': return <Badger />;
     case 'treasury': return <Fox />;
-    case 'craft': return <Beaver />;
+    case 'craft': return <Beaver isShelving={isShelving} />;
     case 'passive': return <MothWyrm />;
   }
 }
@@ -242,7 +302,7 @@ function Fox() {
 //   Species — Beaver (The Workshop, craft)
 // ═════════════════════════════════════════════════════════════════════════
 
-function Beaver() {
+function Beaver({ isShelving }: { isShelving?: boolean }) {
   const stroke = PALETTE.ink;
   return (
     <g>
@@ -277,6 +337,22 @@ function Beaver() {
       {/* Tiny round ears */}
       <circle cx="-9" cy="-3" r="2" fill={PALETTE.beaverBody} stroke={stroke} strokeWidth="0.5" />
       <circle cx="9" cy="-3" r="2" fill={PALETTE.beaverBody} stroke={stroke} strokeWidth="0.5" />
+      {/* Book held in arms when shelving */}
+      {isShelving && (
+        <g transform="rotate(-25 0 20)">
+          {/* Book body */}
+          <rect x="-7" y="16" width="10" height="13" rx="0.5"
+            fill="#4A2E18" stroke={stroke} strokeWidth="0.7" />
+          {/* Book cover */}
+          <rect x="-6.5" y="16.5" width="9" height="12" rx="0.3"
+            fill="#7A2E2E" />
+          {/* Book spine */}
+          <rect x="-7" y="16" width="1.5" height="13" fill="#2E1A0A" stroke={stroke} strokeWidth="0.3" />
+          {/* Title line */}
+          <line x1="-5" y1="20" x2="1.5" y2="20" stroke={PALETTE.parchmentWarm} strokeWidth="0.5" opacity="0.8" />
+          <line x1="-5" y1="22.5" x2="1.5" y2="22.5" stroke={PALETTE.parchmentWarm} strokeWidth="0.4" opacity="0.6" />
+        </g>
+      )}
     </g>
   );
 }
@@ -340,7 +416,7 @@ function VoteFlag({ color, isRecent }: { color: string; isRecent: boolean }) {
         strokeWidth="0.7"
         strokeLinejoin="round"
         style={{
-          filter: isRecent ? `drop-shadow(0 0 2px ${PALETTE.lampBloom})` : 'none',
+          filter: isRecent ? `drop-shadow(0 0 3px ${PALETTE.lampBloom})` : 'none',
         }}
       />
     </g>
