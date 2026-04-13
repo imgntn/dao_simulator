@@ -1148,11 +1148,11 @@ function formatPct(n: number): string {
 //   Root component
 // ═══════════════════════════════════════════════════════════════════
 
-export interface BannerSagaSceneProps {
+export interface SanctumSceneProps {
   snapshot?: SimulationSnapshot | null;
 }
 
-export function BannerSagaScene({ snapshot: snapshotProp }: BannerSagaSceneProps = {}) {
+export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {}) {
   const liveSnapshot = useActiveSnapshot();
   const snapshot  = snapshotProp !== undefined ? snapshotProp : liveSnapshot;
   const isPreview = snapshotProp !== undefined;
@@ -1284,7 +1284,7 @@ export function BannerSagaScene({ snapshot: snapshotProp }: BannerSagaSceneProps
 
   return (
     <div
-      data-scene="living-archive-cave"
+      data-scene="sanctum"
       className="relative h-full w-full overflow-hidden select-none"
       ref={containerRef}
       style={{

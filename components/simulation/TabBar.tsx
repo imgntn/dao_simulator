@@ -13,12 +13,12 @@ interface TabBarProps {
   onTabChange: (tab: SimTab) => void;
 }
 
-const tabs: { id: SimTab; label: string }[] = [
-  { id: 'interactive', label: 'Interactive' },
-  { id: 'compare', label: 'Compare' },
-  { id: 'branch', label: 'Branch' },
-  { id: 'multirun', label: 'Multi-Run' },
-  { id: 'research', label: 'Research' },
+const tabs: { id: SimTab; label: string; glyph: string }[] = [
+  { id: 'interactive', label: 'The Sanctum', glyph: '◈' },
+  { id: 'compare',     label: 'Compare',     glyph: '⊕' },
+  { id: 'branch',      label: 'Branch',      glyph: '⋈' },
+  { id: 'multirun',    label: 'Multi-Run',   glyph: '⟳' },
+  { id: 'research',    label: 'Research',    glyph: '⊛' },
 ];
 
 export function TabBar({ activeTab, onTabChange }: TabBarProps) {
@@ -33,25 +33,37 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
 
   return (
     <div className="flex px-4 overflow-x-auto scrollbar-none -mb-px" role="tablist">
-      {tabs.map(tab => (
-        <button
-          key={tab.id}
-          role="tab"
-          aria-selected={activeTab === tab.id}
-          tabIndex={activeTab === tab.id ? 0 : -1}
-          onClick={() => handleTabChange(tab.id)}
-          className={`px-4 py-2.5 text-sm font-medium transition-colors relative whitespace-nowrap flex-shrink-0 ${
-            activeTab === tab.id
-              ? 'text-[var(--sim-accent)]'
-              : 'text-[var(--sim-text-muted)] hover:text-[var(--sim-text-secondary)]'
-          }`}
-        >
-          {tab.label}
-          {activeTab === tab.id && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--sim-accent)]" />
-          )}
-        </button>
-      ))}
+      {tabs.map(tab => {
+        const isActive = activeTab === tab.id;
+        return (
+          <button
+            key={tab.id}
+            role="tab"
+            aria-selected={isActive}
+            tabIndex={isActive ? 0 : -1}
+            onClick={() => handleTabChange(tab.id)}
+            className="relative px-4 py-2.5 text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 flex items-center gap-1.5"
+            style={{
+              color: isActive ? 'var(--mucha-gold-lt, #E8C050)' : 'var(--sim-text-muted)',
+              textShadow: isActive ? '0 0 10px rgba(196,144,32,0.5)' : 'none',
+              letterSpacing: isActive ? '0.03em' : '0',
+            }}
+          >
+            <span style={{ fontSize: '0.7em', opacity: isActive ? 1 : 0.45 }}>{tab.glyph}</span>
+            {tab.label}
+            {isActive && (
+              <span
+                className="absolute bottom-0 left-2 right-2"
+                style={{
+                  height: '1.5px',
+                  background: 'linear-gradient(to right, transparent, var(--mucha-gold, #C49020) 30%, var(--mucha-gold-lt, #E8C050) 50%, var(--mucha-gold, #C49020) 70%, transparent)',
+                  borderRadius: '1px',
+                }}
+              />
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 }

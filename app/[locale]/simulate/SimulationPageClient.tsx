@@ -8,14 +8,12 @@ import { useKeyboardShortcuts } from '@/lib/browser/useKeyboardShortcuts';
 import { decodeConfigFromURL } from '@/components/simulation/ShareButton';
 import { ControlPanel } from '@/components/simulation/ControlPanel';
 import { MetricsDashboard } from '@/components/simulation/dashboard/MetricsDashboard';
-import { EventFeed } from '@/components/simulation/dashboard/EventFeed';
 import { VotingHeatmap } from '@/components/simulation/dashboard/VotingHeatmap';
-import { SimulationCanvas } from '@/components/simulation/SimulationCanvas';
+import { SanctumScene } from '@/components/simulation/sanctum';
 import { TabBar, type SimTab } from '@/components/simulation/TabBar';
 import { AgentGuide } from '@/components/simulation/AgentGuide';
 import { FloorNav } from '@/components/simulation/FloorNav';
 import { DelegationGraph } from '@/components/simulation/dashboard/DelegationGraph';
-import { AnnotatedTimeScrubber } from '@/components/simulation/Annotations';
 import { ScenarioBuilder } from '@/components/simulation/ScenarioBuilder';
 import { ComparisonView } from '@/components/simulation/ComparisonView';
 import { HelpOverlay } from '@/components/simulation/HelpOverlay';
@@ -95,11 +93,15 @@ export default function SimulationPageClient() {
   const isMobile = tier === 'compact' || tier === 'handheld';
   if (status === 'idle' || status === 'initializing') {
     return (
-      <div className="flex items-center justify-center h-screen bg-[var(--sim-bg)] text-[var(--sim-text-secondary)]">
+      <div className="flex items-center justify-center h-screen" style={{ background: 'var(--cave-bg, #040210)' }}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--sim-accent)] mx-auto mb-4" />
-          <p className="text-lg font-mono">Initializing simulation engine...</p>
-          <p className="text-sm text-[var(--sim-text-muted)] mt-2">Loading calibration data for 14 DAOs</p>
+          {/* Crystal growth animation */}
+          <svg width="48" height="48" viewBox="0 0 48 48" className="mx-auto mb-4 animate-crystal-pulse" aria-hidden="true">
+            <polygon points="24,2 30,18 46,18 34,30 38,46 24,36 10,46 14,30 2,18 18,18" fill="none" stroke="var(--cx-sal-g, #40E8FF)" strokeWidth="1.5" opacity="0.7" />
+            <polygon points="24,10 28,20 38,20 30,27 33,37 24,31 15,37 18,27 10,20 20,20" fill="var(--cx-sal, #08B8D8)" opacity="0.25" />
+          </svg>
+          <p className="font-mono text-lg" style={{ color: 'var(--mucha-gold-lt, #E8C050)' }}>Awakening the Sanctum…</p>
+          <p className="mt-2 text-sm" style={{ color: 'var(--cx-pass, #7050B8)' }}>Calibrating 14 DAO digital twins</p>
         </div>
       </div>
     );
@@ -133,7 +135,7 @@ export default function SimulationPageClient() {
       className="sim-layout bg-[var(--sim-bg)] text-[var(--sim-text)]"
     >
       {/* Top bar: tabs + actions */}
-      <div className="flex items-center border-b border-[var(--sim-border)] bg-[var(--sim-bg)]">
+      <div className="flex items-center bg-[var(--sim-bg)]" style={{ borderBottom: '1px solid rgba(196,144,32,0.22)' }}>
         <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
         <div className="ml-auto pr-3 flex items-center gap-1.5">
           <ThemeToggle />
@@ -156,25 +158,11 @@ export default function SimulationPageClient() {
       >
         {/* 3D Canvas — always visible regardless of active tab */}
         <div className="relative min-w-0 min-h-0 overflow-hidden">
-          {/* Canvas stays mounted, other tabs overlay it */}
+          {/* Sanctum — cave scene with built-in timeline scrubber + event log */}
           <div style={{ display: activeTab === 'interactive' ? 'contents' : 'none' }}>
             <div className="absolute inset-0">
-              <SimulationCanvas />
+              <SanctumScene />
             </div>
-            <div className="absolute bottom-0 left-0 right-0 z-10" data-tutorial="timeline">
-              <AnnotatedTimeScrubber />
-              <EventFeed />
-            </div>
-
-            {/* Agent Inspector overlay */}
-            {selectedAgent && (
-              <div className="absolute top-4 right-4 z-40">
-                <AgentInspector
-                  agent={selectedAgent}
-                  onClose={() => setSelectedAgentId(null)}
-                />
-              </div>
-            )}
           </div>
 
           {/* Non-interactive tabs render as overlay over canvas area */}

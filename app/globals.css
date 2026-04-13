@@ -41,26 +41,49 @@
   --ink-soft: #4e5c6b;
   --panel: var(--surface-panel);
 
-  /* ── Simulate page tokens ── */
-  --sim-bg: #030712;
-  --sim-surface: #111827;
-  --sim-surface-hover: #1f2937;
-  --sim-border: #1f2937;
-  --sim-border-strong: #374151;
-  --sim-border-focus: #06b6d4;
-  --sim-text: #e5e7eb;
-  --sim-text-secondary: #d1d5db;
-  --sim-text-muted: #6b7280;
-  --sim-text-dim: #6b7280;
-  --sim-accent: #22d3ee;
-  --sim-accent-bold: #0891b2;
-  --sim-accent-hover: #06b6d4;
-  --sim-accent-bg: rgba(8, 145, 178, 0.15);
-  --sim-accent-ring: #06b6d4;
-  --sim-accent-pause: #ca8a04;
+  /* ── Sanctum cave tokens — shared across home and sim ── */
+  --cave-bg:     #040210;
+  --cave-mid:    #0A0422;
+  --cave-warm:   #120A06;
+  --cave-rock:   #1C100A;
+  --stone-dk:    #2A1610;
+  --stone-md:    #4A2C18;
+
+  --cx-gov:    #8030E0;  /* amethyst  */
+  --cx-gov-g:  #B068F8;
+  --cx-coun:   #C88018;  /* gold      */
+  --cx-coun-g: #F0B830;
+  --cx-trea:   #0898A0;  /* teal      */
+  --cx-trea-g: #20D8C0;
+  --cx-sal:    #08B8D8;  /* aqua      */
+  --cx-sal-g:  #40E8FF;
+  --cx-craf:   #D86018;  /* amber     */
+  --cx-craf-g: #FF9040;
+  --cx-pass:   #7050B8;  /* lavender  */
+  --cx-pass-g: #A888E8;
+  --mucha-gold:    #C49020;
+  --mucha-gold-lt: #E8C050;
+
+  /* ── Simulate page tokens — Sanctum-themed ── */
+  --sim-bg:           var(--cave-bg);
+  --sim-surface:      var(--cave-mid);
+  --sim-surface-hover:#14082A;
+  --sim-border:       var(--stone-dk);
+  --sim-border-strong:var(--stone-md);
+  --sim-border-focus: var(--cx-sal-g);
+  --sim-text:         #DDD8F4;
+  --sim-text-secondary:#B8B0D4;
+  --sim-text-muted:   #706888;
+  --sim-text-dim:     #504870;
+  --sim-accent:       var(--cx-sal-g);
+  --sim-accent-bold:  var(--cx-sal);
+  --sim-accent-hover: var(--cx-trea-g);
+  --sim-accent-bg:    rgba(64, 232, 255, 0.10);
+  --sim-accent-ring:  var(--cx-sal-g);
+  --sim-accent-pause: var(--cx-coun-g);
 }
 
-/* ── Simulation light theme ── */
+/* ── Simulation light theme (kept for toggle, slightly softened cave) ── */
 .sim-theme-light {
   --sim-bg: #f8fafc;
   --sim-surface: #ffffff;
@@ -517,8 +540,160 @@ html.theme-dark body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   Mucha × Sanctum design vocabulary
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Crystal glow — apply to text or SVG to give bioluminescent shimmer */
+.crystal-glow {
+  text-shadow:
+    0 0 6px currentColor,
+    0 0 18px currentColor;
+}
+
+/* Mucha decorative rule — gold vine line with diamond centre */
+.mucha-rule {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--mucha-gold, #C49020) 25%,
+    var(--mucha-gold-lt, #E8C050) 50%,
+    var(--mucha-gold, #C49020) 75%,
+    transparent 100%
+  );
+  position: relative;
+  margin: 2rem 0;
+}
+.mucha-rule::before {
+  content: '◆';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0 0.5rem;
+  background: var(--surface-page, #f6f0e4);
+  color: var(--mucha-gold, #C49020);
+  font-size: 0.55rem;
+  line-height: 1;
+}
+
+/* Dark-mode mucha rule background match */
+.theme-dark .mucha-rule::before,
+html.theme-dark .mucha-rule::before {
+  background: var(--cave-bg, #040210);
+}
+
+/* Section heading with gold side rules */
+.mucha-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--mucha-gold, #C49020);
+  font-family: var(--font-display), Georgia, serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.mucha-section-heading::before,
+.mucha-section-heading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--mucha-gold, #C49020));
+}
+.mucha-section-heading::after {
+  background: linear-gradient(to left, transparent, var(--mucha-gold, #C49020));
+}
+
+/* Cave glass panel — dark backdrop blur card */
+.cave-panel {
+  background: rgba(10, 4, 34, 0.82);
+  border: 1px solid rgba(196, 144, 32, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Crystal stat — a glowing number in a crystal colour */
+.crystal-stat {
+  font-family: var(--font-display), Georgia, serif;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 12px currentColor;
+  transition: text-shadow 300ms ease;
+}
+.crystal-stat:hover {
+  text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+}
+
+/* Illuminated callout — dark cave inscription block */
+.cave-callout {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(8, 184, 216, 0.10) 0%, transparent 70%),
+    rgba(4, 2, 16, 0.88);
+  border: 1px solid rgba(64, 232, 255, 0.22);
+  border-radius: 0.75rem;
+  color: #DDD8F4;
+}
+
+/* Sanctum CTA button */
+.sanctum-cta {
+  background: linear-gradient(
+    135deg,
+    var(--cx-sal, #08B8D8) 0%,
+    var(--cx-trea-g, #20D8C0) 100%
+  );
+  box-shadow:
+    0 0 20px rgba(64, 232, 255, 0.35),
+    0 4px 16px rgba(8, 184, 216, 0.3);
+  color: var(--cave-bg, #040210);
+  font-weight: 700;
+  transition: box-shadow 200ms ease, transform 150ms ease;
+}
+.sanctum-cta:hover {
+  box-shadow:
+    0 0 32px rgba(64, 232, 255, 0.55),
+    0 6px 24px rgba(8, 184, 216, 0.45);
+  transform: translateY(-2px);
+}
+
+/* Mucha vine border — top/bottom ornamental lines on sections */
+.mucha-bordered {
+  border-top: 1px solid rgba(196, 144, 32, 0.30);
+  border-bottom: 1px solid rgba(196, 144, 32, 0.30);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    Animations
    ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes crystal-pulse {
+  0%, 100% { opacity: 0.75; }
+  50%       { opacity: 1.0; }
+}
+.animate-crystal-pulse {
+  animation: crystal-pulse 3s ease-in-out infinite;
+}
+
+@keyframes cave-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.animate-cave-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--mucha-gold, #C49020) 0%,
+    var(--mucha-gold-lt, #E8C050) 30%,
+    var(--cx-sal-g, #40E8FF) 50%,
+    var(--mucha-gold-lt, #E8C050) 70%,
+    var(--mucha-gold, #C49020) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: cave-shimmer 4s linear infinite;
+}
 
 @keyframes rise {
   from {
@@ -658,11 +833,11 @@ html.theme-dark body {
   background: transparent;
 }
 .sim-layout ::-webkit-scrollbar-thumb {
-  background: var(--sim-border-strong, #374151);
+  background: var(--sim-border-strong, #4A2C18);
   border-radius: 3px;
 }
 .sim-layout ::-webkit-scrollbar-thumb:hover {
-  background: var(--sim-text-dim, #6b7280);
+  background: var(--mucha-gold, #C49020);
 }
 
 /* Respect reduced motion within simulation layout */

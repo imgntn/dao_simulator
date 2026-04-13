@@ -120,72 +120,89 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       ]} />
 
       {/* ── Hero ── */}
-      <header className="rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-7 shadow-[var(--shadow-header)] sm:p-10">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12">
+      <header
+        className="relative overflow-hidden rounded-3xl p-7 sm:p-10"
+        style={{
+          background: 'radial-gradient(ellipse at 30% 0%, rgba(128,48,224,0.18) 0%, transparent 55%), radial-gradient(ellipse at 75% 100%, rgba(8,184,216,0.15) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(200,128,24,0.08) 0%, transparent 70%), #040210',
+          border: '1px solid rgba(196,144,32,0.28)',
+          boxShadow: '0 0 60px rgba(8,184,216,0.08), inset 0 1px 0 rgba(232,192,80,0.15)',
+        }}
+      >
+        {/* Decorative crystal glow orbs */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div style={{ position:'absolute', top:'-40px', left:'-60px', width:'300px', height:'300px', borderRadius:'50%', background:'radial-gradient(circle, rgba(128,48,224,0.12) 0%, transparent 70%)', filter:'blur(40px)' }} />
+          <div style={{ position:'absolute', bottom:'-60px', right:'-40px', width:'350px', height:'350px', borderRadius:'50%', background:'radial-gradient(circle, rgba(8,184,216,0.10) 0%, transparent 70%)', filter:'blur(50px)' }} />
+          <div style={{ position:'absolute', top:'40%', left:'50%', width:'200px', height:'200px', borderRadius:'50%', background:'radial-gradient(circle, rgba(200,128,24,0.08) 0%, transparent 70%)', filter:'blur(30px)' }} />
+        </div>
+
+        <div className="relative flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12">
           {/* Left: text content */}
           <div className="flex-1">
-            <p className="text-sm font-semibold uppercase tracking-[0.26em] text-[var(--accent-gold)]">
-              {m.home?.tagline ?? 'DAO Research, Made Actionable'}
+            <p className="mucha-section-heading text-xs">
+              {m.home?.tagline ?? 'DAO Research · Made Actionable · Self-Published'}
             </p>
-            <h1 className="mt-3 max-w-4xl font-serif-display text-5xl leading-[1.08] text-[var(--text-heading)] sm:text-7xl">
+            <h1 className="mt-4 max-w-4xl font-serif-display text-5xl leading-[1.06] sm:text-7xl animate-cave-shimmer">
               {m.home?.heroTitle ?? 'DAO Simulator'}
             </h1>
-            <p className="mt-5 max-w-3xl text-[1.2rem] leading-relaxed text-[var(--text-body)] sm:text-[1.35rem]">
+            <p className="mt-5 max-w-3xl text-[1.15rem] leading-relaxed sm:text-[1.3rem]" style={{ color: '#B8B0D4' }}>
               {m.home?.heroDescription ??
                 'Actionable governance findings from 21,869 simulation runs across 14 calibrated DAO digital twins. Start with any research question below.'}
             </p>
 
-            {/* TL;DR */}
-            <div className="mt-5 rounded-xl border border-[var(--accent-teal)]/30 bg-[var(--accent-teal)]/5 px-5 py-3">
-              <p className="text-sm font-semibold text-[var(--accent-teal)]">TL;DR</p>
-              <p className="mt-1 text-[1.05rem] leading-relaxed text-[var(--text-body)]">
+            {/* TL;DR — illuminated manuscript callout */}
+            <div className="cave-callout mt-6 px-5 py-4">
+              <p className="mucha-section-heading mb-2 text-[0.65rem]">TL;DR</p>
+              <p className="text-[1.05rem] leading-relaxed" style={{ color: '#DDD8F4' }}>
                 Small quorum changes cause governance cliffs. Quadratic voting fixes whale capture without sacrificing efficiency. Structure beats scale in cross-DAO cooperation.
               </p>
             </div>
 
             {/* Primary CTA */}
-            <div className="mt-5 flex flex-wrap items-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center gap-3">
               <a
                 href={`/${locale}/simulate`}
-                className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-teal)] px-7 py-3.5 text-lg font-semibold text-white shadow-md transition hover:bg-[var(--accent-teal-hover)] hover:shadow-lg"
+                className="sanctum-cta inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-lg"
               >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                 </svg>
-                Explore the Simulator
+                Enter the Sanctum
               </a>
               <a
                 href="#research"
-                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--surface-warm)] px-6 py-3.5 text-base font-semibold text-[var(--text-heading)] shadow-sm transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]"
+                className="inline-flex items-center gap-2 rounded-xl px-6 py-3.5 text-base font-semibold transition"
+                style={{ border:'1px solid rgba(196,144,32,0.35)', color:'#E8C050', background:'rgba(196,144,32,0.08)' }}
               >
                 Read the Research
               </a>
             </div>
           </div>
 
-          {/* Right: hero chart + stat counters */}
+          {/* Right: hero chart + crystal stat counters */}
           <div className="flex shrink-0 flex-col items-center gap-4 lg:w-[280px]">
-            <div className="chart-gallery-item w-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4">
+            <div className="chart-gallery-item w-full rounded-2xl p-4" style={{ border:'1px solid rgba(196,144,32,0.22)', background:'rgba(10,4,34,0.7)' }}>
               <QuorumReachChart />
             </div>
             <div className="grid w-full grid-cols-3 gap-2 text-center">
-              <div className="rounded-xl bg-[var(--surface-warm)] p-2.5">
-                <p className="text-xl font-bold text-[var(--accent-teal)]">21,869</p>
-                <p className="text-xs uppercase tracking-wide text-[var(--text-muted)]">Runs</p>
+              <div className="rounded-xl p-2.5" style={{ background:'rgba(8,184,216,0.10)', border:'1px solid rgba(64,232,255,0.18)' }}>
+                <p className="crystal-stat text-xl font-bold" style={{ color:'var(--cx-sal-g)' }}>21,869</p>
+                <p className="text-xs uppercase tracking-wide" style={{ color:'var(--cx-sal)' }}>Runs</p>
               </div>
-              <div className="rounded-xl bg-[var(--surface-warm)] p-2.5">
-                <p className="text-xl font-bold text-[var(--accent-teal)]">14</p>
-                <p className="text-xs uppercase tracking-wide text-[var(--text-muted)]">DAOs</p>
+              <div className="rounded-xl p-2.5" style={{ background:'rgba(128,48,224,0.10)', border:'1px solid rgba(176,104,248,0.18)' }}>
+                <p className="crystal-stat text-xl font-bold" style={{ color:'var(--cx-gov-g)' }}>14</p>
+                <p className="text-xs uppercase tracking-wide" style={{ color:'var(--cx-gov)' }}>DAOs</p>
               </div>
-              <div className="rounded-xl bg-[var(--surface-warm)] p-2.5">
-                <p className="text-xl font-bold text-[var(--accent-gold)]">{sections.length}</p>
-                <p className="text-xs uppercase tracking-wide text-[var(--text-muted)]">Briefs</p>
+              <div className="rounded-xl p-2.5" style={{ background:'rgba(200,128,24,0.10)', border:'1px solid rgba(240,184,48,0.18)' }}>
+                <p className="crystal-stat text-xl font-bold" style={{ color:'var(--cx-coun-g)' }}>{sections.length}</p>
+                <p className="text-xs uppercase tracking-wide" style={{ color:'var(--cx-coun)' }}>Briefs</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-7 grid gap-3 sm:grid-cols-3">
+        <div className="mucha-rule relative mt-8" />
+
+        <div className="relative mt-6 grid gap-3 sm:grid-cols-3">
           <InfoCard label={m.home?.briefsLabel ?? 'Decision Briefs'}>
             {sections.length} {m.home?.briefsCount ?? 'briefs covering participation, capture, operations, treasury, coordination, LLM governance, and counterfactual rule comparison.'}
           </InfoCard>
@@ -198,7 +215,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               href={JAMES_SITE_URL}
               target="_blank"
               rel="noreferrer"
-              className="text-[var(--accent-teal)] underline decoration-[var(--accent-teal)]/40 underline-offset-4 hover:text-[var(--accent-teal-hover)]"
+              className="underline underline-offset-4"
+              style={{ color:'var(--cx-trea-g)', textDecorationColor:'rgba(32,216,192,0.4)' }}
             >
               James B. Pollack
             </a>
@@ -207,59 +225,63 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               href="https://github.com/imgntn/dao_simulator"
               target="_blank"
               rel="noreferrer"
-              className="text-[var(--accent-teal)] underline decoration-[var(--accent-teal)]/40 underline-offset-4 hover:text-[var(--accent-teal-hover)]"
+              className="underline underline-offset-4"
+              style={{ color:'var(--cx-trea-g)', textDecorationColor:'rgba(32,216,192,0.4)' }}
             >
               GitHub
             </a>
           </InfoCard>
         </div>
 
-        {/* Page table of contents */}
-        <nav aria-label="Page sections" className="mt-8 flex flex-wrap gap-2">
-          <a href="#why" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
-            Key Findings
-          </a>
-          <a href="#podcast" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
-            {m.home?.podcastListen ?? 'Podcast'}
-          </a>
-          <a href="#digital-twins" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
-            Digital Twins
-          </a>
-          <a href="#simulator" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
-            Simulator
-          </a>
-          <a href="#charts" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
-            Results
-          </a>
-          <a href="#research" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
-            Research
-          </a>
-          <a href="#papers" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
-            Papers
-          </a>
-          <a href="#consulting" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
-            {m.home?.consultingHeading ?? 'Work With Me'}
-          </a>
-          <a href="#advanced" className="rounded-full border border-[var(--border-default)] bg-[var(--surface-warm)] px-5 py-2.5 text-base font-medium text-[var(--text-body)] transition hover:border-[var(--accent-teal)] hover:text-[var(--accent-teal)]">
-            Advanced
-          </a>
+        {/* Page table of contents — cave glass pills */}
+        <nav aria-label="Page sections" className="relative mt-8 flex flex-wrap gap-2">
+          {([
+            ['#why', 'Key Findings'],
+            ['#podcast', m.home?.podcastListen ?? 'Podcast'],
+            ['#digital-twins', 'Digital Twins'],
+            ['#simulator', 'Simulator'],
+            ['#charts', 'Results'],
+            ['#research', 'Research'],
+            ['#papers', 'Papers'],
+            ['#consulting', 'Consulting'],
+          ] as [string, string][]).map(([href, label]) => (
+            <a key={href} href={href}
+              className="rounded-full px-4 py-2 text-sm font-medium transition-all"
+              style={{
+                border: '1px solid rgba(196,144,32,0.28)',
+                background: 'rgba(10,4,34,0.60)',
+                color: '#B8B0D4',
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(64,232,255,0.55)';
+                (e.currentTarget as HTMLElement).style.color = '#40E8FF';
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(196,144,32,0.28)';
+                (e.currentTarget as HTMLElement).style.color = '#B8B0D4';
+              }}
+            >
+              {label}
+            </a>
+          ))}
         </nav>
       </header>
 
       {/* ── Social Proof ── */}
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] px-6 py-3 text-sm text-[var(--text-muted)]">
-        <span>Featured on <strong className="text-[var(--text-heading)]">Green Pill Podcast</strong></span>
-        <span className="hidden sm:inline text-[var(--border-default)]">|</span>
-        <span><strong className="text-[var(--accent-teal)]">14</strong> DAOs calibrated to real data</span>
-        <span className="hidden sm:inline text-[var(--border-default)]">|</span>
-        <span><strong className="text-[var(--accent-teal)]">21,869</strong> simulation runs</span>
-        <span className="hidden sm:inline text-[var(--border-default)]">|</span>
-        <a href="https://github.com/imgntn/dao_simulator" target="_blank" rel="noreferrer" className="font-semibold text-[var(--text-heading)] hover:text-[var(--accent-teal)]">Open Source</a>
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-2xl px-6 py-3 text-sm" style={{ border:'1px solid rgba(196,144,32,0.20)', background:'rgba(10,4,34,0.65)', color:'#B8B0D4' }}>
+        <span>Featured on <strong style={{ color:'var(--cx-coun-g)' }}>Green Pill Podcast</strong></span>
+        <span className="hidden sm:inline" style={{ color:'rgba(196,144,32,0.35)' }}>◆</span>
+        <span><strong style={{ color:'var(--cx-gov-g)' }}>14</strong> DAOs calibrated to real data</span>
+        <span className="hidden sm:inline" style={{ color:'rgba(196,144,32,0.35)' }}>◆</span>
+        <span><strong style={{ color:'var(--cx-sal-g)' }}>21,869</strong> simulation runs</span>
+        <span className="hidden sm:inline" style={{ color:'rgba(196,144,32,0.35)' }}>◆</span>
+        <a href="https://github.com/imgntn/dao_simulator" target="_blank" rel="noreferrer" style={{ color:'var(--cx-trea-g)', fontWeight:600 }}>Open Source</a>
       </div>
 
       {/* ── Key Findings ── */}
-      <section id="why" aria-labelledby="why-heading" className="mt-8 rounded-3xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-7 sm:p-9">
-        <h2 id="why-heading" className="font-serif-display text-3xl text-[var(--text-heading)] sm:text-4xl">
+      <section id="why" aria-labelledby="why-heading" className="mt-8 rounded-3xl p-7 sm:p-9" style={{ border:'1px solid rgba(196,144,32,0.22)', background:'radial-gradient(ellipse at 20% 0%, rgba(128,48,224,0.12) 0%, transparent 60%), rgba(10,4,34,0.80)' }}>
+        <p className="mucha-section-heading mb-3">Key Findings</p>
+        <h2 id="why-heading" className="font-serif-display text-3xl sm:text-4xl" style={{ color:'var(--mucha-gold-lt)' }}>
           Three Numbers That Should Change How You Design Governance
         </h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
