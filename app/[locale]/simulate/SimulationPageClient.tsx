@@ -8,6 +8,7 @@ import { useKeyboardShortcuts } from '@/lib/browser/useKeyboardShortcuts';
 import { decodeConfigFromURL } from '@/components/simulation/ShareButton';
 import { ControlPanel } from '@/components/simulation/ControlPanel';
 import { MetricsDashboard } from '@/components/simulation/dashboard/MetricsDashboard';
+import { EventFeed } from '@/components/simulation/dashboard/EventFeed';
 import { VotingHeatmap } from '@/components/simulation/dashboard/VotingHeatmap';
 import { SanctumScene } from '@/components/simulation/sanctum';
 import { TabBar, type SimTab } from '@/components/simulation/TabBar';
@@ -234,6 +235,11 @@ function buildPanelContent(
     'delegation-graph': (
       <CollapsiblePanel id="delegation-graph" title="Delegation Graph">
         <DelegationGraph />
+      </CollapsiblePanel>
+    ),
+    'event-feed': (
+      <CollapsiblePanel id="event-feed" title="Event Feed">
+        <EventFeed />
       </CollapsiblePanel>
     ),
     // --- Configuration ---

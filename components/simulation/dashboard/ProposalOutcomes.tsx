@@ -27,10 +27,13 @@ export function ProposalOutcomes({ snapshot }: Props) {
     return entries;
   }, [snapshot]);
 
-  if (data.length === 0) return null;
-
   return (
     <ChartWrapper title="Proposal Outcomes">
+      {data.length === 0 ? (
+        <div className="rounded border border-[var(--sim-border)] bg-[var(--sim-surface)] px-3 py-4 text-center text-xs text-[var(--sim-text-muted)]">
+          No proposal outcomes yet
+        </div>
+      ) : (
       <div className="flex items-center gap-4">
         <ResponsiveContainer width={100} height={100}>
           <PieChart>
@@ -66,6 +69,7 @@ export function ProposalOutcomes({ snapshot }: Props) {
           ))}
         </div>
       </div>
+      )}
     </ChartWrapper>
   );
 }

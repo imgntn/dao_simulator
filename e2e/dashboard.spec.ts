@@ -12,7 +12,7 @@ async function gotoAndWaitForInit(page: Page) {
   await page.addInitScript(() => {
     localStorage.setItem('sim-tutorial-complete', 'true');
   });
-  await page.goto(SIMULATE_URL);
+  await page.goto(SIMULATE_URL, { waitUntil: 'domcontentloaded' });
   await expect(
     page.getByRole('heading', { name: /Simulation Control/i }),
   ).toBeVisible({ timeout: 60000 });
@@ -24,31 +24,31 @@ test.describe('Tab Navigation', () => {
   });
 
   test('all 5 tabs are visible', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'Interactive' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Compare' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Branch' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Multi-Run' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Research' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: /The Sanctum/i })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Compare' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Branch' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Multi-Run' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Research' })).toBeVisible();
   });
 
   test('can switch to Compare tab', async ({ page }) => {
-    await page.getByRole('button', { name: 'Compare' }).click();
-    await expect(page.getByRole('button', { name: 'Compare' })).toBeVisible();
+    await page.getByRole('tab', { name: 'Compare' }).click();
+    await expect(page.getByRole('tab', { name: 'Compare', selected: true })).toBeVisible();
   });
 
   test('can switch to Branch tab', async ({ page }) => {
-    await page.getByRole('button', { name: 'Branch' }).click();
-    await expect(page.getByRole('button', { name: 'Branch' })).toBeVisible();
+    await page.getByRole('tab', { name: 'Branch' }).click();
+    await expect(page.getByRole('tab', { name: 'Branch', selected: true })).toBeVisible();
   });
 
   test('can switch to Multi-Run tab', async ({ page }) => {
-    await page.getByRole('button', { name: 'Multi-Run' }).click();
-    await expect(page.getByRole('button', { name: 'Multi-Run' })).toBeVisible();
+    await page.getByRole('tab', { name: 'Multi-Run' }).click();
+    await expect(page.getByRole('tab', { name: 'Multi-Run', selected: true })).toBeVisible();
   });
 
   test('can switch to Research tab', async ({ page }) => {
-    await page.getByRole('button', { name: 'Research' }).click();
-    await expect(page.getByRole('button', { name: 'Research' })).toBeVisible();
+    await page.getByRole('tab', { name: 'Research' }).click();
+    await expect(page.getByRole('tab', { name: 'Research', selected: true })).toBeVisible();
   });
 
   test('switching tabs preserves simulation state', async ({ page }) => {
@@ -61,8 +61,8 @@ test.describe('Tab Navigation', () => {
     }).toPass({ timeout: 5000 });
 
     // Switch to Compare and back
-    await page.getByRole('button', { name: 'Compare' }).click();
-    await page.getByRole('button', { name: 'Interactive' }).click();
+    await page.getByRole('tab', { name: 'Compare' }).click();
+    await page.getByRole('tab', { name: /The Sanctum/i }).click();
 
     // Step should still be 1
     const text = await page.getByText(/Step \d+/).innerText();
@@ -90,14 +90,14 @@ test.describe('Control Panel Layout', () => {
     await expect(daoSelect).toContainText('MakerDAO');
   });
 
-  test('has Governance Rule dropdown with 8 options', async ({ page }) => {
+  test('has Scenario Preset dropdown with 7 options', async ({ page }) => {
     const govSelect = page.locator('select').nth(1);
     const options = govSelect.locator('option');
-    await expect(options).toHaveCount(8);
+    await expect(options).toHaveCount(7);
 
-    await expect(govSelect).toContainText('Simple Majority');
-    await expect(govSelect).toContainText('Quadratic Voting');
-    await expect(govSelect).toContainText('Conviction Voting');
+    await expect(govSelect).toContainText('None (manual config)');
+    await expect(govSelect).toContainText('Quadratic vs Majority');
+    await expect(govSelect).toContainText('Black Swan Stress Test');
   });
 
   test('has speed slider with label', async ({ page }) => {

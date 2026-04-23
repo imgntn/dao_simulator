@@ -10,7 +10,7 @@ npm install
 npm run dev
 ```
 
-Visit http://localhost:7884
+Visit the URL printed by the launcher. It starts with `http://127.0.0.1:7884` and moves to the next free port when needed.
 
 > Requires Node.js 22+ (Next.js 16).
 
@@ -22,7 +22,7 @@ All mutation endpoints (POST, PUT, DELETE) require authentication:
 
 ```bash
 # Create a simulation
-curl -X POST http://localhost:7884/api/simulation \
+curl -X POST http://127.0.0.1:7884/api/simulation \
   -H "X-API-Key: your-api-key-here" \
   -H "Content-Type: application/json" \
   -d '{"num_developers": 10, "num_investors": 5}'

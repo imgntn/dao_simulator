@@ -1,6 +1,12 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 const SIMULATE_URL = '/en/simulate';
+
+async function prepareSimulator(page: Page) {
+  await page.addInitScript(() => {
+    localStorage.setItem('sim-tutorial-complete', 'true');
+  });
+}
 
 /**
  * Smoke Tests - Quick validation that core functionality works.
@@ -9,28 +15,30 @@ const SIMULATE_URL = '/en/simulate';
 test.describe('Smoke Tests', () => {
   test.describe('Homepage', () => {
     test('loads successfully', async ({ page }) => {
-      await page.goto('/');
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
       await page.waitForLoadState('domcontentloaded');
       await expect(page.getByRole('heading', { name: /DAO Simulator/i })).toBeVisible();
     });
 
     test('has simulator link', async ({ page }) => {
-      await page.goto('/');
-      const simLink = page.getByRole('link', { name: /Launch Simulator/i });
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      const simLink = page.getByRole('link', { name: /Launch Simulator|Enter the Sanctum/i }).first();
       await expect(simLink).toBeVisible();
     });
   });
 
   test.describe('Simulator', () => {
     test('loads and initializes', async ({ page }) => {
-      await page.goto(SIMULATE_URL);
+      await prepareSimulator(page);
+      await page.goto(SIMULATE_URL, { waitUntil: 'domcontentloaded' });
       await expect(
         page.getByRole('heading', { name: /Simulation Control/i }),
       ).toBeVisible({ timeout: 60000 });
     });
 
     test('has transport controls', async ({ page }) => {
-      await page.goto(SIMULATE_URL);
+      await prepareSimulator(page);
+      await page.goto(SIMULATE_URL, { waitUntil: 'domcontentloaded' });
       await expect(
         page.getByRole('heading', { name: /Simulation Control/i }),
       ).toBeVisible({ timeout: 60000 });
@@ -41,7 +49,8 @@ test.describe('Smoke Tests', () => {
     });
 
     test('shows step counter at zero', async ({ page }) => {
-      await page.goto(SIMULATE_URL);
+      await prepareSimulator(page);
+      await page.goto(SIMULATE_URL, { waitUntil: 'domcontentloaded' });
       await expect(
         page.getByRole('heading', { name: /Simulation Control/i }),
       ).toBeVisible({ timeout: 60000 });

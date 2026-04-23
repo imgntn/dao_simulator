@@ -11,14 +11,14 @@ npm install
 npm run dev
 ```
 
-Visit http://localhost:7884
+Visit the URL printed by the launcher. It starts with `http://127.0.0.1:7884` and automatically moves to the next free port if `7884` is occupied.
 
 > Requires Node.js 22+ (Next.js 16).
 
 ### Launch the 3D Simulator
 
-1. Visit http://localhost:7884
-2. Click **"Launch Simulator"** (or go directly to http://localhost:7884/simulate)
+1. Visit the URL printed by `npm run dev`
+2. Click **"Launch Simulator"** (or go directly to `/simulate`)
 3. Use the transport controls: **Play / Pause / Step / Reset**
 4. Select a DAO preset (14 real-world DAOs) and governance rule
 5. Watch agents vote, propose, and trade in the 3D skyscraper visualization
@@ -88,14 +88,14 @@ npm run lint         # ESLint
 
 ## API Endpoints
 
-The REST API is available at http://localhost:7884/api/simulation
+The REST API is available at `<printed-base-url>/api/simulation`
 
 ```bash
 # List simulations
-curl http://localhost:7884/api/simulation
+curl http://127.0.0.1:7884/api/simulation
 
 # Create simulation (requires API key)
-curl -X POST http://localhost:7884/api/simulation \
+curl -X POST http://127.0.0.1:7884/api/simulation \
   -H "X-API-Key: your-api-key" \
   -H "Content-Type: application/json" \
   -d '{"num_developers": 10, "num_investors": 5}'
@@ -105,7 +105,7 @@ curl -X POST http://localhost:7884/api/simulation \
 
 ```
 Browser
-    |-- HTTP --> Next.js (port 7884)
+    |-- HTTP --> Next.js (starts at port 7884, shifts if occupied)
     |            \__ REST API (/api/simulation)
     |            \__ App pages (/, /simulate)
     |
@@ -116,11 +116,11 @@ Browser
 
 ### Simulation not starting
 - Make sure the dev server is running: `npm run dev`
-- Check that http://localhost:7884 loads
+- Check that the printed server URL loads
 - Open browser console for error messages
 
 ### Port already in use
-- Change port in `package.json` scripts or use: `PORT=7885 npm run dev`
+- The launcher automatically chooses the next free port. To request a different starting port, use: `PORT=7890 npm run dev`
 
 ### 3D scene not rendering
 - Ensure your browser supports WebGL (all modern browsers do)

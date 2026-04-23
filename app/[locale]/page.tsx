@@ -246,19 +246,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             ['#consulting', 'Consulting'],
           ] as [string, string][]).map(([href, label]) => (
             <a key={href} href={href}
-              className="rounded-full px-4 py-2 text-sm font-medium transition-all"
+              className="rounded-full px-4 py-2 text-sm font-medium transition-all hover:border-[rgba(64,232,255,0.55)] hover:text-[#40E8FF]"
               style={{
                 border: '1px solid rgba(196,144,32,0.28)',
                 background: 'rgba(10,4,34,0.60)',
                 color: '#B8B0D4',
-              }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(64,232,255,0.55)';
-                (e.currentTarget as HTMLElement).style.color = '#40E8FF';
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(196,144,32,0.28)';
-                (e.currentTarget as HTMLElement).style.color = '#B8B0D4';
               }}
             >
               {label}

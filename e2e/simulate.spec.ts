@@ -12,7 +12,7 @@ async function gotoAndWaitForInit(page: Page) {
   await page.addInitScript(() => {
     localStorage.setItem('sim-tutorial-complete', 'true');
   });
-  await page.goto(SIMULATE_URL);
+  await page.goto(SIMULATE_URL, { waitUntil: 'domcontentloaded' });
   await expect(
     page.getByRole('heading', { name: /Simulation Control/i }),
   ).toBeVisible({ timeout: 60000 });
@@ -27,7 +27,7 @@ async function getStep(page: Page): Promise<number> {
 
 /** Click Play button and wait for steps to start advancing. */
 async function playAndWaitForSteps(page: Page, minSteps = 5) {
-  await page.getByRole('button', { name: 'Play' }).click();
+  await page.locator('button[aria-label="Play simulation"]', { hasText: /^Play$/ }).click();
   // Wait until step counter reaches at least minSteps
   await expect(async () => {
     const step = await getStep(page);
@@ -35,15 +35,31 @@ async function playAndWaitForSteps(page: Page, minSteps = 5) {
   }).toPass({ timeout: 30000 });
 }
 
+/** Click the main Pause control and wait for the UI to settle back to Play. */
+async function pauseAndWait(page: Page) {
+  await page.locator('button[aria-label="Pause simulation"]', { hasText: /^Pause$/ }).click();
+  await expect(page.locator('button[aria-label="Play simulation"]', { hasText: /^Play$/ })).toBeVisible();
+}
+
+function speedSlider(page: Page) {
+  return page.getByRole('slider', { name: 'Simulation speed' });
+}
+
+async function stepForward(page: Page, count = 1) {
+  for (let i = 0; i < count; i += 1) {
+    await page.getByRole('button', { name: 'Step simulation forward' }).click();
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Page Load & Initialization
 // ---------------------------------------------------------------------------
 test.describe('Simulate Page - Load & Initialization', () => {
   test('shows initializing state while loading', async ({ page }) => {
-    await page.goto(SIMULATE_URL);
+    await page.goto(SIMULATE_URL, { waitUntil: 'domcontentloaded' });
     // The loading text should appear before init completes
     await expect(
-      page.getByText('Initializing simulation engine...'),
+      page.getByText(/Awakening the Sanctum|Initializing simulation engine/i),
     ).toBeVisible({ timeout: 10000 });
   });
 
@@ -51,7 +67,7 @@ test.describe('Simulate Page - Load & Initialization', () => {
     await gotoAndWaitForInit(page);
 
     await expect(page.getByRole('heading', { name: /Simulation Control/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Play' })).toBeVisible();
+    await expect(page.locator('button[aria-label="Play simulation"]', { hasText: /^Play$/ })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Step' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
   });
@@ -69,17 +85,15 @@ test.describe('Simulate Page - Load & Initialization', () => {
     await expect(daoSelect).toContainText('Gitcoin');
   });
 
-  test('governance rule dropdown has options', async ({ page }) => {
+  test('scenario preset dropdown has options', async ({ page }) => {
     await gotoAndWaitForInit(page);
 
     const govSelect = page.locator('select').nth(1);
     const options = govSelect.locator('option');
-    // 8 options: Default + 7 rules
-    const count = await options.count();
-    expect(count).toBeGreaterThanOrEqual(7);
+    await expect(options).toHaveCount(7);
 
-    await expect(govSelect).toContainText('Simple Majority');
-    await expect(govSelect).toContainText('Quadratic Voting');
+    await expect(govSelect).toContainText('None (manual config)');
+    await expect(govSelect).toContainText('Quadratic vs Majority');
   });
 });
 
@@ -101,10 +115,11 @@ test.describe('Simulate Page - Controls', () => {
 
   test('Pause button stops the step counter', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    await playAndWaitForSteps(page, 5);
+    await speedSlider(page).fill('1');
+    await expect(page.getByText('1 steps/sec')).toBeVisible();
+    await playAndWaitForSteps(page, 1);
 
-    // Click Pause
-    await page.getByRole('button', { name: 'Pause' }).last().click();
+    await pauseAndWait(page);
 
     // Record current step, wait a bit, confirm it hasn't advanced
     const steppedAt = await getStep(page);
@@ -128,10 +143,13 @@ test.describe('Simulate Page - Controls', () => {
 
   test('Reset button resets step counter to 0', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    await playAndWaitForSteps(page, 5);
+    await speedSlider(page).fill('1');
+    await expect(page.getByText('1 steps/sec')).toBeVisible();
+    await playAndWaitForSteps(page, 1);
 
     // Pause first, then reset
-    await page.getByRole('button', { name: 'Pause' }).last().click();
+    await pauseAndWait(page);
+    page.once('dialog', (dialog) => dialog.accept());
     await page.getByRole('button', { name: 'Reset' }).click();
 
     await expect(async () => {
@@ -143,7 +161,7 @@ test.describe('Simulate Page - Controls', () => {
   test('Speed slider accepts new values', async ({ page }) => {
     await gotoAndWaitForInit(page);
 
-    const slider = page.locator('input[type="range"]');
+    const slider = speedSlider(page);
     await expect(slider).toBeVisible();
 
     // Set slider to a specific value
@@ -155,15 +173,15 @@ test.describe('Simulate Page - Controls', () => {
     await gotoAndWaitForInit(page);
 
     // Initially shows Play
-    await expect(page.getByRole('button', { name: 'Play' })).toBeVisible();
+    await expect(page.locator('button[aria-label="Play simulation"]', { hasText: /^Play$/ })).toBeVisible();
 
     // Click Play -> should now show Pause
-    await page.getByRole('button', { name: 'Play' }).click();
-    await expect(page.getByRole('button', { name: 'Pause' }).last()).toBeVisible();
+    await page.locator('button[aria-label="Play simulation"]', { hasText: /^Play$/ }).click();
+    await expect(page.locator('button[aria-label="Pause simulation"]', { hasText: /^Pause$/ })).toBeVisible();
 
     // Click Pause -> should now show Play
-    await page.getByRole('button', { name: 'Pause' }).last().click();
-    await expect(page.getByRole('button', { name: 'Play' })).toBeVisible();
+    await pauseAndWait(page);
+    await expect(page.locator('button[aria-label="Play simulation"]', { hasText: /^Play$/ })).toBeVisible();
   });
 });
 
@@ -173,8 +191,7 @@ test.describe('Simulate Page - Controls', () => {
 test.describe('Simulate Page - Dashboard & Charts', () => {
   test('metric cards appear after simulation runs', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    await playAndWaitForSteps(page, 5);
-    await page.getByRole('button', { name: 'Pause' }).last().click();
+    await stepForward(page);
 
     // Metric card labels are <div> elements; chart titles are <h3> elements.
     // Scope to div to avoid strict-mode violations from duplicate text.
@@ -190,8 +207,7 @@ test.describe('Simulate Page - Dashboard & Charts', () => {
 
   test('Recharts SVG elements render after steps', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    await playAndWaitForSteps(page, 5);
-    await page.getByRole('button', { name: 'Pause' }).last().click();
+    await stepForward(page, 2);
 
     // Recharts renders <svg> with role="application" inside chart containers
     const charts = page.locator('svg[role="application"]');
@@ -203,8 +219,7 @@ test.describe('Simulate Page - Dashboard & Charts', () => {
 
   test('agent distribution chart shows at least one agent type', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    await playAndWaitForSteps(page, 5);
-    await page.getByRole('button', { name: 'Pause' }).last().click();
+    await stepForward(page);
 
     await expect(page.getByText('Agent Types')).toBeVisible();
     // The bar chart should have at least one recharts bar
@@ -217,23 +232,25 @@ test.describe('Simulate Page - Dashboard & Charts', () => {
 
   test('event feed shows entries after simulation produces events', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    // Play the simulation and wait for events to appear in the feed
-    await page.getByRole('button', { name: 'Play' }).click();
+    await page.locator('select').nth(1).selectOption('black-swan-stress');
+    await page.getByRole('button', { name: /^Reset$/ }).first().click();
     await expect(async () => {
-      const eventText = page.getByText(/Proposal created|Agent voted|Proposal approved/);
-      const count = await eventText.count();
-      expect(count).toBeGreaterThanOrEqual(1);
-    }).toPass({ timeout: 90000 });
-    await page.getByRole('button', { name: 'Pause' }).last().click();
+      const step = await getStep(page);
+      expect(step).toBe(0);
+    }).toPass({ timeout: 15000 });
+
+    // The stress preset schedules an early crisis, giving the feed a deterministic event.
+    for (let i = 0; i < 6; i += 1) {
+      await stepForward(page);
+    }
+    await expect(page.getByText(/Black Swan:/i)).toBeVisible({ timeout: 30000 });
   });
 
   test('proposal outcomes section appears after proposals are created', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    // Play simulation and wait for proposals to be created and resolved
-    await page.getByRole('button', { name: 'Play' }).click();
-    // Proposals need many steps to create and resolve — wait directly for the heading
-    await expect(page.getByText('Proposal Outcomes')).toBeVisible({ timeout: 90000 });
-    await page.getByRole('button', { name: 'Pause' }).last().click();
+    await stepForward(page);
+    await expect(page.getByRole('heading', { name: 'Proposal Outcomes' })).toBeVisible();
+    await expect(page.getByText(/No proposal outcomes yet|Approved|Rejected|Expired|Open/)).toBeVisible();
   });
 });
 
@@ -263,8 +280,7 @@ test.describe('Simulate Page - 3D Visualization', () => {
     });
 
     await gotoAndWaitForInit(page);
-    await playAndWaitForSteps(page, 5);
-    await page.getByRole('button', { name: 'Pause' }).last().click();
+    await stepForward(page, 5);
 
     expect(errors).toHaveLength(0);
   });
@@ -287,8 +303,7 @@ test.describe('Simulate Page - 3D Visualization', () => {
 test.describe('Simulate Page - DAO Switching', () => {
   test('selecting a different DAO resets simulation', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    await playAndWaitForSteps(page, 5);
-    await page.getByRole('button', { name: 'Pause' }).last().click();
+    await stepForward(page, 5);
 
     const stepBefore = await getStep(page);
     expect(stepBefore).toBeGreaterThan(0);

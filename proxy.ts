@@ -4,10 +4,10 @@ import type { NextRequest } from 'next/server';
 const locales = ['en', 'es', 'zh', 'ja'];
 const defaultLocale = 'en';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip API routes, Next.js internals, and static/public assets
+  // Skip API routes, Next.js internals, and static/public assets.
   if (
     pathname.startsWith('/api/') ||
     pathname.startsWith('/_next/') ||
@@ -16,12 +16,12 @@ export function middleware(request: NextRequest) {
     pathname.startsWith('/apple-icon') ||
     pathname === '/robots.txt' ||
     pathname === '/sitemap.xml' ||
-    /\.\w{2,5}$/.test(pathname) // skip files with extensions (.json, .mp3, .png, etc.)
+    /\.\w{2,5}$/.test(pathname)
   ) {
     return NextResponse.next();
   }
 
-  // Check if pathname already has a valid locale prefix
+  // Check if pathname already has a valid locale prefix.
   const pathnameLocale = locales.find(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
@@ -30,11 +30,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check cookie first (set when user manually switches locale)
+  // Check cookie first (set when user manually switches locale).
   const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
   const savedLocale = cookieLocale && locales.includes(cookieLocale) ? cookieLocale : null;
 
-  // Fall back to Accept-Language header detection
+  // Fall back to Accept-Language header detection.
   const acceptLang = request.headers.get('accept-language') ?? '';
   const preferred = acceptLang
     .split(',')
@@ -43,7 +43,7 @@ export function middleware(request: NextRequest) {
 
   const locale = savedLocale ?? preferred ?? defaultLocale;
 
-  // Redirect to locale-prefixed path
+  // Redirect to locale-prefixed path.
   const url = request.nextUrl.clone();
   url.pathname = `/${locale}${pathname}`;
   return NextResponse.redirect(url);
@@ -51,7 +51,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Match all paths except static files, API, and Next.js internals
     '/((?!api|_next/static|_next/image|favicon\\.ico|icon\\.svg|apple-icon|robots\\.txt|sitemap\\.xml).*)',
   ],
 };

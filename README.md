@@ -6,12 +6,12 @@ Modern TypeScript/Next.js environment for experimenting with decentralized gover
 
 ```bash
 npm install
-npm run dev        # Next.js app on http://localhost:7884
+npm run dev        # Starts Next.js on port 7884 or the next free port
 ```
 
 Requires Node.js 22+ (Next.js 16).
 
-Open [http://localhost:7884/simulate](http://localhost:7884/simulate) to launch the 3D interactive simulator. The simulation engine runs in a Web Worker off the main thread — use play/pause/step/reset to drive it in real-time with the skyscraper DAO visualization.
+Open the URL printed by `npm run dev` and visit `/simulate` to launch the 3D interactive simulator. By default the app tries `http://127.0.0.1:7884` and automatically moves to the next free port if needed. The simulation engine runs in a Web Worker off the main thread — use play/pause/step/reset to drive it in real-time with the skyscraper DAO visualization.
 
 ## Highlights
 
@@ -48,7 +48,7 @@ See `paper/` for the LaTeX source and `experiments/paper/` for all experiment co
 
 | Script | Description |
 | --- | --- |
-| `npm run dev` | Next.js app (Turbopack) on port **7884** |
+| `npm run dev` | Next.js app (Turbopack), starting at **7884** and shifting to the next free port if needed |
 | `npm run test` | Vitest unit suite with coverage (784 tests) |
 | `npm run test:e2e` | Playwright e2e suite — 138 tests across 10 projects (smoke, dashboard, simulation, controls, visualizations, API, accessibility, responsive, homepage) |
 | `npm run lint` | ESLint (flat config) |
@@ -70,7 +70,7 @@ See `docs/EXAMPLES.md` for full details on each scenario, output expectations, a
 ## Testing & Quality
 
 - **Unit tests**: `npm run test` — 784 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, and LLM integration. V8 coverage enabled.
-- **E2E tests**: `npm run test:e2e` — 138 Playwright tests across 10 projects: smoke (page load), dashboard (UI layout/tabs/panels), simulation (behavior/keyboard shortcuts/DAO switching), simulate (play/pause/step/reset/metrics/charts), visualizations (3D canvas/WebGL/charts/delegation graph/theme), API (REST endpoints), accessibility (a11y compliance), responsive (mobile/tablet/orientation/touch), and homepage tests. Reuses the dev server on port 7884.
+- **E2E tests**: `npm run test:e2e` — 138 Playwright tests across 10 projects: smoke (page load), dashboard (UI layout/tabs/panels), simulation (behavior/keyboard shortcuts/DAO switching), simulate (play/pause/step/reset/metrics/charts), visualizations (3D canvas/WebGL/charts/delegation graph/theme), API (REST endpoints), accessibility (a11y compliance), responsive (mobile/tablet/orientation/touch), and homepage tests. Reuses a healthy server when one is already running, otherwise launches its own server on the next free port.
 - **Linting**: `npm run lint` (ESLint + Next core web vitals). Coverage artifacts are ignored to keep the tree clean.
 
 ## 3D Interactive Simulator

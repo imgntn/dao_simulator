@@ -7,12 +7,12 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "next dev --turbopack -p 7884",
+    "dev": "node scripts/next-server.js --dev",
     "build": "node scripts/build.js",
     "build:next": "next build --turbopack",
     "bundle:browser": "tsx scripts/bundle-browser-data.ts",
     "start": "node scripts/start.js",
-    "start:next": "next start",
+    "start:next": "node scripts/next-server.js",
     "lint": "eslint",
     "test": "npm run test:unit",
     "test:unit": "vitest run --coverage",

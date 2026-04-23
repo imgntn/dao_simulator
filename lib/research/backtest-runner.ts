@@ -5,7 +5,7 @@
  * digital twins reproduce real DAO dynamics within statistical bounds.
  */
 
-import { DAOSimulation, type DAOSimulationConfig } from '../engine/simulation';
+import type { DAOSimulationConfig } from '../engine/simulation';
 import { CalibrationLoader } from '../digital-twins/calibration-loader';
 import type { CalibrationProfile } from '../digital-twins/calibration-loader';
 import {
@@ -76,6 +76,9 @@ export class BacktestRunner {
     if (!profile) {
       throw new Error(`No calibration profile found for DAO: ${config.daoId}`);
     }
+
+    // Load the heavy simulation engine only after we know the DAO is valid.
+    const { DAOSimulation } = await import('../engine/simulation');
 
     const reports: AccuracyReport[] = [];
 

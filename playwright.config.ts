@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:7884';
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:7884';
+const basePort = new URL(baseURL).port || '7884';
 const workerEnv = process.env.PLAYWRIGHT_WORKERS;
 const parsedWorkers = workerEnv ? Number.parseInt(workerEnv, 10) : NaN;
 // Default to 1 worker to prevent system freezes with WebGL/3D content
@@ -156,7 +157,7 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_SKIP_WEBSERVER
     ? undefined
     : {
-        command: 'npm run dev',
+        command: `node scripts/next-server.js --dev --hostname=127.0.0.1 --port=${basePort}`,
         url: baseURL,
         reuseExistingServer: true,
         timeout: 120 * 1000,

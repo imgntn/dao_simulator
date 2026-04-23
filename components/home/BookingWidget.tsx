@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
+import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 
 interface ContactFormData {
   name: string;
@@ -15,6 +17,7 @@ export function BookingWidget() {
     message: '',
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const { trackEvent } = useAnalytics();
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,20 +32,11 @@ export function BookingWidget() {
 
       if (!res.ok) throw new Error('Send failed');
       setStatus('success');
-
-      // Track analytics
-      try {
-        fetch('/api/analytics', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'event', name: 'contact_submitted' }),
-          keepalive: true,
-        });
-      } catch { /* noop */ }
+      trackEvent(ANALYTICS_EVENTS.BOOKING_SUBMITTED);
     } catch {
       setStatus('error');
     }
-  }, [form]);
+  }, [form, trackEvent]);
 
   const updateField = (field: keyof ContactFormData, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }));

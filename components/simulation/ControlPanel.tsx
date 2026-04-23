@@ -95,6 +95,9 @@ const SCENARIO_PRESETS: ScenarioPreset[] = [
       blackSwanEnabled: true,
       blackSwanFrequency: 5,
       blackSwanSeverityScale: 0.8,
+      scheduledBlackSwans: [
+        { step: 5, category: 'market_contagion', severity: 0.8 },
+      ],
     },
   },
   {
