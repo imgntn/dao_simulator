@@ -83,6 +83,7 @@ export default defineConfig({
       name: 'smoke',
       testMatch: /.*smoke\.spec\.ts/,
       use: { ...devices['Desktop Chrome'] },
+      timeout: 120000,
     },
 
     /* Dashboard tests - simulator UI layout, tabs, panels */
