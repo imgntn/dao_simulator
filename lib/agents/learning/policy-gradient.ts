@@ -16,6 +16,7 @@ import { random } from '../../utils/random';
 interface TrajectoryStep {
   state: string;
   action: string;
+  availableActions: string[];
   reward: number;
   /** Log probability of the action under the policy */
   logProb: number;
@@ -191,7 +192,7 @@ export class PolicyGradientMixin {
     const prob = this.getActionProbability(state, action, actions);
     const logProb = Math.log(Math.max(prob, 1e-10));
 
-    this.trajectory.push({ state, action, reward, logProb });
+    this.trajectory.push({ state, action, availableActions: [...actions], reward, logProb });
     this.totalReward += reward;
 
     // Force update if trajectory gets too long
@@ -248,16 +249,15 @@ export class PolicyGradientMixin {
     // Update policy parameters
     const alpha = this.config.learningRate;
     for (let t = 0; t < n; t++) {
-      const { state, action } = this.trajectory[t];
+      const { state, action, availableActions } = this.trajectory[t];
       const advantage = returns[t] - (this.config.useBaseline ? this.baseline : 0);
 
-      // Get current probability of the taken action
-      // We need all actions that were available, but since we don't store them,
-      // we use all actions known for this state
-      const knownActions = this.policy[state]
-        ? Object.keys(this.policy[state])
-        : [action];
-      // Ensure the taken action is included
+      const knownActions = [
+        ...new Set([
+          ...(this.policy[state] ? Object.keys(this.policy[state]) : []),
+          ...availableActions,
+        ]),
+      ];
       if (!knownActions.includes(action)) {
         knownActions.push(action);
       }
@@ -388,7 +388,7 @@ export class PolicyGradientMixin {
    */
   mergeFrom(other: PolicyGradientMixin, weight: number = 0.3): void {
     const clampedWeight = Math.max(0, Math.min(1, weight));
-    const otherPolicy = (other as any).policy;
+    const otherPolicy = other.policy;
 
     for (const state of Object.keys(otherPolicy)) {
       if (!this.policy[state]) {

@@ -49,7 +49,7 @@ See `paper/` for the LaTeX source and `experiments/paper/` for all experiment co
 | Script | Description |
 | --- | --- |
 | `npm run dev` | Next.js app (Turbopack), starting at **7884** and shifting to the next free port if needed |
-| `npm run test` | Vitest unit suite with coverage (1028 tests) |
+| `npm run test` | Vitest unit suite with coverage (1035 tests) |
 | `npm run typecheck` | TypeScript compile check without emit |
 | `npm run verify` | Local CI-equivalent gate: lint, typecheck, unit tests, build, smoke/API E2E, and audit |
 | `npm run test:e2e` | Playwright e2e suite - 138 tests in 9 files across 10 projects |
@@ -72,7 +72,7 @@ See `docs/EXAMPLES.md` for full details on each scenario, output expectations, a
 
 ## Testing & Quality
 
-- **Unit tests**: `npm run test` — 1028 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, LLM integration, auth, validation, analytics, event utilities, proxy security, readiness checks, environment validation, path safety, API hardening, browser-facing simulation state, vote escrow, payment streams, vesting schedules, SBT gates, inter-DAO proposals, and sub-DAOs. V8 coverage enabled.
+- **Unit tests**: `npm run test` — 1035 Vitest tests covering simulation engine, data collector, agents, learning, neural-network/DQN/policy-gradient utilities, calibration, voting mechanisms, LLM integration, auth, validation, analytics, event utilities, proxy security, readiness checks, environment validation, path safety, API hardening, browser-facing simulation state, vote escrow, payment streams, vesting schedules, SBT gates, inter-DAO proposals, and sub-DAOs. V8 coverage enabled.
 - **Typecheck**: `npm run typecheck` — runs `tsc --noEmit`.
 - **E2E tests**: `npm run test:e2e` - 138 Playwright tests in 9 files across 10 projects: smoke, dashboard, simulation, simulate, visualizations, API, accessibility, chromium homepage, mobile, and tablet. The CI-equivalent `npm run verify` gate runs the smoke and API projects; the broader suite is available by project and runs in the scheduled/manual Full E2E GitHub workflow. Reuses a healthy server when one is already running, otherwise launches its own server on the next free port.
 - **Linting**: `npm run lint` (ESLint + Next core web vitals). Coverage artifacts are ignored to keep the tree clean.
@@ -112,7 +112,7 @@ lib/
   |- llm/           Ollama client, prompt templates, response cache, agent memory
   `- utils/         Governance plugins, voting strategies, event bus, RNG
 experiments/paper/  12 YAML experiment configs for reproducible research
-tests/              1028 Vitest unit tests
+tests/              1035 Vitest unit tests
 python/             Calibration data ingestion scripts
 ```
 

@@ -25,6 +25,22 @@ export interface NetworkState {
   inputSize: number;
 }
 
+function cloneNetworkState<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
+function assertPositiveInteger(value: number, label: string): void {
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new Error(`${label} must be a positive integer`);
+  }
+}
+
+function sameLayerDefs(a: LayerDef[], b: LayerDef[]): boolean {
+  return a.length === b.length && a.every((layer, index) => (
+    layer.size === b[index].size && layer.activation === b[index].activation
+  ));
+}
+
 /**
  * Apply activation function
  */
@@ -71,8 +87,16 @@ export class NeuralNetwork {
   private layerInputs: number[][] = [];
 
   constructor(inputSize: number, layers: LayerDef[]) {
+    assertPositiveInteger(inputSize, 'inputSize');
+    if (layers.length === 0) {
+      throw new Error('NeuralNetwork requires at least one layer');
+    }
+    for (const [index, layer] of layers.entries()) {
+      assertPositiveInteger(layer.size, `layers[${index}].size`);
+    }
+
     this.inputSize = inputSize;
-    this.layerDefs = layers;
+    this.layerDefs = cloneNetworkState(layers);
     this.weights = [];
     this.biases = [];
 
@@ -142,6 +166,16 @@ export class NeuralNetwork {
    */
   backward(targets: number[], learningRate: number): number {
     const outputLayer = this.layerOutputs[this.layerOutputs.length - 1];
+    if (!outputLayer) {
+      throw new Error('forward() must be called before backward()');
+    }
+    if (targets.length !== outputLayer.length) {
+      throw new Error(`Expected ${outputLayer.length} targets, got ${targets.length}`);
+    }
+    if (!Number.isFinite(learningRate) || learningRate < 0) {
+      throw new Error('learningRate must be a non-negative finite number');
+    }
+
     const numLayers = this.weights.length;
 
     // Compute output layer error (MSE derivative: 2*(output - target))
@@ -226,6 +260,11 @@ export class NeuralNetwork {
    * Soft-update from another network: θ_target = τ*θ_online + (1-τ)*θ_target
    */
   softUpdate(source: NeuralNetwork, tau: number): void {
+    this.assertCompatible(source);
+    if (!Number.isFinite(tau) || tau < 0 || tau > 1) {
+      throw new Error('tau must be between 0 and 1');
+    }
+
     for (let l = 0; l < this.weights.length; l++) {
       for (let i = 0; i < this.weights[l].length; i++) {
         for (let j = 0; j < this.weights[l][i].length; j++) {
@@ -242,6 +281,8 @@ export class NeuralNetwork {
    * Copy weights from another network
    */
   copyFrom(source: NeuralNetwork): void {
+    this.assertCompatible(source);
+
     for (let l = 0; l < this.weights.length; l++) {
       for (let i = 0; i < this.weights[l].length; i++) {
         for (let j = 0; j < this.weights[l][i].length; j++) {
@@ -257,9 +298,9 @@ export class NeuralNetwork {
    */
   exportState(): NetworkState {
     return {
-      weights: JSON.parse(JSON.stringify(this.weights)),
-      biases: JSON.parse(JSON.stringify(this.biases)),
-      layerDefs: JSON.parse(JSON.stringify(this.layerDefs)),
+      weights: cloneNetworkState(this.weights),
+      biases: cloneNetworkState(this.biases),
+      layerDefs: cloneNetworkState(this.layerDefs),
       inputSize: this.inputSize,
     };
   }
@@ -268,8 +309,12 @@ export class NeuralNetwork {
    * Import network state
    */
   importState(state: NetworkState): void {
-    this.weights = JSON.parse(JSON.stringify(state.weights));
-    this.biases = JSON.parse(JSON.stringify(state.biases));
+    if (state.inputSize !== this.inputSize || !sameLayerDefs(state.layerDefs, this.layerDefs)) {
+      throw new Error('Network state architecture does not match this network');
+    }
+    this.assertStateShape(state);
+    this.weights = cloneNetworkState(state.weights);
+    this.biases = cloneNetworkState(state.biases);
   }
 
   /**
@@ -279,5 +324,46 @@ export class NeuralNetwork {
     const net = new NeuralNetwork(state.inputSize, state.layerDefs);
     net.importState(state);
     return net;
+  }
+
+  private assertCompatible(source: NeuralNetwork): void {
+    if (
+      source.inputSize !== this.inputSize ||
+      !sameLayerDefs(source.layerDefs, this.layerDefs)
+    ) {
+      throw new Error('Network architectures are not compatible');
+    }
+  }
+
+  private assertStateShape(state: NetworkState): void {
+    if (state.weights.length !== this.layerDefs.length || state.biases.length !== this.layerDefs.length) {
+      throw new Error('Network state layer count does not match architecture');
+    }
+
+    let expectedInputs = this.inputSize;
+    for (let layerIndex = 0; layerIndex < this.layerDefs.length; layerIndex++) {
+      const expectedOutputs = this.layerDefs[layerIndex].size;
+      const layerWeights = state.weights[layerIndex];
+      const layerBiases = state.biases[layerIndex];
+
+      if (layerWeights.length !== expectedOutputs || layerBiases.length !== expectedOutputs) {
+        throw new Error(`Network state layer ${layerIndex} size does not match architecture`);
+      }
+
+      for (const neuronWeights of layerWeights) {
+        if (
+          neuronWeights.length !== expectedInputs ||
+          neuronWeights.some((weight) => !Number.isFinite(weight))
+        ) {
+          throw new Error(`Network state layer ${layerIndex} weights do not match architecture`);
+        }
+      }
+
+      if (layerBiases.some((bias) => !Number.isFinite(bias))) {
+        throw new Error(`Network state layer ${layerIndex} biases must be finite numbers`);
+      }
+
+      expectedInputs = expectedOutputs;
+    }
   }
 }
