@@ -29,3 +29,10 @@ export function projectPath(...segments: string[]): string {
 export function projectResolve(...segments: string[]): string {
   return _path.resolve(projectRoot(), ...segments);
 }
+
+export function isPathInside(basePath: string, candidatePath: string): boolean {
+  const base = _path.resolve(basePath);
+  const candidate = _path.resolve(candidatePath);
+  const relative = _path.relative(base, candidate);
+  return relative === '' || (!relative.startsWith('..') && !_path.isAbsolute(relative));
+}

@@ -5,6 +5,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { DAOSimulation } from '@/lib/engine/simulation';
 import { createSimulationStore, InMemorySimulationStore, rehydrateSimulation } from '@/lib/utils/redis-store';
 import { requireAuth } from '@/lib/auth';
+import { InMemoryRateLimiter, getClientIdentifier } from '@/lib/utils/rate-limit';
+import { noStoreHeadersFrom } from '@/lib/utils/http-safety';
 import {
   CreateSimulationRequestSchema,
   StepSimulationRequestSchema,
@@ -16,84 +18,39 @@ import {
 // Rate Limiting for Simulation Creation
 // ============================================================================
 
-interface SimulationRateLimitEntry {
-  count: number;
-  resetAt: number;
-}
-
 /**
  * Rate limiter specifically for simulation creation to prevent DOS attacks
  */
 class SimulationRateLimiter {
-  private attempts = new Map<string, SimulationRateLimitEntry>();
   // Allow 10 simulations per client per hour in production, more in dev
   private readonly maxAttempts = process.env.NODE_ENV === 'production' ? 10 : 100;
   private readonly windowMs = 60 * 60 * 1000; // 1 hour
-
-  constructor() {
-    // Cleanup expired entries every 10 minutes
-    if (typeof setInterval !== 'undefined') {
-      setInterval(() => this.cleanup(), 10 * 60 * 1000);
-    }
-  }
+  private readonly limiter = new InMemoryRateLimiter(this.maxAttempts, this.windowMs);
 
   private getClientId(request: NextRequest): string {
-    const trustProxy = process.env.TRUST_PROXY === 'true';
-    if (trustProxy) {
-      const forwarded = request.headers.get('x-forwarded-for');
-      if (forwarded) {
-        return `sim_${forwarded.split(',')[0].trim()}`;
-      }
-      const realIp = request.headers.get('x-real-ip');
-      if (realIp) {
-        return `sim_${realIp}`;
-      }
-    }
-    // In development or when not behind a proxy, use a generic key
-    return 'sim_default_client';
+    return getClientIdentifier(request, 'sim');
   }
 
   isRateLimited(request: NextRequest): { limited: boolean; retryAfter?: number } {
     const clientId = this.getClientId(request);
-    const now = Date.now();
-    const entry = this.attempts.get(clientId);
-
-    if (!entry || now > entry.resetAt) {
-      return { limited: false };
-    }
-
-    if (entry.count >= this.maxAttempts) {
-      const retryAfter = Math.ceil((entry.resetAt - now) / 1000);
-      return { limited: true, retryAfter };
-    }
-
-    return { limited: false };
+    const result = this.limiter.check(clientId);
+    return { limited: result.limited, retryAfter: result.retryAfter };
   }
 
   recordAttempt(request: NextRequest): void {
-    const clientId = this.getClientId(request);
-    const now = Date.now();
-    const entry = this.attempts.get(clientId);
-
-    if (!entry || now > entry.resetAt) {
-      this.attempts.set(clientId, { count: 1, resetAt: now + this.windowMs });
-    } else {
-      entry.count++;
-    }
-  }
-
-  private cleanup(): void {
-    const now = Date.now();
-    for (const [key, entry] of this.attempts.entries()) {
-      if (now > entry.resetAt) {
-        this.attempts.delete(key);
-      }
-    }
+    this.limiter.record(this.getClientId(request));
   }
 }
 
 // Global rate limiter instance for simulation creation
 const simulationRateLimiter = new SimulationRateLimiter();
+
+function jsonResponse(body: unknown, init: ResponseInit = {}): NextResponse {
+  return NextResponse.json(body, {
+    ...init,
+    headers: noStoreHeadersFrom(init.headers),
+  });
+}
 
 // Create simulation store (Redis in production, in-memory for dev)
 const simulationStore = createSimulationStore();
@@ -145,7 +102,7 @@ async function withSimulationLock<T>(id: string, fn: () => Promise<T>): Promise<
 
 // Cleanup stale simulations periodically
 if (typeof setInterval !== 'undefined') {
-  setInterval(() => {
+  const timer = setInterval(() => {
     const now = Date.now();
     for (const [id, entry] of liveSimulations.entries()) {
       if (now - entry.lastAccessed > SIMULATION_TTL_MS) {
@@ -153,6 +110,9 @@ if (typeof setInterval !== 'undefined') {
       }
     }
   }, CLEANUP_INTERVAL_MS);
+  if (typeof (timer as { unref?: () => void }).unref === 'function') {
+    (timer as { unref: () => void }).unref();
+  }
 }
 
 const getLiveSimulation = (id: string): DAOSimulation | null => {
@@ -191,28 +151,41 @@ const trackSimulation = (id: string, simulation: DAOSimulation) => {
  * List all active simulations or get a specific simulation state
  */
 export async function GET(request: NextRequest) {
+  const authError = await requireAuth(request);
+  if (authError) return authError;
+
   const searchParams = request.nextUrl.searchParams;
   const id = searchParams.get('id');
 
   if (id) {
     const liveSimulation = getLiveSimulation(id);
     if (liveSimulation) {
-      return NextResponse.json({
+      return jsonResponse({
         id,
         summary: liveSimulation.getSummary(),
         step: liveSimulation.currentStep,
       });
     }
 
-    const data = await simulationStore.load(id);
+    let data;
+    try {
+      data = await simulationStore.load(id);
+    } catch (error) {
+      console.error('[simulation] failed to load simulation:', error);
+      return jsonResponse(
+        { error: 'Failed to load simulation' },
+        { status: 500 }
+      );
+    }
+
     if (!data) {
-      return NextResponse.json(
+      return jsonResponse(
         { error: 'Simulation not found' },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({
+    return jsonResponse({
       id,
       step: data.step,
       summary: data.daoState ?? ((data.simulation as DAOSimulation | undefined)?.getSummary?.() ?? null),
@@ -220,8 +193,16 @@ export async function GET(request: NextRequest) {
   }
 
   // List all simulations
-  const list = await simulationStore.list();
-  return NextResponse.json({ simulations: list });
+  try {
+    const list = await simulationStore.list();
+    return jsonResponse({ simulations: list });
+  } catch (error) {
+    console.error('[simulation] failed to list simulations:', error);
+    return jsonResponse(
+      { error: 'Failed to load simulations' },
+      { status: 500 }
+    );
+  }
 }
 
 /**
@@ -236,7 +217,7 @@ export async function POST(request: NextRequest) {
   // Check rate limiting for simulation creation
   const rateLimitResult = simulationRateLimiter.isRateLimited(request);
   if (rateLimitResult.limited) {
-    return NextResponse.json(
+    return jsonResponse(
       {
         error: 'Too many simulation creation requests. Please try again later.',
         retryAfter: rateLimitResult.retryAfter,
@@ -269,14 +250,14 @@ export async function POST(request: NextRequest) {
     trackSimulation(id, simulation);
     await simulationStore.save(id, simulation);
 
-    return NextResponse.json({
+    return jsonResponse({
       id,
       message: 'Simulation created successfully',
       summary: simulation.getSummary(),
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Failed to create simulation';
-    return NextResponse.json(
+    return jsonResponse(
       { error: message },
       { status: 400 }
     );
@@ -313,7 +294,7 @@ export async function PUT(request: NextRequest) {
       }
 
       if (!simulation) {
-        return NextResponse.json(
+        return jsonResponse(
           { error: 'Simulation not found or not active in this process' },
           { status: 404 }
         );
@@ -335,14 +316,14 @@ export async function PUT(request: NextRequest) {
       trackSimulation(id, simulation);
       await simulationStore.save(id, simulation);
 
-      return NextResponse.json({
+      return jsonResponse({
         id,
         summary: simulation.getSummary(),
       });
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Failed to step simulation';
-    return NextResponse.json(
+    return jsonResponse(
       { error: message },
       { status: 400 }
     );
@@ -365,15 +346,24 @@ export async function DELETE(request: NextRequest) {
   }
   const id = idValidation.data;
 
-  const deleted = await simulationStore.delete(id);
-  liveSimulations.delete(id);
+  let deleted;
+  try {
+    deleted = await simulationStore.delete(id);
+    liveSimulations.delete(id);
+  } catch (error) {
+    console.error('[simulation] failed to delete simulation:', error);
+    return jsonResponse(
+      { error: 'Failed to delete simulation' },
+      { status: 500 }
+    );
+  }
 
   if (!deleted) {
-    return NextResponse.json(
+    return jsonResponse(
       { error: 'Simulation not found' },
       { status: 404 }
     );
   }
 
-  return NextResponse.json({ message: 'Simulation deleted successfully' });
+  return jsonResponse({ message: 'Simulation deleted successfully' });
 }

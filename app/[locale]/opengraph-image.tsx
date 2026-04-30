@@ -1,7 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const runtime = 'edge';
-export const alt = 'DAO Simulator — Actionable governance findings from 21,869 simulation runs';
+export const alt = 'DAO Simulator - Actionable governance findings from 21,869 simulation runs';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -131,7 +130,7 @@ export default function OGImage() {
             ))}
           </div>
           <div style={{ fontSize: '11px', color: '#5c7083', marginTop: '8px' }}>
-            Quorum threshold → reach rate
+            Quorum threshold to reach rate
           </div>
         </div>
       </div>

@@ -62,12 +62,16 @@ test.describe('Smoke Tests', () => {
   test.describe('API Endpoints', () => {
     test('simulation API responds', async ({ request }) => {
       const response = await request.get('/api/simulation');
-      expect(response.status()).toBeLessThan(500);
+      expect(response.status()).toBe(200);
+      const body = await response.json();
+      expect(Array.isArray(body.simulations)).toBeTruthy();
     });
 
     test('simulation data API responds', async ({ request }) => {
       const response = await request.get('/api/simulation/data');
-      expect(response.status()).toBeLessThan(500);
+      expect(response.status()).toBe(400);
+      const body = await response.json();
+      expect(body).toHaveProperty('error');
     });
   });
 });

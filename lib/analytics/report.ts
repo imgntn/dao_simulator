@@ -57,7 +57,7 @@ function buildHtml(summary: ReturnType<typeof summarize>, days: number): string 
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"></head>
 <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#222">
-  <h2 style="margin:0 0 4px">DAO Simulator — Analytics Report</h2>
+  <h2 style="margin:0 0 4px">DAO Simulator - Analytics Report</h2>
   <p style="color:#666;margin:0 0 16px">${date} &middot; Last ${days} days &middot; ${totalPageviews.toLocaleString()} page views &middot; ${totalEvents.toLocaleString()} events</p>
   ${renderTable('Page Views', summary['pageview'])}
   ${renderTable('Events', summary['event'])}
@@ -89,7 +89,7 @@ export async function sendDailyReport(days = 7): Promise<{ sent: boolean; error?
     await transport.sendMail({
       from: `"DAO Simulator" <${user}>`,
       to: getRecipients().join(', '),
-      subject: `DAO Simulator Analytics — ${date}`,
+      subject: `DAO Simulator Analytics - ${date}`,
       html,
     });
     return { sent: true };

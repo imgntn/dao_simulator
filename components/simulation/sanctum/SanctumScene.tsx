@@ -44,9 +44,6 @@ const B_TOP = -165; const B_BOT = -45;
 const C_TOP =  -45; const C_BOT =  85;
 const D_TOP =   85; const D_BOT = 195;
 
-const HULL_TOP = D_BOT;
-const HULL_BOT = 238;
-
 const MID = 0;
 
 const CY_A = A_BOT - 42;
@@ -1226,7 +1223,7 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
       }
       return changed ? next : prev;
     });
-  }, [snapshot?.step]);
+  }, [snapshot]);
 
   // ── Crystal-shelving (replaces book-shelving) ──────────────────
   const [shelving, setShelving] = useState<Set<string>>(new Set());
@@ -1241,7 +1238,7 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
     setShelving(new Set([beavers[idx1], beavers[idx2 !== idx1 ? idx2 : (idx1 + 1) % beavers.length]]));
     const t = setTimeout(() => setShelving(new Set()), 1800);
     return () => clearTimeout(t);
-  }, [snapshot?.step]);
+  }, [snapshot]);
 
   // ── Inspector ──────────────────────────────────────────────────
   const [inspectedAgentId, setInspectedAgentId] = useState<string | null>(null);

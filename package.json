@@ -14,6 +14,9 @@
     "start": "node scripts/start.js",
     "start:next": "node scripts/next-server.js",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "audit:moderate": "npm audit --audit-level=moderate",
+    "verify": "npm run lint && npm run typecheck && npm test && npm run build && npm run test:e2e:smoke && npm run test:e2e:api && npm run audit:moderate",
     "test": "npm run test:unit",
     "test:unit": "vitest run --coverage",
     "test:unit:watch": "vitest",
@@ -22,6 +25,7 @@
     "test:e2e:headed": "node scripts/test-e2e.js --headed",
     "test:e2e:report": "playwright show-report",
     "test:e2e:smoke": "node scripts/test-e2e.js --project=smoke",
+    "test:e2e:api": "node scripts/test-e2e.js --project=api",
     "test:e2e:dashboard": "node scripts/test-e2e.js --project=dashboard",
     "test:e2e:simulation": "node scripts/test-e2e.js --project=simulation",
     "test:e2e:a11y": "node scripts/test-e2e.js --project=accessibility",
@@ -97,6 +101,7 @@
   },
   "overrides": {
     "brace-expansion@^1.1.7": "1.1.13",
-    "picomatch@^4.0.3": "4.0.4"
+    "picomatch@^4.0.3": "4.0.4",
+    "postcss": "8.5.12"
   }
 }

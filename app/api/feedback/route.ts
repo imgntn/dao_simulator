@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 import nodemailer from 'nodemailer';
-
-// ---------------------------------------------------------------------------
-// Database
-// ---------------------------------------------------------------------------
+import { InMemoryRateLimiter, getClientIdentifier } from '@/lib/utils/rate-limit';
+import {
+  escapeHtml,
+  isRecord,
+  isValidEmail,
+  noStoreHeaders,
+  readStringField,
+  sanitizeHeaderValue,
+} from '@/lib/utils/http-safety';
 
 const CREATE_TABLE_SQL = `
 CREATE TABLE IF NOT EXISTS feedback (
@@ -26,8 +31,17 @@ VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING id
 `;
 
+const RECIPIENT = process.env.CONTACT_EMAIL || process.env.SMTP_USER || 'hello@daosimulator.com';
+const TYPE_LABEL: Record<string, string> = {
+  bug: 'Bug',
+  feature: 'Feature',
+  general: 'General',
+};
+
 let pool: Pool | null = null;
 let tableEnsured = false;
+
+const feedbackLimiter = new InMemoryRateLimiter(10, 10 * 60 * 1000);
 
 function getPool(): Pool | null {
   if (pool) return pool;
@@ -51,16 +65,10 @@ async function ensureTable(): Promise<boolean> {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Email
-// ---------------------------------------------------------------------------
-
-const RECIPIENT = process.env.CONTACT_EMAIL || process.env.SMTP_USER || 'hello@daosimulator.com';
-
 function createTransport() {
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.zoho.com',
-    port: parseInt(process.env.SMTP_PORT || '465', 10),
+    port: Number.parseInt(process.env.SMTP_PORT || '465', 10),
     secure: (process.env.SMTP_PORT || '465') === '465',
     auth: {
       user: process.env.SMTP_USER,
@@ -69,48 +77,49 @@ function createTransport() {
   });
 }
 
-const TYPE_EMOJI: Record<string, string> = {
-  bug: '🐛',
-  feature: '💡',
-  general: '💬',
-};
-
-// ---------------------------------------------------------------------------
-// Handler
-// ---------------------------------------------------------------------------
-
-interface FeedbackPayload {
-  type?: string;
-  message?: string;
-  email?: string;
-  url?: string;
-  userAgent?: string;
-  timestamp?: string;
-}
-
 export async function POST(request: NextRequest) {
-  let body: FeedbackPayload;
+  const clientId = getClientIdentifier(request, 'feedback');
+  const rateLimit = feedbackLimiter.check(clientId);
+  if (rateLimit.limited) {
+    return NextResponse.json(
+      { error: 'Too many feedback requests. Please try again later.' },
+      { status: 429, headers: noStoreHeaders({ 'Retry-After': String(rateLimit.retryAfter) }) }
+    );
+  }
+  feedbackLimiter.record(clientId);
+
+  let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400, headers: noStoreHeaders() });
   }
 
-  if (!body.message?.trim()) {
-    return NextResponse.json({ error: 'message is required' }, { status: 400 });
+  if (!isRecord(body)) {
+    return NextResponse.json({ error: 'Request body must be an object' }, { status: 400, headers: noStoreHeaders() });
   }
 
-  const type = (['bug', 'feature', 'general'].includes(body.type ?? '') ? body.type : 'general') as string;
-  const message = body.message.trim().slice(0, 2000);
-  const email = body.email?.trim().slice(0, 200) || null;
-  const url = body.url?.slice(0, 500) || null;
-  const userAgent = body.userAgent?.slice(0, 300) || null;
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  const message = readStringField(body.message, 2000);
+  if (!message) {
+    return NextResponse.json({ error: 'message is required' }, { status: 400, headers: noStoreHeaders() });
+  }
+
+  const typeCandidate = readStringField(body.type, 20);
+  const type = ['bug', 'feature', 'general'].includes(typeCandidate) ? typeCandidate : 'general';
+  const emailCandidate = readStringField(body.email, 200);
+  if (emailCandidate && !isValidEmail(emailCandidate)) {
+    return NextResponse.json({ error: 'Invalid email address' }, { status: 400, headers: noStoreHeaders() });
+  }
+
+  const email = emailCandidate || null;
+  const url = readStringField(body.url, 500, { trim: false }) || null;
+  const userAgent = readStringField(body.userAgent, 300, { trim: false }) || null;
+  const ip = getClientIdentifier(request, '');
+  const timestamp = readStringField(body.timestamp, 80) || new Date().toISOString();
 
   let dbSaved = false;
   let emailSent = false;
 
-  // 1. Store in Postgres
   if (await ensureTable()) {
     try {
       const p = getPool()!;
@@ -121,35 +130,34 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // 2. Send email notification
   if (process.env.SMTP_USER && process.env.SMTP_PASS) {
     try {
       const transport = createTransport();
-      const emoji = TYPE_EMOJI[type] || '💬';
+      const label = TYPE_LABEL[type] || TYPE_LABEL.general;
       await transport.sendMail({
         from: `"DAO Simulator Feedback" <${process.env.SMTP_USER}>`,
         replyTo: email ? `<${email}>` : undefined,
         to: RECIPIENT,
-        subject: `${emoji} [Feedback] ${type}: ${message.slice(0, 60)}${message.length > 60 ? '...' : ''}`,
+        subject: sanitizeHeaderValue(`[Feedback] ${label}: ${message.slice(0, 60)}${message.length > 60 ? '...' : ''}`, 180),
         text: [
           `Type: ${type}`,
           `Message: ${message}`,
           email ? `Email: ${email}` : null,
           url ? `Page: ${url}` : null,
           `IP: ${ip}`,
-          `Time: ${body.timestamp || new Date().toISOString()}`,
+          `Time: ${timestamp}`,
         ].filter(Boolean).join('\n'),
         html: `
           <div style="font-family: system-ui, sans-serif; max-width: 600px;">
-            <h3 style="margin: 0 0 12px;">${emoji} Simulator Feedback: <em>${type}</em></h3>
+            <h3 style="margin: 0 0 12px;">Simulator Feedback: <em>${escapeHtml(label)}</em></h3>
             <div style="background: #f4f4f5; padding: 12px 16px; border-radius: 8px; margin-bottom: 12px;">
-              <p style="margin: 0; white-space: pre-wrap;">${message.replace(/</g, '&lt;').replace(/\n/g, '<br />')}</p>
+              <p style="margin: 0; white-space: pre-wrap;">${escapeHtml(message).replace(/\n/g, '<br />')}</p>
             </div>
             <table style="font-size: 13px; color: #666;">
-              ${email ? `<tr><td style="padding: 2px 8px 2px 0;"><strong>Email:</strong></td><td><a href="mailto:${email}">${email}</a></td></tr>` : ''}
-              ${url ? `<tr><td style="padding: 2px 8px 2px 0;"><strong>Page:</strong></td><td>${url}</td></tr>` : ''}
-              <tr><td style="padding: 2px 8px 2px 0;"><strong>IP:</strong></td><td>${ip}</td></tr>
-              <tr><td style="padding: 2px 8px 2px 0;"><strong>Time:</strong></td><td>${body.timestamp || new Date().toISOString()}</td></tr>
+              ${email ? `<tr><td style="padding: 2px 8px 2px 0;"><strong>Email:</strong></td><td><a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></td></tr>` : ''}
+              ${url ? `<tr><td style="padding: 2px 8px 2px 0;"><strong>Page:</strong></td><td>${escapeHtml(url)}</td></tr>` : ''}
+              <tr><td style="padding: 2px 8px 2px 0;"><strong>IP:</strong></td><td>${escapeHtml(ip)}</td></tr>
+              <tr><td style="padding: 2px 8px 2px 0;"><strong>Time:</strong></td><td>${escapeHtml(timestamp)}</td></tr>
             </table>
           </div>
         `,
@@ -160,11 +168,15 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // At least one storage method must succeed
   if (!dbSaved && !emailSent) {
-    // Fallback: log to stdout so Railway logs capture it
-    console.log('[feedback]', JSON.stringify({ type, message, email, url, ip }));
+    console.log('[feedback]', JSON.stringify({
+      type,
+      messageLength: message.length,
+      emailPresent: Boolean(email),
+      urlPresent: Boolean(url),
+      clientKnown: !ip.startsWith('unknown:'),
+    }));
   }
 
-  return NextResponse.json({ ok: true, db: dbSaved, email: emailSent });
+  return NextResponse.json({ ok: true, db: dbSaved, email: emailSent }, { headers: noStoreHeaders() });
 }

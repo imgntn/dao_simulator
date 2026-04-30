@@ -98,10 +98,11 @@ New `.env.example` file created with:
 
 ## Testing Status
 
-- **Unit Tests**: 784 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, and LLM integration
-- **E2E Tests**: 138 Playwright tests across 10 projects (smoke, dashboard, simulation, controls, visualizations, API, accessibility, responsive, homepage) — all targeting the Web Worker-based 3D simulator at `/en/simulate`
-- **Linting**: Clean ESLint runs (flat config + Next core web vitals)
-- **Build**: Ready for production
+- **Unit Tests**: 982 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, LLM integration, auth, validation, analytics, proxy security, path safety, API hardening, and browser-facing simulation state
+- **E2E Tests**: Smoke and API E2E are wired into CI; the broader 138-test Playwright suite remains available by project (dashboard, simulation, simulate, visualizations, accessibility, chromium homepage, mobile, and tablet)
+- **Linting**: Clean ESLint runs with archived/generated directories excluded from active-source linting
+- **Typecheck**: `npm run typecheck` runs `tsc --noEmit`
+- **Build**: Production build passes
 
 ## Production Deployment Checklist
 
@@ -114,7 +115,8 @@ New `.env.example` file created with:
 - [ ] Set REDIS_URL in production
 - [ ] Set strong NEXTAUTH_SECRET
 - [ ] Set API_KEY for endpoint security
-- [ ] Run E2E tests in CI/CD
+- [x] Run smoke and API E2E tests in CI/CD
+- [x] Run lint, typecheck, unit tests, and production build in CI/CD
 
 ## Summary
 

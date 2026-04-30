@@ -3,8 +3,9 @@ import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'yaml';
-import { projectRoot, projectPath } from '@/lib/utils/server-paths';
+import { isPathInside, projectRoot, projectPath } from '@/lib/utils/server-paths';
 import { requireAuth } from '@/lib/auth';
+import { isRecord, noStoreHeadersFrom, readStringField } from '@/lib/utils/http-safety';
 
 export const runtime = 'nodejs';
 
@@ -17,7 +18,7 @@ function ensureDir(dir: string): void {
 function normalizePath(baseDir: string, relativePath: string): string {
   const resolved = path.resolve(projectRoot(), relativePath);
   const base = path.resolve(baseDir);
-  if (!resolved.startsWith(base)) {
+  if (!isPathInside(base, resolved)) {
     throw new Error(`Path is outside allowed directory: ${relativePath}`);
   }
   if (!fs.existsSync(resolved)) {
@@ -74,6 +75,13 @@ function buildRedirect(request: NextRequest, params: Record<string, string>): Ne
   return NextResponse.redirect(url, { status: 303 });
 }
 
+function jsonResponse(body: unknown, init: ResponseInit = {}): NextResponse {
+  return NextResponse.json(body, {
+    ...init,
+    headers: noStoreHeadersFrom(init.headers),
+  });
+}
+
 export async function POST(request: NextRequest) {
   const authError = await requireAuth(request);
   if (authError) return authError;
@@ -86,12 +94,13 @@ export async function POST(request: NextRequest) {
   let inlineConfig: Record<string, unknown> | null = null;
 
   if (isJson) {
-    const body = await request.json().catch(() => ({} as Record<string, unknown>));
-    action = String(body.action || '');
-    configPath = String(body.configPath || '');
-    resultsDir = String(body.resultsDir || '');
-    if (body.inlineConfig && typeof body.inlineConfig === 'object') {
-      inlineConfig = body.inlineConfig as Record<string, unknown>;
+    const parsed: unknown = await request.json().catch(() => ({}));
+    const body = isRecord(parsed) ? parsed : {};
+    action = readStringField(body.action, 50);
+    configPath = readStringField(body.configPath, 500);
+    resultsDir = readStringField(body.resultsDir, 500);
+    if (isRecord(body.inlineConfig)) {
+      inlineConfig = body.inlineConfig;
     }
   } else {
     const formData = await request.formData();
@@ -105,7 +114,7 @@ export async function POST(request: NextRequest) {
 
     function respond(params: Record<string, string>) {
       if (isJson) {
-        return NextResponse.json({
+        return jsonResponse({
           success: true,
           action: params.action,
           target: params.target,
@@ -130,7 +139,7 @@ export async function POST(request: NextRequest) {
       }
       case 'run-custom': {
         if (!inlineConfig) {
-          return NextResponse.json({ error: 'inlineConfig required for run-custom' }, { status: 400 });
+          return jsonResponse({ error: 'inlineConfig required for run-custom' }, { status: 400 });
         }
         ensureDir(projectPath('experiments', 'custom'));
         const filename = `custom-${Date.now()}.yaml`;
@@ -199,10 +208,10 @@ export async function POST(request: NextRequest) {
         });
       }
       default:
-        return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
+        return jsonResponse({ error: 'Unknown action' }, { status: 400 });
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ error: message }, { status: 400 });
+    return jsonResponse({ error: message }, { status: 400 });
   }
 }

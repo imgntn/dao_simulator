@@ -2,6 +2,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { safeCompare, rateLimiter, requireAuth } from '@/lib/auth';
 
+function expectNoStoreNosniff(response: Response) {
+  expect(response.headers.get('cache-control')).toBe('no-store');
+  expect(response.headers.get('x-content-type-options')).toBe('nosniff');
+}
+
 describe('safeCompare', () => {
   it('should return true for matching strings', () => {
     expect(safeCompare('hello', 'hello')).toBe(true);
@@ -145,6 +150,7 @@ describe('requireAuth', () => {
     const result = await requireAuth(request);
     expect(result).not.toBeNull();
     expect(result?.status).toBe(401);
+    expectNoStoreNosniff(result!);
   });
 
   it('should allow requests with valid API_KEY', async () => {
@@ -174,6 +180,7 @@ describe('requireAuth', () => {
     const result = await requireAuth(request);
     expect(result).not.toBeNull();
     expect(result?.status).toBe(401);
+    expectNoStoreNosniff(result!);
   });
 
   it('should reject rate-limited clients', async () => {
@@ -198,6 +205,7 @@ describe('requireAuth', () => {
     const result = await requireAuth(request);
     expect(result).not.toBeNull();
     expect(result?.status).toBe(429);
+    expectNoStoreNosniff(result!);
 
     const body = await result?.json();
     expect(body.error).toContain('Too many');

@@ -4,6 +4,20 @@ import type { NextRequest } from 'next/server';
 const locales = ['en', 'es', 'zh', 'ja'];
 const defaultLocale = 'en';
 
+const SECURITY_HEADERS: ReadonlyArray<readonly [string, string]> = [
+  ['X-Content-Type-Options', 'nosniff'],
+  ['X-Frame-Options', 'DENY'],
+  ['Referrer-Policy', 'strict-origin-when-cross-origin'],
+  ['Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()'],
+];
+
+function withSecurityHeaders(response: NextResponse): NextResponse {
+  for (const [name, value] of SECURITY_HEADERS) {
+    response.headers.set(name, value);
+  }
+  return response;
+}
+
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -18,7 +32,7 @@ export function proxy(request: NextRequest) {
     pathname === '/sitemap.xml' ||
     /\.\w{2,5}$/.test(pathname)
   ) {
-    return NextResponse.next();
+    return withSecurityHeaders(NextResponse.next());
   }
 
   // Check if pathname already has a valid locale prefix.
@@ -27,7 +41,7 @@ export function proxy(request: NextRequest) {
   );
 
   if (pathnameLocale) {
-    return NextResponse.next();
+    return withSecurityHeaders(NextResponse.next());
   }
 
   // Check cookie first (set when user manually switches locale).
@@ -46,7 +60,7 @@ export function proxy(request: NextRequest) {
   // Redirect to locale-prefixed path.
   const url = request.nextUrl.clone();
   url.pathname = `/${locale}${pathname}`;
-  return NextResponse.redirect(url);
+  return withSecurityHeaders(NextResponse.redirect(url));
 }
 
 export const config = {

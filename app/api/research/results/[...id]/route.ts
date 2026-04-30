@@ -1,22 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import { projectPath } from '@/lib/utils/server-paths';
+import { isPathInside, projectPath } from '@/lib/utils/server-paths';
+import { requireAuth } from '@/lib/auth';
+import { noStoreHeaders } from '@/lib/utils/http-safety';
 
 export const runtime = 'nodejs';
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string[] }> }
 ) {
+  const authError = await requireAuth(request);
+  if (authError) return authError;
+
   try {
     const { id } = await params;
     const relativePath = id.join('/');
 
     // Path traversal protection
-    const resolved = path.resolve(projectPath('results'), relativePath);
-    if (!resolved.startsWith(path.resolve(projectPath('results')))) {
-      return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+    const resultsRoot = path.resolve(projectPath('results'));
+    const resolved = path.resolve(resultsRoot, relativePath);
+    if (!isPathInside(resultsRoot, resolved)) {
+      return NextResponse.json({ error: 'Invalid path' }, { status: 400, headers: noStoreHeaders() });
     }
 
     const statusPath = path.join(resolved, 'status.json');
@@ -49,12 +55,12 @@ export async function GET(
     }
 
     if (!status && !summary) {
-      return NextResponse.json({ error: 'Result not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Result not found' }, { status: 404, headers: noStoreHeaders() });
     }
 
-    return NextResponse.json({ status, summary });
+    return NextResponse.json({ status, summary }, { headers: noStoreHeaders() });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500, headers: noStoreHeaders() });
   }
 }

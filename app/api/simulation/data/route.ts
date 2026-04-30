@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createSimulationStore, InMemorySimulationStore } from '@/lib/utils/redis-store';
 import { requireAuth } from '@/lib/auth';
 import { validateId, FormatSchema } from '@/lib/validation/schemas';
+import { noStoreHeaders, sanitizeContentDispositionFilename } from '@/lib/utils/http-safety';
 
 const simulationStore = createSimulationStore();
 const inMemoryStore = simulationStore instanceof InMemorySimulationStore
@@ -76,7 +77,7 @@ export async function GET(request: NextRequest) {
   if (!formatResult.success) {
     return NextResponse.json(
       { error: 'Invalid format. Must be "csv" or "json"' },
-      { status: 400 }
+      { status: 400, headers: noStoreHeaders() }
     );
   }
   const format = formatResult.data;
@@ -92,7 +93,17 @@ export async function GET(request: NextRequest) {
       dataCollector = sim.dataCollector;
     }
   } else {
-    const data = await simulationStore.load(id);
+    let data;
+    try {
+      data = await simulationStore.load(id);
+    } catch (error) {
+      console.error('[simulation-data] failed to load simulation data:', error);
+      return NextResponse.json(
+        { error: 'Failed to load simulation data' },
+        { status: 500, headers: noStoreHeaders() }
+      );
+    }
+
     if (data) {
       simulationData = data;
     }
@@ -101,24 +112,27 @@ export async function GET(request: NextRequest) {
   if (!simulationData) {
     return NextResponse.json(
       { error: 'Simulation not found' },
-      { status: 404 }
+      { status: 404, headers: noStoreHeaders() }
     );
   }
 
   // Export based on format
   if (format === 'csv') {
     const csv = generateCSV(simulationData as unknown as SimulationLike, dataCollector as unknown as DataCollectorLike | null);
+    const fileName = sanitizeContentDispositionFilename(`simulation_${id}.csv`, 'simulation.csv');
     return new NextResponse(csv, {
-      headers: {
-        'Content-Type': 'text/csv',
-        'Content-Disposition': `attachment; filename="simulation_${id}.csv"`,
-      },
+      headers: noStoreHeaders({
+        'Content-Type': 'text/csv; charset=utf-8',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+      }),
     });
   }
 
   // Return JSON data
   const jsonData = generateJSON(simulationData as unknown as SimulationLike, dataCollector as unknown as DataCollectorLike | null);
-  return NextResponse.json(jsonData);
+  return NextResponse.json(jsonData, {
+    headers: noStoreHeaders(),
+  });
 }
 
 /**

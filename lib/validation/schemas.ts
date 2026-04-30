@@ -1,6 +1,7 @@
 // Zod validation schemas for API requests
 
 import { z } from 'zod';
+import { noStoreHeaders } from '@/lib/utils/http-safety';
 
 /**
  * Simulation configuration schema
@@ -141,7 +142,7 @@ export async function validateRequest<T extends z.ZodSchema>(
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' },
+          headers: noStoreHeaders({ 'Content-Type': 'application/json' }),
         }
       ),
     };
@@ -164,7 +165,7 @@ export async function validateRequest<T extends z.ZodSchema>(
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' },
+          headers: noStoreHeaders({ 'Content-Type': 'application/json' }),
         }
       ),
     };
@@ -215,7 +216,7 @@ export function validateId(
       success: false,
       response: new Response(
         JSON.stringify({ error: 'Simulation ID required' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 400, headers: noStoreHeaders({ 'Content-Type': 'application/json' }) }
       ),
     };
   }
@@ -229,7 +230,7 @@ export function validateId(
           error: 'Invalid simulation ID',
           details: result.error.issues[0]?.message || 'ID must be 1-100 characters',
         }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 400, headers: noStoreHeaders({ 'Content-Type': 'application/json' }) }
       ),
     };
   }

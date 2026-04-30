@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test';
 
 test.describe('API Routes', () => {
   test('simulation API can create a simulation', async ({ request }) => {
-    // Test POST /api/simulation to create a simulation
     const response = await request.post('/api/simulation', {
       data: {
         num_developers: 5,
@@ -11,16 +10,10 @@ test.describe('API Routes', () => {
       },
     });
 
-    // Should return 200 or error with message
+    expect(response.ok()).toBeTruthy();
     const responseBody = await response.json();
-
-    if (response.ok()) {
-      expect(responseBody).toHaveProperty('id');
-      expect(responseBody).toHaveProperty('message');
-    } else {
-      // If it fails, it should have an error message
-      expect(responseBody).toHaveProperty('error');
-    }
+    expect(responseBody).toHaveProperty('id');
+    expect(responseBody).toHaveProperty('message');
   });
 
   test('simulation API can list all simulations', async ({ request }) => {
@@ -43,7 +36,6 @@ test.describe('API Routes', () => {
   });
 
   test('simulation API workflow: create, step, and retrieve', async ({ request }) => {
-    // Create a simulation
     const createResponse = await request.post('/api/simulation', {
       data: {
         num_developers: 3,
@@ -51,11 +43,7 @@ test.describe('API Routes', () => {
       },
     });
 
-    // Skip if creation fails (might be due to library issues)
-    if (!createResponse.ok()) {
-      test.skip();
-      return;
-    }
+    expect(createResponse.ok()).toBeTruthy();
 
     const createBody = await createResponse.json();
     const simId = createBody.id;
@@ -80,11 +68,11 @@ test.describe('API Routes', () => {
   });
 
   test('simulation data API endpoint responds', async ({ request }) => {
-    // Test GET /api/simulation/data
     const response = await request.get('/api/simulation/data');
 
-    // Should return a response (not necessarily 200)
-    expect(response.status()).toBeLessThan(500);
+    expect(response.status()).toBe(400);
+    const responseBody = await response.json();
+    expect(responseBody).toHaveProperty('error');
   });
 });
 

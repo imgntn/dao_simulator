@@ -21,7 +21,6 @@ import { HelpOverlay } from '@/components/simulation/HelpOverlay';
 import { ResearchPanel } from '@/components/simulation/research/ResearchPanel';
 import { MetricAlerts } from '@/components/simulation/MetricAlerts';
 import { CustomAgentForm } from '@/components/simulation/CustomAgentForm';
-import { AgentInspector } from '@/components/simulation/AgentInspector';
 import { BranchView } from '@/components/simulation/BranchView';
 import { MultiRunPanel } from '@/components/simulation/MultiRunPanel';
 import { ShareButton } from '@/components/simulation/ShareButton';
@@ -40,7 +39,6 @@ export default function SimulationPageClient() {
   const initialized = useRef(false);
   const [activeTab, setActiveTab] = useState<SimTab>('interactive');
   const [showHelp, setShowHelp] = useState(false);
-  const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
 
   const tier = useBreakpointTier();
   const sidebarWidth = useLayoutStore(s => s.sidebarWidth);
@@ -50,9 +48,6 @@ export default function SimulationPageClient() {
     onToggleHelp: () => setShowHelp(prev => !prev),
   }), []);
   useKeyboardShortcuts(shortcutCallbacks());
-
-  // Get selected agent from snapshot
-  const selectedAgent = snapshot?.agents.find(a => a.id === selectedAgentId) ?? null;
 
   useEffect(() => {
     if (initialized.current) return;

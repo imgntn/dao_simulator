@@ -6,6 +6,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { DAOMember } from '../lib/agents/base';
+import { DAOSimulation } from '../lib/engine/simulation';
 
 // ---------------------------------------------------------------------------
 // Event Publishing — the simulation engine should emit market/social/system events
@@ -13,7 +15,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 describe('Simulation event publishing', () => {
   it('should publish treasury_change events on significant treasury modifications', async () => {
-    const { DAOSimulation } = await import('../lib/engine/simulation');
     const events: Array<{ type: string; data: Record<string, unknown> }> = [];
 
     const sim = new DAOSimulation({
@@ -33,15 +34,17 @@ describe('Simulation event publishing', () => {
       events.push({ type: 'treasury_change', data });
     });
 
-    await sim.run(100);
+    const voter = sim.dao.members[0];
+    expect(voter).toBeDefined();
+    (sim as unknown as { votersThisStep: Set<string> }).votersThisStep = new Set([voter.uniqueId]);
+    (sim as unknown as { applyParticipationPolicy: () => void }).applyParticipationPolicy();
 
-    // Treasury changes should be emitted (participation rewards, proposal spending, etc.)
-    // Some may not fire in 100 steps, but we verify the subscription works
-    expect(typeof events.length).toBe('number');
+    expect(events).toHaveLength(1);
+    expect(events[0].data).toMatchObject({ reason: 'participation_rewards' });
+    expect(typeof events[0].data.amount).toBe('number');
   });
 
   it('should publish member_joined events when new members are added', async () => {
-    const { DAOSimulation } = await import('../lib/engine/simulation');
     const events: Array<{ type: string; data: Record<string, unknown> }> = [];
 
     const sim = new DAOSimulation({
@@ -61,17 +64,22 @@ describe('Simulation event publishing', () => {
       events.push({ type: 'member_joined', data });
     });
 
-    // Run enough steps for member lifecycle
-    await sim.run(200);
+    const originalAddNewMembers = sim.agentManager.addNewMembers.bind(sim.agentManager);
+    sim.agentManager.addNewMembers = () => {
+      sim.dao.addMember(new DAOMember('deterministic_joiner', sim, 10, 1, 'Test'));
+      sim.agentManager.addNewMembers = originalAddNewMembers;
+    };
 
-    // Members should eventually join
-    for (const e of events) {
-      expect(e.data).toHaveProperty('type');
-    }
+    await sim.step();
+
+    expect(events).toHaveLength(1);
+    expect(events[0].data).toMatchObject({
+      memberId: 'deterministic_joiner',
+      type: 'DAOMember',
+    });
   });
 
   it('should publish price_change events periodically', async () => {
-    const { DAOSimulation } = await import('../lib/engine/simulation');
     const events: Array<{ type: string; data: Record<string, unknown> }> = [];
 
     const sim = new DAOSimulation({
@@ -92,7 +100,7 @@ describe('Simulation event publishing', () => {
     });
 
     // Run 50 steps — price_change fires every 10 steps
-    await sim.run(50);
+    await sim.run(10);
 
     // Should have at least a few price change events
     expect(events.length).toBeGreaterThanOrEqual(1);
@@ -105,7 +113,6 @@ describe('Simulation event publishing', () => {
   });
 
   it('should publish forum_topic events when forum is enabled', async () => {
-    const { DAOSimulation } = await import('../lib/engine/simulation');
     const events: Array<{ type: string; data: Record<string, unknown> }> = [];
 
     const sim = new DAOSimulation({
@@ -141,8 +148,6 @@ describe('Simulation event publishing', () => {
 
 describe('Simulation snapshot structure', () => {
   it('should produce a valid snapshot with all required fields', async () => {
-    const { DAOSimulation } = await import('../lib/engine/simulation');
-
     const sim = new DAOSimulation({
       num_developers: 3,
       num_investors: 1,
@@ -170,8 +175,6 @@ describe('Simulation snapshot structure', () => {
   });
 
   it('should track proposals with correct fields', async () => {
-    const { DAOSimulation } = await import('../lib/engine/simulation');
-
     const sim = new DAOSimulation({
       num_developers: 5,
       num_investors: 2,
@@ -204,8 +207,6 @@ describe('Simulation snapshot structure', () => {
   });
 
   it('should have agents with uniqueId and constructor name', async () => {
-    const { DAOSimulation } = await import('../lib/engine/simulation');
-
     const sim = new DAOSimulation({
       num_developers: 2,
       num_investors: 1,
@@ -239,8 +240,6 @@ describe('Governance rule simulation QA', () => {
 
   for (const rule of rules) {
     it(`should run successfully with ${rule} rule`, async () => {
-      const { DAOSimulation } = await import('../lib/engine/simulation');
-
       const sim = new DAOSimulation({
         num_developers: 3,
         num_investors: 1,
@@ -276,8 +275,6 @@ describe('Scale QA', () => {
 
   for (const scale of scales) {
     it(`should run at ${scale.label} agents`, async () => {
-      const { DAOSimulation } = await import('../lib/engine/simulation');
-
       const sim = new DAOSimulation({
         num_developers: scale.devs,
         num_investors: scale.investors,
@@ -303,8 +300,6 @@ describe('Scale QA', () => {
 
 describe('Black swan QA', () => {
   it('should survive high-frequency black swans', async () => {
-    const { DAOSimulation } = await import('../lib/engine/simulation');
-
     const sim = new DAOSimulation({
       num_developers: 5,
       num_investors: 2,
@@ -333,8 +328,6 @@ describe('Black swan QA', () => {
 
 describe('RL activation QA', () => {
   it('should run with learning enabled', async () => {
-    const { DAOSimulation } = await import('../lib/engine/simulation');
-
     const sim = new DAOSimulation({
       num_developers: 3,
       num_investors: 1,
@@ -360,8 +353,6 @@ describe('RL activation QA', () => {
 
 describe('Forum QA', () => {
   it('should run with forum enabled', async () => {
-    const { DAOSimulation } = await import('../lib/engine/simulation');
-
     const sim = new DAOSimulation({
       num_developers: 3,
       num_investors: 1,

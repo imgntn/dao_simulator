@@ -11,23 +11,33 @@
  *   node scripts/test-e2e.js --project=smoke
  *   node scripts/test-e2e.js --project=dashboard --headed
  *   node scripts/test-e2e.js --ui
+ *
+ * Set E2E_CLEAN_STALE_PROCESSES=1 to force-kill stale Node listeners before
+ * startup. This is intentionally opt-in so concurrent e2e runs do not
+ * terminate each other.
  */
 
 const { spawn, execFileSync } = require('child_process');
+const crypto = require('crypto');
 const fs = require('fs');
 const http = require('http');
 const os = require('os');
 const path = require('path');
 const { URL } = require('url');
-const { buildBaseUrl, DEFAULT_PORT, getPortFromUrl } = require('./port-utils');
+const { buildBaseUrl, DEFAULT_PORT, getPortFromUrl, isProcessAlive } = require('./port-utils');
 
 const MAX_WAIT_MS = 180000; // 3 minutes max wait for servers
 const HEALTHCHECK_TIMEOUT_MS = 20000;
 const HEALTH_PATHS = ['/api/healthz', '/api/healthz/simulate'];
 const REPO_PATH = process.cwd();
 const SERVER_INFO_FILE = path.join(os.tmpdir(), `dao-simulator-e2e-${process.pid}.json`);
+const RUN_LOCK_FILE = path.join(
+  os.tmpdir(),
+  `dao-simulator-e2e-run-${crypto.createHash('sha1').update(REPO_PATH.toLowerCase()).digest('hex').slice(0, 16)}.lock`
+);
 
 const processes = [];
+let runLock = null;
 
 function log(msg) {
   console.log(`[test-e2e] ${msg}`);
@@ -61,6 +71,7 @@ async function checkServerHealth(baseUrl) {
 
 function clearStaleWindowsNodeListener(baseUrl) {
   if (process.platform !== 'win32') return false;
+  if (process.env.E2E_CLEAN_STALE_PROCESSES !== '1') return false;
 
   const port = getPortFromUrl(baseUrl);
 
@@ -94,6 +105,7 @@ function clearStaleWindowsNodeListener(baseUrl) {
 
 function clearStaleWindowsRepoNodeProcesses() {
   if (process.platform !== 'win32') return false;
+  if (process.env.E2E_CLEAN_STALE_PROCESSES !== '1') return false;
 
   try {
     const escapedRepoPath = REPO_PATH.replace(/\\/g, '\\\\');
@@ -163,6 +175,70 @@ async function waitForServer(url, name, proc) {
   throw new Error(`${name} failed to start within ${MAX_WAIT_MS / 1000}s`);
 }
 
+async function acquireRunLock() {
+  const token = `${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const payload = JSON.stringify({
+    pid: process.pid,
+    repo: REPO_PATH,
+    token,
+    createdAt: new Date().toISOString(),
+  });
+  const start = Date.now();
+  let loggedWait = false;
+
+  while (Date.now() - start < MAX_WAIT_MS) {
+    try {
+      const fd = fs.openSync(RUN_LOCK_FILE, 'wx');
+      try {
+        fs.writeFileSync(fd, payload);
+      } finally {
+        fs.closeSync(fd);
+      }
+
+      return {
+        release() {
+          try {
+            const existing = JSON.parse(fs.readFileSync(RUN_LOCK_FILE, 'utf8'));
+            if (existing.token === token) {
+              fs.unlinkSync(RUN_LOCK_FILE);
+            }
+          } catch {
+            // The lock may already have been removed by cleanup.
+          }
+        },
+      };
+    } catch (error) {
+      if (error.code !== 'EEXIST') {
+        throw error;
+      }
+
+      try {
+        const existing = JSON.parse(fs.readFileSync(RUN_LOCK_FILE, 'utf8'));
+        if (!isProcessAlive(existing.pid)) {
+          fs.unlinkSync(RUN_LOCK_FILE);
+          continue;
+        }
+      } catch {
+        try {
+          fs.unlinkSync(RUN_LOCK_FILE);
+        } catch {
+          // Another process may have removed the broken lock first.
+        }
+        continue;
+      }
+
+      if (!loggedWait) {
+        log('Another e2e runner is active for this repo; waiting for it to finish');
+        loggedWait = true;
+      }
+
+      await new Promise(r => setTimeout(r, 1000));
+    }
+  }
+
+  throw new Error(`Timed out waiting for e2e run lock after ${MAX_WAIT_MS / 1000}s`);
+}
+
 function startProcess(command, args, name, extraEnv = {}) {
   const isWindows = process.platform === 'win32';
   const executable = isWindows && command === 'npm'
@@ -229,7 +305,9 @@ async function waitForServerInfo(proc) {
       if (serverInfo?.baseUrl) {
         return serverInfo;
       }
-    } catch {}
+    } catch {
+      // Server info is created asynchronously by the dev server.
+    }
 
     await new Promise(r => setTimeout(r, 250));
   }
@@ -241,7 +319,9 @@ function cleanup() {
   log('Cleaning up...');
   try {
     fs.unlinkSync(SERVER_INFO_FILE);
-  } catch {}
+  } catch {
+    // It is fine if a previous test run already removed the server info file.
+  }
   for (const proc of processes) {
     if (proc && !proc.killed) {
       try {
@@ -250,10 +330,14 @@ function cleanup() {
         } else {
           process.kill(-proc.pid, 'SIGTERM');
         }
-      } catch (e) {
+      } catch {
         // Process may already be dead
       }
     }
+  }
+  if (runLock) {
+    runLock.release();
+    runLock = null;
   }
 }
 
@@ -269,6 +353,8 @@ async function main() {
   process.on('exit', cleanup);
 
   try {
+    runLock = await acquireRunLock();
+
     let devUrl = configuredBaseUrl || buildBaseUrl(configuredPort, '127.0.0.1');
 
     // By default, own the Next server lifecycle for the test run.
@@ -306,7 +392,9 @@ async function main() {
       if (serverInfo?.baseUrl) {
         devUrl = serverInfo.baseUrl;
       }
-    } catch {}
+    } catch {
+      // The server info file may not exist when reusing an existing server.
+    }
 
     log(`Using Next.js server at ${devUrl}`);
     log('Running Playwright tests...');

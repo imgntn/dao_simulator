@@ -49,8 +49,10 @@ See `paper/` for the LaTeX source and `experiments/paper/` for all experiment co
 | Script | Description |
 | --- | --- |
 | `npm run dev` | Next.js app (Turbopack), starting at **7884** and shifting to the next free port if needed |
-| `npm run test` | Vitest unit suite with coverage (784 tests) |
-| `npm run test:e2e` | Playwright e2e suite — 138 tests across 10 projects (smoke, dashboard, simulation, controls, visualizations, API, accessibility, responsive, homepage) |
+| `npm run test` | Vitest unit suite with coverage (982 tests) |
+| `npm run typecheck` | TypeScript compile check without emit |
+| `npm run verify` | Local CI-equivalent gate: lint, typecheck, unit tests, build, smoke/API E2E, and audit |
+| `npm run test:e2e` | Playwright e2e suite - 138 tests in 9 files across 10 projects |
 | `npm run lint` | ESLint (flat config) |
 | `npm run examples -- --scenario=<name>` | Run a TypeScript example (`basic`, `market-shock`, `governance`, or `all`) via `tsx` |
 | `npm run experiment -- <config.yaml>` | Run research experiment with specified configuration |
@@ -69,8 +71,9 @@ See `docs/EXAMPLES.md` for full details on each scenario, output expectations, a
 
 ## Testing & Quality
 
-- **Unit tests**: `npm run test` — 784 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, and LLM integration. V8 coverage enabled.
-- **E2E tests**: `npm run test:e2e` — 138 Playwright tests across 10 projects: smoke (page load), dashboard (UI layout/tabs/panels), simulation (behavior/keyboard shortcuts/DAO switching), simulate (play/pause/step/reset/metrics/charts), visualizations (3D canvas/WebGL/charts/delegation graph/theme), API (REST endpoints), accessibility (a11y compliance), responsive (mobile/tablet/orientation/touch), and homepage tests. Reuses a healthy server when one is already running, otherwise launches its own server on the next free port.
+- **Unit tests**: `npm run test` — 982 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, LLM integration, auth, validation, analytics, proxy security, path safety, API hardening, and browser-facing simulation state. V8 coverage enabled.
+- **Typecheck**: `npm run typecheck` — runs `tsc --noEmit`.
+- **E2E tests**: `npm run test:e2e` - 138 Playwright tests in 9 files across 10 projects: smoke, dashboard, simulation, simulate, visualizations, API, accessibility, chromium homepage, mobile, and tablet. The CI-equivalent `npm run verify` gate runs the smoke and API projects; the broader suite remains available by project. Reuses a healthy server when one is already running, otherwise launches its own server on the next free port.
 - **Linting**: `npm run lint` (ESLint + Next core web vitals). Coverage artifacts are ignored to keep the tree clean.
 
 ## 3D Interactive Simulator
@@ -108,7 +111,7 @@ lib/
   |- llm/           Ollama client, prompt templates, response cache, agent memory
   `- utils/         Governance plugins, voting strategies, event bus, RNG
 experiments/paper/  12 YAML experiment configs for reproducible research
-tests/              784 Vitest unit tests
+tests/              982 Vitest unit tests
 python/             Calibration data ingestion scripts
 ```
 

@@ -1,11 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 import { NextResponse } from 'next/server';
-import { projectResolve } from '@/lib/utils/server-paths';
+import { isPathInside, projectResolve } from '@/lib/utils/server-paths';
+import { requireAuth } from '@/lib/auth';
+import { noStoreHeaders, sanitizeContentDispositionFilename } from '@/lib/utils/http-safety';
 
 export const runtime = 'nodejs';
 
 const ALLOWED_BASES = ['paper', 'results', 'docs'];
+const PROTECTED_EXTENSIONS = new Set(['.log', '.yaml', '.yml']);
 
 const MIME_MAP: Record<string, string> = {
   '.pdf': 'application/pdf',
@@ -23,7 +26,7 @@ const MIME_MAP: Record<string, string> = {
 function isInsideAllowedRoots(absolutePath: string): boolean {
   return ALLOWED_BASES.some((baseDir) => {
     const allowedRoot = projectResolve(baseDir);
-    return absolutePath === allowedRoot || absolutePath.startsWith(`${allowedRoot}${path.sep}`);
+    return isPathInside(allowedRoot, absolutePath);
   });
 }
 
@@ -56,32 +59,35 @@ export async function GET(
 
   const resolved = resolveSafePath(routeParams?.slug ?? fallbackSlug);
   if (!resolved) {
-    return NextResponse.json({ error: 'Invalid artifact path.' }, { status: 400 });
-  }
-
-  if (!fs.existsSync(resolved)) {
-    return NextResponse.json({ error: 'Artifact not found.' }, { status: 404 });
-  }
-
-  const stats = fs.statSync(resolved);
-  if (!stats.isFile()) {
-    return NextResponse.json({ error: 'Path is not a file.' }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid artifact path.' }, { status: 400, headers: noStoreHeaders() });
   }
 
   const ext = path.extname(resolved).toLowerCase();
+  if (PROTECTED_EXTENSIONS.has(ext)) {
+    const authError = await requireAuth(request);
+    if (authError) return authError;
+  }
+
+  if (!fs.existsSync(/* turbopackIgnore: true */ resolved)) {
+    return NextResponse.json({ error: 'Artifact not found.' }, { status: 404, headers: noStoreHeaders() });
+  }
+
+  const stats = fs.statSync(/* turbopackIgnore: true */ resolved);
+  if (!stats.isFile()) {
+    return NextResponse.json({ error: 'Path is not a file.' }, { status: 400, headers: noStoreHeaders() });
+  }
+
   const contentType = MIME_MAP[ext] ?? 'application/octet-stream';
-  const fileName = path.basename(resolved);
+  const fileName = sanitizeContentDispositionFilename(path.basename(resolved), 'artifact');
   const isInline = ['.pdf', '.md', '.json', '.txt', '.csv', '.log', '.tex', '.yaml', '.yml'].includes(ext);
 
-  const content = fs.readFileSync(resolved);
+  const content = fs.readFileSync(/* turbopackIgnore: true */ resolved);
 
   return new NextResponse(content, {
-    headers: {
+    headers: noStoreHeaders({
       'Content-Type': contentType,
       'Content-Length': String(stats.size),
       'Content-Disposition': `${isInline ? 'inline' : 'attachment'}; filename="${fileName}"`,
-      'Cache-Control': 'no-store',
-      'X-Content-Type-Options': 'nosniff',
-    },
+    }),
   });
 }

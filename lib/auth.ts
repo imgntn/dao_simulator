@@ -3,6 +3,8 @@
 import type { NextAuthConfig } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { timingSafeEqual } from 'crypto';
+import { InMemoryRateLimiter, getClientIdentifier } from './utils/rate-limit';
+import { noStoreHeaders } from './utils/http-safety';
 
 const isProduction = process.env.NODE_ENV === 'production';
 // Skip checks during Next.js build phase (NEXT_PHASE is set during build)
@@ -44,69 +46,8 @@ function safeCompare(a: string, b: string): boolean {
  * Simple in-memory rate limiter for API authentication
  * Tracks failed attempts by IP/key and blocks after threshold
  */
-interface RateLimitEntry {
-  count: number;
-  resetAt: number;
-}
-
-class RateLimiter {
-  private attempts = new Map<string, RateLimitEntry>();
-  private readonly maxAttempts: number;
-  private readonly windowMs: number;
-
-  constructor(maxAttempts = 10, windowMs = 60000) {
-    this.maxAttempts = maxAttempts;
-    this.windowMs = windowMs;
-
-    // Clean up expired entries every minute
-    if (typeof setInterval !== 'undefined') {
-      const timer = setInterval(() => this.cleanup(), 60000);
-      // Allow process to exit in test/CLI environments
-      if (typeof (timer as any).unref === 'function') {
-        (timer as any).unref();
-      }
-    }
-  }
-
-  isBlocked(key: string): boolean {
-    const entry = this.attempts.get(key);
-    if (!entry) return false;
-
-    if (Date.now() > entry.resetAt) {
-      this.attempts.delete(key);
-      return false;
-    }
-
-    return entry.count >= this.maxAttempts;
-  }
-
-  recordAttempt(key: string): void {
-    const now = Date.now();
-    const entry = this.attempts.get(key);
-
-    if (!entry || now > entry.resetAt) {
-      this.attempts.set(key, { count: 1, resetAt: now + this.windowMs });
-    } else {
-      entry.count++;
-    }
-  }
-
-  reset(key: string): void {
-    this.attempts.delete(key);
-  }
-
-  private cleanup(): void {
-    const now = Date.now();
-    for (const [key, entry] of this.attempts.entries()) {
-      if (now > entry.resetAt) {
-        this.attempts.delete(key);
-      }
-    }
-  }
-}
-
 // Global rate limiter instance - 10 failed attempts per minute per IP
-const rateLimiter = new RateLimiter(10, 60000);
+const rateLimiter = new InMemoryRateLimiter(10, 60000);
 
 export const authConfig: NextAuthConfig = {
   providers: [
@@ -176,44 +117,26 @@ export const authConfig: NextAuthConfig = {
 /**
  * Get client identifier for rate limiting
  */
-function getClientId(request: Request): string {
-  const trustProxy = process.env.TRUST_PROXY === 'true';
-  if (trustProxy) {
-    // Try to get real IP from various headers (for proxied requests)
-    const forwarded = request.headers.get('x-forwarded-for');
-    if (forwarded) {
-      return forwarded.split(',')[0].trim();
-    }
-
-    const realIp = request.headers.get('x-real-ip');
-    if (realIp) {
-      return realIp;
-    }
-  }
-
-  // Fall back to a hash of the request URL origin
-  return 'unknown-client';
-}
-
 /**
  * Middleware function to protect API routes
  * Includes rate limiting and timing-safe API key comparison
  */
 export async function requireAuth(request: Request): Promise<Response | null> {
-  const clientId = getClientId(request);
+  const clientId = getClientIdentifier(request, '');
 
   // Check if client is rate limited
-  if (rateLimiter.isBlocked(clientId)) {
+  const rateLimit = rateLimiter.check(clientId);
+  if (rateLimit.limited) {
     return new Response(
       JSON.stringify({
         error: 'Too many failed authentication attempts. Please try again later.',
       }),
       {
         status: 429,
-        headers: {
+        headers: noStoreHeaders({
           'Content-Type': 'application/json',
-          'Retry-After': '60',
-        },
+          'Retry-After': String(rateLimit.retryAfter),
+        }),
       }
     );
   }
@@ -242,14 +165,14 @@ export async function requireAuth(request: Request): Promise<Response | null> {
   }
 
   // Record failed attempt for rate limiting
-  rateLimiter.recordAttempt(clientId);
+  rateLimiter.record(clientId);
 
   // Unauthorized
   return new Response(
     JSON.stringify({ error: 'Unauthorized - API key required' }),
     {
       status: 401,
-      headers: { 'Content-Type': 'application/json' },
+      headers: noStoreHeaders({ 'Content-Type': 'application/json' }),
     }
   );
 }

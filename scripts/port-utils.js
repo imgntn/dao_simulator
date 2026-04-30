@@ -78,6 +78,7 @@ function tryAcquirePortLock(port, host = DEFAULT_HOST) {
       fs.unlinkSync(lockPath);
       acquire();
     } catch {
+      // Another process may have raced us on the lock file.
       return null;
     }
   }
@@ -91,7 +92,9 @@ function tryAcquirePortLock(port, host = DEFAULT_HOST) {
         if (existing.token === token) {
           fs.unlinkSync(lockPath);
         }
-      } catch {}
+      } catch {
+        // The lock may already have been removed by cleanup.
+      }
     },
   };
 }
@@ -132,5 +135,6 @@ module.exports = {
   findAndReserveAvailablePort,
   findAvailablePort,
   getPortFromUrl,
+  isProcessAlive,
   isPortAvailable,
 };

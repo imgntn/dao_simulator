@@ -1,6 +1,6 @@
 # Experiment Status
 
-**Last Updated:** 2026-04-07
+**Last Updated:** 2026-04-29
 
 ## Summary
 
@@ -63,4 +63,4 @@ npm run paper:update
 
 ## Testing
 
-928 tests passing across 42 test files (0 failures, 0 type errors).
+982 unit tests passing across 51 test files (0 failures, 0 type errors). Smoke and API E2E are covered by CI.

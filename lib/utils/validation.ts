@@ -15,11 +15,11 @@ export class ValidationError extends Error {
  * Validate that a value is a positive integer
  */
 export function validatePositiveInt(
-  value: any,
+  value: unknown,
   fieldName: string = 'value',
   maxValue?: number
 ): number {
-  const intVal = parseInt(value, 10);
+  const intVal = Number.parseInt(String(value), 10);
 
   if (isNaN(intVal)) {
     throw new ValidationError(`${fieldName} must be a valid integer`);
@@ -40,10 +40,10 @@ export function validatePositiveInt(
  * Validate that a value is a non-negative number
  */
 export function validateNonNegativeFloat(
-  value: any,
+  value: unknown,
   fieldName: string = 'value'
 ): number {
-  const floatVal = parseFloat(value);
+  const floatVal = Number.parseFloat(String(value));
 
   if (isNaN(floatVal)) {
     throw new ValidationError(`${fieldName} must be a valid number`);
@@ -60,7 +60,7 @@ export function validateNonNegativeFloat(
  * Validate that a value is a safe string
  */
 export function validateString(
-  value: any,
+  value: unknown,
   fieldName: string = 'value',
   maxLength: number = 1000,
   allowEmpty: boolean = false
@@ -92,10 +92,10 @@ export function validateString(
  * Validate that a value is a valid JSON object
  */
 export function validateJsonDict(
-  value: any,
+  value: unknown,
   fieldName: string = 'data',
   requiredKeys?: string[]
-): Record<string, any> {
+): Record<string, unknown> {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) {
     throw new ValidationError(`${fieldName} must be an object`);
   }
@@ -109,18 +109,18 @@ export function validateJsonDict(
     }
   }
 
-  return value;
+  return value as Record<string, unknown>;
 }
 
 /**
  * Validate that a value is one of the allowed choices
  */
 export function validateChoice<T extends string>(
-  value: any,
+  value: unknown,
   choices: readonly T[],
   fieldName: string = 'value'
 ): T {
-  if (!choices.includes(value)) {
+  if (typeof value !== 'string' || !choices.includes(value as T)) {
     throw new ValidationError(
       `${fieldName} must be one of: ${choices.join(', ')}`
     );
@@ -132,28 +132,28 @@ export function validateChoice<T extends string>(
 /**
  * Sanitize and validate agent ID
  */
-export function sanitizeAgentId(agentId: any): number {
+export function sanitizeAgentId(agentId: unknown): number {
   return validatePositiveInt(agentId, 'agent_id', 10000);
 }
 
 /**
  * Sanitize and validate proposal ID
  */
-export function sanitizeProposalId(proposalId: any): number {
+export function sanitizeProposalId(proposalId: unknown): number {
   return validatePositiveInt(proposalId, 'proposal_id', 100000);
 }
 
 /**
  * Sanitize and validate simulation steps
  */
-export function sanitizeSimulationSteps(steps: any): number {
+export function sanitizeSimulationSteps(steps: unknown): number {
   return validatePositiveInt(steps, 'steps', 10000);
 }
 
 /**
  * Sanitize and validate token amounts
  */
-export function sanitizeTokenAmount(amount: any): number {
+export function sanitizeTokenAmount(amount: unknown): number {
   const validated = validateNonNegativeFloat(amount, 'token_amount');
   if (validated > 1_000_000_000) {
     throw new ValidationError('token_amount exceeds maximum allowed value');
@@ -165,7 +165,7 @@ export function sanitizeTokenAmount(amount: any): number {
  * Validate percentage value (0-1 or 0-100)
  */
 export function validatePercentage(
-  value: any,
+  value: unknown,
   fieldName: string = 'percentage',
   asDecimal: boolean = true
 ): number {
@@ -185,8 +185,8 @@ export function validatePercentage(
  * Validate range (min, max)
  */
 export function validateRange(
-  min: any,
-  max: any,
+  min: unknown,
+  max: unknown,
   fieldName: string = 'range'
 ): [number, number] {
   const minVal = validateNonNegativeFloat(min, `${fieldName}_min`);
@@ -203,9 +203,9 @@ export function validateRange(
  * Validate array of specific type
  */
 export function validateArray<T>(
-  value: any,
+  value: unknown,
   fieldName: string = 'array',
-  validator?: (item: any, index: number) => T,
+  validator?: (item: unknown, index: number) => T,
   minLength?: number,
   maxLength?: number
 ): T[] {
@@ -229,13 +229,13 @@ export function validateArray<T>(
     return value.map((item, index) => validator(item, index));
   }
 
-  return value;
+  return value as T[];
 }
 
 /**
  * Validate email format (basic)
  */
-export function validateEmail(value: any, fieldName: string = 'email'): string {
+export function validateEmail(value: unknown, fieldName: string = 'email'): string {
   const str = validateString(value, fieldName, 255);
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -249,7 +249,7 @@ export function validateEmail(value: any, fieldName: string = 'email'): string {
 /**
  * Validate URL format
  */
-export function validateUrl(value: any, fieldName: string = 'url'): string {
+export function validateUrl(value: unknown, fieldName: string = 'url'): string {
   const str = validateString(value, fieldName, 2000);
 
   try {
@@ -277,7 +277,7 @@ export function sanitizeHtml(value: string): string {
  * Validate boolean value
  */
 export function validateBoolean(
-  value: any,
+  value: unknown,
   fieldName: string = 'value'
 ): boolean {
   if (typeof value === 'boolean') {

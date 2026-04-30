@@ -31,13 +31,17 @@ afterEach(async () => {
   for (const child of children.splice(0)) {
     try {
       child.kill('SIGTERM');
-    } catch {}
+    } catch {
+      // The child may already have exited.
+    }
   }
 
   for (const dir of tempDirs.splice(0)) {
     try {
       await rm(dir, { recursive: true, force: true });
-    } catch {}
+    } catch {
+      // Temporary directories are best-effort cleanup.
+    }
   }
 });
 
