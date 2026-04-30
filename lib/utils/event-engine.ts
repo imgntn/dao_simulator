@@ -7,7 +7,11 @@ import { createRandomProposal } from './proposal-utils';
 export interface EventConfig {
   step: number;
   type: string;
-  [key: string]: any;
+  [key: string]: unknown;
+}
+
+interface MarketShockCapable {
+  triggerMarketShock?: (severity: number) => void;
 }
 
 export class EventEngine {
@@ -88,10 +92,11 @@ export class EventEngine {
    * Trigger a market shock event
    */
   private triggerMarketShock(evt: EventConfig, sim: DAOModel): void {
-    const severity = evt.severity || 0;
+    const severity = typeof evt.severity === 'number' ? evt.severity : 0;
+    const shockCapable = sim as DAOModel & MarketShockCapable;
 
-    if (typeof (sim as any).triggerMarketShock === 'function') {
-      (sim as any).triggerMarketShock(severity);
+    if (typeof shockCapable.triggerMarketShock === 'function') {
+      shockCapable.triggerMarketShock(severity);
     } else {
       // Fallback: manually adjust price
       const oldPrice = sim.dao.treasury.getTokenPrice('DAO_TOKEN');
@@ -114,7 +119,7 @@ export class EventEngine {
    */
   private createProposal(evt: EventConfig, sim: DAOModel): void {
     const creator = sim.dao.members.length > 0 ? sim.dao.members[0] : undefined;
-    const title = evt.title || 'Event Proposal';
+    const title = typeof evt.title === 'string' && evt.title ? evt.title : 'Event Proposal';
 
     const proposal = createRandomProposal(sim.dao, creator, title);
 

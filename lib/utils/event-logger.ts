@@ -4,7 +4,12 @@
 export interface LogEntry {
   step: number;
   event: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
+}
+
+function csvCell(value: unknown): string {
+  const text = String(value).replace(/"/g, '""');
+  return /[",\n\r]/.test(text) ? `"${text}"` : text;
 }
 
 /**
@@ -21,7 +26,7 @@ export class EventLogger {
   /**
    * Log an event
    */
-  log(step: number, event: string, details: Record<string, any> = {}): void {
+  log(step: number, event: string, details: Record<string, unknown> = {}): void {
     this.entries.push({ step, event, details });
 
     // Limit memory usage
@@ -33,9 +38,9 @@ export class EventLogger {
   /**
    * Handle event from event bus
    */
-  handleEvent(event: string, data: Record<string, any>): void {
+  handleEvent(event: string, data: Record<string, unknown>): void {
     const { step = 0, ...details } = data;
-    this.log(step, event, details);
+    this.log(typeof step === 'number' ? step : 0, event, details);
   }
 
   /**
@@ -102,8 +107,11 @@ export class EventLogger {
     const lines = ['step,event,details'];
 
     for (const entry of this.entries) {
-      const details = JSON.stringify(entry.details).replace(/"/g, '""');
-      lines.push(`${entry.step},${entry.event},"${details}"`);
+      lines.push([
+        csvCell(entry.step),
+        csvCell(entry.event),
+        csvCell(JSON.stringify(entry.details)),
+      ].join(','));
     }
 
     return lines.join('\n');
@@ -207,7 +215,7 @@ export class IndexedDBEventLogger extends EventLogger {
   /**
    * Log event to IndexedDB
    */
-  async log(step: number, event: string, details: Record<string, any> = {}): Promise<void> {
+  async log(step: number, event: string, details: Record<string, unknown> = {}): Promise<void> {
     // Also log to memory
     super.log(step, event, details);
 
@@ -243,11 +251,14 @@ export class IndexedDBEventLogger extends EventLogger {
       const request = store.getAll();
 
       request.onsuccess = () => {
-        this.entries = request.result.map((r: any) => ({
-          step: r.step,
-          event: r.event,
-          details: r.details,
-        }));
+        this.entries = request.result.map((r: unknown) => {
+          const row = r as Partial<LogEntry>;
+          return {
+            step: typeof row.step === 'number' ? row.step : 0,
+            event: typeof row.event === 'string' ? row.event : 'unknown',
+            details: row.details && typeof row.details === 'object' ? row.details : {},
+          };
+        });
         resolve(this.entries);
       };
       request.onerror = () => reject(request.error);
