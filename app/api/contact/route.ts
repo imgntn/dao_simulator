@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { InMemoryRateLimiter, getClientIdentifier } from '@/lib/utils/rate-limit';
+import { createRateLimiter, getClientIdentifier } from '@/lib/utils/rate-limit';
 import {
   escapeHtml,
   isRecord,
@@ -11,7 +11,7 @@ import {
 } from '@/lib/utils/http-safety';
 
 const RECIPIENT = process.env.CONTACT_EMAIL || process.env.SMTP_USER || 'hello@daosimulator.com';
-const contactLimiter = new InMemoryRateLimiter(5, 10 * 60 * 1000);
+const contactLimiter = createRateLimiter(5, 10 * 60 * 1000, 'contact');
 
 function createTransport() {
   return nodemailer.createTransport({
@@ -27,14 +27,14 @@ function createTransport() {
 
 export async function POST(request: NextRequest) {
   const clientId = getClientIdentifier(request, 'contact');
-  const rateLimit = contactLimiter.check(clientId);
+  const rateLimit = await contactLimiter.check(clientId);
   if (rateLimit.limited) {
     return NextResponse.json(
       { error: 'Too many contact requests. Please try again later.' },
       { status: 429, headers: noStoreHeaders({ 'Retry-After': String(rateLimit.retryAfter) }) }
     );
   }
-  contactLimiter.record(clientId);
+  await contactLimiter.record(clientId);
 
   let body: unknown;
   try {

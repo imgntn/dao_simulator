@@ -126,15 +126,15 @@ describe('analytics API route', () => {
   it('returns a controlled error when analytics stats fail unexpectedly', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
     mutableEnv.NODE_ENV = 'production';
-    mutableEnv.API_KEY = 'test-api-key';
-    mutableEnv.NEXTAUTH_SECRET = 'test-nextauth-secret';
+    mutableEnv.API_KEY = 'test-api-key-for-analytics-route';
+    mutableEnv.NEXTAUTH_SECRET = 'test-nextauth-secret-for-analytics-route';
     mutableEnv.ADMIN_USERNAME = 'admin';
-    mutableEnv.ADMIN_PASSWORD = 'password';
+    mutableEnv.ADMIN_PASSWORD = 'analytics-route-password';
     analyticsMocks.getStats.mockRejectedValueOnce(new Error('database offline'));
 
     const { GET } = await import('../app/api/analytics/route');
     const response = await GET(new NextRequest('http://localhost/api/analytics?days=7', {
-      headers: { 'X-API-Key': 'test-api-key' },
+      headers: { 'X-API-Key': 'test-api-key-for-analytics-route' },
     }));
 
     expect(response.status).toBe(500);

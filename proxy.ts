@@ -11,15 +11,53 @@ const SECURITY_HEADERS: ReadonlyArray<readonly [string, string]> = [
   ['Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()'],
 ];
 
-function withSecurityHeaders(response: NextResponse): NextResponse {
+function buildContentSecurityPolicy(nonce: string): string {
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+  const scriptSrc = [
+    "'self'",
+    `'nonce-${nonce}'`,
+    isDevelopment ? "'unsafe-eval'" : null,
+  ].filter(Boolean).join(' ');
+
+  return [
+    "default-src 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "frame-ancestors 'none'",
+    "form-action 'self'",
+    "img-src 'self' data: blob:",
+    "font-src 'self' data:",
+    "style-src 'self' 'unsafe-inline'",
+    `script-src ${scriptSrc}`,
+    "connect-src 'self' http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:*",
+    "worker-src 'self' blob:",
+    "child-src 'self' blob:",
+    "media-src 'self' blob: data:",
+    "manifest-src 'self'",
+    "upgrade-insecure-requests",
+  ].join('; ');
+}
+
+function withSecurityHeaders(response: NextResponse, nonce: string): NextResponse {
   for (const [name, value] of SECURITY_HEADERS) {
     response.headers.set(name, value);
   }
+  response.headers.set('x-nonce', nonce);
+
+  const cspHeader = process.env.CSP_REPORT_ONLY === 'true'
+    ? 'Content-Security-Policy-Report-Only'
+    : 'Content-Security-Policy';
+  response.headers.set(cspHeader, buildContentSecurityPolicy(nonce));
+
   return response;
 }
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const nonce = crypto.randomUUID();
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-nonce', nonce);
+  const nextInit = { request: { headers: requestHeaders } };
 
   // Skip API routes, Next.js internals, and static/public assets.
   if (
@@ -32,7 +70,7 @@ export function proxy(request: NextRequest) {
     pathname === '/sitemap.xml' ||
     /\.\w{2,5}$/.test(pathname)
   ) {
-    return withSecurityHeaders(NextResponse.next());
+    return withSecurityHeaders(NextResponse.next(nextInit), nonce);
   }
 
   // Check if pathname already has a valid locale prefix.
@@ -41,7 +79,7 @@ export function proxy(request: NextRequest) {
   );
 
   if (pathnameLocale) {
-    return withSecurityHeaders(NextResponse.next());
+    return withSecurityHeaders(NextResponse.next(nextInit), nonce);
   }
 
   // Check cookie first (set when user manually switches locale).
@@ -60,7 +98,7 @@ export function proxy(request: NextRequest) {
   // Redirect to locale-prefixed path.
   const url = request.nextUrl.clone();
   url.pathname = `/${locale}${pathname}`;
-  return withSecurityHeaders(NextResponse.redirect(url));
+  return withSecurityHeaders(NextResponse.redirect(url), nonce);
 }
 
 export const config = {

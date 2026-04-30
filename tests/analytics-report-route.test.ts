@@ -16,10 +16,10 @@ function resetEnv() {
   }
   Object.assign(mutableEnv, originalEnv);
   mutableEnv.NODE_ENV = 'production';
-  mutableEnv.API_KEY = 'test-api-key';
-  mutableEnv.NEXTAUTH_SECRET = 'test-nextauth-secret';
+  mutableEnv.API_KEY = 'test-api-key-for-analytics-report';
+  mutableEnv.NEXTAUTH_SECRET = 'test-nextauth-secret-for-analytics-report';
   mutableEnv.ADMIN_USERNAME = 'admin';
-  mutableEnv.ADMIN_PASSWORD = 'password';
+  mutableEnv.ADMIN_PASSWORD = 'analytics-report-password';
 }
 
 function authorizedRequest(body: unknown = { days: 14 }) {
@@ -27,7 +27,7 @@ function authorizedRequest(body: unknown = { days: 14 }) {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      'X-API-Key': 'test-api-key',
+      'X-API-Key': 'test-api-key-for-analytics-report',
     },
     body: JSON.stringify(body),
   });

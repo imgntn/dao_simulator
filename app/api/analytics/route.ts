@@ -2,22 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { increment, getStats } from '@/lib/analytics/store';
 import { requireAuth } from '@/lib/auth';
 import { isRecord, noStoreHeaders, readStringField } from '@/lib/utils/http-safety';
-import { InMemoryRateLimiter, getClientIdentifier } from '@/lib/utils/rate-limit';
+import { createRateLimiter, getClientIdentifier } from '@/lib/utils/rate-limit';
 
 const VALID_CATEGORIES = new Set(['pageview', 'event', 'referrer', 'device']);
 const MAX_KEY_LENGTH = 200;
-const analyticsLimiter = new InMemoryRateLimiter(120, 60 * 1000);
+const analyticsLimiter = createRateLimiter(120, 60 * 1000, 'analytics');
 
 export async function POST(request: NextRequest) {
   const clientId = getClientIdentifier(request, 'analytics');
-  const rateLimit = analyticsLimiter.check(clientId);
+  const rateLimit = await analyticsLimiter.check(clientId);
   if (rateLimit.limited) {
     return new NextResponse(null, {
       status: 429,
       headers: noStoreHeaders({ 'Retry-After': String(rateLimit.retryAfter) }),
     });
   }
-  analyticsLimiter.record(clientId);
+  await analyticsLimiter.record(clientId);
 
   let body: unknown;
   try {

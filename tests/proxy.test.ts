@@ -7,6 +7,10 @@ function expectSecurityHeaders(response: Response) {
   expect(response.headers.get('X-Frame-Options')).toBe('DENY');
   expect(response.headers.get('Referrer-Policy')).toBe('strict-origin-when-cross-origin');
   expect(response.headers.get('Permissions-Policy')).toContain('camera=()');
+  expect(response.headers.get('x-nonce')).toMatch(/[0-9a-f-]{36}/);
+  expect(response.headers.get('Content-Security-Policy')).toContain("default-src 'self'");
+  expect(response.headers.get('Content-Security-Policy')).toContain("frame-ancestors 'none'");
+  expect(response.headers.get('Content-Security-Policy')).toContain(`'nonce-${response.headers.get('x-nonce')}'`);
 }
 
 describe('proxy', () => {

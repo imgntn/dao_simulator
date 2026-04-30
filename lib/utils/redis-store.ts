@@ -56,6 +56,54 @@ export interface SimulationStore {
   list(): Promise<SimulationListItem[]>;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isMemberSnapshot(value: unknown): value is MemberSnapshot {
+  if (!isRecord(value)) return false;
+  return typeof value.uniqueId === 'string'
+    && typeof value.tokens === 'number'
+    && Number.isFinite(value.tokens)
+    && typeof value.reputation === 'number'
+    && Number.isFinite(value.reputation)
+    && (value.stakedTokens === undefined || typeof value.stakedTokens === 'number');
+}
+
+function isConfigSnapshot(value: unknown): value is SimulationConfigSnapshot {
+  if (!isRecord(value)) return false;
+  return typeof value.numDevelopers === 'number'
+    && typeof value.numInvestors === 'number'
+    && typeof value.numTraders === 'number'
+    && typeof value.governanceRule === 'string'
+    && typeof value.tokenEmissionRate === 'number'
+    && typeof value.tokenBurnRate === 'number'
+    && typeof value.stakingInterestRate === 'number'
+    && typeof value.marketShockFrequency === 'number'
+    && (value.seed === undefined || typeof value.seed === 'number');
+}
+
+function isDAOStateSnapshot(value: unknown): value is DAOStateSnapshot {
+  if (!isRecord(value)) return false;
+  return typeof value.name === 'string'
+    && Array.isArray(value.members)
+    && value.members.every(isMemberSnapshot)
+    && typeof value.proposals === 'number'
+    && typeof value.projects === 'number'
+    && typeof value.treasuryFunds === 'number'
+    && typeof value.tokenPrice === 'number';
+}
+
+export function parseSimulationSnapshot(value: unknown): SimulationSnapshot | null {
+  if (!isRecord(value)) return null;
+  if (typeof value.id !== 'string' || value.id.length === 0) return null;
+  if (typeof value.step !== 'number' || !Number.isFinite(value.step) || value.step < 0) return null;
+  if (!isConfigSnapshot(value.config)) return null;
+  if (!isDAOStateSnapshot(value.daoState)) return null;
+  if (typeof value.timestamp !== 'number' || !Number.isFinite(value.timestamp)) return null;
+  return value as unknown as SimulationSnapshot;
+}
+
 /**
  * Redis-based simulation store for production use
  */
@@ -111,7 +159,14 @@ export class RedisSimulationStore implements SimulationStore {
     }
 
     try {
-      return JSON.parse(data) as SimulationSnapshot;
+      const parsed = parseSimulationSnapshot(JSON.parse(data));
+      if (!parsed) {
+        console.error(`Invalid simulation data for ${id}; removing corrupt snapshot.`);
+        await this.client.del(key);
+        await this.client.srem(this.indexKey, id);
+        return null;
+      }
+      return parsed;
     } catch (error) {
       console.error(`Failed to parse simulation data for ${id}:`, error);
       // Remove corrupted data from Redis

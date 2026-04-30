@@ -98,11 +98,12 @@ New `.env.example` file created with:
 
 ## Testing Status
 
-- **Unit Tests**: 982 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, LLM integration, auth, validation, analytics, proxy security, path safety, API hardening, and browser-facing simulation state
+- **Unit Tests**: 991 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, LLM integration, auth, validation, analytics, proxy security, environment validation, path safety, API hardening, and browser-facing simulation state
 - **E2E Tests**: Smoke and API E2E are wired into CI; the broader 138-test Playwright suite remains available by project (dashboard, simulation, simulate, visualizations, accessibility, chromium homepage, mobile, and tablet)
 - **Linting**: Clean ESLint runs with archived/generated directories excluded from active-source linting
 - **Typecheck**: `npm run typecheck` runs `tsc --noEmit`
 - **Build**: Production build passes
+- **Environment validation**: `npm run validate:env` checks production-only secret strength and required Redis configuration
 
 ## Production Deployment Checklist
 
@@ -117,6 +118,7 @@ New `.env.example` file created with:
 - [ ] Set API_KEY for endpoint security
 - [x] Run smoke and API E2E tests in CI/CD
 - [x] Run lint, typecheck, unit tests, and production build in CI/CD
+- [x] Validate production runtime secret configuration
 
 ## Summary
 

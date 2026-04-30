@@ -25,10 +25,10 @@ describe('API route hardening', () => {
     vi.resetModules();
     resetEnv();
     mutableEnv.NODE_ENV = 'production';
-    mutableEnv.API_KEY = 'test-api-key';
-    mutableEnv.NEXTAUTH_SECRET = 'test-nextauth-secret';
+    mutableEnv.API_KEY = 'test-api-key-for-route-hardening';
+    mutableEnv.NEXTAUTH_SECRET = 'test-nextauth-secret-for-route-hardening';
     mutableEnv.ADMIN_USERNAME = 'admin';
-    mutableEnv.ADMIN_PASSWORD = 'password';
+    mutableEnv.ADMIN_PASSWORD = 'route-hardening-password';
     delete mutableEnv.REDIS_URL;
     delete mutableEnv.USE_REDIS;
   });
@@ -49,7 +49,7 @@ describe('API route hardening', () => {
   it('allows simulation listing with a valid API key', async () => {
     const { GET } = await import('../app/api/simulation/route');
     const response = await GET(new NextRequest('http://localhost/api/simulation', {
-      headers: { 'X-API-Key': 'test-api-key' },
+      headers: { 'X-API-Key': 'test-api-key-for-route-hardening' },
     }));
 
     expect(response.status).toBe(200);
@@ -74,7 +74,7 @@ describe('API route hardening', () => {
     try {
       const { GET } = await import('../app/api/simulation/route');
       const response = await GET(new NextRequest('http://localhost/api/simulation', {
-        headers: { 'X-API-Key': 'test-api-key' },
+        headers: { 'X-API-Key': 'test-api-key-for-route-hardening' },
       }));
 
       expect(response.status).toBe(500);
@@ -101,7 +101,7 @@ describe('API route hardening', () => {
     try {
       const { GET } = await import('../app/api/simulation/route');
       const response = await GET(new NextRequest('http://localhost/api/simulation?id=sim_1', {
-        headers: { 'X-API-Key': 'test-api-key' },
+        headers: { 'X-API-Key': 'test-api-key-for-route-hardening' },
       }));
 
       expect(response.status).toBe(500);
@@ -128,7 +128,7 @@ describe('API route hardening', () => {
     try {
       const { DELETE } = await import('../app/api/simulation/route');
       const response = await DELETE(new NextRequest('http://localhost/api/simulation?id=sim_1', {
-        headers: { 'X-API-Key': 'test-api-key' },
+        headers: { 'X-API-Key': 'test-api-key-for-route-hardening' },
       }));
 
       expect(response.status).toBe(500);
@@ -154,12 +154,76 @@ describe('API route hardening', () => {
     try {
       const { GET } = await import('../app/api/simulation/data/route');
       const response = await GET(new NextRequest('http://localhost/api/simulation/data?id=sim_1', {
-        headers: { 'X-API-Key': 'test-api-key' },
+        headers: { 'X-API-Key': 'test-api-key-for-route-hardening' },
       }));
 
       expect(response.status).toBe(500);
       expectNoStoreNosniff(response);
       await expect(response.json()).resolves.toEqual({ error: 'Failed to load simulation data' });
+    } finally {
+      vi.doUnmock('@/lib/utils/redis-store');
+    }
+  });
+
+  it('creates simulation IDs with UUID entropy', async () => {
+    vi.doMock('@/lib/utils/redis-store', () => ({
+      InMemorySimulationStore: class InMemorySimulationStore {},
+      createSimulationStore: () => ({
+        list: vi.fn(),
+        load: vi.fn(),
+        save: vi.fn().mockResolvedValue(undefined),
+        delete: vi.fn(),
+      }),
+      rehydrateSimulation: vi.fn(),
+    }));
+
+    try {
+      const { POST } = await import('../app/api/simulation/route');
+      const response = await POST(new NextRequest('http://localhost/api/simulation', {
+        method: 'POST',
+        headers: {
+          'X-API-Key': 'test-api-key-for-route-hardening',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      }));
+
+      expect(response.status).toBe(200);
+      expectNoStoreNosniff(response);
+      const body = await response.json();
+      expect(body.id).toMatch(/^sim_[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+    } finally {
+      vi.doUnmock('@/lib/utils/redis-store');
+    }
+  });
+
+  it('reports simulation creation storage failures as internal errors', async () => {
+    vi.doMock('@/lib/utils/redis-store', () => ({
+      InMemorySimulationStore: class InMemorySimulationStore {},
+      createSimulationStore: () => ({
+        list: vi.fn(),
+        load: vi.fn(),
+        save: vi.fn().mockRejectedValue(new Error('store offline')),
+        delete: vi.fn(),
+      }),
+      rehydrateSimulation: vi.fn(),
+    }));
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    try {
+      const { POST } = await import('../app/api/simulation/route');
+      const response = await POST(new NextRequest('http://localhost/api/simulation', {
+        method: 'POST',
+        headers: {
+          'X-API-Key': 'test-api-key-for-route-hardening',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      }));
+
+      expect(response.status).toBe(500);
+      expectNoStoreNosniff(response);
+      await expect(response.json()).resolves.toEqual({ error: 'Failed to persist simulation' });
     } finally {
       vi.doUnmock('@/lib/utils/redis-store');
     }
@@ -263,7 +327,7 @@ describe('API route hardening', () => {
   it('rejects invalid simulation export formats with non-cacheable nosniff headers', async () => {
     const { GET } = await import('../app/api/simulation/data/route');
     const response = await GET(new NextRequest('http://localhost/api/simulation/data?id=missing&format=xml', {
-      headers: { 'X-API-Key': 'test-api-key' },
+      headers: { 'X-API-Key': 'test-api-key-for-route-hardening' },
     }));
 
     expect(response.status).toBe(400);

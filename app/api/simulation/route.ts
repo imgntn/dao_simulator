@@ -2,10 +2,11 @@
 // Provides REST endpoints for simulation control
 
 import { NextRequest, NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 import { DAOSimulation } from '@/lib/engine/simulation';
 import { createSimulationStore, InMemorySimulationStore, rehydrateSimulation } from '@/lib/utils/redis-store';
 import { requireAuth } from '@/lib/auth';
-import { InMemoryRateLimiter, getClientIdentifier } from '@/lib/utils/rate-limit';
+import { createRateLimiter, getClientIdentifier } from '@/lib/utils/rate-limit';
 import { noStoreHeadersFrom } from '@/lib/utils/http-safety';
 import {
   CreateSimulationRequestSchema,
@@ -25,20 +26,20 @@ class SimulationRateLimiter {
   // Allow 10 simulations per client per hour in production, more in dev
   private readonly maxAttempts = process.env.NODE_ENV === 'production' ? 10 : 100;
   private readonly windowMs = 60 * 60 * 1000; // 1 hour
-  private readonly limiter = new InMemoryRateLimiter(this.maxAttempts, this.windowMs);
+  private readonly limiter = createRateLimiter(this.maxAttempts, this.windowMs, 'simulation');
 
   private getClientId(request: NextRequest): string {
     return getClientIdentifier(request, 'sim');
   }
 
-  isRateLimited(request: NextRequest): { limited: boolean; retryAfter?: number } {
+  async isRateLimited(request: NextRequest): Promise<{ limited: boolean; retryAfter?: number }> {
     const clientId = this.getClientId(request);
-    const result = this.limiter.check(clientId);
+    const result = await this.limiter.check(clientId);
     return { limited: result.limited, retryAfter: result.retryAfter };
   }
 
-  recordAttempt(request: NextRequest): void {
-    this.limiter.record(this.getClientId(request));
+  async recordAttempt(request: NextRequest): Promise<void> {
+    await this.limiter.record(this.getClientId(request));
   }
 }
 
@@ -215,7 +216,7 @@ export async function POST(request: NextRequest) {
   if (authError) return authError;
 
   // Check rate limiting for simulation creation
-  const rateLimitResult = simulationRateLimiter.isRateLimited(request);
+  const rateLimitResult = await simulationRateLimiter.isRateLimited(request);
   if (rateLimitResult.limited) {
     return jsonResponse(
       {
@@ -238,28 +239,35 @@ export async function POST(request: NextRequest) {
   }
 
   // Record this creation attempt for rate limiting
-  simulationRateLimiter.recordAttempt(request);
+  await simulationRateLimiter.recordAttempt(request);
 
+  const config = validation.data;
+  const id = `sim_${randomUUID()}`;
+
+  let simulation: DAOSimulation;
   try {
-    const config = validation.data;
-    const id = `sim_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-    const simulation = new DAOSimulation(config);
-
-    // Save to store
-    trackSimulation(id, simulation);
-    await simulationStore.save(id, simulation);
-
-    return jsonResponse({
-      id,
-      message: 'Simulation created successfully',
-      summary: simulation.getSummary(),
-    });
+    simulation = new DAOSimulation(config);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Failed to create simulation';
     return jsonResponse(
       { error: message },
       { status: 400 }
+    );
+  }
+
+  try {
+    await simulationStore.save(id, simulation);
+    trackSimulation(id, simulation);
+    return jsonResponse({
+      id,
+      message: 'Simulation created successfully',
+      summary: simulation.getSummary(),
+    });
+  } catch (error) {
+    console.error('[simulation] failed to save simulation:', error);
+    return jsonResponse(
+      { error: 'Failed to persist simulation' },
+      { status: 500 }
     );
   }
 }
@@ -286,7 +294,16 @@ export async function PUT(request: NextRequest) {
     return await withSimulationLock(id, async () => {
       let simulation = getLiveSimulation(id);
       if (!simulation && !isInMemoryStore) {
-        const snapshot = await simulationStore.load(id);
+        let snapshot;
+        try {
+          snapshot = await simulationStore.load(id);
+        } catch (error) {
+          console.error('[simulation] failed to load simulation for update:', error);
+          return jsonResponse(
+            { error: 'Failed to load simulation' },
+            { status: 500 }
+          );
+        }
         if (snapshot) {
           simulation = rehydrateSimulation(snapshot);
           trackSimulation(id, simulation);
@@ -313,8 +330,16 @@ export async function PUT(request: NextRequest) {
       }
 
       // Update stored state
-      trackSimulation(id, simulation);
-      await simulationStore.save(id, simulation);
+      try {
+        await simulationStore.save(id, simulation);
+        trackSimulation(id, simulation);
+      } catch (error) {
+        console.error('[simulation] failed to save simulation update:', error);
+        return jsonResponse(
+          { error: 'Failed to persist simulation' },
+          { status: 500 }
+        );
+      }
 
       return jsonResponse({
         id,

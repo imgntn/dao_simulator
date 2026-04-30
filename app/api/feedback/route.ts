@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 import nodemailer from 'nodemailer';
-import { InMemoryRateLimiter, getClientIdentifier } from '@/lib/utils/rate-limit';
+import { createRateLimiter, getClientIdentifier } from '@/lib/utils/rate-limit';
 import {
   escapeHtml,
   isRecord,
@@ -41,7 +41,7 @@ const TYPE_LABEL: Record<string, string> = {
 let pool: Pool | null = null;
 let tableEnsured = false;
 
-const feedbackLimiter = new InMemoryRateLimiter(10, 10 * 60 * 1000);
+const feedbackLimiter = createRateLimiter(10, 10 * 60 * 1000, 'feedback');
 
 function getPool(): Pool | null {
   if (pool) return pool;
@@ -79,14 +79,14 @@ function createTransport() {
 
 export async function POST(request: NextRequest) {
   const clientId = getClientIdentifier(request, 'feedback');
-  const rateLimit = feedbackLimiter.check(clientId);
+  const rateLimit = await feedbackLimiter.check(clientId);
   if (rateLimit.limited) {
     return NextResponse.json(
       { error: 'Too many feedback requests. Please try again later.' },
       { status: 429, headers: noStoreHeaders({ 'Retry-After': String(rateLimit.retryAfter) }) }
     );
   }
-  feedbackLimiter.record(clientId);
+  await feedbackLimiter.record(clientId);
 
   let body: unknown;
   try {

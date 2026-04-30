@@ -49,11 +49,12 @@ See `paper/` for the LaTeX source and `experiments/paper/` for all experiment co
 | Script | Description |
 | --- | --- |
 | `npm run dev` | Next.js app (Turbopack), starting at **7884** and shifting to the next free port if needed |
-| `npm run test` | Vitest unit suite with coverage (982 tests) |
+| `npm run test` | Vitest unit suite with coverage (991 tests) |
 | `npm run typecheck` | TypeScript compile check without emit |
 | `npm run verify` | Local CI-equivalent gate: lint, typecheck, unit tests, build, smoke/API E2E, and audit |
 | `npm run test:e2e` | Playwright e2e suite - 138 tests in 9 files across 10 projects |
 | `npm run lint` | ESLint (flat config) |
+| `npm run validate:env` | Validate required production runtime secrets when `NODE_ENV=production` |
 | `npm run examples -- --scenario=<name>` | Run a TypeScript example (`basic`, `market-shock`, `governance`, or `all`) via `tsx` |
 | `npm run experiment -- <config.yaml>` | Run research experiment with specified configuration |
 
@@ -71,7 +72,7 @@ See `docs/EXAMPLES.md` for full details on each scenario, output expectations, a
 
 ## Testing & Quality
 
-- **Unit tests**: `npm run test` — 982 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, LLM integration, auth, validation, analytics, proxy security, path safety, API hardening, and browser-facing simulation state. V8 coverage enabled.
+- **Unit tests**: `npm run test` — 991 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, LLM integration, auth, validation, analytics, proxy security, environment validation, path safety, API hardening, and browser-facing simulation state. V8 coverage enabled.
 - **Typecheck**: `npm run typecheck` — runs `tsc --noEmit`.
 - **E2E tests**: `npm run test:e2e` - 138 Playwright tests in 9 files across 10 projects: smoke, dashboard, simulation, simulate, visualizations, API, accessibility, chromium homepage, mobile, and tablet. The CI-equivalent `npm run verify` gate runs the smoke and API projects; the broader suite remains available by project. Reuses a healthy server when one is already running, otherwise launches its own server on the next free port.
 - **Linting**: `npm run lint` (ESLint + Next core web vitals). Coverage artifacts are ignored to keep the tree clean.
@@ -111,14 +112,15 @@ lib/
   |- llm/           Ollama client, prompt templates, response cache, agent memory
   `- utils/         Governance plugins, voting strategies, event bus, RNG
 experiments/paper/  12 YAML experiment configs for reproducible research
-tests/              982 Vitest unit tests
+tests/              991 Vitest unit tests
 python/             Calibration data ingestion scripts
 ```
 
 ## Deployment Notes
 
-- Set `NEXTAUTH_SECRET`, `API_KEY`, and `ADMIN_*` creds before deploying.
+- Set strong `NEXTAUTH_SECRET`, `API_KEY`, and `ADMIN_*` credentials before deploying. `npm run validate:env` enforces minimum production secret requirements.
 - Use `REDIS_URL` + `USE_REDIS=true` to persist simulations/checkpoints server-side; otherwise the system falls back to the in-memory store (suitable for local dev only).
+- Redis-backed API rate limits are enabled automatically when `REDIS_URL` is set; set `USE_REDIS_RATE_LIMITS=false` only for single-instance debugging.
 - Set `DATABASE_URL` for PostgreSQL analytics (optional — analytics is a no-op without it).
 - The simulation engine runs entirely client-side in a Web Worker — no separate server process is needed.
 - See `DEPLOYMENT.md` for Railway/Vercel/docker instructions plus the security checklist.

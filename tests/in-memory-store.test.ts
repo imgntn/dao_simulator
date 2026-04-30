@@ -1,4 +1,4 @@
-import { InMemorySimulationStore } from '@/lib/utils/redis-store';
+import { InMemorySimulationStore, parseSimulationSnapshot } from '@/lib/utils/redis-store';
 import { DAOSimulation } from '@/lib/engine/simulation';
 
 describe('InMemorySimulationStore', () => {
@@ -23,5 +23,48 @@ describe('InMemorySimulationStore', () => {
 
     const deleted = await store.delete('sim_test');
     expect(deleted).toBe(true);
+  });
+});
+
+describe('parseSimulationSnapshot', () => {
+  const validSnapshot = {
+    id: 'sim_123',
+    step: 4,
+    config: {
+      numDevelopers: 1,
+      numInvestors: 1,
+      numTraders: 1,
+      governanceRule: 'majority',
+      tokenEmissionRate: 0.01,
+      tokenBurnRate: 0.001,
+      stakingInterestRate: 0.02,
+      marketShockFrequency: 0,
+      seed: 123,
+    },
+    daoState: {
+      name: 'Test DAO',
+      members: [{ uniqueId: 'member_1', tokens: 10, reputation: 5 }],
+      proposals: 1,
+      projects: 2,
+      treasuryFunds: 1000,
+      tokenPrice: 1.25,
+    },
+    timestamp: 123456,
+  };
+
+  it('accepts valid persisted snapshots', () => {
+    expect(parseSimulationSnapshot(validSnapshot)).toEqual(validSnapshot);
+  });
+
+  it('rejects malformed persisted snapshots', () => {
+    expect(parseSimulationSnapshot({ ...validSnapshot, step: -1 })).toBeNull();
+    expect(parseSimulationSnapshot({ ...validSnapshot, config: { governanceRule: 'majority' } })).toBeNull();
+    expect(parseSimulationSnapshot({
+      ...validSnapshot,
+      daoState: {
+        ...validSnapshot.daoState,
+        members: [{ uniqueId: 'member_1', tokens: '10', reputation: 5 }],
+      },
+    })).toBeNull();
   });
 });

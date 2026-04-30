@@ -50,61 +50,67 @@ describe('safeCompare', () => {
 describe('RateLimiter', () => {
   const testClientId = 'test-client-123';
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // Reset rate limiter state
-    rateLimiter.reset(testClientId);
+    await rateLimiter.reset(testClientId);
   });
 
-  it('should not block on first attempt', () => {
-    expect(rateLimiter.isBlocked(testClientId)).toBe(false);
+  it('should not block on first attempt', async () => {
+    await rateLimiter.reset(testClientId);
+    expect((await rateLimiter.check(testClientId)).limited).toBe(false);
   });
 
-  it('should record attempts', () => {
-    rateLimiter.recordAttempt(testClientId);
-    rateLimiter.recordAttempt(testClientId);
+  it('should record attempts', async () => {
+    await rateLimiter.reset(testClientId);
+    await rateLimiter.record(testClientId);
+    await rateLimiter.record(testClientId);
 
     // Should still not be blocked (under threshold)
-    expect(rateLimiter.isBlocked(testClientId)).toBe(false);
+    expect((await rateLimiter.check(testClientId)).limited).toBe(false);
   });
 
-  it('should block after max attempts', () => {
+  it('should block after max attempts', async () => {
+    await rateLimiter.reset(testClientId);
     // Record 10 attempts (the default max)
     for (let i = 0; i < 10; i++) {
-      rateLimiter.recordAttempt(testClientId);
+      await rateLimiter.record(testClientId);
     }
 
-    expect(rateLimiter.isBlocked(testClientId)).toBe(true);
+    expect((await rateLimiter.check(testClientId)).limited).toBe(true);
   });
 
-  it('should reset attempts', () => {
+  it('should reset attempts', async () => {
+    await rateLimiter.reset(testClientId);
     // Record several attempts
     for (let i = 0; i < 10; i++) {
-      rateLimiter.recordAttempt(testClientId);
+      await rateLimiter.record(testClientId);
     }
 
-    expect(rateLimiter.isBlocked(testClientId)).toBe(true);
+    expect((await rateLimiter.check(testClientId)).limited).toBe(true);
 
     // Reset
-    rateLimiter.reset(testClientId);
+    await rateLimiter.reset(testClientId);
 
-    expect(rateLimiter.isBlocked(testClientId)).toBe(false);
+    expect((await rateLimiter.check(testClientId)).limited).toBe(false);
   });
 
-  it('should not block different clients', () => {
+  it('should not block different clients', async () => {
     const client1 = 'client-1';
     const client2 = 'client-2';
+    await rateLimiter.reset(client1);
+    await rateLimiter.reset(client2);
 
     // Block client1
     for (let i = 0; i < 10; i++) {
-      rateLimiter.recordAttempt(client1);
+      await rateLimiter.record(client1);
     }
 
-    expect(rateLimiter.isBlocked(client1)).toBe(true);
-    expect(rateLimiter.isBlocked(client2)).toBe(false);
+    expect((await rateLimiter.check(client1)).limited).toBe(true);
+    expect((await rateLimiter.check(client2)).limited).toBe(false);
 
     // Cleanup
-    rateLimiter.reset(client1);
-    rateLimiter.reset(client2);
+    await rateLimiter.reset(client1);
+    await rateLimiter.reset(client2);
   });
 });
 
@@ -142,6 +148,9 @@ describe('requireAuth', () => {
 
   it('should reject requests in production without API_KEY', async () => {
     mutableEnv.NODE_ENV = 'production';
+    mutableEnv.NEXTAUTH_SECRET = 'auth-test-nextauth-secret-32chars';
+    mutableEnv.ADMIN_USERNAME = 'operator';
+    mutableEnv.ADMIN_PASSWORD = 'auth-test-password';
 
     const request = new Request('http://localhost/api/test', {
       headers: {},
@@ -149,17 +158,20 @@ describe('requireAuth', () => {
 
     const result = await requireAuth(request);
     expect(result).not.toBeNull();
-    expect(result?.status).toBe(401);
+    expect(result?.status).toBe(503);
     expectNoStoreNosniff(result!);
   });
 
   it('should allow requests with valid API_KEY', async () => {
     mutableEnv.NODE_ENV = 'production';
-    mutableEnv.API_KEY = 'valid-api-key';
+    mutableEnv.API_KEY = 'valid-api-key-for-auth-tests';
+    mutableEnv.NEXTAUTH_SECRET = 'auth-test-nextauth-secret-32chars';
+    mutableEnv.ADMIN_USERNAME = 'operator';
+    mutableEnv.ADMIN_PASSWORD = 'auth-test-password';
 
     const request = new Request('http://localhost/api/test', {
       headers: {
-        'X-API-Key': 'valid-api-key',
+        'X-API-Key': 'valid-api-key-for-auth-tests',
       },
     });
 
@@ -169,7 +181,10 @@ describe('requireAuth', () => {
 
   it('should reject requests with invalid API_KEY', async () => {
     mutableEnv.NODE_ENV = 'production';
-    mutableEnv.API_KEY = 'valid-api-key';
+    mutableEnv.API_KEY = 'valid-api-key-for-auth-tests';
+    mutableEnv.NEXTAUTH_SECRET = 'auth-test-nextauth-secret-32chars';
+    mutableEnv.ADMIN_USERNAME = 'operator';
+    mutableEnv.ADMIN_PASSWORD = 'auth-test-password';
 
     const request = new Request('http://localhost/api/test', {
       headers: {
@@ -185,14 +200,17 @@ describe('requireAuth', () => {
 
   it('should reject rate-limited clients', async () => {
     mutableEnv.NODE_ENV = 'production';
-    mutableEnv.API_KEY = 'valid-api-key';
+    mutableEnv.API_KEY = 'valid-api-key-for-auth-tests';
+    mutableEnv.NEXTAUTH_SECRET = 'auth-test-nextauth-secret-32chars';
+    mutableEnv.ADMIN_USERNAME = 'operator';
+    mutableEnv.ADMIN_PASSWORD = 'auth-test-password';
     mutableEnv.TRUST_PROXY = 'true';
 
     const clientIp = '192.168.1.100';
 
     // Simulate rate limit
     for (let i = 0; i < 10; i++) {
-      rateLimiter.recordAttempt(clientIp);
+      await rateLimiter.record(clientIp);
     }
 
     const request = new Request('http://localhost/api/test', {
@@ -211,6 +229,6 @@ describe('requireAuth', () => {
     expect(body.error).toContain('Too many');
 
     // Cleanup
-    rateLimiter.reset(clientIp);
+    await rateLimiter.reset(clientIp);
   });
 });

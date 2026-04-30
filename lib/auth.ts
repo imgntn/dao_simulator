@@ -3,21 +3,13 @@
 import type { NextAuthConfig } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { timingSafeEqual } from 'crypto';
-import { InMemoryRateLimiter, getClientIdentifier } from './utils/rate-limit';
+import { createRateLimiter, getClientIdentifier } from './utils/rate-limit';
 import { noStoreHeaders } from './utils/http-safety';
+import { assertRuntimeEnv, validateRuntimeEnv } from './config/env';
 
 const isProduction = process.env.NODE_ENV === 'production';
-// Skip checks during Next.js build phase (NEXT_PHASE is set during build)
-const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
 
-if (isProduction && !isBuildPhase) {
-  if (!process.env.NEXTAUTH_SECRET) {
-    throw new Error('NEXTAUTH_SECRET is required in production.');
-  }
-  if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD) {
-    throw new Error('ADMIN_USERNAME and ADMIN_PASSWORD are required in production.');
-  }
-}
+assertRuntimeEnv();
 
 /**
  * Timing-safe string comparison to prevent timing attacks
@@ -42,12 +34,8 @@ function safeCompare(a: string, b: string): boolean {
   }
 }
 
-/**
- * Simple in-memory rate limiter for API authentication
- * Tracks failed attempts by IP/key and blocks after threshold
- */
-// Global rate limiter instance - 10 failed attempts per minute per IP
-const rateLimiter = new InMemoryRateLimiter(10, 60000);
+// Global rate limiter instance - 10 failed attempts per minute per IP/key.
+const rateLimiter = createRateLimiter(10, 60_000, 'auth');
 
 export const authConfig: NextAuthConfig = {
   providers: [
@@ -122,10 +110,22 @@ export const authConfig: NextAuthConfig = {
  * Includes rate limiting and timing-safe API key comparison
  */
 export async function requireAuth(request: Request): Promise<Response | null> {
+  const envValidation = validateRuntimeEnv();
+  if (!envValidation.ok) {
+    console.error('[auth] Invalid production environment:', envValidation.errors.join(' '));
+    return new Response(
+      JSON.stringify({ error: 'Server authentication is not configured' }),
+      {
+        status: 503,
+        headers: noStoreHeaders({ 'Content-Type': 'application/json' }),
+      }
+    );
+  }
+
   const clientId = getClientIdentifier(request, '');
 
   // Check if client is rate limited
-  const rateLimit = rateLimiter.check(clientId);
+  const rateLimit = await rateLimiter.check(clientId);
   if (rateLimit.limited) {
     return new Response(
       JSON.stringify({
@@ -154,7 +154,7 @@ export async function requireAuth(request: Request): Promise<Response | null> {
   if (validApiKey) {
     if (apiKey && safeCompare(apiKey, validApiKey)) {
       // Successful auth - reset rate limit counter
-      rateLimiter.reset(clientId);
+      await rateLimiter.reset(clientId);
       return null;
     }
   }
@@ -165,7 +165,7 @@ export async function requireAuth(request: Request): Promise<Response | null> {
   }
 
   // Record failed attempt for rate limiting
-  rateLimiter.record(clientId);
+  await rateLimiter.record(clientId);
 
   // Unauthorized
   return new Response(
