@@ -235,6 +235,37 @@ describe('API route hardening', () => {
 
     expect(response.status).toBe(200);
     expectNoStoreNosniff(response);
+    const body = await response.json();
+    expect(body.ok).toBe(true);
+    expect(body.checks.runtimeEnv.status).toBe('ok');
+    expect(body.checks.redis.status).toBe('skipped');
+    expect(body.checks.postgres.status).toBe('skipped');
+  });
+
+  it('reports health readiness failures without throwing', async () => {
+    vi.doMock('@/lib/utils/dependency-health', () => ({
+      getReadinessReport: vi.fn().mockResolvedValue({
+        ok: false,
+        checks: {
+          runtimeEnv: { status: 'failed', errors: ['bad env'] },
+          redis: { status: 'skipped' },
+          postgres: { status: 'skipped' },
+        },
+      }),
+    }));
+
+    try {
+      const { GET } = await import('../app/api/healthz/route');
+      const response = await GET();
+
+      expect(response.status).toBe(503);
+      expectNoStoreNosniff(response);
+      const body = await response.json();
+      expect(body.ok).toBe(false);
+      expect(body.checks.runtimeEnv.errors).toContain('bad env');
+    } finally {
+      vi.doUnmock('@/lib/utils/dependency-health');
+    }
   });
 
   it('serves simulation health checks with non-cacheable nosniff headers', async () => {

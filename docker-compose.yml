@@ -1,0 +1,52 @@
+services:
+  app:
+    build: .
+    ports:
+      - "7884:7884"
+    environment:
+      NODE_ENV: production
+      PORT: 7884
+      BIND_HOST: 0.0.0.0
+      NEXTAUTH_URL: http://localhost:7884
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?Set NEXTAUTH_SECRET to a random 32+ character value}
+      API_KEY: ${API_KEY:?Set API_KEY to a random 24+ character value}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD to a random 12+ character value}
+      REDIS_URL: redis://redis:6379
+      USE_REDIS: "true"
+      USE_REDIS_RATE_LIMITS: "true"
+      DATABASE_URL: postgres://dao:dao@postgres:5432/dao_simulator
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: dao
+      POSTGRES_PASSWORD: dao
+      POSTGRES_DB: dao_simulator
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dao -d dao_simulator"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres-data:

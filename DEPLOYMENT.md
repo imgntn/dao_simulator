@@ -93,33 +93,26 @@ vercel --prod
 
 ### Option 3: Docker
 
-1. **Create `docker-compose.yml`**:
-```yaml
-version: '3.8'
-services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - USE_REDIS=true
-      - API_KEY=${API_KEY}
-      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-      - NEXTAUTH_URL=${NEXTAUTH_URL}
-    depends_on:
-      - redis
+The repository includes a production-oriented `Dockerfile` and `docker-compose.yml` with Redis and PostgreSQL services.
 
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
+1. **Set strong local secrets**:
+```bash
+export API_KEY=$(openssl rand -base64 32)
+export NEXTAUTH_SECRET=$(openssl rand -base64 32)
+export ADMIN_PASSWORD=$(openssl rand -base64 24)
 ```
 
 2. **Build and run**:
 ```bash
-docker-compose up -d
+docker compose up --build
 ```
+
+3. **Check readiness**:
+```bash
+curl http://127.0.0.1:7884/api/healthz
+```
+
+The readiness endpoint validates production environment requirements and checks Redis/PostgreSQL connectivity when those services are configured.
 
 ## 🔑 Generating Secure Keys
 

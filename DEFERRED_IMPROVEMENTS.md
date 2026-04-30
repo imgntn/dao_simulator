@@ -18,7 +18,6 @@ These items are intentionally outside the normal local verification loop because
 
 ## Scheduled CI Work
 
-- Run the full 138-test Playwright suite on a nightly schedule or a manual CI trigger.
 - Add load tests for simulation create/step/export endpoints with realistic Redis/Postgres backing.
 - Add browser performance budgets for WebGL startup, worker throughput, and long-running simulation sessions.
 
