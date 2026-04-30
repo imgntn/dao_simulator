@@ -79,6 +79,25 @@ export interface SBTStats {
   tokensByType: Record<SBTType, number>;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function numberOrZero(value: unknown): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0;
+}
+
+function isSerializedEntry(value: unknown): value is [string, unknown] {
+  return Array.isArray(value) && typeof value[0] === 'string' && value.length >= 2;
+}
+
+function asStringSet(value: unknown): Set<string> | null {
+  if (!Array.isArray(value) || value.some((item) => typeof item !== 'string')) {
+    return null;
+  }
+  return new Set(value);
+}
+
 // =============================================================================
 // SOULBOUND TOKEN REGISTRY
 // =============================================================================
@@ -494,25 +513,34 @@ export class SoulboundTokenRegistry {
   /**
    * Restore from serialized data
    */
-  static fromDict(data: any): SoulboundTokenRegistry {
-    const registry = new SoulboundTokenRegistry(data.config);
-    registry.tokenCounter = data.tokenCounter || 0;
+  static fromDict(data: unknown): SoulboundTokenRegistry {
+    const snapshot = isRecord(data) ? data : {};
+    const config = isRecord(snapshot.config)
+      ? snapshot.config as Partial<SBTConfig>
+      : undefined;
+    const registry = new SoulboundTokenRegistry(config);
+    registry.tokenCounter = numberOrZero(snapshot.tokenCounter);
 
-    if (data.tokens) {
-      for (const [id, token] of data.tokens) {
-        registry.tokens.set(id, token);
+    if (Array.isArray(snapshot.tokens)) {
+      for (const entry of snapshot.tokens) {
+        if (!isSerializedEntry(entry) || !isRecord(entry[1])) continue;
+        registry.tokens.set(entry[0], entry[1] as unknown as SoulboundToken);
       }
     }
 
-    if (data.holderTokens) {
-      for (const [holder, ids] of data.holderTokens) {
-        registry.holderTokens.set(holder, new Set(ids));
+    if (Array.isArray(snapshot.holderTokens)) {
+      for (const entry of snapshot.holderTokens) {
+        if (!isSerializedEntry(entry)) continue;
+        const ids = asStringSet(entry[1]);
+        if (ids) registry.holderTokens.set(entry[0], ids);
       }
     }
 
-    if (data.typeTokens) {
-      for (const [type, ids] of data.typeTokens) {
-        registry.typeTokens.set(type as SBTType, new Set(ids));
+    if (Array.isArray(snapshot.typeTokens)) {
+      for (const entry of snapshot.typeTokens) {
+        if (!isSerializedEntry(entry)) continue;
+        const ids = asStringSet(entry[1]);
+        if (ids) registry.typeTokens.set(entry[0] as SBTType, ids);
       }
     }
 

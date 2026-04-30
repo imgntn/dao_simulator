@@ -98,7 +98,7 @@ New `.env.example` file created with:
 
 ## Testing Status
 
-- **Unit Tests**: 1017 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, LLM integration, auth, validation, analytics, event utilities, proxy security, readiness checks, environment validation, path safety, API hardening, browser-facing simulation state, vote escrow, payment streams, and vesting schedules
+- **Unit Tests**: 1028 Vitest tests covering simulation engine, data collector, agents, learning, calibration, voting mechanisms, LLM integration, auth, validation, analytics, event utilities, proxy security, readiness checks, environment validation, path safety, API hardening, browser-facing simulation state, vote escrow, payment streams, vesting schedules, SBT gates, inter-DAO proposals, and sub-DAOs
 - **E2E Tests**: Smoke and API E2E are wired into CI; the broader 138-test Playwright suite remains available by project (dashboard, simulation, simulate, visualizations, accessibility, chromium homepage, mobile, and tablet)
 - **Linting**: Clean ESLint runs with archived/generated directories excluded from active-source linting
 - **Typecheck**: `npm run typecheck` runs `tsc --noEmit`

@@ -81,6 +81,38 @@ export interface SubDAOStats {
   totalMembers: number;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function numberOrZero(value: unknown): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0;
+}
+
+function isSerializedEntry(value: unknown): value is [string, unknown] {
+  return Array.isArray(value) && typeof value[0] === 'string' && value.length >= 2;
+}
+
+function asStringSet(value: unknown): Set<string> | null {
+  if (!Array.isArray(value) || value.some((item) => typeof item !== 'string')) {
+    return null;
+  }
+  return new Set(value);
+}
+
+function asTreasury(value: unknown): Map<string, number> {
+  if (!Array.isArray(value)) return new Map();
+
+  const entries = value.filter((entry): entry is [string, number] => (
+    Array.isArray(entry) &&
+    typeof entry[0] === 'string' &&
+    typeof entry[1] === 'number' &&
+    Number.isFinite(entry[1])
+  ));
+
+  return new Map(entries);
+}
+
 // =============================================================================
 // SUB-DAO CONTROLLER
 // =============================================================================
@@ -690,36 +722,47 @@ export class SubDAOController {
   /**
    * Restore from serialized data
    */
-  static fromDict(data: any): SubDAOController {
-    const controller = new SubDAOController(data.config);
-    controller.subDaoCounter = data.subDaoCounter || 0;
-    controller.requestCounter = data.requestCounter || 0;
+  static fromDict(data: unknown): SubDAOController {
+    const snapshot = isRecord(data) ? data : {};
+    const config = isRecord(snapshot.config)
+      ? snapshot.config as Partial<SubDAOConfig>
+      : undefined;
+    const controller = new SubDAOController(config);
+    controller.subDaoCounter = numberOrZero(snapshot.subDaoCounter);
+    controller.requestCounter = numberOrZero(snapshot.requestCounter);
 
-    if (data.subDaos) {
-      for (const [id, subDaoData] of data.subDaos) {
+    if (Array.isArray(snapshot.subDaos)) {
+      for (const entry of snapshot.subDaos) {
+        if (!isSerializedEntry(entry) || !isRecord(entry[1])) continue;
+        const subDaoData = entry[1];
         const subDao = {
           ...subDaoData,
-          treasury: new Map(subDaoData.treasury),
-        };
-        controller.subDaos.set(id, subDao);
+          treasury: asTreasury(subDaoData.treasury),
+        } as unknown as SubDAO;
+        controller.subDaos.set(entry[0], subDao);
       }
     }
 
-    if (data.parentToSubDaos) {
-      for (const [parent, ids] of data.parentToSubDaos) {
-        controller.parentToSubDaos.set(parent, new Set(ids));
+    if (Array.isArray(snapshot.parentToSubDaos)) {
+      for (const entry of snapshot.parentToSubDaos) {
+        if (!isSerializedEntry(entry)) continue;
+        const ids = asStringSet(entry[1]);
+        if (ids) controller.parentToSubDaos.set(entry[0], ids);
       }
     }
 
-    if (data.memberToSubDaos) {
-      for (const [member, ids] of data.memberToSubDaos) {
-        controller.memberToSubDaos.set(member, new Set(ids));
+    if (Array.isArray(snapshot.memberToSubDaos)) {
+      for (const entry of snapshot.memberToSubDaos) {
+        if (!isSerializedEntry(entry)) continue;
+        const ids = asStringSet(entry[1]);
+        if (ids) controller.memberToSubDaos.set(entry[0], ids);
       }
     }
 
-    if (data.fundingRequests) {
-      for (const [id, request] of data.fundingRequests) {
-        controller.fundingRequests.set(id, request);
+    if (Array.isArray(snapshot.fundingRequests)) {
+      for (const entry of snapshot.fundingRequests) {
+        if (!isSerializedEntry(entry) || !isRecord(entry[1])) continue;
+        controller.fundingRequests.set(entry[0], entry[1] as unknown as FundingRequest);
       }
     }
 
