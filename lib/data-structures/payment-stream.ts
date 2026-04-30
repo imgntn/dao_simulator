@@ -61,6 +61,25 @@ export interface StreamStats {
   totalWithdrawn: number;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function numberOrZero(value: unknown): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0;
+}
+
+function isSerializedEntry(value: unknown): value is [string, unknown] {
+  return Array.isArray(value) && typeof value[0] === 'string' && value.length >= 2;
+}
+
+function asStringSet(value: unknown): Set<string> | null {
+  if (!Array.isArray(value) || value.some((item) => typeof item !== 'string')) {
+    return null;
+  }
+  return new Set(value);
+}
+
 // =============================================================================
 // PAYMENT STREAM CONTROLLER
 // =============================================================================
@@ -513,25 +532,34 @@ export class PaymentStreamController {
   /**
    * Restore from serialized data
    */
-  static fromDict(data: any): PaymentStreamController {
-    const controller = new PaymentStreamController(data.config);
-    controller.streamCounter = data.streamCounter || 0;
+  static fromDict(data: unknown): PaymentStreamController {
+    const snapshot = isRecord(data) ? data : {};
+    const config = isRecord(snapshot.config)
+      ? snapshot.config as Partial<PaymentStreamConfig>
+      : undefined;
+    const controller = new PaymentStreamController(config);
+    controller.streamCounter = numberOrZero(snapshot.streamCounter);
 
-    if (data.streams) {
-      for (const [id, stream] of data.streams) {
-        controller.streams.set(id, stream);
+    if (Array.isArray(snapshot.streams)) {
+      for (const entry of snapshot.streams) {
+        if (!isSerializedEntry(entry) || !isRecord(entry[1])) continue;
+        controller.streams.set(entry[0], entry[1] as unknown as PaymentStream);
       }
     }
 
-    if (data.senderStreams) {
-      for (const [sender, ids] of data.senderStreams) {
-        controller.senderStreams.set(sender, new Set(ids));
+    if (Array.isArray(snapshot.senderStreams)) {
+      for (const entry of snapshot.senderStreams) {
+        if (!isSerializedEntry(entry)) continue;
+        const ids = asStringSet(entry[1]);
+        if (ids) controller.senderStreams.set(entry[0], ids);
       }
     }
 
-    if (data.recipientStreams) {
-      for (const [recipient, ids] of data.recipientStreams) {
-        controller.recipientStreams.set(recipient, new Set(ids));
+    if (Array.isArray(snapshot.recipientStreams)) {
+      for (const entry of snapshot.recipientStreams) {
+        if (!isSerializedEntry(entry)) continue;
+        const ids = asStringSet(entry[1]);
+        if (ids) controller.recipientStreams.set(entry[0], ids);
       }
     }
 

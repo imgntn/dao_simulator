@@ -68,6 +68,25 @@ export interface VestingStats {
   totalUnclaimed: number;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function numberOrZero(value: unknown): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0;
+}
+
+function isSerializedEntry(value: unknown): value is [string, unknown] {
+  return Array.isArray(value) && typeof value[0] === 'string' && value.length >= 2;
+}
+
+function asStringSet(value: unknown): Set<string> | null {
+  if (!Array.isArray(value) || value.some((item) => typeof item !== 'string')) {
+    return null;
+  }
+  return new Set(value);
+}
+
 // =============================================================================
 // VESTING CONTROLLER
 // =============================================================================
@@ -558,25 +577,34 @@ export class VestingController {
   /**
    * Restore from serialized data
    */
-  static fromDict(data: any): VestingController {
-    const controller = new VestingController(data.config);
-    controller.scheduleCounter = data.scheduleCounter || 0;
+  static fromDict(data: unknown): VestingController {
+    const snapshot = isRecord(data) ? data : {};
+    const config = isRecord(snapshot.config)
+      ? snapshot.config as Partial<VestingConfig>
+      : undefined;
+    const controller = new VestingController(config);
+    controller.scheduleCounter = numberOrZero(snapshot.scheduleCounter);
 
-    if (data.schedules) {
-      for (const [id, schedule] of data.schedules) {
-        controller.schedules.set(id, schedule);
+    if (Array.isArray(snapshot.schedules)) {
+      for (const entry of snapshot.schedules) {
+        if (!isSerializedEntry(entry) || !isRecord(entry[1])) continue;
+        controller.schedules.set(entry[0], entry[1] as unknown as VestingSchedule);
       }
     }
 
-    if (data.grantorSchedules) {
-      for (const [grantor, ids] of data.grantorSchedules) {
-        controller.grantorSchedules.set(grantor, new Set(ids));
+    if (Array.isArray(snapshot.grantorSchedules)) {
+      for (const entry of snapshot.grantorSchedules) {
+        if (!isSerializedEntry(entry)) continue;
+        const ids = asStringSet(entry[1]);
+        if (ids) controller.grantorSchedules.set(entry[0], ids);
       }
     }
 
-    if (data.beneficiarySchedules) {
-      for (const [beneficiary, ids] of data.beneficiarySchedules) {
-        controller.beneficiarySchedules.set(beneficiary, new Set(ids));
+    if (Array.isArray(snapshot.beneficiarySchedules)) {
+      for (const entry of snapshot.beneficiarySchedules) {
+        if (!isSerializedEntry(entry)) continue;
+        const ids = asStringSet(entry[1]);
+        if (ids) controller.beneficiarySchedules.set(entry[0], ids);
       }
     }
 

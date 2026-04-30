@@ -37,6 +37,18 @@ export interface VeTokenStats {
   averageVotingPower: number;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function numberOrZero(value: unknown): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0;
+}
+
+function isSerializedEntry(value: unknown): value is [string, unknown] {
+  return Array.isArray(value) && typeof value[0] === 'string' && value.length >= 2;
+}
+
 // =============================================================================
 // VOTE ESCROW CONTROLLER
 // =============================================================================
@@ -406,14 +418,19 @@ export class VoteEscrowController {
   /**
    * Restore from serialized data
    */
-  static fromDict(data: any): VoteEscrowController {
-    const controller = new VoteEscrowController(data.config);
-    controller.totalLocked = data.totalLocked || 0;
-    controller.totalVotingPower = data.totalVotingPower || 0;
+  static fromDict(data: unknown): VoteEscrowController {
+    const snapshot = isRecord(data) ? data : {};
+    const config = isRecord(snapshot.config)
+      ? snapshot.config as Partial<VoteEscrowConfig>
+      : undefined;
+    const controller = new VoteEscrowController(config);
+    controller.totalLocked = numberOrZero(snapshot.totalLocked);
+    controller.totalVotingPower = numberOrZero(snapshot.totalVotingPower);
 
-    if (data.positions) {
-      for (const [owner, position] of data.positions) {
-        controller.positions.set(owner, position);
+    if (Array.isArray(snapshot.positions)) {
+      for (const entry of snapshot.positions) {
+        if (!isSerializedEntry(entry) || !isRecord(entry[1])) continue;
+        controller.positions.set(entry[0], entry[1] as unknown as VeTokenPosition);
       }
     }
 
