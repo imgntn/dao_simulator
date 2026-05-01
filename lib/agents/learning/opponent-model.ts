@@ -72,6 +72,14 @@ export interface OpponentModelState {
   }>;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function finiteOrZero(value: unknown): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0;
+}
+
 /**
  * OpponentModel tracks and predicts opponent behavior.
  *
@@ -114,6 +122,11 @@ export class OpponentModel {
 
   constructor(config: Partial<OpponentModelConfig> = {}) {
     this.config = { ...DEFAULT_OPPONENT_CONFIG, ...config };
+    this.config.maxObservationsPerOpponent = Math.max(1, Math.floor(this.config.maxObservationsPerOpponent));
+    this.config.smoothingFactor = Math.max(0, this.config.smoothingFactor);
+    this.config.opponentWeight = Math.max(0, Math.min(1, this.config.opponentWeight));
+    this.config.maxTrackedOpponents = Math.max(1, Math.floor(this.config.maxTrackedOpponents));
+    this.config.observationDecay = Math.max(0, Math.min(1, this.config.observationDecay));
   }
 
   /**
@@ -357,23 +370,36 @@ export class OpponentModel {
   /**
    * Import state from serialization
    */
-  importState(state: OpponentModelState): void {
+  importState(state: unknown): void {
     this.models.clear();
+    if (!isRecord(state) || !Array.isArray(state.models)) {
+      return;
+    }
 
     for (const entry of state.models) {
+      if (!isRecord(entry) || typeof entry.opponentId !== 'string' || !isRecord(entry.actionCounts)) {
+        continue;
+      }
+
       const actionCounts = new Map<string, Map<string, number>>();
       for (const [stateKey, counts] of Object.entries(entry.actionCounts)) {
+        if (!isRecord(counts)) continue;
         const countMap = new Map<string, number>();
         for (const [action, count] of Object.entries(counts)) {
-          countMap.set(action, count);
+          const normalizedCount = finiteOrZero(count);
+          if (normalizedCount > 0) {
+            countMap.set(action, normalizedCount);
+          }
         }
-        actionCounts.set(stateKey, countMap);
+        if (countMap.size > 0) {
+          actionCounts.set(stateKey, countMap);
+        }
       }
 
       this.models.set(entry.opponentId, {
         actionCounts,
-        totalObservations: entry.totalObservations,
-        lastObservedStep: entry.lastObservedStep,
+        totalObservations: finiteOrZero(entry.totalObservations),
+        lastObservedStep: finiteOrZero(entry.lastObservedStep),
       });
     }
   }

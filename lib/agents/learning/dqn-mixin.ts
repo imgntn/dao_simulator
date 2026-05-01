@@ -7,7 +7,7 @@
 // Best for: Financial agents (RLTrader, MarketMaker, Speculator) with rich state spaces.
 // For governance agents with delayed rewards, prefer PolicyGradientMixin.
 
-import { random, randomChoice } from '../../utils/random';
+import { random } from '../../utils/random';
 import { NeuralNetwork, type LayerDef, type NetworkState } from './neural-network';
 
 /**

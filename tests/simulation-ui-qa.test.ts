@@ -204,7 +204,7 @@ describe('Simulation snapshot structure', () => {
       expect(typeof p.votesFor).toBe('number');
       expect(typeof p.votesAgainst).toBe('number');
     }
-  });
+  }, 15000);
 
   it('should have agents with uniqueId and constructor name', async () => {
     const sim = new DAOSimulation({

@@ -14,6 +14,7 @@
 //   Options: "monitor", "defensive", "opportunistic", "emergency"
 //   Actions within "defensive": "unstake", "hedge", "raise_alert"
 
+import { random } from '../../utils/random';
 import { LearningMixin, type LearningConfig, type LearningState } from './learning-mixin';
 
 /**
@@ -73,6 +74,24 @@ export interface HierarchicalState {
   episodeCount: number;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isLearningState(value: unknown): value is LearningState {
+  return isRecord(value) && isRecord(value.qTable);
+}
+
+function isValidOption(option: Option): boolean {
+  return (
+    typeof option.name === 'string' &&
+    option.name.length > 0 &&
+    Array.isArray(option.actions) &&
+    option.actions.length > 0 &&
+    option.actions.every((action) => typeof action === 'string' && action.length > 0)
+  );
+}
+
 /**
  * HierarchicalRLMixin provides the options framework for agents
  * with multi-phase behaviors.
@@ -116,7 +135,16 @@ export class HierarchicalRLMixin {
   private totalReward: number = 0;
 
   constructor(options: Option[], config: Partial<HierarchicalConfig> = {}) {
-    this.options = options;
+    if (options.length === 0 || options.some((option) => !isValidOption(option))) {
+      throw new Error('HierarchicalRLMixin requires at least one option with actions');
+    }
+
+    this.options = options.map((option) => ({
+      ...option,
+      minDuration: Math.max(0, option.minDuration ?? 1),
+      maxDuration: Math.max(1, option.maxDuration ?? 50),
+      actions: [...option.actions],
+    }));
     this.config = {
       metaConfig: { ...DEFAULT_HIERARCHICAL_CONFIG.metaConfig, ...config.metaConfig },
       subConfig: { ...DEFAULT_HIERARCHICAL_CONFIG.subConfig, ...config.subConfig },
@@ -127,7 +155,7 @@ export class HierarchicalRLMixin {
     this.metaPolicy = new LearningMixin(this.config.metaConfig);
 
     // Create one sub-policy per option
-    for (const option of options) {
+    for (const option of this.options) {
       this.subPolicies.set(option.name, new LearningMixin(this.config.subConfig));
     }
   }
@@ -165,7 +193,7 @@ export class HierarchicalRLMixin {
     const option = this.options.find(o => o.name === this.currentOption);
     const actions = option?.actions || [this.options[0].actions[0]];
 
-    return subPolicy.selectAction(subState, actions);
+    return subPolicy.act(subState, actions);
   }
 
   /**
@@ -213,7 +241,7 @@ export class HierarchicalRLMixin {
     // Probabilistic termination based on how close to maxDuration
     // (more likely to terminate as we approach max)
     const progress = this.optionStepCount / option.maxDuration;
-    return Math.random() < progress * 0.3; // Up to 30% termination probability
+    return random() < progress * 0.3; // Up to 30% termination probability
   }
 
   /**
@@ -288,21 +316,29 @@ export class HierarchicalRLMixin {
   /**
    * Import state from serialization
    */
-  importState(state: HierarchicalState): void {
-    if (state.metaState) {
+  importState(state: unknown): void {
+    if (!isRecord(state)) return;
+
+    if (isLearningState(state.metaState)) {
       this.metaPolicy.importLearningState(state.metaState);
     }
-    if (state.subStates) {
+    if (isRecord(state.subStates)) {
       for (const [name, subState] of Object.entries(state.subStates)) {
         const sub = this.subPolicies.get(name);
-        if (sub) {
+        if (sub && isLearningState(subState)) {
           sub.importLearningState(subState);
         }
       }
     }
-    this.currentOption = state.currentOption;
-    this.optionStepCount = state.optionStepCount;
-    this.episodeCount = state.episodeCount;
+    this.currentOption = typeof state.currentOption === 'string'
+      ? state.currentOption
+      : null;
+    this.optionStepCount = typeof state.optionStepCount === 'number' && Number.isFinite(state.optionStepCount)
+      ? Math.max(0, state.optionStepCount)
+      : 0;
+    this.episodeCount = typeof state.episodeCount === 'number' && Number.isFinite(state.episodeCount)
+      ? Math.max(0, state.episodeCount)
+      : 0;
   }
 
   /**
