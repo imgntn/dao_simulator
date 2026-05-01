@@ -10,7 +10,7 @@ import { randomBool } from '../utils/random';
 export interface Prediction {
   question: string;
   resolveStep: number;
-  target: any | null;
+  target: unknown | null;
   bets: Array<[DAOMember, string, number]>;
   resolved: boolean;
   outcome: string | null;
@@ -21,6 +21,7 @@ export class PredictionMarket {
   treasury: Treasury;
   eventBus: EventBus | null;
   predictions: Prediction[] = [];
+  private resolvedPredictions: Prediction[] = [];
 
   constructor(dao: DAO, treasury: Treasury, eventBus?: EventBus) {
     this.dao = dao;
@@ -34,7 +35,7 @@ export class PredictionMarket {
   createPrediction(
     question: string,
     resolveStep: number,
-    target: any = null
+    target: unknown = null
   ): Prediction {
     const prediction: Prediction = {
       question,
@@ -67,7 +68,15 @@ export class PredictionMarket {
     choice: string,
     amount: number
   ): boolean {
-    if (amount <= 0 || member.tokens < amount || prediction.resolved) {
+    if (
+      !this.predictions.includes(prediction) ||
+      prediction.resolved ||
+      (choice !== 'pass' && choice !== 'fail') ||
+      !Number.isFinite(amount) ||
+      amount <= 0 ||
+      !Number.isFinite(member.tokens) ||
+      member.tokens < amount
+    ) {
       return false;
     }
 
@@ -98,8 +107,11 @@ export class PredictionMarket {
    */
   private determineOutcome(prediction: Prediction): string {
     // If target has status property, use it
-    if (prediction.target && prediction.target.status) {
-      return prediction.target.status === 'approved' ? 'pass' : 'fail';
+    if (typeof prediction.target === 'object' && prediction.target !== null) {
+      const status = (prediction.target as { status?: unknown }).status;
+      if (typeof status === 'string') {
+        return status === 'approved' ? 'pass' : 'fail';
+      }
     }
 
     // Otherwise random
@@ -144,6 +156,8 @@ export class PredictionMarket {
           outcome,
         });
       }
+
+      this.resolvedPredictions.push(pred);
     }
 
     this.predictions = remaining;
@@ -157,6 +171,13 @@ export class PredictionMarket {
   }
 
   /**
+   * Get resolved predictions retained for learning and analytics.
+   */
+  getResolvedPredictions(): Prediction[] {
+    return [...this.resolvedPredictions];
+  }
+
+  /**
    * Get prediction statistics
    */
   getStatistics(): {
@@ -166,20 +187,22 @@ export class PredictionMarket {
     totalBets: number;
     totalVolume: number;
   } {
+    const allPredictions = [...this.predictions, ...this.resolvedPredictions];
     const active = this.predictions.filter((p) => !p.resolved).length;
-    const totalBets = this.predictions.reduce(
+    const resolved = this.resolvedPredictions.length;
+    const totalBets = allPredictions.reduce(
       (sum, p) => sum + p.bets.length,
       0
     );
-    const totalVolume = this.predictions.reduce(
+    const totalVolume = allPredictions.reduce(
       (sum, p) => sum + p.bets.reduce((s, [, , amt]) => s + amt, 0),
       0
     );
 
     return {
-      total: this.predictions.length,
+      total: allPredictions.length,
       active,
-      resolved: this.predictions.length - active,
+      resolved,
       totalBets,
       totalVolume,
     };

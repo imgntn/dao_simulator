@@ -116,9 +116,16 @@ export class TimelockController {
       return false;
     }
 
+    if (!Number.isFinite(additionalSteps) || additionalSteps <= 0) {
+      return false;
+    }
+
     // Clamp extension
-    const maxExtension = this.config.maxDelaySteps - entry.delaySteps;
+    const maxExtension = this.config.maxDelaySteps - entry.delaySteps - entry.dynamicExtension;
     const extension = Math.min(additionalSteps, maxExtension);
+    if (extension <= 0) {
+      return false;
+    }
 
     entry.dynamicExtension += extension;
     entry.executionStep += extension;

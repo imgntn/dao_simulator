@@ -205,7 +205,7 @@ export class Speculator extends DAOMember {
 
     // Check resolved predictions for wins/losses
     if (this.model.dao?.predictionMarket) {
-      const resolved = this.model.dao.predictionMarket.predictions.filter(p => p.resolved);
+      const resolved = this.model.dao.predictionMarket.getResolvedPredictions();
       for (const prediction of resolved) {
         const bet = this.bets.get(prediction.question);
         if (bet) {
