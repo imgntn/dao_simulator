@@ -63,4 +63,4 @@ npm run paper:update
 
 ## Testing
 
-1061 unit tests passing across 62 test files (0 failures, 0 type errors). Smoke and API E2E are covered by CI.
+1066 unit tests passing across 63 test files (0 failures, 0 type errors). Smoke and API E2E are covered by CI.

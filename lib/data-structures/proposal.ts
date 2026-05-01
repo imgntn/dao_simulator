@@ -4,6 +4,28 @@ import type { DAO } from './dao';
 import type { Project } from './project';
 import { DelegationResolver } from '../delegation/delegation-resolver';
 
+const PROPOSAL_STATUSES = new Set<Proposal['status']>([
+  'open',
+  'approved',
+  'rejected',
+  'completed',
+  'expired',
+]);
+
+function nonNegativeFinite(value: unknown): number {
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : 0;
+}
+
+function positiveFinite(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : null;
+}
+
+function validProposalStatus(value: unknown): Proposal['status'] {
+  return typeof value === 'string' && PROPOSAL_STATUSES.has(value as Proposal['status'])
+    ? value as Proposal['status']
+    : 'open';
+}
+
 export class Proposal {
   dao: DAO;
   creator: string;  // Creator's unique ID
@@ -63,11 +85,11 @@ export class Proposal {
     this.creator = creator;
     this.title = title;
     this.description = description;
-    this.fundingGoal = fundingGoal;
-    this.duration = duration;
+    this.fundingGoal = nonNegativeFinite(fundingGoal);
+    this.duration = nonNegativeFinite(duration);
     this.project = project;
     this.topic = topic;
-    this.votingPeriod = duration;
+    this.votingPeriod = this.duration;
     this.uniqueId = '';  // Will be set by DAO when added
   }
 
@@ -96,10 +118,10 @@ export class Proposal {
     let totalSupply = 0;
     for (const member of this.dao.members) {
       // Voting power = own tokens + staked + all delegated power (transitive)
-      const votingPower = DelegationResolver.resolveVotingPower(member);
+      const votingPower = nonNegativeFinite(DelegationResolver.resolveVotingPower(member));
       this.votingPowerSnapshot.set(member.uniqueId, votingPower);
       // Track total token supply (tokens + staked) for quorum denominator
-      totalSupply += member.tokens + member.stakedTokens;
+      totalSupply += nonNegativeFinite(member.tokens) + nonNegativeFinite(member.stakedTokens);
     }
     this.totalSupplySnapshot = totalSupply;
     this.snapshotTaken = true;
@@ -119,10 +141,15 @@ export class Proposal {
    * This prevents double-voting through delegation
    */
   revokeDelegationFor(delegatorId: string, delegateId: string, amount: number): void {
+    const safeAmount = positiveFinite(amount);
+    if (safeAmount === null) {
+      return;
+    }
+
     // Remove delegated support if it was already counted via delegate
     const existingSupport = this.delegatedSupport.get(delegatorId);
-    if (existingSupport !== undefined && existingSupport >= amount) {
-      this.delegatedSupport.set(delegatorId, existingSupport - amount);
+    if (existingSupport !== undefined && existingSupport >= safeAmount) {
+      this.delegatedSupport.set(delegatorId, existingSupport - safeAmount);
     }
 
     this.delegationRevokedFor.add(delegatorId);
@@ -133,7 +160,7 @@ export class Proposal {
         proposal: this.title,
         delegator: delegatorId,
         delegate: delegateId,
-        amount,
+        amount: safeAmount,
       });
     }
   }
@@ -151,18 +178,27 @@ export class Proposal {
       return false;
     }
 
+    const providedWeight = positiveFinite(weight);
+    if (providedWeight === null) {
+      return false;
+    }
+
+    if (vote !== true && vote !== false && vote !== 'abstain') {
+      return false;
+    }
+
     if (!this.votes.has(memberId)) {
       // Use snapshot voting power if available (prevents flash loan attacks)
       // If no snapshot, fall back to provided weight for backwards compatibility
-      let effectiveWeight = weight;
+      let effectiveWeight = providedWeight;
       if (this.snapshotTaken) {
         const snapshotPower = this.votingPowerSnapshot.get(memberId);
         if (snapshotPower !== undefined) {
           // Member had no power at snapshot time — reject vote
-          if (snapshotPower <= 0) return false;
+          if (!Number.isFinite(snapshotPower) || snapshotPower <= 0) return false;
           // Use the MINIMUM of snapshot power and provided weight
           // This ensures votes can't exceed what member had at proposal creation
-          effectiveWeight = Math.min(snapshotPower, weight);
+          effectiveWeight = Math.min(snapshotPower, providedWeight);
         } else {
           // Member wasn't in DAO at snapshot time - no voting rights
           if (this.dao.eventBus) {
@@ -175,6 +211,10 @@ export class Proposal {
           }
           return false;
         }
+      }
+
+      if (!Number.isFinite(effectiveWeight) || effectiveWeight <= 0) {
+        return false;
       }
 
       this.votes.set(memberId, { vote, weight: effectiveWeight });
@@ -241,13 +281,23 @@ export class Proposal {
   }
 
   receiveDelegatedSupport(delegatorId: string, tokenAmount: number): void {
+    const safeAmount = positiveFinite(tokenAmount);
+    if (safeAmount === null) {
+      return;
+    }
+
     const current = this.delegatedSupport.get(delegatorId) || 0;
-    this.delegatedSupport.set(delegatorId, current + tokenAmount);
+    this.delegatedSupport.set(delegatorId, current + safeAmount);
     this.recordActivity(this.dao.currentStep);
   }
 
   receiveInvestment(investorId: string, amount: number): void {
-    this.currentFunding += amount;
+    const safeAmount = positiveFinite(amount);
+    if (safeAmount === null) {
+      return;
+    }
+
+    this.currentFunding += safeAmount;
     this.recordActivity(this.dao.currentStep);
   }
 
@@ -266,6 +316,7 @@ export class Proposal {
       status: this.status,
       votesFor: this.votesFor,
       votesAgainst: this.votesAgainst,
+      votesAbstain: this.votesAbstain,
       currentFunding: this.currentFunding,
       creator: this.creator,
       creationTime: this.creationTime,
@@ -297,27 +348,33 @@ export class Proposal {
       null
     );
 
-    proposal.status = data.status || 'open';
-    proposal.votesFor = data.votesFor || 0;
-    proposal.votesAgainst = data.votesAgainst || 0;
-    proposal.currentFunding = data.currentFunding || 0;
-    proposal.creationTime = data.creationTime || 0;
-    proposal.lastActivityStep = data.lastActivityStep || proposal.creationTime || 0;
-    proposal.resolvedTime = data.resolvedTime;
-    proposal.votingPeriod = data.votingPeriod || proposal.duration;
+    proposal.status = validProposalStatus(data.status);
+    proposal.votesFor = nonNegativeFinite(data.votesFor);
+    proposal.votesAgainst = nonNegativeFinite(data.votesAgainst);
+    proposal.votesAbstain = nonNegativeFinite(data.votesAbstain);
+    proposal.currentFunding = nonNegativeFinite(data.currentFunding);
+    proposal.creationTime = nonNegativeFinite(data.creationTime);
+    proposal.lastActivityStep = nonNegativeFinite(data.lastActivityStep) || proposal.creationTime;
+    proposal.resolvedTime = data.resolvedTime === undefined ? undefined : nonNegativeFinite(data.resolvedTime);
+    proposal.votingPeriod = nonNegativeFinite(data.votingPeriod) || proposal.duration;
     proposal.uniqueId = data.uniqueId || '';
     proposal.type = data.type || 'default';
     proposal.isMalicious = data.isMalicious || false;
-    proposal.bondAmount = data.bondAmount || 0;
+    proposal.bondAmount = nonNegativeFinite(data.bondAmount);
     proposal.bondRefunded = data.bondRefunded || false;
     proposal.bondSlashed = data.bondSlashed || false;
     proposal.quorumMet = data.quorumMet;
 
     // Restore voting power snapshot
     if (data.votingPowerSnapshot) {
-      proposal.votingPowerSnapshot = new Map(Object.entries(data.votingPowerSnapshot));
+      proposal.votingPowerSnapshot = new Map(
+        Object.entries(data.votingPowerSnapshot).map(([memberId, votingPower]) => [
+          memberId,
+          nonNegativeFinite(votingPower),
+        ])
+      );
     }
-    proposal.totalSupplySnapshot = data.totalSupplySnapshot || 0;
+    proposal.totalSupplySnapshot = nonNegativeFinite(data.totalSupplySnapshot);
     proposal.snapshotTaken = data.snapshotTaken || false;
 
     return proposal;
