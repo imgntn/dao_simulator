@@ -144,12 +144,17 @@ export class SharedLearningCoordinator {
 
   constructor(config: Partial<SharedLearningConfig> = {}) {
     this.config = { ...DEFAULT_SHARED_LEARNING_CONFIG, ...config };
+    this.config.mergeInterval = Math.max(1, Math.floor(this.config.mergeInterval));
+    this.config.mergeWeight = Math.max(0, Math.min(1, this.config.mergeWeight));
+    this.config.crossCategoryWeight = Math.max(0, Math.min(1, this.config.crossCategoryWeight));
+    this.config.minEpisodesForMerge = Math.max(0, Math.floor(this.config.minEpisodesForMerge));
   }
 
   /**
    * Register an agent for shared learning
    */
   register(id: string, typeName: string, learning: LearningMixin): void {
+    this.unregister(id);
     const group = TYPE_TO_GROUP[typeName] || 'community';
     this.agents.push({ id, type: typeName, group, learning });
   }

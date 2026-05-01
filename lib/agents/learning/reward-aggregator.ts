@@ -126,7 +126,7 @@ export class RewardAggregator {
   ) {
     this.category = category;
     this.customSignals = customSignals;
-    this.rewardClamp = rewardClamp;
+    this.setRewardClamp(rewardClamp[0], rewardClamp[1]);
   }
 
   /**
@@ -234,6 +234,7 @@ export class RewardAggregator {
    * Clamp reward to configured bounds
    */
   private clampReward(value: number): number {
+    if (!Number.isFinite(value)) return 0;
     return Math.max(this.rewardClamp[0], Math.min(this.rewardClamp[1], value));
   }
 
@@ -351,7 +352,12 @@ export class RewardAggregator {
    * Set reward clamp bounds
    */
   setRewardClamp(min: number, max: number): void {
-    this.rewardClamp = [min, max];
+    if (!Number.isFinite(min) || !Number.isFinite(max)) {
+      this.rewardClamp = [-10, 10];
+      return;
+    }
+
+    this.rewardClamp = min <= max ? [min, max] : [max, min];
   }
 }
 
