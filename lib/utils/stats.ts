@@ -3,6 +3,10 @@
 
 import type { DAOMember } from '../agents/base';
 
+function finiteValues(values: number[]): number[] {
+  return values.filter(Number.isFinite);
+}
+
 /**
  * Calculate Gini coefficient for a list of values
  */
@@ -12,7 +16,7 @@ export function gini(values: number[]): number {
   }
 
   // Filter out negative values and sort
-  const arr = values.filter((v) => v >= 0).sort((a, b) => a - b);
+  const arr = finiteValues(values).filter((v) => v >= 0).sort((a, b) => a - b);
   const n = arr.length;
 
   if (n === 0) {
@@ -51,7 +55,7 @@ export function inDegreeCentrality(members: DAOMember[]): Map<string, number> {
   members.forEach((m) => counts.set(m.uniqueId, 0));
 
   for (const member of members) {
-    const rep = (member as any).representative;
+    const rep = (member as { representative?: Pick<DAOMember, 'uniqueId'> }).representative;
     if (rep && rep.uniqueId) {
       const current = counts.get(rep.uniqueId) || 0;
       counts.set(rep.uniqueId, current + 1);
@@ -73,17 +77,19 @@ export function inDegreeCentrality(members: DAOMember[]): Map<string, number> {
  * Calculate mean of an array of numbers
  */
 export function mean(values: number[]): number {
-  if (values.length === 0) return 0;
-  return values.reduce((sum, v) => sum + v, 0) / values.length;
+  const finite = finiteValues(values);
+  if (finite.length === 0) return 0;
+  return finite.reduce((sum, v) => sum + v, 0) / finite.length;
 }
 
 /**
  * Calculate median of an array of numbers
  */
 export function median(values: number[]): number {
-  if (values.length === 0) return 0;
+  const finite = finiteValues(values);
+  if (finite.length === 0) return 0;
 
-  const sorted = [...values].sort((a, b) => a - b);
+  const sorted = [...finite].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
 
   if (sorted.length % 2 === 0) {
@@ -97,11 +103,12 @@ export function median(values: number[]): number {
  * Calculate standard deviation of an array of numbers
  */
 export function standardDeviation(values: number[]): number {
-  if (values.length <= 1) return 0;
+  const finite = finiteValues(values);
+  if (finite.length <= 1) return 0;
 
-  const avg = mean(values);
-  const squareDiffs = values.map((v) => (v - avg) ** 2);
-  const variance = squareDiffs.reduce((sum, d) => sum + d, 0) / (values.length - 1);
+  const avg = mean(finite);
+  const squareDiffs = finite.map((v) => (v - avg) ** 2);
+  const variance = squareDiffs.reduce((sum, d) => sum + d, 0) / (finite.length - 1);
 
   return Math.sqrt(variance);
 }
@@ -110,10 +117,11 @@ export function standardDeviation(values: number[]): number {
  * Calculate percentile of an array of numbers
  */
 export function percentile(values: number[], p: number): number {
-  if (values.length === 0) return 0;
+  const finite = finiteValues(values);
+  if (finite.length === 0) return 0;
   if (p < 0 || p > 100) throw new Error('Percentile must be between 0 and 100');
 
-  const sorted = [...values].sort((a, b) => a - b);
+  const sorted = [...finite].sort((a, b) => a - b);
   const index = (p / 100) * (sorted.length - 1);
   const lower = Math.floor(index);
   const upper = Math.ceil(index);
