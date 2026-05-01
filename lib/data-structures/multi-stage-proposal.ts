@@ -73,6 +73,117 @@ export interface HouseVoteResult {
  */
 export type ProposalCategory = 'constitutional' | 'non_constitutional' | 'standard';
 
+const PROPOSAL_STAGES = new Set<ProposalStage>([
+  'rfc',
+  'temp_check',
+  'on_chain',
+  'timelock',
+  'veto_window',
+  'execution',
+  'executed',
+  'cancelled',
+  'vetoed',
+]);
+
+const HOUSE_TYPES = new Set<HouseType>([
+  'token_house',
+  'citizens_house',
+  'security_council',
+]);
+
+const PROPOSAL_CATEGORIES = new Set<ProposalCategory>([
+  'constitutional',
+  'non_constitutional',
+  'standard',
+]);
+
+const PROPOSAL_STATUSES = new Set<Proposal['status']>([
+  'open',
+  'approved',
+  'rejected',
+  'completed',
+  'expired',
+]);
+
+function nonNegativeFinite(value: unknown): number {
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : 0;
+}
+
+function positiveFinite(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : null;
+}
+
+function validProposalStatus(value: unknown): Proposal['status'] {
+  return typeof value === 'string' && PROPOSAL_STATUSES.has(value as Proposal['status'])
+    ? value as Proposal['status']
+    : 'open';
+}
+
+function validProposalCategory(value: unknown): ProposalCategory {
+  return typeof value === 'string' && PROPOSAL_CATEGORIES.has(value as ProposalCategory)
+    ? value as ProposalCategory
+    : 'standard';
+}
+
+function sanitizeStageConfigs(stageConfigs: StageConfig[], fallbackDuration: number): StageConfig[] {
+  const sanitized = stageConfigs
+    .filter((config) => PROPOSAL_STAGES.has(config.stage))
+    .map((config) => ({
+      ...config,
+      durationSteps: nonNegativeFinite(config.durationSteps),
+      quorumPercent: config.quorumPercent === undefined ? undefined : nonNegativeFinite(config.quorumPercent),
+      approvalThresholdPercent: config.approvalThresholdPercent === undefined
+        ? undefined
+        : nonNegativeFinite(config.approvalThresholdPercent),
+    }));
+
+  return sanitized.length > 0
+    ? sanitized
+    : [{ stage: 'on_chain', durationSteps: nonNegativeFinite(fallbackDuration) }];
+}
+
+function sanitizeStageStates(value: unknown): StageState[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .filter((state): state is Partial<StageState> =>
+      typeof state === 'object' &&
+      state !== null &&
+      typeof state.stage === 'string' &&
+      PROPOSAL_STAGES.has(state.stage as ProposalStage)
+    )
+    .map((state) => {
+      const startStep = nonNegativeFinite(state.startStep);
+      const endStep = Math.max(startStep, nonNegativeFinite(state.endStep));
+      return {
+        stage: state.stage as ProposalStage,
+        startStep,
+        endStep,
+        passed: typeof state.passed === 'boolean' ? state.passed : null,
+        reason: typeof state.reason === 'string' ? state.reason : undefined,
+        details: typeof state.details === 'object' && state.details !== null ? state.details : undefined,
+      };
+    });
+}
+
+function sanitizeHouseVoteResult(house: string, value: unknown): [HouseType, HouseVoteResult] | null {
+  if (!HOUSE_TYPES.has(house as HouseType) || typeof value !== 'object' || value === null) {
+    return null;
+  }
+
+  const result = value as Partial<HouseVoteResult>;
+  return [house as HouseType, {
+    house: house as HouseType,
+    votesFor: nonNegativeFinite(result.votesFor),
+    votesAgainst: nonNegativeFinite(result.votesAgainst),
+    quorumMet: result.quorumMet === true,
+    approved: result.approved === true,
+    vetoTriggered: result.vetoTriggered === undefined ? undefined : result.vetoTriggered === true,
+  }];
+}
+
 // =============================================================================
 // MULTI-STAGE PROPOSAL CLASS
 // =============================================================================
@@ -117,9 +228,7 @@ export class MultiStageProposal extends Proposal {
     super(dao, creator, title, description, fundingGoal, duration, topic, project);
 
     // Use provided stage configs or default single-stage
-    this.stageConfigs = stageConfigs.length > 0
-      ? stageConfigs
-      : [{ stage: 'on_chain', durationSteps: duration }];
+    this.stageConfigs = sanitizeStageConfigs(stageConfigs, this.duration);
 
     // Initialize first stage
     this.initializeFirstStage();
@@ -205,9 +314,16 @@ export class MultiStageProposal extends Proposal {
     vote: boolean,
     weight: number = 1,
     house: HouseType = 'token_house'
-  ): void {
+  ): boolean {
+    if (!HOUSE_TYPES.has(house)) {
+      return false;
+    }
+
     // Call parent vote method
-    this.addVote(memberId, vote, weight);
+    const accepted = this.addVote(memberId, vote, weight);
+    if (!accepted) {
+      return false;
+    }
 
     // Track house-specific vote
     const existing = this.houseVotes.get(house) || {
@@ -225,22 +341,28 @@ export class MultiStageProposal extends Proposal {
     }
 
     this.houseVotes.set(house, existing);
+    return true;
   }
 
   /**
    * Signal veto (for dual governance like Lido)
    */
   signalVeto(stakerId: string, amount: number): void {
+    const safeAmount = positiveFinite(amount);
+    if (safeAmount === null) {
+      return;
+    }
+
     const current = this.vetoSignals.get(stakerId) || 0;
-    this.vetoSignals.set(stakerId, current + amount);
-    this.totalVetoSignal += amount;
+    this.vetoSignals.set(stakerId, current + safeAmount);
+    this.totalVetoSignal += safeAmount;
 
     if (this.dao.eventBus) {
       this.dao.eventBus.publish('veto_signaled', {
         step: this.dao.currentStep,
         proposal: this.uniqueId,
         staker: stakerId,
-        amount,
+        amount: safeAmount,
         totalSignal: this.totalVetoSignal,
       });
     }
@@ -250,7 +372,7 @@ export class MultiStageProposal extends Proposal {
    * Check if veto threshold is reached
    */
   isVetoThresholdReached(totalStakeSupply: number): boolean {
-    if (totalStakeSupply <= 0) return false;
+    if (!Number.isFinite(totalStakeSupply) || totalStakeSupply <= 0 || this.vetoThresholdPercent <= 0) return false;
     const signalPercent = (this.totalVetoSignal / totalStakeSupply) * 100;
     return signalPercent >= this.vetoThresholdPercent;
   }
@@ -263,20 +385,28 @@ export class MultiStageProposal extends Proposal {
     minTimelockSteps: number,
     maxTimelockSteps: number
   ): number {
-    if (totalStakeSupply <= 0) return minTimelockSteps;
+    const minSteps = nonNegativeFinite(minTimelockSteps);
+    const maxSteps = Math.max(minSteps, nonNegativeFinite(maxTimelockSteps));
+    if (!Number.isFinite(totalStakeSupply) || totalStakeSupply <= 0 || this.vetoThresholdPercent <= 0) {
+      return minSteps;
+    }
 
     const signalPercent = (this.totalVetoSignal / totalStakeSupply) * 100;
     // Linear interpolation between min and max based on signal
-    const range = maxTimelockSteps - minTimelockSteps;
+    const range = maxSteps - minSteps;
     const extension = Math.min(range * (signalPercent / this.vetoThresholdPercent), range);
 
-    return Math.round(minTimelockSteps + extension);
+    return Math.round(minSteps + extension);
   }
 
   /**
    * Advance to the next stage
    */
   advanceToNextStage(passed: boolean, reason?: string, details?: Record<string, unknown>): boolean {
+    if (this.status !== 'open') {
+      return false;
+    }
+
     // Mark current stage as completed
     if (this.currentStageState) {
       this.currentStageState.passed = passed;
@@ -355,15 +485,16 @@ export class MultiStageProposal extends Proposal {
    * Schedule for timelock execution
    */
   scheduleTimelock(delaySteps: number): void {
+    const safeDelay = nonNegativeFinite(delaySteps);
     this.timelockScheduledStep = this.dao.currentStep;
-    this.timelockExecutionStep = this.dao.currentStep + delaySteps;
+    this.timelockExecutionStep = this.dao.currentStep + safeDelay;
 
     if (this.dao.eventBus) {
       this.dao.eventBus.publish('timelock_scheduled', {
         step: this.dao.currentStep,
         proposal: this.uniqueId,
         executionStep: this.timelockExecutionStep,
-        delaySteps,
+        delaySteps: safeDelay,
       });
     }
   }
@@ -464,35 +595,58 @@ export class MultiStageProposal extends Proposal {
       data.duration || 0,
       data.topic || 'Default Topic',
       null,
-      data.stageConfigs || []
+      Array.isArray(data.stageConfigs) ? data.stageConfigs : []
     );
 
-    proposal.status = data.status || 'open';
-    proposal.votesFor = data.votesFor || 0;
-    proposal.votesAgainst = data.votesAgainst || 0;
-    proposal.currentFunding = data.currentFunding || 0;
-    proposal.creationTime = data.creationTime || 0;
-    proposal.votingPeriod = data.votingPeriod || proposal.duration;
+    proposal.status = validProposalStatus(data.status);
+    proposal.votesFor = nonNegativeFinite(data.votesFor);
+    proposal.votesAgainst = nonNegativeFinite(data.votesAgainst);
+    proposal.votesAbstain = nonNegativeFinite(data.votesAbstain);
+    proposal.currentFunding = nonNegativeFinite(data.currentFunding);
+    proposal.creationTime = nonNegativeFinite(data.creationTime);
+    proposal.lastActivityStep = nonNegativeFinite(data.lastActivityStep) || proposal.creationTime;
+    proposal.resolvedTime = data.resolvedTime === undefined ? undefined : nonNegativeFinite(data.resolvedTime);
+    proposal.votingPeriod = nonNegativeFinite(data.votingPeriod) || proposal.duration;
     proposal.uniqueId = data.uniqueId || '';
     proposal.type = data.type || 'default';
 
     // Multi-stage specific
-    proposal.stageStates = data.stageStates || [];
-    proposal.currentStageIndex = data.currentStageIndex || 0;
-    proposal.proposalCategory = data.proposalCategory || 'standard';
+    proposal.stageStates = sanitizeStageStates(data.stageStates);
+    if (proposal.stageStates.length === 0) {
+      proposal.stageStates = [];
+      proposal.initializeFirstStage();
+    }
+    proposal.currentStageIndex = Math.min(
+      nonNegativeFinite(data.currentStageIndex),
+      Math.max(0, proposal.stageConfigs.length)
+    );
+    proposal.proposalCategory = validProposalCategory(data.proposalCategory);
     proposal.requiresBicameral = data.requiresBicameral || false;
-    proposal.totalVetoSignal = data.totalVetoSignal || 0;
-    proposal.timelockScheduledStep = data.timelockScheduledStep || null;
-    proposal.timelockExecutionStep = data.timelockExecutionStep || null;
+    proposal.totalVetoSignal = nonNegativeFinite(data.totalVetoSignal);
+    proposal.vetoThresholdPercent = positiveFinite(data.vetoThresholdPercent) ?? proposal.vetoThresholdPercent;
+    proposal.dynamicTimelockExtension = nonNegativeFinite(data.dynamicTimelockExtension);
+    proposal.timelockScheduledStep = data.timelockScheduledStep === null || data.timelockScheduledStep === undefined
+      ? null
+      : nonNegativeFinite(data.timelockScheduledStep);
+    proposal.timelockExecutionStep = data.timelockExecutionStep === null || data.timelockExecutionStep === undefined
+      ? null
+      : nonNegativeFinite(data.timelockExecutionStep);
 
     // Restore maps
     if (data.houseVotes) {
       proposal.houseVotes = new Map(
-        Object.entries(data.houseVotes) as [HouseType, HouseVoteResult][]
+        Object.entries(data.houseVotes)
+          .map(([house, result]) => sanitizeHouseVoteResult(house, result))
+          .filter((entry): entry is [HouseType, HouseVoteResult] => entry !== null)
       );
     }
     if (data.vetoSignals) {
-      proposal.vetoSignals = new Map(Object.entries(data.vetoSignals) as [string, number][]);
+      proposal.vetoSignals = new Map(
+        Object.entries(data.vetoSignals)
+          .map(([staker, amount]) => [staker, nonNegativeFinite(amount)] as [string, number])
+      );
+      proposal.totalVetoSignal = Array.from(proposal.vetoSignals.values())
+        .reduce((sum, amount) => sum + amount, 0);
     }
 
     return proposal;
@@ -512,7 +666,8 @@ export function createMultiStageProposal(
   category: ProposalCategory = 'standard',
   requiresBicameral: boolean = false
 ): MultiStageProposal {
-  const totalDuration = stageConfigs.reduce((sum, s) => sum + s.durationSteps, 0);
+  const sanitizedStageConfigs = sanitizeStageConfigs(stageConfigs, 0);
+  const totalDuration = sanitizedStageConfigs.reduce((sum, s) => sum + s.durationSteps, 0);
 
   const proposal = new MultiStageProposal(
     dao,
@@ -523,10 +678,10 @@ export function createMultiStageProposal(
     totalDuration,
     'Multi-Stage Proposal',
     null,
-    stageConfigs
+    sanitizedStageConfigs
   );
 
-  proposal.proposalCategory = category;
+  proposal.proposalCategory = validProposalCategory(category);
   proposal.requiresBicameral = requiresBicameral;
 
   return proposal;
