@@ -4,6 +4,10 @@ import type { EventBus } from '../utils/event-bus';
 import type { PriceOracle } from '@/types/simulation';
 import { RandomWalkOracle } from '../utils/oracles';
 
+function isPositiveFiniteAmount(amount: number): boolean {
+  return Number.isFinite(amount) && amount > 0;
+}
+
 /**
  * Constant product automated market maker (AMM)
  * Implements x * y = k formula
@@ -23,7 +27,7 @@ export class LiquidityPool {
 
   addLiquidity(amountA: number, amountB: number, step: number = 0): void {
     // Validate amounts - must be positive and finite
-    if (amountA <= 0 || amountB <= 0 || !Number.isFinite(amountA) || !Number.isFinite(amountB)) {
+    if (!isPositiveFiniteAmount(amountA) || !isPositiveFiniteAmount(amountB)) {
       return;
     }
 
@@ -42,6 +46,10 @@ export class LiquidityPool {
   }
 
   removeLiquidity(share: number, step: number = 0): [number, number] {
+    if (!Number.isFinite(share) || share <= 0) {
+      return [0, 0];
+    }
+
     share = Math.max(0, Math.min(1, share));
     const amountA = this.reserveA * share;
     const amountB = this.reserveB * share;
@@ -64,7 +72,11 @@ export class LiquidityPool {
 
   swap(tokenIn: string, amountIn: number, step: number = 0): number {
     // Validate input amount
-    if (amountIn <= 0 || !Number.isFinite(amountIn)) {
+    if (!isPositiveFiniteAmount(amountIn)) {
+      return 0;
+    }
+
+    if (tokenIn !== this.tokenA && tokenIn !== this.tokenB) {
       return 0;
     }
 
@@ -172,6 +184,10 @@ export class Treasury {
   }
 
   deposit(token: string, amount: number, step: number = 0): void {
+    if (!isPositiveFiniteAmount(amount)) {
+      return;
+    }
+
     this.ensureTokenPrice(token);
     const current = this.tokens.get(token) || 0;
     this.tokens.set(token, current + amount);
@@ -185,6 +201,10 @@ export class Treasury {
   }
 
   withdraw(token: string, amount: number, step: number = 0): number {
+    if (!isPositiveFiniteAmount(amount)) {
+      return 0;
+    }
+
     const current = this.tokens.get(token) || 0;
     let withdrawn: number;
 
@@ -222,6 +242,10 @@ export class Treasury {
   }
 
   withdrawLocked(token: string, amount: number, step: number = 0): number {
+    if (!isPositiveFiniteAmount(amount)) {
+      return 0;
+    }
+
     const currentLocked = this.lockedTokens.get(token) || 0;
     let withdrawn: number;
 
@@ -241,7 +265,7 @@ export class Treasury {
   }
 
   mintTokens(token: string, amount: number, step: number = 0): void {
-    if (amount <= 0) return;
+    if (!isPositiveFiniteAmount(amount)) return;
 
     this.ensureTokenPrice(token);
     const current = this.tokens.get(token) || 0;
@@ -256,6 +280,8 @@ export class Treasury {
   }
 
   burnTokens(token: string, amount: number, step: number = 0): number {
+    if (!isPositiveFiniteAmount(amount)) return 0;
+
     const current = this.tokens.get(token) || 0;
     const burn = Math.min(amount, current);
 
@@ -278,6 +304,10 @@ export class Treasury {
   }
 
   updateTokenPrice(token: string, newPrice: number): void {
+    if (!isPositiveFiniteAmount(newPrice)) {
+      return;
+    }
+
     this.tokenPrices.set(token, newPrice);
     if (this.oracle) {
       this.oracle.setPrice(token, newPrice);
@@ -364,6 +394,10 @@ export class Treasury {
   }
 
   addRevenue(amount: number): void {
+    if (!isPositiveFiniteAmount(amount)) {
+      return;
+    }
+
     this.revenue += amount;
   }
 
@@ -437,8 +471,17 @@ export class Treasury {
       throw new Error('Pool does not exist');
     }
 
-    this.withdraw(tokenIn, amountIn, step);
-    const amountOut = pool.swap(tokenIn, amountIn, step);
+    const actualIn = this.withdraw(tokenIn, amountIn, step);
+    if (actualIn <= 0) {
+      return 0;
+    }
+
+    const amountOut = pool.swap(tokenIn, actualIn, step);
+    if (amountOut <= 0) {
+      this.deposit(tokenIn, actualIn, step);
+      return 0;
+    }
+
     this.deposit(tokenOut, amountOut, step);
 
     return amountOut;
