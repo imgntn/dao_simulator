@@ -14,6 +14,7 @@ import type {
   WorkerOutMessage,
 } from './worker-protocol';
 import type { CalibrationProfile } from '../digital-twins/calibration-loader';
+import { useBranchStore } from './branch-store';
 
 // =============================================================================
 // STATE TYPES
@@ -118,6 +119,58 @@ const DEFAULT_CONFIG: BrowserSimConfig = {
   blackSwanFrequency: 2,
 };
 
+type SimulationSet = (
+  partial:
+    | Partial<SimulationState>
+    | SimulationState
+    | ((state: SimulationState) => Partial<SimulationState> | SimulationState),
+  replace?: false
+) => void;
+
+let pendingStepSnapshots: SimulationSnapshot[] = [];
+let snapshotFlushHandle: number | null = null;
+
+function scheduleSnapshotFlush(set: SimulationSet, snapshot: SimulationSnapshot): void {
+  pendingStepSnapshots.push(snapshot);
+  if (snapshotFlushHandle !== null) return;
+
+  const flush = () => {
+    snapshotFlushHandle = null;
+    const batch = pendingStepSnapshots;
+    pendingStepSnapshots = [];
+    if (batch.length === 0) return;
+
+    const latest = batch[batch.length - 1];
+    set(prev => {
+      const newHistory = [...prev.history, ...batch];
+      if (newHistory.length > MAX_HISTORY_LENGTH) {
+        newHistory.splice(0, newHistory.length - MAX_HISTORY_LENGTH);
+      }
+      return {
+        snapshot: latest,
+        history: newHistory,
+      };
+    });
+  };
+
+  if (typeof requestAnimationFrame === 'function') {
+    snapshotFlushHandle = requestAnimationFrame(flush);
+  } else {
+    snapshotFlushHandle = window.setTimeout(flush, 16);
+  }
+}
+
+function clearPendingSnapshotFlush(): void {
+  pendingStepSnapshots = [];
+  if (snapshotFlushHandle === null) return;
+  if (typeof cancelAnimationFrame === 'function') {
+    cancelAnimationFrame(snapshotFlushHandle);
+  } else {
+    clearTimeout(snapshotFlushHandle);
+  }
+  snapshotFlushHandle = null;
+}
+
 // =============================================================================
 // STORE
 // =============================================================================
@@ -211,6 +264,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
     const availableDaos = Object.keys(calibrationProfiles).sort();
 
     const currentConfig = get().config;
+    clearPendingSnapshotFlush();
     set({
       status: 'initializing',
       calibrationProfiles,
@@ -246,17 +300,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
           break;
 
         case 'stepComplete':
-          set(prev => {
-            const newHistory = [...prev.history, msg.snapshot];
-            // Trim history to max length
-            if (newHistory.length > MAX_HISTORY_LENGTH) {
-              newHistory.splice(0, newHistory.length - MAX_HISTORY_LENGTH);
-            }
-            return {
-              snapshot: msg.snapshot,
-              history: newHistory,
-            };
-          });
+          scheduleSnapshotFlush(set, msg.snapshot);
           break;
 
         case 'error':
@@ -265,7 +309,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
           break;
 
         case 'forkedState':
-          // Handled by branch-store listener externally
+          useBranchStore.getState().startBranch(msg.snapshot, get().config, get().history);
           break;
 
         case 'disposed':
@@ -311,6 +355,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
     const { worker, config, calibrationProfiles, marketData } = get();
     if (!worker || !calibrationProfiles || !marketData) return;
 
+    clearPendingSnapshotFlush();
     set({ status: 'initializing', history: [], snapshot: null, error: null, lastSentConfig: { ...config }, viewingStep: null });
     worker.postMessage({ type: 'reset', config });
   },
@@ -333,6 +378,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
 
     // Reset simulation with new DAO
     if (state.worker && state.calibrationProfiles && state.marketData) {
+      clearPendingSnapshotFlush();
       set({ status: 'initializing', history: [], snapshot: null, error: null, lastSentConfig: { ...newConfig }, viewingStep: null });
       state.worker.postMessage({ type: 'reset', config: newConfig });
     }
@@ -359,9 +405,10 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
   },
 
   forkState: () => {
-    const { worker } = get();
-    if (!worker) return;
-    worker.postMessage({ type: 'forkState' });
+    const { snapshot, config, history, status, pause } = get();
+    if (!snapshot) return;
+    if (status === 'running') pause();
+    useBranchStore.getState().startBranch(snapshot, config, history);
   },
 
   dispose: () => {
@@ -377,5 +424,6 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
       history: [],
       error: null,
     });
+    clearPendingSnapshotFlush();
   },
 }));

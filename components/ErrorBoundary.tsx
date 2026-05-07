@@ -63,7 +63,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 }
 
-export class Canvas3DErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class SceneErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -74,7 +74,7 @@ export class Canvas3DErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    console.error('3D Canvas error:', error, errorInfo);
+    console.error('Scene visualization error:', error, errorInfo);
     this.props.onError?.(error, errorInfo);
   }
 
@@ -91,9 +91,9 @@ export class Canvas3DErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-[var(--text-heading)] mb-2">3D Visualization Unavailable</h3>
+          <h3 className="text-xl font-semibold text-[var(--text-heading)] mb-2">Visualization Unavailable</h3>
           <p className="text-[var(--text-body)] text-sm text-center mb-4 max-w-md">
-            The 3D network graph could not be rendered. This may be due to WebGL compatibility issues with your browser or graphics card.
+            The interactive scene could not be rendered. Try refreshing the page or restarting the simulation.
           </p>
           <div className="flex gap-3">
             <button
@@ -103,12 +103,12 @@ export class Canvas3DErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
               Retry
             </button>
             <a
-              href="https://get.webgl.org/"
+              href="/en/simulate"
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 bg-[var(--surface-warm)] hover:bg-[var(--border-subtle)] text-[var(--text-heading)] rounded-lg border border-[var(--border-default)] transition-colors"
             >
-              Check WebGL Support
+              Reload Simulator
             </a>
           </div>
         </div>

@@ -18,7 +18,7 @@ export interface TutorialStep {
 const TUTORIAL_STEPS: TutorialStep[] = [
   {
     title: 'Welcome to DAO Simulator',
-    description: 'This interactive 3D simulator lets you explore how decentralized organizations work. Let\'s take a quick tour of the key features.',
+    description: 'This interactive simulator lets you explore how decentralized organizations work. Let\'s take a quick tour of the key features.',
     targetSelector: null,
     position: 'bottom',
   },
@@ -29,9 +29,9 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     position: 'left',
   },
   {
-    title: '3D Scene',
-    description: 'The skyscraper represents your DAO. Each floor houses different agent types. Hover over agents to see their stats, click to pin details. Orbit and zoom with mouse drag and scroll.',
-    targetSelector: 'canvas',
+    title: 'The Sanctum',
+    description: 'The Sanctum represents your DAO as a living governance hall. Scroll to zoom, drag to pan, and click a steward to inspect voting history and agent stats.',
+    targetSelector: '[data-scene="sanctum"]',
     position: 'right',
   },
   {

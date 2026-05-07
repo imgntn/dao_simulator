@@ -50,7 +50,8 @@ function movingAverage(data: number[], window: number): number[] {
 }
 
 export function MetricsDashboard() {
-  const { snapshot, history } = useSimulationStore();
+  const snapshot = useSimulationStore(s => s.snapshot);
+  const history = useSimulationStore(s => s.history);
   const [showTrend, setShowTrend] = useState(false);
 
   const sparklineData = useMemo(() => {

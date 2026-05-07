@@ -1,7 +1,7 @@
 'use client';
 
 import { useSimulationStore } from '@/lib/browser/simulation-store';
-import { FLOORS } from './scene/constants';
+import { FLOORS } from './agent-taxonomy';
 
 export function FloorNav() {
   const setTargetFloor = useSimulationStore(s => s.setTargetFloor);
@@ -10,9 +10,9 @@ export function FloorNav() {
   return (
     <div className="flex gap-1 px-4 py-2 border-b border-[var(--sim-border)]">
       <span className="text-[10px] text-[var(--sim-text-dim)] uppercase tracking-wider self-center mr-1">
-        Floor
+        Hall
       </span>
-      {FLOORS.map(floor => (
+      {FLOORS.map((floor, index) => (
         <button
           key={floor.id}
           onClick={() => setTargetFloor(floor.id)}
@@ -29,7 +29,7 @@ export function FloorNav() {
           }}
           title={floor.name}
         >
-          {floor.id}
+          {index + 1}
         </button>
       ))}
     </div>

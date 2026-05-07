@@ -37,7 +37,11 @@ function AlertToast({ alert, onDismiss }: ToastProps) {
 }
 
 export function MetricAlerts() {
-  const { alerts, addAlert, removeAlert, checkAlerts, snapshot } = useSimulationStore();
+  const alerts = useSimulationStore(s => s.alerts);
+  const addAlert = useSimulationStore(s => s.addAlert);
+  const removeAlert = useSimulationStore(s => s.removeAlert);
+  const checkAlerts = useSimulationStore(s => s.checkAlerts);
+  const snapshot = useSimulationStore(s => s.snapshot);
   const [toasts, setToasts] = useState<MetricAlert[]>([]);
 
   // Form state

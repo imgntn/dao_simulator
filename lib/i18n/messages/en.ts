@@ -78,7 +78,7 @@ export const messages: Messages = {
   // ═══════════════════════════════════════════════════════════════════════════
   tabs: {
     overview: 'Overview',
-    view3d: '3D View',
+    view3d: 'Visual View',
     charts: 'Charts',
     strategy: 'Strategy',
     reports: 'Reports',
@@ -91,7 +91,7 @@ export const messages: Messages = {
     // Overview tab
     daoMap: 'DAO Map',
     opsLog: 'Ops Log',
-    // 3D View tab
+    // Visual view tab
     tower: 'Tower',
     city: 'City',
     network: 'Network',
@@ -271,13 +271,13 @@ export const messages: Messages = {
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // VIEW3D - 3D View tab
+  // VIEW3D - visual view tab
   // ═══════════════════════════════════════════════════════════════════════════
   view3d: {
-    hide3d: 'Hide 3D',
-    show3d: 'Show 3D',
-    hidden3dMessage: '3D visuals are hidden to keep the layout compact.',
-    show3dView: 'Show 3D View',
+    hide3d: 'Hide Visual',
+    show3d: 'Show Visual',
+    hidden3dMessage: 'Visuals are hidden to keep the layout compact.',
+    show3dView: 'Show Visual View',
     networkControls: 'Network Controls',
     showLabels: 'Show labels',
     interactiveControls: 'Interactive controls',
@@ -289,7 +289,7 @@ export const messages: Messages = {
     interDaoProposals: 'Inter-DAO Proposals',
     noInterDaoProposals: 'No inter-DAO proposals yet.',
     startCitySimulation: 'Start the city simulation to see the visualization',
-    visualsPausedMessage: 'Visuals paused. Resume to view 3D scenes.',
+    visualsPausedMessage: 'Visuals paused. Resume to view the interactive scene.',
     startToPopulateTower: 'Start a simulation to populate the tower.',
     startToSeeNetwork: 'Start a simulation to see the network graph.',
   },
@@ -299,7 +299,7 @@ export const messages: Messages = {
   // ═══════════════════════════════════════════════════════════════════════════
   daoTower: {
     title: 'DAO Tower',
-    open3d: 'Open 3D',
+    open3d: 'Open Visual',
     loading: 'Building the DAO tower...',
     loadingHelp: 'Getting everyone settled in',
     emptyMessage: 'No members in the tower yet',
@@ -331,7 +331,7 @@ export const messages: Messages = {
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // NETWORK GRAPH - 3D network visualization
+  // NETWORK GRAPH - network visualization
   // ═══════════════════════════════════════════════════════════════════════════
   networkGraph: {
     title: 'DAO Network Graph',
@@ -546,12 +546,12 @@ export const messages: Messages = {
   dashboard: {
     title: 'DAO Simulator',
     subtitle: 'Real-time decentralized governance visualization',
-    description: 'Experience the beauty of distributed decision-making through stunning 3D network graphs, interactive charts, and comprehensive analytics.',
+    description: 'Experience distributed decision-making through an interactive Sanctum scene, live charts, and comprehensive analytics.',
     launchDashboard: 'Launch Dashboard',
     // Feature cards
-    feature3dLabel: '3D',
-    feature3dTitle: '3D Network Graphs',
-    feature3dDesc: 'Visualize complex governance networks in stunning 3D with WebGL and Three.js',
+    feature3dLabel: 'Live',
+    feature3dTitle: 'Interactive Sanctum',
+    feature3dDesc: 'Visualize governance agents, delegations, treasury pressure, and events in the live simulator',
     featureLiveLabel: 'Live',
     featureLiveTitle: 'Real-time Analytics',
     featureLiveDesc: 'Live price charts, heatmaps, and comprehensive reports updated via WebSocket',
@@ -565,7 +565,7 @@ export const messages: Messages = {
   // ═══════════════════════════════════════════════════════════════════════════
   footer: {
     brand: 'DAO Simulator',
-    stack: 'Next.js, Three.js, Recharts, Socket.IO',
+    stack: 'Next.js, Recharts, Socket.IO',
     tagline: 'Built with vision by incredible technologists and artists',
   },
 
@@ -583,10 +583,10 @@ export const messages: Messages = {
     pageNotFound: 'Page Not Found',
     pageNotFoundDesc: "The page you're looking for doesn't exist or has been moved.",
     openDashboard: 'Open Dashboard',
-    // 3D error boundary
-    visualization3dUnavailable: '3D Visualization Unavailable',
-    webglError: 'The 3D network graph could not be rendered. This may be due to WebGL compatibility issues with your browser or graphics card.',
-    checkWebgl: 'Check WebGL Support',
+    // Visualization error boundary
+    visualization3dUnavailable: 'Visualization Unavailable',
+    webglError: 'The interactive scene could not be rendered. Try refreshing the page or restarting the simulation.',
+    checkWebgl: 'Check Browser Support',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════

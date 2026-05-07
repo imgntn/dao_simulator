@@ -2,12 +2,13 @@
 
 import { useState, useCallback } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
-import { TYPE_COLOR_MAP, AGENT_TYPE_INFO } from './scene/constants';
+import { TYPE_COLOR_MAP, AGENT_TYPE_INFO } from './agent-taxonomy';
 
 const AGENT_TYPES = Object.keys(AGENT_TYPE_INFO);
 
 export function CustomAgentForm() {
-  const { injectAgent, status } = useSimulationStore();
+  const injectAgent = useSimulationStore(s => s.injectAgent);
+  const status = useSimulationStore(s => s.status);
   const [type, setType] = useState(AGENT_TYPES[0]);
   const [tokens, setTokens] = useState(1000);
   const [optimism, setOptimism] = useState(0.5);

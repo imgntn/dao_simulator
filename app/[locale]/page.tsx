@@ -487,7 +487,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-400 sm:text-lg">
           14 real DAOs. 25 agent types. Every governance rule you can think of.
-          Watch agents vote, delegate, and shape treasuries in real-time 3D.
+          Watch agents vote, delegate, and shape treasuries in the interactive Sanctum.
         </p>
         <a
           href={`/${locale}/simulate`}
@@ -515,14 +515,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               Interactive Simulator
             </h2>
             <p className="mt-3 max-w-3xl text-[1.12rem] leading-relaxed text-[var(--text-body)] sm:text-[1.22rem]">
-              Run your own governance experiments in real time. Pick any of the 14 calibrated DAOs, swap governance rules, toggle forum activity and black swan events, and watch the simulation unfold in an interactive 3D environment.
+              Run your own governance experiments in real time. Pick any of the 14 calibrated DAOs, swap governance rules, toggle forum activity and black swan events, and watch the simulation unfold in the interactive Sanctum.
             </p>
 
             <div className="mt-5 grid gap-4 sm:grid-cols-3">
               <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4">
-                <p className="text-sm font-semibold uppercase tracking-wide text-[var(--accent-teal)]">Real-Time 3D</p>
+                <p className="text-sm font-semibold uppercase tracking-wide text-[var(--accent-teal)]">Live Sanctum</p>
                 <p className="mt-1.5 text-base leading-relaxed text-[var(--text-body-secondary)]">
-                  Agents move, vote, and form delegations in a live 3D scene. Treasury, token price, and participation update every step.
+                  Agents move, vote, and form delegations in a live scene. Treasury, token price, and participation update every step.
                 </p>
               </div>
               <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4">

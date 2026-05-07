@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import type { AgentSnapshot } from '@/lib/browser/worker-protocol';
-import { AGENT_TYPE_INFO, TYPE_COLOR_MAP, AGENT_FLOOR_MAP, getDisplayName } from './scene/constants';
+import { AGENT_TYPE_INFO, TYPE_COLOR_MAP, AGENT_FLOOR_MAP, getDisplayName } from './agent-taxonomy';
 
 interface Props {
   agent: AgentSnapshot;

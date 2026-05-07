@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useEffect, useState, useCallback } from 'react';
 import type { AgentSnapshot, ProposalSnapshot } from '@/lib/browser/worker-protocol';
-import { getDisplayName } from '../scene/constants';
+import { getDisplayName } from '../agent-taxonomy';
 import { PRETEXT_FONTS, getPretextTextLayout } from '@/lib/ui/pretext';
 import { usePretextReady } from '@/lib/ui/usePretextText';
 

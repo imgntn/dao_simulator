@@ -53,7 +53,7 @@ export function MobileSimView() {
       {/* Desktop recommendation banner */}
       <div className="mx-3 mt-3 rounded-lg border border-[var(--sim-border)] bg-[var(--sim-accent-bg)] px-3 py-2 text-center">
         <p className="text-xs text-[var(--sim-accent)]">
-          For the full 3D experience, open on desktop
+          For the full Sanctum scene, open on desktop
         </p>
       </div>
 

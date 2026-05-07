@@ -85,7 +85,7 @@ export interface Messages {
     // Overview tab
     daoMap: string;
     opsLog: string;
-    // 3D View tab
+    // Visual view tab
     tower: string;
     city: string;
     network: string;
@@ -243,7 +243,7 @@ export interface Messages {
     rangeLabel: string;
   };
 
-  // 3D View tab
+  // Visual view tab
   view3d: {
     hide3d: string;
     show3d: string;
@@ -524,7 +524,7 @@ export interface Messages {
     pageNotFound: string;
     pageNotFoundDesc: string;
     openDashboard: string;
-    // 3D error boundary
+    // Visualization error boundary
     visualization3dUnavailable: string;
     webglError: string;
     checkWebgl: string;

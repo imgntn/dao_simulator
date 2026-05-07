@@ -5,8 +5,9 @@ import { useBranchStore } from '@/lib/browser/branch-store';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
 
 export function BranchView() {
-  const { active, forkStep, closeBranch } = useBranchStore();
+  const { active, forkStep, branchConfig, closeBranch } = useBranchStore();
   const history = useSimulationStore(s => s.history);
+  const currentConfig = useSimulationStore(s => s.config);
 
   // Split history into pre-fork and post-fork
   const postForkHistory = useMemo(
@@ -18,7 +19,7 @@ export function BranchView() {
     return (
       <div className="p-8 text-center text-[var(--sim-text-muted)]">
         <p className="text-sm mb-2">No active branch</p>
-        <p className="text-xs">Pause the simulation and click <b>Fork</b> to create a branch point.</p>
+        <p className="text-xs">Pause the simulation and click <b>Fork</b> to mark a what-if branch point.</p>
       </div>
     );
   }
@@ -54,6 +55,17 @@ export function BranchView() {
         </button>
       </div>
 
+      <div className="rounded border border-[var(--sim-border)] bg-[var(--sim-surface)] px-3 py-2 text-[10px] text-[var(--sim-text-muted)]">
+        <div className="mb-1 font-semibold uppercase tracking-wider text-[var(--sim-text-secondary)]">
+          Branch baseline
+        </div>
+        <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+          <span>DAO</span><span className="font-mono text-[var(--sim-text)]">{branchConfig?.daoId ?? 'unknown'}</span>
+          <span>Rule</span><span className="font-mono text-[var(--sim-text)]">{branchConfig?.governanceRule ?? 'calibrated default'}</span>
+          <span>Current rule</span><span className="font-mono text-[var(--sim-text)]">{currentConfig.governanceRule ?? 'calibrated default'}</span>
+        </div>
+      </div>
+
       {/* Divergence sparklines */}
       <div className="grid grid-cols-2 gap-3">
         {metrics.map(metric => {
@@ -76,7 +88,7 @@ export function BranchView() {
       </div>
 
       <div className="text-[10px] text-[var(--sim-text-muted)] text-center">
-        Showing main simulation trajectory from fork point. Change governance rules or other parameters, then reset to see divergence.
+        Showing the live trajectory from the fork point. Open Compare for side-by-side alternate runs.
       </div>
     </div>
   );

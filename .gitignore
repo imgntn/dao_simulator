@@ -89,6 +89,10 @@ __pycache__/
 
 # Docs (drafts / transcripts)
 docs/
+!docs/
+docs/*
+!docs/comfyui/
+!docs/comfyui/**
 
 # Podcast media (hosted on Cloudflare R2)
 podcast_media/
@@ -98,6 +102,10 @@ podcast_media/
 
 # Archived directories (backed up to R2: dao-research-media bucket)
 /archive/
+!/archive/
+/archive/*
+!/archive/legacy-skyscraper-visualization/
+!/archive/legacy-skyscraper-visualization/**
 /legacy-python/
 /paper_p1/
 /paper_p2/

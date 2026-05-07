@@ -1,6 +1,6 @@
 'use client';
 
-import { AGENT_FLOORS, AGENT_TYPE_INFO, TYPE_COLOR_MAP } from './scene/constants';
+import { AGENT_FLOORS, AGENT_TYPE_INFO, TYPE_COLOR_MAP } from './agent-taxonomy';
 
 export function AgentGuide() {
   return (

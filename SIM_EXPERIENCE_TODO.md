@@ -1,5 +1,13 @@
 # DAO Simulator – Experience TODO
 
+## Current Visualization Direction
+
+- [x] Archive the old skyscraper renderer under `archive/legacy-skyscraper-visualization/`.
+- [x] Use the active Sanctum scene as the primary interactive visualization.
+- [x] Wire hall navigation (`1`-`5`) to visible Sanctum viewport jumps.
+- [x] Replace branch placeholder behavior with a real fork marker and baseline panel.
+- [x] Update user-facing docs to describe the current interactive layer and legacy archive.
+
 These items enhance the “virtual organization” feel of the DAO while keeping it a serious simulator with light game dynamics.
 
 ## 1. Organizational Map & Control Surface

@@ -1101,7 +1101,7 @@ export class DAOCity {
   }
 
   /**
-   * Get network data for 3D visualization
+   * Get network data for visualization
    */
   getNetworkData(): DAOCityNetworkData {
     const towers: DAOTowerData[] = [];

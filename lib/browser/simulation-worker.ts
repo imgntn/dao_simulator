@@ -34,6 +34,7 @@ const ctx = self as unknown as DedicatedWorkerGlobalScope;
 let sim: DAOSimulation | null = null;
 let intervalId: ReturnType<typeof setInterval> | null = null;
 let stepsPerSecond = 10;
+let stepInFlight = false;
 let recentEvents: SimulationEvent[] = [];
 let eventBuffer: SimulationEvent[] = [];
 const MAX_RECENT_EVENTS = 30;
@@ -205,7 +206,8 @@ function pushEvent(type: SimulationEvent['type'], message: string): void {
 
 /** Run a single simulation step and post snapshot */
 async function runStep(): Promise<void> {
-  if (!sim) return;
+  if (!sim || stepInFlight) return;
+  stepInFlight = true;
 
   try {
     // Clear event buffer for this step
@@ -222,6 +224,8 @@ async function runStep(): Promise<void> {
     const err = error as Error;
     postOut({ type: 'error', message: err.message, stack: err.stack });
     stopLoop();
+  } finally {
+    stepInFlight = false;
   }
 }
 
@@ -238,6 +242,7 @@ function stopLoop(): void {
     clearInterval(intervalId);
     intervalId = null;
   }
+  stepInFlight = false;
 }
 
 function postOut(msg: WorkerOutMessage): void {

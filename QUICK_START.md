@@ -11,23 +11,32 @@ npm install
 npm run dev
 ```
 
+Windows PowerShell:
+
+```powershell
+npm.cmd install
+npm.cmd run dev
+```
+
+Use `npm.cmd run ...` for local commands on Windows so PowerShell does not invoke or open `npm.ps1`.
+
 Visit the URL printed by the launcher. It starts with `http://127.0.0.1:7884` and automatically moves to the next free port if `7884` is occupied.
 
 > Requires Node.js 22+ (Next.js 16).
 
-### Launch the 3D Simulator
+### Launch the Interactive Simulator
 
 1. Visit the URL printed by `npm run dev`
 2. Click **"Launch Simulator"** (or go directly to `/simulate`)
 3. Use the transport controls: **Play / Pause / Step / Reset**
 4. Select a DAO preset (14 real-world DAOs) and governance rule
-5. Watch agents vote, propose, and trade in the 3D skyscraper visualization
+5. Watch agents vote, propose, and trade in the Sanctum visualization
 
-The simulation runs in a Web Worker off the main thread — the 3D visualization stays responsive while the engine processes steps in the background.
+The simulation runs in a Web Worker off the main thread, so the interactive visualization stays responsive while the engine processes steps in the background.
 
 ## What You'll See
 
-- **3D Skyscraper** — agents organized by type across floors, with delegation beams, proposal particles, treasury pulse, and black swan weather effects
+- **The Sanctum** — agents organized into governance halls with vote banners, treasury/proposal overlays, and black swan weather effects
 - **Metrics Dashboard** — real-time treasury, token price, members, proposals, Gini coefficient, and participation rate
 - **Charts** — sparklines with trend overlays, agent type distribution, proposal outcomes
 - **Event Feed** — live stream of proposals created, votes cast, and outcomes
@@ -50,7 +59,7 @@ The simulation runs in a Web Worker off the main thread — the 3D visualization
 | `Space` | Play / Pause |
 | `→` or `.` | Step forward |
 | `R` | Reset |
-| `1-6` | Navigate to floor |
+| `1-5` | Navigate to hall |
 | `?` | Toggle help overlay |
 | `Esc` | Clear time-travel |
 
@@ -122,14 +131,13 @@ Browser
 ### Port already in use
 - The launcher automatically chooses the next free port. To request a different starting port, use: `PORT=7890 npm run dev`
 
-### 3D scene not rendering
-- Ensure your browser supports WebGL (all modern browsers do)
-- Check browser console for WebGL context errors
+### Interactive scene not rendering
 - Try a hard refresh (Ctrl+Shift+R)
+- Check the browser console for worker or asset loading errors
 
 ## Next Steps
 
-1. Explore the 3D simulator at `/simulate`
+1. Explore the interactive simulator at `/simulate`
 2. Try different DAO presets and governance rules
 3. Run research experiments from the CLI
 4. Check `paper/` for the full research paper

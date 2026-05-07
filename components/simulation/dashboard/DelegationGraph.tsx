@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect, useRef } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
-import { TYPE_COLOR_MAP } from '../scene/constants';
+import { TYPE_COLOR_MAP } from '../agent-taxonomy';
 
 interface Node {
   id: string;

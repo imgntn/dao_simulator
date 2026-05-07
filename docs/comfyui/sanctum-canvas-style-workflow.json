@@ -1,0 +1,47 @@
+﻿{
+  "3": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 426042,
+      "steps": 28,
+      "cfg": 6.5,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1,
+      "model": ["4", 0],
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["5", 0]
+    }
+  },
+  "4": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": { "ckpt_name": "SDXL/sd_xl_base_1.0.safetensors" }
+  },
+  "5": {
+    "class_type": "EmptyLatentImage",
+    "inputs": { "width": 1024, "height": 1024, "batch_size": 1 }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "A polished game UI concept sheet for a DAO simulator called The Living Archive: five tiny canvas-rendered steward sprites in a bioluminescent crystal cave, art nouveau Mucha linework, owl governance sage, treasury coin keeper, craft builder, council risk guardian, passive community moth, luminous vote flags, gold ink outlines, teal and amethyst cave light, orthographic sprite sheet, clean silhouettes, readable at small size, no text, transparent-feeling dark background",
+      "clip": ["4", 1]
+    }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "photorealistic, blurry, noisy, low contrast, cluttered, unreadable, text, watermark, logo, extra limbs, horror, gore",
+      "clip": ["4", 1]
+    }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": { "samples": ["3", 0], "vae": ["4", 2] }
+  },
+  "9": {
+    "class_type": "SaveImage",
+    "inputs": { "filename_prefix": "dao_sanctum_agent_style_reference", "images": ["8", 0] }
+  }
+}

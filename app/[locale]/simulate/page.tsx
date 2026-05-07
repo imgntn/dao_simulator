@@ -3,7 +3,7 @@ import SimulationPageClient from './SimulationPageClient';
 
 export const metadata: Metadata = {
   title: 'Live Simulation',
-  description: 'Run DAO governance simulations in your browser with real-time 3D visualization.',
+  description: 'Run DAO governance simulations in your browser with a real-time interactive Sanctum visualization.',
 };
 
 export default function SimulatePage() {

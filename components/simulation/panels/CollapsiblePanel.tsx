@@ -116,7 +116,7 @@ export function CollapsiblePanel({ id, title, badge, children, dragHandleProps, 
             className="overflow-y-auto"
             style={{ maxHeight: collapsed ? 0 : maxHeight }}
           >
-            {children}
+            {!collapsed && children}
           </div>
 
           {!collapsed && (

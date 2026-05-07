@@ -91,7 +91,7 @@ Six decision briefs summarize findings in plain language:
 
 - TypeScript simulation engine with reinforcement learning (Q-learning, DQN, policy gradient)
 - Next.js research site with i18n (en, es, zh, ja)
-- Three.js 3D governance visualizations
+- Interactive Sanctum governance visualization
 - Python calibration pipeline for historical data ingestion
 
 ## Contact

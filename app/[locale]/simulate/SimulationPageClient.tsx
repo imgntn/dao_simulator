@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
 import { useLayoutStore } from '@/lib/browser/layout-store';
 import { useBreakpointTier } from '@/components/simulation/panels/useBreakpointTier';
@@ -32,13 +32,22 @@ import { Sidebar } from '@/components/simulation/panels/Sidebar';
 import { MobileSimView } from '@/components/simulation/MobileSimView';
 import { SidebarResizeHandle } from '@/components/simulation/panels/SidebarResizeHandle';
 import { CollapsiblePanel } from '@/components/simulation/panels/CollapsiblePanel';
+import { SimulationCommandBar } from '@/components/simulation/SimulationCommandBar';
+import { ScenarioPresetWizard } from '@/components/simulation/ScenarioPresetWizard';
+import { LiveExplainabilityPanel } from '@/components/simulation/LiveExplainabilityPanel';
 
 export default function SimulationPageClient() {
-  const { status, error, initialize, dispose, updateConfig, selectDao } = useSimulationStore();
+  const status = useSimulationStore(s => s.status);
+  const error = useSimulationStore(s => s.error);
+  const initialize = useSimulationStore(s => s.initialize);
+  const dispose = useSimulationStore(s => s.dispose);
+  const updateConfig = useSimulationStore(s => s.updateConfig);
+  const selectDao = useSimulationStore(s => s.selectDao);
   const snapshot = useActiveSnapshot();
   const initialized = useRef(false);
   const [activeTab, setActiveTab] = useState<SimTab>('interactive');
   const [showHelp, setShowHelp] = useState(false);
+  const [showPresetWizard, setShowPresetWizard] = useState(false);
 
   const tier = useBreakpointTier();
   const sidebarWidth = useLayoutStore(s => s.sidebarWidth);
@@ -83,9 +92,12 @@ export default function SimulationPageClient() {
   }, [initialize, dispose, updateConfig, selectDao]);
 
   // Build panel content map for the Sidebar
-  const panelContent = buildPanelContent(snapshot, activeTab);
+  const panelContent = useMemo(
+    () => buildPanelContent(snapshot, activeTab),
+    [snapshot, activeTab]
+  );
 
-  // Mobile gets a 2D-only UI, desktop/tablet gets full 3D
+  // Mobile gets a compact dashboard UI, desktop/tablet gets the full Sanctum scene.
   const isMobile = tier === 'compact' || tier === 'handheld';
   if (status === 'idle' || status === 'initializing') {
     return (
@@ -120,7 +132,7 @@ export default function SimulationPageClient() {
     );
   }
 
-  // Mobile: render 2D-only UI (no canvas, no 3D)
+  // Mobile: render a compact UI optimized for narrow screens.
   if (isMobile) {
     return <MobileSimView />;
   }
@@ -147,12 +159,14 @@ export default function SimulationPageClient() {
         </div>
       </div>
 
+      <SimulationCommandBar onOpenWizard={() => setShowPresetWizard(true)} />
+
       {/* Main content area */}
       <div
         className="sim-layout-body"
         style={{ '--sidebar-width': `${sidebarWidth}px` } as React.CSSProperties}
       >
-        {/* 3D Canvas — always visible regardless of active tab */}
+        {/* Interactive scene area */}
         <div className="relative min-w-0 min-h-0 overflow-hidden">
           {/* Sanctum — cave scene with built-in timeline scrubber + event log */}
           <div style={{ display: activeTab === 'interactive' ? 'contents' : 'none' }}>
@@ -161,7 +175,7 @@ export default function SimulationPageClient() {
             </div>
           </div>
 
-          {/* Non-interactive tabs render as overlay over canvas area */}
+          {/* Non-interactive tabs render as overlays over the scene area */}
           {activeTab === 'compare' && (
             <div className="absolute inset-0 overflow-y-auto bg-[var(--sim-bg)]">
               <ComparisonView />
@@ -192,6 +206,7 @@ export default function SimulationPageClient() {
       </div>
 
       {showHelp && <HelpOverlay onClose={() => setShowHelp(false)} />}
+      {showPresetWizard && <ScenarioPresetWizard onClose={() => setShowPresetWizard(false)} />}
       <Tutorial />
     </div>
   );
@@ -225,6 +240,11 @@ function buildPanelContent(
     'metric-alerts': (
       <CollapsiblePanel id="metric-alerts" title="Alerts">
         <MetricAlerts />
+      </CollapsiblePanel>
+    ),
+    explainability: (
+      <CollapsiblePanel id="explainability" title="Live Explainability">
+        <LiveExplainabilityPanel />
       </CollapsiblePanel>
     ),
     'delegation-graph': (

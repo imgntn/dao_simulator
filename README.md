@@ -1,6 +1,6 @@
 # DAO Simulator
 
-Modern TypeScript/Next.js environment for experimenting with decentralized governance. The repository contains a headless simulation engine, a 3D interactive browser simulator, REST API, a research experiment framework, and historical calibration against 14 real-world DAOs.
+Modern TypeScript/Next.js environment for experimenting with decentralized governance. The repository contains a headless simulation engine, an interactive browser simulator, REST API, a research experiment framework, and historical calibration against 14 real-world DAOs.
 
 ## Quick Start
 
@@ -9,14 +9,24 @@ npm install
 npm run dev        # Starts Next.js on port 7884 or the next free port
 ```
 
+Windows PowerShell: use the command shim explicitly so PowerShell does not resolve `npm` to `npm.ps1`:
+
+```powershell
+npm.cmd install
+npm.cmd run dev
+npm.cmd run typecheck
+npm.cmd run lint
+npm.cmd run build
+```
+
 Requires Node.js 22+ (Next.js 16).
 
-Open the URL printed by `npm run dev` and visit `/simulate` to launch the 3D interactive simulator. By default the app tries `http://127.0.0.1:7884` and automatically moves to the next free port if needed. The simulation engine runs in a Web Worker off the main thread — use play/pause/step/reset to drive it in real-time with the skyscraper DAO visualization.
+Open the URL printed by `npm run dev` and visit `/simulate` to launch the interactive Sanctum simulator. By default the app tries `http://127.0.0.1:7884` and automatically moves to the next free port if needed. The simulation engine runs in a Web Worker off the main thread; use play/pause/step/reset to drive it in real time while the Sanctum scene, metrics, heatmap, delegation graph, and event feed update.
 
 ## Highlights
 
 - **Full DAO sandbox** — 27 agent archetypes, 15 governance plugins, liquidity pools, NFTs, violations/disputes, proposal lifecycle, and stochastic market shocks.
-- **3D interactive simulator** — WebGL skyscraper visualization with 32 interactive features including delegation beams, proposal particles, treasury pulse, black swan weather, agent trails, voting heatmap, and more.
+- **Interactive Sanctum simulator** — real-time governance hall visualization with clickable agents, vote banners, treasury/proposal overlays, black swan weather, timeline scrubber, voting heatmap, delegation graph, and more.
 - **Research framework** — 21,800+ simulation runs across 17 experiments investigating participation dynamics, governance capture, proposal pipelines, treasury resilience, inter-DAO cooperation, LLM agent reasoning, counterfactual governance, black swan resilience, scale effects, and voting mechanisms.
 - **Historical calibration** — Digital twin calibration against 14 real DAOs (Aave, Uniswap, Compound, MakerDAO, Lido, ENS, Gitcoin, Arbitrum, Optimism, Nouns, Curve, Balancer, dYdX, SushiSwap) with average accuracy scores of 0.85+.
 - **Advanced voting** — Ranked choice (IRV), futarchy with LMSR prediction markets, liquid delegation with decay, plus 12 standard governance rules.
@@ -58,6 +68,8 @@ See `paper/` for the LaTeX source and `experiments/paper/` for all experiment co
 | `npm run examples -- --scenario=<name>` | Run a TypeScript example (`basic`, `market-shock`, `governance`, or `all`) via `tsx` |
 | `npm run experiment -- <config.yaml>` | Run research experiment with specified configuration |
 
+Windows PowerShell note: run these as `npm.cmd run ...` to avoid invoking or opening `npm.ps1`.
+
 ## Example Scenarios
 
 The new `examples/run-scenarios.ts` driver exposes all demo simulations behind a single command:
@@ -77,29 +89,31 @@ See `docs/EXAMPLES.md` for full details on each scenario, output expectations, a
 - **E2E tests**: `npm run test:e2e` - 138 Playwright tests in 9 files across 10 projects: smoke, dashboard, simulation, simulate, visualizations, API, accessibility, chromium homepage, mobile, and tablet. The CI-equivalent `npm run verify` gate runs the smoke and API projects; the broader suite is available by project and runs in the scheduled/manual Full E2E GitHub workflow. Reuses a healthy server when one is already running, otherwise launches its own server on the next free port.
 - **Linting**: `npm run lint` (ESLint + Next core web vitals). Coverage artifacts are ignored to keep the tree clean.
 
-## 3D Interactive Simulator
+## Interactive Sanctum Simulator
 
-The `/simulate` page features a full 3D skyscraper DAO visualization with 32 interactive features:
+The `/simulate` page features the Sanctum, a real-time interactive governance hall driven by the browser simulation worker:
 
-**Visual Effects** — Delegation beams (purple lines connecting delegates), proposal lifecycle particles (cyan/green/red bursts), treasury vault pulse on large fund changes, black swan weather system (storm clouds, lightning, rain), agent movement trails.
+**Visual Effects** — vote banners, ceremony walks, treasury pool state, proposal lectern, black swan rain/lightning, hall labels, and an in-scene fire log.
 
 **Analytics** — CSV/JSON/events export, timeline annotations (double-click to add), metric threshold alerts with toast notifications, linear regression + moving average trend overlays, agent type voting correlation heatmap.
 
 **Simulation Depth** — Live parameter injection (change governance mid-run), agent inspector drill-down with token history sparkline, what-if branching from fork points, multi-run statistics with 95% confidence intervals (3/5/10 parallel workers), custom agent injection with configurable parameters.
 
-**UX** — Keyboard shortcuts (Space=play/pause, R=reset, 1-6=floor nav, ?=help), 7-step guided tutorial, mobile-responsive bottom sheet layout, permalink URL sharing, light/dark theme toggle, split-screen comparison mode.
+**UX** — Keyboard shortcuts (Space=play/pause, R=reset, 1-5=hall nav, ?=help), 7-step guided tutorial, mobile-responsive compact layout, permalink URL sharing, light/dark theme toggle, split-screen comparison mode.
 
 ## Architecture Overview
 
 ```
 app/                Next.js (App Router) pages + API routes
-  |- [locale]/simulate/  3D interactive simulator (SimulationPageClient)
+  |- [locale]/simulate/  Interactive Sanctum simulator (SimulationPageClient)
 components/
-  |- simulation/    3D simulator UI (32 features)
-  |  |- scene/      Three.js scene components (Building, AgentGroups, effects)
+  |- simulation/    Sanctum scene, controls, panels, and charts
+  |  |- sanctum/    Active interactive scene
   |  |- dashboard/  Metrics, charts, heatmap, delegation graph
   |  `- research/   Batch experiment UI
   `- visualizations/ Legacy dashboard widgets
+archive/
+  `- legacy-skyscraper-visualization/  Archived Three.js/WebGL renderer
 lib/
   |- engine/        Simulation orchestration, data collector
   |- agents/        27 agent types + learning infrastructure

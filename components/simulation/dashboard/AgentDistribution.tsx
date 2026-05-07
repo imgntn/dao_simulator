@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import type { AgentSnapshot } from '@/lib/browser/worker-protocol';
-import { getDisplayName } from '../scene/constants';
+import { getDisplayName } from '../agent-taxonomy';
 import { ChartWrapper } from './TreasuryChart';
 
 const TYPE_COLORS: Record<string, string> = {

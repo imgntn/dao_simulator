@@ -6,18 +6,9 @@ import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
 import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 
 export function Tutorial() {
-  const { active, currentStep, steps, next, prev, skip, start, completed } = useTutorialStore();
+  const { active, currentStep, steps, next, prev, skip } = useTutorialStore();
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const { trackEvent } = useAnalytics();
-
-  // Auto-start on first visit
-  useEffect(() => {
-    if (!completed && !active) {
-      // Small delay so the page renders first
-      const timer = setTimeout(() => { start(); trackEvent(ANALYTICS_EVENTS.TUTORIAL_STARTED); }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [completed, active, start, trackEvent]);
 
   // Find and track the target element
   useEffect(() => {

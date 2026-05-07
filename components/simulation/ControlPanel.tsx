@@ -5,7 +5,7 @@ import { useSimulationStore } from '@/lib/browser/simulation-store';
 import type { BrowserSimConfig } from '@/lib/browser/worker-protocol';
 import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
 import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
-import { AGENT_FLOORS, TYPE_COLOR_MAP, AGENT_TYPE_INFO } from './scene/constants';
+import { AGENT_FLOORS, TYPE_COLOR_MAP, AGENT_TYPE_INFO } from './agent-taxonomy';
 
 const DAO_DISPLAY_NAMES: Record<string, string> = {
   aave: 'Aave',
@@ -171,23 +171,21 @@ function isConfigDirty(config: BrowserSimConfig, lastSent: BrowserSimConfig | nu
 }
 
 export function ControlPanel() {
-  const {
-    status,
-    config,
-    selectedDao,
-    availableDaos,
-    snapshot,
-    lastSentConfig,
-    start,
-    pause,
-    step,
-    reset,
-    setSpeed,
-    selectDao,
-    updateConfig,
-    injectConfig,
-    forkState,
-  } = useSimulationStore();
+  const status = useSimulationStore(s => s.status);
+  const config = useSimulationStore(s => s.config);
+  const selectedDao = useSimulationStore(s => s.selectedDao);
+  const availableDaos = useSimulationStore(s => s.availableDaos);
+  const snapshot = useSimulationStore(s => s.snapshot);
+  const lastSentConfig = useSimulationStore(s => s.lastSentConfig);
+  const start = useSimulationStore(s => s.start);
+  const pause = useSimulationStore(s => s.pause);
+  const step = useSimulationStore(s => s.step);
+  const reset = useSimulationStore(s => s.reset);
+  const setSpeed = useSimulationStore(s => s.setSpeed);
+  const selectDao = useSimulationStore(s => s.selectDao);
+  const updateConfig = useSimulationStore(s => s.updateConfig);
+  const injectConfig = useSimulationStore(s => s.injectConfig);
+  const forkState = useSimulationStore(s => s.forkState);
 
   const { trackEvent } = useAnalytics();
   const [agentsOpen, setAgentsOpen] = useState(false);

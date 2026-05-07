@@ -70,22 +70,20 @@
 | **Disputes** | Conflict resolution |
 | **Violations** | Compliance tracking |
 
-## 3D Interactive Simulator (32 features)
+## Interactive Sanctum Simulator
 
 ### Visual Effects
 
 | Feature | Description | File |
 |---------|-------------|------|
-| **Vote Flash** | Agents flash green/red when voting | `AgentGroups.tsx` |
+| **Sanctum Scene** | Living governance hall with clickable stewards | `SanctumScene.tsx` |
+| **Vote Banners** | Agents raise color-coded banners after voting | `Creatures.tsx` |
+| **Ceremony Walks** | Recently voting agents move toward the lectern | `SanctumScene.tsx` |
+| **Treasury Pool** | Treasury state rendered as the central pool | `SanctumScene.tsx` |
+| **Black Swan Weather** | Rain and lightning during crisis events | `SanctumScene.tsx` |
+| **Fire Log** | In-scene event stream for proposals, votes, shocks, treasury changes | `SanctumScene.tsx` |
 | **Sparklines** | Mini charts on each metric card | `MetricsDashboard.tsx` |
 | **Delegation Graph** | SVG graph of delegation relationships | `DelegationGraph.tsx` |
-| **Delegation Beams** | Purple 3D beams connecting delegates | `DelegationBeams.tsx` |
-| **Proposal Particles** | Cyan/green/red bursts on proposal events | `ProposalParticles.tsx` |
-| **Treasury Pulse** | Vault floor glows on large fund changes | `TreasuryIndicator.tsx` |
-| **Black Swan Weather** | Storm clouds, lightning, rain during crises | `BlackSwanEffect.tsx` |
-| **Agent Trails** | Fading trail lines behind moving agents | `AgentTrails.tsx` |
-| **Floor Labels** | Agent count badges on each floor | `FloorLabel.tsx` |
-| **Building Shake** | Building shakes during black swan events | `BlackSwanEffect.tsx` |
 
 ### Analytics & Data
 
@@ -109,20 +107,20 @@
 | **Custom Agent Injection** | Add agents with custom parameters | `CustomAgentForm.tsx` |
 | **What-If Branching** | Fork simulation state for divergence analysis | `BranchView.tsx` |
 | **Multi-Run Statistics** | Run N simulations for confidence intervals | `MultiRunPanel.tsx` |
-| **Floor Navigation** | Click to zoom camera to specific floors | `FloorNav.tsx` |
+| **Hall Navigation** | Jump the Sanctum view to agent halls | `FloorNav.tsx` |
 
 ### UX & Polish
 
 | Feature | Description | File |
 |---------|-------------|------|
-| **Keyboard Shortcuts** | Space, R, 1-6, Esc, L, ? shortcuts | `useKeyboardShortcuts.ts` |
+| **Keyboard Shortcuts** | Space, R, 1-5, Esc, L, ? shortcuts | `useKeyboardShortcuts.ts` |
 | **Guided Tutorial** | 7-step spotlight overlay for new users | `Tutorial.tsx` |
 | **Mobile Layout** | Bottom sheet sidebar on narrow screens | `SimulationPageClient.tsx` |
 | **Permalink Sharing** | URL-encoded config for sharing | `ShareButton.tsx` |
 | **Theme Toggle** | Light/dark theme for simulator UI | `ThemeToggle.tsx` |
 | **Help Overlay** | Comprehensive help with shortcut reference | `HelpOverlay.tsx` |
 | **Agent Guide** | Expandable guide to all agent types | `AgentGuide.tsx` |
-| **Renderer Badge** | Shows WebGPU/WebGL renderer type | `SimulationCanvas.tsx` |
+| **Legacy Renderer Archive** | Old Three.js skyscraper renderer retained for reference | `archive/legacy-skyscraper-visualization/` |
 
 ## Learning Infrastructure (Tiers 1-3)
 

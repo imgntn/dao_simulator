@@ -20,6 +20,7 @@
  *  - Click fires `onInspect` for the detail panel
  */
 
+import { memo } from 'react';
 import type { AgentSnapshot } from '@/lib/browser/worker-protocol';
 import { PALETTE, getArchetype, type Archetype } from './palette';
 import { getRole } from './roles';
@@ -35,6 +36,9 @@ export interface CreatureProps {
   inCeremony?: boolean;    // currently walking to lectern for vote
   isShelving?: boolean;    // beaver currently carrying a book to the shelf
   highlighted?: boolean;   // inspector is showing this creature
+  detailLevel?: 'far' | 'near' | 'close';
+  labelsVisible?: boolean;
+  influenceRank?: number;
 }
 
 /**
@@ -42,7 +46,7 @@ export interface CreatureProps {
  * positioned at (x, y) in the scene's SVG coordinate space. Includes
  * name ribbon + vote banner.
  */
-export function Creature({
+export const Creature = memo(function Creature({
   agent,
   x,
   y,
@@ -53,11 +57,16 @@ export function Creature({
   inCeremony = false,
   isShelving = false,
   highlighted = false,
+  detailLevel = 'far',
+  labelsVisible = true,
+  influenceRank = 0,
 }: CreatureProps) {
   const role = getRole(agent.type);
   const archetype = getArchetype(agent.type);
   const hasVote = agent.lastVote !== null;
   const isRecent = hasVote && currentStep - agent.lastVoteStep < 8;
+  const isClose = detailLevel === 'close';
+  const isNear = detailLevel !== 'far';
   const flagColor = agent.lastVote === true
     ? PALETTE.voteFor
     : agent.lastVote === false
@@ -74,6 +83,8 @@ export function Creature({
   const ribbonW = Math.max(46, Math.min(110, role.name.length * 5.0));
   const ribbonH = 11;
   const ribbonY = -18 + ribbonOffsetY;
+  const labelScale = detailLevel === 'close' ? 0.68 : detailLevel === 'near' ? 0.82 : 1;
+  const badgeScale = detailLevel === 'close' ? 0.78 : 0.92;
 
   return (
     <g
@@ -83,15 +94,36 @@ export function Creature({
       role={onInspect ? 'button' : undefined}
       aria-label={onInspect ? `Inspect ${role.name}` : undefined}
     >
+      <circle
+        cx="0"
+        cy="20"
+        r={isClose ? 27 : 22}
+        fill={ARCHETYPE_ACCENT[archetype]}
+        opacity={highlighted ? 0.25 : isNear ? 0.12 : 0.05}
+        style={{ filter: `blur(${isClose ? 5 : 3}px)` }}
+      />
+
       {/* Selected highlight ring */}
       {highlighted && (
         <circle
-          cx="0" cy="20" r="30"
+          cx="0" cy="20" r="32"
           fill="none"
           stroke={PALETTE.honey}
-          strokeWidth="2"
+          strokeWidth="2.5"
           opacity="0.9"
           style={{ filter: `drop-shadow(0 0 4px ${PALETTE.gold})` }}
+        />
+      )}
+
+      {influenceRank > 0 && (
+        <circle
+          cx="-18"
+          cy="4"
+          r={3 + influenceRank}
+          fill={PALETTE.gold}
+          stroke={PALETTE.ink}
+          strokeWidth="0.6"
+          opacity="0.72"
         />
       )}
 
@@ -130,11 +162,12 @@ export function Creature({
       >
         <CreatureBody archetype={archetype} isShelving={isShelving} />
         {/* Vote banner in the paw */}
-        {flagColor && <VoteFlag color={flagColor} isRecent={isRecent || inCeremony} />}
+        {flagColor && <VoteFlag color={flagColor} isRecent={isRecent || inCeremony} detailLevel={detailLevel} />}
       </g>
 
       {/* Always-visible name ribbon */}
-      <g transform={`translate(0 ${ribbonY})`}>
+      {labelsVisible && (
+      <g transform={`translate(0 ${ribbonY}) scale(${labelScale})`} opacity={detailLevel === 'far' ? 0.82 : 1}>
         {/* Ribbon shape — pennant cuts on both sides */}
         <path
           d={`M${-ribbonW / 2 - 3} 0 L${-ribbonW / 2} ${-ribbonH / 2} L${ribbonW / 2} ${-ribbonH / 2} L${ribbonW / 2 + 3} 0 L${ribbonW / 2} ${ribbonH / 2} L${-ribbonW / 2} ${ribbonH / 2} Z`}
@@ -155,12 +188,76 @@ export function Creature({
           {role.name}
         </text>
       </g>
+      )}
+
+      {isNear && (
+        <g transform={`translate(-22 30) scale(${badgeScale})`}>
+          <rect x="0" y="0" width={isClose ? 46 : 32} height={isClose ? 15 : 10} rx="2"
+            fill={PALETTE.ink} opacity="0.78" stroke={ARCHETYPE_ACCENT[archetype]} strokeWidth="0.5" />
+          <text x="4" y={isClose ? 10.5 : 7.5} fontSize={isClose ? 7 : 5.5} fontWeight="700"
+            fill={PALETTE.parchment} style={{ fontFamily: 'Georgia, serif', pointerEvents: 'none' }}>
+            {role.short}{isClose ? ` ${Math.round(agent.tokens).toLocaleString()} tk` : ''}
+          </text>
+        </g>
+      )}
+
+      {isClose && (
+        <g transform="translate(15 30) scale(0.85)">
+          <circle cx="0" cy="0" r="5" fill={PALETTE.parchmentWarm} stroke={PALETTE.ink} strokeWidth="0.7" />
+          <path d={agent.optimism >= 0.5 ? 'M-2 0 Q0 2 2 0' : 'M-2 2 Q0 0 2 2'} stroke={PALETTE.ink} strokeWidth="0.6" fill="none" />
+          <rect x="-8" y="8" width="16" height="2" rx="1" fill={PALETTE.ink} opacity="0.45" />
+          <rect x="-8" y="8" width={Math.max(1, Math.min(16, agent.reputation * 16))} height="2" rx="1" fill={ARCHETYPE_ACCENT[archetype]} />
+        </g>
+      )}
 
       {/* Accessible title for native tooltip */}
       <title>{`${role.name} (${agent.type}) · ${role.flavor} · ${hasVote ? (agent.lastVote ? 'voted FOR' : 'voted AGAINST') : 'not yet voted'}`}</title>
     </g>
   );
+}, areCreaturePropsEqual);
+
+function areCreaturePropsEqual(prev: CreatureProps, next: CreatureProps): boolean {
+  const prevAgent = prev.agent;
+  const nextAgent = next.agent;
+  if (
+    prevAgent.id !== nextAgent.id ||
+    prevAgent.type !== nextAgent.type ||
+    prevAgent.lastVote !== nextAgent.lastVote ||
+    prevAgent.lastVoteStep !== nextAgent.lastVoteStep ||
+    prev.x !== next.x ||
+    prev.y !== next.y ||
+    prev.idx !== next.idx ||
+    prev.ribbonOffsetY !== next.ribbonOffsetY ||
+    prev.inCeremony !== next.inCeremony ||
+    prev.isShelving !== next.isShelving ||
+    prev.highlighted !== next.highlighted ||
+    prev.detailLevel !== next.detailLevel ||
+    prev.labelsVisible !== next.labelsVisible ||
+    prev.influenceRank !== next.influenceRank ||
+    (next.detailLevel !== 'far' && (
+      prevAgent.tokens !== nextAgent.tokens ||
+      prevAgent.reputation !== nextAgent.reputation ||
+      prevAgent.optimism !== nextAgent.optimism
+    ))
+  ) {
+    return false;
+  }
+
+  const needsRecentUpdate =
+    prevAgent.lastVote !== null &&
+    (Math.abs(prev.currentStep - prevAgent.lastVoteStep) < 9 ||
+      Math.abs(next.currentStep - nextAgent.lastVoteStep) < 9);
+
+  return !needsRecentUpdate || prev.currentStep === next.currentStep;
 }
+
+const ARCHETYPE_ACCENT: Record<Archetype, string> = {
+  governance: PALETTE.owlEyes,
+  treasury: PALETTE.gold,
+  craft: PALETTE.chlorophyll,
+  council: PALETTE.flame,
+  passive: PALETTE.mothEye,
+};
 
 // ═════════════════════════════════════════════════════════════════════════
 //   Species dispatch
@@ -402,18 +499,20 @@ function MothWyrm() {
 //   VoteFlag — small banner raised in the creature's paw
 // ═════════════════════════════════════════════════════════════════════════
 
-function VoteFlag({ color, isRecent }: { color: string; isRecent: boolean }) {
+function VoteFlag({ color, isRecent, detailLevel }: { color: string; isRecent: boolean; detailLevel: 'far' | 'near' | 'close' }) {
+  const flagW = detailLevel === 'close' ? 13 : detailLevel === 'near' ? 11 : 9;
+  const flagH = detailLevel === 'close' ? 11 : 9;
   return (
     <g transform="translate(13 14)">
       {/* Pole */}
-      <line x1="0" y1="-4" x2="0" y2="14" stroke={PALETTE.ink} strokeWidth="0.9" />
+      <line x1="0" y1="-4" x2="0" y2="15" stroke={PALETTE.ink} strokeWidth="1.1" />
       <circle cx="0" cy="-4" r="1" fill={PALETTE.gold} stroke={PALETTE.ink} strokeWidth="0.4" />
       {/* Flag cloth with pennant cut */}
       <path
-        d="M0 -3 L9 -3 L9 6 L5 4 L0 6 Z"
+        d={`M0 -3 L${flagW} -3 L${flagW} ${flagH - 3} L${flagW * 0.55} ${flagH - 5} L0 ${flagH - 3} Z`}
         fill={color}
         stroke={PALETTE.ink}
-        strokeWidth="0.7"
+        strokeWidth="0.8"
         strokeLinejoin="round"
         style={{
           filter: isRecent ? `drop-shadow(0 0 3px ${PALETTE.lampBloom})` : 'none',

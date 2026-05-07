@@ -6,10 +6,10 @@ import { useSimulationStore } from './simulation-store';
 export interface ShortcutCallbacks {
   onToggleHelp?: () => void;
   onToggleExport?: () => void;
-  onNavigateFloor?: (floorIndex: number) => void;
+  onNavigateHall?: (hallIndex: number) => void;
 }
 
-const FLOOR_IDS = ['B1', 'F1', 'F2', 'F3', 'F4', 'F5'];
+const HALL_IDS = ['market', 'governance', 'workshop', 'council', 'observatory'];
 
 /**
  * Keyboard shortcuts for the simulation page.
@@ -54,12 +54,12 @@ export function useKeyboardShortcuts(callbacks: ShortcutCallbacks = {}) {
           }
           break;
 
-        case '1': case '2': case '3': case '4': case '5': case '6': {
+        case '1': case '2': case '3': case '4': case '5': {
           const idx = parseInt(e.key) - 1;
-          if (idx >= 0 && idx < FLOOR_IDS.length) {
+          if (idx >= 0 && idx < HALL_IDS.length) {
             e.preventDefault();
-            setTargetFloor(FLOOR_IDS[idx]);
-            callbacks.onNavigateFloor?.(idx);
+            setTargetFloor(HALL_IDS[idx]);
+            callbacks.onNavigateHall?.(idx);
           }
           break;
         }

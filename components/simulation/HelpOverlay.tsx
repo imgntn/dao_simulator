@@ -56,25 +56,24 @@ export function HelpOverlay({ onClose }: Props) {
             </ul>
           </Section>
 
-          <Section title="The Building">
-            <p>The skyscraper represents the DAO. Each floor houses a different category of agents:</p>
+          <Section title="The Sanctum">
+            <p>The Sanctum represents the DAO as a living governance hall. Each hall groups related agent roles:</p>
             <ul className="list-disc ml-4 space-y-1">
-              <li><b>B1 — Treasury Vault</b> — visualizes DAO funds; pulses on large changes</li>
-              <li><b>F1 — Trading Floor</b> — traders, investors, and market makers</li>
-              <li><b>F2 — Governance Chamber</b> — proposal creators, voters, and delegates</li>
-              <li><b>F3 — Workshop</b> — developers, artists, auditors, and service providers</li>
-              <li><b>F4 — Council Room</b> — regulators, arbitrators, and risk managers</li>
-              <li><b>F5 — Observatory</b> — collectors, stakers, and passive members</li>
+              <li><b>Market Hall</b> — traders, investors, speculators, and market makers</li>
+              <li><b>Governance Hall</b> — proposal creators, voters, delegates, and validators</li>
+              <li><b>Workshop</b> — developers, artists, auditors, and service providers</li>
+              <li><b>Council Hall</b> — regulators, arbitrators, risk managers, and partners</li>
+              <li><b>Observatory</b> — collectors, stakers, and passive members</li>
             </ul>
           </Section>
 
           <Section title="Visual Effects">
             <ul className="list-disc ml-4 space-y-1">
-              <li><b>Delegation Beams</b> — purple lines connecting delegating agents to their delegates</li>
-              <li><b>Proposal Particles</b> — cyan/green/red bursts on proposal creation/approval/rejection</li>
-              <li><b>Treasury Pulse</b> — the vault floor glows on large fund changes</li>
-              <li><b>Black Swan Weather</b> — storm clouds, lightning, and rain during crisis events</li>
-              <li><b>Agent Trails</b> — fading lines behind moving agents</li>
+              <li><b>Vote Banners</b> — stewards raise color-coded banners after voting</li>
+              <li><b>Ceremony Walks</b> — recently voting stewards move toward the lectern</li>
+              <li><b>Treasury Pool</b> — the pool reflects DAO treasury health</li>
+              <li><b>Black Swan Weather</b> — rain and lightning mark crisis events</li>
+              <li><b>Fire Log</b> — recent proposals, votes, shocks, and treasury changes stream in-scene</li>
             </ul>
           </Section>
 
@@ -93,7 +92,7 @@ export function HelpOverlay({ onClose }: Props) {
               <Shortcut keys="Space" action="Play / Pause" />
               <Shortcut keys="&rarr; / ." action="Step forward" />
               <Shortcut keys="R" action="Reset" />
-              <Shortcut keys="1-6" action="Navigate to floor" />
+              <Shortcut keys="1-5" action="Navigate to hall" />
               <Shortcut keys="Esc" action="Deselect / close" />
               <Shortcut keys="L" action="Go to LIVE" />
               <Shortcut keys="?" action="Toggle help" />
