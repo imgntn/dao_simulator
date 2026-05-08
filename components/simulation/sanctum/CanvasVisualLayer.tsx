@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { SimulationSnapshot } from '@/lib/browser/worker-protocol';
-import type { VisualAgentDraw, VisualLayoutRequest, VisualSceneDraw } from '@/lib/browser/visual-layout-protocol';
+import type { VisualAgentDraw, VisualLayoutRequest, VisualQuality, VisualSceneDraw } from '@/lib/browser/visual-layout-protocol';
 import { toVisualAgentInput } from '@/lib/browser/visual-layout-protocol';
 
 interface CanvasVisualLayerProps {
@@ -12,9 +12,12 @@ interface CanvasVisualLayerProps {
   selectedAgentId: string | null;
   labelsVisible: boolean;
   showDelegations: boolean;
+  quality: VisualQuality;
   zoom: number;
   pan: { x: number; y: number };
   onInspectAgent: (agentId: string) => void;
+  onHoverAgent?: (agent: VisualAgentDraw | null) => void;
+  onSelectedAgentPosition?: (position: { x: number; y: number } | null) => void;
   onVisualStats?: (stats: VisualSceneDraw['stats'] | null) => void;
 }
 
@@ -104,9 +107,12 @@ export function CanvasVisualLayer({
   selectedAgentId,
   labelsVisible,
   showDelegations,
+  quality,
   zoom,
   pan,
   onInspectAgent,
+  onHoverAgent,
+  onSelectedAgentPosition,
   onVisualStats,
 }: CanvasVisualLayerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -115,6 +121,7 @@ export function CanvasVisualLayer({
   const sceneRef = useRef<VisualSceneDraw | null>(null);
   const metricsRef = useRef<CanvasMetrics | null>(null);
   const hitRef = useRef<Array<{ id: string; x: number; y: number; r: number }>>([]);
+  const hoverIdRef = useRef<string | null>(null);
   const [scene, setScene] = useState<VisualSceneDraw | null>(null);
 
   const ceremoniesPayload = useMemo(() => Array.from(ceremonies.entries()), [ceremonies]);
@@ -156,6 +163,7 @@ export function CanvasVisualLayer({
       selectedAgentId,
       labelsVisible,
       showDelegations,
+      quality,
       zoom,
       viewport,
     };
@@ -165,6 +173,7 @@ export function CanvasVisualLayer({
     ceremoniesPayload,
     labelsVisible,
     pan,
+    quality,
     selectedAgentId,
     shelvingPayload,
     showDelegations,
@@ -174,12 +183,12 @@ export function CanvasVisualLayer({
     zoom,
   ]);
 
-  const handleClick = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
+  const findHit = useCallback((clientX: number, clientY: number, target: HTMLCanvasElement) => {
     const metrics = metricsRef.current;
-    if (!metrics) return;
-    const rect = event.currentTarget.getBoundingClientRect();
-    const px = (event.clientX - rect.left) * metrics.dpr;
-    const py = (event.clientY - rect.top) * metrics.dpr;
+    if (!metrics) return null;
+    const rect = target.getBoundingClientRect();
+    const px = (clientX - rect.left) * metrics.dpr;
+    const py = (clientY - rect.top) * metrics.dpr;
     let best: { id: string; dist: number } | null = null;
     for (const hit of hitRef.current) {
       const dx = px - hit.x;
@@ -187,8 +196,38 @@ export function CanvasVisualLayer({
       const dist = Math.hypot(dx, dy);
       if (dist <= hit.r && (!best || dist < best.dist)) best = { id: hit.id, dist };
     }
-    if (best) onInspectAgent(best.id);
-  }, [onInspectAgent]);
+    return best?.id ?? null;
+  }, []);
+
+  const handleClick = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
+    const id = findHit(event.clientX, event.clientY, event.currentTarget);
+    if (id) onInspectAgent(id);
+  }, [findHit, onInspectAgent]);
+
+  const handleMouseMove = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
+    const id = findHit(event.clientX, event.clientY, event.currentTarget);
+    if (id === hoverIdRef.current) return;
+    hoverIdRef.current = id;
+    event.currentTarget.style.cursor = id ? 'pointer' : 'inherit';
+    onHoverAgent?.(id ? sceneRef.current?.agents.find(agent => agent.id === id) ?? null : null);
+  }, [findHit, onHoverAgent]);
+
+  const handleMouseLeave = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
+    hoverIdRef.current = null;
+    event.currentTarget.style.cursor = 'inherit';
+    onHoverAgent?.(null);
+  }, [onHoverAgent]);
+
+  useEffect(() => {
+    if (!selectedAgentId || !scene) {
+      onSelectedAgentPosition?.(null);
+      return;
+    }
+    const selected = scene.agents.find(agent => agent.id === selectedAgentId);
+    onSelectedAgentPosition?.(selected ? { x: selected.x, y: selected.y } : null);
+  }, [onSelectedAgentPosition, scene, selectedAgentId]);
+
+  const effectiveLabelsVisible = labelsVisible && quality !== 'low';
 
   const drawCanvas = useCallback((canvas: HTMLCanvasElement | null, nextScene: VisualSceneDraw | null, showLabels: boolean) => {
     if (!canvas || !nextScene) return;
@@ -199,18 +238,18 @@ export function CanvasVisualLayer({
 
     ctx.clearRect(0, 0, metrics.width, metrics.height);
     hitRef.current = [];
-    const detail = getDetailLevel(zoom);
-    drawAmbientLighting(ctx, metrics, nextScene.step);
-    drawStorm(ctx, metrics, nextScene.blackSwanActive, nextScene.step);
-    drawDelegations(ctx, metrics, nextScene);
+    const detail = getDetailLevel(zoom, quality);
+    if (quality !== 'low') drawAmbientLighting(ctx, metrics, nextScene.step);
+    drawStorm(ctx, metrics, nextScene.blackSwanActive, nextScene.step, quality);
+    if (quality !== 'low') drawDelegations(ctx, metrics, nextScene);
     drawAgents(ctx, metrics, nextScene.agents, showLabels, nextScene.step, detail, hitRef.current);
-    drawEvents(ctx, metrics, nextScene.events, nextScene.step);
-  }, [zoom]);
+    if (quality === 'high') drawEvents(ctx, metrics, nextScene.events, nextScene.step);
+  }, [quality, zoom]);
 
   useEffect(() => {
     sceneRef.current = scene;
-    drawCanvas(canvasRef.current, scene, labelsVisible);
-  }, [drawCanvas, labelsVisible, scene]);
+    drawCanvas(canvasRef.current, scene, effectiveLabelsVisible);
+  }, [drawCanvas, effectiveLabelsVisible, scene]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -220,12 +259,12 @@ export function CanvasVisualLayer({
     const resize = () => {
       const metrics = resizeCanvas(canvas);
       metricsRef.current = metrics;
-      drawCanvas(canvas, sceneRef.current, labelsVisible);
+      drawCanvas(canvas, sceneRef.current, effectiveLabelsVisible);
       raf = requestAnimationFrame(resize);
     };
     raf = requestAnimationFrame(resize);
     return () => cancelAnimationFrame(raf);
-  }, [drawCanvas, labelsVisible]);
+  }, [drawCanvas, effectiveLabelsVisible]);
 
   return (
     <canvas
@@ -233,7 +272,8 @@ export function CanvasVisualLayer({
       className="absolute inset-0 h-full w-full"
       aria-label="Canvas-rendered agents and live simulation effects"
       onClick={handleClick}
-      data-ui-interactive
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       style={{ pointerEvents: 'auto' }}
     />
   );
@@ -283,7 +323,9 @@ function getVisibleSceneBounds(width: number, height: number, zoom: number, pan:
   };
 }
 
-function getDetailLevel(zoom: number): DetailLevel {
+function getDetailLevel(zoom: number, quality: VisualQuality): DetailLevel {
+  if (quality === 'low') return 'far';
+  if (quality === 'medium' && zoom < 2.4) return 'mid';
   if (zoom >= 3.2) return 'close';
   if (zoom >= 1.65) return 'mid';
   return 'far';
@@ -312,7 +354,7 @@ function drawAmbientLighting(ctx: CanvasRenderingContext2D, metrics: CanvasMetri
   ctx.restore();
 }
 
-function drawStorm(ctx: CanvasRenderingContext2D, metrics: CanvasMetrics, active: boolean, step: number) {
+function drawStorm(ctx: CanvasRenderingContext2D, metrics: CanvasMetrics, active: boolean, step: number, quality: VisualQuality) {
   if (!active) return;
   ctx.save();
   ctx.globalAlpha = 0.18;
@@ -322,7 +364,8 @@ function drawStorm(ctx: CanvasRenderingContext2D, metrics: CanvasMetrics, active
   ctx.globalAlpha = 0.44;
   ctx.strokeStyle = COLORS.treasury;
   ctx.lineWidth = Math.max(1, metrics.scale * 0.9);
-  for (let i = 0; i < 28; i++) {
+  const streaks = quality === 'low' ? 10 : quality === 'medium' ? 18 : 28;
+  for (let i = 0; i < streaks; i++) {
     const x = ((i * 79 + step * 17) % 1100) - 550;
     const y = ((i * 53 + step * 31) % 760) - 340;
     const a = sceneToCanvas(metrics, x, y);

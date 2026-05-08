@@ -93,13 +93,13 @@ See `docs/EXAMPLES.md` for full details on each scenario, output expectations, a
 
 The `/simulate` page features the Sanctum, a real-time interactive governance hall driven by the browser simulation worker:
 
-**Visual Effects** — vote banners, ceremony walks, treasury pool state, proposal lectern, black swan rain/lightning, hall labels, and an in-scene fire log.
+**Visual Effects** — worker-computed canvas agents, culling/LOD sprites, vote banners, ceremony walks, treasury pool state, proposal lectern, black swan rain/lightning, a visual state legend, and a stable in-scene fire log.
 
-**Analytics** — CSV/JSON/events export, timeline annotations (double-click to add), metric threshold alerts with toast notifications, linear regression + moving average trend overlays, agent type voting correlation heatmap.
+**Analytics** — CSV/JSON/events export, timeline annotations (double-click to add), metric threshold alerts with toast notifications, linear regression + moving average trend overlays, agent type voting correlation heatmap, live cause-chain explainability, and an FPS/draw/cull performance HUD.
 
-**Simulation Depth** — Live parameter injection (change governance mid-run), agent inspector drill-down with token history sparkline, what-if branching from fork points, multi-run statistics with 95% confidence intervals (3/5/10 parallel workers), custom agent injection with configurable parameters.
+**Simulation Depth** — editable scenario presets, population/quorum/shock authoring, local saved scenarios, live parameter injection (change governance mid-run), agent inspector drill-down with token history sparkline, what-if branching from fork points, multi-run statistics with 95% confidence intervals (3/5/10 parallel workers), custom agent injection with configurable parameters.
 
-**UX** — Keyboard shortcuts (Space=play/pause, R=reset, 1-5=hall nav, ?=help), 7-step guided tutorial, mobile-responsive compact layout, permalink URL sharing, light/dark theme toggle, split-screen comparison mode.
+**UX** — precise hover/click agent selection, deeper zoom, follow mode, keyboard agent stepping, keyboard shortcuts (Space=play/pause, R=reset, 1-5=hall nav, ?=help), guided tutorial, mobile-responsive compact layout, permalink URL sharing, light/dark theme toggle, split-screen comparison mode.
 
 ## Architecture Overview
 

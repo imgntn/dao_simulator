@@ -77,6 +77,8 @@
 | Feature | Description | File |
 |---------|-------------|------|
 | **Sanctum Scene** | Living governance hall with clickable stewards | `SanctumScene.tsx` |
+| **Canvas Agent Layer** | Worker-computed canvas rendering with culling, LOD sprites, hover hit testing, and pooled draw records | `CanvasVisualLayer.tsx`, `visual-layout-worker.ts` |
+| **Visual State Legend** | On-scene color grammar for halls, votes, and risk states | `SanctumScene.tsx` |
 | **Vote Banners** | Agents raise color-coded banners after voting | `Creatures.tsx` |
 | **Ceremony Walks** | Recently voting agents move toward the lectern | `SanctumScene.tsx` |
 | **Treasury Pool** | Treasury state rendered as the central pool | `SanctumScene.tsx` |
@@ -95,6 +97,8 @@
 | **Trend Overlays** | Linear regression + moving average on sparklines | `MetricsDashboard.tsx` |
 | **Voting Heatmap** | Agent type voting correlation matrix | `VotingHeatmap.tsx` |
 | **Agent Inspector** | Detailed drill-down with token history sparkline | `AgentInspector.tsx` |
+| **Live Explainability** | Cause chain, vote drivers, power flow, and metric delta summaries for the latest tick | `LiveExplainabilityPanel.tsx` |
+| **Performance HUD** | FPS, frame time, sim step rate, draw/cull counts, active layers, and adaptive quality state | `SanctumScene.tsx` |
 
 ### Simulation Controls
 
@@ -102,12 +106,14 @@
 |---------|-------------|------|
 | **Time Travel** | Scrub backward through simulation history | `TimeScrubber.tsx` |
 | **Scenario Builder** | Schedule black swan events at specific steps | `ScenarioBuilder.tsx` |
+| **Scenario Preset Wizard** | Editable scenario authoring for DAO, governance rule, population scale, quorum, seed, run length, shock timing/severity, and saved local presets | `ScenarioPresetWizard.tsx` |
 | **Split-Screen Compare** | Run two configs side-by-side | `ComparisonView.tsx` |
 | **Live Parameter Injection** | Change governance/forum/swan mid-run | `ControlPanel.tsx` |
 | **Custom Agent Injection** | Add agents with custom parameters | `CustomAgentForm.tsx` |
 | **What-If Branching** | Fork simulation state for divergence analysis | `BranchView.tsx` |
 | **Multi-Run Statistics** | Run N simulations for confidence intervals | `MultiRunPanel.tsx` |
 | **Hall Navigation** | Jump the Sanctum view to agent halls | `FloorNav.tsx` |
+| **Precision Scene Navigation** | Hover cards, click selection, keyboard agent stepping, follow mode, and deeper zoom for close inspection | `SanctumScene.tsx`, `CanvasVisualLayer.tsx` |
 
 ### UX & Polish
 

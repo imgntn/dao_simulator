@@ -35,6 +35,11 @@ const ROOM_STATIONS: Record<VisualArchetype, Array<[number, number]>> = {
 const LECTERN_POS: [number, number] = [0, 43];
 const SHELF_TARGET_POS: [number, number] = [340, 153];
 const FAR_FULL_AGENT_LIMIT = 18;
+const QUALITY_FULL_AGENT_LIMIT = {
+  high: 28,
+  medium: 18,
+  low: 10,
+} as const;
 
 const ROLE_NAMES: Record<string, { name: string; short: string }> = {
   developer: { name: 'Builder', short: 'DEV' },
@@ -131,7 +136,8 @@ function buildVisualScene(req: VisualLayoutRequest): VisualSceneDraw {
   const shelving = new Set(req.shelving);
   const influenceIds = [...req.agents].sort((a, b) => b.tokens - a.tokens).slice(0, 5).map(a => a.id);
   const influenceRank = new Map(influenceIds.map((id, index) => [id, Math.max(1, 5 - index)]));
-  const far = req.zoom < 1.8;
+  const far = req.zoom < 1.8 || req.quality === 'low';
+  const fullAgentLimit = req.zoom >= 2.8 ? QUALITY_FULL_AGENT_LIMIT.high : QUALITY_FULL_AGENT_LIMIT[req.quality];
   const fullIds = new Set<string>();
 
   const raw = basePlacements(req.agents).map(base => {
@@ -162,7 +168,7 @@ function buildVisualScene(req: VisualLayoutRequest): VisualSceneDraw {
 
   if (far) {
     for (const item of raw) {
-      if (fullIds.size >= FAR_FULL_AGENT_LIMIT) break;
+      if (fullIds.size >= Math.min(FAR_FULL_AGENT_LIMIT, fullAgentLimit)) break;
       fullIds.add(item.agent.id);
     }
   }
@@ -192,7 +198,7 @@ function buildVisualScene(req: VisualLayoutRequest): VisualSceneDraw {
       recentVote: item.recentVote,
       inCeremony: item.inCeremony,
       isShelving: item.isShelving,
-      simplified: far && !fullIds.has(item.agent.id),
+      simplified: (far || fullIds.size > fullAgentLimit) && !fullIds.has(item.agent.id),
       influenceRank: influenceRank.get(item.agent.id) ?? 0,
       label: r.name,
       shortLabel: r.short,
@@ -201,7 +207,7 @@ function buildVisualScene(req: VisualLayoutRequest): VisualSceneDraw {
 
   const byId = new Map(agents.map(agent => [agent.id, agent]));
   const delegations = req.showDelegations
-    ? req.agents.flatMap(agent => {
+    ? req.agents.slice(0, req.quality === 'low' ? 40 : req.quality === 'medium' ? 80 : req.agents.length).flatMap(agent => {
       if (!agent.delegateTo) return [];
       const source = byId.get(agent.id);
       const target = byId.get(agent.delegateTo);
@@ -220,8 +226,8 @@ function buildVisualScene(req: VisualLayoutRequest): VisualSceneDraw {
     : [];
 
   const events: VisualEventDraw[] = req.events
-    .filter(event => req.step - event.step >= 0 && req.step - event.step <= 2)
-    .slice(0, 3)
+    .filter(event => req.step - event.step >= 0 && req.step - event.step <= (req.quality === 'low' ? 1 : 2))
+    .slice(0, req.quality === 'high' ? 4 : 2)
     .map(event => {
       const visual = EVENT_VISUALS[event.type] ?? EVENT_VISUALS.price_change;
       return { type: event.type, ...visual, age: req.step - event.step };
@@ -239,6 +245,7 @@ function buildVisualScene(req: VisualLayoutRequest): VisualSceneDraw {
       simplifiedAgents: agents.filter(agent => agent.simplified).length,
       culledAgents,
       delegations: delegations.length,
+      quality: req.quality,
     },
   };
 }

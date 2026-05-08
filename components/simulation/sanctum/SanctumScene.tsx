@@ -20,6 +20,7 @@ import type {
   SimulationSnapshot,
   SimulationEvent,
 } from '@/lib/browser/worker-protocol';
+import type { VisualAgentDraw, VisualQuality } from '@/lib/browser/visual-layout-protocol';
 import {
   PALETTE,
   ARCHETYPE_COLOR,
@@ -72,7 +73,7 @@ const CX_PASS_G = '#A888E8';
 const MG        = '#C49020';
 const MG_LT     = '#E8C050';
 const ZOOM_MIN   = 0.4;
-const ZOOM_MAX   = 5.0;
+const ZOOM_MAX   = 7.0;
 const SCENE_VISUAL_FPS = 24;
 
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -798,6 +799,67 @@ function Chip({ label, value }: { label: string; value: string }) {
   );
 }
 
+function VisualLegend() {
+  const items = [
+    { label: 'Governance', color: CX_GOV_G },
+    { label: 'Treasury', color: CX_TREA_G },
+    { label: 'Craft', color: CX_CRAF_G },
+    { label: 'Council', color: CX_COUN_G },
+    { label: 'Member', color: CX_PASS_G },
+    { label: 'For', color: PALETTE.voteFor },
+    { label: 'Against', color: PALETTE.voteAgainst },
+    { label: 'Risk', color: PALETTE.blood },
+  ];
+  return (
+    <div
+      className="pointer-events-none absolute left-3 bottom-[3.5rem] z-20 grid grid-cols-2 gap-x-3 gap-y-1 rounded-sm border px-2.5 py-2 text-[10px]"
+      style={{
+        width: 184,
+        background: 'rgba(4,2,16,0.68)',
+        borderColor: 'rgba(196,144,32,0.28)',
+        color: MG,
+        fontFamily: 'Georgia, serif',
+      }}
+    >
+      {items.map(item => (
+        <span key={item.label} className="inline-flex min-w-0 items-center gap-1.5">
+          <span className="h-2 w-2 flex-shrink-0 rounded-full" style={{ background: item.color, boxShadow: `0 0 8px ${item.color}` }} />
+          <span className="truncate">{item.label}</span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function HoverTooltip({ agent }: { agent: VisualAgentDraw | null }) {
+  if (!agent) return null;
+  return (
+    <div
+      className="pointer-events-none absolute left-1/2 top-12 z-30 -translate-x-1/2 rounded-sm border px-2.5 py-1.5 text-[11px]"
+      style={{
+        width: 220,
+        background: 'rgba(8,4,20,0.9)',
+        borderColor: ARCHETYPE_COLOR[agent.archetype],
+        color: MG_LT,
+        fontFamily: 'Georgia, serif',
+        boxShadow: `0 0 14px ${ARCHETYPE_COLOR[agent.archetype]}44`,
+      }}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <span className="truncate font-bold">{agent.label}</span>
+        <span className="rounded-sm px-1.5 py-0.5 text-[9px] uppercase" style={{ background: `${ARCHETYPE_COLOR[agent.archetype]}22`, color: ARCHETYPE_COLOR[agent.archetype] }}>
+          {agent.archetype}
+        </span>
+      </div>
+      <div className="mt-1 grid grid-cols-3 gap-1 text-[10px] tabular-nums" style={{ color: MG }}>
+        <span>{formatMoney(agent.tokens)} tok</span>
+        <span>{formatPct(agent.reputation)} rep</span>
+        <span>{formatPct(agent.optimism)} opt</span>
+      </div>
+    </div>
+  );
+}
+
 function FireLog({ events }: { events: SimulationEvent[] }) {
   const recent = events.slice(0, 2);
   return (
@@ -849,13 +911,17 @@ function PerformanceHud({
   zoom,
   labelsVisible,
   showDelegations,
+  quality,
+  onQualityChange,
   visualStats,
 }: {
   snapshot: SimulationSnapshot;
   zoom: number;
   labelsVisible: boolean;
   showDelegations: boolean;
-  visualStats: { fullAgents: number; simplifiedAgents: number; culledAgents: number; delegations: number } | null;
+  quality: VisualQuality;
+  onQualityChange: (quality: VisualQuality) => void;
+  visualStats: { fullAgents: number; simplifiedAgents: number; culledAgents: number; delegations: number; quality: VisualQuality } | null;
 }) {
   const [stats, setStats] = useState({ fps: 0, frameMs: 0, simRate: 0 });
   const frameCount = useRef(0);
@@ -887,6 +953,9 @@ function PerformanceHud({
           frameMs: lastFrame.current ? now - lastFrame.current : 0,
           simRate: stepDelta / (elapsed / 1000),
         });
+        if (fps < 24) onQualityChange('low');
+        else if (fps < 42) onQualityChange('medium');
+        else if (fps > 54) onQualityChange('high');
         frameCount.current = 0;
         lastSample.current = now;
         lastStep.current = latestStep.current;
@@ -896,7 +965,7 @@ function PerformanceHud({
     }
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [onQualityChange]);
 
   return (
     <div
@@ -914,6 +983,7 @@ function PerformanceHud({
       <span className="opacity-60">Scene</span><span className="text-right">{snapshot.agents.length} a / {zoom.toFixed(1)}x</span>
       <span className="opacity-60">Draw</span><span className="text-right">{visualStats ? `${visualStats.fullAgents}/${visualStats.simplifiedAgents}` : '--'}</span>
       <span className="opacity-60">Cull</span><span className="text-right">{visualStats ? visualStats.culledAgents : '--'}</span>
+      <span className="opacity-60">Quality</span><span className="text-right">{visualStats?.quality ?? quality}</span>
       <span className="opacity-60">Layers</span><span className="text-right">{labelsVisible ? 'labels ' : ''}{showDelegations ? 'deleg' : 'base'}</span>
     </div>
   );
@@ -1396,11 +1466,15 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
   const [pan, setPan]   = useState({ x: 0, y: 0 });
   const [labelsVisible, setLabelsVisible] = useState(false);
   const [showDelegations, setShowDelegations] = useState(false);
+  const [quality, setQuality] = useState<VisualQuality>('high');
+  const [hoveredAgent, setHoveredAgent] = useState<VisualAgentDraw | null>(null);
+  const [selectedAgentPosition, setSelectedAgentPosition] = useState<{ x: number; y: number } | null>(null);
   const [visualStats, setVisualStats] = useState<{
     fullAgents: number;
     simplifiedAgents: number;
     culledAgents: number;
     delegations: number;
+    quality: VisualQuality;
   } | null>(null);
   const dragStart       = useRef<{ mx: number; my: number; px: number; py: number } | null>(null);
   const lastTouchDist   = useRef<number | null>(null);
@@ -1537,6 +1611,35 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
     }
   }, [followedAgentId, snapshot]);
 
+  useEffect(() => {
+    if (!followedAgentId || !selectedAgentPosition) return;
+    setZoom(z => Math.max(z, 3.2));
+    setPan({
+      x: Math.max(-620, Math.min(620, -selectedAgentPosition.x * 1.6)),
+      y: Math.max(-420, Math.min(420, -selectedAgentPosition.y * 1.6)),
+    });
+  }, [followedAgentId, selectedAgentPosition]);
+
+  const handleSceneKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('button,input,select,textarea,a,[data-ui-interactive]')) return;
+    if (!snapshot) return;
+    if (event.key === 'Escape') {
+      setInspectedAgentId(null);
+      setFollowedAgentId(null);
+      setHoveredAgent(null);
+      return;
+    }
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+    const agents = snapshot.agents;
+    if (agents.length === 0) return;
+    event.preventDefault();
+    const currentIdx = inspectedAgentId ? agents.findIndex(agent => agent.id === inspectedAgentId) : -1;
+    const direction = event.key === 'ArrowRight' ? 1 : -1;
+    const nextIdx = currentIdx < 0 ? 0 : (currentIdx + direction + agents.length) % agents.length;
+    setInspectedAgentId(agents[nextIdx].id);
+  }, [inspectedAgentId, snapshot]);
+
   const activeProposal = snapshot
     ? (snapshot.proposals.find(p => p.status === 'open' || p.status === 'voting')
        ?? snapshot.proposals[snapshot.proposals.length - 1]
@@ -1562,6 +1665,7 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
       data-scene="sanctum"
       className="relative h-full w-full overflow-hidden select-none"
       ref={containerRef}
+      tabIndex={0}
       style={{
         fontFamily: 'Georgia, serif',
         background: CAVE_BG,
@@ -1574,6 +1678,7 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onKeyDown={handleSceneKeyDown}
     >
       {/* Zoomable scene wrapper */}
       <div
@@ -1612,9 +1717,12 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
           selectedAgentId={inspectedAgentId}
           labelsVisible={labelsVisible}
           showDelegations={showDelegations}
+          quality={quality}
           zoom={zoom}
           pan={pan}
           onInspectAgent={agentId => setInspectedAgentId(id => id === agentId ? null : agentId)}
+          onHoverAgent={setHoveredAgent}
+          onSelectedAgentPosition={setSelectedAgentPosition}
           onVisualStats={setVisualStats}
         />
       </div>
@@ -1626,8 +1734,12 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
         zoom={zoom}
         labelsVisible={labelsVisible}
         showDelegations={showDelegations}
+        quality={quality}
+        onQualityChange={setQuality}
         visualStats={visualStats}
       />
+      <VisualLegend />
+      <HoverTooltip agent={hoveredAgent} />
       <FireLog events={snapshot.recentEvents} />
       <ZoomControls
         zoom={zoom}

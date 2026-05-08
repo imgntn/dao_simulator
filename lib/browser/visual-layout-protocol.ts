@@ -22,6 +22,7 @@ export interface VisualLayoutRequest {
   selectedAgentId: string | null;
   labelsVisible: boolean;
   showDelegations: boolean;
+  quality: VisualQuality;
   zoom: number;
   viewport: { x: number; y: number; width: number; height: number };
 }
@@ -80,10 +81,12 @@ export interface VisualSceneDraw {
     simplifiedAgents: number;
     culledAgents: number;
     delegations: number;
+    quality: VisualQuality;
   };
 }
 
 export type VisualArchetype = 'governance' | 'treasury' | 'craft' | 'council' | 'passive';
+export type VisualQuality = 'high' | 'medium' | 'low';
 
 export function toVisualAgentInput(agent: AgentSnapshot): VisualLayoutAgentInput {
   return {
