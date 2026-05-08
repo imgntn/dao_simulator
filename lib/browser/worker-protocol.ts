@@ -81,6 +81,11 @@ export interface SimulationSnapshot {
   avgParticipationRate: number;
   forumTopics: number;
   forumPosts: number;
+  perf?: {
+    simStepMs: number;
+    snapshotMs: number;
+    totalStepMs: number;
+  };
 }
 
 // =============================================================================

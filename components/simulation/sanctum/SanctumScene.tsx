@@ -85,6 +85,7 @@ type VisualSceneDrawStats = {
   culledAgents: number;
   delegations: number;
   quality: VisualQuality;
+  layoutMs: number;
 };
 
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -996,9 +997,10 @@ function PerformanceHud({
       data-ui-interactive
     >
       <span className="opacity-60">FPS</span><span className="text-right">{stats.fps.toFixed(0)}</span>
+      <span className="opacity-60">3D FPS</span><span className="text-right">{visualStats && 'renderFps' in visualStats ? visualStats.renderFps.toFixed(0) : '--'}</span>
       <span className="opacity-60">Frame</span><span className="text-right">{stats.frameMs.toFixed(1)}ms</span>
       <span className="opacity-60">Sim</span><span className="text-right">{stats.simRate.toFixed(1)} step/s</span>
-      <span className="opacity-60">Render</span>
+      <span className="opacity-60">Mode</span>
       <span className="text-right">
         <select
           value={rendererMode}
@@ -1017,6 +1019,10 @@ function PerformanceHud({
       <span className="opacity-60">Quality</span><span className="text-right">{visualStats?.quality ?? quality}</span>
       <span className="opacity-60">Calls</span><span className="text-right">{visualStats && 'drawCalls' in visualStats ? visualStats.drawCalls : '--'}</span>
       <span className="opacity-60">Tris</span><span className="text-right">{visualStats && 'triangles' in visualStats ? compactNumber(visualStats.triangles) : '--'}</span>
+      <span className="opacity-60">Sim ms</span><span className="text-right">{snapshot.perf?.totalStepMs.toFixed(1) ?? '--'}</span>
+      <span className="opacity-60">Layout</span><span className="text-right">{visualStats?.layoutMs.toFixed(1) ?? '--'}ms</span>
+      <span className="opacity-60">GPU buf</span><span className="text-right">{visualStats && 'bufferUpdateMs' in visualStats ? visualStats.bufferUpdateMs.toFixed(1) : '--'}ms</span>
+      <span className="opacity-60">Render</span><span className="text-right">{visualStats && 'renderMs' in visualStats ? visualStats.renderMs.toFixed(1) : '--'}ms</span>
       <span className="opacity-60">Layers</span><span className="text-right">{labelsVisible ? 'labels ' : ''}{showDelegations ? 'deleg' : 'base'}</span>
     </div>
   );
@@ -1743,6 +1749,12 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
           className="absolute inset-0 h-full w-full"
           viewBox="-500 -320 1000 640"
           preserveAspectRatio="xMidYMid meet"
+          style={{
+            contain: 'strict',
+            pointerEvents: 'none',
+            transform: 'translateZ(0)',
+            backfaceVisibility: 'hidden',
+          }}
         >
           <StaticSceneDefs />
 

@@ -82,6 +82,7 @@ export interface VisualSceneDraw {
     culledAgents: number;
     delegations: number;
     quality: VisualQuality;
+    layoutMs: number;
   };
 }
 

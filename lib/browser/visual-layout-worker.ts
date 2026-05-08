@@ -131,6 +131,7 @@ function inViewport(x: number, y: number, viewport: VisualLayoutRequest['viewpor
 }
 
 function buildVisualScene(req: VisualLayoutRequest): VisualSceneDraw {
+  const layoutStart = performance.now();
   const agentById = new Map(req.agents.map(agent => [agent.id, agent]));
   const ceremonies = new Map(req.ceremonies);
   const shelving = new Set(req.shelving);
@@ -233,6 +234,7 @@ function buildVisualScene(req: VisualLayoutRequest): VisualSceneDraw {
       return { type: event.type, ...visual, age: req.step - event.step };
     });
 
+  const layoutMs = performance.now() - layoutStart;
   return {
     requestId: req.requestId,
     step: req.step,
@@ -246,6 +248,7 @@ function buildVisualScene(req: VisualLayoutRequest): VisualSceneDraw {
       culledAgents,
       delegations: delegations.length,
       quality: req.quality,
+      layoutMs,
     },
   };
 }

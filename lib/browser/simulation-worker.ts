@@ -208,17 +208,26 @@ function pushEvent(type: SimulationEvent['type'], message: string): void {
 async function runStep(): Promise<void> {
   if (!sim || stepInFlight) return;
   stepInFlight = true;
+  const totalStart = performance.now();
 
   try {
     // Clear event buffer for this step
     eventBuffer = [];
 
+    const simStart = performance.now();
     await sim.step();
+    const simStepMs = performance.now() - simStart;
 
     // Merge new events into recent events list
     recentEvents = [...recentEvents, ...eventBuffer].slice(-MAX_RECENT_EVENTS);
 
+    const snapshotStart = performance.now();
     const snapshot = extractSnapshot(sim, recentEvents.slice(-20));
+    snapshot.perf = {
+      simStepMs,
+      snapshotMs: performance.now() - snapshotStart,
+      totalStepMs: performance.now() - totalStart,
+    };
     postOut({ type: 'stepComplete', snapshot });
   } catch (error) {
     const err = error as Error;

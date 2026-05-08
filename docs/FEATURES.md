@@ -77,7 +77,7 @@
 | Feature | Description | File |
 |---------|-------------|------|
 | **Sanctum Scene** | Living governance hall with clickable stewards | `SanctumScene.tsx` |
-| **Three.js Renderer** | Default WebGL renderer with instanced agents, GPU vote markers, event rings, delegation line buffers, crisis streaks, raycast picking, and Canvas 2D fallback | `SanctumThreeLayer.tsx` |
+| **Three.js Renderer** | Default WebGL renderer with instanced agents, demand-rendered GPU buffers, pooled delegation/storm line buffers, vote markers, event rings, crisis streaks, raycast picking, and Canvas 2D fallback | `SanctumThreeLayer.tsx` |
 | **Canvas Agent Layer** | Worker-computed canvas rendering with culling, LOD sprites, hover hit testing, and pooled draw records | `CanvasVisualLayer.tsx`, `visual-layout-worker.ts` |
 | **Visual State Legend** | On-scene color grammar for halls, votes, and risk states | `SanctumScene.tsx` |
 | **Vote Banners** | Agents raise color-coded banners after voting | `Creatures.tsx` |
@@ -99,7 +99,7 @@
 | **Voting Heatmap** | Agent type voting correlation matrix | `VotingHeatmap.tsx` |
 | **Agent Inspector** | Detailed drill-down with token history sparkline | `AgentInspector.tsx` |
 | **Live Explainability** | Cause chain, vote drivers, power flow, and metric delta summaries for the latest tick | `LiveExplainabilityPanel.tsx` |
-| **Performance HUD** | FPS, frame time, sim step rate, renderer mode, draw/cull counts, WebGL draw calls/triangles, active layers, and adaptive quality state | `SanctumScene.tsx` |
+| **Performance HUD** | Page FPS, Three render FPS, sim step time, visual layout time, GPU buffer update time, WebGL render time, draw/cull counts, draw calls/triangles, active layers, and adaptive quality state | `SanctumScene.tsx` |
 
 ### Simulation Controls
 

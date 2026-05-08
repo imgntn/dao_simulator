@@ -93,9 +93,9 @@ See `docs/EXAMPLES.md` for full details on each scenario, output expectations, a
 
 The `/simulate` page features the Sanctum, a real-time interactive governance hall driven by the browser simulation worker:
 
-**Visual Effects** — Three.js/WebGL instanced agents by default, Canvas 2D fallback, worker-computed culling/LOD, GPU vote markers, delegation/event buffers, ceremony walks, treasury pool state, proposal lectern, black swan effects, a visual state legend, and a stable in-scene fire log.
+**Visual Effects** — Three.js/WebGL instanced agents by default, Canvas 2D fallback, worker-computed culling/LOD, demand-rendered GPU buffers, pooled delegation/storm lines, GPU vote markers, ceremony walks, treasury pool state, proposal lectern, black swan effects, a visual state legend, and a stable in-scene fire log.
 
-**Analytics** — CSV/JSON/events export, timeline annotations (double-click to add), metric threshold alerts with toast notifications, linear regression + moving average trend overlays, agent type voting correlation heatmap, live cause-chain explainability, and an FPS/WebGL draw-call/triangle/cull performance HUD.
+**Analytics** — CSV/JSON/events export, timeline annotations (double-click to add), metric threshold alerts with toast notifications, linear regression + moving average trend overlays, agent type voting correlation heatmap, live cause-chain explainability, and a performance HUD that separates page FPS, Three render FPS, sim step time, visual layout time, GPU buffer update time, WebGL render time, draw calls, triangles, and culling.
 
 **Simulation Depth** — editable scenario presets, population/quorum/shock authoring, local saved scenarios, live parameter injection (change governance mid-run), agent inspector drill-down with token history sparkline, what-if branching from fork points, multi-run statistics with 95% confidence intervals (3/5/10 parallel workers), custom agent injection with configurable parameters.
 

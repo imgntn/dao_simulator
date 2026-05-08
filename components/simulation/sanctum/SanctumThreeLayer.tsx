@@ -12,6 +12,9 @@ export type ThreeRendererStats = VisualSceneDraw['stats'] & {
   triangles: number;
   geometries: number;
   textures: number;
+  bufferUpdateMs: number;
+  renderMs: number;
+  renderFps: number;
 };
 
 interface SanctumThreeLayerProps {
@@ -36,6 +39,8 @@ const MAX_AGENTS = 512;
 const MAX_VOTES = 512;
 const MAX_GLOWS = 256;
 const MAX_EVENT_PARTICLES = 96;
+const MAX_DELEGATION_SEGMENTS = 512;
+const MAX_STORM_SEGMENTS = 64;
 
 const ARCHETYPE_COLORS: Record<VisualArchetype, number> = {
   governance: 0xb068f8,
@@ -73,15 +78,56 @@ export function SanctumThreeLayer({
   const runtimeRef = useRef<ThreeRuntime | null>(null);
   const hoverIdRef = useRef<string | null>(null);
   const qualityRef = useRef(quality);
+  const pendingDrawRef = useRef<VisualSceneDraw | null>(null);
+  const frameRef = useRef<number | null>(null);
+  const lastRenderSampleRef = useRef({ at: 0, count: 0, fps: 0 });
   const [sceneDraw, setSceneDraw] = useState<VisualSceneDraw | null>(null);
 
   const ceremoniesPayload = useMemo(() => Array.from(ceremonies.entries()), [ceremonies]);
   const shelvingPayload = useMemo(() => Array.from(shelving.values()), [shelving]);
   const agentsPayload = useMemo(() => snapshot.agents.map(toVisualAgentInput), [snapshot.agents]);
 
+  const publishStats = useCallback((runtime: ThreeRuntime, draw: VisualSceneDraw, bufferUpdateMs: number, renderMs: number) => {
+    const now = performance.now();
+    const sample = lastRenderSampleRef.current;
+    if (sample.at === 0) sample.at = now;
+    sample.count += 1;
+    const elapsed = now - sample.at;
+    if (elapsed >= 750) {
+      sample.fps = sample.count / (elapsed / 1000);
+      sample.count = 0;
+      sample.at = now;
+    }
+    onVisualStats?.({
+      ...draw.stats,
+      renderer: 'three',
+      drawCalls: runtime.renderer.info.render.calls,
+      triangles: runtime.renderer.info.render.triangles,
+      geometries: runtime.renderer.info.memory.geometries,
+      textures: runtime.renderer.info.memory.textures,
+      bufferUpdateMs,
+      renderMs,
+      renderFps: sample.fps,
+    });
+  }, [onVisualStats]);
+
+  const requestRender = useCallback(() => {
+    if (frameRef.current !== null) return;
+    frameRef.current = requestAnimationFrame(() => {
+      frameRef.current = null;
+      const runtime = runtimeRef.current;
+      const draw = pendingDrawRef.current ?? sceneDrawRef.current;
+      if (!runtime || !draw) return;
+      pendingDrawRef.current = null;
+      const renderResult = renderRuntime(runtime, draw, qualityRef.current);
+      publishStats(runtime, draw, renderResult.bufferUpdateMs, renderResult.renderMs);
+    });
+  }, [publishStats]);
+
   useEffect(() => {
     qualityRef.current = quality;
-  }, [quality]);
+    requestRender();
+  }, [quality, requestRender]);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -89,25 +135,15 @@ export function SanctumThreeLayer({
     try {
       const runtime = createRuntime(host);
       runtimeRef.current = runtime;
-      let raf = 0;
-      const frame = () => {
-        renderRuntime(runtime, sceneDrawRef.current, qualityRef.current);
-        const draw = sceneDrawRef.current;
-        if (draw) {
-          onVisualStats?.({
-            ...draw.stats,
-            renderer: 'three',
-            drawCalls: runtime.renderer.info.render.calls,
-            triangles: runtime.renderer.info.render.triangles,
-            geometries: runtime.renderer.info.memory.geometries,
-            textures: runtime.renderer.info.memory.textures,
-          });
-        }
-        raf = requestAnimationFrame(frame);
-      };
-      raf = requestAnimationFrame(frame);
+      const resizeObserver = new ResizeObserver(() => requestRender());
+      resizeObserver.observe(host);
+      requestRender();
       return () => {
-        cancelAnimationFrame(raf);
+        resizeObserver.disconnect();
+        if (frameRef.current !== null) {
+          cancelAnimationFrame(frameRef.current);
+          frameRef.current = null;
+        }
         disposeRuntime(runtime);
         runtimeRef.current = null;
         onVisualStats?.(null);
@@ -117,7 +153,7 @@ export function SanctumThreeLayer({
       onRendererError?.();
       return undefined;
     }
-  }, [onRendererError, onVisualStats]);
+  }, [onRendererError, onVisualStats, requestRender]);
 
   useEffect(() => {
     const worker = new Worker(new URL('../../../lib/browser/visual-layout-worker.ts', import.meta.url), { type: 'module' });
@@ -125,13 +161,15 @@ export function SanctumThreeLayer({
     worker.onmessage = (event: MessageEvent<VisualSceneDraw>) => {
       if (event.data.requestId < requestIdRef.current) return;
       sceneDrawRef.current = event.data;
+      pendingDrawRef.current = event.data;
       setSceneDraw(event.data);
+      requestRender();
     };
     return () => {
       worker.terminate();
       workerRef.current = null;
     };
-  }, []);
+  }, [requestRender]);
 
   useEffect(() => {
     const worker = workerRef.current;
@@ -242,6 +280,8 @@ interface ThreeRuntime {
   eventMesh: THREE.InstancedMesh;
   delegationLines: THREE.LineSegments;
   stormLines: THREE.LineSegments;
+  delegationPositions: Float32Array;
+  stormPositions: Float32Array;
   pickIds: Map<string, string[]>;
   lastWidth: number;
   lastHeight: number;
@@ -314,14 +354,22 @@ function createRuntime(host: HTMLDivElement): ThreeRuntime {
   eventMesh.count = 0;
   scene.add(eventMesh);
 
+  const delegationPositions = new Float32Array(MAX_DELEGATION_SEGMENTS * 2 * 3);
+  const delegationGeometry = new THREE.BufferGeometry();
+  delegationGeometry.setAttribute('position', new THREE.BufferAttribute(delegationPositions, 3).setUsage(THREE.DynamicDrawUsage));
+  delegationGeometry.setDrawRange(0, 0);
   const delegationLines = new THREE.LineSegments(
-    new THREE.BufferGeometry(),
+    delegationGeometry,
     new THREE.LineBasicMaterial({ color: 0xe8c050, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending })
   );
   scene.add(delegationLines);
 
+  const stormPositions = new Float32Array(MAX_STORM_SEGMENTS * 2 * 3);
+  const stormGeometry = new THREE.BufferGeometry();
+  stormGeometry.setAttribute('position', new THREE.BufferAttribute(stormPositions, 3).setUsage(THREE.DynamicDrawUsage));
+  stormGeometry.setDrawRange(0, 0);
   const stormLines = new THREE.LineSegments(
-    new THREE.BufferGeometry(),
+    stormGeometry,
     new THREE.LineBasicMaterial({ color: 0x20d8c0, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending })
   );
   scene.add(stormLines);
@@ -339,24 +387,33 @@ function createRuntime(host: HTMLDivElement): ThreeRuntime {
     eventMesh,
     delegationLines,
     stormLines,
+    delegationPositions,
+    stormPositions,
     pickIds,
     lastWidth: 0,
     lastHeight: 0,
   };
 }
 
-function renderRuntime(runtime: ThreeRuntime, draw: VisualSceneDraw | null, quality: VisualQuality) {
+function renderRuntime(runtime: ThreeRuntime, draw: VisualSceneDraw, quality: VisualQuality) {
   const canvas = runtime.renderer.domElement;
   const parent = canvas.parentElement;
-  if (!parent) return;
+  if (!parent) return { bufferUpdateMs: 0, renderMs: 0 };
   const rect = parent.getBoundingClientRect();
-  if (rect.width <= 0 || rect.height <= 0) return;
+  if (rect.width <= 0 || rect.height <= 0) return { bufferUpdateMs: 0, renderMs: 0 };
   if (runtime.lastWidth !== rect.width || runtime.lastHeight !== rect.height) {
     resizeRuntime(runtime, rect.width, rect.height);
   }
   runtime.renderer.info.reset();
-  if (draw) updateScene(runtime, draw, quality);
+  const updateStart = performance.now();
+  updateScene(runtime, draw, quality);
+  const bufferUpdateMs = performance.now() - updateStart;
+  const renderStart = performance.now();
   runtime.renderer.render(runtime.scene, runtime.camera);
+  return {
+    bufferUpdateMs,
+    renderMs: performance.now() - renderStart,
+  };
 }
 
 function resizeRuntime(runtime: ThreeRuntime, width: number, height: number) {
@@ -458,43 +515,59 @@ function updateScene(runtime: ThreeRuntime, draw: VisualSceneDraw, quality: Visu
   runtime.eventMesh.count = eventCount;
   runtime.eventMesh.instanceMatrix.needsUpdate = true;
 
-  updateDelegationLines(runtime.delegationLines, draw, quality);
-  updateStormLines(runtime.stormLines, draw, quality);
+  updateDelegationLines(runtime, draw, quality);
+  updateStormLines(runtime, draw, quality);
 }
 
-function updateDelegationLines(lines: THREE.LineSegments, draw: VisualSceneDraw, quality: VisualQuality) {
+function updateDelegationLines(runtime: ThreeRuntime, draw: VisualSceneDraw, quality: VisualQuality) {
+  const lines = runtime.delegationLines;
   if (quality === 'low') {
     lines.visible = false;
+    lines.geometry.setDrawRange(0, 0);
     return;
   }
   lines.visible = draw.delegations.length > 0;
-  const positions: number[] = [];
-  for (const edge of draw.delegations) {
-    positions.push(edge.sx, -edge.sy, 0.2, edge.tx, -edge.ty, 0.2);
+  const limit = Math.min(draw.delegations.length, MAX_DELEGATION_SEGMENTS);
+  for (let i = 0; i < limit; i++) {
+    const edge = draw.delegations[i];
+    const offset = i * 6;
+    runtime.delegationPositions[offset] = edge.sx;
+    runtime.delegationPositions[offset + 1] = -edge.sy;
+    runtime.delegationPositions[offset + 2] = 0.2;
+    runtime.delegationPositions[offset + 3] = edge.tx;
+    runtime.delegationPositions[offset + 4] = -edge.ty;
+    runtime.delegationPositions[offset + 5] = 0.2;
   }
-  lines.geometry.dispose();
-  lines.geometry = new THREE.BufferGeometry();
-  lines.geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  lines.geometry.setDrawRange(0, limit * 2);
+  const attribute = lines.geometry.getAttribute('position') as THREE.BufferAttribute;
+  attribute.needsUpdate = true;
   const material = lines.material as THREE.LineBasicMaterial;
   material.opacity = quality === 'medium' ? 0.32 : 0.48;
 }
 
-function updateStormLines(lines: THREE.LineSegments, draw: VisualSceneDraw, quality: VisualQuality) {
+function updateStormLines(runtime: ThreeRuntime, draw: VisualSceneDraw, quality: VisualQuality) {
+  const lines = runtime.stormLines;
   if (!draw.blackSwanActive) {
     lines.visible = false;
+    lines.geometry.setDrawRange(0, 0);
     return;
   }
   lines.visible = true;
-  const count = quality === 'low' ? 12 : quality === 'medium' ? 24 : 42;
-  const positions: number[] = [];
+  const count = Math.min(MAX_STORM_SEGMENTS, quality === 'low' ? 12 : quality === 'medium' ? 24 : 42);
   for (let i = 0; i < count; i++) {
     const x = ((i * 79 + draw.step * 17) % 1100) - 550;
     const y = ((i * 53 + draw.step * 31) % 760) - 340;
-    positions.push(x, -y, 0.1, x - 5, -(y + 22), 0.1);
+    const offset = i * 6;
+    runtime.stormPositions[offset] = x;
+    runtime.stormPositions[offset + 1] = -y;
+    runtime.stormPositions[offset + 2] = 0.1;
+    runtime.stormPositions[offset + 3] = x - 5;
+    runtime.stormPositions[offset + 4] = -(y + 22);
+    runtime.stormPositions[offset + 5] = 0.1;
   }
-  lines.geometry.dispose();
-  lines.geometry = new THREE.BufferGeometry();
-  lines.geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  lines.geometry.setDrawRange(0, count * 2);
+  const attribute = lines.geometry.getAttribute('position') as THREE.BufferAttribute;
+  attribute.needsUpdate = true;
 }
 
 function disposeRuntime(runtime: ThreeRuntime) {
