@@ -31,6 +31,7 @@ import { getRole } from './roles';
 import { Tooltip } from './Tooltip';
 import { HelpButton } from './HelpButton';
 import { CanvasVisualLayer } from './CanvasVisualLayer';
+import { SanctumThreeLayer, type ThreeRendererStats } from './SanctumThreeLayer';
 
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //   Coordinate constants â€” identical to ship version
@@ -75,6 +76,16 @@ const MG_LT     = '#E8C050';
 const ZOOM_MIN   = 0.4;
 const ZOOM_MAX   = 7.0;
 const SCENE_VISUAL_FPS = 24;
+
+type SanctumRendererMode = 'three' | 'canvas2d';
+type SanctumRendererStats = ThreeRendererStats | (VisualSceneDrawStats & { renderer: 'canvas2d' });
+type VisualSceneDrawStats = {
+  fullAgents: number;
+  simplifiedAgents: number;
+  culledAgents: number;
+  delegations: number;
+  quality: VisualQuality;
+};
 
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //   Seeded random
@@ -913,6 +924,9 @@ function PerformanceHud({
   showDelegations,
   quality,
   onQualityChange,
+  rendererMode,
+  onRendererModeChange,
+  threeAvailable,
   visualStats,
 }: {
   snapshot: SimulationSnapshot;
@@ -921,7 +935,10 @@ function PerformanceHud({
   showDelegations: boolean;
   quality: VisualQuality;
   onQualityChange: (quality: VisualQuality) => void;
-  visualStats: { fullAgents: number; simplifiedAgents: number; culledAgents: number; delegations: number; quality: VisualQuality } | null;
+  rendererMode: SanctumRendererMode;
+  onRendererModeChange: (mode: SanctumRendererMode) => void;
+  threeAvailable: boolean;
+  visualStats: SanctumRendererStats | null;
 }) {
   const [stats, setStats] = useState({ fps: 0, frameMs: 0, simRate: 0 });
   const frameCount = useRef(0);
@@ -969,21 +986,37 @@ function PerformanceHud({
 
   return (
     <div
-      className="pointer-events-none absolute left-3 top-12 z-20 grid grid-cols-2 gap-x-3 gap-y-0.5 rounded-sm border px-2.5 py-1.5 font-mono text-[10px] tabular-nums"
+      className="absolute left-3 top-12 z-20 grid grid-cols-2 gap-x-3 gap-y-0.5 rounded-sm border px-2.5 py-1.5 font-mono text-[10px] tabular-nums"
       style={{
-        width: 164,
+        width: 176,
         background: 'rgba(4,2,16,0.72)',
         borderColor: 'rgba(64,232,255,0.35)',
         color: CX_SAL_G,
       }}
+      data-ui-interactive
     >
       <span className="opacity-60">FPS</span><span className="text-right">{stats.fps.toFixed(0)}</span>
       <span className="opacity-60">Frame</span><span className="text-right">{stats.frameMs.toFixed(1)}ms</span>
       <span className="opacity-60">Sim</span><span className="text-right">{stats.simRate.toFixed(1)} step/s</span>
+      <span className="opacity-60">Render</span>
+      <span className="text-right">
+        <select
+          value={rendererMode}
+          onChange={event => onRendererModeChange(event.target.value as SanctumRendererMode)}
+          className="max-w-[5rem] bg-transparent text-right outline-none"
+          style={{ color: CX_SAL_G }}
+          aria-label="Renderer mode"
+        >
+          <option value="three" disabled={!threeAvailable}>three</option>
+          <option value="canvas2d">canvas</option>
+        </select>
+      </span>
       <span className="opacity-60">Scene</span><span className="text-right">{snapshot.agents.length} a / {zoom.toFixed(1)}x</span>
       <span className="opacity-60">Draw</span><span className="text-right">{visualStats ? `${visualStats.fullAgents}/${visualStats.simplifiedAgents}` : '--'}</span>
       <span className="opacity-60">Cull</span><span className="text-right">{visualStats ? visualStats.culledAgents : '--'}</span>
       <span className="opacity-60">Quality</span><span className="text-right">{visualStats?.quality ?? quality}</span>
+      <span className="opacity-60">Calls</span><span className="text-right">{visualStats && 'drawCalls' in visualStats ? visualStats.drawCalls : '--'}</span>
+      <span className="opacity-60">Tris</span><span className="text-right">{visualStats && 'triangles' in visualStats ? compactNumber(visualStats.triangles) : '--'}</span>
       <span className="opacity-60">Layers</span><span className="text-right">{labelsVisible ? 'labels ' : ''}{showDelegations ? 'deleg' : 'base'}</span>
     </div>
   );
@@ -1446,6 +1479,12 @@ function formatPct(n: number): string {
   if (!Number.isFinite(n)) return 'â€”';
   return `${(n * 100).toFixed(0)}%`;
 }
+function compactNumber(n: number): string {
+  if (!Number.isFinite(n)) return 'â€”';
+  if (Math.abs(n) >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (Math.abs(n) >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
+  return n.toFixed(0);
+}
 
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //   Root component
@@ -1467,15 +1506,11 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
   const [labelsVisible, setLabelsVisible] = useState(false);
   const [showDelegations, setShowDelegations] = useState(false);
   const [quality, setQuality] = useState<VisualQuality>('high');
+  const [rendererMode, setRendererMode] = useState<SanctumRendererMode>('three');
+  const [threeAvailable, setThreeAvailable] = useState(true);
   const [hoveredAgent, setHoveredAgent] = useState<VisualAgentDraw | null>(null);
   const [selectedAgentPosition, setSelectedAgentPosition] = useState<{ x: number; y: number } | null>(null);
-  const [visualStats, setVisualStats] = useState<{
-    fullAgents: number;
-    simplifiedAgents: number;
-    culledAgents: number;
-    delegations: number;
-    quality: VisualQuality;
-  } | null>(null);
+  const [visualStats, setVisualStats] = useState<SanctumRendererStats | null>(null);
   const dragStart       = useRef<{ mx: number; my: number; px: number; py: number } | null>(null);
   const lastTouchDist   = useRef<number | null>(null);
   const containerRef    = useRef<HTMLDivElement>(null);
@@ -1496,6 +1531,19 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
     setZoom(next.z);
     setPan({ x: next.x, y: next.y });
   }, [targetHall]);
+
+  const handleCanvasStats = useCallback((stats: VisualSceneDrawStats | null) => {
+    setVisualStats(stats ? { ...stats, renderer: 'canvas2d' } : null);
+  }, []);
+
+  const handleThreeStats = useCallback((stats: ThreeRendererStats | null) => {
+    setVisualStats(stats);
+  }, []);
+
+  const handleThreeFailure = useCallback(() => {
+    setThreeAvailable(false);
+    setRendererMode('canvas2d');
+  }, []);
 
   const handleWheel = useCallback((e: WheelEvent) => {
     e.preventDefault();
@@ -1710,21 +1758,40 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
           <StaticCaveCeiling />
           <StaticRoomLabels />
         </svg>
-        <CanvasVisualLayer
-          snapshot={snapshot}
-          ceremonies={ceremonies}
-          shelving={shelving}
-          selectedAgentId={inspectedAgentId}
-          labelsVisible={labelsVisible}
-          showDelegations={showDelegations}
-          quality={quality}
-          zoom={zoom}
-          pan={pan}
-          onInspectAgent={agentId => setInspectedAgentId(id => id === agentId ? null : agentId)}
-          onHoverAgent={setHoveredAgent}
-          onSelectedAgentPosition={setSelectedAgentPosition}
-          onVisualStats={setVisualStats}
-        />
+        {rendererMode === 'three' && threeAvailable ? (
+          <SanctumThreeLayer
+            snapshot={snapshot}
+            ceremonies={ceremonies}
+            shelving={shelving}
+            selectedAgentId={inspectedAgentId}
+            labelsVisible={labelsVisible}
+            showDelegations={showDelegations}
+            quality={quality}
+            zoom={zoom}
+            pan={pan}
+            onInspectAgent={agentId => setInspectedAgentId(id => id === agentId ? null : agentId)}
+            onHoverAgent={setHoveredAgent}
+            onSelectedAgentPosition={setSelectedAgentPosition}
+            onVisualStats={handleThreeStats}
+            onRendererError={handleThreeFailure}
+          />
+        ) : (
+          <CanvasVisualLayer
+            snapshot={snapshot}
+            ceremonies={ceremonies}
+            shelving={shelving}
+            selectedAgentId={inspectedAgentId}
+            labelsVisible={labelsVisible}
+            showDelegations={showDelegations}
+            quality={quality}
+            zoom={zoom}
+            pan={pan}
+            onInspectAgent={agentId => setInspectedAgentId(id => id === agentId ? null : agentId)}
+            onHoverAgent={setHoveredAgent}
+            onSelectedAgentPosition={setSelectedAgentPosition}
+            onVisualStats={handleCanvasStats}
+          />
+        )}
       </div>
 
       {/* HTML overlays â€” outside zoom wrapper so they stay crisp */}
@@ -1736,6 +1803,9 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
         showDelegations={showDelegations}
         quality={quality}
         onQualityChange={setQuality}
+        rendererMode={rendererMode}
+        onRendererModeChange={setRendererMode}
+        threeAvailable={threeAvailable}
         visualStats={visualStats}
       />
       <VisualLegend />
