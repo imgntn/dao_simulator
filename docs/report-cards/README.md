@@ -26,6 +26,7 @@ Use `+` and `-` when the area sits near a boundary.
 
 | Date | Report | Commit | Summary |
 | --- | --- | --- | --- |
+| 2026-05-09 | [Hard-A Upgrade](2026-05-09-hard-a-upgrade.md) | this commit | Restores straight As under the harder scale with performance budgets, lifecycle diagnostics, UX validation, visual artifacts, structured explanations, and release gates. |
 | 2026-05-09 | [Harder-A Reassessment](2026-05-09-harder-a-reassessment.md) | `fcf24c409` | Recalibrates the former A grades into B baselines and defines the new harder-A acceptance evidence. |
 | 2026-05-09 | [Straight-A Readiness](2026-05-09-straight-a-readiness.md) | `fcf24c409` | Regraded as the B baseline under the harder scale: useful foundations, but not yet budgeted, replayable, or visual-regression protected. |
 | 2026-05-08 | [Sanctum Performance & UX Baseline](2026-05-08-sanctum-performance-ux.md) | `f11f274b3` | First versioned report card after Three.js renderer, demand rendering, hot-path cleanup, and timing HUD work. |

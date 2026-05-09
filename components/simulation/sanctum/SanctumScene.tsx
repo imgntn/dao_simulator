@@ -35,6 +35,13 @@ import { HelpButton } from './HelpButton';
 import { CanvasVisualLayer } from './CanvasVisualLayer';
 import { SanctumThreeLayer } from './SanctumThreeLayer';
 
+declare global {
+  interface Window {
+    __daoPerfSamples?: PerformanceAverages[];
+    __daoPerfHealth?: ReturnType<typeof getPerformanceHealth>;
+  }
+}
+
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //   Coordinate constants â€” identical to ship version
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -1002,6 +1009,10 @@ function PerformanceHud({
         });
         const nextAverage = averagePerformanceSamples(rollingSamples.current);
         setAverages(nextAverage);
+        if (typeof window !== 'undefined') {
+          window.__daoPerfSamples = rollingSamples.current;
+          window.__daoPerfHealth = getPerformanceHealth(nextAverage);
+        }
         if (fps < 24) onQualityChange('low');
         else if (fps < 42) onQualityChange('medium');
         else if (fps > 54) onQualityChange('high');
@@ -1022,6 +1033,7 @@ function PerformanceHud({
   return (
     <div
       className="absolute left-3 top-12 z-20 grid grid-cols-2 gap-x-3 gap-y-0.5 rounded-sm border px-2.5 py-1.5 font-mono text-[10px] tabular-nums"
+      data-testid="performance-hud"
       style={{
         width: 204,
         background: 'rgba(4,2,16,0.72)',

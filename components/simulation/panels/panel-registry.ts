@@ -38,6 +38,7 @@ export const DEFAULT_PANEL_ORDER = [
   'transport',
   'floor-nav',
   'metrics-dashboard',
+  'explainability',
   'voting-heatmap',
   'metric-alerts',
   'delegation-graph',

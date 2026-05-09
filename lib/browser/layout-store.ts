@@ -83,6 +83,7 @@ function getDefaultState() {
   const defaultCollapsed: Record<string, boolean> = {
     'agent-guide': true,
     'delegation-graph': true,
+    explainability: false,
     'scenario-builder': true,
     'custom-agent': true,
     'metric-alerts': true,

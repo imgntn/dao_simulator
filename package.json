@@ -26,6 +26,7 @@
     "test:e2e:headed": "node scripts/test-e2e.js --headed",
     "test:e2e:report": "playwright show-report",
     "test:e2e:smoke": "node scripts/test-e2e.js --project=smoke",
+    "test:e2e:report-card": "node scripts/test-e2e.js --project=report-card",
     "test:e2e:api": "node scripts/test-e2e.js --project=api",
     "test:e2e:dashboard": "node scripts/test-e2e.js --project=dashboard",
     "test:e2e:simulation": "node scripts/test-e2e.js --project=simulation",

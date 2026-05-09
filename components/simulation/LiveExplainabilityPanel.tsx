@@ -4,6 +4,22 @@ import { useMemo } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
 import type { AgentSnapshot, SimulationEvent, SimulationSnapshot } from '@/lib/browser/worker-protocol';
 
+interface ExplanationRecord {
+  id: string;
+  step: number;
+  source: string;
+  driver: string;
+  impact: string;
+  confidence: number;
+  metricDeltas: {
+    tokenPrice: number;
+    treasuryFunds: number;
+    participationRate: number;
+    gini: number;
+  };
+  candidateCauses: Array<{ cause: string; weight: number }>;
+}
+
 function pct(n: number): string {
   if (!Number.isFinite(n)) return '--';
   return `${(n * 100).toFixed(0)}%`;
@@ -33,61 +49,109 @@ function explainEventProvenance(
   event: SimulationEvent | undefined,
   snapshot: SimulationSnapshot,
   previous: SimulationSnapshot | null
-) {
+): ExplanationRecord {
   const priceDelta = previous ? snapshot.tokenPrice - previous.tokenPrice : 0;
   const treasuryDelta = previous ? snapshot.treasuryFunds - previous.treasuryFunds : 0;
   const turnoutDelta = previous ? snapshot.avgParticipationRate - previous.avgParticipationRate : 0;
   const giniDelta = previous ? snapshot.gini - previous.gini : 0;
+  const metricDeltas = {
+    tokenPrice: priceDelta,
+    treasuryFunds: treasuryDelta,
+    participationRate: turnoutDelta,
+    gini: giniDelta,
+  };
+  const baseCauses = [
+    event ? { cause: event.type, weight: 0.55 } : { cause: 'snapshot_stability', weight: 0.42 },
+    snapshot.openProposalCount > 0 ? { cause: 'open_proposals', weight: 0.28 } : { cause: 'no_open_proposals', weight: 0.12 },
+    snapshot.blackSwan.active ? { cause: 'active_black_swan', weight: 0.86 } : { cause: 'normal_market_conditions', weight: 0.18 },
+  ];
+  const confidence = Math.min(0.96, Math.max(0.44, baseCauses.reduce((sum, item) => sum + item.weight, 0) / baseCauses.length + (previous ? 0.12 : 0)));
+  const id = `${snapshot.step}:${event?.step ?? 'none'}:${event?.type ?? 'stable'}`;
 
   if (snapshot.blackSwan.active) {
     return {
+      id,
+      step: snapshot.step,
       source: snapshot.blackSwan.name ?? 'Active shock',
       driver: `${snapshot.blackSwan.category ?? 'shock'} severity ${snapshot.blackSwan.severity}`,
       impact: `Stress is active; price ${signed(priceDelta)}, treasury ${signed(treasuryDelta, 0)}, turnout ${signed(turnoutDelta * 100, 1)} pts.`,
+      confidence,
+      metricDeltas,
+      candidateCauses: baseCauses,
     };
   }
 
   if (!event) {
     return {
+      id,
+      step: snapshot.step,
       source: 'No recent event',
       driver: 'Latest snapshot only',
       impact: 'Metrics are stable enough that no discrete event is leading the explanation.',
+      confidence,
+      metricDeltas,
+      candidateCauses: baseCauses,
     };
   }
 
   const label = event.type.replaceAll('_', ' ');
   if (event.type === 'treasury_change') {
     return {
+      id,
+      step: snapshot.step,
       source: `${label} at s${event.step}`,
       driver: event.message,
       impact: `Treasury moved ${signed(treasuryDelta, 0)} while token price moved ${signed(priceDelta)}.`,
+      confidence,
+      metricDeltas,
+      candidateCauses: baseCauses,
     };
   }
   if (event.type === 'price_change') {
     return {
+      id,
+      step: snapshot.step,
       source: `${label} at s${event.step}`,
       driver: event.message,
       impact: `Token price moved ${signed(priceDelta)}; turnout moved ${signed(turnoutDelta * 100, 1)} pts.`,
+      confidence,
+      metricDeltas,
+      candidateCauses: baseCauses,
     };
   }
   if (event.type.startsWith('proposal_') || event.type === 'vote_cast') {
     return {
+      id,
+      step: snapshot.step,
       source: `${label} at s${event.step}`,
       driver: `${snapshot.openProposalCount} open proposal${snapshot.openProposalCount === 1 ? '' : 's'}`,
       impact: `Turnout moved ${signed(turnoutDelta * 100, 1)} pts and inequality moved ${signed(giniDelta * 100, 1)} pts.`,
+      confidence,
+      metricDeltas,
+      candidateCauses: baseCauses,
     };
   }
   if (event.type === 'delegation') {
     return {
+      id,
+      step: snapshot.step,
       source: `${label} at s${event.step}`,
       driver: event.message,
       impact: `Delegation concentration can affect quorum; inequality moved ${signed(giniDelta * 100, 1)} pts.`,
+      confidence,
+      metricDeltas,
+      candidateCauses: baseCauses,
     };
   }
   return {
+    id,
+    step: snapshot.step,
     source: `${label} at s${event.step}`,
     driver: event.message,
     impact: `Price ${signed(priceDelta)}, treasury ${signed(treasuryDelta, 0)}, turnout ${signed(turnoutDelta * 100, 1)} pts.`,
+    confidence,
+    metricDeltas,
+    candidateCauses: baseCauses,
   };
 }
 
@@ -204,13 +268,21 @@ export function LiveExplainabilityPanel() {
         </div>
       )}
       {provenance && (
-        <div className="rounded border p-2" style={{ borderColor: 'var(--sim-border)', background: 'rgba(134,239,172,0.035)' }}>
+        <div
+          className="rounded border p-2"
+          data-testid="explanation-record"
+          data-explanation={JSON.stringify(provenance)}
+          style={{ borderColor: 'var(--sim-border)', background: 'rgba(134,239,172,0.035)' }}
+        >
           <div className="mb-1 flex items-center justify-between gap-2">
             <span className="text-[10px] uppercase tracking-wider text-[var(--sim-text-muted)]">Evidence</span>
             <span className="max-w-[9rem] truncate text-[10px] text-emerald-200" title={provenance.source}>{provenance.source}</span>
           </div>
           <p className="text-[11px] leading-snug text-[var(--sim-text-muted)]">{provenance.driver}</p>
           <p className="mt-1 text-[11px] leading-snug text-[var(--sim-text-muted)]">{provenance.impact}</p>
+          <div className="mt-1 text-[10px] text-[var(--sim-text-muted)]">
+            Confidence {Math.round(provenance.confidence * 100)}% | {provenance.candidateCauses[0]?.cause.replaceAll('_', ' ') ?? 'stable'}
+          </div>
         </div>
       )}
       {cards.map(card => (

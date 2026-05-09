@@ -11,6 +11,7 @@ interface ScenarioPresetWizardProps {
 type StrategyKey = 'baseline' | 'growth' | 'community' | 'risk';
 type RiskKey = 'calm' | 'volatile' | 'crisis';
 type SavedScenario = { name: string; config: BrowserSimConfig };
+type ScenarioImportStatus = { tone: 'success' | 'error'; message: string } | null;
 
 const STRATEGIES: Array<{ id: StrategyKey; label: string; config: Partial<BrowserSimConfig> }> = [
   { id: 'baseline', label: 'Baseline', config: {} },
@@ -175,6 +176,7 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
     }
   });
   const [autoStart, setAutoStart] = useState(status === 'running');
+  const [importStatus, setImportStatus] = useState<ScenarioImportStatus>(null);
 
   const preview = useMemo<BrowserSimConfig>(() => {
     const strategyConfig = STRATEGIES.find(s => s.id === strategy)?.config ?? {};
@@ -202,6 +204,7 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
     const next = [...savedScenarios.filter(item => item.name !== name), { name, config: preview }].slice(-8);
     setSavedScenarios(next);
     localStorage.setItem('dao-sim-scenarios', JSON.stringify(next));
+    setImportStatus({ tone: 'success', message: `Saved ${name}.` });
   }
 
   function exportScenario(item: SavedScenario = { name: `${daoId}-${strategy}-${risk}-s${seed}`, config: preview }) {
@@ -219,19 +222,29 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
     try {
       const text = await file.text();
       const parsed = JSON.parse(text) as unknown;
-      if (!parsed || typeof parsed !== 'object') return;
+      if (!parsed || typeof parsed !== 'object') {
+        setImportStatus({ tone: 'error', message: 'Import failed: file must contain a scenario object.' });
+        return;
+      }
       const source = parsed as { name?: unknown; config?: unknown };
       const importedConfig = source.config && typeof source.config === 'object'
         ? source.config as BrowserSimConfig
         : parsed as BrowserSimConfig;
-      if (!importedConfig.daoId || !importedConfig.stepsPerSecond || !importedConfig.totalSteps) return;
+      if (!importedConfig.daoId || !importedConfig.stepsPerSecond || !importedConfig.totalSteps) {
+        setImportStatus({ tone: 'error', message: 'Import failed: missing daoId, stepsPerSecond, or totalSteps.' });
+        return;
+      }
       const name = typeof source.name === 'string' && source.name.trim().length > 0
         ? source.name.trim()
         : `${importedConfig.daoId}-import-s${importedConfig.seed ?? 42}`;
+      const replaced = savedScenarios.some(item => item.name === name);
       const next = [...savedScenarios.filter(item => item.name !== name), { name, config: importedConfig }].slice(-8);
       setSavedScenarios(next);
       localStorage.setItem('dao-sim-scenarios', JSON.stringify(next));
       loadScenario(importedConfig);
+      setImportStatus({ tone: 'success', message: `${replaced ? 'Updated' : 'Imported'} ${name}.` });
+    } catch {
+      setImportStatus({ tone: 'error', message: 'Import failed: invalid JSON.' });
     } finally {
       if (importRef.current) importRef.current.value = '';
     }
@@ -426,6 +439,20 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
                 </span>
               ))}
             </div>
+            {importStatus && (
+              <div
+                className="mt-2 rounded border px-2 py-1 text-[11px]"
+                data-testid="scenario-import-status"
+                role={importStatus.tone === 'error' ? 'alert' : 'status'}
+                style={{
+                  borderColor: importStatus.tone === 'error' ? 'rgba(251,113,133,0.55)' : 'rgba(134,239,172,0.45)',
+                  color: importStatus.tone === 'error' ? '#fda4af' : '#86efac',
+                  background: importStatus.tone === 'error' ? 'rgba(127,29,29,0.18)' : 'rgba(20,83,45,0.14)',
+                }}
+              >
+                {importStatus.message}
+              </div>
+            )}
           </section>
         </div>
 

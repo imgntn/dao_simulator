@@ -43,6 +43,7 @@ export function SimulationCommandBar({ onOpenWizard }: SimulationCommandBarProps
         type="button"
         onClick={() => (isRunning ? pause() : start())}
         disabled={!canRun}
+        data-testid="command-play"
         className="h-7 min-w-[4.5rem] rounded border px-3 font-semibold text-[var(--sim-text-secondary)] disabled:opacity-40"
         style={{ borderColor: 'var(--sim-border)', background: 'var(--sim-surface)' }}
       >
@@ -52,6 +53,7 @@ export function SimulationCommandBar({ onOpenWizard }: SimulationCommandBarProps
         type="button"
         onClick={step}
         disabled={status === 'initializing'}
+        data-testid="command-step"
         className="h-7 rounded border px-2.5 text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] disabled:opacity-40"
         style={{ borderColor: 'var(--sim-border)' }}
       >
@@ -60,6 +62,7 @@ export function SimulationCommandBar({ onOpenWizard }: SimulationCommandBarProps
       <button
         type="button"
         onClick={reset}
+        data-testid="command-reset"
         className="h-7 rounded border px-2.5 text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)]"
         style={{ borderColor: 'var(--sim-border)' }}
       >
@@ -77,6 +80,7 @@ export function SimulationCommandBar({ onOpenWizard }: SimulationCommandBarProps
       <button
         type="button"
         onClick={onOpenWizard}
+        data-testid="command-presets"
         className="h-7 rounded border px-2.5 text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)]"
         style={{ borderColor: 'var(--sim-border)' }}
       >

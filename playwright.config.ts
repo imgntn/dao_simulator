@@ -86,6 +86,14 @@ export default defineConfig({
       timeout: 120000,
     },
 
+    /* Report-card gates - performance, lifecycle, visual artifacts, UX, explainability */
+    {
+      name: 'report-card',
+      testMatch: /.*report-card\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 180000,
+    },
+
     /* Dashboard tests - simulator UI layout, tabs, panels */
     {
       name: 'dashboard',

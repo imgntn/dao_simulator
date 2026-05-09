@@ -7,6 +7,19 @@ import type { ThreeRendererStats } from '@/lib/browser/renderer-stats';
 import type { VisualAgentDraw, VisualArchetype, VisualLayoutRequest, VisualQuality, VisualSceneDraw } from '@/lib/browser/visual-layout-protocol';
 import { toVisualAgentInput } from '@/lib/browser/visual-layout-protocol';
 
+declare global {
+  interface Window {
+    __daoRendererDiagnostics?: {
+      created: number;
+      disposed: number;
+      active: number;
+      renderer: 'three';
+      lastStats: ThreeRendererStats | null;
+      lifecycle: Array<{ event: 'create' | 'dispose'; active: number; at: number }>;
+    };
+  }
+}
+
 interface SanctumThreeLayerProps {
   snapshot: SimulationSnapshot;
   ceremonies: Map<string, number>;
@@ -91,7 +104,7 @@ export function SanctumThreeLayer({
       sample.count = 0;
       sample.at = now;
     }
-    onVisualStats?.({
+    const stats: ThreeRendererStats = {
       ...draw.stats,
       renderer: 'three',
       drawCalls: runtime.renderer.info.render.calls,
@@ -101,7 +114,12 @@ export function SanctumThreeLayer({
       bufferUpdateMs,
       renderMs,
       renderFps: sample.fps,
-    });
+    };
+    if (typeof window !== 'undefined') {
+      const diagnostics = ensureRendererDiagnostics();
+      diagnostics.lastStats = stats;
+    }
+    onVisualStats?.(stats);
   }, [onVisualStats]);
 
   const requestRender = useCallback(() => {
@@ -305,6 +323,12 @@ function createRuntime(host: HTMLDivElement): ThreeRuntime {
   renderer.domElement.className = 'h-full w-full';
   renderer.domElement.style.display = 'block';
   host.appendChild(renderer.domElement);
+  if (typeof window !== 'undefined') {
+    const diagnostics = ensureRendererDiagnostics();
+    diagnostics.created += 1;
+    diagnostics.active += 1;
+    diagnostics.lifecycle = [...diagnostics.lifecycle, { event: 'create' as const, active: diagnostics.active, at: performance.now() }].slice(-24);
+  }
 
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-500, 500, 320, -320, 1, 2000);
@@ -600,11 +624,29 @@ function disposeRuntime(runtime: ThreeRuntime) {
   disposeMaterial(runtime.stormLines.material);
   runtime.renderer.dispose();
   runtime.renderer.domElement.remove();
+  if (typeof window !== 'undefined') {
+    const diagnostics = ensureRendererDiagnostics();
+    diagnostics.disposed += 1;
+    diagnostics.active = Math.max(0, diagnostics.active - 1);
+    diagnostics.lifecycle = [...diagnostics.lifecycle, { event: 'dispose' as const, active: diagnostics.active, at: performance.now() }].slice(-24);
+  }
 }
 
 function disposeMaterial(material: THREE.Material | THREE.Material[]) {
   if (Array.isArray(material)) material.forEach(item => item.dispose());
   else material.dispose();
+}
+
+function ensureRendererDiagnostics() {
+  window.__daoRendererDiagnostics ??= {
+    created: 0,
+    disposed: 0,
+    active: 0,
+    renderer: 'three',
+    lastStats: null,
+    lifecycle: [],
+  };
+  return window.__daoRendererDiagnostics;
 }
 
 function getVisibleSceneBounds(width: number, height: number, zoom: number, pan: { x: number; y: number }) {
