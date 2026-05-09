@@ -977,7 +977,7 @@ function TimelineScrubber() {
         className="flex-shrink-0 flex items-center justify-center rounded border text-sm font-bold"
         style={{ width: 28, height: 28, background: 'rgba(20,10,40,0.9)', borderColor: MG, color: MG_LT }}
         title={isRunning ? 'Pause' : 'Play'}
-        aria-label={isRunning ? 'Pause simulation' : 'Play simulation'}
+        aria-label={isRunning ? 'Pause simulation' : 'Start simulation'}
       >
         {isRunning ? '⏸' : '▶'}
       </button>

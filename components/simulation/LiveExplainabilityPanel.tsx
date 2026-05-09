@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
+import type { AgentSnapshot, SimulationEvent, SimulationSnapshot } from '@/lib/browser/worker-protocol';
 
 function pct(n: number): string {
   if (!Number.isFinite(n)) return '--';
@@ -12,6 +13,82 @@ function signed(n: number, digits = 2): string {
   if (!Number.isFinite(n)) return '--';
   const sign = n > 0 ? '+' : '';
   return `${sign}${n.toFixed(digits)}`;
+}
+
+function topTokenHolders(agents: AgentSnapshot[], count: number): AgentSnapshot[] {
+  const top: AgentSnapshot[] = [];
+  for (const agent of agents) {
+    const insertAt = top.findIndex(item => agent.tokens > item.tokens);
+    if (insertAt === -1) {
+      if (top.length < count) top.push(agent);
+    } else {
+      top.splice(insertAt, 0, agent);
+      if (top.length > count) top.pop();
+    }
+  }
+  return top;
+}
+
+function explainEventProvenance(
+  event: SimulationEvent | undefined,
+  snapshot: SimulationSnapshot,
+  previous: SimulationSnapshot | null
+) {
+  const priceDelta = previous ? snapshot.tokenPrice - previous.tokenPrice : 0;
+  const treasuryDelta = previous ? snapshot.treasuryFunds - previous.treasuryFunds : 0;
+  const turnoutDelta = previous ? snapshot.avgParticipationRate - previous.avgParticipationRate : 0;
+  const giniDelta = previous ? snapshot.gini - previous.gini : 0;
+
+  if (snapshot.blackSwan.active) {
+    return {
+      source: snapshot.blackSwan.name ?? 'Active shock',
+      driver: `${snapshot.blackSwan.category ?? 'shock'} severity ${snapshot.blackSwan.severity}`,
+      impact: `Stress is active; price ${signed(priceDelta)}, treasury ${signed(treasuryDelta, 0)}, turnout ${signed(turnoutDelta * 100, 1)} pts.`,
+    };
+  }
+
+  if (!event) {
+    return {
+      source: 'No recent event',
+      driver: 'Latest snapshot only',
+      impact: 'Metrics are stable enough that no discrete event is leading the explanation.',
+    };
+  }
+
+  const label = event.type.replaceAll('_', ' ');
+  if (event.type === 'treasury_change') {
+    return {
+      source: `${label} at s${event.step}`,
+      driver: event.message,
+      impact: `Treasury moved ${signed(treasuryDelta, 0)} while token price moved ${signed(priceDelta)}.`,
+    };
+  }
+  if (event.type === 'price_change') {
+    return {
+      source: `${label} at s${event.step}`,
+      driver: event.message,
+      impact: `Token price moved ${signed(priceDelta)}; turnout moved ${signed(turnoutDelta * 100, 1)} pts.`,
+    };
+  }
+  if (event.type.startsWith('proposal_') || event.type === 'vote_cast') {
+    return {
+      source: `${label} at s${event.step}`,
+      driver: `${snapshot.openProposalCount} open proposal${snapshot.openProposalCount === 1 ? '' : 's'}`,
+      impact: `Turnout moved ${signed(turnoutDelta * 100, 1)} pts and inequality moved ${signed(giniDelta * 100, 1)} pts.`,
+    };
+  }
+  if (event.type === 'delegation') {
+    return {
+      source: `${label} at s${event.step}`,
+      driver: event.message,
+      impact: `Delegation concentration can affect quorum; inequality moved ${signed(giniDelta * 100, 1)} pts.`,
+    };
+  }
+  return {
+    source: `${label} at s${event.step}`,
+    driver: event.message,
+    impact: `Price ${signed(priceDelta)}, treasury ${signed(treasuryDelta, 0)}, turnout ${signed(turnoutDelta * 100, 1)} pts.`,
+  };
 }
 
 export function LiveExplainabilityPanel() {
@@ -31,7 +108,7 @@ export function LiveExplainabilityPanel() {
     const approvalLean = latestProposal ? latestProposal.votesFor / voteTotal : 0;
     const activeDelegations = snapshot.agents.filter(agent => agent.delegateTo).length;
     const fatiguedAgents = snapshot.agents.filter(agent => agent.voterFatigue > 0.55).length;
-    const highInfluence = [...snapshot.agents].sort((a, b) => b.tokens - a.tokens).slice(0, 3);
+    const highInfluence = topTokenHolders(snapshot.agents, 3);
 
     return [
       {
@@ -81,6 +158,11 @@ export function LiveExplainabilityPanel() {
     ];
   }, [previousSnapshot, snapshot]);
 
+  const provenance = useMemo(() => {
+    if (!snapshot) return null;
+    return explainEventProvenance(snapshot.recentEvents[0], snapshot, previousSnapshot);
+  }, [previousSnapshot, snapshot]);
+
   const chain = useMemo(() => {
     if (!snapshot) return [];
     const previous = previousSnapshot;
@@ -119,6 +201,16 @@ export function LiveExplainabilityPanel() {
               </li>
             ))}
           </ol>
+        </div>
+      )}
+      {provenance && (
+        <div className="rounded border p-2" style={{ borderColor: 'var(--sim-border)', background: 'rgba(134,239,172,0.035)' }}>
+          <div className="mb-1 flex items-center justify-between gap-2">
+            <span className="text-[10px] uppercase tracking-wider text-[var(--sim-text-muted)]">Evidence</span>
+            <span className="max-w-[9rem] truncate text-[10px] text-emerald-200" title={provenance.source}>{provenance.source}</span>
+          </div>
+          <p className="text-[11px] leading-snug text-[var(--sim-text-muted)]">{provenance.driver}</p>
+          <p className="mt-1 text-[11px] leading-snug text-[var(--sim-text-muted)]">{provenance.impact}</p>
         </div>
       )}
       {cards.map(card => (

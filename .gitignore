@@ -93,6 +93,7 @@ docs/
 docs/*
 !docs/comfyui/
 !docs/comfyui/**
+!docs/rendering-architecture.md
 !docs/report-cards/
 !docs/report-cards/**
 

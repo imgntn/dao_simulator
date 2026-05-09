@@ -27,7 +27,7 @@ async function getStep(page: Page): Promise<number> {
 
 /** Click Play button and wait for steps to start advancing. */
 async function playAndWaitForSteps(page: Page, minSteps = 5) {
-  await page.locator('button[aria-label="Play simulation"]', { hasText: /^Play$/ }).click();
+  await page.locator('button[aria-label="Start simulation"]', { hasText: /^Play$/ }).click();
   // Wait until step counter reaches at least minSteps
   await expect(async () => {
     const step = await getStep(page);
@@ -38,7 +38,7 @@ async function playAndWaitForSteps(page: Page, minSteps = 5) {
 /** Click the main Pause control and wait for the UI to settle back to Play. */
 async function pauseAndWait(page: Page) {
   await page.locator('button[aria-label="Pause simulation"]', { hasText: /^Pause$/ }).click();
-  await expect(page.locator('button[aria-label="Play simulation"]', { hasText: /^Play$/ })).toBeVisible();
+  await expect(page.locator('button[aria-label="Start simulation"]', { hasText: /^Play$/ })).toBeVisible();
 }
 
 function speedSlider(page: Page) {
@@ -47,7 +47,7 @@ function speedSlider(page: Page) {
 
 async function stepForward(page: Page, count = 1) {
   for (let i = 0; i < count; i += 1) {
-    await page.getByRole('button', { name: 'Step simulation forward' }).click();
+    await page.getByRole('button', { name: 'Advance simulation' }).click();
   }
 }
 
@@ -67,7 +67,7 @@ test.describe('Simulate Page - Load & Initialization', () => {
     await gotoAndWaitForInit(page);
 
     await expect(page.getByRole('heading', { name: /Simulation Control/i })).toBeVisible();
-    await expect(page.locator('button[aria-label="Play simulation"]', { hasText: /^Play$/ })).toBeVisible();
+    await expect(page.locator('button[aria-label="Start simulation"]', { hasText: /^Play$/ })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Step' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
   });
@@ -173,15 +173,15 @@ test.describe('Simulate Page - Controls', () => {
     await gotoAndWaitForInit(page);
 
     // Initially shows Play
-    await expect(page.locator('button[aria-label="Play simulation"]', { hasText: /^Play$/ })).toBeVisible();
+    await expect(page.locator('button[aria-label="Start simulation"]', { hasText: /^Play$/ })).toBeVisible();
 
     // Click Play -> should now show Pause
-    await page.locator('button[aria-label="Play simulation"]', { hasText: /^Play$/ }).click();
+    await page.locator('button[aria-label="Start simulation"]', { hasText: /^Play$/ }).click();
     await expect(page.locator('button[aria-label="Pause simulation"]', { hasText: /^Pause$/ })).toBeVisible();
 
     // Click Pause -> should now show Play
     await pauseAndWait(page);
-    await expect(page.locator('button[aria-label="Play simulation"]', { hasText: /^Play$/ })).toBeVisible();
+    await expect(page.locator('button[aria-label="Start simulation"]', { hasText: /^Play$/ })).toBeVisible();
   });
 });
 

@@ -43,9 +43,9 @@ test.describe('Smoke Tests', () => {
         page.getByRole('heading', { name: /Simulation Control/i }),
       ).toBeVisible({ timeout: 60000 });
 
-      await expect(page.getByRole('button', { name: 'Play' })).toBeVisible();
-      await expect(page.getByRole('button', { name: 'Step' })).toBeVisible();
-      await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Step', exact: true })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Reset', exact: true })).toBeVisible();
     });
 
     test('shows step counter at zero', async ({ page }) => {

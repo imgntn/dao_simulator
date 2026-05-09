@@ -26,4 +26,5 @@ Use `+` and `-` when the area sits near a boundary.
 
 | Date | Report | Commit | Summary |
 | --- | --- | --- | --- |
+| 2026-05-09 | [Straight-A Readiness](2026-05-09-straight-a-readiness.md) | this commit | Raises all tracked areas to A with typed renderer stats, rolling health diagnostics, focus mode, scenario JSON exchange, explainability provenance, and rendering docs. |
 | 2026-05-08 | [Sanctum Performance & UX Baseline](2026-05-08-sanctum-performance-ux.md) | `f11f274b3` | First versioned report card after Three.js renderer, demand rendering, hot-path cleanup, and timing HUD work. |

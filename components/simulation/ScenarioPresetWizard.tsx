@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
 import type { BrowserSimConfig } from '@/lib/browser/worker-protocol';
 
@@ -10,6 +10,7 @@ interface ScenarioPresetWizardProps {
 
 type StrategyKey = 'baseline' | 'growth' | 'community' | 'risk';
 type RiskKey = 'calm' | 'volatile' | 'crisis';
+type SavedScenario = { name: string; config: BrowserSimConfig };
 
 const STRATEGIES: Array<{ id: StrategyKey; label: string; config: Partial<BrowserSimConfig> }> = [
   { id: 'baseline', label: 'Baseline', config: {} },
@@ -153,6 +154,7 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
   const selectDao = useSimulationStore(s => s.selectDao);
   const reset = useSimulationStore(s => s.reset);
   const start = useSimulationStore(s => s.start);
+  const importRef = useRef<HTMLInputElement>(null);
 
   const [daoId, setDaoId] = useState(selectedDao || config.daoId);
   const [strategy, setStrategy] = useState<StrategyKey>('baseline');
@@ -164,7 +166,7 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
   const [totalSteps, setTotalSteps] = useState(config.totalSteps);
   const [shockStep, setShockStep] = useState(120);
   const [shockSeverity, setShockSeverity] = useState(config.blackSwanSeverityScale ?? 6);
-  const [savedScenarios, setSavedScenarios] = useState<Array<{ name: string; config: BrowserSimConfig }>>(() => {
+  const [savedScenarios, setSavedScenarios] = useState<SavedScenario[]>(() => {
     if (typeof window === 'undefined') return [];
     try {
       return JSON.parse(localStorage.getItem('dao-sim-scenarios') ?? '[]');
@@ -174,7 +176,7 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
   });
   const [autoStart, setAutoStart] = useState(status === 'running');
 
-  const preview = useMemo(() => {
+  const preview = useMemo<BrowserSimConfig>(() => {
     const strategyConfig = STRATEGIES.find(s => s.id === strategy)?.config ?? {};
     const riskConfig = RISKS.find(r => r.id === risk)?.config ?? {};
     const scaledCounts = scaleAgentCounts({ ...config, ...strategyConfig }, populationScale);
@@ -200,6 +202,39 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
     const next = [...savedScenarios.filter(item => item.name !== name), { name, config: preview }].slice(-8);
     setSavedScenarios(next);
     localStorage.setItem('dao-sim-scenarios', JSON.stringify(next));
+  }
+
+  function exportScenario(item: SavedScenario = { name: `${daoId}-${strategy}-${risk}-s${seed}`, config: preview }) {
+    const blob = new Blob([JSON.stringify(item, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${item.name}.scenario.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function importScenario(file: File | null) {
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text) as unknown;
+      if (!parsed || typeof parsed !== 'object') return;
+      const source = parsed as { name?: unknown; config?: unknown };
+      const importedConfig = source.config && typeof source.config === 'object'
+        ? source.config as BrowserSimConfig
+        : parsed as BrowserSimConfig;
+      if (!importedConfig.daoId || !importedConfig.stepsPerSecond || !importedConfig.totalSteps) return;
+      const name = typeof source.name === 'string' && source.name.trim().length > 0
+        ? source.name.trim()
+        : `${importedConfig.daoId}-import-s${importedConfig.seed ?? 42}`;
+      const next = [...savedScenarios.filter(item => item.name !== name), { name, config: importedConfig }].slice(-8);
+      setSavedScenarios(next);
+      localStorage.setItem('dao-sim-scenarios', JSON.stringify(next));
+      loadScenario(importedConfig);
+    } finally {
+      if (importRef.current) importRef.current.value = '';
+    }
   }
 
   function loadScenario(nextConfig: BrowserSimConfig) {
@@ -356,17 +391,39 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
               <button type="button" onClick={saveScenario} className="rounded border px-2 py-1 text-xs text-[var(--sim-accent)]" style={{ borderColor: 'var(--sim-accent)' }}>
                 Save current
               </button>
+              <button type="button" onClick={() => exportScenario()} className="rounded border px-2 py-1 text-xs text-[var(--sim-text-muted)]" style={{ borderColor: 'var(--sim-border)' }}>
+                Export current
+              </button>
+              <button type="button" onClick={() => importRef.current?.click()} className="rounded border px-2 py-1 text-xs text-[var(--sim-text-muted)]" style={{ borderColor: 'var(--sim-border)' }}>
+                Import
+              </button>
+              <input
+                ref={importRef}
+                type="file"
+                accept="application/json,.json"
+                className="hidden"
+                onChange={event => void importScenario(event.target.files?.[0] ?? null)}
+              />
               {savedScenarios.map(item => (
-                <button
-                  key={item.name}
-                  type="button"
-                  onClick={() => loadScenario(item.config)}
-                  className="max-w-[12rem] truncate rounded border px-2 py-1 text-xs text-[var(--sim-text-muted)]"
-                  style={{ borderColor: 'var(--sim-border)' }}
-                  title={item.name}
-                >
-                  {item.name}
-                </button>
+                <span key={item.name} className="inline-flex max-w-[16rem] overflow-hidden rounded border" style={{ borderColor: 'var(--sim-border)' }}>
+                  <button
+                    type="button"
+                    onClick={() => loadScenario(item.config)}
+                    className="min-w-0 truncate px-2 py-1 text-xs text-[var(--sim-text-muted)]"
+                    title={item.name}
+                  >
+                    {item.name}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exportScenario(item)}
+                    className="border-l px-2 py-1 text-xs text-[var(--sim-accent)]"
+                    style={{ borderColor: 'var(--sim-border)' }}
+                    aria-label={`Export ${item.name}`}
+                  >
+                    JSON
+                  </button>
+                </span>
               ))}
             </div>
           </section>

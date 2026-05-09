@@ -3,19 +3,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import type { SimulationSnapshot } from '@/lib/browser/worker-protocol';
+import type { ThreeRendererStats } from '@/lib/browser/renderer-stats';
 import type { VisualAgentDraw, VisualArchetype, VisualLayoutRequest, VisualQuality, VisualSceneDraw } from '@/lib/browser/visual-layout-protocol';
 import { toVisualAgentInput } from '@/lib/browser/visual-layout-protocol';
-
-export type ThreeRendererStats = VisualSceneDraw['stats'] & {
-  renderer: 'three';
-  drawCalls: number;
-  triangles: number;
-  geometries: number;
-  textures: number;
-  bufferUpdateMs: number;
-  renderMs: number;
-  renderFps: number;
-};
 
 interface SanctumThreeLayerProps {
   snapshot: SimulationSnapshot;

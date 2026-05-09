@@ -279,7 +279,7 @@ export function ControlPanel() {
               trackEvent(ANALYTICS_EVENTS.SIMULATION_STARTED);
             }
           }}
-          aria-label={isRunning ? 'Pause simulation' : 'Play simulation'}
+          aria-label={isRunning ? 'Pause simulation' : 'Start simulation'}
           className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${
             isRunning
               ? 'bg-[var(--sim-accent-pause)] hover:brightness-110 text-white'
@@ -291,7 +291,7 @@ export function ControlPanel() {
         <button
           onClick={step}
           disabled={status === 'initializing'}
-          aria-label="Step simulation forward"
+          aria-label="Advance simulation"
           className="px-3 py-2 rounded text-sm font-medium transition-colors bg-[var(--sim-border)] hover:bg-[var(--sim-surface-hover)] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Step
@@ -299,7 +299,7 @@ export function ControlPanel() {
         <button
           onClick={() => { if (window.confirm('Reset simulation? This will lose current state.')) { reset(); trackEvent(ANALYTICS_EVENTS.SIMULATION_RESET); } }}
           disabled={!canInteract}
-          aria-label="Reset simulation"
+          aria-label="Restart simulation"
           className="px-3 py-2 rounded text-sm font-medium transition-colors bg-[var(--sim-border)] hover:bg-[var(--sim-surface-hover)] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Reset

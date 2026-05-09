@@ -14,6 +14,8 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
 import { useBranchStore } from '@/lib/browser/branch-store';
+import type { PerformanceAverages, SanctumRendererMode, SanctumRendererStats, ThreeRendererStats, VisualSceneDrawStats } from '@/lib/browser/renderer-stats';
+import { averagePerformanceSamples, getPerformanceHealth } from '@/lib/browser/renderer-stats';
 import type {
   AgentSnapshot,
   ProposalSnapshot,
@@ -31,7 +33,7 @@ import { getRole } from './roles';
 import { Tooltip } from './Tooltip';
 import { HelpButton } from './HelpButton';
 import { CanvasVisualLayer } from './CanvasVisualLayer';
-import { SanctumThreeLayer, type ThreeRendererStats } from './SanctumThreeLayer';
+import { SanctumThreeLayer } from './SanctumThreeLayer';
 
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //   Coordinate constants â€” identical to ship version
@@ -77,16 +79,6 @@ const ZOOM_MIN   = 0.4;
 const ZOOM_MAX   = 7.0;
 const SCENE_VISUAL_FPS = 24;
 
-type SanctumRendererMode = 'three' | 'canvas2d';
-type SanctumRendererStats = ThreeRendererStats | (VisualSceneDrawStats & { renderer: 'canvas2d' });
-type VisualSceneDrawStats = {
-  fullAgents: number;
-  simplifiedAgents: number;
-  culledAgents: number;
-  delegations: number;
-  quality: VisualQuality;
-  layoutMs: number;
-};
 
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //   Seeded random
@@ -942,15 +934,43 @@ function PerformanceHud({
   visualStats: SanctumRendererStats | null;
 }) {
   const [stats, setStats] = useState({ fps: 0, frameMs: 0, simRate: 0 });
+  const [averages, setAverages] = useState<PerformanceAverages>({
+    pageFps: 0,
+    frameMs: 0,
+    simRate: 0,
+    simMs: 0,
+    layoutMs: 0,
+    bufferUpdateMs: 0,
+    renderMs: 0,
+    quality,
+  });
   const frameCount = useRef(0);
   const lastFrame = useRef<number | null>(null);
   const lastSample = useRef<number | null>(null);
   const lastStep = useRef(snapshot.step);
   const latestStep = useRef(snapshot.step);
+  const rollingSamples = useRef<PerformanceAverages[]>([]);
+  const latestMetrics = useRef({
+    simMs: snapshot.perf?.totalStepMs ?? 0,
+    layoutMs: visualStats?.layoutMs ?? 0,
+    bufferUpdateMs: visualStats && 'bufferUpdateMs' in visualStats ? visualStats.bufferUpdateMs : 0,
+    renderMs: visualStats && 'renderMs' in visualStats ? visualStats.renderMs : 0,
+    quality,
+  });
 
   useEffect(() => {
     latestStep.current = snapshot.step;
   }, [snapshot.step]);
+
+  useEffect(() => {
+    latestMetrics.current = {
+      simMs: snapshot.perf?.totalStepMs ?? 0,
+      layoutMs: visualStats?.layoutMs ?? 0,
+      bufferUpdateMs: visualStats && 'bufferUpdateMs' in visualStats ? visualStats.bufferUpdateMs : 0,
+      renderMs: visualStats && 'renderMs' in visualStats ? visualStats.renderMs : 0,
+      quality,
+    };
+  }, [quality, snapshot.perf?.totalStepMs, visualStats]);
 
   useEffect(() => {
     let raf = 0;
@@ -965,12 +985,23 @@ function PerformanceHud({
       const elapsed = now - lastSample.current;
       if (elapsed >= 500) {
         const fps = frameCount.current / (elapsed / 1000);
+        const frameMs = lastFrame.current ? now - lastFrame.current : 0;
         const stepDelta = latestStep.current - lastStep.current;
+        const simRate = stepDelta / (elapsed / 1000);
+        const sample: PerformanceAverages = {
+          pageFps: fps,
+          frameMs,
+          simRate,
+          ...latestMetrics.current,
+        };
+        rollingSamples.current = [...rollingSamples.current.slice(-9), sample];
         setStats({
           fps,
-          frameMs: lastFrame.current ? now - lastFrame.current : 0,
-          simRate: stepDelta / (elapsed / 1000),
+          frameMs,
+          simRate,
         });
+        const nextAverage = averagePerformanceSamples(rollingSamples.current);
+        setAverages(nextAverage);
         if (fps < 24) onQualityChange('low');
         else if (fps < 42) onQualityChange('medium');
         else if (fps > 54) onQualityChange('high');
@@ -985,11 +1016,14 @@ function PerformanceHud({
     return () => cancelAnimationFrame(raf);
   }, [onQualityChange]);
 
+  const health = getPerformanceHealth(averages);
+  const healthColor = health.health === 'critical' ? '#fb7185' : health.health === 'watch' ? '#facc15' : '#86efac';
+
   return (
     <div
       className="absolute left-3 top-12 z-20 grid grid-cols-2 gap-x-3 gap-y-0.5 rounded-sm border px-2.5 py-1.5 font-mono text-[10px] tabular-nums"
       style={{
-        width: 176,
+        width: 204,
         background: 'rgba(4,2,16,0.72)',
         borderColor: 'rgba(64,232,255,0.35)',
         color: CX_SAL_G,
@@ -997,6 +1031,8 @@ function PerformanceHud({
       data-ui-interactive
     >
       <span className="opacity-60">FPS</span><span className="text-right">{stats.fps.toFixed(0)}</span>
+      <span className="opacity-60">Avg</span><span className="text-right">{averages.pageFps.toFixed(0)} fps / {averages.frameMs.toFixed(1)}ms</span>
+      <span className="opacity-60">Health</span><span className="truncate text-right" style={{ color: healthColor }} title={health.reason}>{health.health}</span>
       <span className="opacity-60">3D FPS</span><span className="text-right">{visualStats && 'renderFps' in visualStats ? visualStats.renderFps.toFixed(0) : '--'}</span>
       <span className="opacity-60">Frame</span><span className="text-right">{stats.frameMs.toFixed(1)}ms</span>
       <span className="opacity-60">Sim</span><span className="text-right">{stats.simRate.toFixed(1)} step/s</span>
@@ -1039,6 +1075,8 @@ function ZoomControls({
   onToggleLabels,
   showDelegations,
   onToggleDelegations,
+  focusMode,
+  onToggleFocusMode,
 }: {
   zoom: number;
   onZoom: (z: number) => void;
@@ -1046,6 +1084,8 @@ function ZoomControls({
   onToggleLabels: () => void;
   showDelegations: boolean;
   onToggleDelegations: () => void;
+  focusMode: boolean;
+  onToggleFocusMode: () => void;
 }) {
   const btn = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -1085,6 +1125,15 @@ function ZoomControls({
         aria-label="Toggle delegation overlay"
       >
         DEL
+      </button>
+      <button
+        type="button"
+        style={{ ...miniBtn, background: focusMode ? 'rgba(134,239,172,0.16)' : 'rgba(12,6,28,0.72)', opacity: focusMode ? 1 : 0.78 }}
+        onClick={onToggleFocusMode}
+        title="Toggle focus mode"
+        aria-label="Toggle focus mode"
+      >
+        FOC
       </button>
     </div>
   );
@@ -1174,7 +1223,7 @@ function TimelineScrubber() {
         className="flex-shrink-0 flex items-center justify-center rounded border text-sm font-bold"
         style={{ width: 28, height: 28, background: 'rgba(20,10,40,0.9)', borderColor: MG, color: MG_LT }}
         title={isRunning ? 'Pause' : 'Play'}
-        aria-label={isRunning ? 'Pause simulation' : 'Play simulation'}
+        aria-label={isRunning ? 'Pause simulation' : 'Start simulation'}
       >
         {isRunning ? 'II' : '>'}
       </button>
@@ -1511,6 +1560,7 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
   const [pan, setPan]   = useState({ x: 0, y: 0 });
   const [labelsVisible, setLabelsVisible] = useState(false);
   const [showDelegations, setShowDelegations] = useState(false);
+  const [focusMode, setFocusMode] = useState(false);
   const [quality, setQuality] = useState<VisualQuality>('high');
   const [rendererMode, setRendererMode] = useState<SanctumRendererMode>('three');
   const [threeAvailable, setThreeAvailable] = useState(true);
@@ -1768,7 +1818,7 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
           />
           <StaticCaveLedges />
           <StaticCaveCeiling />
-          <StaticRoomLabels />
+          {!focusMode && <StaticRoomLabels />}
         </svg>
         {rendererMode === 'three' && threeAvailable ? (
           <SanctumThreeLayer
@@ -1820,9 +1870,9 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
         threeAvailable={threeAvailable}
         visualStats={visualStats}
       />
-      <VisualLegend />
+      {!focusMode && <VisualLegend />}
       <HoverTooltip agent={hoveredAgent} />
-      <FireLog events={snapshot.recentEvents} />
+      {!focusMode && <FireLog events={snapshot.recentEvents} />}
       <ZoomControls
         zoom={zoom}
         onZoom={z => { setZoom(z); if (z === 1) setPan({ x: 0, y: 0 }); }}
@@ -1830,6 +1880,8 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
         onToggleLabels={() => setLabelsVisible(v => !v)}
         showDelegations={showDelegations}
         onToggleDelegations={() => setShowDelegations(v => !v)}
+        focusMode={focusMode}
+        onToggleFocusMode={() => setFocusMode(v => !v)}
       />
       <HelpButton />
 
