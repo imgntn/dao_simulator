@@ -14,6 +14,17 @@ The simulator is intentionally split so simulation work, layout work, and render
 | Canvas fallback | `components/simulation/sanctum/CanvasVisualLayer.tsx` | Keeps a 2D accelerated fallback when WebGL is unavailable. |
 | React UI | `components/simulation/sanctum/SanctumScene.tsx` | Owns controls, overlays, inspector state, focus mode, and performance HUD. |
 
+## Runtime Diagnostics
+
+The hard-A report gate reads machine-readable runtime evidence from the browser:
+
+| Hook | Producer | Used For |
+| --- | --- | --- |
+| `window.__daoPerfSamples` | `SanctumScene` performance HUD | Rolling FPS, frame, sim, layout, buffer, and render budget checks. |
+| `window.__daoPerfHealth` | `SanctumScene` performance HUD | Current aggregate health and reason. |
+| `window.__daoRendererDiagnostics` | `SanctumThreeLayer` | Three.js create/dispose counts, active renderer count, memory counters, and lifecycle events. |
+| `data-explanation` on `explanation-record` | `LiveExplainabilityPanel` | Replayable explanation id, confidence, metric deltas, and candidate causes. |
+
 ## Performance Signals
 
 The on-screen HUD reports both immediate and rolling values:
@@ -39,8 +50,8 @@ The on-screen HUD reports both immediate and rolling values:
 
 The renderer earns an A when:
 
-- Simulation, layout, and rendering timings are visible and typed through `lib/browser/renderer-stats.ts`.
-- WebGL is the default renderer, with Canvas 2D fallback available from the HUD.
-- UI interaction is independent of simulation ticking.
-- Visual noise can be reduced without losing core controls.
-- Scenario state can be imported/exported for reproducible report-card runs.
+- Simulation, layout, and rendering timings are visible, typed through `lib/browser/renderer-stats.ts`, and covered by `npm.cmd run test:e2e:report-card`.
+- WebGL is the default renderer, Canvas 2D fallback remains available from the HUD, and renderer lifecycle diagnostics stay bounded across fallback switching and reset.
+- UI interaction is independent of simulation ticking and scenario import/export has visible validation states.
+- Visual noise can be reduced without losing core controls, with screenshot artifacts for default, focus, and zoomed states.
+- Scenario state and explanation records can be imported, exported, or replayed for reproducible report-card runs.

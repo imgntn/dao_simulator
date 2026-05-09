@@ -1,7 +1,8 @@
 # Hard-A Upgrade Report Card
 
 Date: 2026-05-09
-Commit under review: this commit
+Commit under review: `ba7082bbf`
+Remote status: pushed to `origin/main`
 
 ## Grades
 
@@ -24,6 +25,7 @@ Straight As require this command set to pass:
 - `npm.cmd test`
 - `npm.cmd run test:e2e:smoke`
 - `npm.cmd run test:e2e:report-card`
+- `npm.cmd audit --audit-level=moderate`
 
 ## Evidence Artifacts
 
@@ -35,3 +37,10 @@ The report-card Playwright project attaches these artifacts:
 - `sanctum-focus.png`
 - `sanctum-focus-zoomed.png`
 - `explanation-record.json`
+
+## Security Status
+
+As of this report, local npm audit and GitHub Dependabot open-alert checks are clear:
+
+- `npm.cmd audit --audit-level=moderate` reported 0 vulnerabilities.
+- `gh api 'repos/imgntn/dao_simulator/dependabot/alerts?state=open'` returned no open alerts.

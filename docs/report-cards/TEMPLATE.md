@@ -20,6 +20,7 @@
 | Architecture |  |  |  |
 | Observability |  |  |  |
 | Docs |  |  |  |
+| Security |  |  |  |
 | Overall |  |  |  |
 
 ## Evidence
@@ -27,6 +28,7 @@
 - Checks run:
 - Browser smoke:
 - Screenshots/artifacts:
+- Security checks:
 
 ## Follow-Up Priorities
 
