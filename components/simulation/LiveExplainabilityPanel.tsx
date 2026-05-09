@@ -16,11 +16,11 @@ function signed(n: number, digits = 2): string {
 
 export function LiveExplainabilityPanel() {
   const snapshot = useSimulationStore(s => s.snapshot);
-  const history = useSimulationStore(s => s.history);
+  const previousSnapshot = useSimulationStore(s => s.previousSnapshot);
 
   const cards = useMemo(() => {
     if (!snapshot) return [];
-    const previous = history.length > 1 ? history[history.length - 2] : null;
+    const previous = previousSnapshot;
     const priceDelta = previous ? snapshot.tokenPrice - previous.tokenPrice : 0;
     const treasuryDelta = previous ? snapshot.treasuryFunds - previous.treasuryFunds : 0;
     const participationDelta = previous ? snapshot.avgParticipationRate - previous.avgParticipationRate : 0;
@@ -79,11 +79,11 @@ export function LiveExplainabilityPanel() {
         reason: `${fatiguedAgents} agents are fatigued; top token holders: ${highInfluence.map(agent => agent.type.replaceAll('_', ' ')).join(', ') || 'none'}.`,
       },
     ];
-  }, [history, snapshot]);
+  }, [previousSnapshot, snapshot]);
 
   const chain = useMemo(() => {
     if (!snapshot) return [];
-    const previous = history.length > 1 ? history[history.length - 2] : null;
+    const previous = previousSnapshot;
     const event = snapshot.recentEvents[0];
     const chainItems = [];
     if (event) chainItems.push(`${event.type.replaceAll('_', ' ')} at s${event.step}`);
@@ -100,7 +100,7 @@ export function LiveExplainabilityPanel() {
       chainItems.push(`${snapshot.blackSwan.category ?? 'shock'} severity ${snapshot.blackSwan.severity}`);
     }
     return chainItems.slice(0, 4);
-  }, [history, snapshot]);
+  }, [previousSnapshot, snapshot]);
 
   if (!snapshot) {
     return <div className="p-3 text-xs text-[var(--sim-text-muted)]">Run the simulation to explain live changes.</div>;

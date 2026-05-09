@@ -6,7 +6,9 @@ import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
 import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 
 export function ExportButton() {
-  const { history, config, annotations } = useSimulationStore();
+  const history = useSimulationStore(s => s.history);
+  const config = useSimulationStore(s => s.config);
+  const annotations = useSimulationStore(s => s.annotations);
   const { trackEvent } = useAnalytics();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);

@@ -80,12 +80,15 @@ export function SanctumThreeLayer({
   const qualityRef = useRef(quality);
   const pendingDrawRef = useRef<VisualSceneDraw | null>(null);
   const frameRef = useRef<number | null>(null);
+  const pickFrameRef = useRef<number | null>(null);
+  const pendingPointerRef = useRef<{ x: number; y: number; target: HTMLDivElement } | null>(null);
   const lastRenderSampleRef = useRef({ at: 0, count: 0, fps: 0 });
   const [sceneDraw, setSceneDraw] = useState<VisualSceneDraw | null>(null);
 
   const ceremoniesPayload = useMemo(() => Array.from(ceremonies.entries()), [ceremonies]);
   const shelvingPayload = useMemo(() => Array.from(shelving.values()), [shelving]);
   const agentsPayload = useMemo(() => snapshot.agents.map(toVisualAgentInput), [snapshot.agents]);
+  const agentsKey = useMemo(() => snapshot.agents.map(agent => `${agent.id}:${agent.type}`).join('|'), [snapshot.agents]);
 
   const publishStats = useCallback((runtime: ThreeRuntime, draw: VisualSceneDraw, bufferUpdateMs: number, renderMs: number) => {
     const now = performance.now();
@@ -144,6 +147,10 @@ export function SanctumThreeLayer({
           cancelAnimationFrame(frameRef.current);
           frameRef.current = null;
         }
+        if (pickFrameRef.current !== null) {
+          cancelAnimationFrame(pickFrameRef.current);
+          pickFrameRef.current = null;
+        }
         disposeRuntime(runtime);
         runtimeRef.current = null;
         onVisualStats?.(null);
@@ -180,6 +187,7 @@ export function SanctumThreeLayer({
     const request: VisualLayoutRequest = {
       requestId: ++requestIdRef.current,
       step: snapshot.step,
+      agentsKey,
       agents: agentsPayload,
       events: snapshot.recentEvents,
       blackSwanActive: snapshot.blackSwan.active,
@@ -195,6 +203,7 @@ export function SanctumThreeLayer({
     worker.postMessage(request);
   }, [
     agentsPayload,
+    agentsKey,
     ceremoniesPayload,
     labelsVisible,
     pan,
@@ -235,15 +244,27 @@ export function SanctumThreeLayer({
   }, []);
 
   const handlePointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    const agent = pickAgent(event.clientX, event.clientY);
-    const id = agent?.id ?? null;
-    if (id === hoverIdRef.current) return;
-    hoverIdRef.current = id;
-    event.currentTarget.style.cursor = id ? 'pointer' : 'inherit';
-    onHoverAgent?.(agent);
+    pendingPointerRef.current = { x: event.clientX, y: event.clientY, target: event.currentTarget };
+    if (pickFrameRef.current !== null) return;
+    pickFrameRef.current = requestAnimationFrame(() => {
+      pickFrameRef.current = null;
+      const pending = pendingPointerRef.current;
+      if (!pending) return;
+      const agent = pickAgent(pending.x, pending.y);
+      const id = agent?.id ?? null;
+      if (id === hoverIdRef.current) return;
+      hoverIdRef.current = id;
+      pending.target.style.cursor = id ? 'pointer' : 'inherit';
+      onHoverAgent?.(agent);
+    });
   }, [onHoverAgent, pickAgent]);
 
   const handlePointerLeave = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    pendingPointerRef.current = null;
+    if (pickFrameRef.current !== null) {
+      cancelAnimationFrame(pickFrameRef.current);
+      pickFrameRef.current = null;
+    }
     hoverIdRef.current = null;
     event.currentTarget.style.cursor = 'inherit';
     onHoverAgent?.(null);

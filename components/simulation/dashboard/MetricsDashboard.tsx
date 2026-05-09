@@ -12,6 +12,7 @@ import { ExportButton } from '../ExportButton';
 
 const SPARKLINE_WINDOW = 50;
 const MA_WINDOW = 10;
+const CHART_POINT_BUDGET = 140;
 
 const SPARKLINE_COLORS: Record<string, string> = {
   Treasury: '#06b6d4',
@@ -41,12 +42,23 @@ function linearRegression(data: number[]): [number, number] {
 /** Moving average with given window */
 function movingAverage(data: number[], window: number): number[] {
   const result: number[] = [];
+  let sum = 0;
   for (let i = 0; i < data.length; i++) {
-    const start = Math.max(0, i - window + 1);
-    const slice = data.slice(start, i + 1);
-    result.push(slice.reduce((a, b) => a + b, 0) / slice.length);
+    sum += data[i];
+    if (i >= window) sum -= data[i - window];
+    result.push(sum / Math.min(window, i + 1));
   }
   return result;
+}
+
+function sampleHistory<T>(items: T[], budget: number): T[] {
+  if (items.length <= budget) return items;
+  const stride = Math.ceil(items.length / budget);
+  const sampled: T[] = [];
+  for (let i = 0; i < items.length; i += stride) sampled.push(items[i]);
+  const last = items[items.length - 1];
+  if (sampled[sampled.length - 1] !== last) sampled.push(last);
+  return sampled;
 }
 
 export function MetricsDashboard() {
@@ -65,6 +77,11 @@ export function MetricsDashboard() {
       participation: tail.map(s => s.avgParticipationRate),
     };
   }, [history]);
+
+  const chartHistory = useMemo(
+    () => sampleHistory(history, CHART_POINT_BUDGET),
+    [history]
+  );
 
   if (!snapshot) {
     return (
@@ -103,10 +120,10 @@ export function MetricsDashboard() {
       </div>
 
       {/* Charts */}
-      <TreasuryChart history={history} />
-      <PriceChart history={history} />
-      <ParticipationChart history={history} />
-      <GiniChart history={history} />
+      <TreasuryChart history={chartHistory} />
+      <PriceChart history={chartHistory} />
+      <ParticipationChart history={chartHistory} />
+      <GiniChart history={chartHistory} />
       <AgentDistribution agents={snapshot.agents} />
       <ProposalOutcomes snapshot={snapshot} />
     </div>

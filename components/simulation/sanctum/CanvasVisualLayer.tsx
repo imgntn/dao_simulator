@@ -127,6 +127,7 @@ export function CanvasVisualLayer({
   const ceremoniesPayload = useMemo(() => Array.from(ceremonies.entries()), [ceremonies]);
   const shelvingPayload = useMemo(() => Array.from(shelving.values()), [shelving]);
   const agentsPayload = useMemo(() => snapshot.agents.map(toVisualAgentInput), [snapshot.agents]);
+  const agentsKey = useMemo(() => snapshot.agents.map(agent => `${agent.id}:${agent.type}`).join('|'), [snapshot.agents]);
 
   useEffect(() => {
     const worker = new Worker(new URL('../../../lib/browser/visual-layout-worker.ts', import.meta.url), { type: 'module' });
@@ -155,6 +156,7 @@ export function CanvasVisualLayer({
     const request: VisualLayoutRequest = {
       requestId: ++requestIdRef.current,
       step: snapshot.step,
+      agentsKey,
       agents: agentsPayload,
       events: snapshot.recentEvents,
       blackSwanActive: snapshot.blackSwan.active,
@@ -170,6 +172,7 @@ export function CanvasVisualLayer({
     worker.postMessage(request);
   }, [
     agentsPayload,
+    agentsKey,
     ceremoniesPayload,
     labelsVisible,
     pan,

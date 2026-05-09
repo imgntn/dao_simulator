@@ -86,12 +86,7 @@ function role(type: string) {
   return ROLE_NAMES[type] ?? ROLE_NAMES[type.toLowerCase()] ?? { name: type.replaceAll('_', ' '), short: type.slice(0, 4).toUpperCase() };
 }
 
-function baseKey(agents: VisualLayoutAgentInput[]) {
-  return agents.map(agent => `${agent.id}:${agent.type}`).join('|');
-}
-
-function basePlacements(agents: VisualLayoutAgentInput[]) {
-  const key = baseKey(agents);
+function basePlacements(agents: VisualLayoutAgentInput[], key: string) {
   const cached = BASE_CACHE.get(key);
   if (cached) return cached;
 
@@ -141,7 +136,7 @@ function buildVisualScene(req: VisualLayoutRequest): VisualSceneDraw {
   const fullAgentLimit = req.zoom >= 2.8 ? QUALITY_FULL_AGENT_LIMIT.high : QUALITY_FULL_AGENT_LIMIT[req.quality];
   const fullIds = new Set<string>();
 
-  const raw = basePlacements(req.agents).map(base => {
+  const raw = basePlacements(req.agents, req.agentsKey).map(base => {
     const agent = agentById.get(base.id);
     if (!agent) return null;
     let x = base.x;

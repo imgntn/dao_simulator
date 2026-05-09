@@ -40,6 +40,7 @@ export interface SimulationState {
   // Core state
   status: SimulationStatus;
   snapshot: SimulationSnapshot | null;
+  previousSnapshot: SimulationSnapshot | null;
   history: SimulationSnapshot[];
   error: string | null;
 
@@ -142,11 +143,12 @@ function scheduleSnapshotFlush(set: SimulationSet, snapshot: SimulationSnapshot)
 
     const latest = batch[batch.length - 1];
     set(prev => {
-      const newHistory = [...prev.history, ...batch];
-      if (newHistory.length > MAX_HISTORY_LENGTH) {
-        newHistory.splice(0, newHistory.length - MAX_HISTORY_LENGTH);
-      }
+      const overflow = Math.max(0, prev.history.length + batch.length - MAX_HISTORY_LENGTH);
+      const newHistory = overflow > 0
+        ? prev.history.slice(overflow).concat(batch)
+        : prev.history.concat(batch);
       return {
+        previousSnapshot: prev.snapshot,
         snapshot: latest,
         history: newHistory,
       };
@@ -179,6 +181,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
   // Initial state
   status: 'idle',
   snapshot: null,
+  previousSnapshot: null,
   history: [],
   error: null,
   config: { ...DEFAULT_CONFIG },
@@ -273,6 +276,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
       error: null,
       history: [],
       snapshot: null,
+      previousSnapshot: null,
       lastSentConfig: { ...currentConfig },
     });
 
@@ -356,7 +360,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
     if (!worker || !calibrationProfiles || !marketData) return;
 
     clearPendingSnapshotFlush();
-    set({ status: 'initializing', history: [], snapshot: null, error: null, lastSentConfig: { ...config }, viewingStep: null });
+    set({ status: 'initializing', history: [], snapshot: null, previousSnapshot: null, error: null, lastSentConfig: { ...config }, viewingStep: null });
     worker.postMessage({ type: 'reset', config });
   },
 
@@ -379,7 +383,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
     // Reset simulation with new DAO
     if (state.worker && state.calibrationProfiles && state.marketData) {
       clearPendingSnapshotFlush();
-      set({ status: 'initializing', history: [], snapshot: null, error: null, lastSentConfig: { ...newConfig }, viewingStep: null });
+      set({ status: 'initializing', history: [], snapshot: null, previousSnapshot: null, error: null, lastSentConfig: { ...newConfig }, viewingStep: null });
       state.worker.postMessage({ type: 'reset', config: newConfig });
     }
   },
@@ -421,6 +425,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
       status: 'idle',
       worker: null,
       snapshot: null,
+      previousSnapshot: null,
       history: [],
       error: null,
     });

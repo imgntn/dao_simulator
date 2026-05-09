@@ -14,6 +14,7 @@ export interface VisualLayoutAgentInput {
 export interface VisualLayoutRequest {
   requestId: number;
   step: number;
+  agentsKey: string;
   agents: VisualLayoutAgentInput[];
   events: SimulationEvent[];
   blackSwanActive: boolean;
