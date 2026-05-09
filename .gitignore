@@ -93,6 +93,8 @@ docs/
 docs/*
 !docs/comfyui/
 !docs/comfyui/**
+!docs/report-cards/
+!docs/report-cards/**
 
 # Podcast media (hosted on Cloudflare R2)
 podcast_media/
