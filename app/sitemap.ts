@@ -4,7 +4,6 @@ const locales = ['en', 'es', 'zh', 'ja'] as const;
 const baseUrl = 'https://daosimulator.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  // Core pages (localized)
   const corePages = ['', '/console', '/simulate', '/health'];
 
   const localizedEntries = corePages.flatMap((page) =>
@@ -21,24 +20,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }))
   );
 
-  // Research brief anchors (English only — briefs are section anchors on the homepage)
-  const briefIds = ['rq1', 'rq2', 'rq3', 'rq4', 'rq5', 'rq6', 'rq7'];
-  const briefEntries = briefIds.map((id) => ({
-    url: `${baseUrl}/en#${id}`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly' as const,
-    priority: 0.8,
-  }));
+  const paperEntries = [
+    {
+      url: `${baseUrl}/api/artifacts/paper/main.pdf`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    },
+  ];
 
-  // Paper PDF (served via artifacts API)
-  const paperEntries = [{
-    url: `${baseUrl}/api/artifacts/paper/main.pdf`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
-  }];
-
-  // llms.txt
   const llmsTxtEntry = {
     url: `${baseUrl}/llms.txt`,
     lastModified: new Date(),
@@ -46,5 +36,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.3,
   };
 
-  return [...localizedEntries, ...briefEntries, ...paperEntries, llmsTxtEntry];
+  return [...localizedEntries, ...paperEntries, llmsTxtEntry];
 }

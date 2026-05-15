@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       // Default: allow everything except private routes
       {
         userAgent: '*',
-        allow: '/',
+        allow: ['/', '/api/artifacts/paper/main.pdf'],
         disallow: ['/api/', '/en/console', '/es/console', '/zh/console', '/ja/console'],
       },
       // OpenAI crawlers
