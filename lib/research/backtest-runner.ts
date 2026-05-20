@@ -204,6 +204,9 @@ export class BacktestRunner {
       forum_activity_error: 0,
     };
 
+    const detailSums: Record<string, number> = {};
+    const detailCounts: Record<string, number> = {};
+
     let avgScore = 0;
 
     for (const report of reports) {
@@ -214,6 +217,17 @@ export class BacktestRunner {
       avgMetrics.voter_concentration_error += report.metrics.voter_concentration_error;
       avgMetrics.forum_activity_error += report.metrics.forum_activity_error;
       avgScore += report.overall_score;
+
+      for (const [key, value] of Object.entries(report.details)) {
+        if (typeof value !== 'number' || !isFinite(value)) continue;
+        detailSums[key] = (detailSums[key] ?? 0) + value;
+        detailCounts[key] = (detailCounts[key] ?? 0) + 1;
+      }
+    }
+
+    const averagedDetails: Record<string, number> = {};
+    for (const key of Object.keys(detailSums)) {
+      averagedDetails[key] = detailSums[key] / detailCounts[key];
     }
 
     return {
@@ -228,7 +242,7 @@ export class BacktestRunner {
         forum_activity_error: avgMetrics.forum_activity_error / n,
       },
       overall_score: avgScore / n,
-      details: {},
+      details: averagedDetails,
     };
   }
 

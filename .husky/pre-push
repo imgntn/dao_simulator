@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Optional pre-push hook: run the fast calibration suite ONLY when
+# the diff touches paths that can influence simulation behavior.
+# Skip entirely when CALIBRATION_PRE_PUSH=0 to bypass on a per-push basis.
+
+if [ "${CALIBRATION_PRE_PUSH:-1}" = "0" ]; then
+  exit 0
+fi
+
+REMOTE="$1"
+RANGE_BASE=$(git merge-base HEAD "${REMOTE}/main" 2>/dev/null || git merge-base HEAD origin/main 2>/dev/null || echo "")
+
+if [ -z "$RANGE_BASE" ]; then
+  exit 0
+fi
+
+CHANGED=$(git diff --name-only "$RANGE_BASE" HEAD)
+
+RELEVANT_PATTERN='^(lib/agents/|lib/engine/|lib/digital-twins/|lib/utils/random\.ts|lib/research/)'
+if ! echo "$CHANGED" | grep -E "$RELEVANT_PATTERN" > /dev/null; then
+  echo "[pre-push] no calibration-relevant changes — skipping fast suite"
+  exit 0
+fi
+
+echo "[pre-push] calibration-relevant paths changed — running fast suite"
+bash ci/validate-fast.sh
+EXIT=$?
+if [ $EXIT -ne 0 ]; then
+  echo "[pre-push] calibration validation failed (exit $EXIT) — push aborted."
+  echo "          Use CALIBRATION_PRE_PUSH=0 git push to bypass intentionally."
+fi
+exit $EXIT

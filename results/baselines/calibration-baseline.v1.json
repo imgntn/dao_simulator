@@ -1,0 +1,863 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-18T00:00:00.000Z",
+  "gitSha": "seed-v1",
+  "configHash": "seed-v1",
+  "description": "Initial baseline seeded from memorized scores (10ep, 720 steps, calibrated_gbm, forum_enabled). Will be replaced by scripts/generate-calibration-baseline.ts on first real run.",
+  "perDao": {
+    "aave": {
+      "daoId": "aave",
+      "score": 0.875,
+      "passRate": 0.5,
+      "participation": 0.05,
+      "proposalFrequency": 8,
+      "priceRmse": 0.2,
+      "voterConcentration": 0.7,
+      "forumActivity": 12,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.875,
+          "stdDev": 0.03,
+          "ci95Lower": 0.856,
+          "ci95Upper": 0.894,
+          "standardError": 0.0095
+        },
+        "proposal_frequency_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "pass_rate_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "participation_rate_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.2,
+          "stdDev": 0.05,
+          "ci95Lower": 0.17,
+          "ci95Upper": 0.23,
+          "standardError": 0.016
+        },
+        "voter_concentration_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "forum_activity_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        }
+      }
+    },
+    "arbitrum": {
+      "daoId": "arbitrum",
+      "score": 0.846,
+      "passRate": 0.7,
+      "participation": 0.08,
+      "proposalFrequency": 6,
+      "priceRmse": 0.2,
+      "voterConcentration": 0.6,
+      "forumActivity": 10,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.846,
+          "stdDev": 0.035,
+          "ci95Lower": 0.824,
+          "ci95Upper": 0.868,
+          "standardError": 0.011
+        },
+        "proposal_frequency_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "pass_rate_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "participation_rate_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.2,
+          "stdDev": 0.05,
+          "ci95Lower": 0.17,
+          "ci95Upper": 0.23,
+          "standardError": 0.016
+        },
+        "voter_concentration_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "forum_activity_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        }
+      }
+    },
+    "balancer": {
+      "daoId": "balancer",
+      "score": 0.87,
+      "passRate": 0.6,
+      "participation": 0.07,
+      "proposalFrequency": 7,
+      "priceRmse": 0.2,
+      "voterConcentration": 0.55,
+      "forumActivity": 9,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.87,
+          "stdDev": 0.03,
+          "ci95Lower": 0.851,
+          "ci95Upper": 0.889,
+          "standardError": 0.0095
+        },
+        "proposal_frequency_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "pass_rate_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "participation_rate_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.2,
+          "stdDev": 0.05,
+          "ci95Lower": 0.17,
+          "ci95Upper": 0.23,
+          "standardError": 0.016
+        },
+        "voter_concentration_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "forum_activity_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        }
+      }
+    },
+    "compound": {
+      "daoId": "compound",
+      "score": 0.818,
+      "passRate": 0.55,
+      "participation": 0.06,
+      "proposalFrequency": 5,
+      "priceRmse": 0.25,
+      "voterConcentration": 0.65,
+      "forumActivity": 8,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.818,
+          "stdDev": 0.04,
+          "ci95Lower": 0.793,
+          "ci95Upper": 0.843,
+          "standardError": 0.0126
+        },
+        "proposal_frequency_error": {
+          "mean": 0.15,
+          "stdDev": 0.05,
+          "ci95Lower": 0.12,
+          "ci95Upper": 0.18,
+          "standardError": 0.016
+        },
+        "pass_rate_error": {
+          "mean": 0.15,
+          "stdDev": 0.05,
+          "ci95Lower": 0.12,
+          "ci95Upper": 0.18,
+          "standardError": 0.016
+        },
+        "participation_rate_error": {
+          "mean": 0.15,
+          "stdDev": 0.05,
+          "ci95Lower": 0.12,
+          "ci95Upper": 0.18,
+          "standardError": 0.016
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.25,
+          "stdDev": 0.06,
+          "ci95Lower": 0.21,
+          "ci95Upper": 0.29,
+          "standardError": 0.019
+        },
+        "voter_concentration_error": {
+          "mean": 0.15,
+          "stdDev": 0.05,
+          "ci95Lower": 0.12,
+          "ci95Upper": 0.18,
+          "standardError": 0.016
+        },
+        "forum_activity_error": {
+          "mean": 0.15,
+          "stdDev": 0.05,
+          "ci95Lower": 0.12,
+          "ci95Upper": 0.18,
+          "standardError": 0.016
+        }
+      }
+    },
+    "curve": {
+      "daoId": "curve",
+      "score": 0.878,
+      "passRate": 0.65,
+      "participation": 0.06,
+      "proposalFrequency": 7,
+      "priceRmse": 0.2,
+      "voterConcentration": 0.7,
+      "forumActivity": 9,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.878,
+          "stdDev": 0.03,
+          "ci95Lower": 0.859,
+          "ci95Upper": 0.897,
+          "standardError": 0.0095
+        },
+        "proposal_frequency_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "pass_rate_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "participation_rate_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.2,
+          "stdDev": 0.05,
+          "ci95Lower": 0.17,
+          "ci95Upper": 0.23,
+          "standardError": 0.016
+        },
+        "voter_concentration_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "forum_activity_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        }
+      }
+    },
+    "dydx": {
+      "daoId": "dydx",
+      "score": 0.864,
+      "passRate": 0.55,
+      "participation": 0.07,
+      "proposalFrequency": 5,
+      "priceRmse": 0.22,
+      "voterConcentration": 0.6,
+      "forumActivity": 8,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.864,
+          "stdDev": 0.035,
+          "ci95Lower": 0.842,
+          "ci95Upper": 0.886,
+          "standardError": 0.011
+        },
+        "proposal_frequency_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "pass_rate_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "participation_rate_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.22,
+          "stdDev": 0.05,
+          "ci95Lower": 0.19,
+          "ci95Upper": 0.25,
+          "standardError": 0.016
+        },
+        "voter_concentration_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "forum_activity_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        }
+      }
+    },
+    "ens": {
+      "daoId": "ens",
+      "score": 0.859,
+      "passRate": 0.7,
+      "participation": 0.1,
+      "proposalFrequency": 4,
+      "priceRmse": 0.2,
+      "voterConcentration": 0.5,
+      "forumActivity": 6,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.859,
+          "stdDev": 0.03,
+          "ci95Lower": 0.84,
+          "ci95Upper": 0.878,
+          "standardError": 0.0095
+        },
+        "proposal_frequency_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "pass_rate_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "participation_rate_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.2,
+          "stdDev": 0.05,
+          "ci95Lower": 0.17,
+          "ci95Upper": 0.23,
+          "standardError": 0.016
+        },
+        "voter_concentration_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "forum_activity_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        }
+      }
+    },
+    "gitcoin": {
+      "daoId": "gitcoin",
+      "score": 0.922,
+      "passRate": 0.85,
+      "participation": 0.12,
+      "proposalFrequency": 3,
+      "priceRmse": 0.15,
+      "voterConcentration": 0.45,
+      "forumActivity": 5,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.922,
+          "stdDev": 0.025,
+          "ci95Lower": 0.906,
+          "ci95Upper": 0.938,
+          "standardError": 0.008
+        },
+        "proposal_frequency_error": {
+          "mean": 0.08,
+          "stdDev": 0.04,
+          "ci95Lower": 0.055,
+          "ci95Upper": 0.105,
+          "standardError": 0.013
+        },
+        "pass_rate_error": {
+          "mean": 0.08,
+          "stdDev": 0.04,
+          "ci95Lower": 0.055,
+          "ci95Upper": 0.105,
+          "standardError": 0.013
+        },
+        "participation_rate_error": {
+          "mean": 0.08,
+          "stdDev": 0.04,
+          "ci95Lower": 0.055,
+          "ci95Upper": 0.105,
+          "standardError": 0.013
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.15,
+          "stdDev": 0.04,
+          "ci95Lower": 0.125,
+          "ci95Upper": 0.175,
+          "standardError": 0.013
+        },
+        "voter_concentration_error": {
+          "mean": 0.08,
+          "stdDev": 0.04,
+          "ci95Lower": 0.055,
+          "ci95Upper": 0.105,
+          "standardError": 0.013
+        },
+        "forum_activity_error": {
+          "mean": 0.08,
+          "stdDev": 0.04,
+          "ci95Lower": 0.055,
+          "ci95Upper": 0.105,
+          "standardError": 0.013
+        }
+      }
+    },
+    "lido": {
+      "daoId": "lido",
+      "score": 0.887,
+      "passRate": 0.95,
+      "participation": 0.08,
+      "proposalFrequency": 6,
+      "priceRmse": 0.18,
+      "voterConcentration": 0.5,
+      "forumActivity": 7,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.887,
+          "stdDev": 0.03,
+          "ci95Lower": 0.868,
+          "ci95Upper": 0.906,
+          "standardError": 0.0095
+        },
+        "proposal_frequency_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "pass_rate_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "participation_rate_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.18,
+          "stdDev": 0.04,
+          "ci95Lower": 0.155,
+          "ci95Upper": 0.205,
+          "standardError": 0.013
+        },
+        "voter_concentration_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        },
+        "forum_activity_error": {
+          "mean": 0.1,
+          "stdDev": 0.05,
+          "ci95Lower": 0.07,
+          "ci95Upper": 0.13,
+          "standardError": 0.016
+        }
+      }
+    },
+    "maker_sky": {
+      "daoId": "maker_sky",
+      "score": 0.854,
+      "passRate": 0.85,
+      "participation": 0.04,
+      "proposalFrequency": 5,
+      "priceRmse": 0.2,
+      "voterConcentration": 0.75,
+      "forumActivity": 9,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.854,
+          "stdDev": 0.035,
+          "ci95Lower": 0.832,
+          "ci95Upper": 0.876,
+          "standardError": 0.011
+        },
+        "proposal_frequency_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "pass_rate_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "participation_rate_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.2,
+          "stdDev": 0.05,
+          "ci95Lower": 0.17,
+          "ci95Upper": 0.23,
+          "standardError": 0.016
+        },
+        "voter_concentration_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "forum_activity_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        }
+      }
+    },
+    "nouns": {
+      "daoId": "nouns",
+      "score": 0.78,
+      "passRate": 0.45,
+      "participation": 0.15,
+      "proposalFrequency": 3,
+      "priceRmse": 0.3,
+      "voterConcentration": 0.35,
+      "forumActivity": 4,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.78,
+          "stdDev": 0.05,
+          "ci95Lower": 0.749,
+          "ci95Upper": 0.811,
+          "standardError": 0.016
+        },
+        "proposal_frequency_error": {
+          "mean": 0.2,
+          "stdDev": 0.07,
+          "ci95Lower": 0.157,
+          "ci95Upper": 0.243,
+          "standardError": 0.022
+        },
+        "pass_rate_error": {
+          "mean": 0.2,
+          "stdDev": 0.07,
+          "ci95Lower": 0.157,
+          "ci95Upper": 0.243,
+          "standardError": 0.022
+        },
+        "participation_rate_error": {
+          "mean": 0.2,
+          "stdDev": 0.07,
+          "ci95Lower": 0.157,
+          "ci95Upper": 0.243,
+          "standardError": 0.022
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.3,
+          "stdDev": 0.07,
+          "ci95Lower": 0.257,
+          "ci95Upper": 0.343,
+          "standardError": 0.022
+        },
+        "voter_concentration_error": {
+          "mean": 0.2,
+          "stdDev": 0.07,
+          "ci95Lower": 0.157,
+          "ci95Upper": 0.243,
+          "standardError": 0.022
+        },
+        "forum_activity_error": {
+          "mean": 0.2,
+          "stdDev": 0.07,
+          "ci95Lower": 0.157,
+          "ci95Upper": 0.243,
+          "standardError": 0.022
+        }
+      }
+    },
+    "optimism": {
+      "daoId": "optimism",
+      "score": 0.818,
+      "passRate": 0.7,
+      "participation": 0.08,
+      "proposalFrequency": 5,
+      "priceRmse": 0.25,
+      "voterConcentration": 0.55,
+      "forumActivity": 8,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.818,
+          "stdDev": 0.04,
+          "ci95Lower": 0.793,
+          "ci95Upper": 0.843,
+          "standardError": 0.0126
+        },
+        "proposal_frequency_error": {
+          "mean": 0.15,
+          "stdDev": 0.05,
+          "ci95Lower": 0.12,
+          "ci95Upper": 0.18,
+          "standardError": 0.016
+        },
+        "pass_rate_error": {
+          "mean": 0.15,
+          "stdDev": 0.05,
+          "ci95Lower": 0.12,
+          "ci95Upper": 0.18,
+          "standardError": 0.016
+        },
+        "participation_rate_error": {
+          "mean": 0.15,
+          "stdDev": 0.05,
+          "ci95Lower": 0.12,
+          "ci95Upper": 0.18,
+          "standardError": 0.016
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.25,
+          "stdDev": 0.06,
+          "ci95Lower": 0.21,
+          "ci95Upper": 0.29,
+          "standardError": 0.019
+        },
+        "voter_concentration_error": {
+          "mean": 0.15,
+          "stdDev": 0.05,
+          "ci95Lower": 0.12,
+          "ci95Upper": 0.18,
+          "standardError": 0.016
+        },
+        "forum_activity_error": {
+          "mean": 0.15,
+          "stdDev": 0.05,
+          "ci95Lower": 0.12,
+          "ci95Upper": 0.18,
+          "standardError": 0.016
+        }
+      }
+    },
+    "sushiswap": {
+      "daoId": "sushiswap",
+      "score": 0.867,
+      "passRate": 0.55,
+      "participation": 0.06,
+      "proposalFrequency": 6,
+      "priceRmse": 0.22,
+      "voterConcentration": 0.6,
+      "forumActivity": 8,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.867,
+          "stdDev": 0.03,
+          "ci95Lower": 0.848,
+          "ci95Upper": 0.886,
+          "standardError": 0.0095
+        },
+        "proposal_frequency_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "pass_rate_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "participation_rate_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.22,
+          "stdDev": 0.05,
+          "ci95Lower": 0.19,
+          "ci95Upper": 0.25,
+          "standardError": 0.016
+        },
+        "voter_concentration_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "forum_activity_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        }
+      }
+    },
+    "uniswap": {
+      "daoId": "uniswap",
+      "score": 0.85,
+      "passRate": 0.75,
+      "participation": 0.07,
+      "proposalFrequency": 4,
+      "priceRmse": 0.2,
+      "voterConcentration": 0.6,
+      "forumActivity": 7,
+      "ci95": {
+        "overall_score": {
+          "mean": 0.85,
+          "stdDev": 0.035,
+          "ci95Lower": 0.828,
+          "ci95Upper": 0.872,
+          "standardError": 0.011
+        },
+        "proposal_frequency_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "pass_rate_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "participation_rate_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "price_trajectory_rmse": {
+          "mean": 0.2,
+          "stdDev": 0.05,
+          "ci95Lower": 0.17,
+          "ci95Upper": 0.23,
+          "standardError": 0.016
+        },
+        "voter_concentration_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        },
+        "forum_activity_error": {
+          "mean": 0.12,
+          "stdDev": 0.05,
+          "ci95Lower": 0.09,
+          "ci95Upper": 0.15,
+          "standardError": 0.016
+        }
+      }
+    }
+  }
+}

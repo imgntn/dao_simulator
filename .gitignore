@@ -39,10 +39,11 @@ yarn-error.log*
 next-env.d.ts
 
 # experiment results (archived to R2: dao-research-media bucket)
-/results/
+/results/*
 !/results/historical/
 /results/historical/*
 !/results/historical/calibration/
+!/results/baselines/
 
 # playwright
 /test-results/
@@ -96,6 +97,7 @@ docs/*
 !docs/rendering-architecture.md
 !docs/report-cards/
 !docs/report-cards/**
+!docs/validation-loop-plan.md
 
 # Podcast media (hosted on Cloudflare R2)
 podcast_media/

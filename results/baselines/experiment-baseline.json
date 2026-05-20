@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-18T00:00:00.000Z",
+  "gitSha": "seed-v1",
+  "configHash": "seed-v1",
+  "findings": {
+    "exp-10-calibration-validation": {
+      "description": "14-DAO calibration validation average score",
+      "direction": "positive",
+      "magnitudeRange": [0.82, 0.90],
+      "metric": "avg_calibration_score",
+      "observedMagnitude": 0.856,
+      "observedAt": "2026-05-18T00:00:00.000Z"
+    },
+    "exp-11-advanced-mechanisms": {
+      "description": "Advanced mechanisms (IRV, futarchy, liquid+decay) vs majority: null result",
+      "direction": "neutral",
+      "magnitudeRange": [-0.05, 0.05],
+      "metric": "mechanism_score_delta",
+      "observedMagnitude": 0.01,
+      "observedAt": "2026-05-18T00:00:00.000Z"
+    },
+    "exp-13-cross-dao-governance": {
+      "description": "Cross-DAO governance comparison: scale dominates rule choice",
+      "direction": "positive",
+      "magnitudeRange": [0.10, 0.40],
+      "metric": "scale_effect_size",
+      "observedMagnitude": 0.25,
+      "observedAt": "2026-05-18T00:00:00.000Z"
+    },
+    "exp-14-black-swan-resilience": {
+      "description": "Black swan reduces participation and approval rate",
+      "direction": "negative",
+      "magnitudeRange": [-0.30, -0.05],
+      "metric": "black_swan_participation_delta",
+      "observedMagnitude": -0.18,
+      "observedAt": "2026-05-18T00:00:00.000Z"
+    },
+    "exp-15-counterfactual-expansion": {
+      "description": "Counterfactual governance: most rules within ±0.05 of historical",
+      "direction": "neutral",
+      "magnitudeRange": [-0.05, 0.05],
+      "metric": "counterfactual_pass_rate_delta",
+      "observedMagnitude": 0.02,
+      "observedAt": "2026-05-18T00:00:00.000Z"
+    },
+    "exp-16-rl-activation": {
+      "description": "RL tiers 1-3 progressively improve agent reward",
+      "direction": "positive",
+      "magnitudeRange": [0.02, 0.20],
+      "metric": "tier3_vs_baseline_reward",
+      "observedMagnitude": 0.12,
+      "observedAt": "2026-05-18T00:00:00.000Z"
+    },
+    "exp-17-gemma4-e4b": {
+      "description": "Gemma 4 E4B with enriched DAO briefing + thinking mode improves governance",
+      "direction": "positive",
+      "magnitudeRange": [0.04, 0.10],
+      "metric": "llm_thinking_score_delta",
+      "observedMagnitude": 0.067,
+      "observedAt": "2026-05-18T00:00:00.000Z"
+    }
+  }
+}

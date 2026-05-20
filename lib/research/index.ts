@@ -181,3 +181,78 @@ export {
   type EmergentMetrics,
   type CounterfactualArm,
 } from './counterfactual-runner';
+
+// Calibration Validation Loop
+export {
+  CALIBRATION_FAST_SEEDS,
+  CALIBRATION_FULL_SEEDS,
+  CALIBRATION_SMOKE_SEEDS,
+  CALIBRATION_CANONICAL_SEED,
+} from './canonical-seeds';
+export {
+  BASELINE_DAO_IDS,
+  DAO_SUITE_CONFIG,
+  BASELINE_CALIBRATION_CONFIG,
+  EXPERIMENT_BASELINE_FINDINGS,
+  METRIC_THRESHOLD_MULTIPLIER,
+  computeBaselineConfigHash,
+  EXIT_OK,
+  EXIT_REGRESSION,
+  EXIT_CONFIG_DRIFT,
+  EXIT_INFRA_FAILURE,
+  type DaoSuiteConfig,
+  type ExperimentFinding,
+} from './baseline-config';
+export {
+  CalibrationBaselineSchema,
+  ExperimentBaselineSchema,
+  ValidationRunSchema,
+  DaoBaselineSchema,
+  DaoValidationResultSchema,
+  ExperimentFindingSchema,
+  ExperimentValidationResultSchema,
+  ConfidenceIntervalSchema,
+  type CalibrationBaseline,
+  type ExperimentBaseline,
+  type ValidationRun,
+  type DaoBaseline,
+  type DaoValidationResult,
+  type ExperimentFindingRecord,
+  type ExperimentValidationResult,
+  type ConfidenceIntervalShape,
+} from './baseline-schema';
+export {
+  CalibrationValidator,
+  populateExp10Magnitude,
+  type ValidatorOptions,
+} from './calibration-validator';
+export {
+  ValidationDiffer,
+  type DiffReport,
+  type DaoDiffEntry,
+  type RegressionKind,
+} from './validation-differ';
+export {
+  FindingChecker,
+  type FindingDiffReport,
+  type FindingDiffEntry,
+  type FindingIssueKind,
+} from './finding-checker';
+export {
+  writeValidationReport,
+  collectSuspectCommits,
+  type ReportContext,
+  type ReportSinkOptions,
+} from './validation-report';
+export {
+  readHistory,
+  renderTrendSvg,
+  writeTrendSvg,
+  type TrendPlotOptions,
+} from './trend-svg';
+export {
+  getValidationWorkerCount,
+  readDaoHistory,
+  adaptiveEpisodeCount,
+  setupValidationLlmCache,
+} from './validation-cost-control';
