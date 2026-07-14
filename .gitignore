@@ -88,6 +88,9 @@ __pycache__/
 # Claude local settings
 .claude/settings.local.json
 
+# OpenClaw recursive-loop runtime state
+/.openclaw/
+
 # Docs (drafts / transcripts)
 docs/
 !docs/

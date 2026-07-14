@@ -8,9 +8,9 @@
   },
 
   "optimization_rationale": {
-    "steps": "Increased from 20→40 for finer detail without over-processing",
-    "denoise": "Reduced from 0.3→0.15-0.2 to preserve chart data accuracy",
-    "cfg": "Reduced from 7→5.5 to prevent over-stylization of clean charts",
+    "steps": "Increased from 20???40 for finer detail without over-processing",
+    "denoise": "Reduced from 0.3???0.15-0.2 to preserve chart data accuracy",
+    "cfg": "Reduced from 7???5.5 to prevent over-stylization of clean charts",
     "sampler": "Changed to euler_a for smoother gradients in scientific visualizations",
     "prompts": "More specific to scientific/academic chart aesthetics"
   },
@@ -183,3 +183,4 @@
     "Title text unchanged"
   ]
 }
+

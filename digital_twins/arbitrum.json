@@ -45,7 +45,7 @@
       "execution": {
         "timelock_and_bridging": {
           "notes": [
-            "Arbitrum governance execution involves timelocks and L2→L1 message delays (depending on proposal type/execution path)."
+            "Arbitrum governance execution involves timelocks and L2???L1 message delays (depending on proposal type/execution path)."
           ],
           "typical_components": [
             {
@@ -53,7 +53,7 @@
               "typical_delay_days": 3
             },
             {
-              "component": "L2→L1 message delay",
+              "component": "L2???L1 message delay",
               "typical_delay_days": 7
             },
             {
@@ -110,12 +110,12 @@
         {
           "stage": "Temperature Check",
           "platform": "Snapshot",
-          "entry_requirement": "≥0.01% of votable tokens delegated"
+          "entry_requirement": "???0.01% of votable tokens delegated"
         },
         {
           "stage": "On-chain proposal",
           "platform": "Tally/on-chain",
-          "entry_requirement": "≥1,000,000 ARB delegated"
+          "entry_requirement": "???1,000,000 ARB delegated"
         },
         {
           "stage": "Voting",
@@ -145,7 +145,7 @@
       "timelock": true,
       "multi_stage_execution": true,
       "notes": [
-        "long voting window (≈2 weeks) plus timelocks provide review time",
+        "long voting window (???2 weeks) plus timelocks provide review time",
         "execution can be delayed by cross-chain messaging windows"
       ]
     },
@@ -182,7 +182,7 @@
         "url": "https://docs.arbitrum.foundation/dao-governance/dao-faqs"
       },
       {
-        "title": "Arbitrum forum: execution path discussion (timelock + L2→L1 delay components)",
+        "title": "Arbitrum forum: execution path discussion (timelock + L2???L1 delay components)",
         "url": "https://forum.arbitrum.foundation/t/arbitrumdao-should-reduce-the-l2-timelock/21374"
       }
     ]

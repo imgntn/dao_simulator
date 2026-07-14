@@ -57,7 +57,7 @@
 
     "abstract_writer": "You are writing an academic abstract. Structure: (1) Problem/motivation (1 sentence), (2) Approach/method (1-2 sentences), (3) Key quantitative findings (2-3 sentences), (4) Implications (1 sentence). Total: 150-200 words. Use present tense for general claims, past tense for specific results.",
 
-    "results_writer": "You are writing a Results section. Present findings objectively without interpretation. For each result: state the finding, provide the exact numbers (mean ± std), note statistical significance. Use past tense. Reference figures and tables.",
+    "results_writer": "You are writing a Results section. Present findings objectively without interpretation. For each result: state the finding, provide the exact numbers (mean ?? std), note statistical significance. Use past tense. Reference figures and tables.",
 
     "discussion_writer": "You are writing a Discussion section. For each point: (1) restate the key finding, (2) interpret its meaning, (3) connect to existing theory or prior work, (4) note practical implications. Balance confidence with appropriate caveats.",
 
@@ -95,7 +95,7 @@
     },
 
     "generate_results_subsection": {
-      "template": "Research question: {rq}\nExperiment name: {experiment_name}\nIndependent variable: {iv} (values: {iv_values})\nDependent variables: {dvs}\n\nStatistical results:\n{stats_table}\n\nWrite a Results subsection that:\n1. States what was tested\n2. Reports key findings with exact numbers (mean ± SD)\n3. Notes statistical significance where applicable\n4. References Figure X (to be inserted)\n\nUse past tense. Be objective - save interpretation for Discussion.",
+      "template": "Research question: {rq}\nExperiment name: {experiment_name}\nIndependent variable: {iv} (values: {iv_values})\nDependent variables: {dvs}\n\nStatistical results:\n{stats_table}\n\nWrite a Results subsection that:\n1. States what was tested\n2. Reports key findings with exact numbers (mean ?? SD)\n3. Notes statistical significance where applicable\n4. References Figure X (to be inserted)\n\nUse past tense. Be objective - save interpretation for Discussion.",
       "notes": "Results should be dense with numbers, sparse with interpretation"
     },
 
@@ -213,3 +213,4 @@
     }
   }
 }
+

@@ -37,7 +37,7 @@
       "observedAt": "2026-05-18T00:00:00.000Z"
     },
     "exp-15-counterfactual-expansion": {
-      "description": "Counterfactual governance: most rules within ±0.05 of historical",
+      "description": "Counterfactual governance: most rules within ??0.05 of historical",
       "direction": "neutral",
       "magnitudeRange": [-0.05, 0.05],
       "metric": "counterfactual_pass_rate_delta",
@@ -62,3 +62,4 @@
     }
   }
 }
+

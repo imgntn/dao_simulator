@@ -104,8 +104,8 @@
           "voting_delay_days": 2,
           "voting_period_days": 7,
           "timelock_days": 2,
-          "entry_requirement": "≥1,000,000 UNI delegated to proposer",
-          "pass_condition": "For > Against AND For votes ≥ 40,000,000 UNI"
+          "entry_requirement": "???1,000,000 UNI delegated to proposer",
+          "pass_condition": "For > Against AND For votes ??? 40,000,000 UNI"
         }
       ],
       "proposal_types": [
