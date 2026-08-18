@@ -109,9 +109,9 @@ test.describe('Accessibility', () => {
     });
 
     test('navigation tabs are keyboard accessible', async ({ page }) => {
-      const interactiveTab = page.getByRole('button', { name: 'Interactive' });
-      await interactiveTab.focus();
-      const isFocused = await interactiveTab.evaluate((el) =>
+      const evidenceTab = page.getByRole('tab', { name: 'Evidence', exact: true });
+      await evidenceTab.focus();
+      const isFocused = await evidenceTab.evaluate((el) =>
         document.activeElement === el
       );
       expect(isFocused).toBe(true);
@@ -147,10 +147,10 @@ test.describe('Accessibility', () => {
 
     test('can navigate simulator tabs with keyboard', async ({ page }) => {
       await gotoAndWaitForInit(page);
-      const compareTab = page.getByRole('button', { name: 'Compare' });
-      await compareTab.focus();
+      const evidenceTab = page.getByRole('tab', { name: 'Evidence', exact: true });
+      await evidenceTab.focus();
       await page.keyboard.press('Enter');
-      await expect(compareTab).toBeVisible();
+      await expect(evidenceTab).toHaveAttribute('aria-selected', 'true');
     });
 
     test('can operate simulation controls with keyboard', async ({ page }) => {
@@ -189,9 +189,9 @@ test.describe('Accessibility', () => {
       await gotoAndWaitForInit(page);
 
       const buttons = [
-        page.getByRole('button', { name: 'Play' }),
-        page.getByRole('button', { name: 'Step' }),
-        page.getByRole('button', { name: 'Reset' }),
+        page.getByTestId('command-play'),
+        page.getByTestId('command-step'),
+        page.getByTestId('command-reset'),
       ];
 
       for (const button of buttons) {

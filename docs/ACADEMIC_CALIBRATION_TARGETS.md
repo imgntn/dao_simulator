@@ -1,92 +1,53 @@
-# Academic Calibration Targets
+# Academic calibration targets
 
-This grounding table summarizes governance participation and market volatility proxies derived from the local historical dataset (2024 daily) and governance parameter targets from the digital twins.
+This document identifies the canonical target artifacts and their interpretation.
+It intentionally does not copy numeric targets into prose because copied tables
+become stale when source corrections or partition definitions change.
 
-## Coverage
+## Canonical artifacts
 
-- Time window: 2024-01-01 through 2024-12-31 (daily).
-- Governance sources: Snapshot proposals/votes and MakerDAO polls from `results/historical_2024_q*_daily/governance/`.
-- Market sources: `results/historical_2024_q*_daily/market/market_daily.csv` (CryptoCompare feed).
+- Training profiles: `results/historical/validation/train/*_profile.json`
+- Held-out profiles: `results/historical/validation/holdout/*_profile.json`
+- Raw-source checksums: `results/historical/source-checksums.json`
+- Compiler: `python/data_ingestion/compile_calibration.py`
+- Temporal validation runner: `scripts/run-calibration-validation.ts`
 
-## Governance Parameter Targets (Digital Twins)
+Every profile contains its inclusive UTC period, partition label, selected row
+counts and date ranges, raw-source SHA-256 values, source-quality counts, and
+field-level observed/derived/unavailable status.
 
-| DAO | Proposal threshold | Quorum | Voting period | Notes |
-| --- | --- | --- | --- | --- |
-| Aave | short: 80000 AAVE; long: 1.25% | short: 320000 AAVE; long: 6.5% | short: 3d; long: 10d | Dual executor thresholds |
-| Lido DAO | N/A | N/A | offchain 7d; onchain 5d | Snapshot + onchain voting |
-| Sky (MakerDAO) | N/A | N/A | continuous / weekly | Polling + executive approvals |
-| Uniswap DAO | 1000000 UNI | 40000000 UNI | 7d |  |
-| Arbitrum DAO | 1000000 ARB | non-const: 3.0%; const: 4.5% | 14-16d |  |
-| Optimism | N/A | 30.0% | 7d | Token House quorum/approval |
+## Frozen temporal design
 
-## Governance Participation Targets (2024 Snapshot/Maker)
+- Training/calibration period: 2023-01-01 through 2024-12-31 UTC.
+- Held-out evaluation period: 2025-01-01 through 2025-12-31 UTC.
+- The training profile may configure simulator parameters.
+- The held-out profile may only score predictions.
+- Aggregate profiles are diagnostic and cannot support held-out claims.
+- A run is invalid if training and evaluation periods overlap.
 
-| DAO | Proposals (count) | Binary pass rate | Quorum reach rate | Avg total votes (token-weighted) | Avg quorum |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| Aave | 260 | 0.92 | 0.92 | 633536.84 | 320000.0 |
-| Lido DAO | 77 | 1.00 | N/A | 31168030.21 | 0.0 |
-| Sky (MakerDAO) | 56 polls | 0.9285714285714286 | N/A | 90898.2 MKR | N/A |
-| Uniswap DAO | 49 | 0.92 | 0.89 | 29977160.03 | 10000000.0 |
-| Arbitrum DAO | 211 | 0.89 | N/A | 150944431.84 | 0.0 |
-| Optimism | 19 | 1.00 | 0.50 | 36.21 | 37.67 |
+## Target interpretation
 
-## Treasury Volatility Proxy (Token Price, 2024 Daily)
+Governance outcome rates use only classifiable terminal outcomes. Snapshot
+binary outcomes are reconstructed from weighted yes/no or for/against votes and
+must meet the recorded quorum when one exists. Participation uses the fixed
+observed-voter denominator defined by the compiler; it is a behavioral proxy,
+not token-holder turnout. Proposal cadence includes inactive calendar months.
+Protocol, forum, and market targets are period-filtered by their actual UTC
+timestamp columns.
 
-| DAO | Token | Days | Annualized vol (log returns) |
-| --- | --- | ---: | ---: |
-| Aave | AAVE | 366 | 0.9761 |
-| Lido DAO | LDO | 366 | 1.1598 |
-| Sky (MakerDAO) | MKR | 366 | 0.8854 |
-| Uniswap DAO | UNI | 366 | 1.1 |
-| Arbitrum DAO | ARB | 366 | 0.9157 |
-| Optimism | OP | 366 | 1.015 |
+Unavailable measurements are represented as `null`, never as plausible-looking
+defaults. In particular, the corpus does not currently identify delegation
+events or contain an independently sourced ETH benchmark, so delegation rate
+and correlation to ETH are unavailable. Voter-cluster majority alignment is
+derived from comparable vote records and weighted proposal majorities.
 
-## Realism Bands (Initial)
+## Required reporting
 
-These bands are used for initial calibration checks. They are defined as:
-- Rates (pass/quorum reach): +/- 0.10 absolute, clamped to [0, 1].
-- Participation (avg total votes): +/- 25% relative.
-- Volatility proxy (annualized): +/- 25% relative.
+Publication tables must show per-DAO metric scores and uncertainty, the
+historical-persistence null, the paired uncalibrated-simulation null, and both
+absolute and normalized skill. Composite scores are secondary and must include
+their weights and a weight-sensitivity analysis.
 
-| DAO | Pass rate band | Quorum reach band | Avg votes band | Volatility band |
-| --- | --- | --- | --- | --- |
-| Aave | 0.82-1.00 | 0.82-1.00 | 475152.63-791921.05 | 0.73-1.22 |
-| Lido DAO | 0.90-1.00 | N/A | 23376022.65-38960037.76 | 0.87-1.45 |
-| Sky (MakerDAO) | 0.83-1.00 | N/A | 68173.65-113622.75 | 0.66-1.11 |
-| Uniswap DAO | 0.82-1.00 | 0.79-0.99 | 22482870.02-37471450.03 | 0.82-1.37 |
-| Arbitrum DAO | 0.79-0.99 | N/A | 113208323.88-188680539.8 | 0.69-1.14 |
-| Optimism | 0.90-1.00 | 0.40-0.60 | 27.16-45.26 | 0.76-1.27 |
-
-## Sources
-
-- Governance: Snapshot proposal/vote exports and MakerDAO poll exports captured in `results/historical_2024_q*_daily/governance/`.
-- Markets: CryptoCompare daily price feed captured in `results/historical_2024_q*_daily/market/market_daily.csv`.
-- Governance parameter targets: digital twin sources listed in each twin JSON file:
-  - Aave:
-    - Aave help: Voting in Aave Governance (vote delay and short/long executor timelines) (https://aave.com/help/governance/voting)
-    - Aave Governance Process Document v1 (quorum concept and 320k AAVE example) (https://aave.com/docs/ecosystem/governance/governance-process)
-    - Aave governance-v2 proposal 106 (updates to Level 2/long executor requirements) (https://governance-v2.aave.com/governance/proposal/106/)
-    - Aave governance forum: Adjust long-executor requirements (historic baseline thresholds and periods) (https://governance.aave.com/t/rfc-aave-governance-adjust-level-2-requirements-long-executor/8693)
-  - Lido DAO:
-    - Lido DAO governance overview (regular process durations and platforms) (https://lido.fi/governance)
-    - Lido blog: Participating in Dual Governance (thresholds and dynamic timelock behavior) (https://blog.lido.fi/participating-in-dual-governance-a-guide-for-steth-holders/)
-  - Sky (MakerDAO):
-    - MakerDAO Voting Proxy Contract (poll vs executive; approval voting; locking; hot/cold wallet separation) (https://medium.com/@MakerDAO/the-makerdao-voting-proxy-contract-5765dd5946b4)
-    - Sky ecosystem / Maker community: How voting works (governance polls and executive votes) (https://github.com/sky-ecosystem/community/blob/master/content/en/learn/governance/how-voting-works.mdx)
-    - Maker Protocol Technical Docs: Chief (approval voting mechanics) (https://docs.makerdao.com/smart-contract-modules/governance-module/chief-detailed-documentation)
-  - Uniswap DAO:
-    - Uniswap governance process (Temperature Check + Governance Proposal parameters) (https://docs.uniswap.org/concepts/governance/process)
-    - Uniswap Beginners' Guide to Voting (proposal threshold and quorum) (https://docs.uniswap.org/concepts/governance/guide-to-voting)
-    - Uniswap governance forum: Lower onchain proposal threshold to 1M UNI (https://gov.uniswap.org/t/rfc-lower-onchain-proposal-threshold/22429)
-    - Uniswap docs governance overview (timelock minimum delay concept) (https://docs.uniswap.org/contracts/v3/reference/governance/overview)
-    - Uniswap: Introducing UNI (token contract address) (https://blog.uniswap.org/uni)
-    - Uniswap governance concept overview (timelock address) (https://docs.uniswap.org/concepts/governance/overview)
-  - Arbitrum DAO:
-    - Arbitrum DAO voting guide (temperature check + on-chain thresholds, voting period, quorums) (https://docs.arbitrum.foundation/dao-governance/dao-vote)
-    - Arbitrum DAO FAQs (Snapshot + Tally usage; 1M ARB threshold) (https://docs.arbitrum.foundation/dao-governance/dao-faqs)
-    - Arbitrum forum: execution path discussion (timelock + L2→L1 delay components) (https://forum.arbitrum.foundation/t/arbitrumdao-should-reduce-the-l2-timelock/21374)
-  - Optimism:
-    - Optimism governance docs (Token House / Citizens' House and structures) (https://docs.optimism.io/governance)
-    - Optimism governance forum: Season 2 voting, quorum set to 30% of votable supply (https://gov.optimism.io/t/season-2-token-house-voting-approach/2395)
-    - Optimism governance forum: Voting Cycle Roundup #29 (cycle dates and Citizens' House veto week) (https://gov.optimism.io/t/voting-cycle-roundup-29/9164)
-    - Optimism docs: Protocol upgrades and 7 day veto period (process safety) (https://docs.optimism.io/governance/protocol-upgrades)
+The legacy hand-copied 2024 target table and its obsolete quarterly paths are
+preserved only in the immutable legacy archive listed in
+`docs/LEGACY_ARTIFACT_INVENTORY.md`.

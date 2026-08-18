@@ -8,9 +8,9 @@ description: |
 version: 1.0.0
 baseConfig:
   template: compound
-  simulationOverrides:
-    learning_enabled: true
   overrides:
+    learning_persist_q_tables: false
+    learning_shared_experience: false
     voting_activity: 0.4
     proposal_creation_probability: 0.005
     num_developers: 2
@@ -48,14 +48,15 @@ baseConfig:
 sweep:
   parameter: learning_enabled
   values:
-    - true
     - false
+    - true
 execution:
   runsPerConfig: 20
   stepsPerRun: 200
+  learningEpisodesPerRun: 4
   seedStrategy: sequential
   baseSeed: 42
-  workers: 4
+  workers: 1
 metrics:
   - name: Proposal Pass Rate
     type: builtin
@@ -75,10 +76,28 @@ metrics:
   - name: Total Proposals
     type: builtin
     builtin: total_proposals
+  - name: Learning Agent Count
+    type: builtin
+    builtin: learning_agent_count
+  - name: Mean Learning Q-Table Size
+    type: builtin
+    builtin: learning_q_table_size_mean
+  - name: Mean Learning State Count
+    type: builtin
+    builtin: learning_state_count_mean
+  - name: Mean Learning Episode Count
+    type: builtin
+    builtin: learning_episode_count_mean
+  - name: Mean Learning Exploration Rate
+    type: builtin
+    builtin: learning_exploration_rate_mean
+  - name: Mean Learning Total Reward
+    type: builtin
+    builtin: learning_total_reward_mean
 output:
   directory: results/validation/learning-agents
   formats:
     - json
     - csv
-  includeRawRuns: false
+  includeRawRuns: true
   includeManifest: true

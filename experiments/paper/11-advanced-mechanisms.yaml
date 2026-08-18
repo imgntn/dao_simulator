@@ -127,6 +127,10 @@ metrics:
     type: builtin
     builtin: treasury_volatility
     description: Coefficient of variation of treasury over time
+  - name: Governance Activity Index
+    type: builtin
+    builtin: governance_activity_index
+    description: Turnout-weighted terminal proposals per 100 simulation steps
 output:
   directory: results/paper/11-advanced-mechanisms
   formats:

@@ -1,3 +1,4 @@
+id: rq3-proposal-pipeline-factorial
 name: Proposal Pipeline Effects
 description: Vary temp-check duration and fast-track rules to assess pipeline impact.
 version: 1.0.0
@@ -7,6 +8,25 @@ tags:
   - proposals
   - pipeline
   - temp-check
+research:
+  classification: confirmatory
+  publicationRole: core-confirmatory
+  researchQuestionIds: [RQ3]
+  hypothesis: Temp-check and fast-track settings change median time to a valid decision without proportionally increasing abandonment.
+  primaryOutcome: median_time_to_decision
+  secondaryOutcomes:
+    - proposal_completion_rate
+    - proposal_abandonment_rate
+    - governance_overhead
+  analysisModel: factorial_ols
+  comparisonCorrection: holm
+  smallestEffectOfInterest:
+    value: 0.10
+    unit: relative change
+    rationale: A ten-percent median decision-time change was frozen as the smallest practically important throughput effect.
+  analysisFamily: rq3-proposal-pipeline
+  experimentalUnit: One seeded DAO simulation replicate under one proposal-pipeline condition.
+  estimatedRuntimeMinutes: 240
 baseConfig:
   template: compound
   population:
@@ -54,6 +74,14 @@ execution:
   baseSeed: 505
   workers: 4
 metrics:
+  - name: Proposal Completion Rate
+    type: builtin
+    builtin: proposal_completion_rate
+    description: Fraction of proposals reaching a valid terminal governance decision
+  - name: Median Time to Decision
+    type: builtin
+    builtin: median_time_to_decision
+    description: Median elapsed hours from proposal creation to terminal resolution
   - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
@@ -101,4 +129,5 @@ output:
     - csv
   includeRawRuns: true
   includeManifest: true
-  includeTimeline: false
+  includeTimeline: true
+  timelineStride: 24

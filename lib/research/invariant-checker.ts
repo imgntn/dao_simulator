@@ -25,6 +25,28 @@ export interface InvariantCheckResult {
   checksPerformed: number;
 }
 
+export interface TokenSupplySnapshot {
+  token: string;
+  memberLiquid: number;
+  memberStaked: number;
+  memberDelegated: number;
+  treasuryLiquid: number;
+  treasuryLocked: number;
+  treasuryBuffer: number;
+  liquidityPools: number;
+  guildTreasuries: number;
+  externalCustody: number;
+  minted: number;
+  burned: number;
+  total: number;
+}
+
+export interface AssetSupplyBaseline {
+  supply: number;
+  minted: number;
+  burned: number;
+}
+
 export interface InvariantConfig {
   checkConservation?: boolean;
   checkReputationNonNegative?: boolean;
@@ -95,47 +117,209 @@ export function checkInvariants(
   };
 }
 
+function poolTokenBalance(dao: DAO, token: string): number {
+  let total = 0;
+  for (const pool of dao.treasury.pools.values()) {
+    if (pool.tokenA === token) total += pool.reserveA;
+    if (pool.tokenB === token) total += pool.reserveB;
+  }
+  return total;
+}
+
+export function captureTokenSupply(dao: DAO, token: string = dao.tokenSymbol): TokenSupplySnapshot {
+  const isPrimary = token === dao.tokenSymbol;
+  const memberLiquid = dao.members.reduce(
+    (sum, member) => sum + member.getAssetBalance(token),
+    0
+  );
+  const memberStaked = isPrimary
+    ? dao.members.reduce((sum, member) => sum + member.stakedTokens, 0)
+    : 0;
+  const memberDelegated = isPrimary
+    ? dao.members.reduce(
+        (sum, member) =>
+          sum +
+          Array.from(member.delegations.values()).reduce(
+            (subtotal, value) => subtotal + value,
+            0
+          ),
+        0
+      )
+    : 0;
+  const treasuryLiquid = dao.treasury.getTokenBalance(token);
+  const treasuryLocked = dao.treasury.getLockedBalance(token);
+  const treasuryBuffer = isPrimary ? dao.treasury.getTokenBalance('DAO_BUFFER') : 0;
+  const liquidityPools = poolTokenBalance(dao, token);
+  let guildTreasuries = 0;
+  let externalCustody = 0;
+  let minted = 0;
+  let burned = 0;
+
+  const treasuries = [dao.treasury, ...dao.guilds.map(guild => guild.treasury)];
+  for (const treasury of treasuries) {
+    if (treasury !== dao.treasury) {
+      guildTreasuries += treasury.getTokenBalance(token) + treasury.getLockedBalance(token);
+      for (const pool of treasury.pools.values()) {
+        if (pool.tokenA === token) guildTreasuries += pool.reserveA;
+        if (pool.tokenB === token) guildTreasuries += pool.reserveB;
+      }
+    }
+    for (const entry of treasury.getLedger()) {
+      if (entry.token !== token) continue;
+      if (entry.operation === 'mint') minted += entry.amount;
+      if (entry.operation === 'burn') burned += entry.amount;
+      if (entry.flowClass === 'transfer' && entry.destination.startsWith('external:')) {
+        externalCustody += entry.amount;
+      }
+      if (entry.flowClass === 'transfer' && entry.source.startsWith('external:')) {
+        externalCustody -= entry.amount;
+      }
+    }
+  }
+
+  return {
+    token,
+    memberLiquid,
+    memberStaked,
+    memberDelegated,
+    treasuryLiquid,
+    treasuryLocked,
+    treasuryBuffer,
+    liquidityPools,
+    guildTreasuries,
+    externalCustody,
+    minted,
+    burned,
+    total:
+      memberLiquid +
+      memberStaked +
+      memberDelegated +
+      treasuryLiquid +
+      treasuryLocked +
+      treasuryBuffer +
+      liquidityPools +
+      guildTreasuries +
+      externalCustody,
+  };
+}
+
+export function captureAllTokenSupplies(dao: DAO): Record<string, TokenSupplySnapshot> {
+  const tokens = new Set<string>([dao.tokenSymbol]);
+  for (const member of dao.members) {
+    for (const token of Object.keys(member.getAssetBalances())) tokens.add(token);
+  }
+  for (const treasury of [dao.treasury, ...dao.guilds.map(guild => guild.treasury)]) {
+    for (const token of treasury.getTokenSymbols()) tokens.add(token);
+  }
+  // DAO_BUFFER is an internal claim on primary assets, not a separate currency.
+  tokens.delete('DAO_BUFFER');
+
+  return Object.fromEntries(
+    Array.from(tokens)
+      .sort()
+      .map(token => [token, captureTokenSupply(dao, token)])
+  );
+}
+
+export function createAssetSupplyBaselines(
+  dao: DAO
+): Record<string, AssetSupplyBaseline> {
+  return Object.fromEntries(
+    Object.entries(captureAllTokenSupplies(dao)).map(([token, snapshot]) => [
+      token,
+      {
+        supply: snapshot.total,
+        minted: snapshot.minted,
+        burned: snapshot.burned,
+      },
+    ])
+  );
+}
+
+export function checkAllTokenConservation(
+  dao: DAO,
+  step: number,
+  baselines: Record<string, AssetSupplyBaseline>,
+  tolerance: number
+): InvariantViolation | null {
+  const snapshots = captureAllTokenSupplies(dao);
+  const tokens = new Set([...Object.keys(baselines), ...Object.keys(snapshots)]);
+  for (const token of Array.from(tokens).sort()) {
+    const snapshot = snapshots[token] || captureTokenSupply(dao, token);
+    const baseline = baselines[token] || { supply: 0, minted: 0, burned: 0 };
+    const expected =
+      baseline.supply +
+      (snapshot.minted - baseline.minted) -
+      (snapshot.burned - baseline.burned);
+    if (Math.abs(snapshot.total - expected) > tolerance) {
+      return {
+        invariant: 'multi_asset_token_conservation',
+        step,
+        message:
+          `Accounted ${token} supply (${snapshot.total.toFixed(6)}) differs from ` +
+          `baseline + net issuance (${expected.toFixed(6)}); ` +
+          `members=${snapshot.memberLiquid.toFixed(6)}, treasury=${snapshot.treasuryLiquid.toFixed(6)}, ` +
+          `locked=${snapshot.treasuryLocked.toFixed(6)}, pools=${snapshot.liquidityPools.toFixed(6)}, ` +
+          `guilds=${snapshot.guildTreasuries.toFixed(6)}, external=${snapshot.externalCustody.toFixed(6)}`,
+        expected,
+        actual: snapshot.total,
+      };
+    }
+  }
+
+  const ledgerIssues = [dao.treasury, ...dao.guilds.map(guild => guild.treasury)]
+    .flatMap(treasury => treasury.validateLedger(tolerance).issues);
+  return ledgerIssues.length > 0
+    ? {
+        invariant: 'multi_asset_token_conservation',
+        step,
+        message: `Treasury ledger failed reconciliation: ${ledgerIssues.join('; ')}`,
+      }
+    : null;
+}
+
 /**
- * Check token conservation: sum of all tokens equals initial supply
+ * Check exact token conservation across every modeled holding location.
  */
-function checkTokenConservation(
+export function checkTokenConservation(
   dao: DAO,
   step: number,
   initialSupply: number,
   tolerance: number
 ): InvariantViolation | null {
-  // Sum all agent tokens
-  const agentTokens = dao.members.reduce((sum, m) => sum + (m.tokens || 0), 0);
+  const snapshot = captureTokenSupply(dao);
+  const expected = initialSupply + snapshot.minted - snapshot.burned;
+  const ledgerIssues = [dao.treasury, ...dao.guilds.map(guild => guild.treasury)]
+    .flatMap(treasury => treasury.validateLedger(tolerance).issues);
 
-  // Get treasury token balance
-  const treasuryTokens = dao.treasury.getTokenBalance(dao.tokenSymbol);
-
-  // Note: We're not tracking burned tokens explicitly, so we just check
-  // that total doesn't exceed initial supply and is reasonably close
-  const totalTokens = agentTokens + treasuryTokens;
-
-  // Check if total exceeds initial (tokens created from nowhere)
-  if (totalTokens > initialSupply + tolerance) {
+  if (ledgerIssues.length > 0) {
     return {
       invariant: 'token_conservation',
       step,
-      message: `Total tokens (${totalTokens.toFixed(2)}) exceeds initial supply (${initialSupply.toFixed(2)})`,
-      expected: initialSupply,
-      actual: totalTokens,
+      message: `Treasury ledger failed reconciliation: ${ledgerIssues.join('; ')}`,
+      expected,
+      actual: snapshot.total,
     };
   }
 
-  // We allow tokens to decrease (burned/lost) but not increase
-  // If you want strict conservation, uncomment this:
-  // if (Math.abs(totalTokens - initialSupply) > tolerance) {
-  //   return {
-  //     invariant: 'token_conservation',
-  //     step,
-  //     message: `Token total (${totalTokens.toFixed(2)}) differs from initial supply (${initialSupply.toFixed(2)})`,
-  //     expected: initialSupply,
-  //     actual: totalTokens,
-  //   };
-  // }
+  if (Math.abs(snapshot.total - expected) > tolerance) {
+    return {
+      invariant: 'token_conservation',
+      step,
+      message:
+        `Accounted ${snapshot.token} supply (${snapshot.total.toFixed(6)}) differs from ` +
+        `initial + minted - burned (${expected.toFixed(6)}); ` +
+        `liquid=${snapshot.memberLiquid.toFixed(6)}, staked=${snapshot.memberStaked.toFixed(6)}, ` +
+        `delegated=${snapshot.memberDelegated.toFixed(6)}, treasury=${snapshot.treasuryLiquid.toFixed(6)}, ` +
+        `locked=${snapshot.treasuryLocked.toFixed(6)}, buffer=${snapshot.treasuryBuffer.toFixed(6)}, ` +
+        `pools=${snapshot.liquidityPools.toFixed(6)}, ` +
+        `guilds=${snapshot.guildTreasuries.toFixed(6)}, external=${snapshot.externalCustody.toFixed(6)}, ` +
+        `minted=${snapshot.minted.toFixed(6)}, ` +
+        `burned=${snapshot.burned.toFixed(6)}`,
+      expected,
+      actual: snapshot.total,
+    };
+  }
 
   return null;
 }
@@ -284,15 +468,8 @@ function checkDelegationAcyclic(dao: DAO, step: number): InvariantViolation[] {
  * Calculate initial token supply from a simulation
  */
 export function calculateInitialTokenSupply(simulation: DAOSimulation): number {
-  const dao = simulation.dao;
-
-  // Sum all agent tokens
-  const agentTokens = dao.members.reduce((sum, m) => sum + (m.tokens || 0), 0);
-
-  // Get treasury balance
-  const treasuryTokens = dao.treasury.getTokenBalance(dao.tokenSymbol);
-
-  return agentTokens + treasuryTokens;
+  const snapshot = captureTokenSupply(simulation.dao);
+  return snapshot.total - snapshot.minted + snapshot.burned;
 }
 
 /**

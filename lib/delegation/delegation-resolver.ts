@@ -157,6 +157,8 @@ export class DelegationResolver {
       const delegatedAmount = delegator.delegations.get(member.uniqueId) || 0;
       if (delegatedAmount > 0) {
         total += delegatedAmount * decayFactor;
+      } else if (delegator.representative === member) {
+        total += (delegator.tokens + delegator.stakedTokens) * decayFactor;
       }
 
       // Recursively get what was delegated to the delegator

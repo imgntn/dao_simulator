@@ -104,12 +104,47 @@ describe('MultiStageProposal lifecycle invariants', () => {
 
     expect(proposal.advanceToNextStage(false, 'failed temp check')).toBe(false);
     expect(proposal.status).toBe('rejected');
+    expect(proposal.resolvedTime).toBe(4);
     expect(proposal.advanceToNextStage(true)).toBe(false);
     expect(proposal.currentStageIndex).toBe(0);
 
     proposal.scheduleTimelock(Number.NaN);
     expect(proposal.timelockScheduledStep).toBe(4);
     expect(proposal.timelockExecutionStep).toBe(4);
+  });
+
+  it('records the terminal simulation step for every multi-stage closure path', () => {
+    const dao = new DAO('Resolution DAO');
+    const stages: StageConfig[] = [{ stage: 'on_chain', durationSteps: 1 }];
+
+    dao.currentStep = 11;
+    const approved = new MultiStageProposal(
+      dao, 'creator', 'Approved', 'desc', 0, 1, 'governance', null, stages
+    );
+    expect(approved.advanceToNextStage(true)).toBe(true);
+    expect(approved.status).toBe('approved');
+    expect(approved.resolvedTime).toBe(11);
+
+    dao.currentStep = 12;
+    const vetoed = new MultiStageProposal(
+      dao, 'creator', 'Vetoed', 'desc', 0, 1, 'governance', null, stages
+    );
+    vetoed.veto('test veto');
+    expect(vetoed.resolvedTime).toBe(12);
+
+    dao.currentStep = 13;
+    const cancelled = new MultiStageProposal(
+      dao, 'creator', 'Cancelled', 'desc', 0, 1, 'governance', null, stages
+    );
+    cancelled.cancel('test cancel');
+    expect(cancelled.resolvedTime).toBe(13);
+
+    dao.currentStep = 14;
+    const executed = new MultiStageProposal(
+      dao, 'creator', 'Executed', 'desc', 0, 1, 'governance', null, stages
+    );
+    executed.execute();
+    expect(executed.resolvedTime).toBe(14);
   });
 
   it('sanitizes restored stage, house, veto, and timelock state', () => {

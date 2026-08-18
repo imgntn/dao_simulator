@@ -8,7 +8,7 @@
  *                        below the baseline mean.
  *   2. ci_violation    — current score falls outside the baseline 95% CI
  *                        widened by METRIC_THRESHOLD_MULTIPLIER.
- *   3. metric_regression — per-sub-metric drift (priceRmse, passRate, etc.)
+ *   3. metric_regression — per-sub-metric drift (priceLevelError, passRate, etc.)
  *                          beyond a metric-specific threshold.
  *
  * Improvements are also tracked — useful both for the report and for the
@@ -153,14 +153,30 @@ export class ValidationDiffer {
     current: DaoValidationResult,
     base: DaoBaseline,
   ): string | null {
-    const checks: Array<{ name: string; cur: number; baseline: number; ciWidth: number; relative: boolean }> = [
-      { name: 'passRate', cur: current.passRate, baseline: base.passRate, ciWidth: base.ci95.pass_rate_error.ci95Upper - base.ci95.pass_rate_error.ci95Lower, relative: true },
-      { name: 'participation', cur: current.participation, baseline: base.participation, ciWidth: base.ci95.participation_rate_error.ci95Upper - base.ci95.participation_rate_error.ci95Lower, relative: true },
-      { name: 'priceRmse', cur: current.priceRmse, baseline: base.priceRmse, ciWidth: base.ci95.price_trajectory_rmse.ci95Upper - base.ci95.price_trajectory_rmse.ci95Lower, relative: false },
-      { name: 'voterConcentration', cur: current.voterConcentration, baseline: base.voterConcentration, ciWidth: base.ci95.voter_concentration_error.ci95Upper - base.ci95.voter_concentration_error.ci95Lower, relative: true },
+    const currentAvailability = [...current.availableMetrics].sort().join(',');
+    const baselineAvailability = [...base.availableMetrics].sort().join(',');
+    if (currentAvailability !== baselineAvailability) {
+      return `available metric set changed (${baselineAvailability} → ${currentAvailability})`;
+    }
+    const checks: Array<{
+      name: string;
+      cur: number | null;
+      baseline: number | null;
+      ciWidth: number;
+      sampleSize: number;
+      relative: boolean;
+    }> = [
+      { name: 'passRate', cur: current.passRate, baseline: base.passRate, ciWidth: base.ci95.pass_rate_error.ci95Upper - base.ci95.pass_rate_error.ci95Lower, sampleSize: base.ci95.pass_rate_error.sampleSize ?? 0, relative: true },
+      { name: 'participation', cur: current.participation, baseline: base.participation, ciWidth: base.ci95.participation_rate_error.ci95Upper - base.ci95.participation_rate_error.ci95Lower, sampleSize: base.ci95.participation_rate_error.sampleSize ?? 0, relative: true },
+      { name: 'priceLevelError', cur: current.priceLevelError, baseline: base.priceLevelError, ciWidth: base.ci95.price_level_error.ci95Upper - base.ci95.price_level_error.ci95Lower, sampleSize: base.ci95.price_level_error.sampleSize ?? 0, relative: false },
+      { name: 'voterConcentration', cur: current.voterConcentration, baseline: base.voterConcentration, ciWidth: base.ci95.voter_concentration_error.ci95Upper - base.ci95.voter_concentration_error.ci95Lower, sampleSize: base.ci95.voter_concentration_error.sampleSize ?? 0, relative: true },
     ];
 
     for (const check of checks) {
+      if (check.cur === null && check.baseline === null && check.sampleSize === 0) continue;
+      if (check.cur === null || check.baseline === null || check.sampleSize === 0) {
+        return `${check.name} availability changed or baseline sample size is zero`;
+      }
       const threshold = Math.max(check.ciWidth * METRIC_THRESHOLD_MULTIPLIER, 0.05);
       const drift = Math.abs(check.cur - check.baseline);
       const isRegression = check.relative

@@ -215,38 +215,63 @@ export class MarketMaker extends DAOMember {
   private addLiquidity(): number {
     if (!this.model.dao) return -0.1;
 
-    const treasury = this.model.dao.treasury;
-    const liquidityAmount = Math.min(this.tokens * 0.3, 500);
+    const dao = this.model.dao;
+    const treasury = dao.treasury;
+    const primary = dao.tokenSymbol;
+    const liquidityAmount = Math.min(
+      this.getAssetBalance(primary) * 0.3,
+      this.getAssetBalance('USDC'),
+      500
+    );
     if (liquidityAmount <= 10) return -0.1;
 
-    this.tokens -= liquidityAmount;
-    treasury.deposit('DAO_TOKEN', liquidityAmount, this.model.currentStep);
+    const primaryDebited = this.debitAsset(primary, liquidityAmount);
+    const usdcDebited = this.debitAsset('USDC', liquidityAmount);
+    if (primaryDebited !== liquidityAmount || usdcDebited !== liquidityAmount) {
+      this.creditAsset(primary, primaryDebited);
+      this.creditAsset('USDC', usdcDebited);
+      return -0.2;
+    }
+    treasury.deposit(primary, liquidityAmount, this.model.currentStep, {
+      source: `member:${this.uniqueId}`,
+      destination: 'treasury:liquidity-staging',
+      event: 'liquidity_primary_deposit',
+    });
+    treasury.deposit('USDC', liquidityAmount, this.model.currentStep, {
+      source: `member:${this.uniqueId}`,
+      destination: 'treasury:liquidity-staging',
+      event: 'liquidity_counterasset_deposit',
+    });
 
-    const usdcAvailable = treasury.getTokenBalance('USDC');
-    const usdcAmount = Math.min(liquidityAmount, usdcAvailable);
-    if (usdcAmount <= 0) {
-      this.tokens += liquidityAmount;
-      treasury.withdraw('DAO_TOKEN', liquidityAmount, this.model.currentStep);
+    const lpMinted = treasury.addLiquidity(
+      primary,
+      'USDC',
+      liquidityAmount,
+      liquidityAmount,
+      this.model.currentStep
+    );
+    if (lpMinted <= 0) {
+      this.creditAsset(primary, treasury.withdraw(primary, liquidityAmount, this.model.currentStep));
+      this.creditAsset('USDC', treasury.withdraw('USDC', liquidityAmount, this.model.currentStep));
       return -0.2;
     }
 
-    treasury.addLiquidity('DAO_TOKEN', 'USDC', liquidityAmount, usdcAmount);
-
     // Track position
-    const poolKey = 'DAO_TOKEN/USDC';
+    const poolKey = [primary, 'USDC'].sort().join('|');
     const existing = this.positions.get(poolKey);
     if (existing) {
       existing.amountA += liquidityAmount;
-      existing.amountB += usdcAmount;
+      existing.amountB += liquidityAmount;
+      existing.lpTokens += lpMinted;
     } else {
       this.positions.set(poolKey, {
         poolKey,
-        tokenA: 'DAO_TOKEN',
+        tokenA: primary,
         tokenB: 'USDC',
         amountA: liquidityAmount,
-        amountB: usdcAmount,
-        entryPrice: treasury.getTokenPrice('DAO_TOKEN'),
-        lpTokens: liquidityAmount,
+        amountB: liquidityAmount,
+        entryPrice: treasury.getTokenPrice(primary),
+        lpTokens: lpMinted,
       });
     }
 
@@ -262,21 +287,39 @@ export class MarketMaker extends DAOMember {
   private removeLiquidity(): number {
     if (!this.model.dao || this.positions.size === 0) return -0.1;
 
-    const treasury = this.model.dao.treasury;
-    const poolKey = 'DAO_TOKEN/USDC';
+    const dao = this.model.dao;
+    const treasury = dao.treasury;
+    const primary = dao.tokenSymbol;
+    const poolKey = [primary, 'USDC'].sort().join('|');
     const position = this.positions.get(poolKey);
     if (!position) return -0.1;
 
     try {
-      const removed = treasury.removeLiquidity('DAO_TOKEN', 'USDC', 0.3, this.model.currentStep);
-      if (removed && removed[0] > 0) {
-        const claimed = treasury.withdraw('DAO_TOKEN', removed[0], this.model.currentStep);
-        this.tokens += claimed;
+      const lpToBurn = position.lpTokens * 0.3;
+      const removed = treasury.removeLiquidityByLP(
+        primary,
+        'USDC',
+        lpToBurn,
+        this.model.currentStep
+      );
+      if (removed && (removed[0] > 0 || removed[1] > 0)) {
+        const pool = treasury.pools.get(poolKey);
+        const primaryAmount = pool?.tokenA === primary ? removed[0] : removed[1];
+        const usdcAmount = pool?.tokenA === primary ? removed[1] : removed[0];
+        this.creditAsset(
+          primary,
+          treasury.withdraw(primary, primaryAmount, this.model.currentStep)
+        );
+        this.creditAsset(
+          'USDC',
+          treasury.withdraw('USDC', usdcAmount, this.model.currentStep)
+        );
 
         // Update position
-        position.amountA -= removed[0];
-        position.amountB -= removed[1] || 0;
-        if (position.amountA <= 0) {
+        position.amountA = Math.max(0, position.amountA - primaryAmount);
+        position.amountB = Math.max(0, position.amountB - usdcAmount);
+        position.lpTokens = Math.max(0, position.lpTokens - lpToBurn);
+        if (position.lpTokens <= Number.EPSILON) {
           this.positions.delete(poolKey);
         }
 
@@ -390,11 +433,9 @@ export class MarketMaker extends DAOMember {
    * Collect trading fees
    */
   private collectFees(): void {
-    if (this.pendingFees > 0) {
-      this.tokens += this.pendingFees;
-      this.stats.feesEarned += this.pendingFees;
-      this.pendingFees = 0;
-    }
+    // AMM fees remain in pool reserves and are realized through LP redemption.
+    // Do not also credit a synthetic wallet reward.
+    this.pendingFees = 0;
   }
 
   /**
@@ -404,7 +445,8 @@ export class MarketMaker extends DAOMember {
     if (!this.model.dao) return;
 
     const treasury = this.model.dao.treasury;
-    const price = treasury.getTokenPrice('DAO_TOKEN');
+    const primary = this.model.dao.tokenSymbol;
+    const price = treasury.getTokenPrice(primary);
     const deviation = Math.abs(price - 1.0);
 
     if (deviation > SPREAD_TARGET && this.tokens > 10) {
@@ -413,30 +455,40 @@ export class MarketMaker extends DAOMember {
 
       try {
         if (price < 1.0) {
-          this.tokens -= tradeAmount;
+          const stableDebited = this.debitAsset('USDC', tradeAmount);
+          if (stableDebited !== tradeAmount) {
+            this.creditAsset('USDC', stableDebited);
+            return;
+          }
           treasury.deposit('USDC', tradeAmount, this.model.currentStep);
-          const out = treasury.swap('USDC', 'DAO_TOKEN', tradeAmount, this.model.currentStep);
+          const out = treasury.swap('USDC', primary, tradeAmount, this.model.currentStep);
           if (out > 0) {
-            this.tokens += treasury.withdraw('DAO_TOKEN', out, this.model.currentStep);
-            this.pendingFees += out * 0.003;
+            this.creditAsset(primary, treasury.withdraw(primary, out, this.model.currentStep));
             this.stats.totalVolume += tradeAmount;
             this.stats.tradesExecuted++;
           } else {
-            treasury.withdraw('USDC', tradeAmount, this.model.currentStep);
-            this.tokens += tradeAmount;
+            this.creditAsset(
+              'USDC',
+              treasury.withdraw('USDC', tradeAmount, this.model.currentStep)
+            );
           }
         } else {
-          this.tokens -= tradeAmount;
-          treasury.deposit('DAO_TOKEN', tradeAmount, this.model.currentStep);
-          const out = treasury.swap('DAO_TOKEN', 'USDC', tradeAmount, this.model.currentStep);
+          const primaryDebited = this.debitAsset(primary, tradeAmount);
+          if (primaryDebited !== tradeAmount) {
+            this.creditAsset(primary, primaryDebited);
+            return;
+          }
+          treasury.deposit(primary, tradeAmount, this.model.currentStep);
+          const out = treasury.swap(primary, 'USDC', tradeAmount, this.model.currentStep);
           if (out > 0) {
-            this.tokens += treasury.withdraw('USDC', out, this.model.currentStep);
-            this.pendingFees += out * 0.003;
+            this.creditAsset('USDC', treasury.withdraw('USDC', out, this.model.currentStep));
             this.stats.totalVolume += tradeAmount;
             this.stats.tradesExecuted++;
           } else {
-            treasury.withdraw('DAO_TOKEN', tradeAmount, this.model.currentStep);
-            this.tokens += tradeAmount;
+            this.creditAsset(
+              primary,
+              treasury.withdraw(primary, tradeAmount, this.model.currentStep)
+            );
           }
         }
         this.markActive();

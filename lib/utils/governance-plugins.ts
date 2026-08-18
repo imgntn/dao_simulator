@@ -23,6 +23,12 @@ function getTotalTokenSupply(dao: DAO): number {
   );
 }
 
+function getProposalTokenSupply(proposal: Proposal, dao: DAO): number {
+  return proposal.snapshotTaken && proposal.totalSupplySnapshot > 0
+    ? proposal.totalSupplySnapshot
+    : getTotalTokenSupply(dao);
+}
+
 /**
  * Base class for governance approval rules
  */
@@ -113,7 +119,7 @@ export class MajorityRule extends GovernanceRule {
     if (this.quorumPercentage !== undefined && this.quorumPercentage > 0) {
       // Calculate total voting power (tokens) in the DAO
       // This matches how real DAOs like Compound calculate quorum
-      const totalTokens = getTotalTokenSupply(dao);
+      const totalTokens = getProposalTokenSupply(proposal, dao);
 
       // Calculate tokens that participated in voting
       const votingTokens = proposal.votesFor + proposal.votesAgainst;
@@ -144,7 +150,7 @@ export class QuorumRule extends GovernanceRule {
 
   approve(proposal: Proposal, dao: DAO): boolean {
     const totalVotes = proposal.votesFor + proposal.votesAgainst;
-    const totalTokens = getTotalTokenSupply(dao);
+    const totalTokens = getProposalTokenSupply(proposal, dao);
     const participationRate = totalVotes / Math.max(totalTokens, 1);
 
     // Must meet quorum AND have majority support
@@ -177,7 +183,7 @@ export class SupermajorityRule extends GovernanceRule {
 
     // Check quorum first if configured
     if (this.quorumPercentage !== undefined && this.quorumPercentage > 0) {
-      const totalTokens = getTotalTokenSupply(dao);
+      const totalTokens = getProposalTokenSupply(proposal, dao);
       const participationRate = totalVotes / Math.max(totalTokens, 1);
 
       if (participationRate < this.quorumPercentage) {
@@ -204,7 +210,7 @@ export class TokenQuorumRule extends GovernanceRule {
 
   approve(proposal: Proposal, dao: DAO): boolean {
     // Calculate total tokens in circulation (including staked and delegated)
-    const totalTokens = getTotalTokenSupply(dao);
+    const totalTokens = getProposalTokenSupply(proposal, dao);
 
     // Calculate tokens that participated in voting
     const votingTokens = proposal.votesFor + proposal.votesAgainst;
@@ -245,7 +251,7 @@ export class TimeDecayRule extends GovernanceRule {
 
     // Check quorum first if configured
     if (this.quorumPercentage !== undefined && this.quorumPercentage > 0) {
-      const totalTokens = getTotalTokenSupply(dao);
+      const totalTokens = getProposalTokenSupply(proposal, dao);
       const participationRate = totalVotes / Math.max(totalTokens, 1);
 
       if (participationRate < this.quorumPercentage) {
@@ -339,7 +345,7 @@ export class ConvictionVotingRule extends GovernanceRule {
     this.convictionState.set(stateKey, newConviction);
 
     // Calculate threshold based on total voting power
-    const totalTokens = getTotalTokenSupply(dao);
+    const totalTokens = getProposalTokenSupply(proposal, dao);
     const requestedFraction = (proposal.fundingGoal || 1) / Math.max(totalTokens, 1);
     const threshold = totalTokens * requestedFraction / (1 - decayRate);
 
@@ -434,7 +440,7 @@ export class CategoryQuorumRule extends GovernanceRule {
     const category = multiStage.proposalCategory || 'standard';
 
     // Calculate total voting power
-    const totalTokens = getTotalTokenSupply(dao);
+    const totalTokens = getProposalTokenSupply(proposal, dao);
 
     // Select quorum based on category
     let requiredQuorum: number;
@@ -746,7 +752,7 @@ export class HolographicConsensusRule extends GovernanceRule {
     // Check if proposal is "boosted" (simplified - would need staking tracking)
     const isBoosted = proposal.currentFunding >= this.stakingThreshold;
 
-    const totalTokens = getTotalTokenSupply(dao);
+    const totalTokens = getProposalTokenSupply(proposal, dao);
 
     const requiredQuorum = isBoosted ? this.boostedQuorum : this.normalQuorum;
     const quorumVotes = totalTokens * requiredQuorum;
@@ -827,7 +833,7 @@ export class InstantRunoffRule extends GovernanceRule {
 
     // Check quorum if configured
     if (this.quorumPercentage > 0) {
-      const totalTokens = getTotalTokenSupply(dao);
+      const totalTokens = getProposalTokenSupply(proposal, dao);
       const totalVoters = proposal.ballots.size;
       const participationRate = totalVoters / Math.max(dao.members.length, 1);
       if (participationRate < this.quorumPercentage) {

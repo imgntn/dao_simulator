@@ -10,6 +10,7 @@ Usage:
 """
 
 import argparse
+import hashlib
 import json
 import logging
 import math
@@ -26,6 +27,21 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 HISTORICAL_DIR = PROJECT_ROOT / "results" / "historical"
 DEFAULT_OUTPUT_DIR = HISTORICAL_DIR / "calibration"
 
+DATE_COLUMNS = {
+    "market_daily": "timestamp_iso",
+    "snapshot_proposals": "created_iso",
+    "snapshot_votes": "created_iso",
+    "tally_proposals": "created_at",
+    "tally_votes": "created_at",
+    "maker_polls": "start_date",
+    "maker_poll_tallies": "block_timestamp",
+    "forum_topics": "created_at",
+    "forum_posts": "created_at",
+    "protocol_tvl": "timestamp_iso",
+    "protocol_fees": "timestamp_iso",
+    "protocol_revenue": "timestamp_iso",
+}
+
 logger = logging.getLogger(__name__)
 
 
@@ -33,13 +49,29 @@ logger = logging.getLogger(__name__)
 # UTILITY FUNCTIONS
 # =============================================================================
 
-def safe_float(val, default=0.0):
-    """Convert value to float safely."""
+def optional_float(val):
+    """Return a finite float or None without manufacturing a numeric fallback."""
     try:
         f = float(val)
-        return f if math.isfinite(f) else default
+        return f if math.isfinite(f) else None
     except (TypeError, ValueError):
-        return default
+        return None
+
+
+def atomic_json_dump(path, value):
+    """Durably replace a JSON artifact only after its complete payload is written."""
+    path = Path(path)
+    temporary_path = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    try:
+        with temporary_path.open("w", encoding="utf-8", newline="\n") as handle:
+            json.dump(value, handle, indent=2, allow_nan=False)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary_path, path)
+    finally:
+        if temporary_path.exists():
+            temporary_path.unlink()
 
 
 def gini_coefficient(values):
@@ -64,6 +96,93 @@ def participation_histogram(rates, buckets=10):
     if total > 0:
         hist = [h / total for h in hist]
     return hist
+
+
+def full_month_index(period):
+    """Return every calendar month in a declared inclusive partition."""
+    if not period or not period.get("start") or not period.get("end"):
+        return None
+    start = pd.Timestamp(period["start"]).to_period("M")
+    end = pd.Timestamp(period["end"]).to_period("M")
+    return pd.period_range(start=start, end=end, freq="M")
+
+
+def snapshot_binary_outcomes(proposals, votes):
+    """Classify Snapshot yes/no and for/against proposals from weighted votes."""
+    if proposals.empty or votes.empty:
+        return []
+    votes_by_proposal = {
+        proposal_id: frame
+        for proposal_id, frame in votes.groupby("proposal_id")
+    }
+    outcomes = []
+    for _, proposal in proposals.iterrows():
+        try:
+            choices = json.loads(proposal.get("choices") or "[]")
+        except (TypeError, ValueError, json.JSONDecodeError):
+            continue
+        normalized = [str(choice).strip().lower() for choice in choices]
+        pairs = (
+            ("yes", "no"),
+            ("for", "against"),
+            ("yea", "nay"),
+            ("yae", "nay"),
+            ("approve", "reject"),
+        )
+        labels = next(
+            ((yes, no) for yes, no in pairs if yes in normalized and no in normalized),
+            None,
+        )
+        proposal_votes = votes_by_proposal.get(proposal.get("proposal_id"))
+        if labels is None or proposal_votes is None or proposal_votes.empty:
+            continue
+        yes_label, no_label = labels
+        index_to_label = {index + 1: label for index, label in enumerate(normalized)}
+        totals = {yes_label: 0.0, no_label: 0.0}
+        for _, vote in proposal_votes.iterrows():
+            voting_power = optional_float(vote.get("vp"))
+            if voting_power is None or voting_power < 0:
+                continue
+            raw_choice = vote.get("choice")
+            try:
+                choice_index = int(float(raw_choice))
+                label = index_to_label.get(choice_index)
+                if label in totals:
+                    totals[label] += voting_power
+            except (TypeError, ValueError):
+                try:
+                    weighted = json.loads(str(raw_choice))
+                    if isinstance(weighted, dict) and weighted:
+                        valid_weights = {}
+                        for key, value in weighted.items():
+                            weight = optional_float(value)
+                            if weight is not None and weight >= 0:
+                                valid_weights[key] = weight
+                        weight_total = sum(valid_weights.values())
+                        if weight_total > 0:
+                            for key, weight in valid_weights.items():
+                                try:
+                                    label = index_to_label.get(int(key))
+                                except (TypeError, ValueError):
+                                    continue
+                                if label in totals:
+                                    totals[label] += voting_power * weight / weight_total
+                except (TypeError, ValueError, json.JSONDecodeError):
+                    pass
+        yes_power = totals[yes_label]
+        no_power = totals[no_label]
+        if yes_power + no_power <= 0:
+            continue
+        quorum = optional_float(proposal.get("quorum"))
+        scores_total = optional_float(proposal.get("scores_total"))
+        if quorum is not None and quorum > 0 and scores_total is None:
+            continue
+        meets_quorum = quorum is None or quorum <= 0 or scores_total >= quorum
+        outcomes.append({
+            "passed": yes_power > no_power and meets_quorum,
+            "for_share": yes_power / (yes_power + no_power),
+        })
+    return outcomes
 
 
 def detect_drawdowns(prices, threshold=0.20):
@@ -112,13 +231,17 @@ def detect_drawdowns(prices, threshold=0.20):
 def tvl_trend(tvl_series):
     """Determine TVL trend: growing, stable, or declining."""
     if len(tvl_series) < 30:
-        return "stable"
+        return None
     # Compare first quarter average to last quarter average
     q_len = len(tvl_series) // 4
     first_q = np.mean(tvl_series[:q_len])
     last_q = np.mean(tvl_series[-q_len:])
-    if first_q == 0:
-        return "stable"
+    if (
+        not math.isfinite(first_q)
+        or not math.isfinite(last_q)
+        or first_q <= 0
+    ):
+        return None
     change = (last_q - first_q) / first_q
     if change > 0.15:
         return "growing"
@@ -161,6 +284,168 @@ def load_all_data():
         "protocol_fees": load_csv("protocol/protocol_fees_daily.csv"),
         "protocol_revenue": load_csv("protocol/protocol_revenue_daily.csv"),
     }
+
+
+def filter_data_by_period(data, start_date=None, end_date=None):
+    """Return source tables restricted to an inclusive UTC evaluation period."""
+    if start_date is None and end_date is None:
+        return data
+
+    start = pd.Timestamp(start_date, tz="UTC") if start_date else None
+    end = pd.Timestamp(end_date, tz="UTC") if end_date else None
+    if end is not None:
+        # Date-only end bounds are inclusive through the end of that UTC day.
+        end = end + pd.Timedelta(days=1) - pd.Timedelta(microseconds=1)
+
+    filtered = {}
+    for key, df in data.items():
+        if df.empty:
+            filtered[key] = df
+            continue
+        date_col = DATE_COLUMNS.get(key)
+        if not date_col or date_col not in df.columns:
+            filtered[key] = df
+            continue
+        dates = pd.to_datetime(df[date_col], errors="coerce", utc=True)
+        mask = dates.notna()
+        if start is not None:
+            mask &= dates >= start
+        if end is not None:
+            mask &= dates <= end
+        filtered[key] = df.loc[mask].copy()
+    return filtered
+
+
+def source_manifest(data):
+    """Describe the exact source rows used to compile a profile."""
+    result = {}
+    for key, df in data.items():
+        date_col = DATE_COLUMNS.get(key)
+        entry = {"rows": int(len(df)), "date_column": date_col}
+        if not df.empty and date_col and date_col in df.columns:
+            dates = pd.to_datetime(df[date_col], errors="coerce", utc=True).dropna()
+            entry["min_date"] = dates.min().isoformat() if len(dates) else None
+            entry["max_date"] = dates.max().isoformat() if len(dates) else None
+        result[key] = entry
+    return result
+
+
+def source_quality_index(raw_data, selected_data, dao_ids):
+    """Build per-DAO exclusion/malformed-date counts in one pass per source."""
+    quality_by_dao = {dao_id: {} for dao_id in dao_ids}
+    for key, raw_frame in raw_data.items():
+        selected_frame = selected_data.get(key, pd.DataFrame())
+        date_col = DATE_COLUMNS.get(key)
+        has_dao = not raw_frame.empty and "dao_id" in raw_frame.columns
+        if has_dao:
+            raw_counts = raw_frame.groupby("dao_id", observed=True).size()
+            selected_counts = (
+                selected_frame.groupby("dao_id", observed=True).size()
+                if not selected_frame.empty and "dao_id" in selected_frame.columns
+                else pd.Series(dtype=int)
+            )
+            if date_col and date_col in raw_frame.columns:
+                invalid_mask = pd.to_datetime(
+                    raw_frame[date_col], errors="coerce", utc=True
+                ).isna()
+                invalid_counts = (
+                    raw_frame.assign(_invalid_date=invalid_mask)
+                    .groupby("dao_id", observed=True)["_invalid_date"]
+                    .sum()
+                )
+            else:
+                invalid_counts = pd.Series(dtype=int)
+        else:
+            raw_counts = pd.Series(dtype=int)
+            selected_counts = pd.Series(dtype=int)
+            invalid_counts = pd.Series(dtype=int)
+
+        for dao_id in dao_ids:
+            raw_rows = int(raw_counts.get(dao_id, len(raw_frame) if not has_dao else 0))
+            selected_rows = int(
+                selected_counts.get(
+                    dao_id,
+                    len(selected_frame) if not has_dao else 0,
+                )
+            )
+            invalid_dates = int(invalid_counts.get(dao_id, 0))
+            quality_by_dao[dao_id][key] = {
+                "raw_rows": raw_rows,
+                "selected_rows": selected_rows,
+                "invalid_date_rows": invalid_dates,
+                "period_excluded_rows": max(
+                    raw_rows - invalid_dates - selected_rows,
+                    0,
+                ),
+            }
+    return quality_by_dao
+
+
+def file_sha256(path):
+    """Compute a stable source-file checksum for provenance."""
+    if not path.exists():
+        return None
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def historical_source_checksums():
+    """Checksum every raw table consumed by the compiler."""
+    cache_path = HISTORICAL_DIR / "source-checksums.json"
+    cached = {}
+    if cache_path.exists():
+        try:
+            cached = json.loads(cache_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            cached = {}
+
+    cache_entries = {}
+    checksums = {}
+    for key, relative in {
+        "market_daily": "market/market_daily.csv",
+        "snapshot_proposals": "governance/snapshot_proposals.csv",
+        "snapshot_votes": "governance/snapshot_votes.csv",
+        "tally_proposals": "governance/tally_proposals.csv",
+        "tally_votes": "governance/tally_votes.csv",
+        "maker_polls": "governance/maker_polls.csv",
+        "maker_poll_tallies": "governance/maker_poll_tallies.csv",
+        "forum_topics": "forum/forum_topics.csv",
+        "forum_posts": "forum/forum_posts.csv",
+        "protocol_tvl": "protocol/protocol_tvl_daily.csv",
+        "protocol_fees": "protocol/protocol_fees_daily.csv",
+        "protocol_revenue": "protocol/protocol_revenue_daily.csv",
+    }.items():
+        source_path = HISTORICAL_DIR / relative
+        if not source_path.exists():
+            continue
+        stat = source_path.stat()
+        cached_entry = cached.get(key, {})
+        if (
+            cached_entry.get("path") == relative
+            and cached_entry.get("size") == stat.st_size
+            and cached_entry.get("mtime_ns") == stat.st_mtime_ns
+            and cached_entry.get("sha256")
+        ):
+            checksum = cached_entry["sha256"]
+        else:
+            checksum = file_sha256(source_path)
+        if checksum is not None:
+            cache_entries[key] = {
+                "path": relative,
+                "sha256": checksum,
+                "size": stat.st_size,
+                "mtime_ns": stat.st_mtime_ns,
+            }
+            checksums[key] = {
+                "path": relative,
+                "sha256": checksum,
+                "bytes": stat.st_size,
+            }
+    atomic_json_dump(cache_path, cache_entries)
+    return checksums
 
 
 # =============================================================================
@@ -207,79 +492,83 @@ def compile_voting_profile(dao_id, data):
         vpp = tally_votes.groupby("proposal_id").size()
         votes_per_proposal.extend(vpp.tolist())
 
-    avg_votes_per_proposal = float(np.mean(votes_per_proposal)) if votes_per_proposal else 0
+    avg_votes_per_proposal = (
+        float(sum(votes_per_proposal) / total_proposals)
+        if total_proposals > 0 else None
+    )
 
     # Voter concentration (Gini of voting power)
     voting_powers = []
     if not snap_votes.empty and "vp" in snap_votes.columns:
-        vp_by_voter = snap_votes.groupby("voter")["vp"].sum()
+        snapshot_votes_clean = snap_votes.copy()
+        snapshot_votes_clean["vp"] = pd.to_numeric(
+            snapshot_votes_clean["vp"],
+            errors="coerce",
+        )
+        snapshot_votes_clean = snapshot_votes_clean[
+            snapshot_votes_clean["voter"].notna()
+            & snapshot_votes_clean["vp"].notna()
+            & (snapshot_votes_clean["vp"] >= 0)
+        ]
+        vp_by_voter = snapshot_votes_clean.groupby("voter")["vp"].sum()
         voting_powers.extend(vp_by_voter.tolist())
     if not tally_votes.empty and "weight" in tally_votes.columns:
         tally_votes_clean = tally_votes.copy()
         tally_votes_clean["weight"] = pd.to_numeric(tally_votes_clean["weight"], errors="coerce")
+        tally_votes_clean = tally_votes_clean[
+            tally_votes_clean["voter"].notna()
+            & tally_votes_clean["weight"].notna()
+            & (tally_votes_clean["weight"] >= 0)
+        ]
         vp_by_voter = tally_votes_clean.groupby("voter")["weight"].sum()
         voting_powers.extend(vp_by_voter.tolist())
 
-    voter_concentration = gini_coefficient(voting_powers) if voting_powers else 0.5
+    voter_concentration = gini_coefficient(voting_powers) if voting_powers else None
 
-    # Approval rate from snapshot
-    approval_rate = 0.5
-    if not snap_props.empty and "state" in snap_props.columns:
-        closed = snap_props[snap_props["state"] == "closed"]
-        if len(closed) > 0:
-            # Most snapshot proposals that close are considered "passed"
-            approval_rate = len(closed) / max(len(snap_props), 1)
-
-    # Tally approval rate (proposals with status 'executed' or 'passed')
+    # Outcome rates use only proposals with classifiable outcomes.
+    snapshot_outcomes = snapshot_binary_outcomes(snap_props, snap_votes)
+    classified_outcomes = [outcome["passed"] for outcome in snapshot_outcomes]
     if not tally_props.empty and "status" in tally_props.columns:
-        passed = tally_props[tally_props["status"].isin(["executed", "passed", "succeeded"])]
-        tally_approval_rate = len(passed) / max(len(tally_props), 1)
-        # Blend with snapshot rate
-        if approval_rate > 0:
-            approval_rate = (approval_rate + tally_approval_rate) / 2
-        else:
-            approval_rate = tally_approval_rate
+        terminal_statuses = {
+            "executed", "passed", "succeeded", "defeated", "failed",
+        }
+        for status in tally_props["status"].dropna().astype(str).str.lower():
+            if status in terminal_statuses:
+                classified_outcomes.append(status in {"executed", "passed", "succeeded"})
+    approval_rate = (
+        sum(classified_outcomes) / len(classified_outcomes)
+        if classified_outcomes else None
+    )
 
     # Avg for percentage from tally votes (on-chain) or snapshot votes (off-chain)
-    avg_for_pct = 0.65
-    if not tally_votes.empty and "support" in tally_votes.columns:
-        for_votes = tally_votes[tally_votes["support"] == "for"]
-        if len(tally_votes) > 0:
-            avg_for_pct = len(for_votes) / len(tally_votes)
-    elif not snap_votes.empty and "choice" in snap_votes.columns:
-        # For Snapshot-only DAOs, choice=1 is the first option (typically For/Yes).
-        # Only count binary proposals (2 choices) for clean for/against semantics.
-        if not snap_props.empty and "choices" in snap_props.columns:
-            binary_proposal_ids = snap_props[
-                snap_props["choices"].apply(
-                    lambda x: isinstance(x, str) and x.count('",') == 1
-                )
-            ]["proposal_id"]
-            binary_votes = snap_votes[snap_votes["proposal_id"].isin(binary_proposal_ids)]
-            if len(binary_votes) > 0:
-                # Choice column is string: either numeric '1','2' or JSON '{"1": 100}'.
-                # Convert to numeric first (handles '1','2'); for JSON, extract primary key.
-                numeric_choices = pd.to_numeric(binary_votes["choice"], errors="coerce")
-                is_for = numeric_choices == 1
-                # Handle JSON-formatted weighted choices (e.g. '{"1": 100, "2": 0}')
-                json_mask = numeric_choices.isna()
-                if json_mask.any():
-                    def _primary_choice(val):
-                        try:
-                            d = json.loads(str(val))
-                            if isinstance(d, dict) and d:
-                                return int(max(d.keys(), key=lambda k: float(d[k])))
-                        except Exception:
-                            pass
-                        return 0
-                    json_primary = binary_votes.loc[json_mask, "choice"].apply(_primary_choice)
-                    is_for = is_for.copy()
-                    is_for.loc[json_mask] = json_primary == 1
-                avg_for_pct = is_for.sum() / len(binary_votes)
-                logger.info(
-                    "%s: Computed avg_for_pct=%.3f from %d binary Snapshot votes (%d proposals)",
-                    dao_id, avg_for_pct, len(binary_votes), len(binary_proposal_ids),
-                )
+    for_shares = [outcome["for_share"] for outcome in snapshot_outcomes]
+    avg_for_pct = float(np.mean(for_shares)) if for_shares else None
+    if (
+        not tally_votes.empty
+        and "support" in tally_votes.columns
+        and "weight" in tally_votes.columns
+        and "proposal_id" in tally_votes.columns
+    ):
+        weighted_tally = tally_votes.copy()
+        weighted_tally["_support"] = (
+            weighted_tally["support"].astype(str).str.strip().str.lower()
+        )
+        weighted_tally["_weight"] = pd.to_numeric(
+            weighted_tally["weight"],
+            errors="coerce",
+        )
+        weighted_tally = weighted_tally[
+            weighted_tally["_support"].isin(["for", "against"])
+            & weighted_tally["_weight"].notna()
+            & (weighted_tally["_weight"] >= 0)
+        ]
+        for _, proposal_votes in weighted_tally.groupby("proposal_id"):
+            position_power = proposal_votes.groupby("_support")["_weight"].sum()
+            for_power = float(position_power.get("for", 0.0))
+            against_power = float(position_power.get("against", 0.0))
+            if for_power + against_power > 0:
+                for_shares.append(for_power / (for_power + against_power))
+        avg_for_pct = float(np.mean(for_shares)) if for_shares else None
 
     # Participation rate estimation
     # We approximate using unique voters / total unique voters across all proposals
@@ -287,31 +576,46 @@ def compile_voting_profile(dao_id, data):
     participation_rates = []
 
     if not snap_votes.empty and "voter" in snap_votes.columns:
-        all_voters.update(snap_votes["voter"].unique())
+        all_voters.update(snap_votes["voter"].dropna().unique())
+    if not tally_votes.empty and "voter" in tally_votes.columns:
+        all_voters.update(tally_votes["voter"].dropna().unique())
+
+    if not snap_votes.empty and "voter" in snap_votes.columns:
         for _, grp in snap_votes.groupby("proposal_id"):
             participation_rates.append(len(grp["voter"].unique()) / max(len(all_voters), 1))
 
     if not tally_votes.empty and "voter" in tally_votes.columns:
-        all_voters.update(tally_votes["voter"].unique())
         for _, grp in tally_votes.groupby("proposal_id"):
             participation_rates.append(len(grp["voter"].unique()) / max(len(all_voters), 1))
 
-    avg_participation = float(np.mean(participation_rates)) if participation_rates else 0.15
-    participation_dist = participation_histogram(participation_rates) if participation_rates else [0.1] * 10
+    avg_participation = float(np.mean(participation_rates)) if participation_rates else None
+    participation_dist = participation_histogram(participation_rates) if participation_rates else []
+    quorum_hit_rate = None
+    if (
+        not snap_props.empty
+        and "scores_total" in snap_props.columns
+        and "quorum" in snap_props.columns
+    ):
+        scores = pd.to_numeric(snap_props["scores_total"], errors="coerce")
+        quorums = pd.to_numeric(snap_props["quorum"], errors="coerce")
+        applicable = (quorums > 0) & scores.notna()
+        if applicable.any():
+            quorum_hit_rate = float((scores[applicable] >= quorums[applicable]).mean())
 
     return {
-        "avg_participation_rate": round(avg_participation, 4),
+        "avg_participation_rate": round(avg_participation, 4) if avg_participation is not None else None,
         "participation_distribution": [round(p, 4) for p in participation_dist],
-        "avg_votes_per_proposal": round(avg_votes_per_proposal, 2),
-        "voter_concentration": round(voter_concentration, 4),
-        "approval_rate": round(approval_rate, 4),
-        "avg_for_percentage": round(avg_for_pct, 4),
-        "quorum_hit_rate": round(min(approval_rate * 1.1, 1.0), 4),  # Approximation
-        "delegation_rate": 0.0,  # Would need delegation data
+        "avg_votes_per_proposal": round(avg_votes_per_proposal, 2) if avg_votes_per_proposal is not None else None,
+        "voter_concentration": round(voter_concentration, 4) if voter_concentration is not None else None,
+        "approval_rate": round(approval_rate, 4) if approval_rate is not None else None,
+        "avg_for_percentage": round(avg_for_pct, 4) if avg_for_pct is not None else None,
+        "quorum_hit_rate": round(quorum_hit_rate, 4) if quorum_hit_rate is not None else None,
+        # Neither Snapshot nor Tally vote exports contain delegation events.
+        "delegation_rate": None,
     }
 
 
-def compile_proposal_profile(dao_id, data):
+def compile_proposal_profile(dao_id, data, period=None):
     """Compile proposal dynamics from snapshot + tally proposals."""
     snap_props = data["snapshot_proposals"]
     tally_props = data["tally_proposals"]
@@ -328,18 +632,28 @@ def compile_proposal_profile(dao_id, data):
         tally_props = pd.DataFrame()
 
     # Monthly counts
-    monthly_counts = []
+    monthly_counts_by_period = defaultdict(int)
     for df, date_col in [(snap_props, "created_iso"), (tally_props, "created_at")]:
         if not df.empty and date_col in df.columns:
             try:
                 dates = pd.to_datetime(df[date_col], errors="coerce")
-                months = dates.dt.to_period("M")
+                months = dates.dt.tz_localize(None).dt.to_period("M")
                 monthly = months.value_counts().sort_index()
-                monthly_counts.extend(monthly.tolist())
+                for month, count in monthly.items():
+                    if not pd.isna(month):
+                        monthly_counts_by_period[month] += int(count)
             except Exception:
                 pass
 
-    avg_per_month = float(np.mean(monthly_counts)) if monthly_counts else 2.0
+    complete_months = full_month_index(period)
+    if complete_months is not None:
+        monthly_counts = [monthly_counts_by_period.get(month, 0) for month in complete_months]
+    else:
+        monthly_counts = [
+            monthly_counts_by_period[month]
+            for month in sorted(monthly_counts_by_period)
+        ]
+    avg_per_month = float(np.mean(monthly_counts)) if monthly_counts else None
 
     # Voting period
     voting_periods = []
@@ -358,27 +672,36 @@ def compile_proposal_profile(dao_id, data):
             except Exception:
                 pass
 
-    avg_voting_period = float(np.mean(voting_periods)) if voting_periods else 7.0
+    avg_voting_period = float(np.mean(voting_periods)) if voting_periods else None
 
     # Choices per proposal (from snapshot)
-    avg_choices = 3.0
+    choice_counts = []
     if not snap_props.empty and "choices" in snap_props.columns:
-        try:
-            choice_counts = snap_props["choices"].apply(
-                lambda x: len(json.loads(x)) if isinstance(x, str) else 3
-            )
-            avg_choices = float(choice_counts.mean())
-        except Exception:
-            pass
+        for raw_choices in snap_props["choices"].dropna():
+            try:
+                choices = json.loads(raw_choices) if isinstance(raw_choices, str) else raw_choices
+                if isinstance(choices, list):
+                    choice_counts.append(len(choices))
+            except (TypeError, ValueError, json.JSONDecodeError):
+                continue
+    avg_choices = float(np.mean(choice_counts)) if choice_counts else None
 
-    # Pass rate (same as approval rate, computed from both sources)
-    total = len(snap_props) + len(tally_props)
-    passed = 0
-    if not snap_props.empty and "state" in snap_props.columns:
-        passed += len(snap_props[snap_props["state"] == "closed"])
+    # Pass rate is restricted to classifiable Snapshot binaries and terminal Tally outcomes.
+    snapshot_outcomes = snapshot_binary_outcomes(
+        snap_props,
+        data["snapshot_votes"][
+            data["snapshot_votes"]["dao_id"] == dao_id
+        ] if not data["snapshot_votes"].empty else pd.DataFrame(),
+    )
+    outcomes = [outcome["passed"] for outcome in snapshot_outcomes]
     if not tally_props.empty and "status" in tally_props.columns:
-        passed += len(tally_props[tally_props["status"].isin(["executed", "passed", "succeeded"])])
-    pass_rate = passed / max(total, 1)
+        terminal_statuses = {
+            "executed", "passed", "succeeded", "defeated", "failed",
+        }
+        for status in tally_props["status"].dropna().astype(str).str.lower():
+            if status in terminal_statuses:
+                outcomes.append(status in {"executed", "passed", "succeeded"})
+    pass_rate = sum(outcomes) / len(outcomes) if outcomes else None
 
     # Proposal types (from title keywords)
     type_counts = defaultdict(int)
@@ -402,11 +725,11 @@ def compile_proposal_profile(dao_id, data):
     proposal_types = {k: round(v / type_total, 4) for k, v in type_counts.items()}
 
     return {
-        "avg_proposals_per_month": round(avg_per_month, 2),
+        "avg_proposals_per_month": round(avg_per_month, 2) if avg_per_month is not None else None,
         "proposal_types": proposal_types,
-        "avg_voting_period_days": round(avg_voting_period, 2),
-        "avg_choices_per_proposal": round(avg_choices, 2),
-        "pass_rate": round(pass_rate, 4),
+        "avg_voting_period_days": round(avg_voting_period, 2) if avg_voting_period is not None else None,
+        "avg_choices_per_proposal": round(avg_choices, 2) if avg_choices is not None else None,
+        "pass_rate": round(pass_rate, 4) if pass_rate is not None else None,
         "monthly_cadence": [round(c, 2) for c in monthly_counts[-12:]],  # Last 12 months
     }
 
@@ -427,16 +750,20 @@ def compile_market_profile(dao_id, data):
     dao_data = dao_data.dropna(subset=["price_usd"])
     dao_data = dao_data.sort_values("timestamp_utc")
 
+    dao_data = dao_data[dao_data["price_usd"] > 0]
     prices = dao_data["price_usd"].values
     if len(prices) < 2:
         return None
 
     # Daily returns
-    returns = np.diff(np.log(prices[prices > 0]))
+    returns = np.diff(np.log(prices))
     returns = returns[np.isfinite(returns)]
+    if len(returns) == 0:
+        logger.warning("Skipping market profile for %s: no valid price returns", dao_id)
+        return None
 
-    avg_daily_return = float(np.mean(returns)) if len(returns) > 0 else 0.0
-    daily_volatility = float(np.std(returns)) if len(returns) > 0 else 0.02
+    avg_daily_return = float(np.mean(returns))
+    daily_volatility = float(np.std(returns))
 
     # Market cap and volume
     market_caps = pd.to_numeric(dao_data.get("market_cap_usd", pd.Series()), errors="coerce").dropna()
@@ -450,14 +777,16 @@ def compile_market_profile(dao_id, data):
         "daily_volatility": round(daily_volatility, 6),
         "avg_price_usd": round(float(np.mean(prices)), 4),
         "price_range": [round(float(np.min(prices)), 4), round(float(np.max(prices)), 4)],
-        "avg_market_cap": round(float(market_caps.mean()), 2) if len(market_caps) > 0 else 0,
-        "avg_daily_volume": round(float(volumes.mean()), 2) if len(volumes) > 0 else 0,
-        "correlation_to_eth": 0.5,  # Placeholder - would need ETH price data
+        "avg_market_cap": round(float(market_caps.mean()), 2) if len(market_caps) > 0 else None,
+        "avg_daily_volume": round(float(volumes.mean()), 2) if len(volumes) > 0 else None,
+        # The raw corpus contains DAO-token series but no independently sourced
+        # ETH benchmark. Do not manufacture a correlation.
+        "correlation_to_eth": None,
         "drawdown_events": drawdowns[:10],  # Cap at 10 events
     }
 
 
-def compile_forum_profile(dao_id, data):
+def compile_forum_profile(dao_id, data, period=None):
     """Compile forum activity metrics."""
     topics = data["forum_topics"]
     posts = data["forum_posts"]
@@ -474,21 +803,25 @@ def compile_forum_profile(dao_id, data):
         return None
 
     # Topics per month
+    avg_topics_per_month = None
     try:
         topic_dates = pd.to_datetime(dao_topics["created_at"], errors="coerce")
-        topic_months = topic_dates.dt.to_period("M")
+        topic_months = topic_dates.dt.tz_localize(None).dt.to_period("M")
         monthly_topics = topic_months.value_counts()
+        complete_months = full_month_index(period)
+        if complete_months is not None:
+            monthly_topics = monthly_topics.reindex(complete_months, fill_value=0)
         avg_topics_per_month = float(monthly_topics.mean())
-    except Exception:
-        avg_topics_per_month = 5.0
+    except (KeyError, TypeError, ValueError, AttributeError):
+        pass
 
     # Posts per topic
     posts_count = pd.to_numeric(dao_topics.get("posts_count", pd.Series()), errors="coerce").dropna()
-    avg_posts_per_topic = float(posts_count.mean()) if len(posts_count) > 0 else 3.0
+    avg_posts_per_topic = float(posts_count.mean()) if len(posts_count) > 0 else None
 
     # Views per topic
     views = pd.to_numeric(dao_topics.get("views", pd.Series()), errors="coerce").dropna()
-    avg_views_per_topic = float(views.mean()) if len(views) > 0 else 100.0
+    avg_views_per_topic = float(views.mean()) if len(views) > 0 else None
 
     # Top categories (from topic slugs/titles)
     categories = defaultdict(int)
@@ -512,12 +845,12 @@ def compile_forum_profile(dao_id, data):
     )[:10]}
 
     # Post analysis
-    avg_post_length = 500
-    reply_rate = 0.6
+    avg_post_length = None
+    reply_rate = None
     if not dao_posts.empty:
         if "raw" in dao_posts.columns:
             lengths = dao_posts["raw"].dropna().apply(len)
-            avg_post_length = int(lengths.mean()) if len(lengths) > 0 else 500
+            avg_post_length = int(lengths.mean()) if len(lengths) > 0 else None
 
         if "reply_to_post_number" in dao_posts.columns:
             replies = dao_posts["reply_to_post_number"].notna().sum()
@@ -539,12 +872,12 @@ def compile_forum_profile(dao_id, data):
                 sentiment_keywords[w] = count
 
     return {
-        "avg_topics_per_month": round(avg_topics_per_month, 2),
-        "avg_posts_per_topic": round(avg_posts_per_topic, 2),
-        "avg_views_per_topic": round(avg_views_per_topic, 2),
+        "avg_topics_per_month": round(avg_topics_per_month, 2) if avg_topics_per_month is not None else None,
+        "avg_posts_per_topic": round(avg_posts_per_topic, 2) if avg_posts_per_topic is not None else None,
+        "avg_views_per_topic": round(avg_views_per_topic, 2) if avg_views_per_topic is not None else None,
         "top_categories": top_categories,
         "avg_post_length_chars": avg_post_length,
-        "reply_rate": round(reply_rate, 4),
+        "reply_rate": round(reply_rate, 4) if reply_rate is not None else None,
         "sentiment_keywords": sentiment_keywords,
     }
 
@@ -554,61 +887,125 @@ def compile_voter_clusters(dao_id, data):
     snap_votes = data["snapshot_votes"]
     tally_votes = data["tally_votes"]
 
-    # Collect per-voter stats
+    # Collect per-voter stats. Alignment is record-weighted within voters:
+    # each comparable vote is compared with that proposal's voting-power
+    # weighted modal position.
     voter_stats = {}
 
-    for votes_df, vp_col in [(snap_votes, "vp"), (tally_votes, "weight")]:
+    sources = [
+        ("snapshot", snap_votes, "vp", "choice"),
+        ("tally", tally_votes, "weight", "support"),
+    ]
+    total_proposal_ids = set()
+    for source_name, proposals_key in (
+        ("snapshot", "snapshot_proposals"),
+        ("tally", "tally_proposals"),
+    ):
+        proposals = data[proposals_key]
+        if proposals.empty or "dao_id" not in proposals.columns:
+            continue
+        dao_proposals = proposals[proposals["dao_id"] == dao_id]
+        if "proposal_id" in dao_proposals.columns:
+            total_proposal_ids.update(
+                f"{source_name}:{proposal_id}"
+                for proposal_id in dao_proposals["proposal_id"].dropna().unique()
+            )
+    for source_name, votes_df, vp_col, position_col in sources:
         if votes_df.empty or "dao_id" not in votes_df.columns:
             continue
         dao_votes = votes_df[votes_df["dao_id"] == dao_id]
         if dao_votes.empty:
             continue
+        dao_votes = dao_votes.copy()
+        dao_votes[vp_col] = pd.to_numeric(
+            dao_votes.get(vp_col), errors="coerce"
+        )
+        dao_votes["_position"] = dao_votes.get(position_col, pd.Series(index=dao_votes.index)).map(
+            lambda value: (
+                str(int(float(value)))
+                if source_name == "snapshot"
+                and pd.notna(value)
+                and str(value).strip().replace(".", "", 1).isdigit()
+                else str(value).strip().lower()
+            )
+        )
+        dao_votes = dao_votes[
+            dao_votes["voter"].notna()
+            & dao_votes["proposal_id"].notna()
+            & dao_votes[vp_col].notna()
+            & (dao_votes[vp_col] >= 0)
+            & (dao_votes["_position"] != "")
+            & (dao_votes["_position"] != "nan")
+        ]
+        total_proposal_ids.update(
+            f"{source_name}:{proposal_id}"
+            for proposal_id in dao_votes["proposal_id"].unique()
+        )
 
         # Count proposals per voter (vectorized)
         proposals_per_voter = dao_votes.groupby("voter")["proposal_id"].nunique()
 
         # Sum voting power per voter (vectorized)
-        vp_per_voter = pd.Series(dtype=float)
-        if vp_col in dao_votes.columns:
-            dao_votes_copy = dao_votes.copy()
-            dao_votes_copy[vp_col] = pd.to_numeric(dao_votes_copy[vp_col], errors="coerce")
-            vp_per_voter = dao_votes_copy.groupby("voter")[vp_col].sum()
+        vp_per_voter = dao_votes.groupby("voter")[vp_col].sum()
+
+        alignment_by_voter = defaultdict(lambda: {"aligned": 0, "comparable": 0})
+        for _, proposal_votes in dao_votes.groupby("proposal_id"):
+            position_power = proposal_votes.groupby("_position")[vp_col].sum()
+            if position_power.empty or position_power.max() <= 0:
+                continue
+            leaders = position_power[position_power == position_power.max()].index.tolist()
+            if len(leaders) != 1:
+                continue
+            majority_position = leaders[0]
+            for _, vote in proposal_votes.iterrows():
+                voter = vote["voter"]
+                alignment_by_voter[voter]["comparable"] += 1
+                alignment_by_voter[voter]["aligned"] += int(
+                    vote["_position"] == majority_position
+                )
 
         for voter, prop_count in proposals_per_voter.items():
             if voter not in voter_stats:
-                voter_stats[voter] = {"vote_count": 0, "total_vp": 0.0, "proposals_voted": 0}
+                voter_stats[voter] = {
+                    "vote_count": 0,
+                    "total_vp": 0.0,
+                    "proposals_voted": 0,
+                    "aligned": 0,
+                    "comparable": 0,
+                }
             voter_stats[voter]["vote_count"] += int(prop_count)
             voter_stats[voter]["proposals_voted"] += int(prop_count)
             if voter in vp_per_voter.index:
                 voter_stats[voter]["total_vp"] += float(vp_per_voter[voter])
+            voter_stats[voter]["aligned"] += alignment_by_voter[voter]["aligned"]
+            voter_stats[voter]["comparable"] += alignment_by_voter[voter]["comparable"]
 
     if not voter_stats:
-        return _default_voter_clusters()
+        return []
 
     total_voters = len(voter_stats)
-    total_proposals_count = max(
-        max((v["proposals_voted"] for v in voter_stats.values()), default=1),
-        1
-    )
+    total_proposals_count = len(total_proposal_ids)
 
     # Classify voters
     clusters = {
-        "whale": {"count": 0, "total_vp": 0, "total_participation": 0},
-        "active_delegate": {"count": 0, "total_vp": 0, "total_participation": 0},
-        "regular_voter": {"count": 0, "total_vp": 0, "total_participation": 0},
-        "passive_holder": {"count": 0, "total_vp": 0, "total_participation": 0},
+        label: {
+            "count": 0,
+            "total_vp": 0,
+            "total_participation": 0,
+            "aligned": 0,
+            "comparable": 0,
+        }
+        for label in ("whale", "active_delegate", "regular_voter", "passive_holder")
     }
 
     # Sort by voting power to find whales
     sorted_voters = sorted(voter_stats.items(), key=lambda x: -x[1]["total_vp"])
-    vp_values = [v["total_vp"] for _, v in sorted_voters]
-    total_vp = sum(vp_values) or 1
+    whale_count = max(1, math.ceil(total_voters * 0.10))
 
     for i, (voter, stats) in enumerate(sorted_voters):
         participation = stats["proposals_voted"] / total_proposals_count
-        vp_share = stats["total_vp"] / total_vp
 
-        if vp_share > 0.01:  # Top 1% of voting power
+        if i < whale_count:
             label = "whale"
         elif participation > 0.5:  # Votes on >50% of proposals
             label = "active_delegate"
@@ -620,6 +1017,8 @@ def compile_voter_clusters(dao_id, data):
         clusters[label]["count"] += 1
         clusters[label]["total_vp"] += stats["total_vp"]
         clusters[label]["total_participation"] += participation
+        clusters[label]["aligned"] += stats["aligned"]
+        clusters[label]["comparable"] += stats["comparable"]
 
     result = []
     for label, c in clusters.items():
@@ -630,20 +1029,13 @@ def compile_voter_clusters(dao_id, data):
             "share": round(c["count"] / total_voters, 4),
             "avg_voting_power": round(c["total_vp"] / c["count"], 4),
             "participation_rate": round(c["total_participation"] / c["count"], 4),
-            "alignment_with_majority": 0.7,  # Default - would need per-proposal analysis
+            "alignment_with_majority": (
+                round(c["aligned"] / c["comparable"], 4)
+                if c["comparable"] > 0 else None
+            ),
         })
 
-    return result if result else _default_voter_clusters()
-
-
-def _default_voter_clusters():
-    """Return default voter cluster distribution."""
-    return [
-        {"label": "whale", "share": 0.05, "avg_voting_power": 50000, "participation_rate": 0.7, "alignment_with_majority": 0.75},
-        {"label": "active_delegate", "share": 0.15, "avg_voting_power": 10000, "participation_rate": 0.6, "alignment_with_majority": 0.7},
-        {"label": "regular_voter", "share": 0.30, "avg_voting_power": 1000, "participation_rate": 0.3, "alignment_with_majority": 0.65},
-        {"label": "passive_holder", "share": 0.50, "avg_voting_power": 100, "participation_rate": 0.05, "alignment_with_majority": 0.6},
-    ]
+    return result
 
 
 def compile_protocol_profile(dao_id, data):
@@ -652,17 +1044,23 @@ def compile_protocol_profile(dao_id, data):
     fees_df = data["protocol_fees"]
     revenue_df = data["protocol_revenue"]
 
-    result = {
-        "avg_tvl": 0,
-        "tvl_trend": "stable",
-        "avg_daily_fees": 0,
-        "avg_daily_revenue": 0,
-    }
+    result = {}
 
     if not tvl_df.empty and "dao_id" in tvl_df.columns:
-        dao_tvl = tvl_df[tvl_df["dao_id"] == dao_id]
+        dao_tvl = tvl_df[tvl_df["dao_id"] == dao_id].copy()
         if not dao_tvl.empty and "tvl_usd" in dao_tvl.columns:
-            tvl_values = pd.to_numeric(dao_tvl["tvl_usd"], errors="coerce").dropna()
+            if "timestamp_iso" in dao_tvl.columns:
+                dao_tvl["_timestamp"] = pd.to_datetime(
+                    dao_tvl["timestamp_iso"],
+                    errors="coerce",
+                    utc=True,
+                )
+                dao_tvl = dao_tvl.sort_values("_timestamp")
+            tvl_values = pd.to_numeric(
+                dao_tvl["tvl_usd"],
+                errors="coerce",
+            ).dropna()
+            tvl_values = tvl_values[tvl_values >= 0]
             if len(tvl_values) > 0:
                 result["avg_tvl"] = round(float(tvl_values.mean()), 2)
                 result["tvl_trend"] = tvl_trend(tvl_values.values)
@@ -681,6 +1079,12 @@ def compile_protocol_profile(dao_id, data):
             if len(rev_values) > 0:
                 result["avg_daily_revenue"] = round(float(rev_values.mean()), 2)
 
+    if not result:
+        return None
+    result.setdefault("avg_tvl", None)
+    result.setdefault("tvl_trend", None)
+    result.setdefault("avg_daily_fees", None)
+    result.setdefault("avg_daily_revenue", None)
     return result
 
 
@@ -688,19 +1092,164 @@ def compile_protocol_profile(dao_id, data):
 # MAIN COMPILATION
 # =============================================================================
 
-def compile_profile(dao_id, data):
+def compile_profile(dao_id, data, metadata=None):
     """Compile full CalibrationProfile for a single DAO."""
     print(f"  Compiling profile for: {dao_id}")
 
     voting = compile_voting_profile(dao_id, data)
-    proposals = compile_proposal_profile(dao_id, data)
+    period = (metadata or {}).get("period")
+    proposals = compile_proposal_profile(dao_id, data, period)
     market = compile_market_profile(dao_id, data)
-    forum = compile_forum_profile(dao_id, data)
+    forum = compile_forum_profile(dao_id, data, period)
     voter_clusters = compile_voter_clusters(dao_id, data)
     protocol = compile_protocol_profile(dao_id, data)
 
+    def availability(value, observed_reason, unavailable_reason, status="derived"):
+        return {
+            "status": status if value is not None else "unavailable",
+            "reason": observed_reason if value is not None else unavailable_reason,
+        }
+
+    profile_metadata = dict(metadata or {})
+    field_quality = {
+        "voting.avg_participation_rate": availability(
+            voting["avg_participation_rate"],
+            "Derived from unique voters per proposal over the observed voter universe.",
+            "No proposal-level vote participation observations were available.",
+        ),
+        "voting.avg_votes_per_proposal": availability(
+            voting["avg_votes_per_proposal"],
+            "Derived over all observed proposals, including proposals with zero recorded votes.",
+            "No proposals were observed.",
+        ),
+        "voting.voter_concentration": availability(
+            voting["voter_concentration"],
+            "Derived as the Gini coefficient of cumulative observed voting power by voter.",
+            "No usable voter-power observations were available.",
+        ),
+        "voting.approval_rate": availability(
+            voting["approval_rate"],
+            "Derived from classifiable binary Snapshot outcomes and terminal Tally outcomes.",
+            "No classifiable terminal proposal outcomes were available.",
+        ),
+        "voting.avg_for_percentage": availability(
+            voting["avg_for_percentage"],
+            "Derived from classifiable vote positions.",
+            "No classifiable vote-position observations were available.",
+        ),
+        "voting.quorum_hit_rate": availability(
+            voting["quorum_hit_rate"],
+            "Derived over Snapshot proposals with a positive reported quorum.",
+            "No proposals with an applicable reported quorum were available.",
+        ),
+        "voting.delegation_rate": {
+            "status": "unavailable",
+            "reason": "Snapshot and Tally vote exports do not contain delegation events.",
+        },
+        "proposals.avg_proposals_per_month": availability(
+            proposals["avg_proposals_per_month"],
+            "Derived over every calendar month in the declared partition, including zero-count months.",
+            "No valid proposal dates or declared evaluation period were available.",
+        ),
+        "proposals.avg_voting_period_days": availability(
+            proposals["avg_voting_period_days"],
+            "Derived from valid positive proposal start-to-end durations below 90 days.",
+            "No valid proposal voting-period observations were available.",
+        ),
+        "proposals.avg_choices_per_proposal": availability(
+            proposals["avg_choices_per_proposal"],
+            "Derived from successfully parsed Snapshot choice arrays.",
+            "No valid Snapshot choice arrays were available.",
+        ),
+        "proposals.pass_rate": availability(
+            proposals["pass_rate"],
+            "Derived from classifiable binary Snapshot outcomes and terminal Tally outcomes.",
+            "No classifiable terminal proposal outcomes were available.",
+        ),
+        "market": availability(
+            market,
+            "Observed from at least two positive token-price records with a valid log return.",
+            "No usable positive token-price return series was available.",
+            "observed",
+        ),
+        "market.avg_market_cap": availability(
+            market["avg_market_cap"] if market is not None else None,
+            "Derived from observed finite market-cap records.",
+            "No finite market-cap observations were available.",
+        ),
+        "market.avg_daily_volume": availability(
+            market["avg_daily_volume"] if market is not None else None,
+            "Derived from observed finite daily-volume records.",
+            "No finite daily-volume observations were available.",
+        ),
+        "market.correlation_to_eth": {
+            "status": "unavailable" if market is not None else "not_applicable",
+            "reason": "The source corpus has no independently sourced ETH benchmark.",
+        },
+        "forum": availability(
+            forum,
+            "Observed from forum-topic records for this DAO and partition.",
+            "No forum-topic records were available for this DAO and partition.",
+            "observed",
+        ),
+        "forum.avg_topics_per_month": availability(
+            forum["avg_topics_per_month"] if forum is not None else None,
+            "Derived over every calendar month in the declared partition, including zero-count months.",
+            "No valid forum-topic dates or declared evaluation period were available.",
+        ),
+        "forum.avg_posts_per_topic": availability(
+            forum["avg_posts_per_topic"] if forum is not None else None,
+            "Derived from observed topic post counts.",
+            "No usable topic post-count observations were available.",
+        ),
+        "forum.avg_views_per_topic": availability(
+            forum["avg_views_per_topic"] if forum is not None else None,
+            "Derived from observed topic view counts.",
+            "No usable topic view-count observations were available.",
+        ),
+        "forum.avg_post_length_chars": availability(
+            forum["avg_post_length_chars"] if forum is not None else None,
+            "Derived from observed non-null raw forum-post text.",
+            "No usable raw forum-post text was available.",
+        ),
+        "forum.reply_rate": availability(
+            forum["reply_rate"] if forum is not None else None,
+            "Derived as replies divided by observed forum posts.",
+            "No forum posts with reply metadata were available.",
+        ),
+        "voter_clusters.alignment_with_majority": {
+            "status": (
+                "derived"
+                if any(
+                    cluster["alignment_with_majority"] is not None
+                    for cluster in voter_clusters
+                )
+                else "unavailable"
+            ),
+            "reason": (
+                "Derived by comparing each comparable vote with the proposal's "
+                "voting-power-weighted modal position."
+                if any(
+                    cluster["alignment_with_majority"] is not None
+                    for cluster in voter_clusters
+                )
+                else "No comparable vote records were available."
+            ),
+        },
+        "protocol": {
+            "status": "observed" if protocol is not None else "unavailable",
+            "reason": (
+                "At least one protocol series was observed."
+                if protocol is not None
+                else "No protocol series was observed for this DAO and period."
+            ),
+        },
+    }
+    profile_metadata["field_quality"] = field_quality
+
     profile = {
         "dao_id": dao_id,
+        "calibration_metadata": profile_metadata,
         "voting": voting,
         "proposals": proposals,
         "market": market,
@@ -733,6 +1282,9 @@ def main():
                         help="Output directory for JSON profiles")
     parser.add_argument("--list", action="store_true", help="List available DAO IDs and exit")
     parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose logging")
+    parser.add_argument("--start-date", type=str, help="Inclusive UTC start date (YYYY-MM-DD)")
+    parser.add_argument("--end-date", type=str, help="Inclusive UTC end date (YYYY-MM-DD)")
+    parser.add_argument("--label", type=str, default="aggregate", help="Dataset partition label")
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -741,7 +1293,8 @@ def main():
     )
 
     print("Loading historical data...")
-    data = load_all_data()
+    raw_data = load_all_data()
+    data = filter_data_by_period(raw_data, args.start_date, args.end_date)
 
     # Check what data is available
     for key, df in data.items():
@@ -750,6 +1303,7 @@ def main():
 
     # Discover DAO IDs
     all_dao_ids = get_all_dao_ids(data)
+    quality_by_dao = source_quality_index(raw_data, data, all_dao_ids)
     print(f"\nFound {len(all_dao_ids)} DAOs: {', '.join(all_dao_ids)}")
 
     if args.list:
@@ -765,12 +1319,33 @@ def main():
     # Compile profiles
     print(f"\nCompiling calibration profiles...")
     compiled = 0
+    checksums = historical_source_checksums()
     for dao_id in dao_ids:
         try:
-            profile = compile_profile(dao_id, data)
+            dao_data = {
+                key: (
+                    frame[frame["dao_id"] == dao_id].copy()
+                    if not frame.empty and "dao_id" in frame.columns
+                    else frame
+                )
+                for key, frame in data.items()
+            }
+            metadata = {
+                "schema_version": "1.1.0",
+                "partition": args.label,
+                "period": {
+                    "start": args.start_date,
+                    "end": args.end_date,
+                    "inclusive": True,
+                },
+                "source_manifest": source_manifest(dao_data),
+                "source_quality": quality_by_dao.get(dao_id, {}),
+                "source_checksums": checksums,
+                "method": "chronological-source-filter",
+            }
+            profile = compile_profile(dao_id, dao_data, metadata)
             output_path = output_dir / f"{dao_id}_profile.json"
-            with open(output_path, "w") as f:
-                json.dump(profile, f, indent=2, default=str)
+            atomic_json_dump(output_path, profile)
             print(f"    -> Saved: {output_path}")
             compiled += 1
         except Exception as e:

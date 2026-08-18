@@ -419,6 +419,7 @@ export class MultiStageProposal extends Proposal {
     // If stage failed, reject the proposal
     if (!passed) {
       this.status = 'rejected';
+      this.recordResolutionTime();
       this.emitStageChange('rejected', reason);
       return false;
     }
@@ -431,6 +432,7 @@ export class MultiStageProposal extends Proposal {
     // Check if we've completed all stages
     if (this.currentStageIndex >= this.stageConfigs.length) {
       this.status = 'approved';
+      this.recordResolutionTime();
       this.emitStageChange('executed', 'All stages completed');
       return true;
     }
@@ -462,6 +464,7 @@ export class MultiStageProposal extends Proposal {
    */
   veto(reason: string = 'Veto threshold reached'): void {
     this.status = 'rejected';
+    this.recordResolutionTime();
     if (this.currentStageState) {
       this.currentStageState.passed = false;
       this.currentStageState.reason = reason;
@@ -474,6 +477,7 @@ export class MultiStageProposal extends Proposal {
    */
   cancel(reason: string = 'Cancelled by proposer'): void {
     this.status = 'rejected';
+    this.recordResolutionTime();
     if (this.currentStageState) {
       this.currentStageState.passed = false;
       this.currentStageState.reason = reason;
@@ -512,7 +516,14 @@ export class MultiStageProposal extends Proposal {
    */
   execute(): void {
     this.status = 'completed';
+    this.recordResolutionTime();
     this.emitStageChange('executed', 'Timelock completed');
+  }
+
+  private recordResolutionTime(): void {
+    if (this.resolvedTime === undefined) {
+      this.resolvedTime = this.dao.currentStep;
+    }
   }
 
   /**

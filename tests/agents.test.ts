@@ -33,10 +33,30 @@ describe('DAOMember base class', () => {
     expect(member.stakedTokens).toBe(0);
   });
 
+  it('tracks primary and secondary assets in distinct wallets', () => {
+    member.creditAsset('USDC', 75);
+    member.debitAsset('USDC', 20);
+
+    expect(member.tokens).toBe(100);
+    expect(member.getAssetBalance(simulation.dao.tokenSymbol)).toBe(100);
+    expect(member.getAssetBalance('DAO_TOKEN')).toBe(100);
+    expect(member.getAssetBalance('USDC')).toBe(55);
+    expect(member.getAssetBalances()).toEqual({
+      [simulation.dao.tokenSymbol]: 100,
+      USDC: 55,
+    });
+  });
+
   it('should receive revenue share', () => {
     const initialTokens = member.tokens;
     member.receiveRevenueShare(50);
     expect(member.tokens).toBe(initialTokens + 50);
+  });
+
+  it('does not double-count fatigue in an observed calibrated participation rate', () => {
+    member.calibratedVotingProbability = 0.25;
+    member.voterFatigue = 0.9;
+    expect(member.getEffectiveVotingProbability()).toBe(0.25);
   });
 
   it('should decide vote based on optimism', () => {
@@ -249,6 +269,16 @@ describe('ProposalCreator agent', () => {
 
   it('should inherit from DAOMember', () => {
     expect(creator instanceof DAOMember).toBe(true);
+  });
+
+  it('creates no proposals when calibrated cadence is exactly zero', () => {
+    (
+      simulation as unknown as { proposalCreationProbability: number }
+    ).proposalCreationProbability = 0;
+    for (let index = 0; index < 100; index++) {
+      creator.step();
+    }
+    expect(simulation.dao.proposals).toHaveLength(0);
   });
 });
 

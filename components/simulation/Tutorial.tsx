@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTutorialStore } from '@/lib/browser/tutorial-store';
 import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
 import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
@@ -8,6 +8,8 @@ import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 export function Tutorial() {
   const { active, currentStep, steps, next, prev, skip } = useTutorialStore();
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
   const { trackEvent } = useAnalytics();
 
   // Find and track the target element
@@ -34,6 +36,37 @@ export function Tutorial() {
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, [active, currentStep, steps]);
+
+  useEffect(() => {
+    if (!active) return;
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    const frame = requestAnimationFrame(() => {
+      dialogRef.current?.querySelector<HTMLButtonElement>('button')?.focus();
+    });
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') skip();
+      if (event.key !== 'Tab' || !dialogRef.current) return;
+      const focusable = [...dialogRef.current.querySelectorAll<HTMLElement>(
+        'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'
+      )].filter(element => !element.hasAttribute('disabled'));
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable.at(-1)!;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      cancelAnimationFrame(frame);
+      document.removeEventListener('keydown', onKeyDown);
+      previouslyFocused.current?.focus();
+    };
+  }, [active, skip]);
 
   if (!active) return null;
 
@@ -109,6 +142,7 @@ export function Tutorial() {
 
       {/* Tooltip */}
       <div
+        ref={dialogRef}
         className="absolute bg-[var(--sim-surface)] border border-[var(--sim-border)] rounded-lg shadow-2xl p-4 max-w-sm z-[201]"
         style={tooltipStyle}
       >

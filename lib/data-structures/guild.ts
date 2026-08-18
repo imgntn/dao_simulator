@@ -17,6 +17,7 @@ export class Guild {
     this.name = name;
     this.dao = dao;
     this.treasury = new Treasury(dao.eventBus);
+    this.treasury.setPrimaryTokenSymbol(dao.tokenSymbol);
 
     if (creator) {
       this.addMember(creator);
@@ -74,6 +75,7 @@ export class Guild {
   static fromDict(data: any, dao: DAO, membersByIdMap: Map<string, DAOMember>): Guild {
     const guild = new Guild(data.name || 'Unknown Guild', dao);
     guild.treasury = Treasury.fromDict(data.treasury || {}, dao.eventBus);
+    guild.treasury.setPrimaryTokenSymbol(dao.tokenSymbol);
 
     for (const memberId of data.members || []) {
       const member = membersByIdMap.get(memberId);

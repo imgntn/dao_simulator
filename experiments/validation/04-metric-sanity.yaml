@@ -41,7 +41,7 @@ metrics:
     builtin: final_treasury
   - name: Final Gini
     type: builtin
-    builtin: gini_coefficient
+    builtin: final_gini
 output:
   directory: results/validation/metric-sanity
   formats:

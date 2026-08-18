@@ -35,6 +35,10 @@ import {
   EXIT_CONFIG_DRIFT,
   EXIT_INFRA_FAILURE,
 } from '../lib/research/baseline-config';
+import {
+  computeExperimentBaselineConfigHash,
+  experimentIdsForSuite,
+} from '../lib/research/experiment-baseline-identity';
 import { logger } from '../lib/utils/logger';
 
 interface CliOptions {
@@ -135,6 +139,38 @@ async function main(): Promise<void> {
     process.exit(EXIT_CONFIG_DRIFT);
   }
 
+  if ((opts.suite === 'full' || opts.suite === 'llm') && !experimentBaseline) {
+    console.error(
+      `A measured experiment baseline is required for suite=${opts.suite}.`
+    );
+    process.exit(EXIT_CONFIG_DRIFT);
+  }
+  if ((opts.suite === 'full' || opts.suite === 'llm') && experimentBaseline) {
+    const expectedSuite = opts.suite;
+    const expectedExperimentHash = computeExperimentBaselineConfigHash(expectedSuite);
+    const missingProvenance = experimentBaseline.suite !== expectedSuite
+      || !experimentBaseline.sourceRunId
+      || !/^[0-9a-f]{40}$/i.test(experimentBaseline.gitSha);
+    if (missingProvenance || experimentBaseline.configHash !== expectedExperimentHash) {
+      console.error(
+        `Experiment baseline provenance/config drift for suite=${expectedSuite}. `
+        + `baseline hash=${experimentBaseline.configHash}, current=${expectedExperimentHash}. `
+        + 'Generate a measured experiment baseline from a completed matching replay.'
+      );
+      process.exit(EXIT_CONFIG_DRIFT);
+    }
+    const requiredIds = experimentIdsForSuite(expectedSuite);
+    const missingBaselineIds = requiredIds.filter(
+      id => !experimentBaseline!.findings[id]
+    );
+    if (missingBaselineIds.length > 0) {
+      console.error(
+        `Experiment baseline is incomplete: ${missingBaselineIds.join(', ')}`
+      );
+      process.exit(EXIT_CONFIG_DRIFT);
+    }
+  }
+
   const validator = new CalibrationValidator({
     suite: opts.suite,
     baselineVersion: calibrationBaseline.version,
@@ -162,9 +198,17 @@ async function main(): Promise<void> {
   }
 
   const hasRegression = diff.regressions.length > 0
-    || (findings ? findings.inversions.length > 0 : false);
+    || (findings
+      ? findings.inversions.length > 0
+        || findings.warnings.length > 0
+        || findings.missing.length > 0
+      : false);
 
-  run.regressionCount = diff.regressions.length + (findings ? findings.inversions.length : 0);
+  run.regressionCount = diff.regressions.length + (
+    findings
+      ? findings.inversions.length + findings.warnings.length + findings.missing.length
+      : 0
+  );
   run.status = hasRegression ? 'regression' : 'pass';
 
   const { markdownPath } = writeValidationReport(

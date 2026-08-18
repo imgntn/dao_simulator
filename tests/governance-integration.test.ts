@@ -33,6 +33,11 @@ import {
   createLidoStETHTracker,
 } from '../lib/governance';
 import { EventBus } from '../lib/utils/event-bus';
+import { setSeed } from '../lib/utils/random';
+import {
+  checkAllTokenConservation,
+  createAssetSupplyBaselines,
+} from '../lib/research/invariant-checker';
 
 describe('GovernanceProcessor', () => {
   let simulation: DAOSimulation;
@@ -222,6 +227,165 @@ describe('DAOCity Governance Integration', () => {
     // Run simulation
     await multiCity.run(10);
     expect(multiCity.getCurrentStep()).toBe(10);
+  });
+
+  it('is invariant to DAO configuration order for a fixed seed', async () => {
+    const daos = [
+      {
+        id: 'alpha',
+        name: 'Alpha',
+        tokenSymbol: 'ALPHA',
+        initialTreasuryFunding: 100000,
+        governanceRule: 'majority',
+        agentCounts: { num_passive_members: 3 },
+        color: '#111111',
+      },
+      {
+        id: 'beta',
+        name: 'Beta',
+        tokenSymbol: 'BETA',
+        initialTreasuryFunding: 100000,
+        governanceRule: 'quorum',
+        agentCounts: { num_passive_members: 3 },
+        color: '#222222',
+      },
+    ];
+    const common = {
+      globalMarketplaceConfig: {
+        initialLiquidity: 50000,
+        volatility: 0.02,
+        priceUpdateFrequency: 1,
+        baseTokenSymbol: 'STABLE',
+      },
+      bridgeFeeRate: 0.01,
+      bridgeDelay: 5,
+      enableInterDAOProposals: false,
+    };
+
+    setSeed(4242);
+    const forward = new DAOCity({ ...common, daos });
+    await forward.run(5);
+    const forwardState = forward.getState();
+
+    setSeed(4242);
+    const reversed = new DAOCity({ ...common, daos: [...daos].reverse() });
+    await reversed.run(5);
+
+    expect(reversed.getState()).toEqual(forwardState);
+  });
+
+  it('bridges member holdings through explicit source burns and destination mints', async () => {
+    const bridgeCity = new DAOCity({
+      daos: [
+        {
+          id: 'alpha',
+          name: 'Alpha',
+          tokenSymbol: 'ALPHA',
+          initialTreasuryFunding: 100000,
+          initialTokenPrice: 2,
+          governanceRule: 'majority',
+          agentCounts: { num_passive_members: 1 },
+          color: '#111111',
+        },
+        {
+          id: 'beta',
+          name: 'Beta',
+          tokenSymbol: 'BETA',
+          initialTreasuryFunding: 100000,
+          initialTokenPrice: 4,
+          governanceRule: 'majority',
+          agentCounts: { num_passive_members: 1 },
+          color: '#222222',
+        },
+      ],
+      globalMarketplaceConfig: {
+        initialLiquidity: 50000,
+        volatility: 0,
+        priceUpdateFrequency: 1000,
+        baseTokenSymbol: 'STABLE',
+      },
+      bridgeFeeRate: 0.01,
+      bridgeDelay: 1,
+      enableInterDAOProposals: false,
+      memberTransferEnabled: true,
+      memberTransferRate: 0,
+      tokenSwapRate: 0,
+    });
+    const alpha = bridgeCity.getSimulation('alpha')!;
+    const beta = bridgeCity.getSimulation('beta')!;
+    const member = alpha.dao.members[0];
+    const alphaBaselines = createAssetSupplyBaselines(alpha.dao);
+    const betaBaselines = createAssetSupplyBaselines(beta.dao);
+
+    const transferController = bridgeCity as unknown as {
+      handleTransferRequest(data: {
+        step: number;
+        memberId: string;
+        fromDaoId: string;
+        toDaoId: string;
+      }): void;
+    };
+    transferController.handleTransferRequest({
+      step: 0,
+      memberId: member.uniqueId,
+      fromDaoId: 'alpha',
+      toDaoId: 'beta',
+    });
+    await bridgeCity.run(2);
+
+    expect(alpha.dao.members).not.toContain(member);
+    expect(beta.dao.members).toContain(member);
+    expect(member.daoId).toBe('beta');
+    expect(
+      alpha.dao.treasury.getLedger().some(entry => entry.event === 'member_bridge_source_burned')
+    ).toBe(true);
+    expect(
+      beta.dao.treasury.getLedger().some(entry => entry.event === 'member_bridge_destination_minted')
+    ).toBe(true);
+    expect(checkAllTokenConservation(alpha.dao, 2, alphaBaselines, 0.01)).toBeNull();
+    expect(checkAllTokenConservation(beta.dao, 2, betaBaselines, 0.01)).toBeNull();
+  });
+
+  it('funds city attack agents from treasury without creating supply', async () => {
+    const attackCity = new DAOCity({
+      daos: [{
+        id: 'target',
+        name: 'Target',
+        tokenSymbol: 'TARGET',
+        initialTreasuryFunding: 100000,
+        governanceRule: 'majority',
+        agentCounts: {
+          num_passive_members: 4,
+          num_proposal_creators: 2,
+        },
+        color: '#333333',
+      }],
+      globalMarketplaceConfig: {
+        initialLiquidity: 50000,
+        volatility: 0,
+        priceUpdateFrequency: 1000,
+      },
+      bridgeFeeRate: 0.01,
+      bridgeDelay: 1,
+      enableInterDAOProposals: false,
+      baseSettings: {
+        validateEconomicInvariants: true,
+        proposal_creation_probability: 0.05,
+      },
+      attackConfig: {
+        targetSelection: 'all',
+        sybilAttackers: 1,
+        flashLoanAttackers: 1,
+        attackerBudget: 1000,
+      },
+    });
+
+    const simulation = attackCity.getSimulation('target')!;
+    expect(
+      simulation.dao.treasury.getLedger()
+        .filter(entry => entry.event === 'scenario_attacker_endowment')
+    ).toHaveLength(2);
+    await expect(attackCity.run(50)).resolves.toBeUndefined();
   });
 });
 

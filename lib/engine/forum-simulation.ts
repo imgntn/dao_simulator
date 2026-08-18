@@ -29,18 +29,23 @@ export class ForumSimulation {
     this.forumState = forumState;
     this.influenceWeight = influenceWeight;
 
-    if (calibration?.forum) {
+    const topicsPerMonth = calibration?.forum?.avg_topics_per_month;
+    const historicalReplyRate = calibration?.forum?.reply_rate;
+    if (typeof topicsPerMonth === 'number' && Number.isFinite(topicsPerMonth)) {
       // Calibrate: use a global per-step rate so topic count is independent of agent count.
       // avg_topics_per_month / (30 days * 24 steps/day) = topics per step
-      this.globalTopicRate = calibration.forum.avg_topics_per_month / (30 * STEPS_PER_DAY);
+      this.globalTopicRate = Math.max(0, topicsPerMonth) / (30 * STEPS_PER_DAY);
       this.perAgentTopicRate = 0;
       this.calibrated = true;
-      this.replyRate = Math.max(0.001, calibration.forum.reply_rate * 0.01);
     } else {
       // Default rates (per-agent)
       this.globalTopicRate = 0;
       this.perAgentTopicRate = 0.001;
       this.calibrated = false;
+    }
+    if (typeof historicalReplyRate === 'number' && Number.isFinite(historicalReplyRate)) {
+      this.replyRate = Math.max(0.001, Math.max(0, historicalReplyRate) * 0.01);
+    } else {
       this.replyRate = 0.005;
     }
   }

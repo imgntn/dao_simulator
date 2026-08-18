@@ -1,65 +1,77 @@
 {
-  "version": 1,
-  "generatedAt": "2026-05-18T00:00:00.000Z",
-  "gitSha": "seed-v1",
-  "configHash": "seed-v1",
+  "version": 3,
+  "generatedAt": "2026-07-18T05:55:49.660Z",
+  "gitSha": "024d5e5507aaeb2b9414ba431d889e5697a6d786",
+  "configHash": "aa4431f5cf0d003d590a0d279754e5d01ab897148494a9ee6585d76d39a978b7",
+  "suite": "full",
+  "sourceRunId": "run-1784347296596-f6ddc31bca31",
+  "description": "Replace seeded expected outcomes with measured replay drift contracts",
   "findings": {
     "exp-10-calibration-validation": {
       "description": "14-DAO calibration validation average score",
       "direction": "positive",
-      "magnitudeRange": [0.82, 0.90],
+      "magnitudeRange": [
+        0.38394653221206093,
+        0.4243619566554358
+      ],
       "metric": "avg_calibration_score",
-      "observedMagnitude": 0.856,
-      "observedAt": "2026-05-18T00:00:00.000Z"
+      "observedMagnitude": 0.40415424443374837,
+      "observedAt": "2026-07-18T05:43:54.624Z"
     },
     "exp-11-advanced-mechanisms": {
       "description": "Advanced mechanisms (IRV, futarchy, liquid+decay) vs majority: null result",
       "direction": "neutral",
-      "magnitudeRange": [-0.05, 0.05],
+      "magnitudeRange": [
+        -0.005,
+        0.005
+      ],
       "metric": "mechanism_score_delta",
-      "observedMagnitude": 0.01,
-      "observedAt": "2026-05-18T00:00:00.000Z"
+      "observedMagnitude": 0,
+      "observedAt": "2026-07-18T05:43:54.624Z"
     },
     "exp-13-cross-dao-governance": {
-      "description": "Cross-DAO governance comparison: scale dominates rule choice",
+      "description": "Range of governance activity across calibrated DAO-rule conditions",
       "direction": "positive",
-      "magnitudeRange": [0.10, 0.40],
-      "metric": "scale_effect_size",
-      "observedMagnitude": 0.25,
-      "observedAt": "2026-05-18T00:00:00.000Z"
+      "magnitudeRange": [
+        0.03027614806582567,
+        0.04027614806582567
+      ],
+      "metric": "governance_activity_range",
+      "observedMagnitude": 0.03527614806582567,
+      "observedAt": "2026-07-18T05:43:54.624Z"
     },
     "exp-14-black-swan-resilience": {
-      "description": "Black swan reduces participation and approval rate",
-      "direction": "negative",
-      "magnitudeRange": [-0.30, -0.05],
+      "description": "Black-swan participation contrast against the no-shock condition",
+      "direction": "neutral",
+      "magnitudeRange": [
+        -0.0009999274577221174,
+        0.009000072542277884
+      ],
       "metric": "black_swan_participation_delta",
-      "observedMagnitude": -0.18,
-      "observedAt": "2026-05-18T00:00:00.000Z"
+      "observedMagnitude": 0.004000072542277883,
+      "observedAt": "2026-07-18T05:43:54.624Z"
     },
     "exp-15-counterfactual-expansion": {
-      "description": "Counterfactual governance: most rules within ??0.05 of historical",
-      "direction": "neutral",
-      "magnitudeRange": [-0.05, 0.05],
+      "description": "Counterfactual governance pass-rate contrast across rules",
+      "direction": "positive",
+      "magnitudeRange": [
+        0.1456371340575209,
+        0.1609673586951547
+      ],
       "metric": "counterfactual_pass_rate_delta",
-      "observedMagnitude": 0.02,
-      "observedAt": "2026-05-18T00:00:00.000Z"
+      "observedMagnitude": 0.1533022463763378,
+      "observedAt": "2026-07-18T05:43:54.624Z"
     },
     "exp-16-rl-activation": {
-      "description": "RL tiers 1-3 progressively improve agent reward",
-      "direction": "positive",
-      "magnitudeRange": [0.02, 0.20],
-      "metric": "tier3_vs_baseline_reward",
-      "observedMagnitude": 0.12,
-      "observedAt": "2026-05-18T00:00:00.000Z"
-    },
-    "exp-17-gemma4-e4b": {
-      "description": "Gemma 4 E4B with enriched DAO briefing + thinking mode improves governance",
-      "direction": "positive",
-      "magnitudeRange": [0.04, 0.10],
-      "metric": "llm_thinking_score_delta",
-      "observedMagnitude": 0.067,
-      "observedAt": "2026-05-18T00:00:00.000Z"
+      "description": "Full RL stack changes governance activity relative to disabled learning",
+      "direction": "neutral",
+      "magnitudeRange": [
+        -0.004869899179796959,
+        0.005130100820203041
+      ],
+      "metric": "full_rl_governance_activity_delta",
+      "observedMagnitude": 0.00013010082020304146,
+      "observedAt": "2026-07-18T05:43:54.624Z"
     }
   }
 }
-

@@ -283,6 +283,14 @@ export class AgentManager {
         agentClass,
         `${agentClass.name}_${this.simulation.currentStep}`
       );
+      const endowment = newAgent.tokens + newAgent.stakedTokens;
+      const requiredTreasury = endowment + constants.NEW_MEMBER_COST;
+      if (
+        this.simulation.dao.treasury.getTokenBalance(this.simulation.dao.tokenSymbol) <
+        requiredTreasury
+      ) {
+        continue;
+      }
 
       // Add any agent with non-negative reputation (lowered from 25 to enable
       // realistic population dynamics — previously almost all agents were rejected
@@ -292,11 +300,27 @@ export class AgentManager {
         this.simulation.schedule.add(newAgent);
         this.invalidateCache();
 
-        // Deduct cost from treasury
+        // Fund the new member from existing treasury supply.
         this.simulation.dao.treasury.withdraw(
-          'DAO_TOKEN',
+          this.simulation.dao.tokenSymbol,
+          endowment,
+          this.simulation.currentStep,
+          {
+            source: 'treasury:liquid',
+            destination: `member:${newAgent.uniqueId}`,
+            event: 'new_member_endowment',
+          }
+        );
+        // Treat the separate onboarding cost as consumed supply.
+        this.simulation.dao.treasury.burnTokens(
+          this.simulation.dao.tokenSymbol,
           constants.NEW_MEMBER_COST,
-          this.simulation.currentStep
+          this.simulation.currentStep,
+          {
+            source: 'treasury:liquid',
+            destination: 'operations:onboarding_cost',
+            event: 'new_member_onboarding_cost',
+          }
         );
       }
     }
@@ -318,6 +342,10 @@ export class AgentManager {
     }
 
     for (const agent of agentsToRemove) {
+      this.simulation.dao.settlePermanentMemberExit(
+        agent,
+        'negative_reputation_member_exit'
+      );
       this.simulation.dao.removeMember(agent);
       this.simulation.schedule.remove(agent);
       this.invalidateCache();

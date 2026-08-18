@@ -306,6 +306,16 @@ export class Arbitrator extends DAOMember {
         const slashAmount = Math.min(rawSlash, violator.stakedTokens);
         if (slashAmount > 0) {
           violator.stakedTokens -= slashAmount;
+          this.model.dao.treasury.deposit(
+            this.model.dao.tokenSymbol,
+            slashAmount,
+            this.model.currentStep,
+            {
+              source: `member:${violator.uniqueId}:staked`,
+              destination: 'treasury:slashing-revenue',
+              event: 'stake_slashed',
+            }
+          );
         }
       }
 

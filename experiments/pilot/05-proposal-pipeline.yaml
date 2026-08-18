@@ -1,0 +1,150 @@
+# Generated from experiments/paper/05-proposal-pipeline.yaml; regenerate with npm run catalog:pilots.
+id: rq3-proposal-pipeline-factorial-pilot
+name: Proposal Pipeline Effects — Paired Pilot
+description: Vary temp-check duration and fast-track rules to assess pipeline impact. Eight-replicate paired-seed pilot for variance, diagnostics, and final power planning.
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - paper
+  - proposals
+  - pipeline
+  - temp-check
+  - pilot
+research:
+  classification: exploratory
+  publicationRole: pilot-development
+  researchQuestionIds:
+    - RQ3
+  hypothesis: Temp-check and fast-track settings change median time to a valid decision without proportionally increasing abandonment. This pilot estimates paired variance and checks outcome support before the confirmatory freeze.
+  primaryOutcome: median_time_to_decision
+  secondaryOutcomes:
+    - proposal_completion_rate
+    - proposal_abandonment_rate
+    - governance_overhead
+  analysisModel: factorial_ols
+  comparisonCorrection: holm
+  smallestEffectOfInterest:
+    value: 0.1
+    unit: relative change
+    rationale: A ten-percent median decision-time change was frozen as the smallest practically important throughput effect.
+  analysisFamily: rq3-proposal-pipeline
+  experimentalUnit: One seeded DAO simulation replicate under one proposal-pipeline condition.
+  estimatedRuntimeMinutes: 20
+baseConfig:
+  template: compound
+  population:
+    totalMembers: 200
+  overrides:
+    governance_rule: majority
+    governance_config:
+      quorumPercentage: 0.05
+    voting_activity: 0.25
+    proposal_creation_probability: 0.004
+    proposal_duration_min_steps: 24
+    proposal_duration_max_steps: 96
+    treasury_stabilization_enabled: true
+    treasury_target_reserve: 10000
+    treasury_target_reserve_fraction: 0.6
+    treasury_buffer_fraction: 0.2
+    treasury_buffer_fill_rate: 0.5
+    treasury_emergency_topup_rate: 0.25
+    treasury_max_spend_fraction: 0.15
+    participation_target_rate: 0.2
+    participation_boost_strength: 0.6
+    participation_boost_decay: 0.1
+    participation_boost_max: 0.25
+    participation_inactivity_boost: 0.15
+    participation_reward_per_vote: 0
+    proposal_bond_fraction: 0.01
+    proposal_bond_min: 10
+    proposal_bond_max: 1000
+    proposal_inactivity_steps: 72
+    vote_power_cap_fraction: 0.15
+    vote_power_quadratic_threshold: 250
+    vote_power_velocity_window: 72
+    vote_power_velocity_penalty: 0.5
+    delegation_lock_steps: 48
+sweep:
+  grid:
+    - parameter: proposal_temp_check_fraction
+      values:
+        - 0.05
+        - 0.25
+        - 0.5
+    - parameter: proposal_fast_track_min_steps
+      values:
+        - 0
+        - 6
+        - 12
+execution:
+  runsPerConfig: 8
+  stepsPerRun: 2000
+  seedStrategy: fixed
+  workers: 4
+  fixedSeeds:
+    - 910001
+    - 910019
+    - 910031
+    - 910043
+    - 910057
+    - 910069
+    - 910081
+    - 910097
+metrics:
+  - name: Proposal Completion Rate
+    type: builtin
+    builtin: proposal_completion_rate
+    description: Fraction of proposals reaching a valid terminal governance decision
+  - name: Median Time to Decision
+    type: builtin
+    builtin: median_time_to_decision
+    description: Median elapsed hours from proposal creation to terminal resolution
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "% of resolved proposals that passed"
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% of proposals meeting participation threshold"
+  - name: Avg Time to Decision
+    type: builtin
+    builtin: avg_time_to_decision
+    description: Average steps from proposal to resolution
+  - name: Proposal Abandonment Rate
+    type: builtin
+    builtin: proposal_abandonment_rate
+    description: "% of proposals that expired unresolved"
+  - name: Proposal Rejection Rate
+    type: builtin
+    builtin: proposal_rejection_rate
+    description: "% of resolved proposals that were rejected"
+  - name: Governance Overhead
+    type: builtin
+    builtin: governance_overhead
+    description: Total votes cast per resolved proposal
+  - name: Average Turnout
+    type: builtin
+    builtin: average_turnout
+    description: Average token-weighted voter participation
+  - name: Avg Margin of Victory
+    type: builtin
+    builtin: avg_margin_of_victory
+    description: How decisive votes are (0=tied, 1=unanimous)
+  - name: Proposal Rate
+    type: builtin
+    builtin: proposal_rate
+    description: Proposals per 100 simulation steps
+  - name: Total Proposals
+    type: builtin
+    builtin: total_proposals
+    description: Total proposals created
+output:
+  directory: results/pilot/05-proposal-pipeline
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeManifest: true
+  includeTimeline: true
+  timelineStride: 24

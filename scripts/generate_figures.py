@@ -14,9 +14,10 @@ plt.rcParams['font.size'] = 11
 plt.rcParams['axes.titlesize'] = 13
 plt.rcParams['axes.labelsize'] = 12
 
-RESULTS_DIR = Path(r'C:\Users\James Pollack\Desktop\imgntn_repos\dao_simulator_private\results\paper')
-FIGURES_DIR = Path(r'C:\Users\James Pollack\Desktop\imgntn_repos\dao_simulator_private\paper\figures')
-FIGURES_DIR.mkdir(exist_ok=True)
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+RESULTS_DIR = REPOSITORY_ROOT / 'results' / 'paper'
+FIGURES_DIR = REPOSITORY_ROOT / 'paper' / 'figures'
+FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
 def load_metrics(experiment):
     """Load metrics CSV for an experiment."""

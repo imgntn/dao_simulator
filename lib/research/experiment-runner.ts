@@ -12,7 +12,11 @@ import { getBaselineConfig } from './baselines';
 import { resolveSimulationConfig, type ResearchConfig } from './config-resolver';
 import { mergePopulation, type PopulationSpec } from './population';
 import { applySweepValue } from './sweep-mapper';
-import { setSeed } from '../utils/random';
+import {
+  deriveSeed,
+  SEED_DERIVATION_SCHEMA_VERSION,
+  setSeed,
+} from '../utils/random';
 import { settings } from '../config/settings';
 import type { LearningState } from '../agents/learning/learning-mixin';
 import type {
@@ -34,6 +38,22 @@ import type {
 import * as stats from './statistics';
 import { WorkerPool } from './worker-pool';
 import type { WorkerTask } from './simulation-worker';
+import { execFileSync } from 'node:child_process';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { canonicalJson, sha256, sha256File } from './campaign-manifest';
+import { buildStableRunId } from './run-identity';
+import { extractBuiltinMetric } from './builtin-metric-extractor';
+import { assertFiniteRunResults } from './metric-validation';
+import {
+  METRIC_REGISTRY,
+  METRIC_REGISTRY_SCHEMA_VERSION,
+} from './metric-registry';
+import { validateExperimentConfig } from './experiment-config-validator';
+import { runLearningEpisodes } from './learning-episodes';
+import { collectLlmRunDiagnostics } from './llm-run-diagnostics';
+import { sampleTimeline } from './timeline-sampling';
+import { campaignConditionId } from './condition-identity';
 
 // =============================================================================
 // DEEP MERGE UTILITY
@@ -73,6 +93,17 @@ type CityRunConfig = {
 };
 
 type RunConfig = ResearchConfig | CityRunConfig;
+
+function resolveResearchHorizon(config: RunConfig, fallback: number): number {
+  if ('research_horizon_steps' in config && config.research_horizon_steps !== undefined) {
+    const value = Number(config.research_horizon_steps);
+    if (!Number.isSafeInteger(value) || value <= 0) {
+      throw new Error('research_horizon_steps must be a positive safe integer');
+    }
+    return value;
+  }
+  return fallback;
+}
 
 interface CityRunContext {
   city: DAOCity;
@@ -308,10 +339,8 @@ export class ExperimentRunner {
   private config: ExperimentConfig;
   private progressCallback?: ProgressCallback;
 
-  /** Persisted Q-tables from previous runs (type -> states) */
-  private persistedLearningStates: Map<string, LearningState[]> | null = null;
-
   constructor(config: ExperimentConfig, progressCallback?: ProgressCallback) {
+    validateExperimentConfig(config);
     this.config = config;
     this.progressCallback = progressCallback;
   }
@@ -321,6 +350,9 @@ export class ExperimentRunner {
    * Uses parallel execution if workers > 1
    */
   async run(): Promise<ExperimentSummary> {
+    if (typeof process !== 'undefined') {
+      process.env.DAO_SIM_RESEARCH_MODE = '1';
+    }
     const workerCount = this.config.execution.workers ?? 1;
 
     if (workerCount > 1) {
@@ -345,7 +377,7 @@ export class ExperimentRunner {
 
     for (const { daoConfig, sweepValue } of configs) {
       for (let i = 0; i < this.config.execution.runsPerConfig; i++) {
-        const seed = this.getSeed(runIndex);
+        const seed = this.getSeedForRun(i, sweepValue);
 
         // Report progress
         if (this.progressCallback) {
@@ -358,7 +390,13 @@ export class ExperimentRunner {
         }
 
         // Run single simulation
-        const result = await this.runSingle(daoConfig, seed, sweepValue, i);
+        const result = await this.runSingle(
+          daoConfig,
+          seed,
+          sweepValue,
+          i,
+          resolveResearchHorizon(daoConfig, this.config.execution.stepsPerRun),
+        );
         results.push(result);
 
         runIndex++;
@@ -390,18 +428,25 @@ export class ExperimentRunner {
 
     for (const { daoConfig, sweepValue } of configs) {
       for (let i = 0; i < this.config.execution.runsPerConfig; i++) {
-        const seed = this.getSeed(runIndex);
+        const seed = this.getSeedForRun(i, sweepValue);
 
         tasks.push({
+          runId: this.buildRunId(sweepValue, i),
+          conditionId: campaignConditionId(sweepValue, daoConfig),
           config: daoConfig as ResearchConfig,
           simConfig: {
             checkpointInterval: this.config.baseConfig.simulationOverrides?.checkpointInterval,
             eventLogging: this.config.baseConfig.simulationOverrides?.eventLogging,
           },
           seed,
-          stepsPerRun: this.config.execution.stepsPerRun,
+          stepsPerRun: resolveResearchHorizon(
+            daoConfig,
+            this.config.execution.stepsPerRun,
+          ),
+          learningEpisodesPerRun: this.config.execution.learningEpisodesPerRun,
           metrics: this.config.metrics,
           includeTimeline: this.config.output.includeTimeline ?? false,
+          timelineStride: this.config.output.timelineStride,
           sweepValue,
           runIndex: i,
           experimentName: this.config.name,
@@ -463,7 +508,8 @@ export class ExperimentRunner {
     daoConfig: RunConfig,
     seed: number,
     sweepValue: number | string | boolean | undefined,
-    runIndexWithinSweep: number
+    runIndexWithinSweep: number,
+    stepsOverride?: number,
   ): Promise<RunResult> {
     if (this.config.mode === 'city') {
       return this.runSingleCity(daoConfig as CityRunConfig, seed, sweepValue, runIndexWithinSweep);
@@ -482,27 +528,14 @@ export class ExperimentRunner {
 
     // Create and run simulation
     const simulation = new DAOSimulation(simConfig);
-    const stepsToRun = this.config.execution.stepsPerRun;
+    const stepsToRun = stepsOverride
+      ?? resolveResearchHorizon(daoConfig, this.config.execution.stepsPerRun);
 
-    // Import persisted Q-tables from previous runs if available
-    if (settings.learning_persist_q_tables && this.persistedLearningStates) {
-      simulation.importLearningStates(this.persistedLearningStates);
-    }
-
-    await simulation.run(stepsToRun);
-
-    // Signal end of learning episode (decays exploration, increments episode counts)
-    simulation.endLearningEpisode();
-
-    // Merge shared experience across same-type agents if enabled
-    if (settings.learning_shared_experience) {
-      simulation.mergeSharedExperience();
-    }
-
-    // Persist Q-tables for next run if enabled
-    if (settings.learning_persist_q_tables) {
-      this.persistedLearningStates = simulation.exportLearningStates();
-    }
+    await runLearningEpisodes(
+      simulation,
+      stepsToRun,
+      this.config.execution.learningEpisodesPerRun ?? 1
+    );
 
     // Collect metrics
     const metrics = this.collectMetrics(simulation);
@@ -510,7 +543,10 @@ export class ExperimentRunner {
     // Collect timeline if requested
     let timeline: TimelineEntry[] | undefined;
     if (this.config.output.includeTimeline) {
-      timeline = this.collectTimeline(simulation);
+      timeline = sampleTimeline(
+        this.collectTimeline(simulation),
+        this.config.output.timelineStride ?? 1,
+      );
     }
 
     const runEndTime = Date.now();
@@ -521,12 +557,14 @@ export class ExperimentRunner {
     return {
       runId,
       experimentName: this.config.name,
+      conditionId: campaignConditionId(sweepValue, daoConfig),
       sweepValue,
       runIndex: runIndexWithinSweep,
       config: simConfig,
       seed,
       metrics,
       timeline,
+      llmDiagnostics: collectLlmRunDiagnostics(simulation),
       startedAt: new Date(runStartTime).toISOString(),
       completedAt: new Date(runEndTime).toISOString(),
       durationMs: runEndTime - runStartTime,
@@ -564,6 +602,7 @@ export class ExperimentRunner {
     return {
       runId,
       experimentName: this.config.name,
+      conditionId: campaignConditionId(sweepValue, runConfig),
       sweepValue,
       runIndex: runIndexWithinSweep,
       config: cityConfig,
@@ -580,29 +619,7 @@ export class ExperimentRunner {
     sweepValue: number | string | boolean | undefined,
     runIndexWithinSweep: number
   ): string {
-    const experimentId = this.config.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
-    const runSuffix = `-run-${String(runIndexWithinSweep + 1).padStart(3, '0')}`;
-    if (sweepValue === undefined) {
-      return `${experimentId}${runSuffix}`;
-    }
-
-    const rawSweep = String(sweepValue)
-      .replace(/\./g, '_')
-      .replace(/[^a-zA-Z0-9._=-]+/g, '_');
-
-    const sweepPart = rawSweep.length <= 80
-      ? rawSweep
-      : `sweep_${this.shortHash(rawSweep)}`;
-
-    return `${experimentId}-${sweepPart}${runSuffix}`;
-  }
-
-  private shortHash(input: string): string {
-    let hash = 0;
-    for (let i = 0; i < input.length; i++) {
-      hash = ((hash << 5) - hash + input.charCodeAt(i)) | 0;
-    }
-    return Math.abs(hash).toString(16).slice(0, 8);
+    return buildStableRunId(this.config, sweepValue, runIndexWithinSweep);
   }
 
   private buildCityConfig(baseCityConfig: CityBaseConfig, scenario: CityScenarioConfig): DAOCityConfig {
@@ -928,7 +945,9 @@ export class ExperimentRunner {
 
       case 'treasury_loss': {
         const initial = context.initialTreasury.get(daoId) ?? 0;
-        const final = simulation.dao.treasury.getTokenBalance(tokenSymbol || 'DAO_TOKEN');
+        const final = simulation.dao.treasury.getTokenBalance(
+          tokenSymbol || simulation.dao.tokenSymbol
+        );
         return initial > final ? initial - final : 0;
       }
 
@@ -949,7 +968,7 @@ export class ExperimentRunner {
         return context.vetoActions.get(daoId) || 0;
 
       default:
-        return this.extractBuiltinMetric(simulation, metric);
+        return extractBuiltinMetric(simulation, metric);
     }
   }
 
@@ -990,7 +1009,7 @@ export class ExperimentRunner {
         if (simulations.length === 0) return 0;
         let survivors = 0;
         for (const sim of simulations) {
-          const tokenSymbol = context.tokenByDao.get(sim.dao.daoId) || 'DAO_TOKEN';
+          const tokenSymbol = context.tokenByDao.get(sim.dao.daoId) || sim.dao.tokenSymbol;
           const treasury = sim.dao.treasury.getTokenBalance(tokenSymbol);
           if (sim.dao.members.length > 0 && treasury > 0) {
             survivors++;
@@ -1025,28 +1044,28 @@ export class ExperimentRunner {
       case 'ecosystem_treasury_total': {
         let total = 0;
         for (const sim of simulations) {
-          const tokenSymbol = context.tokenByDao.get(sim.dao.daoId) || 'DAO_TOKEN';
+          const tokenSymbol = context.tokenByDao.get(sim.dao.daoId) || sim.dao.tokenSymbol;
           total += sim.dao.treasury.getTokenBalance(tokenSymbol);
         }
         return total;
       }
 
       case 'participation_convergence': {
-        const rates = simulations.map(sim => this.extractBuiltinMetric(sim, 'voter_participation_rate'));
+        const rates = simulations.map(sim => extractBuiltinMetric(sim, 'voter_participation_rate'));
         if (rates.length === 0) return 0;
         const cv = calculateCV(rates);
         return Math.max(0, 1 - cv);
       }
 
       case 'governance_quality_variance': {
-        const risks = simulations.map(sim => this.extractBuiltinMetric(sim, 'governance_capture_risk'));
+        const risks = simulations.map(sim => extractBuiltinMetric(sim, 'governance_capture_risk'));
         return calculateVariance(risks);
       }
 
       case 'transferred_member_impact': {
         if (simulations.length < 2) return 0;
         const flows = daoIds.map(id => (context.transfersIn.get(id) || 0) - (context.transfersOut.get(id) || 0));
-        const participation = simulations.map(sim => this.extractBuiltinMetric(sim, 'voter_participation_rate'));
+        const participation = simulations.map(sim => extractBuiltinMetric(sim, 'voter_participation_rate'));
         return Math.abs(calculateCorrelation(flows, participation));
       }
 
@@ -1278,11 +1297,14 @@ export class ExperimentRunner {
     if (this.config.sweep?.type === 'zip') {
       // Zip: iterate parameters in parallel (each row is one config)
       const len = parameterValues[0]?.values.length || 0;
+      if (parameterValues.some(item => item.values.length !== len)) {
+        throw new Error('Zip sweep dimensions must have equal lengths');
+      }
       const combinations: Array<Record<string, number | string | boolean>> = [];
       for (let i = 0; i < len; i++) {
         const combo: Record<string, number | string | boolean> = {};
         for (const pv of parameterValues) {
-          combo[pv.parameter] = pv.values[i % pv.values.length];
+          combo[pv.parameter] = pv.values[i];
         }
         combinations.push(combo);
       }
@@ -1392,20 +1414,36 @@ export class ExperimentRunner {
   /**
    * Get seed for a specific run
    */
-  private getSeed(runIndex: number): number {
+  getSeedForRun(
+    runIndex: number,
+    sweepValue?: number | string | boolean
+  ): number {
+    if (this.config.sweep?.parameter === 'seed') {
+      if (
+        typeof sweepValue !== 'number' ||
+        !Number.isSafeInteger(sweepValue)
+      ) {
+        throw new Error('A seed sweep requires safe-integer numeric sweep values');
+      }
+      const seed = sweepValue + runIndex;
+      if (!Number.isSafeInteger(seed)) {
+        throw new Error(`Derived seed is outside the safe integer range: ${seed}`);
+      }
+      return seed;
+    }
+
     const { seedStrategy, baseSeed = 12345, fixedSeeds } = this.config.execution;
 
     switch (seedStrategy) {
       case 'sequential':
         return baseSeed + runIndex;
       case 'fixed':
-        if (fixedSeeds && fixedSeeds[runIndex] !== undefined) {
-          return fixedSeeds[runIndex];
+        if (!fixedSeeds || fixedSeeds[runIndex] === undefined) {
+          throw new Error(`Missing fixed seed for replicate index ${runIndex}`);
         }
-        return baseSeed;
+        return fixedSeeds[runIndex];
       case 'random':
-        console.warn('[experiment-runner] Warning: "random" seed strategy is non-deterministic and breaks reproducibility');
-        return Math.floor(Math.random() * 2147483647);
+        throw new Error('"random" seed strategy is prohibited for reproducible research');
       default:
         return baseSeed + runIndex;
     }
@@ -1419,6 +1457,9 @@ export class ExperimentRunner {
 
     for (const metricConfig of this.config.metrics) {
       const value = this.extractMetric(simulation, metricConfig);
+      if (!Number.isFinite(value)) {
+        throw new Error(`Metric "${metricConfig.name}" produced non-finite value: ${value}`);
+      }
       metrics[metricConfig.name] = value;
     }
 
@@ -1431,7 +1472,7 @@ export class ExperimentRunner {
   private extractMetric(simulation: DAOSimulation, metricConfig: MetricConfig): number {
     // Explicit builtin metric
     if (metricConfig.type === 'builtin' && metricConfig.builtin) {
-      return this.extractBuiltinMetric(simulation, metricConfig.builtin);
+      return extractBuiltinMetric(simulation, metricConfig.builtin);
     }
 
     // Custom expression metric
@@ -1439,602 +1480,11 @@ export class ExperimentRunner {
       return this.extractCustomMetric(simulation, metricConfig.expression);
     }
 
-    // If no type specified, try to infer from name
-    // This allows YAML configs to just specify { name: "proposal_pass_rate" }
-    // without requiring explicit type: builtin and builtin: proposal_pass_rate
-    if (!metricConfig.type && metricConfig.name) {
-      // Try the metric name as a builtin metric (handles both snake_case and PascalCase)
-      const builtinName = metricConfig.name.toLowerCase().replace(/\s+/g, '_') as BuiltinMetricType;
-      try {
-        return this.extractBuiltinMetric(simulation, builtinName);
-      } catch {
-        // Not a valid builtin metric, fall through to return 0
-      }
-    }
-
-    return 0;
+    throw new Error(`Metric "${metricConfig.name}" has an invalid explicit configuration`);
   }
 
   /**
    * Extract a builtin metric - comprehensive implementation
-   */
-  private extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricType): number {
-    const dao = simulation.dao;
-    const dataCollector = simulation.dataCollector;
-    const latestStats = dataCollector.getLatestStats();
-    const history = dataCollector.history || [];
-    const proposals = dao.proposals || [];
-    const members = dao.members || [];
-
-    switch (metric) {
-      // =========================================================================
-      // BASIC OUTCOME METRICS
-      // =========================================================================
-
-      case 'proposal_pass_rate': {
-        const stats = getProposalStats(proposals);
-        const resolved = stats.passed + stats.rejected;
-        return resolved > 0 ? stats.passed / resolved : 0;
-      }
-
-      case 'average_turnout': {
-        if (proposals.length === 0) return 0;
-        const totalSupply = getTotalVotingPower(members);
-        if (totalSupply === 0) return 0;
-
-        let totalTurnout = 0;
-        for (const proposal of proposals) {
-          const votes = getProposalVotes(proposal);
-          const votingPower = votes.reduce((sum, v) => sum + v.weight, 0);
-          totalTurnout += votingPower / totalSupply;
-        }
-        return totalTurnout / proposals.length;
-      }
-
-      case 'final_treasury':
-        return dao.treasury?.getTokenBalance?.('DAO_TOKEN') ?? dao.treasury?.funds ?? 0;
-
-      case 'final_token_price':
-        return dao.treasury?.getTokenPrice?.('DAO_TOKEN') ?? 1;
-
-      case 'final_member_count':
-        return members.length;
-
-      case 'final_gini':
-        return latestStats?.gini ?? calculateGini(members.map(m => m.tokens || 0));
-
-      case 'final_reputation_gini':
-        return latestStats?.repGini ?? calculateGini(members.map(m => m.reputation || 0));
-
-      case 'total_proposals':
-        return proposals.length;
-
-      case 'total_projects':
-        return dao.projects?.length ?? 0;
-
-      case 'average_token_balance': {
-        if (members.length === 0) return 0;
-        const totalTokens = members.reduce((sum, m) => sum + (m.tokens || 0), 0);
-        return totalTokens / members.length;
-      }
-
-      // =========================================================================
-      // GOVERNANCE EFFICIENCY METRICS
-      // =========================================================================
-
-      case 'quorum_reach_rate': {
-        if (proposals.length === 0) return 0;
-        const totalSupply = getTotalVotingPower(members);
-        const quorumThreshold = (simulation.governanceRule as { quorumPercentage?: number } | undefined)?.quorumPercentage ?? 0.04;
-
-        let quorumMet = 0;
-        for (const proposal of proposals) {
-          const votes = getProposalVotes(proposal);
-          const votingPower = votes.reduce((sum, v) => sum + v.weight, 0);
-          if (votingPower / totalSupply >= quorumThreshold) {
-            quorumMet++;
-          }
-        }
-        return quorumMet / proposals.length;
-      }
-
-      case 'avg_margin_of_victory': {
-        const resolvedProposals = proposals.filter(p =>
-          p.status === 'approved' || p.status === 'completed' ||
-          p.status === 'rejected'
-        );
-        if (resolvedProposals.length === 0) return 0;
-
-        let totalMargin = 0;
-        for (const p of resolvedProposals) {
-          const total = (p.votesFor || 0) + (p.votesAgainst || 0);
-          if (total > 0) {
-            totalMargin += Math.abs((p.votesFor || 0) - (p.votesAgainst || 0)) / total;
-          }
-        }
-        return totalMargin / resolvedProposals.length;
-      }
-
-      case 'avg_time_to_decision': {
-        const resolvedProposals = proposals.filter(p =>
-          p.status === 'approved' || p.status === 'completed' ||
-          p.status === 'rejected' || p.status === 'expired'
-        );
-        if (resolvedProposals.length === 0) return 0;
-
-        let totalTime = 0;
-        for (const p of resolvedProposals) {
-          const creationTime = p.creationTime || 0;
-          const resolvedTime = p.resolvedTime ?? simulation.currentStep;
-          totalTime += resolvedTime - creationTime;
-        }
-        return totalTime / resolvedProposals.length;
-      }
-
-      case 'proposal_abandonment_rate': {
-        const stats = getProposalStats(proposals);
-        if (stats.total === 0) return 0;
-        return stats.expired / stats.total;
-      }
-
-      case 'proposal_rejection_rate': {
-        const stats = getProposalStats(proposals);
-        const resolved = stats.passed + stats.rejected;
-        return resolved > 0 ? stats.rejected / resolved : 0;
-      }
-
-      case 'governance_overhead': {
-        const stats = getProposalStats(proposals);
-        const resolved = stats.passed + stats.rejected;
-        if (resolved === 0) return 0;
-
-        let totalVotesCast = 0;
-        for (const p of proposals) {
-          const votes = getProposalVotes(p);
-          totalVotesCast += votes.length;
-        }
-        return totalVotesCast / resolved;
-      }
-
-      // =========================================================================
-      // PARTICIPATION QUALITY METRICS
-      // =========================================================================
-
-      case 'unique_voter_count': {
-        const uniqueVoters = new Set<string>();
-        for (const p of proposals) {
-          const votes = getProposalVotes(p);
-          for (const v of votes) {
-            uniqueVoters.add(v.voterId);
-          }
-        }
-        return uniqueVoters.size;
-      }
-
-      case 'voter_participation_rate': {
-        if (proposals.length === 0) return 0;
-
-        let totalRate = 0;
-        let counted = 0;
-
-        for (const p of proposals) {
-          const votes = getProposalVotes(p);
-          const eligible = p.snapshotTaken
-            ? p.votingPowerSnapshot.size
-            : members.length;
-          if (eligible <= 0) continue;
-
-          const uniqueVoters = new Set<string>(votes.map(v => v.voterId));
-          totalRate += uniqueVoters.size / eligible;
-          counted++;
-        }
-
-        return counted > 0 ? totalRate / counted : 0;
-      }
-
-      case 'voter_concentration_gini': {
-        const voterCounts = new Map<string, number>();
-        for (const p of proposals) {
-          const votes = getProposalVotes(p);
-          for (const v of votes) {
-            voterCounts.set(v.voterId, (voterCounts.get(v.voterId) || 0) + 1);
-          }
-        }
-        const allMemberVotes = members.map(m => voterCounts.get(m.uniqueId) || 0);
-        return calculateGini(allMemberVotes);
-      }
-
-      case 'delegate_concentration': {
-        const voterPower = new Map<string, number>();
-        let totalPower = 0;
-
-        for (const p of proposals) {
-          const votes = getProposalVotes(p);
-          for (const v of votes) {
-            voterPower.set(v.voterId, (voterPower.get(v.voterId) || 0) + v.weight);
-            totalPower += v.weight;
-          }
-        }
-
-        if (totalPower === 0) return 0;
-
-        const sortedPowers = Array.from(voterPower.values()).sort((a, b) => b - a);
-        const top10Count = Math.max(1, Math.ceil(sortedPowers.length * 0.1));
-        const top10Power = sortedPowers.slice(0, top10Count).reduce((a, b) => a + b, 0);
-
-        return top10Power / totalPower;
-      }
-
-      case 'avg_votes_per_proposal': {
-        if (proposals.length === 0) return 0;
-
-        let totalVoters = 0;
-        for (const p of proposals) {
-          const votes = getProposalVotes(p);
-          totalVoters += votes.length;
-        }
-        return totalVoters / proposals.length;
-      }
-
-      case 'voter_retention_rate': {
-        if (proposals.length < 2) return 0;
-
-        const midpoint = Math.floor(proposals.length / 2);
-        const firstHalfVoters = new Set<string>();
-        const secondHalfVoters = new Set<string>();
-
-        for (let i = 0; i < proposals.length; i++) {
-          const votes = getProposalVotes(proposals[i]);
-          for (const v of votes) {
-            if (i < midpoint) {
-              firstHalfVoters.add(v.voterId);
-            } else {
-              secondHalfVoters.add(v.voterId);
-            }
-          }
-        }
-
-        if (firstHalfVoters.size === 0) return 0;
-
-        let retained = 0;
-        for (const voter of firstHalfVoters) {
-          if (secondHalfVoters.has(voter)) {
-            retained++;
-          }
-        }
-        return retained / firstHalfVoters.size;
-      }
-
-      case 'voting_power_utilization': {
-        const totalSupply = getTotalVotingPower(members);
-        if (totalSupply === 0 || proposals.length === 0) return 0;
-
-        let totalUsed = 0;
-        for (const p of proposals) {
-          const votes = getProposalVotes(p);
-          totalUsed += votes.reduce((sum, v) => sum + v.weight, 0);
-        }
-
-        return totalUsed / (totalSupply * proposals.length);
-      }
-
-      // =========================================================================
-      // ECONOMIC HEALTH METRICS
-      // =========================================================================
-
-      case 'treasury_volatility': {
-        const treasuryHistory = history.map(h => h.treasuryFunds || 0);
-        return calculateCV(treasuryHistory);
-      }
-
-      case 'treasury_growth_rate': {
-        if (history.length < 2) return 0;
-        const initial = history[0]?.treasuryFunds || 0;
-        const final = history[history.length - 1]?.treasuryFunds || dao.treasury?.funds || 0;
-        return initial > 0 ? (final - initial) / initial : 0;
-      }
-
-      case 'emergency_topup_total': {
-        return simulation.totalEmergencyTopup || 0;
-      }
-
-      case 'staking_participation': {
-        let totalTokens = 0;
-        let stakedTokens = 0;
-        for (const m of members) {
-          totalTokens += (m.tokens || 0) + (m.stakedTokens || 0);
-          stakedTokens += m.stakedTokens || 0;
-        }
-        return totalTokens > 0 ? stakedTokens / totalTokens : 0;
-      }
-
-      case 'token_concentration_gini': {
-        const holdings = members.map(m => (m.tokens || 0) + (m.stakedTokens || 0));
-        return calculateGini(holdings);
-      }
-
-      case 'avg_member_wealth': {
-        if (members.length === 0) return 0;
-        const totalWealth = members.reduce((sum, m) =>
-          sum + (m.tokens || 0) + (m.stakedTokens || 0), 0);
-        return totalWealth / members.length;
-      }
-
-      case 'wealth_mobility': {
-        const holdings = getMemberTokensSorted(members);
-        if (holdings.length < 2) return 0;
-        const gini = calculateGini(holdings.map(h => h.tokens));
-        return 1 - gini;
-      }
-
-      // =========================================================================
-      // ATTACK RESISTANCE METRICS
-      // =========================================================================
-
-      case 'whale_influence': {
-        if (proposals.length === 0) return 0;
-
-        let totalRate = 0;
-        let counted = 0;
-
-        for (const p of proposals) {
-          const votes = getProposalVotes(p);
-          if (votes.length === 0) {
-            totalRate += 0;
-            counted++;
-            continue;
-          }
-
-          let whaleIds: Set<string>;
-          if (p.snapshotTaken && p.votingPowerSnapshot.size > 0) {
-            const snapshotHoldings = Array.from(p.votingPowerSnapshot.entries())
-              .map(([memberId, power]) => ({ memberId, power }))
-              .sort((a, b) => b.power - a.power);
-            const top10Count = Math.max(1, Math.ceil(snapshotHoldings.length * 0.1));
-            whaleIds = new Set(snapshotHoldings.slice(0, top10Count).map(m => m.memberId));
-          } else {
-            const sortedMembers = getMemberTokensSorted(members);
-            const top10Count = Math.max(1, Math.ceil(sortedMembers.length * 0.1));
-            whaleIds = new Set(sortedMembers.slice(0, top10Count).map(m => m.id));
-          }
-
-          let whaleVotes = 0;
-          let totalVotes = 0;
-          for (const v of votes) {
-            totalVotes += v.weight;
-            if (whaleIds.has(v.voterId)) {
-              whaleVotes += v.weight;
-            }
-          }
-
-          totalRate += totalVotes > 0 ? whaleVotes / totalVotes : 0;
-          counted++;
-        }
-
-        return counted > 0 ? totalRate / counted : 0;
-      }
-
-      case 'whale_proposal_rate': {
-        if (proposals.length === 0) return 0;
-
-        const sortedMembers = getMemberTokensSorted(members);
-        const top10Count = Math.max(1, Math.ceil(sortedMembers.length * 0.1));
-        const whaleIds = new Set(sortedMembers.slice(0, top10Count).map(m => m.id));
-
-        let whaleProposals = 0;
-        for (const p of proposals) {
-          // Fix: Proposal class uses 'creator' field
-          if (whaleIds.has(p.creator)) {
-            whaleProposals++;
-          }
-        }
-
-        return whaleProposals / proposals.length;
-      }
-
-      case 'governance_capture_risk': {
-        // Measure voting power concentration affecting outcomes
-        // Calculate what % of winning vote weight came from top 10% of voters
-        const memberInfluence = new Map<string, number>();
-        let totalInfluence = 0;
-
-        for (const p of proposals) {
-          // Only count resolved proposals
-          if (p.status !== 'approved' && p.status !== 'rejected' &&
-              p.status !== 'completed') {
-            continue;
-          }
-
-          const votes = getProposalVotes(p);
-          const isApproved = p.status === 'approved' || p.status === 'completed';
-
-          for (const v of votes) {
-            // Did this voter vote with the winning side?
-            const votedWithWinner = (v.vote && isApproved) || (!v.vote && !isApproved);
-
-            if (votedWithWinner) {
-              memberInfluence.set(v.voterId, (memberInfluence.get(v.voterId) || 0) + v.weight);
-              totalInfluence += v.weight;
-            }
-          }
-        }
-
-        if (totalInfluence === 0) return 0;
-
-        // Sort influences descending and calculate top 10% concentration
-        const influences = Array.from(memberInfluence.values()).sort((a, b) => b - a);
-        const top10Count = Math.max(1, Math.ceil(influences.length * 0.1));
-        const top10Influence = influences.slice(0, top10Count).reduce((a, b) => a + b, 0);
-
-        // Return as 0-1 scale: what fraction of "winning influence" came from top 10%
-        return top10Influence / totalInfluence;
-      }
-
-      case 'vote_buying_vulnerability': {
-        const closeVotes = proposals.filter(p => {
-          const total = (p.votesFor || 0) + (p.votesAgainst || 0);
-          if (total === 0) return false;
-          const margin = Math.abs((p.votesFor || 0) - (p.votesAgainst || 0)) / total;
-          return margin < 0.1;
-        });
-
-        if (closeVotes.length === 0) return 0;
-
-        let totalFlipCost = 0;
-        for (const p of closeVotes) {
-          const margin = Math.abs((p.votesFor || 0) - (p.votesAgainst || 0));
-          totalFlipCost += margin / 2 + 1;
-        }
-
-        return totalFlipCost / closeVotes.length;
-      }
-
-      case 'single_entity_control': {
-        const totalSupply = getTotalVotingPower(members);
-        if (totalSupply === 0) return 0;
-
-        let maxPower = 0;
-        for (const m of members) {
-          const power = (m.tokens || 0) + (m.stakedTokens || 0);
-          maxPower = Math.max(maxPower, power);
-        }
-
-        return Math.max(0, Math.min(1, maxPower / totalSupply));
-      }
-
-      case 'collusion_threshold': {
-        // Apply quadratic adjustment to token holdings for collusion calculation.
-        // Raw tokens overstate whale power when quadratic voting or caps are in play.
-        // Using sqrt-compressed power gives a more realistic collusion metric.
-        const adjustedMembers = members
-          .map(m => {
-            const raw = (m.tokens || 0) + (m.stakedTokens || 0);
-            // Sqrt compression reflects diminishing marginal voting power
-            return { id: m.uniqueId, power: Math.sqrt(Math.max(0, raw)) };
-          })
-          .sort((a, b) => b.power - a.power);
-
-        const totalPower = adjustedMembers.reduce((s, m) => s + m.power, 0);
-        if (totalPower === 0 || adjustedMembers.length === 0) return 1;
-
-        let accumulated = 0;
-        let count = 0;
-
-        for (const m of adjustedMembers) {
-          accumulated += m.power;
-          count++;
-          if (accumulated > totalPower / 2) {
-            break;
-          }
-        }
-
-        return count / members.length;
-      }
-
-      // =========================================================================
-      // TEMPORAL DYNAMICS METRICS
-      // =========================================================================
-
-      case 'participation_trend': {
-        if (proposals.length < 2) return 0;
-
-        const totalSupply = getTotalVotingPower(members);
-        if (totalSupply === 0) return 0;
-
-        const participationOverTime = proposals.map(p => {
-          const votes = getProposalVotes(p);
-          return votes.reduce((sum, v) => sum + v.weight, 0) / totalSupply;
-        });
-
-        return calculateSlope(participationOverTime);
-      }
-
-      case 'treasury_trend': {
-        const treasuryHistory = history.map(h => h.treasuryFunds || 0);
-        return calculateSlope(treasuryHistory);
-      }
-
-      case 'member_growth_rate': {
-        if (history.length < 2) return 0;
-        const initial = history[0]?.memberCount || members.length;
-        const final = history[history.length - 1]?.memberCount || members.length;
-        return initial > 0 ? (final - initial) / initial : 0;
-      }
-
-      case 'proposal_rate': {
-        const steps = simulation.currentStep || 1;
-        return (proposals.length / steps) * 100;
-      }
-
-      case 'governance_activity_index': {
-        const stats = getProposalStats(proposals);
-        const resolved = stats.passed + stats.rejected;
-        const resolutionRate = stats.total > 0 ? resolved / stats.total : 0;
-
-        const totalSupply = getTotalVotingPower(members);
-        let avgParticipation = 0;
-        if (proposals.length > 0 && totalSupply > 0) {
-          for (const p of proposals) {
-            const votes = getProposalVotes(p);
-            avgParticipation += votes.reduce((sum, v) => sum + v.weight, 0) / totalSupply;
-          }
-          avgParticipation /= proposals.length;
-        }
-
-        const steps = simulation.currentStep || 1;
-        const proposalRate = proposals.length / steps;
-
-        return proposalRate * avgParticipation * resolutionRate;
-      }
-
-      // =========================================================================
-      // LLM AGENT METRICS
-      // =========================================================================
-
-      case 'llm_vote_consistency': {
-        // % of LLM votes that match what rule-based voting would have chosen
-        const { LLMAgent } = require('../../lib/agents/llm-agent');
-        const llmAgents = members.filter((m: any) => m instanceof LLMAgent && m.llmVoting);
-        if (llmAgents.length === 0) return 0;
-
-        let totalDecisions = 0;
-        let matchingDecisions = 0;
-        for (const agent of llmAgents) {
-          const llm = agent as any;
-          if (!llm.llmVoting) continue;
-          const history = llm.llmVoting.voteHistory || [];
-          for (const record of history) {
-            if (record.decision.vote === 'abstain') continue;
-            totalDecisions++;
-            // Compare with what rule-based would have done
-            const proposal = proposals.find((p: any) => p.uniqueId === record.proposalId);
-            if (proposal) {
-              const ruleVote = llm.optimism > 0.5 ? 'yes' : 'no';
-              if (record.decision.vote === ruleVote) matchingDecisions++;
-            }
-          }
-        }
-        return totalDecisions > 0 ? matchingDecisions / totalDecisions : 0;
-      }
-
-      case 'llm_cache_hit_rate': {
-        if (!simulation.llmCache) return 0;
-        const cacheStats = simulation.llmCache.stats;
-        return cacheStats.hitRate;
-      }
-
-      case 'llm_avg_latency_ms': {
-        if (!simulation.ollamaClient) return 0;
-        return simulation.ollamaClient.avgLatencyMs;
-      }
-
-      default:
-        return 0;
-    }
-  }
-
-  /**
-   * Extract a custom metric using an expression
    */
   private extractCustomMetric(simulation: DAOSimulation, expression: string): number {
     try {
@@ -2079,6 +1529,7 @@ export class ExperimentRunner {
         treasuryFunds: entry.treasuryFunds,
         gini: mv?.gini ?? 0,
         reputationGini: mv?.repGini ?? 0,
+        participationRate: mv?.avgParticipationRate ?? 0,
       };
     });
   }
@@ -2088,6 +1539,7 @@ export class ExperimentRunner {
    * Public for use by BatchRunner
    */
   generateSummary(results: RunResult[], startTime: number, failedCount: number = 0): ExperimentSummary {
+    assertFiniteRunResults(results, `Experiment "${this.config.name}" summary`);
     const endTime = Date.now();
 
     // Group results by sweep value
@@ -2365,7 +1817,14 @@ export class ExperimentRunner {
     const metrics: MetricStatistics[] = [];
 
     for (const name of metricNames) {
-      const values = results.map((r) => r.metrics[name]).filter((v) => typeof v === 'number');
+      const values = results.map((r) => r.metrics[name]);
+      for (const value of values) {
+        if (typeof value !== 'number' || !Number.isFinite(value)) {
+          throw new Error(
+            `Metric "${name}" contains a non-finite replicate value before aggregation`
+          );
+        }
+      }
 
       if (values.length === 0) {
         metrics.push({
@@ -2449,28 +1908,76 @@ export class ExperimentRunner {
    */
   private generateManifest(results: RunResult[], startTime: number, endTime: number): ReproducibilityManifest {
     const seeds = results.map((r) => r.seed);
-
-    // Generate config hash (simple hash for now)
-    const configStr = JSON.stringify(this.config);
-    let configHash = 0;
-    for (let i = 0; i < configStr.length; i++) {
-      configHash = ((configHash << 5) - configHash + configStr.charCodeAt(i)) | 0;
-    }
-
-    // Generate results hash
-    const resultsStr = JSON.stringify(results.map((r) => r.metrics));
-    let resultsHash = 0;
-    for (let i = 0; i < resultsStr.length; i++) {
-      resultsHash = ((resultsHash << 5) - resultsHash + resultsStr.charCodeAt(i)) | 0;
-    }
+    const rootDir = process.cwd();
+    const gitValue = (args: string[], fallback: string): string => {
+      try {
+        return execFileSync('git', args, { cwd: rootDir, encoding: 'utf8' }).trim();
+      } catch {
+        return fallback;
+      }
+    };
+    const packagePath = path.join(rootDir, 'package.json');
+    const lockfilePath = path.join(rootDir, 'package-lock.json');
+    const simulatorVersion = fs.existsSync(packagePath)
+      ? String(JSON.parse(fs.readFileSync(packagePath, 'utf8')).version ?? 'unknown')
+      : 'unknown';
+    const gitStatus = gitValue(['status', '--porcelain'], 'unknown');
+    const selectedMetricDefinitions = Object.fromEntries(
+      this.config.metrics
+        .filter(metric => metric.type === 'builtin' && metric.builtin)
+        .map(metric => metric.builtin!)
+        .sort()
+        .map(id => [id, METRIC_REGISTRY[id]])
+    ) as Partial<typeof METRIC_REGISTRY>;
+    const subsystemStreams = [
+      'scheduler:activation',
+      'events',
+      'shocks',
+      'shocks:schedule',
+      'forum',
+      'membership',
+      'governance',
+      'markets',
+      'llm:assignment',
+      'initialization:agents',
+      'initialization:calibration',
+    ];
+    const namespaces = this.config.mode === 'city'
+      ? Array.from(new Set(
+          (this.config.scenarios ?? [])
+            .flatMap(scenario => scenario.daos)
+            .map(dao => `dao:${dao.id}`)
+        )).sort()
+      : ['simulation'];
+    const derivedSubsystemSeeds = Object.fromEntries(
+      Array.from(new Set(seeds)).sort((a, b) => a - b).map(seed => [
+        String(seed),
+        Object.fromEntries(
+          namespaces.flatMap(namespace =>
+            subsystemStreams.map(stream => {
+              const id = `${namespace}:${stream}`;
+              return [id, deriveSeed(seed, id)];
+            })
+          )
+        ),
+      ])
+    );
 
     return {
+      schemaVersion: 2,
       experimentId: `${this.config.name}-${startTime}`,
-      configHash: `hash:${Math.abs(configHash).toString(16)}`,
+      configHash: `sha256:${sha256(canonicalJson(this.config))}`,
       software: {
-        simulatorVersion: '0.2.0',
+        simulatorVersion,
         nodeVersion: process.version || 'unknown',
         platform: process.platform || 'unknown',
+        architecture: process.arch || 'unknown',
+        gitCommit: gitValue(['rev-parse', 'HEAD'], 'unknown'),
+        gitBranch: gitValue(['branch', '--show-current'], 'unknown'),
+        gitDirty: gitStatus !== '' && gitStatus !== 'unknown',
+        packageLockHash: fs.existsSync(lockfilePath)
+          ? `sha256:${sha256File(lockfilePath)}`
+          : 'missing',
       },
       execution: {
         startedAt: new Date(startTime).toISOString(),
@@ -2478,8 +1985,29 @@ export class ExperimentRunner {
         totalRuns: results.length,
         seeds,
         workerCount: this.config.execution.workers ?? 1,
+        command: process.argv,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        locale: Intl.DateTimeFormat().resolvedOptions().locale,
+        rngAlgorithm: 'mulberry32',
+        rngSchemaVersion: 2,
+        seedDerivationSchemaVersion: SEED_DERIVATION_SCHEMA_VERSION,
+        derivedSubsystemSeeds,
       },
-      resultsHash: `hash:${Math.abs(resultsHash).toString(16)}`,
+      metricDefinitions: {
+        registrySchemaVersion: METRIC_REGISTRY_SCHEMA_VERSION,
+        hash: `sha256:${sha256(canonicalJson(selectedMetricDefinitions))}`,
+        versions: Object.fromEntries(
+          Object.entries(selectedMetricDefinitions).map(([id, definition]) => [
+            id,
+            definition!.definitionVersion,
+          ])
+        ),
+      },
+      resultsHash: `sha256:${sha256(canonicalJson(results.map((result) => ({
+        runId: result.runId,
+        seed: result.seed,
+        metrics: result.metrics,
+      }))))}`,
     };
   }
 }
@@ -2512,8 +2040,9 @@ export async function runSingleSimulation(
     baseConfig: { inline: daoConfig },
     execution: {
       runsPerConfig: 1,
-      seedStrategy: seed !== undefined ? 'fixed' : 'random',
-      baseSeed: seed ?? Math.floor(Math.random() * 2147483647),
+      seedStrategy: 'fixed',
+      baseSeed: seed ?? 42,
+      fixedSeeds: [seed ?? 42],
       stepsPerRun: steps,
     },
     metrics: [

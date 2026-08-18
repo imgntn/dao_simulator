@@ -13,19 +13,19 @@ interface DAOHealthRow {
   governance: string;
   features: string[];
   url?: string;
-  tier: 'excellent' | 'good' | 'fair';
+  tier: 'strong' | 'moderate' | 'limited';
 }
 
 function getTier(score: number): DAOHealthRow['tier'] {
-  if (score >= 0.88) return 'excellent';
-  if (score >= 0.85) return 'good';
-  return 'fair';
+  if (score >= 0.6) return 'strong';
+  if (score >= 0.4) return 'moderate';
+  return 'limited';
 }
 
 const TIER_COLORS = {
-  excellent: { bg: 'bg-emerald-500/15', text: 'text-emerald-400', border: 'border-emerald-500/30' },
-  good: { bg: 'bg-amber-500/15', text: 'text-amber-400', border: 'border-amber-500/30' },
-  fair: { bg: 'bg-zinc-500/15', text: 'text-zinc-400', border: 'border-zinc-500/30' },
+  strong: { bg: 'bg-emerald-500/15', text: 'text-emerald-400', border: 'border-emerald-500/30' },
+  moderate: { bg: 'bg-amber-500/15', text: 'text-amber-400', border: 'border-amber-500/30' },
+  limited: { bg: 'bg-zinc-500/15', text: 'text-zinc-400', border: 'border-zinc-500/30' },
 } as const;
 
 export default async function HealthDashboard({ params }: { params: Promise<{ locale: string }> }) {
@@ -44,9 +44,9 @@ export default async function HealthDashboard({ params }: { params: Promise<{ lo
     .sort((a, b) => b.score - a.score);
 
   const avgScore = rows.reduce((sum, r) => sum + r.score, 0) / rows.length;
-  const excellent = rows.filter(r => r.tier === 'excellent').length;
-  const good = rows.filter(r => r.tier === 'good').length;
-  const fair = rows.filter(r => r.tier === 'fair').length;
+  const strong = rows.filter(r => r.tier === 'strong').length;
+  const moderate = rows.filter(r => r.tier === 'moderate').length;
+  const limited = rows.filter(r => r.tier === 'limited').length;
 
   return (
     <PageShell locale={locale}>
@@ -58,8 +58,8 @@ export default async function HealthDashboard({ params }: { params: Promise<{ lo
           Digital Twin Calibration Dashboard
         </h1>
         <p className="mt-4 max-w-3xl text-lg leading-relaxed text-[var(--text-body)]">
-          Live calibration accuracy scores for all 14 DAO digital twins, measuring how faithfully
-          each simulation reproduces real on-chain governance dynamics.
+          Frozen 2025 temporal-holdout similarity scores for all 14 DAO digital twins. These
+          measure composite historical fidelity and are not universal forecasting accuracy.
         </p>
 
         {/* Summary stats */}
@@ -68,19 +68,19 @@ export default async function HealthDashboard({ params }: { params: Promise<{ lo
             <p className="text-3xl font-bold tabular-nums text-[var(--accent-teal)]">
               {(avgScore * 100).toFixed(1)}%
             </p>
-            <p className="mt-1 text-sm text-[var(--text-muted)]">Average Accuracy</p>
+            <p className="mt-1 text-sm text-[var(--text-muted)]">Mean Held-out Similarity</p>
           </div>
           <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4 text-center">
-            <p className="text-3xl font-bold tabular-nums text-emerald-400">{excellent}</p>
-            <p className="mt-1 text-sm text-[var(--text-muted)]">Excellent (&ge;88%)</p>
+            <p className="text-3xl font-bold tabular-nums text-emerald-400">{strong}</p>
+            <p className="mt-1 text-sm text-[var(--text-muted)]">Strong (&ge;60%)</p>
           </div>
           <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4 text-center">
-            <p className="text-3xl font-bold tabular-nums text-amber-400">{good}</p>
-            <p className="mt-1 text-sm text-[var(--text-muted)]">Good (85-87%)</p>
+            <p className="text-3xl font-bold tabular-nums text-amber-400">{moderate}</p>
+            <p className="mt-1 text-sm text-[var(--text-muted)]">Moderate (40-59%)</p>
           </div>
           <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4 text-center">
-            <p className="text-3xl font-bold tabular-nums text-zinc-400">{fair}</p>
-            <p className="mt-1 text-sm text-[var(--text-muted)]">Fair (&lt;85%)</p>
+            <p className="text-3xl font-bold tabular-nums text-zinc-400">{limited}</p>
+            <p className="mt-1 text-sm text-[var(--text-muted)]">Limited (&lt;40%)</p>
           </div>
         </div>
       </header>
@@ -89,18 +89,21 @@ export default async function HealthDashboard({ params }: { params: Promise<{ lo
       <section className="mt-8 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-panel)] p-6 sm:p-8">
         <h2 className="font-serif-display text-2xl text-[var(--text-heading)]">How Scores Are Computed</h2>
         <p className="mt-3 text-base leading-relaxed text-[var(--text-body)]">
-          Each digital twin is backtested against real historical data over 10 episodes of 720 simulation steps.
-          The calibration score is a weighted composite of five metrics: proposal frequency, pass rate,
-          participation rate, token price trajectory (RMSE), and forum activity. Scores use Poisson-aware
-          error tolerances for low-frequency metrics to account for irreducible stochastic variance.
+          Each twin was trained on 2023-2024 profiles and evaluated on a separately hashed 2025
+          holdout over 30 episodes of 1,440 steps. The score is a bounded weighted composite of
+          proposal frequency, pass rate, participation, price level, voter concentration, and forum
+          activity; unavailable observed dimensions are omitted and weights are renormalized.
+          Calibrated runs beat historical persistence for 5/14 DAOs and an uncalibrated simulator
+          for 8/14, so the per-DAO failures are part of the result.
         </p>
-        <div className="mt-4 grid gap-3 sm:grid-cols-5">
+        <div className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {[
-            { label: 'Proposal Frequency', weight: '20%' },
-            { label: 'Pass Rate', weight: '25%' },
-            { label: 'Participation Rate', weight: '25%' },
+            { label: 'Proposal Frequency', weight: '25%' },
+            { label: 'Pass Rate', weight: '20%' },
+            { label: 'Participation Rate', weight: '20%' },
             { label: 'Price Trajectory', weight: '15%' },
-            { label: 'Forum Activity', weight: '15%' },
+            { label: 'Voter Concentration', weight: '10%' },
+            { label: 'Forum Activity', weight: '10%' },
           ].map(m => (
             <div key={m.label} className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-warm)] px-3 py-2">
               <p className="text-xs font-semibold text-[var(--accent-teal)]">{m.weight}</p>
@@ -150,8 +153,8 @@ export default async function HealthDashboard({ params }: { params: Promise<{ lo
                 <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[var(--surface-warm-deep)]">
                   <div
                     className={`h-full rounded-full transition-all ${
-                      dao.tier === 'excellent' ? 'bg-emerald-500' :
-                      dao.tier === 'good' ? 'bg-amber-500' : 'bg-zinc-500'
+                      dao.tier === 'strong' ? 'bg-emerald-500' :
+                      dao.tier === 'moderate' ? 'bg-amber-500' : 'bg-zinc-500'
                     }`}
                     style={{ width: `${dao.score * 100}%` }}
                   />

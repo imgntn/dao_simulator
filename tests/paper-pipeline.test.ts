@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { parseArgs } from '../scripts/run-paper-suite';
 import {
   assertFreshResults,
+  calculateExpectedRuns,
   resolveProfileConfigPaths,
   resolvePaperConfig,
   validateResultFreshness,
@@ -56,6 +57,39 @@ describe('paper profile config mapping', () => {
   });
 });
 
+describe('paper run counting', () => {
+  it('counts city scenarios as independent conditions', () => {
+    expect(calculateExpectedRuns({
+      name: 'City count fixture',
+      mode: 'city',
+      baseConfig: { inline: {} },
+      baseCityConfig: {},
+      scenarios: ['a', 'b', 'c'].map(name => ({
+        name,
+        daos: [{ id: `dao-${name}`, name, tokenSymbol: `T${name.toUpperCase()}` }],
+      })),
+      execution: {
+        runsPerConfig: 10,
+        stepsPerRun: 1,
+        seedStrategy: 'sequential',
+        baseSeed: 1,
+      },
+      metrics: [{ name: 'Members', type: 'builtin', builtin: 'final_member_count' }],
+      output: { directory: 'unused', formats: ['json'] },
+    })).toBe(30);
+  });
+
+  it('rejects unequal zip dimensions', () => {
+    expect(() => calculateExpectedRuns({
+      sweep: {
+        type: 'zip',
+        grid: [{ values: [1, 2] }, { values: [1, 2, 3] }],
+      },
+      execution: { runsPerConfig: 1 },
+    })).toThrow(/equal lengths/);
+  });
+});
+
 describe('freshness validation', () => {
   function writeFixtureTree(baseDir: string): string {
     const configDir = path.join(baseDir, 'experiments', 'paper');
@@ -66,17 +100,37 @@ describe('freshness validation', () => {
     const configPath = path.join(configDir, '00-test.yaml');
     fs.writeFileSync(configPath, [
       'name: Test Experiment',
+      'baseConfig:',
+      '  inline: {}',
       'execution:',
       '  runsPerConfig: 10',
+      '  stepsPerRun: 1',
+      '  seedStrategy: sequential',
+      '  baseSeed: 1',
       'sweep:',
+      '  parameter: voting_activity',
       '  values: [1, 2]',
+      'metrics:',
+      '  - name: Proposal Pass Rate',
+      '    type: builtin',
+      '    builtin: proposal_pass_rate',
       'output:',
       '  directory: results/paper/00-test',
       '',
     ].join('\n'));
 
     fs.writeFileSync(path.join(outputDir, 'stats.csv'), 'sweep_value,run_count,Proposal Pass Rate_mean,Proposal Pass Rate_std\n1,10,0.5,0.1\n2,10,0.6,0.1\n');
-    fs.writeFileSync(path.join(outputDir, 'manifest.json'), JSON.stringify({ configHash: 'hash:fixture' }, null, 2));
+    fs.writeFileSync(path.join(outputDir, 'manifest.json'), JSON.stringify({
+      schemaVersion: 2,
+      configHash: `sha256:${'a'.repeat(64)}`,
+      resultsHash: `sha256:${'b'.repeat(64)}`,
+      metricDefinitions: {
+        hash: `sha256:${'c'.repeat(64)}`,
+        versions: { proposal_pass_rate: '1.0.0' },
+      },
+      software: { gitCommit: 'fixture', gitDirty: false },
+      execution: { totalRuns: 20 },
+    }, null, 2));
     return configPath;
   }
 
@@ -123,5 +177,44 @@ describe('freshness validation', () => {
     expect(() => {
       assertFreshResults(baseDir, [path.join('experiments', 'paper', '00-test.yaml')], true);
     }).toThrow(/freshness check failed/i);
+  });
+
+  it('rejects known dummy and placeholder paper artifacts', () => {
+    const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), 'paper-pipeline-placeholder-'));
+    const configPath = writeFixtureTree(baseDir);
+    const outputDir = path.join(baseDir, 'results', 'paper', '00-test');
+    const oldTime = new Date(Date.now() - 60_000);
+    fs.utimesSync(configPath, oldTime, oldTime);
+
+    fs.writeFileSync(path.join(outputDir, 'summary.json'), JSON.stringify({
+      totalRuns: 20,
+      manifest: { execution: { completedAt: new Date().toISOString() } },
+    }, null, 2));
+    fs.writeFileSync(path.join(outputDir, 'manifest.json'), JSON.stringify({
+      configHash: 'dummyhash',
+    }, null, 2));
+    fs.writeFileSync(path.join(outputDir, 'stats.csv'), 'metric,value\nplaceholder,0\n');
+
+    const resolved = resolvePaperConfig(baseDir, path.join('experiments', 'paper', '00-test.yaml'));
+    const result = validateResultFreshness(baseDir, resolved);
+
+    expect(result.isFresh).toBe(false);
+    expect(result.issues.map((issue) => issue.code)).toEqual(
+      expect.arrayContaining(['placeholder_manifest', 'placeholder_stats'])
+    );
+  });
+
+  it('cannot generate placeholder-backed manuscript figures', () => {
+    const updater = fs.readFileSync(
+      path.join(process.cwd(), 'scripts', 'paper-update.ts'),
+      'utf8',
+    );
+
+    expect(updater).not.toContain('generatePlaceholderChart');
+    expect(updater).not.toContain('writing placeholder');
+    expect(updater).not.toContain('generating placeholder-backed paper assets');
+    expect(updater).toContain(
+      '--allow-placeholders was removed: publication assets must be generated from verified results',
+    );
   });
 });

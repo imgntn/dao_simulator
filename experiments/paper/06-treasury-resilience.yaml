@@ -1,3 +1,4 @@
+id: rq4-treasury-resilience-factorial
 name: Treasury Resilience
 description: Evaluate treasury stabilization policies under identical governance loads.
 version: 1.0.0
@@ -6,6 +7,25 @@ tags:
   - paper
   - treasury
   - resilience
+research:
+  classification: confirmatory
+  publicationRole: core-confirmatory
+  researchQuestionIds: [RQ4]
+  hypothesis: Treasury stabilization reduces maximum peak-to-trough treasury drawdown under matched governance load, with effects moderated by explicit protocol yield.
+  primaryOutcome: max_treasury_drawdown
+  secondaryOutcomes:
+    - treasury_survival_indicator
+    - treasury_recovery_time
+    - token_conservation_error
+  analysisModel: factorial_ols
+  comparisonCorrection: holm
+  smallestEffectOfInterest:
+    value: 0.05
+    unit: absolute drawdown fraction
+    rationale: A five-percentage-point change in maximum peak-to-trough treasury drawdown is the smallest practically important resilience effect.
+  analysisFamily: rq4-treasury-resilience
+  experimentalUnit: One seeded DAO simulation replicate under one treasury-policy and yield condition.
+  estimatedRuntimeMinutes: 480
 baseConfig:
   template: compound
   population:
@@ -42,6 +62,14 @@ baseConfig:
     vote_power_velocity_window: 72
     vote_power_velocity_penalty: 0.5
     delegation_lock_steps: 48
+    black_swan_enabled: true
+    black_swan_frequency: 0
+    black_swan_categories: [market_contagion]
+    simulationStepsPerYear: 8760
+    black_swan_scheduled_events:
+      - step: 720
+        category: market_contagion
+        severity: 0.8
 sweep:
   grid:
     - parameter: treasury_stabilization_enabled
@@ -50,6 +78,8 @@ sweep:
       values: [0.0, 0.2, 0.4]
     - parameter: treasury_max_spend_fraction
       values: [0.1, 0.2]
+    - parameter: treasuryProtocolAnnualYield
+      values: [0.0, 0.03, 0.08]
 execution:
   runsPerConfig: 100
   stepsPerRun: 2000
@@ -57,6 +87,22 @@ execution:
   baseSeed: 606
   workers: 4
 metrics:
+  - name: Treasury Survival Indicator
+    type: builtin
+    builtin: treasury_survival_indicator
+    description: One when every recorded treasury balance remains strictly positive
+  - name: Maximum Treasury Drawdown
+    type: builtin
+    builtin: max_treasury_drawdown
+    description: Largest running peak-to-trough fractional treasury loss
+  - name: Treasury Recovery Time
+    type: builtin
+    builtin: treasury_recovery_time
+    description: Hours from the largest drawdown trough to recovery or the horizon
+  - name: Token Conservation Error
+    type: builtin
+    builtin: token_conservation_error
+    description: Absolute accounted token-supply reconciliation error
   - name: Treasury Volatility
     type: builtin
     builtin: treasury_volatility
@@ -92,4 +138,5 @@ output:
     - csv
   includeRawRuns: true
   includeManifest: true
-  includeTimeline: false
+  includeTimeline: true
+  timelineStride: 24

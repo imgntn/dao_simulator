@@ -39,7 +39,7 @@ export function MobileSimView() {
   const snapshot = useActiveSnapshot();
 
   return (
-    <div className="flex flex-col min-h-screen bg-[var(--sim-bg)] text-[var(--sim-text)]">
+    <div data-sim-root className="flex flex-col min-h-screen bg-[var(--sim-bg)] text-[var(--sim-text)]">
       {/* Top bar */}
       <div className="sticky top-0 z-20 flex items-center justify-between border-b border-[var(--sim-border)] bg-[var(--sim-bg)] px-3 py-2">
         <span className="text-sm font-semibold text-[var(--sim-text)]">Simulation</span>

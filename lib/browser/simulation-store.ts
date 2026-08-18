@@ -16,6 +16,14 @@ import type {
 import type { CalibrationProfile } from '../digital-twins/calibration-loader';
 import { useBranchStore } from './branch-store';
 
+let localIdSequence = 0;
+function createLocalId(prefix: string): string {
+  const uuid = globalThis.crypto?.randomUUID?.();
+  if (uuid) return `${prefix}-${uuid}`;
+  localIdSequence += 1;
+  return `${prefix}-${Date.now().toString(36)}-${localIdSequence.toString(36)}`;
+}
+
 // =============================================================================
 // STATE TYPES
 // =============================================================================
@@ -207,7 +215,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
   },
 
   addAnnotation: (step, text) => {
-    const id = `ann-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const id = createLocalId('ann');
     set(prev => ({
       annotations: [...prev.annotations, { id, step, text }].slice(-50),
     }));
@@ -219,7 +227,7 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
   },
 
   addAlert: (alert) => {
-    const id = `alert-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const id = createLocalId('alert');
     set(prev => ({
       alerts: [...prev.alerts, { ...alert, id, triggered: false }],
     }));
@@ -304,6 +312,10 @@ export const useSimulationStore = create<SimulationState>((set, get) => ({
           break;
 
         case 'stepComplete':
+          // A step already in flight may finish after a reset request. Its
+          // snapshot belongs to the previous DAO/configuration and must not
+          // repopulate the cleared history while initialization is pending.
+          if (get().status === 'initializing') break;
           scheduleSnapshotFlush(set, msg.snapshot);
           break;
 

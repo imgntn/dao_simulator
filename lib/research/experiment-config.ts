@@ -20,11 +20,13 @@ import type { PopulationOverride } from './population';
  */
 export interface ExperimentConfig {
   // Metadata
+  id?: string;
   name: string;
   description?: string;
   version?: string;
   author?: string;
   tags?: string[];
+  research?: ResearchDesignMetadata;
 
   // Execution mode
   mode?: 'single' | 'city';
@@ -49,6 +51,35 @@ export interface ExperimentConfig {
 
   // Output settings
   output: OutputConfig;
+}
+
+export interface ResearchDesignMetadata {
+  classification: 'confirmatory' | 'exploratory' | 'validation' | 'legacy';
+  publicationRole:
+    | 'core-confirmatory'
+    | 'supporting-exploratory'
+    | 'pilot-development'
+    | 'validation'
+    | 'llm-secondary'
+    | 'legacy-archived';
+  researchQuestionIds: string[];
+  hypothesis: string;
+  primaryOutcome: BuiltinMetricType;
+  secondaryOutcomes: BuiltinMetricType[];
+  analysisModel:
+    | 'paired_contrast'
+    | 'factorial_ols'
+    | 'hierarchical_random_effects'
+    | 'validation_invariant';
+  comparisonCorrection: 'holm' | 'benjamini-hochberg' | 'none';
+  smallestEffectOfInterest: {
+    value: number;
+    unit: string;
+    rationale: string;
+  };
+  analysisFamily: string;
+  experimentalUnit: string;
+  estimatedRuntimeMinutes?: number;
 }
 
 /**
@@ -200,6 +231,9 @@ export interface ExecutionConfig {
   // Number of simulation steps per run
   stepsPerRun: number;
 
+  // Independent learning episodes within each replicate (Q-tables persist only within the replicate)
+  learningEpisodesPerRun?: number;
+
   // Parallelization (Phase 2)
   workers?: number;
 
@@ -234,6 +268,8 @@ export type BuiltinMetricType =
   | 'total_proposals'
   | 'total_projects'
   | 'average_token_balance'
+  | 'proposal_completion_rate'
+  | 'median_time_to_decision'
 
   // === Governance Efficiency Metrics ===
   | 'quorum_reach_rate'           // % of proposals that met quorum threshold
@@ -247,7 +283,7 @@ export type BuiltinMetricType =
   | 'unique_voter_count'          // Number of distinct members who voted at least once
   | 'voter_participation_rate'    // unique_voters / total_members
   | 'voter_concentration_gini'    // Gini coefficient of voting activity distribution
-  | 'delegate_concentration'      // % of total votes controlled by top 10% of voters
+  | 'delegate_concentration'      // HHI of incoming delegated voting power
   | 'avg_votes_per_proposal'      // Average number of unique voters per proposal
   | 'voter_retention_rate'        // % of voters who voted in both first and last half
   | 'voting_power_utilization'    // % of total voting power actually used
@@ -259,7 +295,11 @@ export type BuiltinMetricType =
   | 'staking_participation'       // stakedTokens / totalTokens
   | 'token_concentration_gini'    // Gini of token holdings (same as final_gini but explicit)
   | 'avg_member_wealth'           // Average tokens per member
-  | 'wealth_mobility'             // How much token rankings changed over simulation
+  | 'wealth_mobility'             // Normalized longitudinal token-rank displacement
+  | 'token_conservation_error'    // Absolute accounted-supply reconciliation error
+  | 'treasury_survival_indicator' // 1 iff treasury remains positive
+  | 'max_treasury_drawdown'       // Maximum peak-to-trough fractional loss
+  | 'treasury_recovery_time'      // Hours from trough to recovery/horizon
 
   // === Attack Resistance Metrics ===
   | 'whale_influence'             // % of total votes from top 10% token holders
@@ -330,7 +370,15 @@ export type BuiltinMetricType =
   // === LLM Agent Metrics ===
   | 'llm_vote_consistency'        // % of LLM votes matching rule-based prediction
   | 'llm_cache_hit_rate'          // Cache hits / total requests
-  | 'llm_avg_latency_ms';        // Average LLM response time
+  | 'llm_avg_latency_ms'          // Average LLM response time
+
+  // === Learning Diagnostics ===
+  | 'learning_agent_count'        // Agents exposing learning diagnostics
+  | 'learning_q_table_size_mean'  // Mean learned state-action entries per agent
+  | 'learning_state_count_mean'   // Mean learned states per agent
+  | 'learning_episode_count_mean' // Mean completed learning episodes per agent
+  | 'learning_exploration_rate_mean' // Mean current epsilon per agent
+  | 'learning_total_reward_mean'; // Mean cumulative reward per agent
 
 /**
  * Configuration for a single metric to capture
@@ -376,6 +424,9 @@ export interface OutputConfig {
   // Include step-by-step timeline data
   includeTimeline?: boolean;
 
+  // Retain the first, last, and every Nth simulation step when timelines are included
+  timelineStride?: number;
+
   // Generate reproducibility manifest
   includeManifest?: boolean;
 }
@@ -393,6 +444,11 @@ export interface RunResult {
   // Identifiers
   runId: string;
   experimentName: string;
+  /**
+   * Canonical identity of the pre-execution experimental condition.
+   * Optional only for backward compatibility with legacy result artifacts.
+   */
+  conditionId?: string;
   sweepValue?: number | string | boolean;
   runIndex: number;
 
@@ -405,6 +461,8 @@ export interface RunResult {
 
   // Optional raw data
   timeline?: TimelineEntry[];
+  /** Complete successful LLM response cache and request/error telemetry for archival research runs. */
+  llmDiagnostics?: import('./llm-run-diagnostics').LlmRunDiagnostics;
 
   // Execution metadata
   startedAt: string;
@@ -425,6 +483,7 @@ export interface TimelineEntry {
   treasuryFunds: number;
   gini: number;
   reputationGini: number;
+  participationRate?: number;
 }
 
 /**
@@ -568,6 +627,7 @@ export interface StatisticalSignificance {
  * Reproducibility manifest for an experiment
  */
 export interface ReproducibilityManifest {
+  schemaVersion: 2;
   experimentId: string;
   configHash: string;
 
@@ -575,9 +635,11 @@ export interface ReproducibilityManifest {
     simulatorVersion: string;
     nodeVersion: string;
     platform: string;
-    gitCommit?: string;
-    gitBranch?: string;
-    gitDirty?: boolean;
+    architecture: string;
+    gitCommit: string;
+    gitBranch: string;
+    gitDirty: boolean;
+    packageLockHash: string;
   };
 
   execution: {
@@ -586,6 +648,19 @@ export interface ReproducibilityManifest {
     totalRuns: number;
     seeds: number[];
     workerCount: number;
+    command: string[];
+    timezone: string;
+    locale: string;
+    rngAlgorithm: string;
+    rngSchemaVersion: number;
+    seedDerivationSchemaVersion: number;
+    derivedSubsystemSeeds: Record<string, Record<string, number>>;
+  };
+
+  metricDefinitions: {
+    registrySchemaVersion: string;
+    hash: string;
+    versions: Record<string, string>;
   };
 
   resultsHash: string;

@@ -58,6 +58,7 @@ export class DAOMember implements Agent {
   uniqueId: string;
   model: DAOModel;
   private _tokens: number;
+  private assetBalances: Map<string, number> = new Map();
   reputation: number;
   location: string;
   stakedTokens: number = 0;
@@ -173,6 +174,58 @@ export class DAOMember implements Agent {
     if (delta !== 0 && this.model?.dao?.invalidateVotingPowerCache) {
       this.model.dao.invalidateVotingPowerCache();
     }
+  }
+
+  private primaryTokenSymbol(): string {
+    return this.model?.dao?.tokenSymbol || 'DAO_TOKEN';
+  }
+
+  /** Return this member's balance for one concrete asset. */
+  getAssetBalance(token: string): number {
+    if (token === 'DAO_TOKEN' || token === this.primaryTokenSymbol()) {
+      return this.tokens;
+    }
+    return this.assetBalances.get(token) || 0;
+  }
+
+  /**
+   * Set an asset balance without allowing negative or non-finite holdings.
+   * Primary-token writes retain the existing velocity and voting-cache hooks.
+   */
+  setAssetBalance(token: string, value: number): void {
+    const sanitized = Number.isFinite(value) && value >= 0 ? value : 0;
+    if (token === 'DAO_TOKEN' || token === this.primaryTokenSymbol()) {
+      this.tokens = sanitized;
+      return;
+    }
+    if (sanitized === 0) {
+      this.assetBalances.delete(token);
+    } else {
+      this.assetBalances.set(token, sanitized);
+    }
+  }
+
+  /** Credit an existing asset to this member and return the credited amount. */
+  creditAsset(token: string, amount: number): number {
+    if (!Number.isFinite(amount) || amount <= 0) return 0;
+    this.setAssetBalance(token, this.getAssetBalance(token) + amount);
+    return amount;
+  }
+
+  /** Debit up to the requested amount and return the amount actually debited. */
+  debitAsset(token: string, amount: number): number {
+    if (!Number.isFinite(amount) || amount <= 0) return 0;
+    const debited = Math.min(amount, this.getAssetBalance(token));
+    this.setAssetBalance(token, this.getAssetBalance(token) - debited);
+    return debited;
+  }
+
+  /** Serializable holdings map including the canonical primary token. */
+  getAssetBalances(): Record<string, number> {
+    return {
+      ...Object.fromEntries(this.assetBalances),
+      [this.primaryTokenSymbol()]: this.tokens,
+    };
   }
 
   markActive(): void {
@@ -341,10 +394,10 @@ export class DAOMember implements Agent {
    */
   getEffectiveVotingProbability(): number {
     // Per-agent calibrated probability bypasses generic apathy/salience/boost logic.
-    // This is set from voter cluster data for historically calibrated simulations.
+    // This is an observed per-proposal participation rate, so historical fatigue
+    // is already included and must not be multiplied in a second time.
     if (this.calibratedVotingProbability !== undefined) {
-      // Still apply fatigue so agents who vote heavily slow down
-      return Math.min(1, Math.max(0, this.calibratedVotingProbability * (1 - this.voterFatigue)));
+      return Math.min(1, Math.max(0, this.calibratedVotingProbability));
     }
 
     const baseActivity = this.model.dao?.votingActivity ?? 0.3;
@@ -955,7 +1008,11 @@ export class DAOMember implements Agent {
    * Execute the transfer to a new DAO
    * Called by DAOCity when transfer is approved and processed
    */
-  executeTransfer(newDaoId: string, newModel?: DAOModel): void {
+  executeTransfer(
+    newDaoId: string,
+    newModel?: DAOModel,
+    daoStateAlreadyCleared: boolean = false
+  ): void {
     // Store previous DAO in history
     this.previousDaos.push(this.daoId);
 
@@ -965,7 +1022,9 @@ export class DAOMember implements Agent {
     }
 
     // Clear DAO-specific state
-    this.clearDaoSpecificState();
+    if (!daoStateAlreadyCleared) {
+      this.clearDaoSpecificState();
+    }
 
     // Update to new DAO
     const oldDaoId = this.daoId;
@@ -992,6 +1051,15 @@ export class DAOMember implements Agent {
         toDaoId: newDaoId,
       });
     }
+  }
+
+  /**
+   * Release DAO-local delegation and guild claims before a city bridge converts
+   * the member's source-DAO assets. This must run while the old DAO model is
+   * still attached so every returned claim retains the correct denomination.
+   */
+  prepareForDaoTransfer(): void {
+    this.clearDaoSpecificState();
   }
 
   /**

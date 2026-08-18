@@ -10,7 +10,7 @@ import { TimelockController, createTimelockController } from '../data-structures
 import { BicameralGovernance, createOptimismBicameral, createArbitrumGovernance } from '../data-structures/governance-house';
 import { GovernanceProcessor, createGovernanceProcessor } from '../governance';
 import { EventBus } from '../utils/event-bus';
-import { random, randomChoice, randomShuffle } from '../utils/random';
+import { random, randomChoice } from '../utils/random';
 import type { DAOMember } from '../agents/base';
 import { SybilAttacker, FlashLoanAttacker } from '../agents';
 import { DelegationResolver } from '../delegation/delegation-resolver';
@@ -152,7 +152,8 @@ export class DAOCity {
    * Initialize all DAOs from config
    */
   private initializeDAOs(): void {
-    for (const daoConfig of this.config.daos) {
+    const orderedDaoConfigs = [...this.config.daos].sort((a, b) => a.id.localeCompare(b.id));
+    for (const daoConfig of orderedDaoConfigs) {
       const governanceRule = this.normalizeGovernanceRule(daoConfig.governanceRule);
       const simConfig: DAOSimulationConfig = {
         governance_rule: governanceRule,
@@ -186,7 +187,11 @@ export class DAOCity {
         num_risk_managers: daoConfig.agentCounts.num_risk_managers,
         num_market_makers: daoConfig.agentCounts.num_market_makers,
         num_whistleblowers: daoConfig.agentCounts.num_whistleblowers,
+        daoId: daoConfig.id,
+        tokenSymbol: daoConfig.tokenSymbol,
+        daoColor: daoConfig.color,
         useSharedRandom: true,
+        rngStreamId: `dao:${daoConfig.id}`,
         // Apply base settings if provided
         ...this.config.baseSettings,
         // Apply per-DAO simulation params if provided
@@ -219,10 +224,15 @@ export class DAOCity {
       // Set initial treasury funding
       const currentBalance = simulation.dao.treasury.getTokenBalance(daoConfig.tokenSymbol);
       if (currentBalance < daoConfig.initialTreasuryFunding) {
-        simulation.dao.treasury.deposit(
+        simulation.dao.treasury.mintTokens(
           daoConfig.tokenSymbol,
           daoConfig.initialTreasuryFunding - currentBalance,
-          0
+          0,
+          {
+            source: 'protocol:city-opening-issuance',
+            destination: 'treasury:opening-funding',
+            event: 'city_opening_treasury_funded',
+          }
         );
       }
 
@@ -289,10 +299,21 @@ export class DAOCity {
 
       for (let i = 0; i < sybilCount; i++) {
         const attackerId = `${daoId}_sybil_attacker_${i}`;
+        const requestedEndowment = budgetPerAttacker ?? 1000;
+        const fundedEndowment = sim.dao.treasury.withdraw(
+          sim.dao.tokenSymbol,
+          requestedEndowment,
+          this.currentStep,
+          {
+            source: 'treasury:security-scenario-budget',
+            destination: `member:${attackerId}`,
+            event: 'scenario_attacker_endowment',
+          }
+        );
         const attacker = new SybilAttacker(
           attackerId,
           sim,
-          budgetPerAttacker ?? 1000,
+          fundedEndowment,
           50,
           'node_0',
           this.attackConfig.sybilConfig
@@ -303,10 +324,21 @@ export class DAOCity {
 
       for (let i = 0; i < flashCount; i++) {
         const attackerId = `${daoId}_flashloan_attacker_${i}`;
+        const requestedEndowment = budgetPerAttacker ?? 100;
+        const fundedEndowment = sim.dao.treasury.withdraw(
+          sim.dao.tokenSymbol,
+          requestedEndowment,
+          this.currentStep,
+          {
+            source: 'treasury:security-scenario-budget',
+            destination: `member:${attackerId}`,
+            event: 'scenario_attacker_endowment',
+          }
+        );
         const attacker = new FlashLoanAttacker(
           attackerId,
           sim,
-          budgetPerAttacker ?? 100,
+          fundedEndowment,
           30,
           'node_0',
           this.attackConfig.flashLoanConfig
@@ -485,7 +517,7 @@ export class DAOCity {
     if (!this.bridgesEnabled) {
       return;
     }
-    const daoIds = this.config.daos.map(d => d.id);
+    const daoIds = this.config.daos.map(d => d.id).sort();
 
     for (let i = 0; i < daoIds.length; i++) {
       for (let j = i + 1; j < daoIds.length; j++) {
@@ -580,15 +612,79 @@ export class DAOCity {
         continue;
       }
 
-      // Deduct transfer fee and deposit into source DAO treasury
-      if (request.transferFee > 0) {
-        const fee = Math.min(request.transferFee, member.tokens);
-        member.tokens -= fee;
-        fromSim.dao.treasury.deposit('DAO_TOKEN', fee, this.currentStep);
+      // Resolve DAO-local claims before converting the source primary asset.
+      member.prepareForDaoTransfer();
+
+      const sourceToken = fromSim.dao.tokenSymbol;
+      const destinationToken = toSim.dao.tokenSymbol;
+
+      // Staked claims cannot cross governance domains directly; unlock them
+      // into the bridgeable source balance before conversion.
+      if (member.stakedTokens > 0) {
+        member.tokens += member.stakedTokens;
+        member.stakedTokens = 0;
+        member.stakeLocks = [];
       }
 
-      // Execute transfer
-      member.executeTransfer(request.toDaoId, toSim);
+      // Deduct transfer fee and deposit into source DAO treasury.
+      let actualFee = 0;
+      if (request.transferFee > 0) {
+        actualFee = member.debitAsset(sourceToken, request.transferFee);
+        fromSim.dao.treasury.deposit(sourceToken, actualFee, this.currentStep, {
+          source: `member:${member.uniqueId}`,
+          destination: 'treasury:bridge-fees',
+          event: 'member_bridge_fee_paid',
+        });
+      }
+
+      // Burn the source-domain claim and mint an equal market-value claim in
+      // the destination domain. Both supply changes are explicit in ledgers.
+      const sourceAmount = member.debitAsset(sourceToken, member.getAssetBalance(sourceToken));
+      const sourcePrice = this.globalMarketplace.getTokenPrice(sourceToken);
+      const destinationPrice = this.globalMarketplace.getTokenPrice(destinationToken);
+      const safeSourcePrice = Number.isFinite(sourcePrice) && sourcePrice > 0 ? sourcePrice : 1;
+      const safeDestinationPrice =
+        Number.isFinite(destinationPrice) && destinationPrice > 0 ? destinationPrice : 1;
+      const destinationAmount = sourceAmount * safeSourcePrice / safeDestinationPrice;
+
+      if (sourceAmount > 0) {
+        fromSim.dao.treasury.deposit(sourceToken, sourceAmount, this.currentStep, {
+          source: `member:${member.uniqueId}`,
+          destination: 'treasury:bridge-burn-transit',
+          event: 'member_bridge_source_deposited',
+        });
+        fromSim.dao.treasury.burnTokens(sourceToken, sourceAmount, this.currentStep, {
+          source: 'treasury:bridge-burn-transit',
+          destination: 'protocol:bridge-burn',
+          event: 'member_bridge_source_burned',
+        });
+      }
+
+      member.executeTransfer(request.toDaoId, toSim, true);
+
+      if (destinationAmount > 0) {
+        toSim.dao.treasury.mintTokens(
+          destinationToken,
+          destinationAmount,
+          this.currentStep,
+          {
+            source: 'protocol:bridge-mint',
+            destination: 'treasury:bridge-mint-transit',
+            event: 'member_bridge_destination_minted',
+          }
+        );
+        const received = toSim.dao.treasury.withdraw(
+          destinationToken,
+          destinationAmount,
+          this.currentStep,
+          {
+            source: 'treasury:bridge-mint-transit',
+            destination: `member:${member.uniqueId}`,
+            event: 'member_bridge_destination_received',
+          }
+        );
+        member.creditAsset(destinationToken, received);
+      }
 
       // Remove from source DAO and scheduler
       const memberIndex = fromSim.dao.members.indexOf(member);
@@ -610,7 +706,11 @@ export class DAOCity {
         memberId: request.memberId,
         fromDaoId: request.fromDaoId,
         toDaoId: request.toDaoId,
-        fee: request.transferFee,
+        fee: actualFee,
+        sourceAmount,
+        destinationAmount,
+        sourceToken,
+        destinationToken,
       };
 
       this.eventBus.publish('member_transfer_completed', {
@@ -629,8 +729,9 @@ export class DAOCity {
    * Step all DAOs forward
    */
   async step(): Promise<void> {
-    // Step each DAO simulation in randomized order to eliminate ordering bias
-    const daoIds = randomShuffle(Array.from(this.simulations.keys()));
+    // Stable ID order makes outcomes invariant to configuration array order.
+    // Cross-condition stochastic variation is handled by paired replicate seeds.
+    const daoIds = Array.from(this.simulations.keys()).sort();
     for (const daoId of daoIds) {
       const simulation = this.simulations.get(daoId)!;
       await simulation.step();

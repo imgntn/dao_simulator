@@ -250,8 +250,16 @@ export class LLMAgent extends DAOMember {
     // Check cache
     let responseText: string | undefined;
     let cacheKey: string | undefined;
+    let rawCacheKey: string | undefined;
 
     if (this.cache) {
+      rawCacheKey = LLMResponseCache.makeRawKey(
+        this.llmModel,
+        system,
+        prompt,
+        this.llmSeed,
+        this.llmTemperature
+      );
       cacheKey = LLMResponseCache.makeKey(
         this.llmModel,
         system,
@@ -259,7 +267,7 @@ export class LLMAgent extends DAOMember {
         this.llmSeed,
         this.llmTemperature
       );
-      responseText = this.cache.get(cacheKey);
+      responseText = this.cache.get(cacheKey, rawCacheKey);
     }
 
     if (responseText === undefined) {
@@ -280,7 +288,7 @@ export class LLMAgent extends DAOMember {
         responseText = response.response;
 
         if (this.cache && cacheKey) {
-          this.cache.set(cacheKey, responseText, this.llmModel);
+          this.cache.set(cacheKey, responseText, this.llmModel, rawCacheKey);
         }
       } catch (err) {
         logger.debug(`LLM proposal generation failed for ${this.uniqueId}: ${err}`);

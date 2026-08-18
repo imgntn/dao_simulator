@@ -1,6 +1,7 @@
 // Lightweight Neural Network for DQN
 // No external dependencies - pure TypeScript implementation
 // Supports feedforward networks with ReLU/tanh activations
+import { random } from '../../utils/random';
 
 /**
  * Activation function types
@@ -110,7 +111,7 @@ export class NeuralNetwork {
       for (let i = 0; i < layer.size; i++) {
         const neuronWeights: number[] = [];
         for (let j = 0; j < prevSize; j++) {
-          neuronWeights.push((Math.random() * 2 - 1) * scale);
+          neuronWeights.push((random() * 2 - 1) * scale);
         }
         layerWeights.push(neuronWeights);
         layerBiases.push(0);

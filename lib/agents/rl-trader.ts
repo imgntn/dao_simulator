@@ -25,6 +25,7 @@ export class RLTrader extends DAOMember {
   prevTokens: number;
   tradeCount: number = 0;
   priceHistory: number[] = [];
+  private lpTokens: number = 0;
 
   constructor(
     uniqueId: string,
@@ -82,59 +83,104 @@ export class RLTrader extends DAOMember {
     if (!this.model.dao) return -0.05;
 
     const treasury = this.model.dao.treasury;
-    const tradeAmount = Math.max(MIN_TRADE_AMOUNT, this.tokens * TRADE_FRACTION);
+    const primary = this.model.dao.tokenSymbol;
     let reward = 0;
 
     try {
       switch (action) {
         case 'buy':
-          if (this.tokens >= tradeAmount) {
+          {
+            const tradeAmount = Math.max(
+              MIN_TRADE_AMOUNT,
+              this.getAssetBalance('USDC') * TRADE_FRACTION
+            );
+          if (this.getAssetBalance('USDC') >= tradeAmount) {
+            const debited = this.debitAsset('USDC', tradeAmount);
+            if (debited !== tradeAmount) break;
             treasury.deposit('USDC', tradeAmount, this.model.currentStep);
-            const out = treasury.swap('USDC', 'DAO_TOKEN', tradeAmount, this.model.currentStep);
+            const out = treasury.swap('USDC', primary, tradeAmount, this.model.currentStep);
             if (out > 0) {
-              this.tokens -= tradeAmount;
-              this.tokens += treasury.withdraw('DAO_TOKEN', out, this.model.currentStep);
-              reward = treasury.getTokenPrice('DAO_TOKEN') * out - tradeAmount;
+              this.creditAsset(primary, treasury.withdraw(primary, out, this.model.currentStep));
+              reward = treasury.getTokenPrice(primary) * out - tradeAmount;
               this.tradeCount++;
             } else {
-              treasury.withdraw('USDC', tradeAmount, this.model.currentStep);
+              this.creditAsset(
+                'USDC',
+                treasury.withdraw('USDC', tradeAmount, this.model.currentStep)
+              );
             }
           }
           break;
+          }
 
         case 'sell':
-          if (this.tokens >= tradeAmount) {
-            treasury.deposit('DAO_TOKEN', tradeAmount, this.model.currentStep);
-            const out = treasury.swap('DAO_TOKEN', 'USDC', tradeAmount, this.model.currentStep);
+          {
+            const tradeAmount = Math.max(MIN_TRADE_AMOUNT, this.tokens * TRADE_FRACTION);
+          if (this.getAssetBalance(primary) >= tradeAmount) {
+            const debited = this.debitAsset(primary, tradeAmount);
+            if (debited !== tradeAmount) break;
+            treasury.deposit(primary, tradeAmount, this.model.currentStep);
+            const out = treasury.swap(primary, 'USDC', tradeAmount, this.model.currentStep);
             if (out > 0) {
-              this.tokens -= tradeAmount;
-              this.tokens += treasury.withdraw('USDC', out, this.model.currentStep);
-              reward = out - treasury.getTokenPrice('DAO_TOKEN') * tradeAmount;
+              this.creditAsset('USDC', treasury.withdraw('USDC', out, this.model.currentStep));
+              reward = out - treasury.getTokenPrice(primary) * tradeAmount;
               this.tradeCount++;
             } else {
-              treasury.withdraw('DAO_TOKEN', tradeAmount, this.model.currentStep);
+              this.creditAsset(
+                primary,
+                treasury.withdraw(primary, tradeAmount, this.model.currentStep)
+              );
             }
           }
           break;
+          }
 
         case 'add_lp':
-          if (this.tokens >= tradeAmount * 2) {
-            const lpAmount = tradeAmount / 2;
-            treasury.deposit('DAO_TOKEN', lpAmount, this.model.currentStep);
+          {
+          const lpAmount = Math.min(
+            this.getAssetBalance(primary),
+            this.getAssetBalance('USDC')
+          ) * TRADE_FRACTION;
+          if (lpAmount >= MIN_TRADE_AMOUNT) {
+            this.debitAsset(primary, lpAmount);
+            this.debitAsset('USDC', lpAmount);
+            treasury.deposit(primary, lpAmount, this.model.currentStep);
             treasury.deposit('USDC', lpAmount, this.model.currentStep);
-            treasury.addLiquidity('DAO_TOKEN', 'USDC', lpAmount, lpAmount, this.model.currentStep);
-            this.tokens -= tradeAmount;
+            this.lpTokens += treasury.addLiquidity(
+              primary,
+              'USDC',
+              lpAmount,
+              lpAmount,
+              this.model.currentStep
+            );
             reward = 0.02; // Small positive reward for providing liquidity
           }
           break;
+          }
 
         case 'remove_lp': {
           try {
-            const removed = treasury.removeLiquidity('DAO_TOKEN', 'USDC', 0.1, this.model.currentStep);
-            if (removed) {
-              // Agent claims the DAO_TOKEN portion
-              const claimed = treasury.withdraw('DAO_TOKEN', removed[0] || 0, this.model.currentStep);
-              this.tokens += claimed;
+            const lpToBurn = this.lpTokens * 0.1;
+            const removed = treasury.removeLiquidityByLP(
+              primary,
+              'USDC',
+              lpToBurn,
+              this.model.currentStep
+            );
+            if (lpToBurn > 0 && (removed[0] > 0 || removed[1] > 0)) {
+              const poolKey = [primary, 'USDC'].sort().join('|');
+              const pool = treasury.pools.get(poolKey);
+              const primaryAmount = pool?.tokenA === primary ? removed[0] : removed[1];
+              const usdcAmount = pool?.tokenA === primary ? removed[1] : removed[0];
+              this.creditAsset(
+                primary,
+                treasury.withdraw(primary, primaryAmount, this.model.currentStep)
+              );
+              this.creditAsset(
+                'USDC',
+                treasury.withdraw('USDC', usdcAmount, this.model.currentStep)
+              );
+              this.lpTokens = Math.max(0, this.lpTokens - lpToBurn);
             }
             reward = -0.01; // Small negative reward for removing liquidity
           } catch (error) {

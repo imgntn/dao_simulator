@@ -126,18 +126,11 @@ async function main(): Promise<void> {
         passRate: current.passRate,
         participation: current.participation,
         proposalFrequency: current.proposalFrequency,
-        priceRmse: current.priceRmse,
+        priceLevelError: current.priceLevelError,
         voterConcentration: current.voterConcentration,
         forumActivity: current.forumActivity,
-        ci95: previous.perDao[entry.daoId]?.ci95 ?? {
-          overall_score: { mean: current.score, stdDev: 0.03, ci95Lower: current.ci95Lower, ci95Upper: current.ci95Upper, standardError: 0.01 },
-          proposal_frequency_error: { mean: 0.1, stdDev: 0.05, ci95Lower: 0.07, ci95Upper: 0.13, standardError: 0.016 },
-          pass_rate_error: { mean: 0.1, stdDev: 0.05, ci95Lower: 0.07, ci95Upper: 0.13, standardError: 0.016 },
-          participation_rate_error: { mean: 0.1, stdDev: 0.05, ci95Lower: 0.07, ci95Upper: 0.13, standardError: 0.016 },
-          price_trajectory_rmse: { mean: 0.2, stdDev: 0.05, ci95Lower: 0.17, ci95Upper: 0.23, standardError: 0.016 },
-          voter_concentration_error: { mean: 0.1, stdDev: 0.05, ci95Lower: 0.07, ci95Upper: 0.13, standardError: 0.016 },
-          forum_activity_error: { mean: 0.1, stdDev: 0.05, ci95Lower: 0.07, ci95Upper: 0.13, standardError: 0.016 },
-        },
+        availableMetrics: current.availableMetrics,
+        ci95: current.ci95,
       };
       acceptedIds.push(entry.daoId);
     }

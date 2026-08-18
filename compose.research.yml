@@ -1,0 +1,28 @@
+services:
+  reproduce:
+    build:
+      context: .
+      dockerfile: Dockerfile.research
+    environment:
+      NODE_ENV: test
+    volumes:
+      - type: bind
+        source: ${DAO_SIM_CAMPAIGN_DIR}
+        target: /evidence/campaign
+        read_only: true
+      - type: bind
+        source: ${DAO_SIM_REPRODUCTION_OUTPUT}
+        target: /evidence/output
+    command:
+      - npm
+      - run
+      - reproduce
+      - --
+      - --campaign
+      - /evidence/campaign
+      - --output
+      - /evidence/output/publication
+      - --report
+      - /evidence/output/reproduction-report.json
+      - --profile
+      - full

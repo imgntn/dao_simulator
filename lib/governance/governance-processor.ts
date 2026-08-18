@@ -909,7 +909,8 @@ export class GovernanceProcessor {
 export function createGovernanceProcessor(
   dao: DAO,
   eventBus: EventBus,
-  daoType: string
+  daoType: string,
+  overrides: Partial<GovernanceSystemsConfig> = {}
 ): GovernanceProcessor {
   const configs: Record<string, GovernanceSystemsConfig> = {
     // Uniswap - multi-stage with proposal gates
@@ -997,6 +998,7 @@ export function createGovernanceProcessor(
   const normalizedType = daoType.toLowerCase().replace(/[\s-]/g, '_');
   const config = {
     ...(configs[normalizedType] || configs.default),
+    ...overrides,
     attackDetectionEnabled: true,
   };
 

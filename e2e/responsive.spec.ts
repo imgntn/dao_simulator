@@ -41,15 +41,13 @@ test.describe('Desktop Layout (1280x720)', () => {
   test('shows all transport controls', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'Play' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Step' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Reset', exact: true })).toBeVisible();
   });
 
-  test('all tabs are visible', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'Interactive' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Compare' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Branch' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Multi-Run' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Research' })).toBeVisible();
+  test('primary navigation and analysis menu are visible', async ({ page }) => {
+    await expect(page.getByRole('tab', { name: 'Explore · Sanctum' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Evidence' })).toBeVisible();
+    await expect(page.getByText(/^Analysis tools/)).toBeVisible();
   });
 
   test('control panel is visible in sidebar', async ({ page }) => {
@@ -89,17 +87,15 @@ test.describe('Tablet Layout (768x1024)', () => {
   });
 
   test('page loads correctly on tablet', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'Play' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start simulation', exact: true })).toBeVisible();
   });
 
-  test('tabs are accessible', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'Interactive' })).toBeVisible();
+  test('tablet uses the compact dashboard at handheld width', async ({ page }) => {
+    await expect(page.getByText('For the full Sanctum scene, open on desktop')).toBeVisible();
   });
 
-  test('canvas renders', async ({ page }) => {
-    await playAndWaitForSteps(page, 3);
-    const canvas = page.locator('canvas').first();
-    await expect(canvas).toBeVisible();
+  test('desktop canvas is omitted at handheld width', async ({ page }) => {
+    await expect(page.locator('canvas')).toHaveCount(0);
   });
 });
 
@@ -113,16 +109,13 @@ test.describe('Mobile Layout (375x667)', () => {
     await expect(page.locator('[data-sim-root]')).toBeVisible();
   });
 
-  test('canvas renders on mobile', async ({ page }) => {
-    // On mobile the step counter may not be visible, so just click Play and wait
-    await page.getByRole('button', { name: 'Play' }).click();
-    await page.waitForTimeout(3000);
-    const canvas = page.locator('canvas').first();
-    await expect(canvas).toBeVisible({ timeout: 15000 });
+  test('mobile uses the compact dashboard instead of the desktop scene', async ({ page }) => {
+    await expect(page.getByText('For the full Sanctum scene, open on desktop')).toBeVisible();
+    await expect(page.locator('canvas')).toHaveCount(0);
   });
 
   test('controls are accessible on mobile', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'Play' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start simulation', exact: true })).toBeVisible();
   });
 });
 
@@ -162,10 +155,10 @@ test.describe('Orientation Changes', () => {
   test('handles portrait to landscape change', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await gotoAndWaitForInit(page);
-    await expect(page.getByRole('button', { name: 'Play' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start simulation', exact: true })).toBeVisible();
 
     await page.setViewportSize({ width: 812, height: 375 });
-    await expect(page.getByRole('button', { name: 'Play' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start simulation', exact: true })).toBeVisible();
   });
 });
 
@@ -174,7 +167,7 @@ test.describe('Touch Interactions', () => {
     await page.setViewportSize({ width: 375, height: 667 });
     await gotoAndWaitForInit(page);
 
-    const playButton = page.getByRole('button', { name: 'Play' });
+    const playButton = page.getByRole('button', { name: 'Start simulation', exact: true });
     const buttonBox = await playButton.boundingBox();
     if (buttonBox) {
       expect(buttonBox.height).toBeGreaterThanOrEqual(32);
@@ -182,14 +175,14 @@ test.describe('Touch Interactions', () => {
     }
   });
 
-  test('tabs are touch-friendly', async ({ page }) => {
+  test('primary control remains touch-friendly', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await gotoAndWaitForInit(page);
 
-    const interactiveTab = page.getByRole('button', { name: 'Interactive' });
-    const tabBox = await interactiveTab.boundingBox();
-    if (tabBox) {
-      expect(tabBox.height).toBeGreaterThanOrEqual(28);
+    const stepButton = page.getByRole('button', { name: 'Advance simulation' });
+    const controlBox = await stepButton.boundingBox();
+    if (controlBox) {
+      expect(controlBox.height).toBeGreaterThanOrEqual(32);
     }
   });
 });

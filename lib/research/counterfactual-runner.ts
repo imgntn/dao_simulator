@@ -293,7 +293,7 @@ export class CounterfactualRunner {
           proposal_frequency_error: 1,
           pass_rate_error: 1,
           participation_rate_error: 1,
-          price_trajectory_rmse: 1,
+          price_level_error: 1,
           voter_concentration_error: 1,
           forum_activity_error: 1,
         },
@@ -306,7 +306,7 @@ export class CounterfactualRunner {
       proposal_frequency_error: 0,
       pass_rate_error: 0,
       participation_rate_error: 0,
-      price_trajectory_rmse: 0,
+      price_level_error: 0,
       voter_concentration_error: 0,
       forum_activity_error: 0,
     };
@@ -316,7 +316,7 @@ export class CounterfactualRunner {
       avgMetrics.proposal_frequency_error += report.metrics.proposal_frequency_error;
       avgMetrics.pass_rate_error += report.metrics.pass_rate_error;
       avgMetrics.participation_rate_error += report.metrics.participation_rate_error;
-      avgMetrics.price_trajectory_rmse += report.metrics.price_trajectory_rmse;
+      avgMetrics.price_level_error += report.metrics.price_level_error;
       avgMetrics.voter_concentration_error += report.metrics.voter_concentration_error;
       avgMetrics.forum_activity_error += report.metrics.forum_activity_error;
       avgScore += report.overall_score;
@@ -329,7 +329,7 @@ export class CounterfactualRunner {
         proposal_frequency_error: avgMetrics.proposal_frequency_error / n,
         pass_rate_error: avgMetrics.pass_rate_error / n,
         participation_rate_error: avgMetrics.participation_rate_error / n,
-        price_trajectory_rmse: avgMetrics.price_trajectory_rmse / n,
+        price_level_error: avgMetrics.price_level_error / n,
         voter_concentration_error: avgMetrics.voter_concentration_error / n,
         forum_activity_error: avgMetrics.forum_activity_error / n,
       },

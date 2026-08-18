@@ -71,11 +71,12 @@ test.describe('3D Canvas', () => {
     expect(errors).toHaveLength(0);
   });
 
-  test('renderer badge is visible', async ({ page }) => {
-    // The renderer badge shows "WebGL" or "WebGPU" in the canvas area
+  test('renderer mode control reports the active renderer', async ({ page }) => {
     await playAndWaitForSteps(page, 3);
     await page.getByRole('button', { name: 'Pause' }).last().click();
-    await expect(page.getByText(/WebGL|WebGPU/)).toBeVisible({ timeout: 15000 });
+    const rendererMode = page.getByLabel('Renderer mode');
+    await expect(rendererMode).toBeVisible({ timeout: 15000 });
+    await expect(rendererMode).toHaveValue('three');
   });
 });
 
@@ -132,7 +133,9 @@ test.describe('Charts', () => {
     await gotoAndWaitForInit(page);
     // Play simulation and wait for proposals to be created and resolved
     await page.getByRole('button', { name: 'Play' }).click();
-    await expect(page.getByText('Proposal Outcomes')).toBeVisible({ timeout: 90000 });
+    await expect(
+      page.getByRole('heading', { name: 'Proposal Outcomes', exact: true }),
+    ).toBeVisible({ timeout: 90000 });
     await page.getByRole('button', { name: 'Pause' }).last().click();
   });
 });

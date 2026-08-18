@@ -101,6 +101,24 @@ docs/*
 !docs/report-cards/
 !docs/report-cards/**
 !docs/validation-loop-plan.md
+!docs/PUBLICATION_READINESS_AUDIT_2026-07-17.md
+!docs/PUBLICATION_IMPLEMENTATION_MASTER_PLAN.md
+!docs/PUBLICATION_RESEARCH_CHARTER.md
+!docs/LEGACY_ARTIFACT_INVENTORY.md
+!docs/RELEASE_ASSET_CLASSIFICATION.md
+!docs/CONFIRMATORY_ANALYSIS_PLAN.md
+!docs/PILOT_DECISION_LOG.md
+!docs/REPRODUCIBILITY.md
+!docs/experiment-catalog.json
+
+# Immutable local research archives (indexed by tracked inventory documents)
+/artifacts/legacy/
+/artifacts/campaigns/
+/artifacts/reanalysis/
+
+# Generated publication bundles and PDF inspection intermediates
+/publication/campaigns/
+/tmp/
 
 # Podcast media (hosted on Cloudflare R2)
 podcast_media/

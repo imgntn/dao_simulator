@@ -24,6 +24,7 @@ interface PackEntry {
 function parseArgs(args: string[]) {
   const result = {
     outputDir: '',
+    resultsRoot: '',
     configs: [] as string[],
   };
 
@@ -31,6 +32,9 @@ function parseArgs(args: string[]) {
     const arg = args[i];
     if (arg === '--output' || arg === '-o') {
       result.outputDir = args[i + 1] || '';
+      i++;
+    } else if (arg === '--results-root') {
+      result.resultsRoot = args[i + 1] || '';
       i++;
     } else {
       result.configs.push(arg);
@@ -40,14 +44,19 @@ function parseArgs(args: string[]) {
   return result;
 }
 
-function resolveOutputDir(configPath: string): { name: string; dir: string; steps?: number; runs?: number; sweep?: string } {
+function resolveOutputDir(
+  configPath: string,
+  resultsRoot: string = ''
+): { name: string; dir: string; steps?: number; runs?: number; sweep?: string } {
   const absolutePath = path.resolve(configPath);
   const content = fs.readFileSync(absolutePath, 'utf8');
   const parsed = yaml.parse(content);
   const name = parsed?.name || path.basename(configPath, path.extname(configPath));
-  const outputDir = parsed?.output?.directory
-    ? String(parsed.output.directory)
-    : path.join('results', String(name).replace(/[^\w-]+/g, '_').toLowerCase());
+  const outputDir = resultsRoot
+    ? path.join(resultsRoot, String(name).replace(/[^a-zA-Z0-9._-]+/g, '_'))
+    : parsed?.output?.directory
+      ? String(parsed.output.directory)
+      : path.join('results', String(name).replace(/[^\w-]+/g, '_').toLowerCase());
 
   const steps = parsed?.execution?.stepsPerRun;
   const runs = parsed?.execution?.runsPerConfig;
@@ -119,7 +128,7 @@ function main(): void {
   const entries: PackEntry[] = [];
 
   for (const configPath of args.configs) {
-    const resolved = resolveOutputDir(configPath);
+    const resolved = resolveOutputDir(configPath, args.resultsRoot);
     const summaryPath = path.join(resolved.dir, 'summary.json');
     const status: PackEntry['status'] = fs.existsSync(summaryPath) ? 'ok' : 'missing_results';
 

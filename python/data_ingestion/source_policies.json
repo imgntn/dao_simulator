@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0.0",
+  "reviewed_at_utc": "2026-07-17T00:00:00Z",
+  "review_scope": "Conservative engineering classification; not legal advice.",
+  "sources": {
+    "coingecko": {
+      "homepage": "https://www.coingecko.com/",
+      "api_documentation": "https://docs.coingecko.com/",
+      "terms": "https://www.coingecko.com/en/api_terms",
+      "raw_redistribution": "prohibited_without_applicable_license_or_written_permission",
+      "release_policy": "exclude_raw_rows",
+      "notes": "CoinGecko distinguishes product use from redistribution and prohibits redistribution of raw API data under ordinary licenses."
+    },
+    "cryptocompare": {
+      "homepage": "https://www.cryptocompare.com/",
+      "api_documentation": "https://developers.cryptocompare.com/",
+      "terms": "https://www.cryptocompare.com/api-licence-agreement",
+      "raw_redistribution": "prohibited_without_separate_license",
+      "release_policy": "exclude_raw_rows",
+      "notes": "The CCData API license limits selected data to internal use unless separate rights are obtained."
+    },
+    "coincap": {
+      "homepage": "https://coincap.io/",
+      "api_documentation": "https://docs.coincap.io/",
+      "terms": "https://assets.coincap.io/documents/terms_of_service.pdf",
+      "raw_redistribution": "not_granted",
+      "release_policy": "exclude_raw_rows",
+      "notes": "No explicit open-data redistribution grant was identified."
+    },
+    "defillama": {
+      "homepage": "https://defillama.com/",
+      "api_documentation": "https://defillama.com/docs/api",
+      "terms": "https://defillama.com/terms",
+      "raw_redistribution": "prohibited_without_permission",
+      "release_policy": "exclude_raw_rows",
+      "notes": "Current terms prohibit republishing data without permission."
+    },
+    "snapshot": {
+      "homepage": "https://snapshot.box/",
+      "api_documentation": "https://docs.snapshot.box/developers",
+      "terms": "https://snapshot.box/",
+      "raw_redistribution": "no_explicit_open_data_grant_identified",
+      "release_policy": "exclude_raw_rows_and_user_content",
+      "notes": "The GraphQL API is public, but proposal text, voter identifiers, and a blanket data redistribution license are distinct issues."
+    },
+    "tally": {
+      "homepage": "https://www.tally.xyz/",
+      "api_documentation": "https://apidocs.tally.xyz/",
+      "terms": "https://terms.tally.xyz/",
+      "raw_redistribution": "no_explicit_data_redistribution_grant_identified",
+      "release_policy": "exclude_raw_rows",
+      "notes": "Apache-2.0 covers the API documentation, not the indexed governance dataset; platform terms restrict systematic content extraction."
+    },
+    "discourse": {
+      "homepage": "https://www.discourse.org/",
+      "api_documentation": "https://docs.discourse.org/",
+      "terms": "instance_specific",
+      "raw_redistribution": "instance_and_author_rights_apply",
+      "release_policy": "exclude_raw_posts_and_topics",
+      "notes": "MIT covers the API documentation/software. Forum content rights and privacy obligations remain instance- and author-specific."
+    },
+    "makerdao": {
+      "homepage": "https://vote.makerdao.com/",
+      "api_documentation": "https://vote.makerdao.com/api-docs",
+      "terms": "https://vote.makerdao.com/terms",
+      "raw_redistribution": "no_explicit_data_redistribution_grant_identified",
+      "release_policy": "exclude_raw_rows",
+      "notes": "AGPL-3.0 covers portal software; it does not by itself grant redistribution rights for every API payload or user-contributed text."
+    }
+  }
+}

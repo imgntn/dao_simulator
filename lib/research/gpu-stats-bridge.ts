@@ -10,6 +10,7 @@
 import { spawn, ChildProcess } from 'child_process';
 import * as readline from 'readline';
 import * as path from 'path';
+import { random } from '../utils/random';
 
 // Response types from Python
 interface PythonResponse {
@@ -321,7 +322,7 @@ export function bootstrapConfidenceIntervalCPU(
   for (let i = 0; i < nSamples; i++) {
     const sample: number[] = [];
     for (let j = 0; j < n; j++) {
-      sample.push(values[Math.floor(Math.random() * n)]);
+      sample.push(values[Math.floor(random() * n)]);
     }
     bootstrapMeans.push(mean(sample));
   }

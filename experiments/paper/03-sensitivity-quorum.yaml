@@ -1,3 +1,4 @@
+id: rq1-quorum-participation-response
 name: Sensitivity - Quorum Threshold
 description: Quorum sweep to characterize decision legitimacy vs throughput.
 version: 1.0.0
@@ -6,6 +7,25 @@ tags:
   - paper
   - sensitivity
   - quorum
+research:
+  classification: confirmatory
+  publicationRole: core-confirmatory
+  researchQuestionIds: [RQ1]
+  hypothesis: Increasing quorum has a nonlinear effect on valid proposal completion, with lower completion at thresholds above realized participation.
+  primaryOutcome: proposal_completion_rate
+  secondaryOutcomes:
+    - quorum_reach_rate
+    - voter_participation_rate
+    - proposal_abandonment_rate
+  analysisModel: paired_contrast
+  comparisonCorrection: holm
+  smallestEffectOfInterest:
+    value: 0.05
+    unit: absolute proportion
+    rationale: A five-percentage-point change in valid completion is governance-relevant and was frozen in the research charter.
+  analysisFamily: rq1-quorum-response
+  experimentalUnit: One seeded DAO simulation replicate under one quorum condition.
+  estimatedRuntimeMinutes: 240
 baseConfig:
   template: compound
   population:
@@ -52,6 +72,10 @@ execution:
   baseSeed: 303
   workers: 4
 metrics:
+  - name: Proposal Completion Rate
+    type: builtin
+    builtin: proposal_completion_rate
+    description: Fraction of proposals reaching an approved, completed, or rejected decision
   - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
@@ -211,4 +235,5 @@ output:
     - csv
   includeRawRuns: true
   includeManifest: true
-  includeTimeline: false
+  includeTimeline: true
+  timelineStride: 24

@@ -1,0 +1,76 @@
+name: All-Agent Economic Conservation
+description: |
+  Exercise every standard simulation archetype together under strict per-step,
+  per-asset conservation and treasury-ledger reconciliation. This campaign is
+  the economic-accounting gate for publication experiments.
+version: 1.0.0
+baseConfig:
+  template: compound
+  overrides:
+    validateEconomicInvariants: true
+    learning_enabled: true
+    proposal_creation_probability: 0.02
+    voting_activity: 0.45
+    forum_enabled: true
+    initial_market_liquidity: 5000
+    initial_trader_stablecoin_ratio: 0.5
+    num_developers: 2
+    num_investors: 2
+    num_traders: 2
+    num_adaptive_investors: 2
+    num_delegators: 2
+    num_liquid_delegators: 2
+    num_proposal_creators: 2
+    num_validators: 2
+    num_service_providers: 2
+    num_arbitrators: 2
+    num_regulators: 2
+    num_auditors: 2
+    num_bounty_hunters: 2
+    num_external_partners: 2
+    num_passive_members: 2
+    num_artists: 2
+    num_collectors: 2
+    num_speculators: 2
+    num_stakers: 2
+    num_rl_traders: 2
+    num_governance_experts: 2
+    num_governance_whales: 2
+    num_risk_managers: 2
+    num_market_makers: 2
+    num_whistleblowers: 2
+    num_llm_agents: 0
+    num_llm_reporters: 0
+sweep:
+  parameter: seed
+  values:
+    - 42
+    - 123
+    - 456
+execution:
+  runsPerConfig: 1
+  stepsPerRun: 500
+  seedStrategy: sequential
+  baseSeed: 42
+metrics:
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+  - name: Total Proposals
+    type: builtin
+    builtin: total_proposals
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Final Token Price
+    type: builtin
+    builtin: final_token_price
+  - name: Token Conservation Error
+    type: builtin
+    builtin: token_conservation_error
+output:
+  directory: results/validation/all-agent-economic-conservation
+  formats:
+    - json
+  includeRawRuns: true
+  includeManifest: true

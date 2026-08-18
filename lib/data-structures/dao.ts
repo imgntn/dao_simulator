@@ -80,6 +80,8 @@ export class DAO {
   votingActivity: number;  // 0-1 probability that agents vote when given the chance
   calibratedProposals: boolean = false; // When true, only ProposalCreator creates proposals
   governanceRuleName: string = 'majority'; // Active governance rule (set by simulation)
+  governanceQuorumPercentage: number = 0.04;
+  governanceApprovalThreshold: number = 0.5;
   externalPartnerInteractProbability: number;
   violationProbability: number;
   reputationPenalty: number;
@@ -194,6 +196,7 @@ export class DAO {
 
     this.eventBus = new EventBus(false);
     this.treasury = new Treasury(this.eventBus);
+    this.treasury.setPrimaryTokenSymbol(this.tokenSymbol);
     this.predictionMarket = new PredictionMarket(this, this.treasury, this.eventBus);
   }
 
@@ -208,13 +211,7 @@ export class DAO {
    * Get the primary treasury token symbol, falling back to DAO_TOKEN when needed.
    */
   getPrimaryTokenSymbol(): string {
-    if (
-      this.treasury.tokenPrices.has(this.tokenSymbol) ||
-      this.treasury.getTokenBalance(this.tokenSymbol) > 0
-    ) {
-      return this.tokenSymbol;
-    }
-    return 'DAO_TOKEN';
+    return this.tokenSymbol;
   }
 
   /**
@@ -536,6 +533,49 @@ export class DAO {
     if (index > -1) {
       this.members.splice(index, 1);
     }
+  }
+
+  /**
+   * Reconcile every asset claim before a member permanently exits this DAO.
+   * Callers performing a cross-DAO transfer intentionally skip this method
+   * because the member carries the wallet into the destination DAO.
+   */
+  settlePermanentMemberExit(member: DAOMember, event: string): void {
+    const step = this.currentStep;
+    for (const [token, balance] of Object.entries(member.getAssetBalances())) {
+      const debited = member.debitAsset(token, balance);
+      if (debited > 0) {
+        this.treasury.deposit(token, debited, step, {
+          source: `member:${member.uniqueId}`,
+          destination: 'treasury:departed-member-assets',
+          event,
+        });
+      }
+    }
+
+    if (member.stakedTokens > 0) {
+      const staked = member.stakedTokens;
+      member.stakedTokens = 0;
+      member.stakeLocks = [];
+      this.treasury.deposit(this.tokenSymbol, staked, step, {
+        source: `member:${member.uniqueId}:staked`,
+        destination: 'treasury:departed-member-assets',
+        event,
+      });
+    }
+
+    const delegated = Array.from(member.delegations.values())
+      .reduce((sum, amount) => sum + amount, 0);
+    if (delegated > 0) {
+      member.delegations.clear();
+      this.treasury.deposit(this.tokenSymbol, delegated, step, {
+        source: `member:${member.uniqueId}:delegated`,
+        destination: 'treasury:departed-member-assets',
+        event,
+      });
+    }
+    member.leaveGuild();
+    this.invalidateVotingPowerCache();
   }
 
   /**

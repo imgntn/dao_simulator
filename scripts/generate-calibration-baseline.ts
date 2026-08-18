@@ -43,7 +43,7 @@ function parseArgs(): CliOptions {
   const argv = process.argv.slice(2);
   const outPath = readOpt(argv, '--out')
     ?? path.join(process.cwd(), 'results', 'baselines', 'calibration-baseline.json');
-  const reason = readOpt(argv, '--reason') ?? '(no reason given)';
+  const reason = readTrailingText(argv, '--reason') ?? '(no reason given)';
   return { outPath, reason };
 }
 
@@ -51,6 +51,16 @@ function readOpt(argv: string[], flag: string): string | undefined {
   const idx = argv.indexOf(flag);
   if (idx >= 0 && idx + 1 < argv.length) return argv[idx + 1];
   return undefined;
+}
+
+function readTrailingText(argv: string[], flag: string): string | undefined {
+  const index = argv.indexOf(flag);
+  if (index < 0) return undefined;
+  const values: string[] = [];
+  for (let cursor = index + 1; cursor < argv.length && !argv[cursor].startsWith('--'); cursor++) {
+    values.push(argv[cursor]);
+  }
+  return values.length > 0 ? values.join(' ') : undefined;
 }
 
 function detectGitSha(): string {
@@ -80,8 +90,19 @@ async function main(): Promise<void> {
   const nextVersion = previous ? previous.version + 1 : 1;
 
   if (previous) {
-    const archivePath = path.join(dir, `calibration-baseline.v${previous.version}.json`);
-    fs.writeFileSync(archivePath, JSON.stringify(previous, null, 2), 'utf-8');
+    const archivePath = path.join(
+      dir,
+      `calibration-baseline.v${previous.version}.`
+      + `${previous.configHash.slice(0, 12)}.${previous.gitSha.slice(0, 8)}.json`
+    );
+    const serialized = `${JSON.stringify(previous, null, 2)}\n`;
+    if (fs.existsSync(archivePath)) {
+      if (fs.readFileSync(archivePath, 'utf8') !== serialized) {
+        throw new Error(`Refusing to overwrite a different archive: ${archivePath}`);
+      }
+    } else {
+      fs.writeFileSync(archivePath, serialized, 'utf-8');
+    }
     console.log(`Archived previous baseline (v${previous.version}) → ${archivePath}`);
   }
 
@@ -105,17 +126,30 @@ async function main(): Promise<void> {
       oracleType: BASELINE_CALIBRATION_CONFIG.oracleType,
       forumEnabled: BASELINE_CALIBRATION_CONFIG.forumEnabled,
       useRealGovernance: BASELINE_CALIBRATION_CONFIG.useRealGovernance,
+      evaluationMode: BASELINE_CALIBRATION_CONFIG.evaluationMode,
+      includeUncalibratedNull: BASELINE_CALIBRATION_CONFIG.includeUncalibratedNull,
+      trainingProfileDir: path.resolve(
+        process.cwd(),
+        BASELINE_CALIBRATION_CONFIG.trainingProfileDir
+      ),
+      holdoutProfileDir: path.resolve(
+        process.cwd(),
+        BASELINE_CALIBRATION_CONFIG.holdoutProfileDir
+      ),
     });
     const details = result.averageReport.details;
     perDao[daoId] = {
       daoId,
       score: result.averageReport.overall_score,
-      passRate: numOrZero(details['sim_pass_rate']),
-      participation: numOrZero(details['sim_participation_rate']),
-      proposalFrequency: numOrZero(details['sim_proposals_per_month']),
-      priceRmse: result.averageReport.metrics.price_trajectory_rmse,
-      voterConcentration: numOrZero(details['sim_voter_concentration']),
-      forumActivity: numOrZero(details['sim_forum_topics_per_month']),
+      passRate: finiteOrNull(details['sim_pass_rate']),
+      participation: finiteOrNull(details['sim_participation_rate']),
+      proposalFrequency: finiteOrNull(details['sim_proposals_per_month']),
+      priceLevelError: result.averageReport.available_metrics?.includes('price_level_error')
+        ? result.averageReport.metrics.price_level_error
+        : null,
+      voterConcentration: finiteOrNull(details['sim_voter_concentration']),
+      forumActivity: finiteOrNull(details['sim_forum_topics_per_month']),
+      availableMetrics: result.averageReport.available_metrics ?? [],
       ci95: result.confidenceIntervals,
     };
     console.log(`    score=${result.averageReport.overall_score.toFixed(3)}`);
@@ -158,8 +192,8 @@ function appendChangelog(dir: string, version: number, baseline: CalibrationBase
   }
 }
 
-function numOrZero(v: unknown): number {
-  return typeof v === 'number' && isFinite(v) ? v : 0;
+function finiteOrNull(v: unknown): number | null {
+  return typeof v === 'number' && Number.isFinite(v) ? v : null;
 }
 
 main().catch((err) => {

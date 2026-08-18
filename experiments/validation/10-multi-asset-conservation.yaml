@@ -1,0 +1,64 @@
+name: Multi-Asset Market Conservation
+description: |
+  Exercise primary-token/stablecoin swaps and LP mint/redemption while strict
+  per-asset conservation and treasury-ledger reconciliation run every step.
+version: 1.0.0
+baseConfig:
+  template: compound
+  overrides:
+    validateEconomicInvariants: true
+    learning_enabled: true
+    initial_market_liquidity: 5000
+    initial_trader_stablecoin_ratio: 0.5
+    num_developers: 0
+    num_investors: 0
+    num_traders: 4
+    num_adaptive_investors: 0
+    num_delegators: 0
+    num_liquid_delegators: 0
+    num_proposal_creators: 0
+    num_validators: 0
+    num_service_providers: 0
+    num_arbitrators: 0
+    num_regulators: 0
+    num_auditors: 0
+    num_bounty_hunters: 0
+    num_external_partners: 0
+    num_passive_members: 0
+    num_artists: 0
+    num_collectors: 0
+    num_speculators: 0
+    num_stakers: 0
+    num_rl_traders: 2
+    num_governance_experts: 0
+    num_governance_whales: 0
+    num_risk_managers: 0
+    num_market_makers: 2
+    num_whistleblowers: 0
+sweep:
+  parameter: seed
+  values:
+    - 42
+    - 123
+    - 456
+execution:
+  runsPerConfig: 3
+  stepsPerRun: 300
+  seedStrategy: sequential
+  baseSeed: 42
+metrics:
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Final Token Price
+    type: builtin
+    builtin: final_token_price
+  - name: Token Conservation Error
+    type: builtin
+    builtin: token_conservation_error
+output:
+  directory: results/validation/multi-asset-conservation
+  formats:
+    - json
+  includeRawRuns: true
+  includeManifest: true

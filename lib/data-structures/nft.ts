@@ -94,7 +94,12 @@ export class NFTMarketplace {
 
     // Transfer tokens
     buyer.tokens -= nft.price;
-    seller.tokens += nft.price;
+    const saleRecipient = seller as DAOMember & { receiveSale?: (amount: number) => void };
+    if (typeof saleRecipient.receiveSale === 'function') {
+      saleRecipient.receiveSale(nft.price);
+    } else {
+      seller.tokens += nft.price;
+    }
 
     // Transfer ownership
     nft.owner = buyer.uniqueId;

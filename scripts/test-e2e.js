@@ -21,6 +21,7 @@ const { spawn, execFileSync } = require('child_process');
 const crypto = require('crypto');
 const fs = require('fs');
 const http = require('http');
+const https = require('https');
 const os = require('os');
 const path = require('path');
 const { URL } = require('url');
@@ -45,7 +46,8 @@ function log(msg) {
 
 function checkUrl(url) {
   return new Promise((resolve) => {
-    const req = http.get(url, (res) => {
+    const transport = new URL(url).protocol === 'https:' ? https : http;
+    const req = transport.get(url, (res) => {
       // Drain the response so sockets do not linger in CLOSE_WAIT.
       res.resume();
       resolve(res.statusCode >= 200 && res.statusCode < 500);
@@ -326,7 +328,11 @@ function cleanup() {
     if (proc && !proc.killed) {
       try {
         if (process.platform === 'win32') {
-          spawn('taskkill', ['/pid', proc.pid, '/f', '/t'], { shell: true });
+          spawn('taskkill', ['/pid', proc.pid, '/f', '/t'], {
+            shell: false,
+            windowsHide: true,
+            stdio: 'ignore',
+          });
         } else {
           process.kill(-proc.pid, 'SIGTERM');
         }
@@ -342,7 +348,9 @@ function cleanup() {
 }
 
 async function main() {
-  const playwrightArgs = process.argv.slice(2);
+  const cliArgs = process.argv.slice(2);
+  const productionMode = cliArgs.includes('--production');
+  const playwrightArgs = cliArgs.filter((arg) => arg !== '--production');
   const configuredBaseUrl = process.env.PLAYWRIGHT_BASE_URL;
   const configuredPort = configuredBaseUrl ? getPortFromUrl(configuredBaseUrl) : DEFAULT_PORT;
   const allowReuseServer = process.env.PLAYWRIGHT_REUSE_SERVER === '1';
@@ -372,11 +380,27 @@ async function main() {
       devUrl = buildBaseUrl(requestedPort, '127.0.0.1');
       log(`Using Next.js base URL ${devUrl}`);
 
-      const nextProc = startProcess(process.execPath, ['scripts/next-server.js', '--dev', '--hostname=127.0.0.1', `--port=${requestedPort}`, `--port-file=${SERVER_INFO_FILE}`], 'next-dev', {
+      const serverArgs = [
+        'scripts/next-server.js',
+        ...(productionMode ? [] : ['--dev']),
+        '--hostname=127.0.0.1',
+        `--port=${requestedPort}`,
+        `--port-file=${SERVER_INFO_FILE}`,
+      ];
+      const nextProc = startProcess(process.execPath, serverArgs, productionMode ? 'next-production' : 'next-dev', {
         PORT: String(requestedPort),
         BIND_HOST: '127.0.0.1',
         PORT_FILE: SERVER_INFO_FILE,
         PLAYWRIGHT_BASE_URL: devUrl,
+        ...(productionMode ? {
+          NODE_ENV: 'production',
+          NEXTAUTH_SECRET: 'e2e-nextauth-secret-32-characters-minimum',
+          API_KEY: 'e2e-api-key-24-characters-minimum',
+          ADMIN_USERNAME: 'e2e-admin',
+          ADMIN_PASSWORD: 'e2e-admin-password',
+          NEXTAUTH_URL: devUrl,
+          USE_REDIS: 'false',
+        } : {}),
       });
 
       const serverInfo = await waitForServerInfo(nextProc);
@@ -404,6 +428,7 @@ async function main() {
     const playwright = spawn(process.execPath, [playwrightCli, 'test', ...playwrightArgs], {
       stdio: 'inherit',
       shell: false,
+      windowsHide: true,
       env: {
         ...process.env,
         PLAYWRIGHT_SKIP_WEBSERVER: '1',

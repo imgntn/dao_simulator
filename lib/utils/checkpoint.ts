@@ -6,15 +6,20 @@
 // - Agent states (tokens, reputation, delegations, votes)
 // - Random number generator state (for deterministic replay)
 
-import type { DAOSimulation } from '../engine/simulation';
+import type {
+  DAOSimulation,
+  DAOSimulationConfig,
+} from '../engine/simulation';
 import type { Dispute } from '../data-structures/dispute';
 import type { Violation } from '../data-structures/violation';
 import { getRandomState, setRandomState } from './random';
+import { sha256Hex } from './sha256';
 
 // Serialized member state for checkpoints
 export interface CheckpointMemberState {
   uniqueId: string;
   tokens: number;
+  assetBalances: Record<string, number>;
   reputation: number;
   stakedTokens: number;
   location: string;
@@ -57,6 +62,7 @@ export interface CheckpointAgentState {
   uniqueId: string;
   type: string;
   tokens: number;
+  assetBalances: Record<string, number>;
   reputation: number;
   stakedTokens: number;
   location: string;
@@ -95,6 +101,8 @@ export interface SimulationCheckpoint {
   timestamp: number;
   step: number;
   config: CheckpointConfig;
+  configSnapshot?: DAOSimulationConfig;
+  replayFingerprint?: string;
   daoState: {
     name: string;
     daoId: string;
@@ -115,7 +123,65 @@ export interface SimulationCheckpoint {
   metadata: {
     version: string;
     checkpointInterval: number;
+    replayStrategy?: 'deterministic-replay';
   };
+}
+
+function canonicalize(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(canonicalize);
+  if (value instanceof Map) {
+    return canonicalize(Object.fromEntries(value));
+  }
+  if (value instanceof Set) {
+    return Array.from(value).sort().map(canonicalize);
+  }
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .filter(([, child]) => typeof child !== 'function' && child !== undefined)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, child]) => [key, canonicalize(child)])
+    );
+  }
+  return value;
+}
+
+export function checkpointReplayFingerprint(simulation: DAOSimulation): string {
+  const dao = simulation.dao;
+  return `sha256:${sha256Hex(JSON.stringify(canonicalize({
+    step: simulation.currentStep,
+    daoStep: dao.currentStep,
+    treasury: dao.treasury.toDict(),
+    members: dao.members
+      .map(member => {
+        const learningAgent = member as typeof member & {
+          exportLearningState?: () => unknown;
+        };
+        return {
+          id: member.uniqueId,
+          type: member.constructor.name,
+          assets: member.getAssetBalances(),
+          reputation: member.reputation,
+          stakedTokens: member.stakedTokens,
+          stakeLocks: member.stakeLocks,
+          optimism: member.optimism,
+          fatigue: member.voterFatigue,
+          votes: Object.fromEntries(member.votes),
+          delegations: Object.fromEntries(member.delegations),
+          learning:
+            typeof learningAgent.exportLearningState === 'function'
+              ? learningAgent.exportLearningState()
+              : null,
+        };
+      })
+      .sort((left, right) => left.id.localeCompare(right.id)),
+    proposals: dao.proposals.map(proposal => proposal.toDict()),
+    projects: dao.projects.map(project => project.toDict()),
+    guilds: dao.guilds.map(guild => guild.toDict()),
+    randomStreams: simulation.randomStreams.getState(),
+    dataHistory: simulation.dataCollector.history,
+    modelVars: simulation.dataCollector.modelVars,
+  })))}`;
 }
 
 export class CheckpointManager {
@@ -133,13 +199,18 @@ export class CheckpointManager {
       timestamp: Date.now(),
       step: simulation.currentStep,
       config: this.serializeConfig(simulation),
+      configSnapshot: JSON.parse(
+        JSON.stringify(simulation.initialConfig)
+      ) as DAOSimulationConfig,
+      replayFingerprint: checkpointReplayFingerprint(simulation),
       daoState: this.serializeDAOState(simulation),
       agentStates: this.serializeAgents(simulation),
       // CRITICAL: Capture RNG state for deterministic replay
       rngState: getRandomState(),
       metadata: {
-        version: '2.0.0',  // Version bump for enhanced checkpoint format
+        version: '3.1.0',
         checkpointInterval: simulation.checkpointInterval,
+        replayStrategy: 'deterministic-replay',
       },
     };
 
@@ -220,6 +291,7 @@ export class CheckpointManager {
       members: dao.members.map(m => ({
         uniqueId: m.uniqueId,
         tokens: m.tokens,
+        assetBalances: m.getAssetBalances(),
         reputation: m.reputation,
         stakedTokens: m.stakedTokens,
         location: m.location,
@@ -257,6 +329,7 @@ export class CheckpointManager {
         uniqueId: agent.uniqueId,
         type: agent.constructor.name,
         tokens: agent.tokens,
+        assetBalances: agent.getAssetBalances(),
         reputation: agent.reputation,
         stakedTokens: agent.stakedTokens,
         location: agent.location,

@@ -1,8 +1,7 @@
 name: Proposal Creator Monotonicity
 description: |
-  Verify that member count affects proposal count as expected:
-  - More members with active_voter archetype = more proposals
-  - This tests the proposal creation rate scales with population
+  Verify that proposal_creation_probability controls proposal count in
+  expectation under matched replicate seeds and a fixed population.
 baseConfig:
   template: compound
   overrides:
@@ -17,15 +16,15 @@ baseConfig:
       - archetype: delegate
         percentage: 20
 sweep:
-  parameter: population.totalMembers
+  parameter: proposal_creation_probability
   values:
-    - 10
-    - 25
-    - 50
-    - 100
-    - 200
+    - 0
+    - 0.0025
+    - 0.005
+    - 0.01
+    - 0.02
 execution:
-  runsPerConfig: 5
+  runsPerConfig: 10
   stepsPerRun: 150
   seedStrategy: sequential
   baseSeed: 42

@@ -18,21 +18,25 @@ export interface AccuracyReport {
     proposal_frequency_error: number;
     pass_rate_error: number;
     participation_rate_error: number;
-    price_trajectory_rmse: number;
+    price_level_error: number;
     voter_concentration_error: number;
     forum_activity_error: number;
   };
   overall_score: number; // 0-1, where 1 = perfect match
   details: Record<string, number>;
+  /** Error dimensions backed by observations in both prediction and target. */
+  available_metrics?: AccuracyMetricId[];
 }
 
+export type AccuracyMetricId = keyof AccuracyReport['metrics'];
+
 export interface SimulationMetrics {
-  proposalsPerMonth: number;
-  passRate: number;
-  participationRate: number;
+  proposalsPerMonth: number | null;
+  passRate: number | null;
+  participationRate: number | null;
   priceHistory: number[];
-  voterConcentration: number;
-  forumTopicsPerMonth: number;
+  voterConcentration: number | null;
+  forumTopicsPerMonth: number | null;
   totalSteps: number;
 }
 
@@ -50,12 +54,27 @@ function relativeError(simulated: number, actual: number, epsilon: number = 0.01
 /**
  * Calculate RMSE between two price series
  */
-function priceRMSE(simPrices: number[], historicalAvgPrice: number): number {
+function priceLevelError(simPrices: number[], historicalAvgPrice: number): number {
   if (simPrices.length === 0) return 1.0;
 
   const simAvg = simPrices.reduce((a, b) => a + b, 0) / simPrices.length;
   // Compare average price level rather than point-by-point (since sim is stochastic)
   return relativeError(simAvg, historicalAvgPrice);
+}
+
+/** Symmetric relative error, bounded to [0, 1], for non-negative count rates. */
+function symmetricRateError(simulated: number, actual: number): number {
+  if (!Number.isFinite(simulated) || !Number.isFinite(actual)) return 1;
+  if (simulated === 0 && actual === 0) return 0;
+  return Math.min(
+    1,
+    (2 * Math.abs(simulated - actual))
+      / Math.max(Math.abs(simulated) + Math.abs(actual), Number.EPSILON)
+  );
+}
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value);
 }
 
 /**
@@ -93,7 +112,7 @@ export function compareToHistorical(
     proposal_frequency_error: 0,
     pass_rate_error: 0,
     participation_rate_error: 0,
-    price_trajectory_rmse: 0,
+    price_level_error: 0,
     voter_concentration_error: 0,
     forum_activity_error: 0,
   };
@@ -101,41 +120,44 @@ export function compareToHistorical(
   const details: Record<string, number> = {};
 
   // 1. Proposal frequency error
-  // For low-frequency DAOs (< 10 proposals/month), Poisson variance is significant.
-  // Allow ±1 standard deviation (sqrt(λ)) tolerance before counting as error.
   const histProposalsPerMonth = historicalProfile.proposals.avg_proposals_per_month;
-  if (histProposalsPerMonth < 10) {
-    const tolerance = Math.sqrt(Math.max(histProposalsPerMonth, 0.5));
-    const error = Math.max(0, Math.abs(simResults.proposalsPerMonth - histProposalsPerMonth) - tolerance)
-      / Math.max(histProposalsPerMonth, 0.01);
-    metrics.proposal_frequency_error = Math.min(error, 1);
-  } else {
-    metrics.proposal_frequency_error = relativeError(
-      simResults.proposalsPerMonth,
-      histProposalsPerMonth
-    );
+  if (isFiniteNumber(histProposalsPerMonth)) {
+    metrics.proposal_frequency_error = isFiniteNumber(simResults.proposalsPerMonth)
+      ? symmetricRateError(simResults.proposalsPerMonth, histProposalsPerMonth)
+      : 1;
+    if (isFiniteNumber(simResults.proposalsPerMonth)) {
+      details['sim_proposals_per_month'] = simResults.proposalsPerMonth;
+    }
+    details['hist_proposals_per_month'] = histProposalsPerMonth;
   }
-  details['sim_proposals_per_month'] = simResults.proposalsPerMonth;
-  details['hist_proposals_per_month'] = histProposalsPerMonth;
 
   // 2. Pass rate error
   const histPassRate = historicalProfile.proposals.pass_rate;
-  metrics.pass_rate_error = relativeError(simResults.passRate, histPassRate);
-  details['sim_pass_rate'] = simResults.passRate;
-  details['hist_pass_rate'] = histPassRate;
+  if (isFiniteNumber(histPassRate)) {
+    metrics.pass_rate_error = isFiniteNumber(simResults.passRate)
+      ? relativeError(simResults.passRate, histPassRate)
+      : 1;
+    if (isFiniteNumber(simResults.passRate)) {
+      details['sim_pass_rate'] = simResults.passRate;
+    }
+    details['hist_pass_rate'] = histPassRate;
+  }
 
   // 3. Participation rate error
   const histParticipation = historicalProfile.voting.avg_participation_rate;
-  metrics.participation_rate_error = relativeError(
-    simResults.participationRate,
-    histParticipation
-  );
-  details['sim_participation_rate'] = simResults.participationRate;
-  details['hist_participation_rate'] = histParticipation;
+  if (isFiniteNumber(histParticipation)) {
+    metrics.participation_rate_error = isFiniteNumber(simResults.participationRate)
+      ? relativeError(simResults.participationRate, histParticipation)
+      : 1;
+    if (isFiniteNumber(simResults.participationRate)) {
+      details['sim_participation_rate'] = simResults.participationRate;
+    }
+    details['hist_participation_rate'] = histParticipation;
+  }
 
-  // 4. Price trajectory RMSE (if market data available)
+  // 4. Mean price-level relative error (profiles do not contain a trajectory).
   if (historicalProfile.market) {
-    metrics.price_trajectory_rmse = priceRMSE(
+    metrics.price_level_error = priceLevelError(
       simResults.priceHistory,
       historicalProfile.market.avg_price_usd
     );
@@ -147,40 +169,38 @@ export function compareToHistorical(
 
   // 5. Voter concentration error
   const histConcentration = historicalProfile.voting.voter_concentration;
-  metrics.voter_concentration_error = relativeError(
-    simResults.voterConcentration,
-    histConcentration
-  );
-  details['sim_voter_concentration'] = simResults.voterConcentration;
-  details['hist_voter_concentration'] = histConcentration;
+  if (isFiniteNumber(histConcentration)) {
+    metrics.voter_concentration_error = isFiniteNumber(simResults.voterConcentration)
+      ? relativeError(simResults.voterConcentration, histConcentration)
+      : 1;
+    if (isFiniteNumber(simResults.voterConcentration)) {
+      details['sim_voter_concentration'] = simResults.voterConcentration;
+    }
+    details['hist_voter_concentration'] = histConcentration;
+  }
 
   // 6. Forum activity error
-  // For low-activity forums (< 5 topics/month), Poisson variance is very high
-  // relative to the mean. Use a tolerance-aware error that accounts for expected
-  // stochastic variance: tolerance = sqrt(expected) / expected = 1/sqrt(expected).
-  if (historicalProfile.forum) {
+  if (
+    historicalProfile.forum
+    && isFiniteNumber(historicalProfile.forum.avg_topics_per_month)
+  ) {
     const histForum = historicalProfile.forum.avg_topics_per_month;
-    const simForum = simResults.forumTopicsPerMonth;
-    if (histForum < 5) {
-      // For low-activity forums, allow ±1 standard deviation (sqrt(λ)) of tolerance.
-      // Scale the expected count to sim duration: monthly rate in a 720-step (30-day) sim.
-      const tolerance = Math.sqrt(Math.max(histForum, 0.5));
-      const error = Math.max(0, Math.abs(simForum - histForum) - tolerance) / Math.max(histForum, 0.01);
-      metrics.forum_activity_error = Math.min(error, 1);
-    } else {
-      metrics.forum_activity_error = relativeError(simForum, histForum);
+    metrics.forum_activity_error = isFiniteNumber(simResults.forumTopicsPerMonth)
+      ? symmetricRateError(simResults.forumTopicsPerMonth, histForum)
+      : 1;
+    if (isFiniteNumber(simResults.forumTopicsPerMonth)) {
+      details['sim_forum_topics_per_month'] = simResults.forumTopicsPerMonth;
     }
-    details['sim_forum_topics_per_month'] = simForum;
     details['hist_forum_topics_per_month'] = histForum;
   }
 
   // Calculate overall score (weighted average of 1 - error, clamped to [0, 1]).
-  // If historical data is missing for a metric (value = 0), skip it and redistribute weight.
+  // If a metric is unavailable, skip it and redistribute its weight.
   const baseWeights: Record<string, number> = {
     proposal_frequency: 0.25,
     pass_rate: 0.20,
     participation_rate: 0.20,
-    price_trajectory: 0.15,
+    price_level: 0.15,
     voter_concentration: 0.10,
     forum_activity: 0.10,
   };
@@ -189,17 +209,34 @@ export function compareToHistorical(
     proposal_frequency: 1 - Math.min(metrics.proposal_frequency_error, 1),
     pass_rate: 1 - Math.min(metrics.pass_rate_error, 1),
     participation_rate: 1 - Math.min(metrics.participation_rate_error, 1),
-    price_trajectory: 1 - Math.min(metrics.price_trajectory_rmse, 1),
+    price_level: 1 - Math.min(metrics.price_level_error, 1),
     voter_concentration: 1 - Math.min(metrics.voter_concentration_error, 1),
     forum_activity: 1 - Math.min(metrics.forum_activity_error, 1),
   };
 
-  // Skip metrics where historical data is missing/zero (indicates no data, not 0%)
+  // Skip only unavailable metrics. Empirical zero is a valid observation.
   const skipMetrics = new Set<string>();
-  if (historicalProfile.proposals.pass_rate === 0) skipMetrics.add('pass_rate');
-  if (!historicalProfile.market) skipMetrics.add('price_trajectory');
-  if (!historicalProfile.forum) skipMetrics.add('forum_activity');
-  if (historicalProfile.voting.voter_concentration === 0) skipMetrics.add('voter_concentration');
+  if (!isFiniteNumber(histProposalsPerMonth)) {
+    skipMetrics.add('proposal_frequency');
+  }
+  if (!isFiniteNumber(histPassRate)) {
+    skipMetrics.add('pass_rate');
+  }
+  if (!isFiniteNumber(histParticipation)) {
+    skipMetrics.add('participation_rate');
+  }
+  if (!historicalProfile.market) {
+    skipMetrics.add('price_level');
+  }
+  if (
+    !historicalProfile.forum
+    || !isFiniteNumber(historicalProfile.forum.avg_topics_per_month)
+  ) {
+    skipMetrics.add('forum_activity');
+  }
+  if (!isFiniteNumber(histConcentration)) {
+    skipMetrics.add('voter_concentration');
+  }
 
   // Compute active weight sum and redistribute
   let activeWeightSum = 0;
@@ -223,6 +260,9 @@ export function compareToHistorical(
     metrics,
     overall_score,
     details,
+    available_metrics: (
+      Object.keys(metrics) as AccuracyMetricId[]
+    ).filter(metric => !skipMetrics.has(metric.replace(/_error$/, ''))),
   };
 }
 
@@ -252,24 +292,24 @@ export function extractSimulationMetrics(
     ? modelVars[modelVars.length - 1].numProposals
     : 0;
   const monthsSimulated = totalSteps / (30 * 24); // 24 steps per day
-  const proposalsPerMonth = monthsSimulated > 0 ? totalProposals / monthsSimulated : 0;
+  const proposalsPerMonth = monthsSimulated > 0 ? totalProposals / monthsSimulated : null;
 
   // Forum topics per month
-  const forumTopics = modelVars.length > 0 && modelVars[modelVars.length - 1].forumTopics
-    ? modelVars[modelVars.length - 1].forumTopics!
-    : 0;
-  const forumTopicsPerMonth = monthsSimulated > 0 ? forumTopics / monthsSimulated : 0;
+  const finalForumTopics = modelVars.at(-1)?.forumTopics;
+  const forumTopicsPerMonth = monthsSimulated > 0 && typeof finalForumTopics === 'number'
+    ? finalForumTopics / monthsSimulated
+    : null;
 
   // Voter concentration from Gini
   const ginis = modelVars.map(mv => mv.gini);
   const voterConcentration = ginis.length > 0
     ? ginis.reduce((a, b) => a + b, 0) / ginis.length
-    : 0.5;
+    : null;
 
   // Compute actual pass rate — approved / (approved + rejected), excluding expired.
   // Real DAOs compute pass rate only among proposals that went to a vote.
   // Expired/abandoned proposals (0 voters, quorum not met) are a separate engagement metric.
-  let passRate = 0.5;
+  let passRate: number | null = null;
   if (proposals && proposals.length > 0) {
     const voted = proposals.filter(p =>
       p.status === 'approved' || p.status === 'rejected'
@@ -291,7 +331,7 @@ export function extractSimulationMetrics(
   // Compute actual participation rate — prefer proposals array, fall back to DataCollector fields.
   // Include ALL resolved proposals (even those with 0 voters) to match how historical
   // participation rates are computed (unconditional average across all proposals).
-  let participationRate = 0.1;
+  let participationRate: number | null = null;
   if (proposals && proposals.length > 0 && memberCount && memberCount > 0) {
     const resolved = proposals.filter(p =>
       p.status === 'approved' || p.status === 'rejected' || p.status === 'expired'

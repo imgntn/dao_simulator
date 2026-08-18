@@ -80,6 +80,10 @@ test.describe('Hard-A Report Card Gates', () => {
     await gotoAndWaitForInit(page, { performanceLayout: true });
     await runShortScenario(page);
     await expect(page.getByTestId('performance-hud')).toBeVisible();
+    await expect.poll(
+      () => page.evaluate(() => (window as ReportCardWindow).__daoPerfSamples?.length ?? 0),
+      { timeout: 5000, message: 'performance HUD should collect at least two 500ms samples' },
+    ).toBeGreaterThanOrEqual(2);
 
     const evidence = await page.evaluate(() => {
       const reportWindow = window as ReportCardWindow;

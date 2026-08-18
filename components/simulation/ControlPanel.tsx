@@ -337,6 +337,7 @@ export function ControlPanel() {
       <div>
         <label className="block text-xs text-[var(--sim-text-muted)] mb-1">DAO Preset</label>
         <select
+          aria-label="DAO preset"
           value={selectedDao}
           onChange={e => { selectDao(e.target.value); trackEvent(`${ANALYTICS_EVENTS.DAO_SELECTED}:${e.target.value}`); }}
           className="w-full bg-[var(--sim-border)] border border-[var(--sim-border-strong)] rounded px-3 py-1.5 text-sm focus:border-[var(--sim-accent-ring)] focus:outline-none"
@@ -353,6 +354,7 @@ export function ControlPanel() {
       <div>
         <label className="block text-xs text-[var(--sim-text-muted)] mb-1">Scenario Preset</label>
         <select
+          aria-label="Scenario preset"
           value={activeScenario}
           onChange={e => {
             const preset = SCENARIO_PRESETS.find(p => p.id === e.target.value);
@@ -403,6 +405,7 @@ export function ControlPanel() {
       <div>
         <label className="block text-xs text-[var(--sim-text-muted)] mb-1">Governance Rule</label>
         <select
+          aria-label="Governance rule"
           value={config.governanceRule ?? ''}
           onChange={e => {
             updateConfig({ governanceRule: e.target.value || undefined });

@@ -498,6 +498,30 @@ describe('Enhanced Delegation Features', () => {
       // C gets: own(0) + B's delegation(30) + A's through B (80)
       expect(powerC).toBe(110);
     });
+
+    it('applies depth limits to transitive liquid-representative power', () => {
+      const a = new LiquidDelegator('liquid-a', simulation, 100, 0, 'loc');
+      const b = new LiquidDelegator('liquid-b', simulation, 50, 0, 'loc');
+      const c = new DAOMember('liquid-c', simulation, 25, 0, 'loc');
+      simulation.dao.addMember(a);
+      simulation.dao.addMember(b);
+      simulation.dao.addMember(c);
+
+      a.delegateToMember(b);
+      b.delegateToMember(c);
+
+      DelegationResolver.maxDepth = 0;
+      DelegationResolver.clearCache();
+      expect(DelegationResolver.resolveVotingPower(c)).toBe(175);
+
+      DelegationResolver.maxDepth = 1;
+      DelegationResolver.clearCache();
+      expect(DelegationResolver.resolveVotingPower(c)).toBe(75);
+
+      DelegationResolver.maxDepth = 2;
+      DelegationResolver.clearCache();
+      expect(DelegationResolver.resolveVotingPower(c)).toBe(175);
+    });
   });
 
   describe('Delegation power decay', () => {

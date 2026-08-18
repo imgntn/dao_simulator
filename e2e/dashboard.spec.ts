@@ -18,37 +18,47 @@ async function gotoAndWaitForInit(page: Page) {
   ).toBeVisible({ timeout: 60000 });
 }
 
+async function openAnalysisTools(page: Page) {
+  await page.getByText(/^Analysis tools/).click();
+}
+
 test.describe('Tab Navigation', () => {
   test.beforeEach(async ({ page }) => {
     await gotoAndWaitForInit(page);
   });
 
-  test('all 5 tabs are visible', async ({ page }) => {
-    await expect(page.getByRole('tab', { name: /The Sanctum/i })).toBeVisible();
+  test('primary tabs and analysis menu are visible', async ({ page }) => {
+    await expect(page.getByRole('tab', { name: 'Explore · Sanctum' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Evidence' })).toBeVisible();
+    await expect(page.getByText(/^Analysis tools/)).toBeVisible();
+
+    await openAnalysisTools(page);
     await expect(page.getByRole('tab', { name: 'Compare' })).toBeVisible();
     await expect(page.getByRole('tab', { name: 'Branch' })).toBeVisible();
     await expect(page.getByRole('tab', { name: 'Multi-Run' })).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Research' })).toBeVisible();
   });
 
   test('can switch to Compare tab', async ({ page }) => {
+    await openAnalysisTools(page);
     await page.getByRole('tab', { name: 'Compare' }).click();
     await expect(page.getByRole('tab', { name: 'Compare', selected: true })).toBeVisible();
   });
 
   test('can switch to Branch tab', async ({ page }) => {
+    await openAnalysisTools(page);
     await page.getByRole('tab', { name: 'Branch' }).click();
     await expect(page.getByRole('tab', { name: 'Branch', selected: true })).toBeVisible();
   });
 
   test('can switch to Multi-Run tab', async ({ page }) => {
+    await openAnalysisTools(page);
     await page.getByRole('tab', { name: 'Multi-Run' }).click();
     await expect(page.getByRole('tab', { name: 'Multi-Run', selected: true })).toBeVisible();
   });
 
-  test('can switch to Research tab', async ({ page }) => {
-    await page.getByRole('tab', { name: 'Research' }).click();
-    await expect(page.getByRole('tab', { name: 'Research', selected: true })).toBeVisible();
+  test('can switch to Evidence tab', async ({ page }) => {
+    await page.getByRole('tab', { name: 'Evidence' }).click();
+    await expect(page.getByRole('tab', { name: 'Evidence', selected: true })).toBeVisible();
   });
 
   test('switching tabs preserves simulation state', async ({ page }) => {
@@ -61,8 +71,9 @@ test.describe('Tab Navigation', () => {
     }).toPass({ timeout: 5000 });
 
     // Switch to Compare and back
+    await openAnalysisTools(page);
     await page.getByRole('tab', { name: 'Compare' }).click();
-    await page.getByRole('tab', { name: /The Sanctum/i }).click();
+    await page.getByRole('tab', { name: 'Explore · Sanctum' }).click();
 
     // Step should still be 1
     const text = await page.getByText(/Step \d+/).innerText();
@@ -81,7 +92,7 @@ test.describe('Control Panel Layout', () => {
   });
 
   test('has DAO Preset dropdown with 14 DAOs', async ({ page }) => {
-    const daoSelect = page.locator('select').first();
+    const daoSelect = page.getByLabel('DAO preset');
     const options = daoSelect.locator('option');
     await expect(options).toHaveCount(14);
 
@@ -91,13 +102,13 @@ test.describe('Control Panel Layout', () => {
   });
 
   test('has Scenario Preset dropdown with 7 options', async ({ page }) => {
-    const govSelect = page.locator('select').nth(1);
-    const options = govSelect.locator('option');
+    const scenarioSelect = page.getByLabel('Scenario preset');
+    const options = scenarioSelect.locator('option');
     await expect(options).toHaveCount(7);
 
-    await expect(govSelect).toContainText('None (manual config)');
-    await expect(govSelect).toContainText('Quadratic vs Majority');
-    await expect(govSelect).toContainText('Black Swan Stress Test');
+    await expect(scenarioSelect).toContainText('None (manual config)');
+    await expect(scenarioSelect).toContainText('Quadratic vs Majority');
+    await expect(scenarioSelect).toContainText('Black Swan Stress Test');
   });
 
   test('has speed slider with label', async ({ page }) => {
@@ -159,7 +170,8 @@ test.describe('Agent Guide', () => {
 test.describe('Floor Navigation', () => {
   test('floor navigation buttons are visible', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    await expect(page.getByText(/^Floor$/i)).toBeVisible();
+    await expect(page.getByText(/^Hall$/i)).toBeVisible();
+    await expect(page.getByRole('button', { name: '1' })).toBeVisible();
   });
 });
 

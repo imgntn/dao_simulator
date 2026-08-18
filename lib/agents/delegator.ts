@@ -204,17 +204,44 @@ export class Delegator extends DAOMember {
     if (!this.model.dao) return;
 
     const completedProposals = this.model.dao.proposals.filter(
-      p => (p.status === 'approved' || p.status === 'completed') &&
-           this.proposalDelegations.has(p.uniqueId)
+      p => p.status !== 'open' && this.proposalDelegations.has(p.uniqueId)
     );
 
     for (const proposal of completedProposals) {
       const delegated = this.proposalDelegations.get(proposal.uniqueId) || 0;
       if (delegated > 0) {
         // Return a portion based on proposal success
-        const returnRate = proposal.status === 'completed' ? 1.1 : 0.9;
-        const returned = delegated * returnRate;
-        this.tokens += returned;
+        const returnRate = proposal.status === 'completed'
+          ? 1.1
+          : proposal.status === 'approved'
+            ? 0.9
+            : 0;
+        const requestedReturn = delegated * returnRate;
+        const reward = Math.max(0, requestedReturn - delegated);
+        const token = this.model.dao.tokenSymbol;
+        if (reward > 0) {
+          this.model.dao.treasury.mintTokens(
+            token,
+            reward,
+            this.model.currentStep,
+            {
+              source: 'protocol:delegation-incentives',
+              destination: 'treasury:delegation-escrow',
+              event: 'delegation_success_reward',
+            }
+          );
+        }
+        const returned = this.model.dao.treasury.withdraw(
+          token,
+          requestedReturn,
+          this.model.currentStep,
+          {
+            source: 'treasury:delegation-escrow',
+            destination: `member:${this.uniqueId}`,
+            event: 'proposal_delegation_settlement',
+          }
+        );
+        this.creditAsset(token, returned);
         this.delegationBudget = Math.min(
           this.delegationBudget + returned * 0.5,
           this.maxDelegationBudget
@@ -310,18 +337,25 @@ export class Delegator extends DAOMember {
     if (amount <= 0) return;
 
     this.delegationBudget -= amount;
-    this.tokens -= amount;
-    proposal.receiveDelegatedSupport(this.uniqueId, amount);
+    const token = this.model.dao?.tokenSymbol || 'DAO_TOKEN';
+    const debited = this.debitAsset(token, amount);
+    if (debited <= 0) return;
+    this.model.dao?.treasury.deposit(token, debited, this.model.currentStep, {
+      source: `member:${this.uniqueId}`,
+      destination: 'treasury:delegation-escrow',
+      event: 'proposal_delegation_escrowed',
+    });
+    proposal.receiveDelegatedSupport(this.uniqueId, debited);
 
     const current = this.proposalDelegations.get(proposal.uniqueId) || 0;
-    this.proposalDelegations.set(proposal.uniqueId, current + amount);
+    this.proposalDelegations.set(proposal.uniqueId, current + debited);
 
     if (this.model.eventBus) {
       this.model.eventBus.publish('proposal_delegated', {
         step: this.model.currentStep,
         delegator: this.uniqueId,
         proposal: proposal.title,
-        amount,
+        amount: debited,
       });
     }
 

@@ -35,6 +35,7 @@ let sim: DAOSimulation | null = null;
 let intervalId: ReturnType<typeof setInterval> | null = null;
 let stepsPerSecond = 10;
 let stepInFlight = false;
+let simulationGeneration = 0;
 let recentEvents: SimulationEvent[] = [];
 let eventBuffer: SimulationEvent[] = [];
 const MAX_RECENT_EVENTS = 30;
@@ -207,6 +208,8 @@ function pushEvent(type: SimulationEvent['type'], message: string): void {
 /** Run a single simulation step and post snapshot */
 async function runStep(): Promise<void> {
   if (!sim || stepInFlight) return;
+  const activeSimulation = sim;
+  const activeGeneration = simulationGeneration;
   stepInFlight = true;
   const totalStart = performance.now();
 
@@ -215,7 +218,8 @@ async function runStep(): Promise<void> {
     eventBuffer = [];
 
     const simStart = performance.now();
-    await sim.step();
+    await activeSimulation.step();
+    if (activeGeneration !== simulationGeneration || activeSimulation !== sim) return;
     const simStepMs = performance.now() - simStart;
 
     // Merge new events into recent events list
@@ -265,6 +269,7 @@ ctx.onmessage = async (event: MessageEvent<WorkerInMessage>) => {
   try {
     switch (msg.type) {
       case 'init': {
+        simulationGeneration++;
         // Set up calibration provider
         const provider = new BrowserCalibrationProvider(msg.calibrationProfiles);
         CalibrationLoader.setProvider(provider);
@@ -326,6 +331,7 @@ ctx.onmessage = async (event: MessageEvent<WorkerInMessage>) => {
         break;
 
       case 'reset': {
+        simulationGeneration++;
         stopLoop();
         recentEvents = [];
         eventBuffer = [];

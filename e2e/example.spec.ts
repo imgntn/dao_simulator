@@ -18,12 +18,12 @@ test.describe('Homepage', () => {
   });
 
   test('has working simulator link', async ({ page }) => {
-    const simLink = page.getByRole('link', { name: /Launch Simulator/i });
+    const simLink = page.getByRole('link', { name: 'Launch Simulator', exact: true }).first();
     await expect(simLink).toBeVisible();
   });
 
   test('simulator link navigates to simulate page', async ({ page }) => {
-    const simLink = page.getByRole('link', { name: /Launch Simulator/i });
+    const simLink = page.getByRole('link', { name: 'Launch Simulator', exact: true }).first();
     await simLink.click();
     await expect(page).toHaveURL(/\/simulate/);
   });

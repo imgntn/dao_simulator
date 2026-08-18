@@ -40,6 +40,9 @@ describe('Proposal lifecycle invariants', () => {
 
   it('sanitizes snapshot power and prevents post-snapshot over-voting', () => {
     const dao = new DAO('Proposal DAO');
+    dao.governanceRuleName = 'supermajority';
+    dao.governanceQuorumPercentage = 0.2;
+    dao.governanceApprovalThreshold = 0.66;
     dao.addMember(member('alice', 10));
     dao.addMember(member('bob', Number.NaN, 5));
     const proposal = new Proposal(dao, 'creator', 'Snapshot safety', 'desc', 0, 10);
@@ -47,6 +50,9 @@ describe('Proposal lifecycle invariants', () => {
     proposal.takeVotingPowerSnapshot();
 
     expect(proposal.totalSupplySnapshot).toBe(15);
+    expect(proposal.governanceRuleSnapshot).toBe('supermajority');
+    expect(proposal.quorumThresholdSnapshot).toBe(0.2);
+    expect(proposal.approvalThresholdSnapshot).toBe(0.66);
     expect(proposal.getSnapshotVotingPower('alice')).toBe(10);
     expect(proposal.getSnapshotVotingPower('bob')).toBe(0);
     expect(proposal.addVote('alice', true, 100)).toBe(true);
@@ -91,6 +97,8 @@ describe('Proposal lifecycle invariants', () => {
         carol: -5,
       },
       totalSupplySnapshot: Number.POSITIVE_INFINITY,
+      quorumThresholdSnapshot: Number.NaN,
+      approvalThresholdSnapshot: Number.POSITIVE_INFINITY,
       snapshotTaken: true,
     }, dao);
 
@@ -110,6 +118,8 @@ describe('Proposal lifecycle invariants', () => {
     expect(restored.getSnapshotVotingPower('bob')).toBe(0);
     expect(restored.getSnapshotVotingPower('carol')).toBe(0);
     expect(restored.totalSupplySnapshot).toBe(0);
+    expect(restored.quorumThresholdSnapshot).toBe(0);
+    expect(restored.approvalThresholdSnapshot).toBe(0.5);
     expect(restored.snapshotTaken).toBe(true);
   });
 });

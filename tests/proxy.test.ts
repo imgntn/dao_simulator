@@ -11,6 +11,8 @@ function expectSecurityHeaders(response: Response) {
   expect(response.headers.get('Content-Security-Policy')).toContain("default-src 'self'");
   expect(response.headers.get('Content-Security-Policy')).toContain("frame-ancestors 'none'");
   expect(response.headers.get('Content-Security-Policy')).toContain(`'nonce-${response.headers.get('x-nonce')}'`);
+  expect(response.headers.get('Content-Security-Policy')).toContain('pub-5203989d31a346d288f97e48812ab2e0.r2.dev');
+  expect(response.headers.get('Content-Security-Policy')).not.toContain('upgrade-insecure-requests');
 }
 
 describe('proxy', () => {
