@@ -1,13 +1,14 @@
 name: Token Conservation
 description: |
   Verify that token conservation holds throughout the simulation.
-  Total tokens (agents + treasury) should not exceed initial supply.
-  This test runs a standard simulation and checks conservation at the end.
+  Accounted supply across members, staking, delegation, treasuries, locked
+  balances, and liquidity pools must equal initial + minted - burned supply.
 baseConfig:
   template: compound
   overrides:
     voting_activity: 0.3
     proposal_creation_probability: 0.005
+    validateEconomicInvariants: true
   population:
     totalMembers: 100
     distribution:
@@ -41,6 +42,9 @@ metrics:
   - name: Final Token Price
     type: builtin
     builtin: final_token_price
+  - name: Token Conservation Error
+    type: builtin
+    builtin: token_conservation_error
 output:
   directory: results/validation/conservation
   formats:

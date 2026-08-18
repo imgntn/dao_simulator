@@ -1,3 +1,4 @@
+id: rq2-capture-mitigation-factorial
 name: Governance Capture Mitigations
 description: Sweep vote power mitigations to quantify capture resistance vs throughput.
 version: 1.0.0
@@ -7,6 +8,26 @@ tags:
   - governance
   - capture
   - mitigations
+research:
+  classification: confirmatory
+  publicationRole: core-confirmatory
+  researchQuestionIds: [RQ2]
+  hypothesis: Vote-power caps and quadratic attenuation reduce the share of proposal-time vote weight controlled by the top token-holding decile while preserving decision throughput.
+  primaryOutcome: whale_influence
+  secondaryOutcomes:
+    - proposal_completion_rate
+    - governance_capture_risk
+    - voting_power_utilization
+    - voter_concentration_gini
+  analysisModel: factorial_ols
+  comparisonCorrection: holm
+  smallestEffectOfInterest:
+    value: 0.05
+    unit: absolute vote-weight share
+    rationale: A five-percentage-point change in the top token-holding decile's share of cast vote weight is the smallest practically important capture-mitigation effect.
+  analysisFamily: rq2-capture-factorial
+  experimentalUnit: One seeded DAO simulation replicate under one factorial policy condition.
+  estimatedRuntimeMinutes: 720
 baseConfig:
   template: compound
   population:
@@ -65,6 +86,10 @@ execution:
   baseSeed: 404
   workers: 4
 metrics:
+  - name: Proposal Completion Rate
+    type: builtin
+    builtin: proposal_completion_rate
+    description: Fraction of proposals reaching a valid terminal governance decision
   - name: Whale Influence
     type: builtin
     builtin: whale_influence
@@ -85,10 +110,6 @@ metrics:
     type: builtin
     builtin: collusion_threshold
     description: Min % of members for majority control
-  - name: Delegate Concentration
-    type: builtin
-    builtin: delegate_concentration
-    description: "% of votes from top 10% of voters"
   - name: Voter Concentration Gini
     type: builtin
     builtin: voter_concentration_gini
@@ -116,4 +137,5 @@ output:
     - csv
   includeRawRuns: true
   includeManifest: true
-  includeTimeline: false
+  includeTimeline: true
+  timelineStride: 24

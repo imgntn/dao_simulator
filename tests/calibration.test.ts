@@ -210,6 +210,22 @@ describe('CalibrationLoader', () => {
       expect(settings.proposal_creation_probability).toBeLessThan(0.05);
     });
 
+    it('preserves observed zero participation and proposal cadence', () => {
+      const profile = makeProfile({
+        voting: {
+          ...makeProfile().voting,
+          avg_participation_rate: 0,
+        },
+        proposals: {
+          ...makeProfile().proposals,
+          avg_proposals_per_month: 0,
+        },
+      });
+      const settings = CalibrationLoader.toSettings(profile);
+      expect(settings.voting_activity).toBe(0);
+      expect(settings.proposal_creation_probability).toBe(0);
+    });
+
     it('converts market volatility', () => {
       const profile = makeProfile();
       const settings = CalibrationLoader.toSettings(profile);
@@ -227,7 +243,7 @@ describe('CalibrationLoader', () => {
     it('clamps voting activity to valid range', () => {
       const low = makeProfile();
       low.voting.avg_participation_rate = 0.001;
-      expect(CalibrationLoader.toSettings(low).voting_activity).toBe(0.005);
+      expect(CalibrationLoader.toSettings(low).voting_activity).toBe(0.001);
 
       const high = makeProfile();
       high.voting.avg_participation_rate = 0.99;
@@ -592,7 +608,7 @@ describe('AccuracyMetrics', () => {
       };
 
       const report = compareToHistorical(metrics, profile);
-      expect(report.metrics.price_trajectory_rmse).toBe(0);
+      expect(report.metrics.price_level_error).toBe(0);
       expect(report.overall_score).toBeGreaterThan(0);
     });
 
@@ -702,7 +718,7 @@ describe('AccuracyMetrics', () => {
       const metrics = extractSimulationMetrics({ modelVars: [] }, 720);
       expect(metrics.proposalsPerMonth).toBe(0);
       expect(metrics.priceHistory).toEqual([]);
-      expect(metrics.passRate).toBe(0.5); // default
+      expect(metrics.passRate).toBeNull();
     });
   });
 });
@@ -748,6 +764,8 @@ describe('BacktestRunner', () => {
       seed: 42,
       oracleType: 'calibrated_gbm',
       forumEnabled: false,
+      evaluationMode: 'aggregate_diagnostic',
+      includeUncalibratedNull: false,
     });
 
     expect(result.daoId).toBe('test_dao');
@@ -828,7 +846,7 @@ describe('Governance Calibration Tuning', () => {
     expect(sim.proposalDurationMaxSteps).toBe(240);  // 200% of 120
   });
 
-  it('calibration governance tuning applies even with explicit governance_config', async () => {
+  it('keeps explicit governance_config authoritative during calibration', async () => {
     const { DAOSimulation } = await import('@/lib/engine/simulation');
     const profile = makeProfile();
     profile.voting.avg_participation_rate = 0.10;
@@ -843,11 +861,11 @@ describe('Governance Calibration Tuning', () => {
       seed: 42,
     });
 
-    // Calibration reconstructs the governance rule with quorum=0 to match
-    // historical pass rates at simulation scale (~200 agents)
+    // Explicit experimental governance must not be silently replaced by
+    // calibration defaults; otherwise swept conditions lose their identity.
     const rule = (sim as any).governanceRule;
     if (rule.quorumPercentage !== undefined) {
-      expect(rule.quorumPercentage).toBe(0);
+      expect(rule.quorumPercentage).toBe(0.25);
     }
   });
 });

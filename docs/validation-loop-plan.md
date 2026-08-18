@@ -4,7 +4,13 @@ A continuously-running validation system that catches calibration drift the mome
 
 ## The problem
 
-The project has climbed from 0.25 → 0.856 average calibration score across 14 DAOs, but every RNG-stream-shifting code change risks silently regressing one DAO while another is being optimized. Drift is currently detectable only when someone happens to look. The validation loop closes that gap.
+The project historically reported a 0.856 aggregate-profile calibration
+score, but that value was not a chronological held-out evaluation. The
+publication-scale 2025 temporal holdout now averages 0.473 across 14 DAOs,
+with heterogeneous skill versus persistence and an uncalibrated simulator.
+Every RNG-stream-shifting code change can still silently regress one DAO
+while another improves; the validation loop closes that drift-detection gap
+without treating the regression reference as scientific evidence.
 
 ## CI integration
 

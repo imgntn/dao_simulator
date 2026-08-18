@@ -12,7 +12,9 @@ npm.cmd run lint
 npm.cmd run build
 npm.cmd test
 npm.cmd run test:e2e:smoke
+npm.cmd run test:e2e:api
 npm.cmd run test:e2e:report-card
+npm.cmd run test:e2e:production
 npm.cmd audit --audit-level=moderate
 ```
 
@@ -25,6 +27,7 @@ npm.cmd audit --audit-level=moderate
 | UX | Scenario import test proves invalid JSON feedback, successful import, duplicate update handling, and saved scenario uniqueness. |
 | Visual Design | Report-card test attaches screenshots for default, focus, and zoomed Sanctum states and verifies focus mode removes Chronicle clutter. |
 | Explainability | `explanation-record.json` includes id, step, confidence, metric deltas, and candidate causes for deterministic replay. |
+| Production Runtime | `test:e2e:production` runs the optimized server with enforced CSP and proves homepage hydration, simulator initialization, podcast media policy, and readiness without CSP violations. |
 | Documentation | Current report card references the commands, thresholds, artifacts, security checks, and residual risks. |
 | Security | `npm.cmd audit --audit-level=moderate` reports 0 vulnerabilities and GitHub Dependabot has no open alerts for the default branch. |
 
@@ -50,3 +53,4 @@ If GitHub reports a vulnerability during push but both checks are clear, treat t
 - If a budget is changed, update this checklist and the relevant report card in the same commit.
 - If a test is flaky, the grade falls back to B until the flake is fixed or the evidence is replaced with a stable check.
 - If a security alert is open, release readiness falls back to B until the dependency is updated or the alert is confirmed fixed.
+- If the optimized production gate is absent or failing, production reliability is F even when development-mode smoke tests pass.

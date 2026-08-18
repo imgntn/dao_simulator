@@ -553,7 +553,15 @@ export class FlashLoanAttacker extends DAOMember {
 
     this.tokens = originalTokens;
     this.borrowedFromTreasury = 0;
-    this.tokens -= this.activeLoan.fee;
+    const actualFee = Math.min(this.activeLoan.fee, this.tokens);
+    this.tokens -= actualFee;
+    if (actualFee > 0) {
+      this.model.dao.treasury.deposit(token, actualFee, this.model.currentStep, {
+        source: `member:${this.uniqueId}`,
+        destination: 'treasury:flashloan-fees',
+        event: 'flashloan_fee_paid',
+      });
+    }
     this.activeLoan.repaidStep = this.model.currentStep;
 
     if (this.model.eventBus) {
@@ -562,7 +570,7 @@ export class FlashLoanAttacker extends DAOMember {
         loanId: this.activeLoan.loanId,
         borrower: this.uniqueId,
         amount: this.activeLoan.amount,
-        fee: this.activeLoan.fee,
+        fee: actualFee,
       });
     }
 

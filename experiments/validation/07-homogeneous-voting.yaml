@@ -9,6 +9,10 @@ baseConfig:
   template: compound
   overrides:
     proposal_creation_probability: 0.005
+    participation_target_rate: 0
+    participation_boost_strength: 0
+    participation_boost_max: 0
+    participation_inactivity_boost: 0
   population:
     totalMembers: 100
     distribution:

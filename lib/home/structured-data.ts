@@ -162,7 +162,7 @@ function datasetSchema() {
     '@type': 'Dataset',
     name: 'DAO Digital Twin Calibration Data',
     description:
-      '14 real DAO digital twins calibrated against on-chain governance votes, Snapshot data, forum activity, and token prices. Average calibration accuracy 0.85 across all DAOs.',
+      'Fourteen DAO digital twins calibrated against on-chain governance votes, Snapshot data, forum activity, and token prices. A separately hashed 2025 temporal holdout produced 0.473 mean composite similarity; performance was heterogeneous across both persistence and uncalibrated null models.',
     creator: { '@id': AUTHOR_ID },
     temporalCoverage: '2021/2026',
     spatialCoverage: 'Ethereum, Arbitrum, Optimism',
@@ -206,8 +206,8 @@ function faqPageSchema() {
       a: 'Across 52 runs (13 per config), hybrid LLM governance with 30% AI agents matched baseline participation (20%) and pass rates (43%) while preserving decision quality. All-LLM mode collapsed participation to 8.8% and pass rates to 23%, showing that AI governance needs human anchoring. LLM vote consistency was 46% in hybrid mode but only 22% in all-LLM mode. Hybrid mode is recommended as the default deployment.',
     },
     {
-      q: 'What is a DAO digital twin and how accurate are they?',
-      a: 'A DAO digital twin is an agent-based simulation model calibrated against a real DAO\'s on-chain governance data, Snapshot votes, forum activity, and token prices. The DAO Simulator built digital twins of 14 major DAOs including Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, and SushiSwap. Each twin captures the DAO\'s actual governance stack: quorum thresholds, voting periods, proposal pipelines, and member archetypes. Calibration scores average 0.85, with Gitcoin highest at 0.922.',
+      q: 'What is a DAO digital twin, and how well does it validate?',
+      a: 'A DAO digital twin is an agent-based simulation model conditioned on a real DAO\'s governance, voting, forum, and market data. Fourteen twins were trained on 2023-2024 profiles and evaluated on a separately hashed 2025 holdout. Mean composite similarity was 0.473; calibrated simulations beat persistence for 5 of 14 DAOs and an uncalibrated simulator for 8 of 14. The result supports DAO-dependent generative fidelity, not universal forecasting accuracy.',
     },
     {
       q: 'What happens if you change a DAO\'s governance rule?',

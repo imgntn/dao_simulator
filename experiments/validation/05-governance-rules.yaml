@@ -6,6 +6,8 @@ baseConfig:
   template: compound
   overrides:
     voting_activity: 0.3
+    governance_config:
+      threshold: 0.9
   population:
     totalMembers: 90
 sweep:

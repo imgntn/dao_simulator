@@ -53,9 +53,9 @@ export const DEFAULT_PANEL_ORDER = [
 export type SimMode = 'interactive' | 'compare' | 'branch' | 'multirun' | 'research';
 
 export const MODE_PANELS: Record<SimMode, readonly string[]> = {
-  interactive: DEFAULT_PANEL_ORDER,
+  interactive: ['transport', 'floor-nav', 'metrics-dashboard', 'event-feed'],
   compare: ['transport', 'comparison'],
   branch: ['transport', 'branch'],
   multirun: ['multirun'],
-  research: ['research'],
+  research: [],
 };

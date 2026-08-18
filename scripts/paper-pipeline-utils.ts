@@ -2,6 +2,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'yaml';
+import { ExperimentRunner } from '../lib/research/experiment-runner';
+import type { ExperimentConfig } from '../lib/research/experiment-config';
 
 export type PaperProfile = 'full' | 'p1' | 'p2' | 'p3' | 'llm';
 
@@ -41,6 +43,20 @@ export interface FreshnessResult {
   completedAt: string;
   issues: FreshnessIssue[];
   isFresh: boolean;
+}
+
+const KNOWN_PLACEHOLDER_MARKERS = [
+  'dummyhash',
+  'placeholder,0',
+  '"placeholder"',
+  '[PLACEHOLDER:',
+] as const;
+
+function findPlaceholderMarker(content: string): string | undefined {
+  const normalized = content.toLowerCase();
+  return KNOWN_PLACEHOLDER_MARKERS.find((marker) =>
+    normalized.includes(marker.toLowerCase())
+  );
 }
 
 const DEFAULT_CONFIG: PaperPipelineConfig = {
@@ -193,6 +209,13 @@ export function resolveOutputDir(rootDir: string, configPath: string): string {
 }
 
 function getSweepConfigCount(parsedConfig: any): number {
+  if (parsedConfig?.mode === 'city') {
+    const scenarios = parsedConfig?.scenarios;
+    if (!Array.isArray(scenarios) || scenarios.length === 0) {
+      throw new Error('City experiment requires at least one scenario');
+    }
+    return scenarios.length;
+  }
   const sweep = parsedConfig?.sweep;
   if (!sweep) return 1;
 
@@ -208,6 +231,9 @@ function getSweepConfigCount(parsedConfig: any): number {
 
     if (counts.length === 0) return 1;
     if (sweep.type === 'zip') {
+      if (counts.some((count) => count !== counts[0])) {
+        throw new Error('Zip sweep dimensions must have equal lengths');
+      }
       return counts[0];
     }
     return counts.reduce((acc, count) => acc * count, 1);
@@ -225,9 +251,9 @@ function getSweepConfigCount(parsedConfig: any): number {
 }
 
 export function calculateExpectedRuns(parsedConfig: any): number {
-  const runsPerConfig = Number(parsedConfig?.execution?.runsPerConfig ?? 10);
-  const sweepCount = getSweepConfigCount(parsedConfig);
-  return Math.max(0, runsPerConfig) * Math.max(1, sweepCount);
+  const config = parsedConfig as ExperimentConfig;
+  const conditions = new ExperimentRunner(config).generateConfigs();
+  return conditions.length * config.execution.runsPerConfig;
 }
 
 export function resolvePaperConfig(rootDir: string, configPath: string): ResolvedPaperConfig {
@@ -273,7 +299,16 @@ export function validateResultFreshness(
       message: `Missing summary.json for ${resolved.configPath}`,
     });
   } else {
-    summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
+    const summaryContent = fs.readFileSync(summaryPath, 'utf8');
+    const placeholderMarker = findPlaceholderMarker(summaryContent);
+    if (placeholderMarker) {
+      issues.push({
+        severity: 'error',
+        code: 'placeholder_summary',
+        message: `summary.json contains known placeholder marker "${placeholderMarker}" for ${resolved.configPath}`,
+      });
+    }
+    summary = JSON.parse(summaryContent);
     actualRuns = Number(summary?.totalRuns ?? 0);
     completedAt = String(summary?.manifest?.execution?.completedAt ?? '');
 
@@ -285,11 +320,11 @@ export function validateResultFreshness(
       });
     }
 
-    if (resolved.expectedRuns > 0 && actualRuns < resolved.expectedRuns) {
+    if (resolved.expectedRuns > 0 && actualRuns !== resolved.expectedRuns) {
       issues.push({
         severity: 'error',
-        code: 'insufficient_runs',
-        message: `${resolved.configPath} has ${actualRuns} runs, expected at least ${resolved.expectedRuns}`,
+        code: 'run_count_mismatch',
+        message: `${resolved.configPath} has ${actualRuns} runs, expected exactly ${resolved.expectedRuns}`,
       });
     }
 
@@ -324,12 +359,67 @@ export function validateResultFreshness(
       message: `Missing manifest.json for ${resolved.configPath}`,
     });
   } else {
-    manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    if (!manifest?.configHash) {
+    const manifestContent = fs.readFileSync(manifestPath, 'utf8');
+    const placeholderMarker = findPlaceholderMarker(manifestContent);
+    if (placeholderMarker) {
       issues.push({
-        severity: 'warning',
-        code: 'missing_config_hash',
-        message: `manifest.json missing configHash for ${resolved.configPath}`,
+        severity: 'error',
+        code: 'placeholder_manifest',
+        message: `manifest.json contains known placeholder marker "${placeholderMarker}" for ${resolved.configPath}`,
+      });
+    }
+    manifest = JSON.parse(manifestContent);
+    if (manifest?.schemaVersion !== 2) {
+      issues.push({
+        severity: 'error',
+        code: 'unsupported_manifest_schema',
+        message: `manifest.json must use reproducibility schema version 2 for ${resolved.configPath}`,
+      });
+    }
+    if (!/^sha256:[a-f0-9]{64}$/i.test(String(manifest?.configHash ?? ''))) {
+      issues.push({
+        severity: 'error',
+        code: 'invalid_config_hash',
+        message: `manifest.json must contain a SHA-256 config hash for ${resolved.configPath}`,
+      });
+    }
+    if (!/^sha256:[a-f0-9]{64}$/i.test(String(manifest?.resultsHash ?? ''))) {
+      issues.push({
+        severity: 'error',
+        code: 'invalid_results_hash',
+        message: `manifest.json must contain a SHA-256 results hash for ${resolved.configPath}`,
+      });
+    }
+    if (!/^sha256:[a-f0-9]{64}$/i.test(String(manifest?.metricDefinitions?.hash ?? ''))) {
+      issues.push({
+        severity: 'error',
+        code: 'invalid_metric_definitions_hash',
+        message: `manifest.json must contain a SHA-256 metric-definitions hash for ${resolved.configPath}`,
+      });
+    }
+    if (
+      !manifest?.metricDefinitions?.versions ||
+      typeof manifest.metricDefinitions.versions !== 'object'
+    ) {
+      issues.push({
+        severity: 'error',
+        code: 'missing_metric_definition_versions',
+        message: `manifest.json lacks metric-definition versions for ${resolved.configPath}`,
+      });
+    }
+    if (!manifest?.software?.gitCommit || typeof manifest?.software?.gitDirty !== 'boolean') {
+      issues.push({
+        severity: 'error',
+        code: 'missing_git_provenance',
+        message: `manifest.json lacks Git provenance for ${resolved.configPath}`,
+      });
+    }
+    const manifestRuns = Number(manifest?.execution?.totalRuns);
+    if (Number.isFinite(actualRuns) && manifestRuns !== actualRuns) {
+      issues.push({
+        severity: 'error',
+        code: 'manifest_summary_count_mismatch',
+        message: `manifest and summary run counts disagree for ${resolved.configPath}`,
       });
     }
   }
@@ -340,6 +430,16 @@ export function validateResultFreshness(
       code: 'missing_stats',
       message: `Missing stats.csv for ${resolved.configPath}`,
     });
+  } else {
+    const statsContent = fs.readFileSync(statsPath, 'utf8');
+    const placeholderMarker = findPlaceholderMarker(statsContent);
+    if (placeholderMarker) {
+      issues.push({
+        severity: 'error',
+        code: 'placeholder_stats',
+        message: `stats.csv contains known placeholder marker "${placeholderMarker}" for ${resolved.configPath}`,
+      });
+    }
   }
 
   const isFresh = !issues.some((issue) => issue.severity === 'error');

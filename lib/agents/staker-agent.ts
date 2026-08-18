@@ -203,19 +203,18 @@ export class StakerAgent extends DAOMember {
 
       case 'restake_rewards':
         if (this.pendingRewards > 0) {
-          const restakeAmount = this.pendingRewards;
-          this.pendingRewards = 0;
-          this.stakeTokens(restakeAmount);
-          reward = 0.3 + restakeAmount * 0.01;
+          const restakeAmount = this.realizePendingRewards();
+          if (restakeAmount > 0) {
+            this.stakeTokens(restakeAmount, this.model.dao.tokenSymbol);
+            reward = 0.3 + restakeAmount * 0.01;
+          }
         }
         break;
 
       case 'claim_rewards':
         if (this.pendingRewards > 0) {
-          this.tokens += this.pendingRewards;
-          this.rewardsEarned += this.pendingRewards;
-          reward = 0.2 + this.pendingRewards * 0.01;
-          this.pendingRewards = 0;
+          const claimed = this.realizePendingRewards();
+          reward = 0.2 + claimed * 0.01;
         }
         break;
 
@@ -233,6 +232,36 @@ export class StakerAgent extends DAOMember {
     }
 
     return reward;
+  }
+
+  /**
+   * Convert an accrued staking-reward liability into issued primary tokens.
+   * Rewards are explicitly minted through the treasury ledger and immediately
+   * transferred to the staker so strict supply accounting can distinguish
+   * issuance from ordinary transfers.
+   */
+  private realizePendingRewards(): number {
+    const dao = this.model.dao;
+    const amount = this.pendingRewards;
+    if (!dao || !Number.isFinite(amount) || amount <= 0) return 0;
+
+    const token = dao.tokenSymbol;
+    const step = this.model.currentStep;
+    dao.treasury.mintTokens(token, amount, step, {
+      source: 'protocol:staking-rewards',
+      destination: 'treasury',
+      event: 'staking_reward_issuance',
+    });
+    const claimed = dao.treasury.withdraw(token, amount, step, {
+      source: 'treasury',
+      destination: `member:${this.uniqueId}`,
+      event: 'staking_reward_claim',
+    });
+
+    this.pendingRewards = Math.max(0, amount - claimed);
+    this.tokens += claimed;
+    this.rewardsEarned += claimed;
+    return claimed;
   }
 
   /**

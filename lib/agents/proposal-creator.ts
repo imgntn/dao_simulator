@@ -104,7 +104,7 @@ export class ProposalCreator extends DAOMember {
     const baseProbability = (this.model as unknown as { proposalCreationProbability?: number }).proposalCreationProbability ?? 0.005;
     const numCreators = this.model.dao?.members.filter(m => m.constructor.name === 'ProposalCreator').length || 1;
     const creationProbability = baseProbability / numCreators;
-    if (random() > creationProbability) {
+    if (creationProbability <= 0 || random() >= creationProbability) {
       return 'hold';  // Skip this step — no proposal allowed
     }
 

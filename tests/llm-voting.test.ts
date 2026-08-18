@@ -433,6 +433,20 @@ describe('LLMResponseCache', () => {
 
     expect(k1).toBe(k2);
     expect(k1).not.toBe(k3);
+    expect(k1).toMatch(/^[a-f0-9]{64}$/);
+  });
+
+  it('archives the raw request identity with the cached response', () => {
+    const rawKey = LLMResponseCache.makeRawKey('model', 'system', 'prompt', 9, 0.1);
+    const key = LLMResponseCache.makeKey('model', 'system', 'prompt', 9, 0.1);
+    cache.set(key, '{"vote":"yes"}', 'model', rawKey);
+
+    expect(cache.export()[key]).toEqual(expect.objectContaining({
+      response: '{"vote":"yes"}',
+      model: 'model',
+      rawKey,
+    }));
+    expect(cache.get(key, `${rawKey}-different`)).toBeUndefined();
   });
 
   it('clears all entries', () => {

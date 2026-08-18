@@ -1,0 +1,77 @@
+{
+  "version": 2,
+  "generatedAt": "2026-07-18T05:54:32.708Z",
+  "gitSha": "024d5e5507aaeb2b9414ba431d889e5697a6d786",
+  "configHash": "48e2138f25947edc4e858ce307b0fc0c460b383e8a07a31fa9175820fd3b4df1",
+  "suite": "full",
+  "sourceRunId": "run-1784347296596-f6ddc31bca31",
+  "description": "Replace seeded placeholder findings with measurements from the exact completed non-LLM replay",
+  "findings": {
+    "exp-10-calibration-validation": {
+      "description": "14-DAO calibration validation average score",
+      "direction": "positive",
+      "magnitudeRange": [
+        0.38394653221206093,
+        0.4243619566554358
+      ],
+      "metric": "avg_calibration_score",
+      "observedMagnitude": 0.40415424443374837,
+      "observedAt": "2026-07-18T05:43:54.624Z"
+    },
+    "exp-11-advanced-mechanisms": {
+      "description": "Advanced mechanisms (IRV, futarchy, liquid+decay) vs majority: null result",
+      "direction": "neutral",
+      "magnitudeRange": [
+        -0.005,
+        0.005
+      ],
+      "metric": "mechanism_score_delta",
+      "observedMagnitude": 0,
+      "observedAt": "2026-07-18T05:43:54.624Z"
+    },
+    "exp-13-cross-dao-governance": {
+      "description": "Range of governance activity across calibrated DAO-rule conditions",
+      "direction": "positive",
+      "magnitudeRange": [
+        0.03027614806582567,
+        0.04027614806582567
+      ],
+      "metric": "governance_activity_range",
+      "observedMagnitude": 0.03527614806582567,
+      "observedAt": "2026-07-18T05:43:54.624Z"
+    },
+    "exp-14-black-swan-resilience": {
+      "description": "Black swan reduces participation and approval rate",
+      "direction": "neutral",
+      "magnitudeRange": [
+        -0.0009999274577221174,
+        0.009000072542277884
+      ],
+      "metric": "black_swan_participation_delta",
+      "observedMagnitude": 0.004000072542277883,
+      "observedAt": "2026-07-18T05:43:54.624Z"
+    },
+    "exp-15-counterfactual-expansion": {
+      "description": "Counterfactual governance: most rules within ±0.05 of historical",
+      "direction": "positive",
+      "magnitudeRange": [
+        0.1456371340575209,
+        0.1609673586951547
+      ],
+      "metric": "counterfactual_pass_rate_delta",
+      "observedMagnitude": 0.1533022463763378,
+      "observedAt": "2026-07-18T05:43:54.624Z"
+    },
+    "exp-16-rl-activation": {
+      "description": "Full RL stack changes governance activity relative to disabled learning",
+      "direction": "neutral",
+      "magnitudeRange": [
+        -0.004869899179796959,
+        0.005130100820203041
+      ],
+      "metric": "full_rl_governance_activity_delta",
+      "observedMagnitude": 0.00013010082020304146,
+      "observedAt": "2026-07-18T05:43:54.624Z"
+    }
+  }
+}

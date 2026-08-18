@@ -140,14 +140,15 @@ export class Trader extends DAOMember {
     const poolKeys = Array.from(treasury.pools.keys());
     if (poolKeys.length === 0) return -0.1;
 
-    // Find a DAO_TOKEN pool
-    const daoPool = poolKeys.find(k => k.includes('DAO_TOKEN'));
+    const primaryToken = this.model.dao.tokenSymbol;
+    // Find a pool containing this DAO's primary token.
+    const daoPool = poolKeys.find(k => k.split('|').includes(primaryToken));
     if (!daoPool) return -0.1;
 
     const parts = daoPool.split('|');
     if (parts.length !== 2) return -0.1;
     const [tokenA, tokenB] = parts;
-    const other = tokenA === 'DAO_TOKEN' ? tokenB : tokenA;
+    const other = tokenA === primaryToken ? tokenB : tokenA;
 
     let sell: string, buy: string;
     let tradeFraction: number;
@@ -155,21 +156,21 @@ export class Trader extends DAOMember {
     switch (action) {
       case 'buy_aggressive':
         sell = other;
-        buy = 'DAO_TOKEN';
+        buy = primaryToken;
         tradeFraction = this.tradeFraction * 2;
         break;
       case 'buy_moderate':
         sell = other;
-        buy = 'DAO_TOKEN';
+        buy = primaryToken;
         tradeFraction = this.tradeFraction;
         break;
       case 'sell_aggressive':
-        sell = 'DAO_TOKEN';
+        sell = primaryToken;
         buy = other;
         tradeFraction = this.tradeFraction * 2;
         break;
       case 'sell_moderate':
-        sell = 'DAO_TOKEN';
+        sell = primaryToken;
         buy = other;
         tradeFraction = this.tradeFraction;
         break;
@@ -178,31 +179,39 @@ export class Trader extends DAOMember {
     }
 
     // Calculate trade amount
-    const baseAmount = this.tokens * tradeFraction;
+    const available = this.getAssetBalance(sell);
+    const baseAmount = available * tradeFraction;
     const amount = Math.max(MIN_TRADE_AMOUNT, baseAmount * (0.5 + random()));
 
-    if (amount <= 0 || amount > this.tokens) {
+    if (amount <= 0 || amount > available) {
       return -0.1;
     }
 
-    // Execute trade
-    treasury.deposit(sell, amount, this.model.currentStep);
+    // Execute a per-asset transfer into the AMM.
+    const debited = this.debitAsset(sell, amount);
+    if (debited !== amount) return -0.1;
+    treasury.deposit(sell, amount, this.model.currentStep, {
+      source: `member:${this.uniqueId}`,
+      destination: 'treasury:swap-input',
+      event: 'member_trade_deposit',
+    });
 
     try {
       const out = treasury.swap(sell, buy, amount, this.model.currentStep);
       if (out <= 0) {
-        treasury.withdraw(sell, amount, this.model.currentStep);
+        const refunded = treasury.withdraw(sell, amount, this.model.currentStep);
+        this.creditAsset(sell, refunded);
         return -0.2;
       }
 
       const gained = treasury.withdraw(buy, out, this.model.currentStep);
-
-      this.tokens -= amount;
-      this.tokens += gained;
+      this.creditAsset(buy, gained);
       this.markActive();
 
-      // Calculate profit
-      const profit = gained - amount;
+      // Calculate profit in the treasury's common price-value units.
+      const profit =
+        gained * treasury.getTokenPrice(buy) -
+        amount * treasury.getTokenPrice(sell);
       this.tradeHistory.push({ profit, action });
       if (this.tradeHistory.length > 20) {
         this.tradeHistory.shift();
@@ -222,7 +231,8 @@ export class Trader extends DAOMember {
       // Return scaled profit as reward
       return profit / 10;
     } catch {
-      treasury.withdraw(sell, amount, this.model.currentStep);
+      const refunded = treasury.withdraw(sell, amount, this.model.currentStep);
+      this.creditAsset(sell, refunded);
       return -0.2;
     }
   }

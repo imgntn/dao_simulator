@@ -32,13 +32,13 @@ function buildContentSecurityPolicy(nonce: string): string {
     "connect-src 'self' http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:*",
     "worker-src 'self' blob:",
     "child-src 'self' blob:",
-    "media-src 'self' blob: data:",
+    "media-src 'self' blob: data: https://pub-5203989d31a346d288f97e48812ab2e0.r2.dev",
     "manifest-src 'self'",
-    "upgrade-insecure-requests",
-  ].join('; ');
+    isDevelopment ? null : "upgrade-insecure-requests",
+  ].filter(Boolean).join('; ');
 }
 
-function withSecurityHeaders(response: NextResponse, nonce: string): NextResponse {
+function withSecurityHeaders(response: NextResponse, nonce: string, csp: string): NextResponse {
   for (const [name, value] of SECURITY_HEADERS) {
     response.headers.set(name, value);
   }
@@ -47,7 +47,7 @@ function withSecurityHeaders(response: NextResponse, nonce: string): NextRespons
   const cspHeader = process.env.CSP_REPORT_ONLY === 'true'
     ? 'Content-Security-Policy-Report-Only'
     : 'Content-Security-Policy';
-  response.headers.set(cspHeader, buildContentSecurityPolicy(nonce));
+  response.headers.set(cspHeader, csp);
 
   return response;
 }
@@ -55,8 +55,13 @@ function withSecurityHeaders(response: NextResponse, nonce: string): NextRespons
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const nonce = crypto.randomUUID();
+  const csp = buildContentSecurityPolicy(nonce);
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-nonce', nonce);
+  // Next.js reads the request CSP to apply the matching nonce to framework
+  // scripts. Supplying it only on the response leaves production hydration
+  // scripts un-nonced and therefore blocked by the browser.
+  requestHeaders.set('Content-Security-Policy', csp);
   const nextInit = { request: { headers: requestHeaders } };
 
   // Skip API routes, Next.js internals, and static/public assets.
@@ -70,7 +75,7 @@ export function proxy(request: NextRequest) {
     pathname === '/sitemap.xml' ||
     /\.\w{2,5}$/.test(pathname)
   ) {
-    return withSecurityHeaders(NextResponse.next(nextInit), nonce);
+    return withSecurityHeaders(NextResponse.next(nextInit), nonce, csp);
   }
 
   // Check if pathname already has a valid locale prefix.
@@ -79,7 +84,7 @@ export function proxy(request: NextRequest) {
   );
 
   if (pathnameLocale) {
-    return withSecurityHeaders(NextResponse.next(nextInit), nonce);
+    return withSecurityHeaders(NextResponse.next(nextInit), nonce, csp);
   }
 
   // Check cookie first (set when user manually switches locale).
@@ -98,7 +103,7 @@ export function proxy(request: NextRequest) {
   // Redirect to locale-prefixed path.
   const url = request.nextUrl.clone();
   url.pathname = `/${locale}${pathname}`;
-  return withSecurityHeaders(NextResponse.redirect(url), nonce);
+  return withSecurityHeaders(NextResponse.redirect(url), nonce, csp);
 }
 
 export const config = {

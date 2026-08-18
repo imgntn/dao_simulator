@@ -79,12 +79,16 @@ export class WorkerPool {
    * Create a new worker process
    */
   private createProcess(): void {
-    const execArgv = this.isTsxMode() ? ['--import', 'tsx'] : [];
+    const execArgv = this.workerScript.endsWith('.ts') || this.isTsxMode()
+      ? ['--import', 'tsx']
+      : [];
 
-    const child = fork(this.workerScript, [], {
+    const forkOptions = {
       execArgv,
       stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
-    });
+      windowsHide: true,
+    } as Parameters<typeof fork>[2] & { windowsHide: boolean };
+    const child = fork(this.workerScript, [], forkOptions);
 
     const processState: ProcessState = {
       process: child,

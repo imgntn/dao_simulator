@@ -4,6 +4,8 @@ coverage
 playwright-report
 test-results
 results
+artifacts
+publication
 archive
 legacy-python
 paper_p1
@@ -17,3 +19,4 @@ podcast_media
 *.log
 *.err
 *.pdf
+.codegraph

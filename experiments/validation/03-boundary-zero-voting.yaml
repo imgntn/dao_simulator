@@ -1,11 +1,16 @@
 name: "Boundary: Zero Voting Activity"
 description: |
-  Test system behavior when voting_activity is 0.
-  Expected: Very low turnout, proposals may fail due to no votes.
+  Test isolated voting behavior when voting_activity and every participation
+  boost are zero. Expected: exactly zero turnout for general and specialized
+  archetypes.
 baseConfig:
   template: compound
   overrides:
     voting_activity: 0
+    participation_target_rate: 0
+    participation_boost_strength: 0
+    participation_boost_max: 0
+    participation_inactivity_boost: 0
   population:
     totalMembers: 60
     distribution:

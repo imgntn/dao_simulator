@@ -419,6 +419,16 @@ export class Whistleblower extends DAOMember {
     if (this.tokens < INVESTIGATION_COST) return -0.2;
 
     this.tokens -= INVESTIGATION_COST;
+    this.model.dao.treasury.deposit(
+      this.model.dao.tokenSymbol,
+      INVESTIGATION_COST,
+      this.model.currentStep,
+      {
+        source: `member:${this.uniqueId}`,
+        destination: 'treasury:investigation-fees',
+        event: 'investigation_fee_paid',
+      }
+    );
     highest.investigatedAt = this.model.currentStep;
 
     const accurateDetection = random() < this.detectionSkill;
@@ -506,10 +516,20 @@ export class Whistleblower extends DAOMember {
           });
         }
       } else {
+        const paidReward = this.model.dao.treasury.withdraw(
+          this.model.dao.tokenSymbol,
+          reward,
+          this.model.currentStep,
+          {
+            source: 'treasury:investigation-fees',
+            destination: `member:${this.uniqueId}`,
+            event: 'whistleblower_reward_paid',
+          }
+        );
         this.successfulReports++;
-        this.totalRewards += reward;
-        this.tokens += reward;
-        this.pendingReportReward += reward;
+        this.totalRewards += paidReward;
+        this.tokens += paidReward;
+        this.pendingReportReward += paidReward;
         totalReward += 10;
 
         if (this.model.eventBus) {
@@ -518,7 +538,7 @@ export class Whistleblower extends DAOMember {
             whistleblower: this.uniqueId,
             targetId: record.targetId,
             targetType: record.targetType,
-            reward,
+            reward: paidReward,
           });
         }
       }

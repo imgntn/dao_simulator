@@ -1,9 +1,9 @@
-name: RL Activation Analysis
+id: supporting-learning-activation
+name: Learning Activation Analysis
 description: >
-  Measures the impact of reinforcement learning on agent behavior across
-  calibrated DAOs. Compares baseline (RL disabled) against progressive RL
-  activation: tabular Q-learning, experience replay, shared learning, and
-  full DQN. Tests whether RL agents converge on different governance outcomes.
+  Measures the impact of reinforcement learning on agent behavior. Compares
+  fixed heuristics with within-replicate tabular Q-learning, replay, and
+  same-type shared experience. Replicate state is never carried between runs.
 version: 1.0.0
 author: DAO Simulator Research Framework
 tags:
@@ -13,28 +13,44 @@ tags:
   - dqn
   - agent-adaptation
   - convergence
+research:
+  classification: exploratory
+  publicationRole: supporting-exploratory
+  researchQuestionIds: [RQ-LEARNING-SUPPORT]
+  hypothesis: Within-replicate tabular learning changes governance activity relative to fixed heuristics, and replay or same-type sharing further changes the learned policy.
+  primaryOutcome: governance_activity_index
+  secondaryOutcomes:
+    - proposal_completion_rate
+    - voter_participation_rate
+    - voter_concentration_gini
+  analysisModel: paired_contrast
+  comparisonCorrection: holm
+  smallestEffectOfInterest:
+    value: 0.05
+    unit: governance activity index
+    rationale: Smaller shifts would not change the substantive interpretation of the primary governance experiments.
+  analysisFamily: supporting-learning-activation
+  experimentalUnit: One independent seeded DAO simulation replicate under one learning condition.
+  estimatedRuntimeMinutes: 180
 
 baseConfig:
   template: compound
   overrides:
     forum_enabled: true
     oracle_type: calibrated_gbm
-    learning_persist_q_tables: true
+    calibration_dao_id: compound
+    learning_persist_q_tables: false
 
 sweep:
   type: zip
   grid:
     # RL mode labels (matched by index)
     - parameter: learning_enabled
-      values: [false, true, true, true, true]
+      values: [false, true, true, true]
     - parameter: learning_experience_replay
-      values: [false, false, true, true, true]
+      values: [false, false, true, true]
     - parameter: learning_shared_experience
-      values: [false, false, false, true, true]
-    - parameter: learning_use_dqn
-      values: [false, false, false, false, true]
-    # All configs run on 4 representative DAOs
-    # (run as separate sweep dimension with grid)
+      values: [false, false, false, true]
 
 execution:
   runsPerConfig: 30
@@ -43,12 +59,17 @@ execution:
   baseSeed: 1600
   workers: 4
   runTimeoutMs: 600000
+  learningEpisodesPerRun: 4
 
 metrics:
   - name: Proposal Pass Rate
     type: builtin
     builtin: proposal_pass_rate
     description: "% of resolved proposals that passed"
+  - name: Proposal Completion Rate
+    type: builtin
+    builtin: proposal_completion_rate
+    description: Fraction of proposals reaching a terminal governance decision
   - name: Average Turnout
     type: builtin
     builtin: average_turnout
@@ -89,6 +110,34 @@ metrics:
     type: builtin
     builtin: treasury_volatility
     description: Coefficient of variation of treasury
+  - name: Governance Activity Index
+    type: builtin
+    builtin: governance_activity_index
+    description: Composite governance activity outcome used for the preregistered RL contrast
+  - name: Learning Agent Count
+    type: builtin
+    builtin: learning_agent_count
+    description: Number of agents exposing complete learning diagnostics
+  - name: Mean Learning Q-Table Size
+    type: builtin
+    builtin: learning_q_table_size_mean
+    description: Mean learned state-action entry count per learning agent
+  - name: Mean Learning State Count
+    type: builtin
+    builtin: learning_state_count_mean
+    description: Mean learned state count per learning agent
+  - name: Mean Learning Episode Count
+    type: builtin
+    builtin: learning_episode_count_mean
+    description: Mean completed episode count per learning agent
+  - name: Mean Learning Exploration Rate
+    type: builtin
+    builtin: learning_exploration_rate_mean
+    description: Mean final epsilon-greedy exploration rate
+  - name: Mean Learning Total Reward
+    type: builtin
+    builtin: learning_total_reward_mean
+    description: Mean cumulative reward per learning agent
 
 output:
   directory: results/paper/16-rl-activation
@@ -98,3 +147,4 @@ output:
   includeRawRuns: true
   includeManifest: true
   includeTimeline: true
+  timelineStride: 24

@@ -459,6 +459,10 @@ export class ProposalStateMachine {
    * Calculate total voting power in the DAO
    */
   private calculateTotalVotingPower(): number {
+    if (this.proposal.snapshotTaken && this.proposal.totalSupplySnapshot > 0) {
+      return this.proposal.totalSupplySnapshot;
+    }
+
     // Sum all member tokens + delegated tokens
     let total = 0;
     for (const member of this.dao.members) {

@@ -21,14 +21,26 @@ npm.cmd run build
 
 Requires Node.js 22+ (Next.js 16).
 
+For publication evidence, use the campaign verifier and deterministic
+reproduction driver rather than the legacy standalone experiment command:
+
+```bash
+npm run reproduce -- --campaign artifacts/campaigns/<campaign-id> --profile artifacts
+```
+
+The `full` profile also runs linting, type checking, the complete unit and
+Python test suites, and a production build. See
+[`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) for local and container
+workflows, evidence identities, and clean campaign reruns.
+
 Open the URL printed by `npm run dev` and visit `/simulate` to launch the interactive Sanctum simulator. By default the app tries `http://127.0.0.1:7884` and automatically moves to the next free port if needed. The simulation engine runs in a Web Worker off the main thread; use play/pause/step/reset to drive it in real time while the Sanctum scene, metrics, heatmap, delegation graph, and event feed update.
 
 ## Highlights
 
 - **Full DAO sandbox** — 27 agent archetypes, 15 governance plugins, liquidity pools, NFTs, violations/disputes, proposal lifecycle, and stochastic market shocks.
 - **Interactive Sanctum simulator** — real-time governance hall visualization with clickable agents, vote banners, treasury/proposal overlays, black swan weather, timeline scrubber, voting heatmap, delegation graph, and more.
-- **Research framework** — 21,800+ simulation runs across 17 experiments investigating participation dynamics, governance capture, proposal pipelines, treasury resilience, inter-DAO cooperation, LLM agent reasoning, counterfactual governance, black swan resilience, scale effects, and voting mechanisms.
-- **Historical calibration** — Digital twin calibration against 14 real DAOs (Aave, Uniswap, Compound, MakerDAO, Lido, ENS, Gitcoin, Arbitrum, Optimism, Nouns, Curve, Balancer, dYdX, SushiSwap) with average accuracy scores of 0.85+.
+- **Research framework** — Immutable, seed-paired campaigns investigating participation dynamics, governance capture, proposal pipelines, treasury resilience, inter-DAO cooperation, LLM agent reasoning, counterfactual governance, black swan resilience, scale effects, and voting mechanisms.
+- **Historical calibration** — Fourteen DAO twins evaluated on a separately hashed 2025 temporal holdout. Mean composite similarity is 0.473; calibrated runs beat persistence for 5/14 DAOs and an uncalibrated simulator for 8/14, so this is conditional generative fidelity rather than universal forecasting accuracy.
 - **Advanced voting** — Ranked choice (IRV), futarchy with LMSR prediction markets, liquid delegation with decay, plus 12 standard governance rules.
 - **Multi-tier RL** — Tabular Q-learning, DQN with target networks, policy gradient (REINFORCE), hierarchical options framework, and federated shared learning.
 - **LLM-powered agents** — Ollama-backed agents with prompt templates, response caching, agent memory, and hybrid/full LLM voting modes.
@@ -45,12 +57,10 @@ npm run experiment -- experiments/paper/00-academic-baseline.yaml --runs 100
 npm run experiment -- experiments/paper/04-governance-capture-mitigations.yaml --runs 100 -c 4
 ```
 
-**Key findings from 21,869 simulation runs:**
-- Quadratic voting threshold=250 reduces whale influence by 43% — the only effective anti-capture mechanism (vote caps and velocity penalties have zero effect)
-- Scale is the #1 governance factor: 50→500 members cuts capture risk 18% and single entity control 60%
-- Advanced voting mechanisms (IRV, futarchy, liquid democracy) produce null results vs simple majority rule
-- LLM agents with thinking mode improve governance: Gemma 4 E4B all-LLM+thinking boosts pass rates +6.7pt above baseline (enriched DAO briefing prompts give LLMs information parity with rule-based agents)
-- Conviction voting universally fails under calibrated DAO conditions (0% pass rate for all 14 DAOs)
+The legacy numerical findings are being regenerated under frozen confirmatory
+designs, exact run accounting, held-out validation, and claim-linked artifact
+provenance. Until that campaign completes, the prior headline percentages are
+historical hypotheses, not current publication evidence.
 
 See `paper/` for the LaTeX source and `experiments/paper/` for all experiment configurations. Generated PDFs are uploaded to R2 (see `ARCHIVES.md`).
 
@@ -59,7 +69,7 @@ See `paper/` for the LaTeX source and `experiments/paper/` for all experiment co
 | Script | Description |
 | --- | --- |
 | `npm run dev` | Next.js app (Turbopack), starting at **7884** and shifting to the next free port if needed |
-| `npm run test` | Vitest unit suite with coverage (1071 tests) |
+| `npm run test` | Vitest unit suite with coverage (1,222 tests) |
 | `npm run typecheck` | TypeScript compile check without emit |
 | `npm run verify` | Local CI-equivalent gate: lint, typecheck, unit tests, build, smoke/API E2E, and audit |
 | `npm run test:e2e` | Playwright e2e suite - 138 tests in 9 files across 10 projects |
@@ -139,7 +149,7 @@ python/             Calibration data ingestion scripts
 - Use `/api/healthz` for readiness checks; it validates runtime configuration and checks Redis/PostgreSQL when those dependencies are configured.
 - For local production parity, set strong secrets in your shell and run `docker compose up --build` to start the app with Redis and PostgreSQL.
 - The simulation engine runs entirely client-side in a Web Worker — no separate server process is needed.
-- See `DEPLOYMENT.md` for Railway/Vercel/docker instructions plus the security checklist.
+- See `DEPLOYMENT.md` for Vercel/Docker instructions plus the security checklist.
 
 ## Development
 

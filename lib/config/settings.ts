@@ -5,9 +5,11 @@ import {
   DEFAULT_PRICE_VOLATILITY,
   DEFAULT_TOKEN_EMISSION_RATE,
   DEFAULT_TOKEN_BURN_RATE,
+  STEPS_PER_YEAR,
 } from './constants';
 
 export interface SimulationSettings {
+  validateEconomicInvariants: boolean;
   // Agent counts
   num_developers: number;
   num_investors: number;
@@ -108,12 +110,18 @@ export interface SimulationSettings {
   learning_min_exploration: number;
   learning_persist_q_tables: boolean;
   learning_shared_experience: boolean;
+  learning_experience_replay: boolean;
+  learning_experience_replay_size: number;
+  learning_experience_replay_batch_size: number;
+  learning_experience_replay_interval: number;
 
   // Treasury revenue parameters
   treasuryProposalFee: number;
   treasuryStakingYield: number;
   treasuryMemberFee: number;
   treasuryTransactionFee: number;
+  treasuryProtocolAnnualYield: number;
+  simulationStepsPerYear: number;
 
   // Treasury emergency topup
   treasuryEmergencyTopupEnabled: boolean;
@@ -138,7 +146,7 @@ export interface SimulationSettings {
   calibration_dao_id?: string;
   /** When true, replay exact historical event sequence; when false (default), use statistical matching (same distributions, randomized timing) */
   calibration_strict_replay?: boolean;
-  /** When true, use DAO's real governance rule (from governance-mapping.ts) instead of majority+optimism hack */
+  /** When true, use the DAO's mapped governance rule instead of the legacy majority-plus-optimism approximation */
   calibration_use_real_governance: boolean;
 
   // Advanced voting mechanisms
@@ -212,6 +220,7 @@ export interface SimulationSettings {
  * Default simulation settings
  */
 export const defaultSettings: SimulationSettings = {
+  validateEconomicInvariants: false,
   num_developers: 10,
   num_investors: 5,
   num_traders: 2,
@@ -262,8 +271,12 @@ export const defaultSettings: SimulationSettings = {
   learning_exploration_rate: 0.3,
   learning_exploration_decay: 0.995,
   learning_min_exploration: 0.01,
-  learning_persist_q_tables: true,
+  learning_persist_q_tables: false,
   learning_shared_experience: false,
+  learning_experience_replay: false,
+  learning_experience_replay_size: 1000,
+  learning_experience_replay_batch_size: 8,
+  learning_experience_replay_interval: 5,
 
   governance_rule: 'majority',
   token_emission_rate: DEFAULT_TOKEN_EMISSION_RATE,
@@ -306,6 +319,8 @@ export const defaultSettings: SimulationSettings = {
   treasuryStakingYield: 0.001,
   treasuryMemberFee: 0.05,
   treasuryTransactionFee: 0.02,
+  treasuryProtocolAnnualYield: 0,
+  simulationStepsPerYear: STEPS_PER_YEAR,
 
   treasuryEmergencyTopupEnabled: true,
 

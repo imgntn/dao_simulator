@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { IBM_Plex_Mono, Space_Grotesk, Source_Serif_4 } from 'next/font/google';
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import '../globals.css';
 import { getMessages, isValidLocale, locales, defaultLocale, ogLocaleMap } from '@/lib/i18n';
@@ -107,6 +108,7 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale: rawLocale } = await params;
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
 
   if (!isValidLocale(rawLocale)) {
     notFound();
@@ -119,6 +121,7 @@ export default async function LocaleLayout({
     <html lang={locale} suppressHydrationWarning>
       <head>
         <script
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(t!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('theme-dark')}}catch(e){}})()`,
           }}

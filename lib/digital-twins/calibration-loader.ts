@@ -22,8 +22,15 @@ function nodeRequire(id: string): any {
   if ((globalThis as any).__nodeRequire) {
     return (globalThis as any).__nodeRequire(id);
   }
-  // CJS fallback — hide from bundler
-  return new Function('id', 'return require(id)')(id);
+  // Node 22+ synchronous built-in loader works in both ESM and CJS while
+  // remaining invisible to browser bundlers.
+  const getBuiltinModule = (globalThis as any).process?.getBuiltinModule;
+  if (typeof getBuiltinModule === 'function') {
+    return getBuiltinModule(id);
+  }
+  throw new Error(
+    `Node built-in module "${id}" is unavailable. Configure a browser calibration provider.`
+  );
 }
 
 function nodeFs() {
@@ -45,22 +52,22 @@ function nodePath() {
 // =============================================================================
 
 export interface VotingProfile {
-  avg_participation_rate: number;
+  avg_participation_rate: number | null;
   participation_distribution: number[];
-  avg_votes_per_proposal: number;
-  voter_concentration: number;
-  approval_rate: number;
-  avg_for_percentage: number;
-  quorum_hit_rate: number;
-  delegation_rate: number;
+  avg_votes_per_proposal: number | null;
+  voter_concentration: number | null;
+  approval_rate: number | null;
+  avg_for_percentage: number | null;
+  quorum_hit_rate: number | null;
+  delegation_rate: number | null;
 }
 
 export interface ProposalProfile {
-  avg_proposals_per_month: number;
+  avg_proposals_per_month: number | null;
   proposal_types: Record<string, number>;
-  avg_voting_period_days: number;
-  avg_choices_per_proposal: number;
-  pass_rate: number;
+  avg_voting_period_days: number | null;
+  avg_choices_per_proposal: number | null;
+  pass_rate: number | null;
   monthly_cadence: number[];
 }
 
@@ -75,19 +82,19 @@ export interface MarketProfile {
   daily_volatility: number;
   avg_price_usd: number;
   price_range: [number, number];
-  avg_market_cap: number;
-  avg_daily_volume: number;
-  correlation_to_eth: number;
+  avg_market_cap: number | null;
+  avg_daily_volume: number | null;
+  correlation_to_eth: number | null;
   drawdown_events: DrawdownEvent[];
 }
 
 export interface ForumProfile {
-  avg_topics_per_month: number;
-  avg_posts_per_topic: number;
-  avg_views_per_topic: number;
+  avg_topics_per_month: number | null;
+  avg_posts_per_topic: number | null;
+  avg_views_per_topic: number | null;
   top_categories: Record<string, number>;
-  avg_post_length_chars: number;
-  reply_rate: number;
+  avg_post_length_chars: number | null;
+  reply_rate: number | null;
   sentiment_keywords: Record<string, number>;
 }
 
@@ -96,24 +103,59 @@ export interface VoterCluster {
   share: number;
   avg_voting_power: number;
   participation_rate: number;
-  alignment_with_majority: number;
+  alignment_with_majority: number | null;
 }
 
 export interface ProtocolProfile {
-  avg_tvl: number;
-  tvl_trend: 'growing' | 'stable' | 'declining';
-  avg_daily_fees: number;
-  avg_daily_revenue: number;
+  avg_tvl: number | null;
+  tvl_trend: 'growing' | 'stable' | 'declining' | null;
+  avg_daily_fees: number | null;
+  avg_daily_revenue: number | null;
+}
+
+export interface CalibrationSourceManifestEntry {
+  rows: number;
+  date_column?: string | null;
+  min_date?: string | null;
+  max_date?: string | null;
+}
+
+export interface CalibrationMetadata {
+  schema_version?: string;
+  partition?: string;
+  period?: {
+    start: string | null;
+    end: string | null;
+    inclusive: boolean;
+  };
+  source_manifest?: Record<string, CalibrationSourceManifestEntry>;
+  source_checksums?: Record<string, {
+    path: string;
+    sha256: string;
+    bytes?: number;
+  }>;
+  source_quality?: Record<string, {
+    raw_rows: number;
+    selected_rows: number;
+    invalid_date_rows: number;
+    period_excluded_rows: number;
+  }>;
+  field_quality?: Record<string, {
+    status: 'observed' | 'derived' | 'unavailable' | 'not_applicable';
+    reason: string;
+  }>;
+  method?: string;
 }
 
 export interface CalibrationProfile {
   dao_id: string;
+  calibration_metadata?: CalibrationMetadata;
   voting: VotingProfile;
   proposals: ProposalProfile;
   market: MarketProfile | null;
   forum: ForumProfile | null;
   voter_clusters: VoterCluster[];
-  protocol: ProtocolProfile;
+  protocol: ProtocolProfile | null;
 }
 
 // =============================================================================
@@ -277,21 +319,28 @@ export class CalibrationLoader {
     // Voting behavior
     // Set votingActivity to the raw historical rate. Per-agent voting probabilities
     // are fine-tuned from voter cluster data in simulation.ts applyCalibrationVotingProbabilities().
-    if (profile.voting) {
-      settings.voting_activity = Math.max(0.005, Math.min(0.95, profile.voting.avg_participation_rate));
+    if (Number.isFinite(profile.voting.avg_participation_rate)) {
+      settings.voting_activity = Math.max(
+        0,
+        Math.min(0.95, profile.voting.avg_participation_rate as number)
+      );
     }
 
     // Proposal creation rate
     // Convert avg proposals per month to per-step probability
     // 1 month ≈ 30 days × 24 steps/day = 720 steps
-    if (profile.proposals) {
-      const proposalsPerStep = profile.proposals.avg_proposals_per_month / 720;
-      settings.proposal_creation_probability = Math.max(0.001, Math.min(0.05, proposalsPerStep));
+    if (Number.isFinite(profile.proposals.avg_proposals_per_month)) {
+      const proposalsPerStep =
+        (profile.proposals.avg_proposals_per_month as number) / 720;
+      settings.proposal_creation_probability = Math.max(0, Math.min(0.05, proposalsPerStep));
     }
 
     // Forum/comment probability
-    if (profile.forum) {
-      settings.comment_probability = Math.max(0.1, Math.min(0.9, profile.forum.reply_rate));
+    if (profile.forum && Number.isFinite(profile.forum.reply_rate)) {
+      settings.comment_probability = Math.max(
+        0.1,
+        Math.min(0.9, profile.forum.reply_rate as number)
+      );
     }
 
     // Market volatility
@@ -303,9 +352,12 @@ export class CalibrationLoader {
     }
 
     // Vote herding from voter concentration
-    if (profile.voting) {
+    if (Number.isFinite(profile.voting.voter_concentration)) {
       // Higher voter concentration → higher herding factor
-      settings.voteHerdingFactor = Math.max(0.05, Math.min(0.5, profile.voting.voter_concentration * 0.4));
+      settings.voteHerdingFactor = Math.max(
+        0.05,
+        Math.min(0.5, (profile.voting.voter_concentration as number) * 0.4)
+      );
     }
 
     // Disable multi-stage proposals for calibrated simulations.

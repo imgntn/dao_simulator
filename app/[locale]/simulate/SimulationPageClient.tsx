@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useSimulationStore } from '@/lib/browser/simulation-store';
 import { useLayoutStore } from '@/lib/browser/layout-store';
 import { useBreakpointTier } from '@/components/simulation/panels/useBreakpointTier';
@@ -18,7 +18,7 @@ import { DelegationGraph } from '@/components/simulation/dashboard/DelegationGra
 import { ScenarioBuilder } from '@/components/simulation/ScenarioBuilder';
 import { ComparisonView } from '@/components/simulation/ComparisonView';
 import { HelpOverlay } from '@/components/simulation/HelpOverlay';
-import { ResearchPanel } from '@/components/simulation/research/ResearchPanel';
+import { EvidenceWorkbench } from '@/components/simulation/evidence/EvidenceWorkbench';
 import { MetricAlerts } from '@/components/simulation/MetricAlerts';
 import { CustomAgentForm } from '@/components/simulation/CustomAgentForm';
 import { BranchView } from '@/components/simulation/BranchView';
@@ -35,6 +35,7 @@ import { CollapsiblePanel } from '@/components/simulation/panels/CollapsiblePane
 import { SimulationCommandBar } from '@/components/simulation/SimulationCommandBar';
 import { ScenarioPresetWizard } from '@/components/simulation/ScenarioPresetWizard';
 import { LiveExplainabilityPanel } from '@/components/simulation/LiveExplainabilityPanel';
+import { useTutorialStore } from '@/lib/browser/tutorial-store';
 
 export default function SimulationPageClient() {
   const status = useSimulationStore(s => s.status);
@@ -44,10 +45,17 @@ export default function SimulationPageClient() {
   const updateConfig = useSimulationStore(s => s.updateConfig);
   const selectDao = useSimulationStore(s => s.selectDao);
   const snapshot = useActiveSnapshot();
-  const initialized = useRef(false);
   const [activeTab, setActiveTab] = useState<SimTab>('interactive');
   const [showHelp, setShowHelp] = useState(false);
   const [showPresetWizard, setShowPresetWizard] = useState(false);
+  const [dataLoadAttempt, setDataLoadAttempt] = useState(0);
+  const [dataLoadFailure, setDataLoadFailure] = useState<{
+    message: string;
+    diagnosticId: string;
+  } | null>(null);
+  const tutorialCompleted = useTutorialStore(s => s.completed);
+  const startTutorial = useTutorialStore(s => s.start);
+  const dismissTutorial = useTutorialStore(s => s.finish);
 
   const tier = useBreakpointTier();
   const sidebarWidth = useLayoutStore(s => s.sidebarWidth);
@@ -59,18 +67,22 @@ export default function SimulationPageClient() {
   useKeyboardShortcuts(shortcutCallbacks());
 
   useEffect(() => {
-    if (initialized.current) return;
-    initialized.current = true;
-
-    // Parse URL params for shared config
+    let cancelled = false;
+    setDataLoadFailure(null);
     const urlConfig = decodeConfigFromURL();
-
-    // Fetch bundled data and initialize
+    const fetchJson = async (url: string) => {
+      const response = await fetch(url, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`${url} returned HTTP ${response.status}`);
+      const contentType = response.headers.get('content-type') ?? '';
+      if (!contentType.includes('json')) throw new Error(`${url} returned ${contentType || 'an unknown content type'}`);
+      return response.json();
+    };
     Promise.all([
-      fetch('/data/calibration-profiles.json').then(r => r.json()),
-      fetch('/data/market-timeseries.json').then(r => r.json()),
+      fetchJson('/data/calibration-profiles.json'),
+      fetchJson('/data/market-timeseries.json'),
     ])
       .then(([profiles, market]) => {
+        if (cancelled) return;
         // Apply URL overrides before initialization
         if (urlConfig.daoId) {
           selectDao(urlConfig.daoId);
@@ -84,12 +96,18 @@ export default function SimulationPageClient() {
       })
       .catch(err => {
         console.error('Failed to load simulation data:', err);
+        if (cancelled) return;
+        setDataLoadFailure({
+          message: err instanceof Error ? err.message : String(err),
+          diagnosticId: `sim-data-${Date.now().toString(36)}-${dataLoadAttempt + 1}`,
+        });
       });
 
     return () => {
+      cancelled = true;
       dispose();
     };
-  }, [initialize, dispose, updateConfig, selectDao]);
+  }, [initialize, dispose, updateConfig, selectDao, dataLoadAttempt]);
 
   // Build panel content map for the Sidebar
   const panelContent = useMemo(
@@ -99,6 +117,21 @@ export default function SimulationPageClient() {
 
   // Mobile gets a compact dashboard UI, desktop/tablet gets the full Sanctum scene.
   const isMobile = tier === 'compact' || tier === 'handheld';
+  if (dataLoadFailure) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-[var(--sim-bg)] text-[var(--sim-text)] p-6">
+        <div className="evidence-card p-6 text-center max-w-lg">
+          <p className="text-lg font-mono mb-2">Simulation data unavailable</p>
+          <p className="text-sm text-[var(--sim-text-muted)]">{dataLoadFailure.message}</p>
+          <p className="text-[10px] text-[var(--sim-text-dim)] mt-2 font-mono">Diagnostic: {dataLoadFailure.diagnosticId}</p>
+          <button onClick={() => setDataLoadAttempt(value => value + 1)} className="evidence-button mt-4">
+            Retry data load
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (status === 'idle' || status === 'initializing') {
     return (
       <div className="flex items-center justify-center h-screen" style={{ background: 'var(--cave-bg, #040210)' }}>
@@ -164,7 +197,7 @@ export default function SimulationPageClient() {
       {/* Main content area */}
       <div
         className="sim-layout-body"
-        style={{ '--sidebar-width': `${sidebarWidth}px` } as React.CSSProperties}
+        style={{ '--sidebar-width': activeTab === 'research' ? '0px' : `${sidebarWidth}px` } as React.CSSProperties}
       >
         {/* Interactive scene area */}
         <div className="relative min-w-0 min-h-0 overflow-hidden">
@@ -173,6 +206,21 @@ export default function SimulationPageClient() {
             <div className="absolute inset-0">
               <SanctumScene />
             </div>
+            {!tutorialCompleted && (
+              <aside
+                className="absolute right-4 top-4 z-40 w-72 rounded border border-[var(--sim-accent)] bg-[var(--sim-surface)] p-3 shadow-xl"
+                aria-label="First-run guide"
+              >
+                <h2 className="text-sm font-semibold">New to the Sanctum?</h2>
+                <p className="mt-1 text-[11px] text-[var(--sim-text-muted)]">
+                  Take a guided tour of controls, the one-hour simulation clock, agent inspection, metrics, and evidence.
+                </p>
+                <div className="mt-3 flex gap-2">
+                  <button className="evidence-button" onClick={startTutorial}>Start guide</button>
+                  <button className="px-2 text-[11px] underline" onClick={dismissTutorial}>Dismiss</button>
+                </div>
+              </aside>
+            )}
           </div>
 
           {/* Non-interactive tabs render as overlays over the scene area */}
@@ -193,16 +241,18 @@ export default function SimulationPageClient() {
           )}
           {activeTab === 'research' && (
             <div className="absolute inset-0 overflow-y-auto bg-[var(--sim-bg)]">
-              <ResearchPanel />
+              <EvidenceWorkbench />
             </div>
           )}
         </div>
 
         {/* Sidebar (tablet/desktop/ultrawide) */}
-        <div className="flex min-h-0">
-          <SidebarResizeHandle />
-          <Sidebar panelContent={panelContent} />
-        </div>
+        {activeTab !== 'research' && (
+          <div className="flex min-h-0" data-tutorial="controls">
+            <SidebarResizeHandle />
+            <Sidebar panelContent={panelContent} />
+          </div>
+        )}
       </div>
 
       {showHelp && <HelpOverlay onClose={() => setShowHelp(false)} />}
@@ -278,6 +328,6 @@ function buildPanelContent(
     comparison: activeTab === 'compare' ? <ComparisonView /> : null,
     branch: activeTab === 'branch' ? <BranchView /> : null,
     multirun: activeTab === 'multirun' ? <MultiRunPanel /> : null,
-    research: activeTab === 'research' ? <ResearchPanel /> : null,
+    research: activeTab === 'research' ? <EvidenceWorkbench /> : null,
   };
 }

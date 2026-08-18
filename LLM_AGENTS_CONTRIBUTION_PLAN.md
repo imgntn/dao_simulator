@@ -81,22 +81,26 @@ npx ts-node scripts/run-experiment.ts experiments/paper/12-llm-agent-reasoning.y
 
 > **RQ6**: How does LLM-based reasoning affect governance outcomes compared to rule-based heuristics, and can hybrid agent architectures improve behavioral realism while maintaining reproducibility?
 
-### 3.2 Add Contribution #6
-> **LLM-Augmented Agents**: An LLM agent architecture with deterministic fallback, demonstrating [results TBD] across hybrid and full-LLM configurations while maintaining reproducibility through response caching and seeded generation.
+### 3.2 Gate any LLM contribution on verified exploratory evidence
+> **LLM-Augmented Agents (exploratory)**: The simulator includes an LLM-agent
+> architecture with an explicit deterministic fallback. No quantitative LLM
+> contribution is claimed until a provider-qualified campaign completes with
+> frozen response caches, model digests, request parameters, seeds,
+> latency/error diagnostics, and independently verified artifacts.
 
 ### 3.3 Section updates needed
 
 | Section | File | Changes |
 |---------|------|---------|
-| Abstract | `paper/sections/abstract.tex` | Add 1-2 sentences about LLM results |
-| Introduction | `paper/sections/introduction.tex` | Add RQ6 + Contribution #6 |
+| Abstract | `paper/sections/abstract.tex` | Add an LLM finding only if the verified exploratory campaign supports one |
+| Introduction | `paper/sections/introduction.tex` | Label RQ6 exploratory and separate it from confirmatory contributions |
 | Background | `paper/sections/background.tex` | Add "LLM Agents in Simulation" subsection (~0.5 page), cite 5 competitors |
 | Architecture | `paper/sections/architecture.tex` | Add "LLM Agent Architecture" subsection: async pre-compute, memory, fallback |
 | Methodology | `paper/sections/methodology.tex` | Add Experiment 12 to parameter table, document LLM metrics |
-| Results | `paper/sections/results.tex` | Add RQ6 subsection with table + figure |
-| Discussion | `paper/sections/discussion.tex` | Interpret LLM vs rule-based findings |
-| Limitations | `paper/sections/limitations.tex` | Move LLM from future work → completed; add LLM-specific caveats (model dependency, cost); also fix: futarchy is listed as "omitted" but is actually implemented |
-| Conclusion | `paper/sections/conclusion.tex` | Update contribution count |
+| Results | `paper/sections/results.tex` | Add RQ6 only from a verified exploratory artifact, including failures and costs |
+| Discussion | `paper/sections/discussion.tex` | Interpret LLM comparisons conditionally and retain null or negative findings |
+| Limitations | `paper/sections/limitations.tex` | Keep LLM studies pending until verified; if run, document model dependency, nondeterminism, availability, and cost |
+| Conclusion | `paper/sections/conclusion.tex` | Do not count LLMs as a contribution without verified evidence |
 | Appendix | `paper/sections/appendix_configs.tex` | Add Exp 12 row |
 | Main | `paper/main.tex` | Update `\experimentcount` and `\totalruns` |
 

@@ -840,6 +840,28 @@ html.theme-dark .mucha-rule::before {
   background: var(--mucha-gold, #C49020);
 }
 
+.evidence-card {
+  border: 1px solid var(--sim-border);
+  border-radius: 0.65rem;
+  background: var(--sim-surface);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.12);
+}
+
+.evidence-button {
+  border: 1px solid var(--sim-border);
+  border-radius: 0.4rem;
+  background: var(--sim-surface);
+  color: var(--sim-text);
+  padding: 0.45rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.evidence-button:hover,
+.evidence-button:focus-visible {
+  border-color: var(--sim-accent);
+  outline: none;
+}
+
 /* Respect reduced motion within simulation layout */
 @media (prefers-reduced-motion: reduce) {
   .sim-layout * {

@@ -13,12 +13,15 @@ interface TabBarProps {
   onTabChange: (tab: SimTab) => void;
 }
 
-const tabs: { id: SimTab; label: string; glyph: string }[] = [
-  { id: 'interactive', label: 'The Sanctum', glyph: '◈' },
-  { id: 'compare',     label: 'Compare',     glyph: '⊕' },
-  { id: 'branch',      label: 'Branch',      glyph: '⋈' },
-  { id: 'multirun',    label: 'Multi-Run',   glyph: '⟳' },
-  { id: 'research',    label: 'Research',    glyph: '⊛' },
+const primaryTabs: { id: SimTab; label: string; glyph: string }[] = [
+  { id: 'interactive', label: 'Explore · Sanctum', glyph: '◈' },
+  { id: 'research', label: 'Evidence', glyph: '⊛' },
+];
+
+const analysisTabs: { id: SimTab; label: string; glyph: string }[] = [
+  { id: 'compare', label: 'Compare', glyph: '⊕' },
+  { id: 'branch', label: 'Branch', glyph: '⋈' },
+  { id: 'multirun', label: 'Multi-Run', glyph: '⟳' },
 ];
 
 export function TabBar({ activeTab, onTabChange }: TabBarProps) {
@@ -33,7 +36,7 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
 
   return (
     <div className="flex px-4 overflow-x-auto scrollbar-none -mb-px" role="tablist">
-      {tabs.map(tab => {
+      {primaryTabs.map(tab => {
         const isActive = activeTab === tab.id;
         return (
           <button
@@ -49,7 +52,12 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
               letterSpacing: isActive ? '0.03em' : '0',
             }}
           >
-            <span style={{ fontSize: '0.7em', opacity: isActive ? 1 : 0.45 }}>{tab.glyph}</span>
+            <span
+              aria-hidden="true"
+              style={{ fontSize: '0.7em', opacity: isActive ? 1 : 0.45 }}
+            >
+              {tab.glyph}
+            </span>
             {tab.label}
             {isActive && (
               <span
@@ -64,6 +72,25 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
           </button>
         );
       })}
+      <details className="relative flex-shrink-0">
+        <summary className="list-none cursor-pointer px-4 py-2.5 text-sm font-medium text-[var(--sim-text-muted)]">
+          Analysis tools ▾
+        </summary>
+        <div className="absolute z-50 left-0 top-full min-w-44 rounded-b border border-[var(--sim-border)] bg-[var(--sim-surface)] shadow-xl p-1">
+          {analysisTabs.map(tab => (
+            <button
+              key={tab.id}
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              onClick={() => handleTabChange(tab.id)}
+              className="w-full text-left rounded px-3 py-2 text-sm hover:bg-[var(--sim-surface-hover)]"
+              style={{ color: activeTab === tab.id ? 'var(--mucha-gold-lt, #E8C050)' : 'var(--sim-text-muted)' }}
+            >
+              <span className="mr-2" aria-hidden="true">{tab.glyph}</span>{tab.label}
+            </button>
+          ))}
+        </div>
+      </details>
     </div>
   );
 }

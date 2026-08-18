@@ -1,0 +1,54 @@
+id: smoke-campaign-lifecycle
+name: Campaign Lifecycle Smoke Test
+description: Exercise immutable campaign creation, execution, indexing, and verification.
+version: 1.0.0
+research:
+  classification: validation
+  publicationRole: validation
+  researchQuestionIds:
+    - SMOKE
+  hypothesis: A nonzero explicit protocol yield changes final treasury over a short deterministic run.
+  primaryOutcome: final_treasury
+  secondaryOutcomes:
+    - token_conservation_error
+  analysisModel: paired_contrast
+  comparisonCorrection: holm
+  smallestEffectOfInterest:
+    value: 1
+    unit: treasury tokens
+    rationale: The smoke profile only verifies the campaign analysis lifecycle.
+  analysisFamily: smoke-campaign-lifecycle
+  experimentalUnit: One deterministic seeded smoke replicate under one yield condition.
+baseConfig:
+  template: compound
+  overrides:
+    proposal_creation_probability: 0
+    voting_activity: 0
+  population:
+    totalMembers: 10
+sweep:
+  parameter: treasuryProtocolAnnualYield
+  values:
+    - 0
+    - 0.01
+execution:
+  runsPerConfig: 2
+  stepsPerRun: 5
+  seedStrategy: fixed
+  fixedSeeds:
+    - 424242
+    - 424243
+  workers: 1
+metrics:
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+  - name: Token Conservation Error
+    type: builtin
+    builtin: token_conservation_error
+output:
+  directory: results/smoke/campaign-lifecycle
+  formats:
+    - json
+  includeRawRuns: true
+  includeManifest: true

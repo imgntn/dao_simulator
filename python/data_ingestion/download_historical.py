@@ -2,9 +2,11 @@
 import argparse
 import csv
 import datetime as dt
+import hashlib
 import json
 import os
 import re
+import sys
 import time
 import socket
 import urllib.error
@@ -67,6 +69,29 @@ def to_iso(ts_seconds: int) -> str:
 
 def ensure_dir(path: str) -> None:
     os.makedirs(path, exist_ok=True)
+
+
+def file_sha256(path: str) -> str:
+    digest = hashlib.sha256()
+    with open(path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def atomic_json_dump(path: str, payload: Dict[str, Any]) -> None:
+    ensure_dir(os.path.dirname(path))
+    temporary = f"{path}.{os.getpid()}.tmp"
+    try:
+        with open(temporary, "w", encoding="utf-8", newline="\n") as handle:
+            json.dump(payload, handle, indent=2)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
 
 
 def normalize_symbol(raw_symbol: Optional[str]) -> Optional[str]:
@@ -801,6 +826,7 @@ def maker_fetch_executive_supporters(api_base: str) -> Optional[Dict[str, Any]]:
 
 
 def main() -> None:
+    started_at = dt.datetime.now(dt.timezone.utc)
     parser = argparse.ArgumentParser(description="Download historical data for digital twins.")
     parser.add_argument("--config", default=DEFAULT_CONFIG_PATH, help="Path to dao_sources.json")
     parser.add_argument("--output", default=DEFAULT_OUTPUT_DIR, help="Output directory for CSVs")
@@ -920,6 +946,27 @@ def main() -> None:
 
     output_dir = args.output
     ensure_dir(output_dir)
+    ingestion_run_id = started_at.strftime("%Y%m%dT%H%M%S.%fZ")
+    ingestion_manifest_path = os.path.join(
+        output_dir,
+        "ingestion-runs",
+        f"{ingestion_run_id}-manifest.json",
+    )
+    ingestion_manifest = {
+        "schema_version": "1.0.0",
+        "run_id": ingestion_run_id,
+        "status": "running",
+        "started_at_utc": started_at.isoformat(),
+        "completed_at_utc": None,
+        "launch_command": [sys.executable, *sys.argv],
+        "arguments": vars(args),
+        "selected_dao_ids": [dao.get("id") for dao in daos],
+        "config_path": os.path.abspath(args.config),
+        "config_sha256": file_sha256(args.config),
+        "output_root": os.path.abspath(output_dir),
+        "tables": [],
+    }
+    atomic_json_dump(ingestion_manifest_path, ingestion_manifest)
 
     market_daily_path = os.path.join(output_dir, "market", "market_daily.csv")
     market_hourly_path = os.path.join(output_dir, "market", "market_hourly.csv")
@@ -1683,6 +1730,24 @@ def main() -> None:
                 if dao_id == "maker_sky":
                     log("  Maker: missing maker_api_base for Maker/Sky")
 
+    completed_at = dt.datetime.now(dt.timezone.utc)
+    ingestion_manifest["status"] = "completed"
+    ingestion_manifest["completed_at_utc"] = completed_at.isoformat()
+    ingestion_manifest["tables"] = [
+        {
+            "path": os.path.relpath(path, output_dir).replace("\\", "/"),
+            "sha256": file_sha256(path),
+            "bytes": os.path.getsize(path),
+            "filesystem_modified_at_utc": dt.datetime.fromtimestamp(
+                os.path.getmtime(path),
+                tz=dt.timezone.utc,
+            ).isoformat(),
+        }
+        for path in sorted(written_paths)
+        if os.path.exists(path)
+    ]
+    atomic_json_dump(ingestion_manifest_path, ingestion_manifest)
+    log(f"Ingestion manifest: {ingestion_manifest_path}")
     log("Done.")
 
 

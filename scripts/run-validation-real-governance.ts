@@ -68,7 +68,7 @@ async function main() {
         propFreq: avg.metrics.proposal_frequency_error,
         passRate: avg.metrics.pass_rate_error,
         partic: avg.metrics.participation_rate_error,
-        price: avg.metrics.price_trajectory_rmse,
+        price: avg.metrics.price_level_error,
         votConc: avg.metrics.voter_concentration_error,
         forum: avg.metrics.forum_activity_error,
         best: result.bestScore,

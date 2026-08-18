@@ -43,9 +43,8 @@ test.describe('Simulation Behavior', () => {
     await expect(page.getByRole('button', { name: 'Fork' })).toBeVisible();
   });
 
-  test('Fork button is not visible at step 0', async ({ page }) => {
-    // At idle state, Fork should not be visible
-    await expect(page.getByRole('button', { name: 'Fork' })).not.toBeVisible();
+  test('Fork button is disabled at step 0', async ({ page }) => {
+    await expect(page.getByRole('button', { name: 'Fork' })).toBeDisabled();
   });
 
   test('speed slider updates display text', async ({ page }) => {
@@ -134,7 +133,7 @@ test.describe('DAO Switching', () => {
     const stepBefore = await getStep(page);
     expect(stepBefore).toBeGreaterThan(0);
 
-    const daoSelect = page.locator('select').first();
+    const daoSelect = page.getByLabel('DAO preset');
     await daoSelect.selectOption({ index: 3 });
 
     await expect(async () => {
@@ -162,14 +161,14 @@ test.describe('DAO Switching', () => {
 test.describe('Governance Rule Switching', () => {
   test('can change governance rule', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    const govSelect = page.locator('select').nth(1);
+    const govSelect = page.getByLabel('Governance rule');
     await govSelect.selectOption('quadratic');
     await expect(govSelect).toHaveValue('quadratic');
   });
 
   test('can change to conviction voting', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    const govSelect = page.locator('select').nth(1);
+    const govSelect = page.getByLabel('Governance rule');
     await govSelect.selectOption('conviction');
     await expect(govSelect).toHaveValue('conviction');
   });

@@ -207,7 +207,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             {sections.length} {m.home?.briefsCount ?? 'briefs covering participation, capture, operations, treasury, coordination, LLM governance, and counterfactual rule comparison.'}
           </InfoCard>
           <InfoCard label={m.home?.evidenceLabel ?? 'Evidence Base'}>
-            {m.home?.evidenceDesc ?? '17 experiment configurations with calibrated digital twins averaging 0.85 accuracy.'}
+            {m.home?.evidenceDesc ?? 'The confirmatory campaign is being regenerated from frozen designs and verified raw runs.'}
           </InfoCard>
           <InfoCard label={m.home?.authorLabel ?? 'Author'}>
             {m.home?.authorDesc ?? 'Research direction and systems thinking by'}{' '}
@@ -394,7 +394,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4">
                 <p className="text-sm font-semibold uppercase tracking-wide text-[var(--accent-gold)]">How</p>
                 <p className="mt-1.5 text-base leading-relaxed text-[var(--text-body-secondary)]">
-                  {m.home?.digitalTwinsHow ?? 'Historical calibration profiles compiled from on-chain data drive agent behavior, proposal frequency, participation rates, and pass rates. Calibration scores average 0.85 across all 14 DAOs.'}
+                  {m.home?.digitalTwinsHow ?? 'Historical profiles drive agent behavior and governance cadence. A 2025 temporal holdout produced 0.473 mean composite similarity; calibrated runs beat persistence for 5/14 DAOs and an uncalibrated simulator for 8/14.'}
                 </p>
               </div>
               <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-warm)] p-4">
@@ -411,7 +411,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 <p className="text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)]">
                   {m.home?.digitalTwinsCategories ?? 'DeFi, Layer 2, Public Goods, Staking, Lending, Identity, Stablecoin, DEX'}
                 </p>
-                <p className="text-xs text-[var(--text-muted)]">Sorted by accuracy</p>
+                <p className="text-xs text-[var(--text-muted)]">Sorted by held-out similarity</p>
               </div>
               <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {(m.home?.digitalTwinsDaos ?? 'Uniswap, Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, SushiSwap')
@@ -448,8 +448,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                           </div>
                           {score != null && (
                             <span className={`rounded px-1.5 py-0.5 text-xs font-bold tabular-nums ${
-                              score >= 0.88 ? 'bg-[var(--accent-teal)]/15 text-[var(--accent-teal)]'
-                                : score >= 0.85 ? 'bg-[var(--accent-gold)]/15 text-[var(--accent-gold)]'
+                              score >= 0.6 ? 'bg-[var(--accent-teal)]/15 text-[var(--accent-teal)]'
+                                : score >= 0.4 ? 'bg-[var(--accent-gold)]/15 text-[var(--accent-gold)]'
                                 : 'bg-[var(--border-subtle)] text-[var(--text-muted)]'
                             }`}>
                               {(score * 100).toFixed(0)}%

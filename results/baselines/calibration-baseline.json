@@ -1,861 +1,1058 @@
 {
-  "version": 3,
-  "generatedAt": "2026-05-19T10:09:58.646Z",
-  "gitSha": "854537f6ac5a3f187b381c76280be444f27b1693",
-  "configHash": "5ff76ac80237904e",
-  "description": "v2 measurement ??? captures averaged per-metric details after averageReports fix",
+  "version": 4,
+  "generatedAt": "2026-07-18T07:10:28.224Z",
+  "gitSha": "7feb4c20bc07b5b480be4b2a06491dfd82342142",
+  "configHash": "385c7bdc842d39666688f237f8752b38fee4ec1d563432ebb3f18f00dd4826a3",
+  "description": "Post-fix temporal baseline preserving observed zero rates and calibrated participation without double-counting fatigue",
   "perDao": {
     "aave": {
       "daoId": "aave",
-      "score": 0.8334308571374098,
-      "passRate": 0.88459951812893,
-      "participation": 0.022869445161622447,
-      "proposalFrequency": 19.2,
-      "priceRmse": 0.12676436645449368,
-      "voterConcentration": 0.9324208195740928,
-      "forumActivity": 3.8,
+      "score": 0.31076130573001076,
+      "passRate": 1,
+      "participation": 0.02535620316698864,
+      "proposalFrequency": 29.9,
+      "priceLevelError": 0.6193769109711139,
+      "voterConcentration": 0.8709374999740769,
+      "forumActivity": 0.1,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "pass_rate_error",
+        "participation_rate_error",
+        "price_level_error",
+        "voter_concentration_error",
+        "forum_activity_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.8334308571374098,
-          "stdDev": 0.038554791945239746,
-          "ci95Lower": 0.809534349514279,
-          "ci95Upper": 0.8573273647605406,
-          "standardError": 0.012192095726087142
+          "mean": 0.31076130573001076,
+          "stdDev": 0.08908997669898441,
+          "ci95Lower": 0.24703460334981164,
+          "ci95Upper": 0.3744880081102099,
+          "standardError": 0.028172724306011986,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.1934826883910387,
-          "stdDev": 0.14314691153405767,
-          "ci95Lower": 0.10475931341965371,
-          "ci95Upper": 0.28220606336242365,
-          "standardError": 0.04526702804662499
+          "mean": 0.7640797469150546,
+          "stdDev": 0.1058220276152125,
+          "ci95Lower": 0.6883844879311029,
+          "ci95Upper": 0.8397750058990064,
+          "standardError": 0.03346386338813078,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.10220902092559847,
-          "stdDev": 0.07890537146967633,
-          "ci95Lower": 0.053302965006292884,
-          "ci95Upper": 0.15111507684490405,
-          "standardError": 0.024952069346584484
+          "mean": 0.714201927105153,
+          "stdDev": 0.46017861640601565,
+          "ci95Lower": 0.38503284640684954,
+          "ci95Upper": 1.0433710078034564,
+          "standardError": 0.14552125583479372,
+          "sampleSize": 10
         },
         "participation_rate_error": {
-          "mean": 0.2526325110580899,
-          "stdDev": 0.0778570379233464,
-          "ci95Lower": 0.2043762190025613,
-          "ci95Upper": 0.30088880311361854,
-          "standardError": 0.02462055717118806
+          "mean": 0.7585123507905844,
+          "stdDev": 0.0279455233053728,
+          "ci95Lower": 0.7385227165744077,
+          "ci95Upper": 0.7785019850067612,
+          "standardError": 0.00883715040502952,
+          "sampleSize": 10
         },
-        "price_trajectory_rmse": {
-          "mean": 0.12676436645449368,
-          "stdDev": 0.0059932204398620995,
-          "ci95Lower": 0.12304972994104336,
-          "ci95Upper": 0.130479002967944,
-          "standardError": 0.0018952227109440424
+        "price_level_error": {
+          "mean": 0.6193769109711139,
+          "stdDev": 0.00370657618222909,
+          "ci95Lower": 0.6167255703156713,
+          "ci95Upper": 0.6220282516265565,
+          "standardError": 0.001172122305677525,
+          "sampleSize": 10
         },
         "voter_concentration_error": {
-          "mean": 0.06739265895769876,
-          "stdDev": 0.0028917662605354648,
-          "ci95Lower": 0.06560032366025124,
-          "ci95Upper": 0.06918499425514628,
-          "standardError": 0.0009144567844119953
+          "mean": 0.12600351231903972,
+          "stdDev": 0.006091864408405436,
+          "ci95Lower": 0.1216459578052848,
+          "ci95Upper": 0.13036106683279466,
+          "standardError": 0.001926416672747537,
+          "sampleSize": 10
         },
         "forum_activity_error": {
-          "mean": 0.2147624350414891,
-          "stdDev": 0.28926497701937304,
-          "ci95Lower": 0.03547414480078245,
-          "ci95Upper": 0.39405072528219576,
-          "standardError": 0.09147361746974829
+          "mean": 0.9816901408450704,
+          "stdDev": 0.057900858566463244,
+          "ci95Lower": 0.9402732394366198,
+          "ci95Upper": 1.0231070422535211,
+          "standardError": 0.018309859154929563,
+          "sampleSize": 10
         }
       }
     },
     "arbitrum": {
       "daoId": "arbitrum",
-      "score": 0.8823186929638259,
-      "passRate": 0.956388888888889,
-      "participation": 0.03126680996472663,
-      "proposalFrequency": 7,
-      "priceRmse": 0.010217378458124787,
-      "voterConcentration": 0.9378358821862399,
-      "forumActivity": 2.4,
+      "score": 0.3206697955260737,
+      "passRate": 0.20974358974358975,
+      "participation": 0.034605739553656215,
+      "proposalFrequency": 13,
+      "priceLevelError": 0.5912114866783422,
+      "voterConcentration": 0.8771124289256281,
+      "forumActivity": 0.3,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "pass_rate_error",
+        "participation_rate_error",
+        "price_level_error",
+        "voter_concentration_error",
+        "forum_activity_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.8823186929638259,
-          "stdDev": 0.05584540991718143,
-          "ci95Lower": 0.8477053492918324,
-          "ci95Upper": 0.9169320366358195,
-          "standardError": 0.01765986922040485
+          "mean": 0.3206697955260737,
+          "stdDev": 0.05662250120359246,
+          "ci95Lower": 0.280167312352061,
+          "ci95Upper": 0.36117227870008645,
+          "standardError": 0.017905607061897758,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.04188449030704326,
-          "stdDev": 0.0899496241163311,
-          "ci95Lower": -0.013866864322145615,
-          "ci95Upper": 0.09763584493623215,
-          "standardError": 0.028444568688361673
+          "mean": 0.7054995957016401,
+          "stdDev": 0.10124388580669409,
+          "ci95Lower": 0.6330791145467538,
+          "ci95Upper": 0.7779200768565264,
+          "standardError": 0.03201612783151472,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.06987724934976283,
-          "stdDev": 0.029412404205813605,
-          "ci95Lower": 0.051647252354393006,
-          "ci95Upper": 0.08810724634513266,
-          "standardError": 0.009301018875188685
+          "mean": 0.7526025126874384,
+          "stdDev": 0.1363381990438752,
+          "ci95Lower": 0.6550788163587533,
+          "ci95Upper": 0.8501262090161235,
+          "standardError": 0.04311392410640364,
+          "sampleSize": 10
         },
         "participation_rate_error": {
-          "mean": 0.3539422827638839,
-          "stdDev": 0.16831655973153098,
-          "ci95Lower": 0.24961859821550217,
-          "ci95Upper": 0.45826596731226565,
-          "standardError": 0.0532263696675417
+          "mean": 0.8804637666540372,
+          "stdDev": 0.017782818768419837,
+          "ci95Lower": 0.8677435882330115,
+          "ci95Upper": 0.893183945075063,
+          "standardError": 0.005623421052619702,
+          "sampleSize": 10
         },
-        "price_trajectory_rmse": {
-          "mean": 0.010217378458124787,
-          "stdDev": 0.0066595117435879776,
-          "ci95Lower": 0.0060897703161068495,
-          "ci95Upper": 0.014344986600142724,
-          "standardError": 0.0021059225214377234
+        "price_level_error": {
+          "mean": 0.5912114866783422,
+          "stdDev": 0.009895940129588427,
+          "ci95Lower": 0.5841328493862782,
+          "ci95Upper": 0.5982901239704063,
+          "standardError": 0.003129371039816126,
+          "sampleSize": 10
         },
         "voter_concentration_error": {
-          "mean": 0.0616010784608365,
-          "stdDev": 0.0036073362172335146,
-          "ci95Lower": 0.05936522830927162,
-          "ci95Upper": 0.06383692861240137,
-          "standardError": 0.001140739873247385
+          "mean": 0.12086556186666528,
+          "stdDev": 0.004660556727854349,
+          "ci95Lower": 0.11753183205185666,
+          "ci95Upper": 0.1241992916814739,
+          "standardError": 0.0014737974424441247,
+          "sampleSize": 10
         },
         "forum_activity_error": {
-          "mean": 0.14753563421881508,
-          "stdDev": 0.2465276687529243,
-          "ci95Lower": -0.005263797925294411,
-          "ci95Upper": 0.30033506636292456,
-          "standardError": 0.07795889395107627
+          "mean": 0.7557377049180327,
+          "stdDev": 0.3932996603246313,
+          "ci95Lower": 0.4744076234833285,
+          "ci95Upper": 1.0370677863527369,
+          "standardError": 0.12437227295963935,
+          "sampleSize": 10
         }
       }
     },
     "balancer": {
       "daoId": "balancer",
-      "score": 0.8209679664002596,
-      "passRate": 0.8916666666666666,
-      "participation": 0.008340698653198652,
-      "proposalFrequency": 14.8,
-      "priceRmse": 0.025814175696263562,
-      "voterConcentration": 0.9246077793958681,
-      "forumActivity": 24.4,
+      "score": 0.36994590194002896,
+      "passRate": null,
+      "participation": 0.052907890166830354,
+      "proposalFrequency": 22,
+      "priceLevelError": 1.8113065936348618,
+      "voterConcentration": 0.8706376607568806,
+      "forumActivity": 33.9,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "participation_rate_error",
+        "price_level_error",
+        "voter_concentration_error",
+        "forum_activity_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.8209679664002596,
-          "stdDev": 0.07316143331384929,
-          "ci95Lower": 0.7756220402340199,
-          "ci95Upper": 0.8663138925664993,
-          "standardError": 0.023135676615428424
+          "mean": 0.36994590194002896,
+          "stdDev": 0.03964873264752572,
+          "ci95Lower": 0.3415848777395393,
+          "ci95Upper": 0.3983069261405186,
+          "standardError": 0.012538030150525925,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.2508905852417303,
-          "stdDev": 0.21469153077861625,
-          "ci95Lower": 0.11782339584645055,
-          "ci95Upper": 0.3839577746370101,
-          "standardError": 0.06789142316085701
+          "mean": 0.5565609345753016,
+          "stdDev": 0.1043754734634884,
+          "ci95Lower": 0.4819004062010034,
+          "ci95Upper": 0.6312214629495999,
+          "standardError": 0.03300642280030868,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.10833333333333335,
-          "stdDev": 0.09425361985604097,
-          "ci95Lower": 0.04991433450702417,
-          "ci95Upper": 0.16675233215964252,
-          "standardError": 0.029805611646076112
+          "mean": 0,
+          "stdDev": 0,
+          "ci95Lower": 0,
+          "ci95Upper": 0,
+          "standardError": 0,
+          "sampleSize": 0
         },
         "participation_rate_error": {
-          "mean": 0.34838291771885516,
-          "stdDev": 0.16065580552492625,
-          "ci95Lower": 0.24880741782044047,
-          "ci95Upper": 0.44795841761726984,
-          "standardError": 0.050803826478782996
+          "mean": 0.6938200800530651,
+          "stdDev": 0.0325711428510303,
+          "ci95Lower": 0.6705217068402879,
+          "ci95Upper": 0.7171184532658422,
+          "standardError": 0.010299899740396612,
+          "sampleSize": 10
         },
-        "price_trajectory_rmse": {
-          "mean": 0.025814175696263562,
-          "stdDev": 0.007305956103224905,
-          "ci95Lower": 0.02128589718906937,
-          "ci95Upper": 0.030342454203457755,
-          "standardError": 0.0023103461771398943
+        "price_level_error": {
+          "mean": 1.8113065936348618,
+          "stdDev": 0.022429509022013357,
+          "ci95Lower": 1.7952626041879982,
+          "ci95Upper": 1.8273505830817254,
+          "standardError": 0.007092833530885795,
+          "sampleSize": 10
         },
         "voter_concentration_error": {
-          "mean": 0.07428135823401263,
-          "stdDev": 0.0051326454289896545,
-          "ci95Lower": 0.0711001116383914,
-          "ci95Upper": 0.07746260482963387,
-          "standardError": 0.0016230849977659331
+          "mean": 0.07339542277896925,
+          "stdDev": 0.006374888993152534,
+          "ci95Lower": 0.06883541874006294,
+          "ci95Upper": 0.07795542681787557,
+          "standardError": 0.0020159169049099547,
+          "sampleSize": 10
         },
         "forum_activity_error": {
-          "mean": 0.13665874901029298,
-          "stdDev": 0.12700714977494296,
-          "ci95Lower": 0.05793890201696053,
-          "ci95Upper": 0.21537859600362544,
-          "standardError": 0.04016318724149615
+          "mean": 0.6879948651564151,
+          "stdDev": 0.17708850491976902,
+          "ci95Lower": 0.5613221813582477,
+          "ci95Upper": 0.8146675489545824,
+          "standardError": 0.056000302298040365,
+          "sampleSize": 10
         }
       }
     },
     "compound": {
       "daoId": "compound",
-      "score": 0.7977739601856262,
-      "passRate": 0.7597069597069597,
-      "participation": 0.01440999779541446,
-      "proposalFrequency": 9.1,
-      "priceRmse": 0.12421322321013176,
-      "voterConcentration": 0.8757744668186629,
-      "forumActivity": 3,
+      "score": 0.514858951529101,
+      "passRate": 1,
+      "participation": 0.012736216329966332,
+      "proposalFrequency": 10.2,
+      "priceLevelError": 0.023636220717498907,
+      "voterConcentration": 0.8703503992162934,
+      "forumActivity": 0.2,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "pass_rate_error",
+        "participation_rate_error",
+        "price_level_error",
+        "voter_concentration_error",
+        "forum_activity_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.7977739601856262,
-          "stdDev": 0.06818441235120817,
-          "ci95Lower": 0.755512823571439,
-          "ci95Upper": 0.8400350967998134,
-          "standardError": 0.02156180439499345
+          "mean": 0.514858951529101,
+          "stdDev": 0.10553622344112999,
+          "ci95Lower": 0.4393681303305839,
+          "ci95Upper": 0.590349772727618,
+          "standardError": 0.03337348417264238,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.33177387914230017,
-          "stdDev": 0.24417066813196603,
-          "ci95Lower": 0.1804353311182879,
-          "ci95Upper": 0.4831124271663124,
-          "standardError": 0.07721354491021033
+          "mean": 0.21591997847138664,
+          "stdDev": 0.24684044147183476,
+          "ci95Lower": 0.0393532317741469,
+          "ci95Upper": 0.39248672516862637,
+          "standardError": 0.07805780136924834,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.18758850640713573,
-          "stdDev": 0.10608579918653738,
-          "ci95Lower": 0.12183584685271132,
-          "ci95Upper": 0.25334116596156014,
-          "standardError": 0.0335472752828696
+          "mean": 0.8271952743382938,
+          "stdDev": 0.36430434902102604,
+          "ci95Lower": 0.5666057480404407,
+          "ci95Upper": 1.0877848006361468,
+          "standardError": 0.11520315044113748,
+          "sampleSize": 10
         },
         "participation_rate_error": {
-          "mean": 0.21307949105568155,
-          "stdDev": 0.1299500390242992,
-          "ci95Lower": 0.1325356224081497,
-          "ci95Upper": 0.2936233597032134,
-          "standardError": 0.04109381053445504
+          "mean": 0.8000593982736841,
+          "stdDev": 0.0448341458818384,
+          "ci95Lower": 0.767989210616817,
+          "ci95Upper": 0.8321295859305512,
+          "standardError": 0.014177801793486771,
+          "sampleSize": 10
         },
-        "price_trajectory_rmse": {
-          "mean": 0.12421322321013176,
-          "stdDev": 0.009284546894838812,
-          "ci95Lower": 0.1184586014249862,
-          "ci95Upper": 0.1299678449952773,
-          "standardError": 0.002936031523033447
+        "price_level_error": {
+          "mean": 0.023636220717498907,
+          "stdDev": 0.010664961560908709,
+          "ci95Lower": 0.016007496853481545,
+          "ci95Upper": 0.03126494458151627,
+          "standardError": 0.0033725569690616097,
+          "sampleSize": 10
         },
         "voter_concentration_error": {
-          "mean": 0.11707383121417206,
-          "stdDev": 0.004443241566860262,
-          "ci95Lower": 0.11431988155923176,
-          "ci95Upper": 0.11982778086911236,
-          "standardError": 0.0014050763545613754
+          "mean": 0.11531774830626818,
+          "stdDev": 0.006153943182127723,
+          "ci95Lower": 0.11091578839828473,
+          "ci95Upper": 0.11971970821425162,
+          "standardError": 0.0019460477046788006,
+          "sampleSize": 10
         },
         "forum_activity_error": {
-          "mean": 0.08809603933298422,
-          "stdDev": 0.19366735361244442,
-          "ci95Lower": -0.03194023005019808,
-          "ci95Upper": 0.20813230871616653,
-          "standardError": 0.06124299458325628
+          "mean": 0.9063291139240507,
+          "stdDev": 0.1974755669641013,
+          "ci95Lower": 0.765073417721519,
+          "ci95Upper": 1.0475848101265823,
+          "standardError": 0.06244725738396623,
+          "sampleSize": 10
         }
       }
     },
     "curve": {
       "daoId": "curve",
-      "score": 0.860933751442785,
-      "passRate": 0.95,
-      "participation": 0.056990740740740745,
-      "proposalFrequency": 2.7,
-      "priceRmse": 0.014772937203195549,
-      "voterConcentration": 0.9367759842101906,
-      "forumActivity": 14,
+      "score": 0.7780296646219618,
+      "passRate": null,
+      "participation": null,
+      "proposalFrequency": 0,
+      "priceLevelError": 0.07323445126012693,
+      "voterConcentration": null,
+      "forumActivity": 0.1,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "price_level_error",
+        "forum_activity_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.860933751442785,
-          "stdDev": 0.03392210198468013,
-          "ci95Lower": 0.8399086148055319,
-          "ci95Upper": 0.881958888080038,
-          "standardError": 0.010727110529210743
+          "mean": 0.7780296646219618,
+          "stdDev": 0.00360924887642787,
+          "ci95Lower": 0.7754479428897705,
+          "ci95Upper": 0.7806113863541531,
+          "standardError": 0.0011413447091915678,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.017976323046086554,
-          "stdDev": 0.0568461247806095,
-          "ci95Lower": -0.017257270124243093,
-          "ci95Upper": 0.0532099162164162,
-          "standardError": 0.017976323046086554
+          "mean": 0,
+          "stdDev": 0,
+          "ci95Lower": 0,
+          "ci95Upper": 0,
+          "standardError": 0,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.2,
-          "stdDev": 0.07440653318043244,
-          "ci95Lower": 0.1538823529411765,
-          "ci95Upper": 0.24611764705882352,
-          "standardError": 0.02352941176470588
+          "mean": 0,
+          "stdDev": 0,
+          "ci95Lower": 0,
+          "ci95Upper": 0,
+          "standardError": 0,
+          "sampleSize": 0
         },
         "participation_rate_error": {
-          "mean": 0.3376157407407408,
-          "stdDev": 0.1082267730640836,
-          "ci95Lower": 0.2705360918289786,
-          "ci95Upper": 0.404695389652503,
-          "standardError": 0.03422431066926644
+          "mean": 0,
+          "stdDev": 0,
+          "ci95Lower": 0,
+          "ci95Upper": 0,
+          "standardError": 0,
+          "sampleSize": 0
         },
-        "price_trajectory_rmse": {
-          "mean": 0.014772937203195549,
-          "stdDev": 0.009185322102058644,
-          "ci95Lower": 0.009079815581776531,
-          "ci95Upper": 0.020466058824614566,
-          "standardError": 0.0029046538884790907
+        "price_level_error": {
+          "mean": 0.07323445126012693,
+          "stdDev": 0.0120308295880928,
+          "ci95Lower": 0.06462871215282258,
+          "ci95Upper": 0.08184019036743127,
+          "standardError": 0.0038044823639718606,
+          "sampleSize": 10
         },
         "voter_concentration_error": {
-          "mean": 0.03920411875877884,
-          "stdDev": 0.004980364556705905,
-          "ci95Lower": 0.036117256825654406,
-          "ci95Upper": 0.04229098069190328,
-          "standardError": 0.0015749295577165475
+          "mean": 0,
+          "stdDev": 0,
+          "ci95Lower": 0,
+          "ci95Upper": 0,
+          "standardError": 0,
+          "sampleSize": 0
         },
         "forum_activity_error": {
-          "mean": 0.20912667191188036,
-          "stdDev": 0.13875389865927304,
-          "ci95Lower": 0.12312611452954904,
-          "ci95Upper": 0.2951272292942117,
-          "standardError": 0.043877835399148635
+          "mean": 1,
+          "stdDev": 0,
+          "ci95Lower": 1,
+          "ci95Upper": 1,
+          "standardError": 0,
+          "sampleSize": 10
         }
       }
     },
     "dydx": {
       "daoId": "dydx",
-      "score": 0.8720569570710106,
-      "passRate": 0.8666666666666666,
-      "participation": 0.06959490740740741,
+      "score": 0.21197609716877644,
+      "passRate": null,
+      "participation": null,
       "proposalFrequency": 1.5,
-      "priceRmse": 0.011773504453648989,
-      "voterConcentration": 0.8983589135507609,
+      "priceLevelError": 2.110893743131006,
+      "voterConcentration": null,
       "forumActivity": 24.3,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "price_level_error",
+        "forum_activity_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.8720569570710106,
-          "stdDev": 0.07206686349081379,
-          "ci95Lower": 0.8273894523097514,
-          "ci95Upper": 0.9167244618322699,
-          "standardError": 0.022789543245540462
+          "mean": 0.21197609716877644,
+          "stdDev": 0.16222365023348445,
+          "ci95Lower": 0.095936351054704,
+          "ci95Upper": 0.3280158432828489,
+          "standardError": 0.051299622508431675,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.0370059211651288,
-          "stdDev": 0.117022997794439,
-          "ci95Lower": -0.03552568431852364,
-          "ci95Upper": 0.10953752664878123,
-          "standardError": 0.0370059211651288
+          "mean": 0.9,
+          "stdDev": 0.31622776601683794,
+          "ci95Lower": 0.6738000000000001,
+          "ci95Upper": 1.1262,
+          "standardError": 0.09999999999999999,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.13333333333333336,
-          "stdDev": 0.21942686286812776,
-          "ci95Lower": -0.0026688452984539868,
-          "ci95Upper": 0.26933551196512073,
-          "standardError": 0.06938886664887109
+          "mean": 0,
+          "stdDev": 0,
+          "ci95Lower": 0,
+          "ci95Upper": 0,
+          "standardError": 0,
+          "sampleSize": 0
         },
         "participation_rate_error": {
-          "mean": 0.3353336239827272,
-          "stdDev": 0.25390564115659225,
-          "ci95Lower": 0.17796127716596397,
-          "ci95Upper": 0.4927059707994904,
-          "standardError": 0.08029201368202206
+          "mean": 0,
+          "stdDev": 0,
+          "ci95Lower": 0,
+          "ci95Upper": 0,
+          "standardError": 0,
+          "sampleSize": 0
         },
-        "price_trajectory_rmse": {
-          "mean": 0.011773504453648989,
-          "stdDev": 0.011473282182295126,
-          "ci95Lower": 0.004662290482608551,
-          "ci95Upper": 0.018884718424689428,
-          "standardError": 0.003628170393387979
+        "price_level_error": {
+          "mean": 2.110893743131006,
+          "stdDev": 0.03682150576273433,
+          "ci95Lower": 2.084555054696269,
+          "ci95Upper": 2.137232431565743,
+          "standardError": 0.0116439825087256,
+          "sampleSize": 10
         },
         "voter_concentration_error": {
-          "mean": 0.09748953832553663,
-          "stdDev": 0.009079275508799165,
-          "ci95Lower": 0.09186214506358668,
-          "ci95Upper": 0.10311693158748657,
-          "standardError": 0.0028711190111989494
+          "mean": 0,
+          "stdDev": 0,
+          "ci95Lower": 0,
+          "ci95Upper": 0,
+          "standardError": 0,
+          "sampleSize": 0
         },
         "forum_activity_error": {
-          "mean": 0.1344319167389419,
-          "stdDev": 0.12382161347423495,
-          "ci95Lower": 0.05768648560036878,
-          "ci95Upper": 0.21117734787751502,
-          "standardError": 0.039155832213557715
+          "mean": 0.19011951415611789,
+          "stdDev": 0.13884426977141534,
+          "ci95Lower": 0.09080320737544807,
+          "ci95Upper": 0.2894358209367877,
+          "standardError": 0.04390641325405385,
+          "sampleSize": 10
         }
       }
     },
     "ens": {
       "daoId": "ens",
-      "score": 0.8719636023736401,
-      "passRate": 0.9,
-      "participation": 0.09291666666666666,
-      "proposalFrequency": 1.7,
-      "priceRmse": 0.12470306760063547,
-      "voterConcentration": 0.8506889323074225,
-      "forumActivity": 2.8,
+      "score": 0.4580967442535197,
+      "passRate": 1,
+      "participation": 0.11574074074074073,
+      "proposalFrequency": 1.9,
+      "priceLevelError": 0.3085346369345401,
+      "voterConcentration": 0.8664024494068862,
+      "forumActivity": 0.1,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "pass_rate_error",
+        "participation_rate_error",
+        "price_level_error",
+        "voter_concentration_error",
+        "forum_activity_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.8719636023736401,
-          "stdDev": 0.05969590396859851,
-          "ci95Lower": 0.8349636977630428,
-          "ci95Upper": 0.9089635069842374,
-          "standardError": 0.018877502352345595
+          "mean": 0.4580967442535197,
+          "stdDev": 0.20515463160141953,
+          "ci95Lower": 0.31134815777496816,
+          "ci95Upper": 0.6048453307320713,
+          "standardError": 0.06487559083932427,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.031800566052952645,
-          "stdDev": 0.10056221960996109,
-          "ci95Lower": -0.030528543410834538,
-          "ci95Upper": 0.09412967551673983,
-          "standardError": 0.031800566052952645
+          "mean": 0.5675271825882268,
+          "stdDev": 0.3907468245520034,
+          "ci95Lower": 0.2880231629792817,
+          "ci95Upper": 0.8470312021971718,
+          "standardError": 0.12356499540625335,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.1521220586655206,
-          "stdDev": 0.16372581875790296,
-          "ci95Lower": 0.050643744851545464,
-          "ci95Upper": 0.25360037247949574,
-          "standardError": 0.05177464990508935
+          "mean": 0.4922810661128419,
+          "stdDev": 0.4369748834442552,
+          "ci95Lower": 0.17970978282512617,
+          "ci95Upper": 0.8048523494005576,
+          "standardError": 0.13818359119704496,
+          "sampleSize": 10
         },
         "participation_rate_error": {
-          "mean": 0.2578853046594982,
-          "stdDev": 0.15649851716019578,
-          "ci95Lower": 0.16088651878512591,
-          "ci95Upper": 0.3548840905338705,
-          "standardError": 0.04948917646651648
+          "mean": 0.7609896938756,
+          "stdDev": 0.14625486585694608,
+          "ci95Lower": 0.6563725343087843,
+          "ci95Upper": 0.8656068534424157,
+          "standardError": 0.046249849499034365,
+          "sampleSize": 10
         },
-        "price_trajectory_rmse": {
-          "mean": 0.12470306760063547,
-          "stdDev": 0.013748403923485409,
-          "ci95Lower": 0.11618171856495448,
-          "ci95Upper": 0.13322441663631648,
-          "standardError": 0.00434762705902092
+        "price_level_error": {
+          "mean": 0.3085346369345401,
+          "stdDev": 0.008362644060179454,
+          "ci95Lower": 0.3025527773709752,
+          "ci95Upper": 0.314516496498105,
+          "standardError": 0.0026445002491445276,
+          "sampleSize": 10
         },
         "voter_concentration_error": {
-          "mean": 0.14236421785722106,
-          "stdDev": 0.008450513015634317,
-          "ci95Lower": 0.13712653562606578,
-          "ci95Upper": 0.14760190008837634,
-          "standardError": 0.002672286852630252
+          "mean": 0.07770656865351702,
+          "stdDev": 0.0072068098925788604,
+          "ci95Lower": 0.07255148559982168,
+          "ci95Upper": 0.08286165170721237,
+          "standardError": 0.0022789933924382607,
+          "sampleSize": 10
         },
         "forum_activity_error": {
-          "mean": 0.051429015223005824,
-          "stdDev": 0.1148981634925352,
-          "ci95Lower": -0.019785604315930523,
-          "ci95Upper": 0.12264363476194218,
-          "standardError": 0.03633398956068181
+          "mean": 0.9531645569620253,
+          "stdDev": 0.14810667522307597,
+          "ci95Lower": 0.8472227848101266,
+          "ci95Upper": 1.059106329113924,
+          "standardError": 0.04683544303797467,
+          "sampleSize": 10
         }
       }
     },
     "gitcoin": {
       "daoId": "gitcoin",
-      "score": 0.8989063542597246,
+      "score": 0.3094351081294926,
       "passRate": 1,
-      "participation": 0.08396990740740741,
-      "proposalFrequency": 2.9,
-      "priceRmse": 0.006959110113902075,
-      "voterConcentration": 0.9301021417926657,
-      "forumActivity": 3,
+      "participation": 0.07897982804232805,
+      "proposalFrequency": 6.9,
+      "priceLevelError": 2.404181351612475,
+      "voterConcentration": 0.8700425287019712,
+      "forumActivity": 0.2,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "pass_rate_error",
+        "participation_rate_error",
+        "price_level_error",
+        "voter_concentration_error",
+        "forum_activity_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.8989063542597246,
-          "stdDev": 0.04397118536541471,
-          "ci95Lower": 0.8716527312139786,
-          "ci95Upper": 0.9261599773054707,
-          "standardError": 0.01390490971721737
+          "mean": 0.3094351081294926,
+          "stdDev": 0.06526291519417562,
+          "ci95Lower": 0.2627520745588843,
+          "ci95Upper": 0.3561181417001009,
+          "standardError": 0.020637945875600507,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.06532559911449602,
-          "stdDev": 0.04744456381482167,
-          "ci95Lower": 0.035919153801879475,
-          "ci95Upper": 0.09473204442711257,
-          "standardError": 0.015003288424804362
+          "mean": 0.8503573667711599,
+          "stdDev": 0.1531125845265082,
+          "ci95Lower": 0.7408348316182789,
+          "ci95Upper": 0.9598799019240409,
+          "standardError": 0.04841845055388195,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.08003024084674379,
-          "stdDev": 1.4628472785736255e-17,
-          "ci95Lower": 0.08003024084674377,
-          "ci95Upper": 0.0800302408467438,
-          "standardError": 4.625929269271485e-18
+          "mean": 0.421498371335505,
+          "stdDev": 0.2032647529663063,
+          "ci95Lower": 0.27610162866449517,
+          "ci95Upper": 0.5668951140065148,
+          "standardError": 0.06427795874049948,
+          "sampleSize": 10
         },
         "participation_rate_error": {
-          "mean": 0.2666383632540838,
-          "stdDev": 0.2007364697171894,
-          "ci95Lower": 0.14222061031560784,
-          "ci95Upper": 0.39105611619255976,
-          "standardError": 0.06347844537677344
+          "mean": 0.7547971808682769,
+          "stdDev": 0.028254961893034482,
+          "ci95Lower": 0.7345862030003053,
+          "ci95Upper": 0.7750081587362484,
+          "standardError": 0.00893500347832518,
+          "sampleSize": 10
         },
-        "price_trajectory_rmse": {
-          "mean": 0.006959110113902075,
-          "stdDev": 0.00617936610044941,
-          "ci95Lower": 0.0031290993247052954,
-          "ci95Upper": 0.010789120903098855,
-          "standardError": 0.001954087137345296
+        "price_level_error": {
+          "mean": 2.404181351612475,
+          "stdDev": 0.02805736119896546,
+          "ci95Lower": 2.384111718945026,
+          "ci95Upper": 2.424250984279924,
+          "standardError": 0.008872516652276357,
+          "sampleSize": 10
         },
         "voter_concentration_error": {
-          "mean": 0.06896682503236666,
-          "stdDev": 0.0030483350467702536,
-          "ci95Lower": 0.06707744739582112,
-          "ci95Upper": 0.0708562026689122,
-          "standardError": 0.0009639681819109904
+          "mean": 0.12716439736961166,
+          "stdDev": 0.005777223141017887,
+          "ci95Lower": 0.12303190802195374,
+          "ci95Upper": 0.13129688671726958,
+          "standardError": 0.0018269183676648659,
+          "sampleSize": 10
         },
         "forum_activity_error": {
-          "mean": 0.0748797612116375,
-          "stdDev": 0.16111252283560407,
-          "ci95Lower": -0.024978815008696614,
-          "ci95Upper": 0.17473833743197162,
-          "standardError": 0.05094825317363986
+          "mean": 0.8,
+          "stdDev": 0.42163702135578396,
+          "ci95Lower": 0.49840000000000007,
+          "ci95Upper": 1.1016,
+          "standardError": 0.13333333333333333,
+          "sampleSize": 10
         }
       }
     },
     "lido": {
       "daoId": "lido",
-      "score": 0.8453536814332854,
-      "passRate": 0.9857142857142858,
-      "participation": 0.022940917107583777,
-      "proposalFrequency": 7.5,
-      "priceRmse": 0.12677450858984785,
-      "voterConcentration": 0.8781254224642001,
-      "forumActivity": 3.1,
+      "score": 0.37097347011814913,
+      "passRate": 0.9788888888888889,
+      "participation": 0.030634645061728395,
+      "proposalFrequency": 10.5,
+      "priceLevelError": 0.7022930684016573,
+      "voterConcentration": 0.8703648380426989,
+      "forumActivity": 0.1,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "pass_rate_error",
+        "participation_rate_error",
+        "price_level_error",
+        "voter_concentration_error",
+        "forum_activity_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.8453536814332854,
-          "stdDev": 0.04589324635701023,
-          "ci95Lower": 0.8169087526426394,
-          "ci95Upper": 0.8737986102239313,
-          "standardError": 0.014512718770737731
+          "mean": 0.37097347011814913,
+          "stdDev": 0.035749970798155326,
+          "ci95Lower": 0.34540125836583846,
+          "ci95Upper": 0.3965456818704598,
+          "standardError": 0.01130513340066785,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.10787561055240884,
-          "stdDev": 0.13813495593700775,
-          "ci95Lower": 0.02225867784381201,
-          "ci95Upper": 0.19349254326100568,
-          "standardError": 0.0436821085247943
+          "mean": 0.9370425771695785,
+          "stdDev": 0.1365401049856152,
+          "ci95Lower": 0.8393744560656853,
+          "ci95Upper": 1.0347106982734717,
+          "standardError": 0.04317777237130561,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.017309760399191326,
-          "stdDev": 0.04299438891572614,
-          "ci95Lower": -0.009338437934643857,
-          "ci95Upper": 0.043957958733026506,
-          "standardError": 0.013596019558079176
+          "mean": 0.04598139481134801,
+          "stdDev": 0.012814993297581357,
+          "ci95Lower": 0.0368147377513903,
+          "ci95Upper": 0.055148051871305726,
+          "standardError": 0.004052456702014904,
+          "sampleSize": 10
         },
         "participation_rate_error": {
-          "mean": 0.42359504754814636,
-          "stdDev": 0.12304007416091213,
-          "ci95Lower": 0.3473340194945418,
-          "ci95Upper": 0.49985607560175094,
-          "standardError": 0.0389086877824513
+          "mean": 0.8803334177276234,
+          "stdDev": 0.008373873031000463,
+          "ci95Lower": 0.8743435260003061,
+          "ci95Upper": 0.8863233094549408,
+          "standardError": 0.0026480511615019236,
+          "sampleSize": 10
         },
-        "price_trajectory_rmse": {
-          "mean": 0.12677450858984785,
-          "stdDev": 0.0102486538674562,
-          "ci95Lower": 0.12042232711216426,
-          "ci95Upper": 0.13312669006753142,
-          "standardError": 0.0032409089171855005
+        "price_level_error": {
+          "mean": 0.7022930684016573,
+          "stdDev": 0.021428247145157262,
+          "ci95Lower": 0.6869652887911328,
+          "ci95Upper": 0.7176208480121817,
+          "standardError": 0.0067762067243697655,
+          "sampleSize": 10
         },
         "voter_concentration_error": {
-          "mean": 0.11772789865949929,
-          "stdDev": 0.004569338058025067,
-          "ci95Lower": 0.11489579358961992,
-          "ci95Upper": 0.12056000372937865,
-          "standardError": 0.0014449515662649833
+          "mean": 0.10206867013030149,
+          "stdDev": 0.006116349597241893,
+          "ci95Lower": 0.0976936011845137,
+          "ci95Upper": 0.10644373907608928,
+          "standardError": 0.0019341595693137903,
+          "sampleSize": 10
         },
         "forum_activity_error": {
-          "mean": 0.08707488184717861,
-          "stdDev": 0.1590903478796836,
-          "ci95Lower": -0.011530337350295891,
-          "ci95Upper": 0.1856801010446531,
-          "standardError": 0.05030878530483393
+          "mean": 0.9395209580838323,
+          "stdDev": 0.19125152315988406,
+          "ci95Lower": 0.802717365269461,
+          "ci95Upper": 1.0763245508982036,
+          "standardError": 0.060479041916167674,
+          "sampleSize": 10
         }
       }
     },
     "maker_sky": {
       "daoId": "maker_sky",
-      "score": 0.8280952977845901,
-      "passRate": 0.9125252525252525,
-      "participation": 0.023481489575239576,
-      "proposalFrequency": 11,
-      "priceRmse": 0.12390813790957822,
-      "voterConcentration": 0.9298115683967125,
-      "forumActivity": 6.8,
+      "score": 0.7733513574577137,
+      "passRate": null,
+      "participation": null,
+      "proposalFrequency": 0,
+      "priceLevelError": 0.08882880847428799,
+      "voterConcentration": null,
+      "forumActivity": 0.3,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "price_level_error",
+        "forum_activity_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.8280952977845901,
-          "stdDev": 0.05769920845005778,
-          "ci95Lower": 0.792332957877951,
-          "ci95Upper": 0.8638576376912293,
-          "standardError": 0.018246091789101627
+          "mean": 0.7733513574577137,
+          "stdDev": 0.0029892538506169045,
+          "ci95Lower": 0.7712131226356217,
+          "ci95Upper": 0.7754895922798056,
+          "standardError": 0.0009452850672378142,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.1826086956521739,
-          "stdDev": 0.15981505799524895,
-          "ci95Lower": 0.08355429647142354,
-          "ci95Upper": 0.2816630948329243,
-          "standardError": 0.050537958765688965
+          "mean": 0,
+          "stdDev": 0,
+          "ci95Lower": 0,
+          "ci95Upper": 0,
+          "standardError": 0,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.09035021415973796,
-          "stdDev": 0.0667864312411835,
-          "ci95Lower": 0.048955555214530204,
-          "ci95Upper": 0.1317448731049457,
-          "standardError": 0.02111972395163661
+          "mean": 0,
+          "stdDev": 0,
+          "ci95Lower": 0,
+          "ci95Upper": 0,
+          "standardError": 0,
+          "sampleSize": 0
         },
         "participation_rate_error": {
-          "mean": 0.2662034507737633,
-          "stdDev": 0.097214550398961,
-          "ci95Lower": 0.2059492481836536,
-          "ci95Upper": 0.32645765336387295,
-          "standardError": 0.030741940096994737
+          "mean": 0,
+          "stdDev": 0,
+          "ci95Lower": 0,
+          "ci95Upper": 0,
+          "standardError": 0,
+          "sampleSize": 0
         },
-        "price_trajectory_rmse": {
-          "mean": 0.12390813790957822,
-          "stdDev": 0.006873332380008875,
-          "ci95Lower": 0.11964800236408027,
-          "ci95Upper": 0.12816827345507617,
-          "standardError": 0.0021735385436214023
+        "price_level_error": {
+          "mean": 0.08882880847428799,
+          "stdDev": 0.009964179502056327,
+          "ci95Lower": 0.08170135906731489,
+          "ci95Upper": 0.0959562578812611,
+          "standardError": 0.0031509502241260407,
+          "sampleSize": 10
         },
         "voter_concentration_error": {
-          "mean": 0.0560288645718654,
-          "stdDev": 0.004191457529922179,
-          "ci95Lower": 0.05343097227982358,
-          "ci95Upper": 0.05862675686390722,
-          "standardError": 0.0013254552510417442
+          "mean": 0,
+          "stdDev": 0,
+          "ci95Lower": 0,
+          "ci95Upper": 0,
+          "standardError": 0,
+          "sampleSize": 0
         },
         "forum_activity_error": {
-          "mean": 0.3075268817204301,
-          "stdDev": 0.2255616810702013,
-          "ci95Lower": 0.1677223033729189,
-          "ci95Upper": 0.4473314600679412,
-          "standardError": 0.07132886650383223
+          "mean": 1,
+          "stdDev": 0,
+          "ci95Lower": 1,
+          "ci95Upper": 1,
+          "standardError": 0,
+          "sampleSize": 10
         }
       }
     },
     "nouns": {
       "daoId": "nouns",
-      "score": 0.7420219479415946,
-      "passRate": 0.25766233766233765,
-      "participation": 0.00895720173753262,
-      "proposalFrequency": 17.9,
-      "priceRmse": 0,
-      "voterConcentration": 0.8368330306531675,
-      "forumActivity": 0,
+      "score": 0.5911160225887764,
+      "passRate": 0.5894300144300144,
+      "participation": 0.02882651412079302,
+      "proposalFrequency": 19.7,
+      "priceLevelError": null,
+      "voterConcentration": 0.777634860152396,
+      "forumActivity": null,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "pass_rate_error",
+        "participation_rate_error",
+        "voter_concentration_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.7420219479415946,
-          "stdDev": 0.08669781513554362,
-          "ci95Lower": 0.6882860853998413,
-          "ci95Upper": 0.7957578104833479,
-          "standardError": 0.027416256398853756
+          "mean": 0.5911160225887764,
+          "stdDev": 0.17219425067343938,
+          "ci95Lower": 0.467944234124578,
+          "ci95Upper": 0.7142878110529748,
+          "standardError": 0.054452603211405125,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.09456521739130429,
-          "stdDev": 0.09080406996403406,
-          "ci95Lower": 0.03828427173897653,
-          "ci95Upper": 0.15084616304363205,
-          "standardError": 0.028714768189963144
+          "mean": 0.213644184396738,
+          "stdDev": 0.09079851366910771,
+          "ci95Lower": 0.14869535320884492,
+          "ci95Upper": 0.27859301558463107,
+          "standardError": 0.028713011135231253,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.4525730769891193,
-          "stdDev": 0.23990967812346028,
-          "ci95Lower": 0.30387551793387035,
-          "ci95Upper": 0.6012706360443683,
-          "standardError": 0.0758661015588005
+          "mean": 0.560846732238944,
+          "stdDev": 0.4828173737087636,
+          "ci95Lower": 0.21548398529057156,
+          "ci95Upper": 0.9062094791873164,
+          "standardError": 0.1526802594820391,
+          "sampleSize": 10
         },
         "participation_rate_error": {
-          "mean": 0.3237680631369357,
-          "stdDev": 0.19488972987293818,
-          "ci95Lower": 0.20297415709814098,
-          "ci95Upper": 0.4445619691757304,
-          "standardError": 0.06162954389734424
+          "mean": 0.656696213838679,
+          "stdDev": 0.28681169302262366,
+          "ci95Lower": 0.4515377428451388,
+          "ci95Upper": 0.8618546848322193,
+          "standardError": 0.09069782095205138,
+          "sampleSize": 10
         },
-        "price_trajectory_rmse": {
+        "price_level_error": {
           "mean": 0,
           "stdDev": 0,
           "ci95Lower": 0,
           "ci95Upper": 0,
-          "standardError": 0
+          "standardError": 0,
+          "sampleSize": 0
         },
         "voter_concentration_error": {
-          "mean": 0.14574006670766876,
-          "stdDev": 0.004602738655355508,
-          "ci95Lower": 0.1428872597330856,
-          "ci95Upper": 0.1485928736822519,
-          "standardError": 0.0014555137625424167
+          "mean": 0.21355697800121773,
+          "stdDev": 0.005673470085910924,
+          "ci95Lower": 0.2094987039615981,
+          "ci95Upper": 0.21761525204083737,
+          "standardError": 0.001794108770830969,
+          "sampleSize": 10
         },
         "forum_activity_error": {
           "mean": 0,
           "stdDev": 0,
           "ci95Lower": 0,
           "ci95Upper": 0,
-          "standardError": 0
+          "standardError": 0,
+          "sampleSize": 0
         }
       }
     },
     "optimism": {
       "daoId": "optimism",
-      "score": 0.7967191247724181,
-      "passRate": 0.85,
-      "participation": 0.09923611111111112,
-      "proposalFrequency": 2.3,
-      "priceRmse": 0.12782161011150045,
-      "voterConcentration": 0.9268804075383257,
-      "forumActivity": 1.7,
+      "score": 0.18433755529133805,
+      "passRate": 0.5,
+      "participation": 0.07589285714285716,
+      "proposalFrequency": 1.6,
+      "priceLevelError": 1.4514448024004805,
+      "voterConcentration": 0.8632762009377929,
+      "forumActivity": 0.3,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "pass_rate_error",
+        "participation_rate_error",
+        "price_level_error",
+        "voter_concentration_error",
+        "forum_activity_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.7967191247724181,
-          "stdDev": 0.09488649991599828,
-          "ci95Lower": 0.7379078628209759,
-          "ci95Upper": 0.8555303867238604,
-          "standardError": 0.030005745893593012
+          "mean": 0.18433755529133805,
+          "stdDev": 0.09086406881809235,
+          "ci95Lower": 0.11934183203293798,
+          "ci95Upper": 0.24933327854973814,
+          "standardError": 0.028733741493545566,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.10539124137276117,
-          "stdDev": 0.3144048168113432,
-          "ci95Lower": -0.0894788830037999,
-          "ci95Upper": 0.3002613657493222,
-          "standardError": 0.09942353284518422
+          "mean": 0.6779220779220779,
+          "stdDev": 0.33936743425083626,
+          "ci95Lower": 0.4351701064729557,
+          "ci95Upper": 0.9206740493712002,
+          "standardError": 0.10731740559200807,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.3512634885944544,
-          "stdDev": 0.023621148636961374,
-          "ci95Lower": 0.3366229489885872,
-          "ci95Upper": 0.3659040282003216,
-          "standardError": 0.007469663064217971
+          "mean": 0.65,
+          "stdDev": 0.47434164902525694,
+          "ci95Lower": 0.31070000000000003,
+          "ci95Upper": 0.9893000000000001,
+          "standardError": 0.15,
+          "sampleSize": 10
         },
         "participation_rate_error": {
-          "mean": 0.30123053336560957,
-          "stdDev": 0.15732029373091966,
-          "ci95Lower": 0.2037224050957523,
-          "ci95Upper": 0.39873866163546684,
-          "standardError": 0.049749045035641475
+          "mean": 0.9011627906976744,
+          "stdDev": 0.09465042953561685,
+          "ci95Lower": 0.8334586563307493,
+          "ci95Upper": 0.9688669250645994,
+          "standardError": 0.02993109388458225,
+          "sampleSize": 10
         },
-        "price_trajectory_rmse": {
-          "mean": 0.12782161011150045,
-          "stdDev": 0.011586739766228713,
-          "ci95Lower": 0.12064007440138225,
-          "ci95Upper": 0.13500314582161865,
-          "standardError": 0.0036640488316929645
+        "price_level_error": {
+          "mean": 1.4514448024004805,
+          "stdDev": 0.029316425667669767,
+          "ci95Lower": 1.4304745518448294,
+          "ci95Upper": 1.4724150529561315,
+          "standardError": 0.009270667796485896,
+          "sampleSize": 10
         },
         "voter_concentration_error": {
-          "mean": 0.07172718323652924,
-          "stdDev": 0.003332291319847022,
-          "ci95Lower": 0.0696618076785359,
-          "ci95Upper": 0.07379255879452258,
-          "standardError": 0.001053763039792524
+          "mean": 1.4427736302710608,
+          "stdDev": 0.019527600099122838,
+          "ci95Lower": 1.428805397190015,
+          "ci95Upper": 1.4567418633521065,
+          "standardError": 0.0061751693550157975,
+          "sampleSize": 10
         },
         "forum_activity_error": {
-          "mean": 0.2008830065200084,
-          "stdDev": 0.3224396946887366,
-          "ci95Lower": 0.0010328132399303191,
-          "ci95Upper": 0.4007331998000865,
-          "standardError": 0.10196438432657046
+          "mean": 0.8594936708860761,
+          "stdDev": 0.22623668337932878,
+          "ci95Lower": 0.6976649408381292,
+          "ci95Upper": 1.021322400934023,
+          "standardError": 0.07154232097610383,
+          "sampleSize": 10
         }
       }
     },
     "sushiswap": {
       "daoId": "sushiswap",
-      "score": 0.8475796523555823,
-      "passRate": 0.9266666666666665,
-      "participation": 0.010342261904761904,
-      "proposalFrequency": 7,
-      "priceRmse": 0.023787062896699934,
-      "voterConcentration": 0.8857299193843513,
-      "forumActivity": 0,
+      "score": 0.2608727538880122,
+      "passRate": 1,
+      "participation": 0.13194444444444445,
+      "proposalFrequency": 0.6,
+      "priceLevelError": 0.35917614935350173,
+      "voterConcentration": 0.8621658579032667,
+      "forumActivity": null,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "pass_rate_error",
+        "participation_rate_error",
+        "price_level_error",
+        "voter_concentration_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.8475796523555823,
-          "stdDev": 0.07066173842593954,
-          "ci95Lower": 0.8037830531323923,
-          "ci95Upper": 0.8913762515787723,
-          "standardError": 0.02234520368530101
+          "mean": 0.2608727538880122,
+          "stdDev": 0.11713245475030515,
+          "ci95Lower": 0.17708706486313303,
+          "ci95Upper": 0.3446584429128913,
+          "standardError": 0.037040534493757354,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.06469383604599072,
-          "stdDev": 0.10551859892437292,
-          "ci95Lower": -0.000707269143728359,
-          "ci95Upper": 0.1300949412357098,
-          "standardError": 0.03336791081108116
+          "mean": 1,
+          "stdDev": 0,
+          "ci95Lower": 1,
+          "ci95Upper": 1,
+          "standardError": 0,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.07333333333333333,
-          "stdDev": 0.15539674432930747,
-          "ci95Lower": -0.02298256666553805,
-          "ci95Upper": 0.16964923333220472,
-          "standardError": 0.049140765305546626
+          "mean": 0.8,
+          "stdDev": 0.42163702135578396,
+          "ci95Lower": 0.49840000000000007,
+          "ci95Upper": 1.1016,
+          "standardError": 0.13333333333333333,
+          "sampleSize": 10
         },
         "participation_rate_error": {
-          "mean": 0.45880689292291504,
-          "stdDev": 0.1747212680503908,
-          "ci95Lower": 0.3505135290313548,
-          "ci95Upper": 0.5671002568144753,
-          "standardError": 0.0552517162712042
+          "mean": 0.951748237540887,
+          "stdDev": 0.10242568187192577,
+          "ci95Lower": 0.8784824091436552,
+          "ci95Upper": 1.0250140659381188,
+          "standardError": 0.03238984456111042,
+          "sampleSize": 10
         },
-        "price_trajectory_rmse": {
-          "mean": 0.023787062896699934,
-          "stdDev": 0.016111484851109286,
-          "ci95Lower": 0.01380106112780632,
-          "ci95Upper": 0.03377306466559355,
-          "standardError": 0.005094898861680416
+        "price_level_error": {
+          "mean": 0.35917614935350173,
+          "stdDev": 0.010928822781010252,
+          "ci95Lower": 0.35135868365716916,
+          "ci95Upper": 0.3669936150498343,
+          "standardError": 0.003455997213232798,
+          "sampleSize": 10
         },
         "voter_concentration_error": {
-          "mean": 0.11008749182723665,
-          "stdDev": 0.00602382079956006,
-          "ci95Lower": 0.1063538890143486,
-          "ci95Upper": 0.1138210946401247,
-          "standardError": 0.00190489939433064
+          "mean": 0.10988451589586343,
+          "stdDev": 0.007766095960974699,
+          "ci95Lower": 0.1043293714868208,
+          "ci95Upper": 0.11543966030490606,
+          "standardError": 0.002455855176411417,
+          "sampleSize": 10
         },
         "forum_activity_error": {
           "mean": 0,
           "stdDev": 0,
           "ci95Lower": 0,
           "ci95Upper": 0,
-          "standardError": 0
+          "standardError": 0,
+          "sampleSize": 0
         }
       }
     },
     "uniswap": {
       "daoId": "uniswap",
-      "score": 0.8604493123200412,
-      "passRate": 0.9,
-      "participation": 0.05645833333333333,
-      "proposalFrequency": 2.2,
-      "priceRmse": 0.12385754244031273,
-      "voterConcentration": 0.9202729272074848,
-      "forumActivity": 1.4,
+      "score": 0.6036280846559627,
+      "passRate": 1,
+      "participation": 0.04751019620811288,
+      "proposalFrequency": 6.5,
+      "priceLevelError": 0.19171489067755892,
+      "voterConcentration": 0.8700669369627716,
+      "forumActivity": 1,
+      "availableMetrics": [
+        "proposal_frequency_error",
+        "pass_rate_error",
+        "participation_rate_error",
+        "price_level_error",
+        "voter_concentration_error",
+        "forum_activity_error"
+      ],
       "ci95": {
         "overall_score": {
-          "mean": 0.8604493123200412,
-          "stdDev": 0.11212698735762895,
-          "ci95Lower": 0.7909522855443307,
-          "ci95Upper": 0.9299463390957516,
-          "standardError": 0.03545766672230123
+          "mean": 0.6036280846559627,
+          "stdDev": 0.10382656558927078,
+          "ci95Lower": 0.5293601940399233,
+          "ci95Upper": 0.6778959752720022,
+          "standardError": 0.0328328428894958,
+          "sampleSize": 10
         },
         "proposal_frequency_error": {
-          "mean": 0.06012825257644561,
-          "stdDev": 0.1326790467806792,
-          "ci95Lower": -0.022107072602521913,
-          "ci95Upper": 0.14236357775541314,
-          "standardError": 0.041956798560697714
+          "mean": 0.49071166064876665,
+          "stdDev": 0.3087328626055937,
+          "ci95Lower": 0.2698728190725756,
+          "ci95Upper": 0.7115505022249577,
+          "standardError": 0.09762990343775024,
+          "sampleSize": 10
         },
         "pass_rate_error": {
-          "mean": 0.15002678667095254,
-          "stdDev": 0.16561891356373126,
-          "ci95Lower": 0.0473751205400193,
-          "ci95Upper": 0.2526784528018858,
-          "standardError": 0.05237329904639451
+          "mean": 0.4799637352674525,
+          "stdDev": 0.44757595394068184,
+          "ci95Lower": 0.15980942985458912,
+          "ci95Upper": 0.8001180406803159,
+          "standardError": 0.14153594403751696,
+          "sampleSize": 10
         },
         "participation_rate_error": {
-          "mean": 0.31176298890834797,
-          "stdDev": 0.255991627854304,
-          "ci95Lower": 0.1530977341414026,
-          "ci95Upper": 0.47042824367529334,
-          "standardError": 0.0809516605953803
+          "mean": 0.36483694908940006,
+          "stdDev": 0.10732956201072275,
+          "ci95Lower": 0.2880633398879463,
+          "ci95Upper": 0.4416105582908538,
+          "standardError": 0.03394058762221653,
+          "sampleSize": 10
         },
-        "price_trajectory_rmse": {
-          "mean": 0.12385754244031273,
-          "stdDev": 0.00969203384625729,
-          "ci95Lower": 0.11785035762604415,
-          "ci95Upper": 0.1298647272545813,
-          "standardError": 0.0030648902113615236
+        "price_level_error": {
+          "mean": 0.19171489067755892,
+          "stdDev": 0.008208986958907157,
+          "ci95Lower": 0.18584294314589933,
+          "ci95Upper": 0.19758683820921852,
+          "standardError": 0.0025959096072765662,
+          "sampleSize": 10
         },
         "voter_concentration_error": {
-          "mean": 0.07917457753903871,
-          "stdDev": 0.004978886937383528,
-          "ci95Lower": 0.07608863144385866,
-          "ci95Upper": 0.08226052363421876,
-          "standardError": 0.001574462293459209
+          "mean": 0.1260000633221782,
+          "stdDev": 0.005870915614355892,
+          "ci95Lower": 0.12180055507312523,
+          "ci95Upper": 0.13019957157123116,
+          "standardError": 0.001856546529201135,
+          "sampleSize": 10
         },
         "forum_activity_error": {
-          "mean": 0.05664580300036446,
-          "stdDev": 0.0918824198015401,
-          "ci95Lower": -0.000303510805757648,
-          "ci95Upper": 0.11359511680648657,
-          "standardError": 0.0290557723500623
+          "mean": 0.6337662337662338,
+          "stdDev": 0.367878777690498,
+          "ci95Lower": 0.37061989288116487,
+          "ci95Upper": 0.8969125746513027,
+          "standardError": 0.11633348403407112,
+          "sampleSize": 10
         }
       }
     }

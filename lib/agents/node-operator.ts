@@ -450,11 +450,24 @@ export class NodeOperator extends DAOMember {
    * Earn fees based on active validators
    */
   private earnFees(): void {
-    // Simplified fee calculation
+    if (!this.model.dao) return;
+    // Validator rewards are explicit protocol issuance, then paid to the operator.
     const baseReward = this.currentValidators.active * 0.01;  // Per step
     const fee = baseReward * (this.operatorFeePercent / 100);
-    this.totalFeesEarned += fee;
-    this.tokens += fee;
+    const treasury = this.model.dao.treasury;
+    const token = this.model.dao.tokenSymbol;
+    treasury.mintTokens(token, fee, this.model.currentStep, {
+      source: 'protocol:validator-reward-issuance',
+      destination: 'treasury:validator-reward-transit',
+      event: 'validator_reward_minted',
+    });
+    const paid = treasury.withdraw(token, fee, this.model.currentStep, {
+      source: 'treasury:validator-reward-transit',
+      destination: `member:${this.uniqueId}`,
+      event: 'node_operator_fee_paid',
+    });
+    this.totalFeesEarned += paid;
+    this.tokens += paid;
   }
 
   /**

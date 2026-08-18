@@ -1,5 +1,10 @@
 # Experiment Status
 
+> **STALE LEGACY RECORD — NOT FOR PUBLICATION.** The runs summarized here predate
+> material simulator changes and their aggregate artifacts were subsequently
+> overwritten by dummy files. This document is preserved only as development
+> history. New findings must come from a verified immutable campaign.
+
 **Last Updated:** 2026-04-29
 
 ## Summary

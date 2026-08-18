@@ -19,7 +19,13 @@ import {
   assertFreshResults,
   resolveOutputDir,
   resolveProfileConfigPaths,
+  resolvePaperConfig,
 } from './paper-pipeline-utils';
+import {
+  createCampaign,
+  verifyCampaign,
+  transitionCampaign,
+} from '../lib/research/campaign-manifest';
 
 const ROOT = process.cwd();
 const TSX_CLI = path.join(ROOT, 'node_modules', 'tsx', 'dist', 'cli.mjs');
@@ -43,6 +49,8 @@ export function parseArgs(args: string[]) {
     outputDir: '',
     profile: 'full' as PaperProfile,
     strictFreshness: true,
+    campaignId: '',
+    allowDirty: false,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -62,21 +70,32 @@ export function parseArgs(args: string[]) {
       result.profile = profile === 'p1' || profile === 'p2' || profile === 'p3' || profile === 'llm' || profile === 'full' ? profile : 'full';
     } else if (arg === '--allow-stale' || arg === '--skip-freshness-check') {
       result.strictFreshness = false;
+    } else if (arg === '--campaign-id') {
+      result.campaignId = args[i + 1] || '';
+      i++;
+    } else if (arg.startsWith('--campaign-id=')) {
+      result.campaignId = arg.split('=')[1] || '';
+    } else if (arg === '--allow-dirty') {
+      result.allowDirty = true;
     }
   }
 
   return result;
 }
 
-function runCommand(command: string, args: string[]): void {
+function runCommand(command: string, args: string[], env?: NodeJS.ProcessEnv): void {
   const shouldAppendCmd = process.platform === 'win32'
     && !path.extname(command)
     && !command.includes('\\')
     && !command.includes('/');
   const executable = shouldAppendCmd ? `${command}.cmd` : command;
-  const result = spawnSync(executable, args, { stdio: 'inherit' });
+  const result = spawnSync(executable, args, {
+    stdio: 'inherit',
+    env: env ?? process.env,
+    windowsHide: true,
+  });
   if (result.status !== 0) {
-    process.exit(result.status ?? 1);
+    throw new Error(`Command failed (${result.status ?? 1}): ${executable} ${args.join(' ')}`);
   }
 }
 
@@ -88,10 +107,88 @@ function runTsx(scriptPath: string, args: string[]): void {
   runCommand('npx', ['tsx', scriptPath, ...args]);
 }
 
-function runSuite(configs: string[]): void {
+function runSuite(configs: string[], campaignDir?: string): void {
   for (const config of configs) {
-    runCommand('npm', ['run', 'exp', '--', 'run', config]);
+    runCommand('npm', ['run', 'exp', '--', 'run', config], campaignDir
+      ? { ...process.env, DAO_SIM_CAMPAIGN_DIR: campaignDir }
+      : process.env);
   }
+}
+
+function createSuiteCampaign(
+  configs: string[],
+  profile: PaperProfile,
+  requestedId: string,
+  allowDirty: boolean
+): string {
+  const shortCommit = spawnSync('git', ['rev-parse', '--short=8', 'HEAD'], {
+    encoding: 'utf8',
+    windowsHide: true,
+  }).stdout.trim();
+  const date = new Date().toISOString().slice(0, 10);
+  const campaignId = requestedId || `${date}-${shortCommit}-${profile}`;
+  const resolved = configs.map((configPath) => resolvePaperConfig(ROOT, configPath));
+  const inputFiles = Object.fromEntries(configs.map((configPath, index) => [`config-${index}`, configPath]));
+  createCampaign({
+    rootDir: ROOT,
+    campaignId,
+    resolvedConfig: {
+      profile,
+      experiments: resolved.map((item) => ({
+        configPath: item.configPath,
+        expectedRuns: item.expectedRuns,
+        config: item.parsedConfig,
+      })),
+    },
+    expectedRuns: resolved.reduce((sum, item) => sum + item.expectedRuns, 0),
+    workerCount: Math.max(...resolved.map((item) => Number(item.parsedConfig?.execution?.workers ?? 1))),
+    inputFiles,
+    command: process.argv,
+    allowDirty,
+  });
+  const campaignDir = path.join(ROOT, 'campaigns', campaignId);
+  transitionCampaign(campaignDir, 'validating');
+  transitionCampaign(campaignDir, 'running');
+  return campaignDir;
+}
+
+function campaignExperimentDirs(configs: string[], campaignDir: string): string[] {
+  return configs.map(configPath => {
+    const resolved = resolvePaperConfig(ROOT, configPath);
+    const experimentId = String(resolved.parsedConfig?.name ?? path.basename(configPath))
+      .replace(/[^a-zA-Z0-9._-]+/g, '_');
+    return path.join(campaignDir, 'experiments', experimentId);
+  });
+}
+
+function assertCampaignOutputs(configs: string[], campaignDir: string): string[] {
+  const verification = verifyCampaign(campaignDir);
+  if (!verification.valid) {
+    throw new Error(`Campaign verification failed: ${verification.errors.join('; ')}`);
+  }
+  const dirs = campaignExperimentDirs(configs, campaignDir);
+  configs.forEach((configPath, index) => {
+    const expected = resolvePaperConfig(ROOT, configPath).expectedRuns;
+    const summaryPath = path.join(dirs[index], 'summary.json');
+    const manifestPath = path.join(dirs[index], 'manifest.json');
+    if (!fs.existsSync(summaryPath) || !fs.existsSync(manifestPath)) {
+      throw new Error(`Campaign output is incomplete: ${dirs[index]}`);
+    }
+    const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    if (
+      summary.totalRuns !== expected ||
+      summary.successfulRuns !== expected ||
+      summary.failedRuns !== 0 ||
+      manifest?.execution?.totalRuns !== expected
+    ) {
+      throw new Error(`Campaign output run accounting mismatch: ${dirs[index]}`);
+    }
+    if (!/^sha256:[a-f0-9]{64}$/i.test(String(manifest?.metricDefinitions?.hash ?? ''))) {
+      throw new Error(`Campaign output lacks metric-definition provenance: ${dirs[index]}`);
+    }
+  });
+  return dirs;
 }
 
 function runReports(configs: string[]): void {
@@ -108,10 +205,22 @@ function runReports(configs: string[]): void {
   }
 }
 
-function buildPack(configs: string[], outputDir: string): void {
+function runReportsForDirs(dirs: string[]): void {
+  for (const outputDir of dirs) {
+    runTsx('scripts/generate-research-quality-report.ts', [
+      outputDir,
+      path.join(outputDir, 'research-quality-report.md'),
+    ]);
+  }
+}
+
+function buildPack(configs: string[], outputDir: string, resultsRoot?: string): void {
   const args: string[] = [];
   if (outputDir) {
     args.push('--output', outputDir);
+  }
+  if (resultsRoot) {
+    args.push('--results-root', resultsRoot);
   }
   args.push(...configs);
   runTsx('scripts/build-paper-report-pack.ts', args);
@@ -130,35 +239,112 @@ function generateSummary(configs: string[]): void {
   runTsx('scripts/generate-executive-summary.ts', dirs);
 }
 
+function generateSummaryFromDirs(dirs: string[], outputPath?: string): void {
+  if (dirs.length === 0) {
+    throw new Error('Cannot generate an executive summary without campaign results');
+  }
+  const args = [...dirs];
+  if (outputPath) {
+    args.push('--output', outputPath);
+  }
+  runTsx('scripts/generate-executive-summary.ts', args);
+}
+
 function main(): void {
   const args = parseArgs(process.argv.slice(2));
   const configs = resolveProfileConfigPaths(ROOT, args.profile, args.includeValidation);
 
   switch (args.command) {
     case 'run':
-      runSuite(configs);
+      {
+        const campaignDir = createSuiteCampaign(
+          configs,
+          args.profile,
+          args.campaignId,
+          args.allowDirty
+        );
+        try {
+          runSuite(configs, campaignDir);
+          transitionCampaign(campaignDir, 'completed');
+          transitionCampaign(campaignDir, 'verified');
+          console.log(`[paper-suite] Verified campaign: ${campaignDir}`);
+        } catch (error) {
+          try {
+            transitionCampaign(campaignDir, 'failed');
+          } catch {
+            // Preserve the original execution failure.
+          }
+          throw error;
+        }
+      }
       break;
     case 'report':
-      assertFreshResults(ROOT, configs, args.strictFreshness);
-      runReports(configs);
+      if (args.campaignId) {
+        runReportsForDirs(assertCampaignOutputs(
+          configs,
+          path.join(ROOT, 'campaigns', args.campaignId)
+        ));
+      } else {
+        assertFreshResults(ROOT, configs, args.strictFreshness);
+        runReports(configs);
+      }
       break;
     case 'pack':
-      assertFreshResults(ROOT, configs, args.strictFreshness);
-      runReports(configs);
-      buildPack(configs, args.outputDir);
-      generateSummary(configs);
+      if (args.campaignId) {
+        const campaignDir = path.join(ROOT, 'campaigns', args.campaignId);
+        const dirs = assertCampaignOutputs(configs, campaignDir);
+        runReportsForDirs(dirs);
+        buildPack(configs, args.outputDir, path.join(campaignDir, 'experiments'));
+        generateSummaryFromDirs(dirs);
+      } else {
+        assertFreshResults(ROOT, configs, args.strictFreshness);
+        runReports(configs);
+        buildPack(configs, args.outputDir);
+        generateSummary(configs);
+      }
       break;
     case 'summary':
-      assertFreshResults(ROOT, configs, args.strictFreshness);
-      generateSummary(configs);
+      if (args.campaignId) {
+        generateSummaryFromDirs(assertCampaignOutputs(
+          configs,
+          path.join(ROOT, 'campaigns', args.campaignId)
+        ));
+      } else {
+        assertFreshResults(ROOT, configs, args.strictFreshness);
+        generateSummary(configs);
+      }
       break;
     case 'all':
     default:
-      runSuite(configs);
-      assertFreshResults(ROOT, configs, args.strictFreshness);
-      runReports(configs);
-      buildPack(configs, args.outputDir);
-      generateSummary(configs);
+      {
+        const campaignDir = createSuiteCampaign(
+          configs,
+          args.profile,
+          args.campaignId,
+          args.allowDirty
+        );
+        try {
+          runSuite(configs, campaignDir);
+          transitionCampaign(campaignDir, 'completed');
+          transitionCampaign(campaignDir, 'verified');
+          const dirs = assertCampaignOutputs(configs, campaignDir);
+          runReportsForDirs(dirs);
+          buildPack(
+            configs,
+            args.outputDir || path.join(campaignDir, 'paper-pack'),
+            path.join(campaignDir, 'experiments')
+          );
+          generateSummaryFromDirs(dirs, path.join(campaignDir, 'executive-summary.md'));
+          console.log(`[paper-suite] Verified campaign and report pack: ${campaignDir}`);
+        } catch (error) {
+          try {
+            transitionCampaign(campaignDir, 'failed');
+          } catch {
+            // Preserve the original execution failure.
+          }
+          throw error;
+        }
+      }
       break;
   }
 }

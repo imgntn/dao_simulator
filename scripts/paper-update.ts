@@ -545,35 +545,6 @@ function extractVotingMechanismLabel(sweepValue: string): string {
   return sweepValue;
 }
 
-async function generatePlaceholderChart(label: string, outputPath: string): Promise<boolean> {
-  const scriptPath = path.join(CONFIG.generatedDir, `placeholder_${Date.now()}.py`);
-  const safeLabel = label.replace(/'/g, "\\'");
-  const pythonScript = `
-import matplotlib.pyplot as plt
-import matplotlib
-matplotlib.use('Agg')
-
-plt.figure(figsize=(8, 5))
-plt.text(0.5, 0.5, '${safeLabel}', ha='center', va='center', fontsize=14)
-plt.axis('off')
-plt.tight_layout()
-plt.savefig('${outputPath.replace(/\\/g, '/')}', dpi=300, bbox_inches='tight')
-plt.close()
-`;
-
-  fs.writeFileSync(scriptPath, pythonScript);
-  try {
-    execSync(`python "${scriptPath}"`, { stdio: 'inherit' });
-    return true;
-  } catch {
-    return false;
-  } finally {
-    if (fs.existsSync(scriptPath)) {
-      fs.unlinkSync(scriptPath);
-    }
-  }
-}
-
 function generateMatplotlibScript(
   chartType: string,
   data: any[],
@@ -752,7 +723,7 @@ function buildRqChecklistSection(metadata: PaperMetadata, sourcePath?: string): 
   output.push('');
   output.push('\\subsection*{Legend}');
   output.push('\\begin{itemize}');
-  output.push('  \\item[$\\Box$] todo');
+  output.push('  \\item[$\\Box$] open');
   output.push('  \\item[$\\boxtimes$] done');
   output.push('\\end{itemize}');
   output.push('');
@@ -1025,8 +996,7 @@ async function renderVotingComparisonFigure(
 
 async function generateAllCharts(
   results: ExperimentResults[],
-  profile: PaperProfile,
-  allowPlaceholders: boolean
+  profile: PaperProfile
 ): Promise<void> {
   console.log('\n=== Generating Charts ===\n');
 
@@ -1296,16 +1266,9 @@ async function generateAllCharts(
       continue;
     }
 
-    const outputPath = path.join(CONFIG.figuresDir, task.file);
-    if (allowPlaceholders) {
-      console.warn(`Data missing for ${task.file}; writing placeholder`);
-      const placeholderSuccess = await generatePlaceholderChart(task.label, outputPath);
-      if (placeholderSuccess) {
-        continue;
-      }
-    }
-
-    throw new Error(`Unable to generate required figure: ${task.file}`);
+    throw new Error(
+      `Unable to generate required figure from verified result data: ${task.file} (${task.label})`
+    );
   }
 
   console.log('Chart generation complete.\n');
@@ -1319,7 +1282,11 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const chartsOnly = args.includes('--charts-only');
   const compile = args.includes('--compile');
-  const allowPlaceholders = args.includes('--allow-placeholders');
+  if (args.includes('--allow-placeholders')) {
+    throw new Error(
+      '--allow-placeholders was removed: publication assets must be generated from verified results'
+    );
+  }
   const strictFreshness = !(args.includes('--allow-stale') || args.includes('--skip-freshness-check'));
   const noLLM = args.includes('--no-llm');
   const enableLLM = args.includes('--llm') || args.includes('--use-llm');
@@ -1379,8 +1346,7 @@ async function main(): Promise<void> {
 
   console.log('=== Living Document Paper Updater ===\n');
   console.log(`Profile: ${profile}`);
-  console.log(`Strict freshness check: ${strictFreshness ? 'enabled' : 'disabled'}`);
-  console.log(`Placeholder figures: ${allowPlaceholders ? 'enabled' : 'disabled'}\n`);
+  console.log(`Strict freshness check: ${strictFreshness ? 'enabled' : 'disabled'}\n`);
 
   // Show LLM provider info
   if (useLLM) {
@@ -1416,11 +1382,10 @@ async function main(): Promise<void> {
   console.log('\nLoading experiment results...');
   const results = await loadResultsForConfigs(configPaths);
   console.log(`Found ${results.length} experiment result sets\n`);
-  if (results.length === 0 && !allowPlaceholders) {
-    throw new Error(`No results found for profile ${profile}. Run paper suite first, or pass --allow-placeholders with --allow-stale for scaffold generation.`);
-  }
-  if (results.length === 0 && allowPlaceholders) {
-    console.warn('No result sets found; generating placeholder-backed paper assets.');
+  if (results.length === 0) {
+    throw new Error(
+      `No verified results found for profile ${profile}. Run and verify the paper suite first.`
+    );
   }
 
   // Calculate metadata
@@ -1449,7 +1414,7 @@ async function main(): Promise<void> {
   buildRqChecklistSection(metadata, rqChecklistArg || defaultChecklist || undefined);
 
   // Generate charts
-  await generateAllCharts(results, profile, allowPlaceholders);
+  await generateAllCharts(results, profile);
 
   if (chartsOnly) {
     console.log('Charts-only mode, skipping text updates.');

@@ -12,6 +12,7 @@
  *   --steps, -s <number>   Override steps per run
  *   --seed <number>        Override base seed
  *   --concurrency, -c <n>  Run N simulations concurrently (default: 1)
+ *   --checkpoint-dir <dir>  Isolated checkpoint directory
  *   --resume               Resume from checkpoint if available
  *   --quiet, -q            Suppress progress output
  *   --help, -h             Show help
@@ -41,6 +42,7 @@ interface CliArgs {
   stepsPerRun?: number;
   baseSeed?: number;
   concurrency: number;
+  checkpointDir?: string;
   resume: boolean;
   quiet: boolean;
   help: boolean;
@@ -97,6 +99,10 @@ function parseArgs(args: string[]): CliArgs {
         result.concurrency = parseInt(args[++i], 10);
         break;
 
+      case '--checkpoint-dir':
+        result.checkpointDir = args[++i];
+        break;
+
       default:
         if (!arg.startsWith('-') && !result.configFile) {
           result.configFile = arg;
@@ -127,6 +133,7 @@ Options:
   --steps, -s <number>  Override steps per simulation run
   --seed <number>       Override base random seed
   --concurrency, -c <n> Run N simulations concurrently (default: 1)
+  --checkpoint-dir <dir> Isolated checkpoint directory
   --resume              Resume from checkpoint if available
   --quiet, -q           Suppress progress output
   --help, -h            Show this help message
@@ -210,11 +217,13 @@ function loadConfig(filePath: string): ExperimentConfig {
 
   // Apply defaults
   const config: ExperimentConfig = {
+    id: parsed.id,
     name: parsed.name || 'Unnamed Experiment',
     description: parsed.description,
     version: parsed.version,
     author: parsed.author,
     tags: parsed.tags,
+    research: parsed.research,
     baseConfig: parsed.baseConfig || {},
     sweep: parsed.sweep,
     mode: parsed.mode,
@@ -384,6 +393,9 @@ async function main(): Promise<void> {
       config,
       {
         concurrency,
+        checkpointDir: args.checkpointDir
+          ? path.resolve(args.checkpointDir)
+          : undefined,
         checkpointInterval: 10,
         runTimeoutMs: config.execution.runTimeoutMs ?? 60000,
       },

@@ -34,39 +34,7 @@ Set `ADMIN_USERNAME` and `ADMIN_PASSWORD` in your environment before logging in.
 
 ## 📦 Production Deployment
 
-### Option 1: Railway (Recommended)
-
-1. **Install Railway CLI**:
-```bash
-npm i -g @railway/cli
-railway login
-```
-
-2. **Set Environment Variables**:
-```bash
-railway variables set API_KEY=$(openssl rand -base64 32)
-railway variables set NEXTAUTH_SECRET=$(openssl rand -base64 32)
-railway variables set NEXTAUTH_URL=https://your-app.railway.app
-railway variables set ADMIN_PASSWORD=YourStrongPassword
-railway variables set NODE_ENV=production
-```
-
-3. **Add Redis** (in Railway dashboard):
-   - Add Redis plugin
-   - Copy REDIS_URL from plugin
-   - Set `USE_REDIS=true`
-
-4. **Add PostgreSQL** (optional, for analytics):
-   - `railway add -d postgres` or add via dashboard
-   - `DATABASE_URL` is set automatically
-   - Analytics runs without it (graceful no-op)
-
-4. **Deploy**:
-```bash
-railway up
-```
-
-### Option 2: Vercel
+### Option 1: Vercel
 
 1. **Install Vercel CLI**:
 ```bash
@@ -91,7 +59,7 @@ vercel env add ADMIN_PASSWORD
 vercel --prod
 ```
 
-### Option 3: Docker
+### Option 2: Docker
 
 The repository includes a production-oriented `Dockerfile` and `docker-compose.yml` with Redis and PostgreSQL services.
 
@@ -145,10 +113,9 @@ docker run -d -p 6379:6379 redis:alpine
 
 ### Production Options
 
-1. **Railway** - Add Redis plugin (1-click)
-2. **Upstash** - https://upstash.com (serverless Redis)
-3. **Redis Cloud** - https://redis.com/redis-enterprise-cloud/
-4. **AWS ElastiCache** - For AWS deployments
+1. **Upstash** - https://upstash.com (serverless Redis)
+2. **Redis Cloud** - https://redis.com/redis-enterprise-cloud/
+3. **AWS ElastiCache** - For AWS deployments
 
 ## 📊 Checkpoint Storage
 

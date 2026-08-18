@@ -6,7 +6,28 @@
 // - Use setSeed() with a known seed for deterministic runs
 // - Checkpoint/restore the random state for mid-simulation saves
 
-export class SeededRandom {
+export interface RandomSource {
+  next(): number;
+  nextInt(min: number, max: number): number;
+  nextFloat(min: number, max: number): number;
+  nextBool(probability?: number): boolean;
+  choice<T>(array: T[]): T;
+  shuffle<T>(array: T[]): T[];
+  nextGaussian(mean?: number, stdDev?: number): number;
+}
+
+export const SEED_DERIVATION_SCHEMA_VERSION = 1;
+
+export function deriveSeed(parentSeed: number, streamId: string): number {
+  let hash = (2166136261 ^ (parentSeed >>> 0) ^ SEED_DERIVATION_SCHEMA_VERSION) >>> 0;
+  for (let index = 0; index < streamId.length; index++) {
+    hash ^= streamId.charCodeAt(index);
+    hash = Math.imul(hash, 16777619) >>> 0;
+  }
+  return hash || 1;
+}
+
+export class SeededRandom implements RandomSource {
   private state: number;
   private initialSeed: number;
 
@@ -106,10 +127,64 @@ export class SeededRandom {
   }
 }
 
+export interface RandomStreamState {
+  seed: number;
+  state: number;
+}
+
+export class RandomStreamRegistry {
+  private streams = new Map<string, SeededRandom>();
+
+  constructor(
+    private readonly parentSeed: number,
+    private readonly namespace: string = 'simulation'
+  ) {}
+
+  get(streamId: string): SeededRandom {
+    const qualifiedId = `${this.namespace}:${streamId}`;
+    let stream = this.streams.get(qualifiedId);
+    if (!stream) {
+      stream = new SeededRandom(deriveSeed(this.parentSeed, qualifiedId));
+      this.streams.set(qualifiedId, stream);
+    }
+    return stream;
+  }
+
+  getDerivedSeeds(streamIds: string[]): Record<string, number> {
+    return Object.fromEntries(
+      [...streamIds].sort().map(id => [
+        id,
+        deriveSeed(this.parentSeed, `${this.namespace}:${id}`),
+      ])
+    );
+  }
+
+  getState(): Record<string, RandomStreamState> {
+    return Object.fromEntries(
+      [...this.streams.entries()]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([id, stream]) => [
+          id,
+          { seed: stream.getSeed(), state: stream.getState() },
+        ])
+    );
+  }
+
+  setState(state: Record<string, RandomStreamState>): void {
+    this.streams.clear();
+    for (const [id, saved] of Object.entries(state).sort(([a], [b]) => a.localeCompare(b))) {
+      const stream = new SeededRandom(saved.seed);
+      stream.setState(saved.state);
+      this.streams.set(id, stream);
+    }
+  }
+}
+
 /**
  * Global seeded random instance
  */
 let globalRandom: SeededRandom | null = null;
+let activeRandomSource: RandomSource | null = null;
 
 /**
  * Track the current seed for checkpoint serialization
@@ -121,6 +196,7 @@ let currentSeed: number | null = null;
  */
 export function setSeed(seed: number): void {
   globalRandom = new SeededRandom(seed);
+  activeRandomSource = null;
   currentSeed = seed;
 }
 
@@ -132,6 +208,7 @@ export function setSeed(seed: number): void {
 export function resetGlobalRandom(seed?: number): void {
   const newSeed = seed ?? Date.now();
   globalRandom = new SeededRandom(newSeed);
+  activeRandomSource = null;
   currentSeed = newSeed;
 }
 
@@ -141,6 +218,7 @@ export function resetGlobalRandom(seed?: number): void {
  */
 export function clearGlobalRandom(): void {
   globalRandom = null;
+  activeRandomSource = null;
   currentSeed = null;
 }
 
@@ -182,53 +260,81 @@ export function setRandomState(state: { seed: number; state: number }): void {
   currentSeed = state.seed;
 }
 
+export function withRandomSource<T>(source: RandomSource, action: () => T): T {
+  const previous = activeRandomSource;
+  activeRandomSource = source;
+  try {
+    const result = action();
+    if (result && typeof (result as { then?: unknown }).then === 'function') {
+      throw new Error('withRandomSource only supports synchronous actions');
+    }
+    return result;
+  } finally {
+    activeRandomSource = previous;
+  }
+}
+
 /**
  * Get seeded random number (0 to 1)
  * Falls back to Math.random if no seed is set
  */
 export function random(): number {
-  return globalRandom ? globalRandom.next() : Math.random();
+  if (activeRandomSource) return activeRandomSource.next();
+  if (globalRandom) return globalRandom.next();
+  const strictResearchMode = typeof process !== 'undefined'
+    && process.env?.DAO_SIM_RESEARCH_MODE === '1';
+  if (strictResearchMode) {
+    throw new Error('Unseeded randomness is prohibited in research mode');
+  }
+  return Math.random();
 }
 
 /**
  * Get seeded random integer
  */
 export function randomInt(min: number, max: number): number {
-  return globalRandom ? globalRandom.nextInt(min, max) : Math.floor(Math.random() * (max - min) + min);
+  if (activeRandomSource) return activeRandomSource.nextInt(min, max);
+  return globalRandom ? globalRandom.nextInt(min, max) : Math.floor(random() * (max - min) + min);
 }
 
 /**
  * Get seeded random float
  */
 export function randomFloat(min: number, max: number): number {
-  return globalRandom ? globalRandom.nextFloat(min, max) : Math.random() * (max - min) + min;
+  if (activeRandomSource) return activeRandomSource.nextFloat(min, max);
+  return globalRandom ? globalRandom.nextFloat(min, max) : random() * (max - min) + min;
 }
 
 /**
  * Get seeded random boolean
  */
 export function randomBool(probability: number = 0.5): boolean {
-  return globalRandom ? globalRandom.nextBool(probability) : Math.random() < probability;
+  if (activeRandomSource) return activeRandomSource.nextBool(probability);
+  return globalRandom ? globalRandom.nextBool(probability) : random() < probability;
 }
 
 /**
  * Choose random element from array
  */
 export function randomChoice<T>(array: T[]): T {
-  return globalRandom ? globalRandom.choice(array) : array[Math.floor(Math.random() * array.length)];
+  if (activeRandomSource) return activeRandomSource.choice(array);
+  return globalRandom ? globalRandom.choice(array) : array[Math.floor(random() * array.length)];
 }
 
 /**
  * Shuffle array
  */
 export function randomShuffle<T>(array: T[]): T[] {
+  if (activeRandomSource) {
+    return activeRandomSource.shuffle(array);
+  }
   if (globalRandom) {
     return globalRandom.shuffle(array);
   }
 
   const arr = [...array];
   for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
@@ -251,12 +357,15 @@ export function weightedRandomChoice<T extends { weight: number }>(items: T[]): 
  * Get Gaussian distributed random number
  */
 export function randomGaussian(mean: number = 0, stdDev: number = 1): number {
+  if (activeRandomSource) {
+    return activeRandomSource.nextGaussian(mean, stdDev);
+  }
   if (globalRandom) {
     return globalRandom.nextGaussian(mean, stdDev);
   }
 
-  const u1 = Math.max(Number.EPSILON, Math.random());
-  const u2 = Math.random();
+  const u1 = Math.max(Number.EPSILON, random());
+  const u2 = random();
   const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
   return z0 * stdDev + mean;
 }

@@ -9,6 +9,8 @@ import { GiniChart } from './GiniChart';
 import { AgentDistribution } from './AgentDistribution';
 import { ProposalOutcomes } from './ProposalOutcomes';
 import { ExportButton } from '../ExportButton';
+import { getMetricDefinition } from '@/lib/research/metric-registry';
+import type { BuiltinMetricType } from '@/lib/research/experiment-config';
 
 const SPARKLINE_WINDOW = 50;
 const MA_WINDOW = 10;
@@ -93,6 +95,9 @@ export function MetricsDashboard() {
 
   return (
     <div className="p-4 space-y-4 flex-1">
+      <p className="rounded border border-[var(--sim-border)] px-2 py-1 text-[10px] text-[var(--sim-text-muted)]">
+        Single-run snapshots and trajectories are descriptive. Use Evidence mode for replicate-level uncertainty and inference.
+      </p>
       {/* Header with controls */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -111,12 +116,12 @@ export function MetricsDashboard() {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-2 gap-2 metrics-grid-responsive">
-        <MetricCard label="Treasury" value={formatCompact(snapshot.treasuryFunds)} data={sparklineData.treasury} color={SPARKLINE_COLORS.Treasury} showTrend={showTrend} />
-        <MetricCard label="Token Price" value={`$${snapshot.tokenPrice.toFixed(2)}`} data={sparklineData.tokenPrice} color={SPARKLINE_COLORS['Token Price']} showTrend={showTrend} />
-        <MetricCard label="Members" value={snapshot.memberCount.toString()} data={sparklineData.members} color={SPARKLINE_COLORS.Members} showTrend={showTrend} />
-        <MetricCard label="Proposals" value={snapshot.proposalCount.toString()} data={sparklineData.proposals} color={SPARKLINE_COLORS.Proposals} showTrend={showTrend} />
-        <MetricCard label="Gini" value={snapshot.gini.toFixed(3)} data={sparklineData.gini} color={SPARKLINE_COLORS.Gini} showTrend={showTrend} />
-        <MetricCard label="Participation" value={`${(snapshot.avgParticipationRate * 100).toFixed(1)}%`} data={sparklineData.participation} color={SPARKLINE_COLORS.Participation} showTrend={showTrend} />
+        <MetricCard metricId="final_treasury" label="Treasury" value={formatCompact(snapshot.treasuryFunds)} data={sparklineData.treasury} color={SPARKLINE_COLORS.Treasury} showTrend={showTrend} />
+        <MetricCard metricId="final_token_price" label="Token Price" value={`$${snapshot.tokenPrice.toFixed(2)}`} data={sparklineData.tokenPrice} color={SPARKLINE_COLORS['Token Price']} showTrend={showTrend} />
+        <MetricCard metricId="final_member_count" label="Members" value={snapshot.memberCount.toString()} data={sparklineData.members} color={SPARKLINE_COLORS.Members} showTrend={showTrend} />
+        <MetricCard metricId="total_proposals" label="Proposals" value={snapshot.proposalCount.toString()} data={sparklineData.proposals} color={SPARKLINE_COLORS.Proposals} showTrend={showTrend} />
+        <MetricCard metricId="final_gini" label="Gini" value={snapshot.gini.toFixed(3)} data={sparklineData.gini} color={SPARKLINE_COLORS.Gini} showTrend={showTrend} />
+        <MetricCard metricId="voter_participation_rate" label="Participation" value={`${(snapshot.avgParticipationRate * 100).toFixed(1)}%`} data={sparklineData.participation} color={SPARKLINE_COLORS.Participation} showTrend={showTrend} />
       </div>
 
       {/* Charts */}
@@ -199,11 +204,31 @@ function Sparkline({ data, color, width = 80, height = 24, showTrend = false }: 
   );
 }
 
-function MetricCard({ label, value, data, color, showTrend }: { label: string; value: string; data?: number[]; color?: string; showTrend?: boolean }) {
+function MetricCard({
+  metricId,
+  label,
+  value,
+  data,
+  color,
+  showTrend,
+}: {
+  metricId: BuiltinMetricType;
+  label: string;
+  value: string;
+  data?: number[];
+  color?: string;
+  showTrend?: boolean;
+}) {
+  const definition = getMetricDefinition(metricId);
   return (
-    <div className="bg-[var(--sim-surface)] rounded px-3 py-2 border border-[var(--sim-border)] transition-colors hover:bg-[var(--sim-surface-hover,rgba(255,255,255,0.03))]">
+    <div
+      className="bg-[var(--sim-surface)] rounded px-3 py-2 border border-[var(--sim-border)] transition-colors hover:bg-[var(--sim-surface-hover,rgba(255,255,255,0.03))]"
+      title={`${definition.construct}. Unit: ${definition.unit}. ${definition.interpretationLimits}`}
+      aria-label={`${label}: ${value}. Unit ${definition.unit}. Single-run descriptive value.`}
+    >
       <div className="text-[10px] text-[var(--sim-text-muted)] uppercase tracking-wider">{label}</div>
       <div className="text-sm font-mono text-[var(--sim-text)] mt-0.5">{value}</div>
+      <div className="text-[9px] text-[var(--sim-text-dim)]">{definition.unit}</div>
       {data && color && <Sparkline data={data} color={color} showTrend={showTrend} />}
     </div>
   );

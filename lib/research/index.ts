@@ -51,6 +51,10 @@ export {
   type RunProgress,
   type ProgressCallback,
 } from './experiment-runner';
+export {
+  buildStableRunId,
+  RUN_IDENTITY_SCHEMA_VERSION,
+} from './run-identity';
 
 // Exporter
 export {
@@ -77,11 +81,25 @@ export {
 export {
   checkInvariants,
   calculateInitialTokenSupply,
+  captureTokenSupply,
+  captureAllTokenSupplies,
+  createAssetSupplyBaselines,
+  checkTokenConservation,
+  checkAllTokenConservation,
   InvariantTracker,
+  type AssetSupplyBaseline,
   type InvariantViolation,
   type InvariantCheckResult,
   type InvariantConfig,
 } from './invariant-checker';
+
+export {
+  BUILTIN_METRIC_IDS,
+  METRIC_REGISTRY,
+  getMetricDefinition,
+  type MetricDefinition,
+  type MetricObservation,
+} from './metric-registry';
 
 // Regression Tester
 export {
@@ -193,7 +211,7 @@ export {
   BASELINE_DAO_IDS,
   DAO_SUITE_CONFIG,
   BASELINE_CALIBRATION_CONFIG,
-  EXPERIMENT_BASELINE_FINDINGS,
+  EXPERIMENT_REPLAY_CONTRACTS,
   METRIC_THRESHOLD_MULTIPLIER,
   computeBaselineConfigHash,
   EXIT_OK,
@@ -201,7 +219,7 @@ export {
   EXIT_CONFIG_DRIFT,
   EXIT_INFRA_FAILURE,
   type DaoSuiteConfig,
-  type ExperimentFinding,
+  type ExperimentReplayContract,
 } from './baseline-config';
 export {
   CalibrationBaselineSchema,
@@ -256,3 +274,7 @@ export {
   adaptiveEpisodeCount,
   setupValidationLlmCache,
 } from './validation-cost-control';
+export * from './confirmatory-analysis';
+export * from './campaign-copy';
+export * from './llm-provenance';
+export * from './llm-run-diagnostics';

@@ -65,6 +65,9 @@ export class Proposal {
   // the balance at proposal creation, not current balance
   votingPowerSnapshot: Map<string, number> = new Map();
   totalSupplySnapshot: number = 0;
+  quorumThresholdSnapshot: number = 0;
+  approvalThresholdSnapshot: number = 0.5;
+  governanceRuleSnapshot: string = 'majority';
   snapshotTaken: boolean = false;
 
   // Track members who have had their delegation revoked for this proposal
@@ -124,6 +127,9 @@ export class Proposal {
       totalSupply += nonNegativeFinite(member.tokens) + nonNegativeFinite(member.stakedTokens);
     }
     this.totalSupplySnapshot = totalSupply;
+    this.quorumThresholdSnapshot = nonNegativeFinite(this.dao.governanceQuorumPercentage);
+    this.approvalThresholdSnapshot = nonNegativeFinite(this.dao.governanceApprovalThreshold);
+    this.governanceRuleSnapshot = this.dao.governanceRuleName;
     this.snapshotTaken = true;
   }
 
@@ -332,6 +338,9 @@ export class Proposal {
       // Serialize voting power snapshot for checkpoint restore
       votingPowerSnapshot: Object.fromEntries(this.votingPowerSnapshot),
       totalSupplySnapshot: this.totalSupplySnapshot,
+      quorumThresholdSnapshot: this.quorumThresholdSnapshot,
+      approvalThresholdSnapshot: this.approvalThresholdSnapshot,
+      governanceRuleSnapshot: this.governanceRuleSnapshot,
       snapshotTaken: this.snapshotTaken,
     };
   }
@@ -375,6 +384,11 @@ export class Proposal {
       );
     }
     proposal.totalSupplySnapshot = nonNegativeFinite(data.totalSupplySnapshot);
+    proposal.quorumThresholdSnapshot = nonNegativeFinite(data.quorumThresholdSnapshot);
+    proposal.approvalThresholdSnapshot = nonNegativeFinite(data.approvalThresholdSnapshot) || 0.5;
+    proposal.governanceRuleSnapshot = typeof data.governanceRuleSnapshot === 'string'
+      ? data.governanceRuleSnapshot
+      : dao.governanceRuleName;
     proposal.snapshotTaken = data.snapshotTaken || false;
 
     return proposal;

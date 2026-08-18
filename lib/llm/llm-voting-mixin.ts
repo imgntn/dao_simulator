@@ -90,6 +90,9 @@ export class LLMVotingBehavior {
       }
 
       const { system, prompt } = buildVotingPrompt(context);
+      const rawCacheKey = this.cache
+        ? LLMResponseCache.makeRawKey(this.model, system, prompt, this.seed, this.temperature)
+        : undefined;
 
       // Compute cache key once for both lookup and storage
       const cacheKey = this.cache
@@ -98,7 +101,7 @@ export class LLMVotingBehavior {
 
       // Check cache first
       if (this.cache && cacheKey) {
-        const cached = this.cache.get(cacheKey);
+        const cached = this.cache.get(cacheKey, rawCacheKey);
         if (cached !== undefined) {
           const decision = parseVoteResponse(cached);
           this.decisions.set(proposalId, decision);
@@ -136,7 +139,7 @@ export class LLMVotingBehavior {
 
         // Cache the response (reuse cacheKey from lookup above)
         if (this.cache && cacheKey) {
-          this.cache.set(cacheKey, response.response, this.model);
+          this.cache.set(cacheKey, response.response, this.model, rawCacheKey);
         }
 
         this.recordVoteHistory({

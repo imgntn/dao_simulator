@@ -1,7 +1,7 @@
-﻿'use client';
+'use client';
 
 /**
- * The Living Archive â€” Mucha Ã— Bioluminescent Crystal Cave.
+ * The Living Archive — Mucha × Bioluminescent Crystal Cave.
  *
  * A vast underground governance hall inside a crystal cave.
  * Each chamber glows with its own crystal colour: amethyst for
@@ -16,6 +16,7 @@ import { useSimulationStore } from '@/lib/browser/simulation-store';
 import { useBranchStore } from '@/lib/browser/branch-store';
 import type { PerformanceAverages, SanctumRendererMode, SanctumRendererStats, ThreeRendererStats, VisualSceneDrawStats } from '@/lib/browser/renderer-stats';
 import { averagePerformanceSamples, getPerformanceHealth } from '@/lib/browser/renderer-stats';
+import { STEP_DURATION_HOURS, stepsToDays, stepsToHours } from '@/lib/config/constants';
 import type {
   AgentSnapshot,
   ProposalSnapshot,
@@ -42,9 +43,9 @@ declare global {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//   Coordinate constants â€” identical to ship version
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
+//   Coordinate constants — identical to ship version
+// ═══════════════════════════════════════════════════════════════════
 
 const SL = -440;
 const SR =  440;
@@ -57,9 +58,9 @@ const D_TOP =   85; const D_BOT = 195;
 const MID = 0;
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Cave colour palette
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 const CAVE_BG   = '#040210';
 const CAVE_MID  = '#0A0422';
@@ -87,18 +88,18 @@ const ZOOM_MAX   = 7.0;
 const SCENE_VISUAL_FPS = 24;
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Seeded random
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function mkRand(seed: number) {
   let s = seed | 0;
   return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   SVG defs
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function SceneDefs() {
   return (
@@ -171,9 +172,9 @@ function SceneDefs() {
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Crystal primitives
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function Crystal({
   x, y, h, w, color, dir = 'up', opacity = 1,
@@ -239,9 +240,9 @@ function CrystalCluster({
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Mucha Art Nouveau vine
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function MuchaVine({
   x1, x2, y, color = MG, flip = false,
@@ -281,9 +282,9 @@ function MuchaVine({
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Rock ledge
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function RockLedge({
   x1, x2, y, thick = 6, seed = 1, vineColor,
@@ -312,9 +313,9 @@ function RockLedge({
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Mucha circular halo
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function MuchaHalo({ cx, cy, r }: { cx: number; cy: number; r: number }) {
   return (
@@ -339,9 +340,9 @@ function MuchaHalo({ cx, cy, r }: { cx: number; cy: number; r: number }) {
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Cave background and zone fills
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function CaveBackground() {
   return (
@@ -411,9 +412,9 @@ function HallIdentityMarks() {
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Cave structural ledges, ceiling stalactites, pillars
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function CaveLedges() {
   return (
@@ -424,7 +425,7 @@ function CaveLedges() {
       <RockLedge x1={SL} x2={SR} y={C_BOT} thick={5} seed={44} vineColor={MG} />
       <RockLedge x1={SL} x2={SR} y={D_BOT} thick={5} seed={55} vineColor={CX_CRAF} />
 
-      {/* Vertical dividers â€” crystal pillars at zone B and D mid-splits */}
+      {/* Vertical dividers — crystal pillars at zone B and D mid-splits */}
       <CrystalCluster cx={MID} cy={B_BOT} color={CX_COUN}   glowColor={CX_COUN_G} seed={301} scale={0.85} dir="up"   />
       <CrystalCluster cx={MID} cy={B_TOP} color={CX_TREA}   glowColor={CX_TREA_G} seed={302} scale={0.85} dir="down" />
       <CrystalCluster cx={MID} cy={D_BOT} color={CX_CRAF}   glowColor={CX_CRAF_G} seed={401} scale={0.75} dir="up"   />
@@ -457,14 +458,14 @@ function CaveCeiling() {
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Per-hall crystal decorations
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function HallCrystals() {
   return (
     <g>
-      {/* Zone A â€” Governance: amethyst columns from floor */}
+      {/* Zone A — Governance: amethyst columns from floor */}
       {([-390, -280, -150, 0, 150, 280, 390] as number[]).map((x, i) => (
         <CrystalCluster key={`ga${i}`}
           cx={x} cy={A_BOT}
@@ -476,7 +477,7 @@ function HallCrystals() {
       <CrystalCluster cx={SL + 8}  cy={A_BOT - 18} color={CX_GOV} glowColor={CX_GOV_G} seed={250} scale={0.55} dir="up" />
       <CrystalCluster cx={SR - 8}  cy={A_BOT - 18} color={CX_GOV} glowColor={CX_GOV_G} seed={251} scale={0.55} dir="up" />
 
-      {/* Zone B-left â€” Council: amber pillars */}
+      {/* Zone B-left — Council: amber pillars */}
       {([-380, -270, -160, -60] as number[]).map((x, i) => (
         <CrystalCluster key={`gb${i}`}
           cx={x} cy={B_BOT}
@@ -485,7 +486,7 @@ function HallCrystals() {
         />
       ))}
 
-      {/* Zone B-right â€” Treasury: teal spires */}
+      {/* Zone B-right — Treasury: teal spires */}
       {([60, 170, 280, 380] as number[]).map((x, i) => (
         <CrystalCluster key={`tc${i}`}
           cx={x} cy={B_BOT}
@@ -494,13 +495,13 @@ function HallCrystals() {
         />
       ))}
 
-      {/* Zone C â€” Ceremony Hall side formations */}
+      {/* Zone C — Ceremony Hall side formations */}
       <CrystalCluster cx={SL + 18} cy={C_BOT - 22} color={CX_SAL} glowColor={CX_SAL_G} seed={500} scale={0.78} dir="up"   />
       <CrystalCluster cx={SR - 18} cy={C_BOT - 22} color={CX_SAL} glowColor={CX_SAL_G} seed={501} scale={0.78} dir="up"   />
       <CrystalCluster cx={SL + 18} cy={C_TOP + 14} color={CX_SAL} glowColor={CX_SAL_G} seed={502} scale={0.55} dir="down" />
       <CrystalCluster cx={SR - 18} cy={C_TOP + 14} color={CX_SAL} glowColor={CX_SAL_G} seed={503} scale={0.55} dir="down" />
 
-      {/* Zone D-left â€” Craft: amber floor clusters */}
+      {/* Zone D-left — Craft: amber floor clusters */}
       {([-380, -265, -150, -55] as number[]).map((x, i) => (
         <CrystalCluster key={`df${i}`}
           cx={x} cy={D_BOT}
@@ -509,7 +510,7 @@ function HallCrystals() {
         />
       ))}
 
-      {/* Zone D-right â€” Archive Stacks: lavender pillar "shelves" */}
+      {/* Zone D-right — Archive Stacks: lavender pillar "shelves" */}
       {([42, 118, 198, 278, 358, 428] as number[]).map((x, i) => (
         <g key={`sp${i}`}>
           <Crystal x={x}      y={D_BOT} h={D_BOT - D_TOP - 12} w={13}
@@ -524,9 +525,9 @@ function HallCrystals() {
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Crystal altar (ceremony focal point)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function CaveAltar({
   proposal, memberCount, treasury,
@@ -554,7 +555,7 @@ function CaveAltar({
           fill={CAVE_MID} stroke={MG} strokeWidth="0.8" opacity="0.88" />
         <text x="0" y="4" textAnchor="middle" fontSize="7.5" fontWeight="700" fill={MG_LT}
           style={{ fontFamily: 'Georgia, serif' }}>
-          {'â—ˆ ' + formatMoney(treasury)}
+          {'◈ ' + formatMoney(treasury)}
         </text>
       </g>
 
@@ -600,7 +601,7 @@ function CaveAltar({
             </text>
             <text x="0" y="7" textAnchor="middle" fontSize="7.2" fontWeight="700" fill={MG_LT}
               style={{ fontFamily: 'Georgia, serif' }}>
-              {proposal.type} Â· s{proposal.creationStep}
+              {proposal.type} · s{proposal.creationStep}
             </text>
           </g>
           <polygon
@@ -629,24 +630,24 @@ function CaveAltar({
             <rect x="-52" y="12" width={104 * quorumPct} height="4" rx="1.5" fill="url(#proposalQuorum)" />
             <text x="0" y="25" textAnchor="middle" fontSize="6" fill={MG}
               style={{ fontFamily: 'Georgia, serif' }}>
-              FOR {Math.round(forPct * 100)}% · TURNOUT {Math.round(participation * 100)}% · FUNDS {formatMoney(proposal.fundingGoal)}
+              FOR {Math.round(forPct * 100)}% • TURNOUT {Math.round(participation * 100)}% • FUNDS {formatMoney(proposal.fundingGoal)}
             </text>
           </g>
-          <title>{`${proposal.status.toUpperCase()} Â· ${proposal.type}\nFOR ${proposal.votesFor} Â· AGAINST ${proposal.votesAgainst}\nFunds: ${formatMoney(proposal.fundingGoal)}`}</title>
+          <title>{`${proposal.status.toUpperCase()} · ${proposal.type}\nFOR ${proposal.votesFor} · AGAINST ${proposal.votesAgainst}\nFunds: ${formatMoney(proposal.fundingGoal)}`}</title>
         </g>
       ) : (
         <text x={cx} y={floorY - altarH - 8} textAnchor="middle" fontSize="6" fill={MG}
           style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
-          the altar awaitsâ€¦
+          the altar awaits…
         </text>
       )}
     </g>
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Room labels
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function RoomLabels() {
   const labels = [
@@ -669,9 +670,9 @@ function RoomLabels() {
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Assembled cave furniture
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function CaveFurniture({
   proposal, memberCount, treasury,
@@ -741,17 +742,17 @@ function useThrottledActiveSnapshot(enabled: boolean, fps: number): SimulationSn
   return visualSnapshot;
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Storm overlay (phosphorescent cave pulse)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Creature placement
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   UI overlays
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function HeaderOverlay({ snap }: { snap: SimulationSnapshot }) {
   const blackSwan = snap.blackSwan.active;
@@ -770,13 +771,13 @@ function HeaderOverlay({ snap }: { snap: SimulationSnapshot }) {
           minWidth: 312,
         }}
       >
-        <Tooltip content={<>Simulation step â€” each tick advances the Archive by one period.</>}>
-          <Chip label="Step" value={snap.step.toLocaleString()} />
+        <Tooltip content={<>One simulation step is {STEP_DURATION_HOURS} hour. This is one descriptive trajectory, not an inferential estimate.</>}>
+          <Chip label="Time" value={`${stepsToHours(snap.step).toLocaleString()} h`} />
         </Tooltip>
         <Tooltip content={<>Stewards gathered in the cave.</>}>
           <Chip label="Stewards" value={snap.memberCount.toString()} />
         </Tooltip>
-        <Tooltip content={<>Current token price â€” the Archive's coin of account.</>}>
+        <Tooltip content={<>Current token price — the Archive's coin of account.</>}>
           <Chip label="Token" value={`$${snap.tokenPrice.toFixed(2)}`} />
         </Tooltip>
         {blackSwan && (
@@ -792,11 +793,17 @@ function HeaderOverlay({ snap }: { snap: SimulationSnapshot }) {
               className="inline-flex items-center gap-1 rounded-sm border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider animate-pulse"
               style={{ background: PALETTE.blood, color: PALETTE.parchment, borderColor: PALETTE.ink }}
             >
-              â›ˆ {snap.blackSwan.name ?? 'Storm'}
+              ⛈ {snap.blackSwan.name ?? 'Storm'}
             </span>
           </Tooltip>
         )}
       </div>
+      <span
+        className="rounded-sm border px-2 py-1 text-[9px] uppercase tracking-wider"
+        style={{ background: 'rgba(12,6,28,0.72)', borderColor: MG, color: MG_LT }}
+      >
+        Single run · descriptive
+      </span>
     </div>
   );
 }
@@ -812,14 +819,14 @@ function Chip({ label, value }: { label: string; value: string }) {
 
 function VisualLegend() {
   const items = [
-    { label: 'Governance', color: CX_GOV_G },
-    { label: 'Treasury', color: CX_TREA_G },
-    { label: 'Craft', color: CX_CRAF_G },
-    { label: 'Council', color: CX_COUN_G },
-    { label: 'Member', color: CX_PASS_G },
-    { label: 'For', color: PALETTE.voteFor },
-    { label: 'Against', color: PALETTE.voteAgainst },
-    { label: 'Risk', color: PALETTE.blood },
+    { label: 'Governance', color: CX_GOV_G, symbol: 'G' },
+    { label: 'Treasury', color: CX_TREA_G, symbol: 'T' },
+    { label: 'Craft', color: CX_CRAF_G, symbol: 'C' },
+    { label: 'Council', color: CX_COUN_G, symbol: 'K' },
+    { label: 'Member', color: CX_PASS_G, symbol: 'M' },
+    { label: 'For', color: PALETTE.voteFor, symbol: '+' },
+    { label: 'Against', color: PALETTE.voteAgainst, symbol: '−' },
+    { label: 'Risk', color: PALETTE.blood, symbol: '!' },
   ];
   return (
     <div
@@ -834,7 +841,13 @@ function VisualLegend() {
     >
       {items.map(item => (
         <span key={item.label} className="inline-flex min-w-0 items-center gap-1.5">
-          <span className="h-2 w-2 flex-shrink-0 rounded-full" style={{ background: item.color, boxShadow: `0 0 8px ${item.color}` }} />
+          <span
+            className="inline-flex h-3 w-3 flex-shrink-0 items-center justify-center rounded-sm border text-[7px] font-bold"
+            style={{ borderColor: item.color, color: item.color, boxShadow: `0 0 8px ${item.color}` }}
+            aria-hidden="true"
+          >
+            {item.symbol}
+          </span>
           <span className="truncate">{item.label}</span>
         </span>
       ))}
@@ -893,7 +906,7 @@ function FireLog({ events }: { events: SimulationEvent[] }) {
         <span className="text-[9px] uppercase tracking-widest" style={{ color: CX_SAL_G }}>Cave Chronicle</span>
       </div>
       {recent.length === 0 ? (
-        <div className="italic opacity-60">the cave is quietâ€¦</div>
+        <div className="italic opacity-60">the cave is quiet…</div>
       ) : (
         <ul className="flex flex-col gap-0.5">
           {recent.map((ev, i) => (
@@ -1076,9 +1089,9 @@ function PerformanceHud({
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Zoom controls
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function ZoomControls({
   zoom,
@@ -1115,7 +1128,7 @@ function ZoomControls({
   return (
     <div className="absolute right-3 z-30 flex flex-col gap-1" style={{ bottom: '8.25rem' }} data-ui-interactive>
       <button type="button" style={btn} onClick={() => onZoom(Math.min(ZOOM_MAX, zoom + 0.4))} title="Zoom in"    aria-label="Zoom in">+</button>
-      <button type="button" style={btn} onClick={() => onZoom(Math.max(ZOOM_MIN, zoom - 0.4))} title="Zoom out"   aria-label="Zoom out">âˆ’</button>
+      <button type="button" style={btn} onClick={() => onZoom(Math.max(ZOOM_MIN, zoom - 0.4))} title="Zoom out"   aria-label="Zoom out">−</button>
       {zoom !== 1 && (
         <button type="button" style={{ ...btn, fontSize: 9, letterSpacing: '0.05em' }}
           onClick={() => onZoom(1)} title="Reset zoom" aria-label="Reset zoom">FIT</button>
@@ -1151,9 +1164,9 @@ function ZoomControls({
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Timeline scrubber
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function TimelineScrubber() {
   const history        = useSimulationStore(s => s.history);
@@ -1221,6 +1234,7 @@ function TimelineScrubber() {
 
   return (
     <div
+      data-tutorial="timeline"
       className="absolute bottom-0 left-0 right-0 z-30 flex items-center gap-2 px-3 py-1.5 border-t"
       style={{
         background: 'rgba(12,6,28,0.96)',
@@ -1256,7 +1270,7 @@ function TimelineScrubber() {
                 borderColor: event.type === 'black_swan' ? PALETTE.blood : MG,
                 background: event.type === 'black_swan' ? `${PALETTE.blood}cc` : 'rgba(64,232,255,0.75)',
               }}
-              title={`s${event.step}: ${event.message}`}
+              title={`${stepsToHours(event.step)} h: ${event.message}`}
             />
           );
         })}
@@ -1267,7 +1281,7 @@ function TimelineScrubber() {
               key={annotation.id}
               className="absolute top-1/2 h-3 w-1 -translate-x-1/2 -translate-y-1/2 rounded-sm"
               style={{ left: `${left}%`, background: CX_TREA }}
-              title={`s${annotation.step}: ${annotation.text}`}
+              title={`${stepsToHours(annotation.step)} h: ${annotation.text}`}
             />
           );
         })}
@@ -1275,7 +1289,7 @@ function TimelineScrubber() {
           <span
             className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 border"
             style={{ left: `${forkPercent}%`, borderColor: CX_COUN_G, background: 'rgba(232,192,80,0.38)' }}
-            title={`Branch forked at s${forkStep}`}
+            title={`Branch forked at ${stepsToHours(forkStep)} h`}
           />
         )}
         <input type="range" min={0} max={maxIdx} value={currentIdx} onChange={handleSlider}
@@ -1289,10 +1303,16 @@ function TimelineScrubber() {
         style={{ width: 22, height: 28, background: 'rgba(20,10,40,0.9)', borderColor: MG, color: MG_LT }}
         aria-label="Step forward">&gt;</button>
       <div className="hidden w-44 flex-shrink-0 truncate text-[10px] md:block" style={{ color: MG }}>
-        {currentEvent ? `s${currentEvent.step} ${currentEvent.type.replaceAll('_', ' ')}` : 'Replay timeline'}
+        {currentEvent ? `${stepsToHours(currentEvent.step)} h ${currentEvent.type.replaceAll('_', ' ')}` : 'Replay timeline'}
       </div>
       <div className="flex-shrink-0 flex items-center gap-1.5 text-[11px]" style={{ color: MG, minWidth: '5rem' }}>
-        <span className="tabular-nums font-bold" style={{ color: MG_LT }}>s{displayStep}</span>
+        <span
+          className="tabular-nums font-bold"
+          style={{ color: MG_LT }}
+          title={`${stepsToDays(displayStep ?? 0).toFixed(2)} days · step ${displayStep}`}
+        >
+          {stepsToHours(displayStep ?? 0)} h
+        </span>
         {isLive ? (
           <span className="rounded px-1 py-0.5 text-[9px] font-bold uppercase tracking-wider"
             style={{ background: CX_TREA, color: CAVE_BG }}>LIVE</span>
@@ -1308,9 +1328,9 @@ function TimelineScrubber() {
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Creature inspector
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function CreatureInspector({
   agent, onClose, currentStep, agents, proposals, onInspectAgent, followedAgentId, onToggleFollow,
@@ -1432,11 +1452,11 @@ function CreatureInspector({
       }}>
         {hasVote ? (
           <span style={{ color: agent.lastVote ? PALETTE.voteFor : PALETTE.voteAgainst }}>
-            {agent.lastVote ? 'â–  Voted FOR' : 'â–  Voted AGAINST'}
+            {agent.lastVote ? '■ Voted FOR' : '■ Voted AGAINST'}
             {isRecent && <span className="ml-1 opacity-70">(just now)</span>}
           </span>
         ) : (
-          <span className="opacity-60" style={{ color: MG }}>â—‹ Not yet voted</span>
+          <span className="opacity-60" style={{ color: MG }}>○ Not yet voted</span>
         )}
       </div>
 
@@ -1463,7 +1483,7 @@ function CreatureInspector({
         </div>
         <div className="text-[11px] flex justify-between" style={{ color: MG }}>
           <span>Last vote</span>
-          <span className="font-bold tabular-nums" style={{ color: MG_LT }}>{hasVote ? `s${agent.lastVoteStep}` : 'â€”'}</span>
+          <span className="font-bold tabular-nums" style={{ color: MG_LT }}>{hasVote ? `s${agent.lastVoteStep}` : '—'}</span>
         </div>
         {agent.delegateTo && (
           <div className="text-[11px] flex justify-between" style={{ color: MG }}>
@@ -1530,12 +1550,12 @@ function CreatureInspector({
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Utils
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 function formatMoney(n: number): string {
-  if (!Number.isFinite(n)) return 'â€”';
+  if (!Number.isFinite(n)) return '—';
   const abs = Math.abs(n);
   if (abs >= 1e9) return `${(n / 1e9).toFixed(1)}B`;
   if (abs >= 1e6) return `${(n / 1e6).toFixed(1)}M`;
@@ -1543,19 +1563,19 @@ function formatMoney(n: number): string {
   return `${n.toFixed(0)}`;
 }
 function formatPct(n: number): string {
-  if (!Number.isFinite(n)) return 'â€”';
+  if (!Number.isFinite(n)) return '—';
   return `${(n * 100).toFixed(0)}%`;
 }
 function compactNumber(n: number): string {
-  if (!Number.isFinite(n)) return 'â€”';
+  if (!Number.isFinite(n)) return '—';
   if (Math.abs(n) >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
   if (Math.abs(n) >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
   return n.toFixed(0);
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 //   Root component
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════════════
 
 export interface SanctumSceneProps {
   snapshot?: SimulationSnapshot | null;
@@ -1567,7 +1587,7 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
   const targetHall = useSimulationStore(s => s.targetFloor);
   const snapshot  = isPreview ? snapshotProp : liveSnapshot;
 
-  // â”€â”€ Zoom / pan â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Zoom / pan ─────────────────────────────────────────────────
   const [zoom, setZoom] = useState(1.0);
   const [pan, setPan]   = useState({ x: 0, y: 0 });
   const [labelsVisible, setLabelsVisible] = useState(false);
@@ -1674,7 +1694,7 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
 
   const handleTouchEnd = useCallback(() => { lastTouchDist.current = null; }, []);
 
-  // â”€â”€ Ceremony tracking â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Ceremony tracking ──────────────────────────────────────────
   const [ceremonies, setCeremonies] = useState<Map<string, number>>(new Map());
 
   useEffect(() => {
@@ -1693,7 +1713,7 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
     });
   }, [snapshot]);
 
-  // â”€â”€ Crystal-shelving (replaces book-shelving) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Crystal-shelving (replaces book-shelving) ──────────────────
   const [shelving, setShelving] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -1708,7 +1728,7 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
     return () => clearTimeout(t);
   }, [snapshot]);
 
-  // â”€â”€ Inspector â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Inspector ──────────────────────────────────────────────────
   const [inspectedAgentId, setInspectedAgentId] = useState<string | null>(null);
   const [followedAgentId, setFollowedAgentId] = useState<string | null>(null);
   const inspectedAgent = snapshot?.agents.find(a => a.id === inspectedAgentId) ?? null;
@@ -1762,13 +1782,13 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
        ?? null)
     : null;
 
-  // â”€â”€ Null state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Null state ─────────────────────────────────────────────────
   if (!snapshot) {
     return (
       <div className="flex h-full items-center justify-center"
         style={{ background: CAVE_BG, color: MG }}>
         <p className="text-sm italic opacity-70" style={{ fontFamily: 'Georgia, serif' }}>
-          The cave is silentâ€¦
+          The cave is silent…
         </p>
       </div>
     );
@@ -1807,7 +1827,7 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
       >
         {/* Main cave scene SVG */}
         <svg
-          aria-label="Cross-section of the Living Archive cave â€” crystal chambers of steward halls"
+          aria-label="Cross-section of the Living Archive cave — crystal chambers of steward halls"
           className="absolute inset-0 h-full w-full"
           viewBox="-500 -320 1000 640"
           preserveAspectRatio="xMidYMid meet"
@@ -1820,7 +1840,7 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
         >
           <StaticSceneDefs />
 
-          {/* Cave â€” back-to-front render order */}
+          {/* Cave — back-to-front render order */}
           <StaticCaveBackground />
           <StaticCaveZones />
           <CaveFurniture
@@ -1868,7 +1888,7 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
         )}
       </div>
 
-      {/* HTML overlays â€” outside zoom wrapper so they stay crisp */}
+      {/* HTML overlays — outside zoom wrapper so they stay crisp */}
       <HeaderOverlay snap={snapshot} />
       <PerformanceHud
         snapshot={snapshot}

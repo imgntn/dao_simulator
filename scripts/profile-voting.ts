@@ -8,6 +8,9 @@ import { DAOSimulation } from '../lib/engine/simulation';
 import { DAOMember } from '../lib/agents/base';
 import { DelegationResolver } from '../lib/delegation/delegation-resolver';
 import { performance } from 'perf_hooks';
+import { random, setSeed } from '../lib/utils/random';
+
+setSeed(42);
 
 async function profileVoting(steps: number, numMembers: number) {
   console.log(`\n=== Voting Operation Profiler ===`);
@@ -170,7 +173,7 @@ async function profileVoting(steps: number, numMembers: number) {
       const prob = (this as any).getProposalVotingProbability(proposal, false);
       timings.votingProbability += performance.now() - start;
 
-      if (Math.random() < prob) {
+      if (random() < prob) {
         start = performance.now();
         delegationTime = 0;
         this.voteOnProposal(proposal);
@@ -188,7 +191,7 @@ async function profileVoting(steps: number, numMembers: number) {
       const prob = (this as any).getProposalVotingProbability(proposal, true);
       timings.votingProbability += performance.now() - start;
 
-      if (Math.random() < prob) {
+      if (random() < prob) {
         start = performance.now();
         delegationTime = 0;
         this.voteOnProposal(proposal);

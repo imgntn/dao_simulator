@@ -168,6 +168,10 @@ export interface MemberTransferResult {
   fromDaoId: string;
   toDaoId: string;
   fee: number;
+  sourceAmount?: number;
+  destinationAmount?: number;
+  sourceToken?: string;
+  destinationToken?: string;
   error?: string;
 }
 

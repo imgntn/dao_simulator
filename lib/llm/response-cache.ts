@@ -21,8 +21,8 @@ function getFs(): typeof import('fs') | null {
   }
   return _fs;
 }
-
 import { logger } from '../utils/logger';
+import { sha256Hex } from '../utils/sha256';
 
 export interface CacheEntry {
   response: string;
@@ -49,8 +49,7 @@ export class LLMResponseCache {
     temperature?: number
   ): string {
     const raw = `${model}|${system}|${prompt}|${seed ?? ''}|${temperature ?? ''}`;
-    // Use hash + length suffix to reduce collision probability
-    return `${simpleHash(raw)}_${raw.length}`;
+    return sha256Hex(raw);
   }
 
   /**
@@ -204,17 +203,4 @@ export class LLMResponseCache {
       this.cache.set(key, entry);
     }
   }
-}
-
-/**
- * Simple string hash function (FNV-1a inspired, returns hex string)
- */
-function simpleHash(str: string): string {
-  let hash = 0x811c9dc5; // FNV offset basis
-  for (let i = 0; i < str.length; i++) {
-    hash ^= str.charCodeAt(i);
-    hash = (hash * 0x01000193) | 0; // FNV prime, keep as 32-bit int
-  }
-  // Convert to unsigned hex
-  return (hash >>> 0).toString(16).padStart(8, '0');
 }

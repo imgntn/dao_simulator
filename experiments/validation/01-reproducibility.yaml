@@ -10,15 +10,22 @@ baseConfig:
     voting_activity: 0.3
   population:
     totalMembers: 50
-sweep:
-  parameter: seed
-  values:
-    - 12345
 execution:
   runsPerConfig: 10
   stepsPerRun: 100
   seedStrategy: fixed
   baseSeed: 12345
+  fixedSeeds:
+    - 12345
+    - 12345
+    - 12345
+    - 12345
+    - 12345
+    - 12345
+    - 12345
+    - 12345
+    - 12345
+    - 12345
 metrics:
   - name: Proposal Pass Rate
     type: builtin
@@ -34,7 +41,7 @@ metrics:
     builtin: final_treasury
   - name: Final Gini
     type: builtin
-    builtin: gini_coefficient
+    builtin: final_gini
 output:
   directory: results/validation/reproducibility
   formats:

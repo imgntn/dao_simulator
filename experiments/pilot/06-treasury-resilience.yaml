@@ -1,0 +1,164 @@
+# Generated from experiments/paper/06-treasury-resilience.yaml; regenerate with npm run catalog:pilots.
+id: rq4-treasury-resilience-factorial-pilot
+name: Treasury Resilience — Paired Pilot
+description: Evaluate treasury stabilization policies under identical governance loads. Eight-replicate paired-seed pilot for variance, diagnostics, and final power planning.
+version: 1.0.0
+author: DAO Simulator Research Framework
+tags:
+  - paper
+  - treasury
+  - resilience
+  - pilot
+research:
+  classification: exploratory
+  publicationRole: pilot-development
+  researchQuestionIds:
+    - RQ4
+  hypothesis: Treasury stabilization reduces maximum peak-to-trough treasury drawdown under matched governance load, with effects moderated by explicit protocol yield. This pilot estimates paired variance and checks outcome support before the confirmatory freeze.
+  primaryOutcome: max_treasury_drawdown
+  secondaryOutcomes:
+    - treasury_survival_indicator
+    - treasury_recovery_time
+    - token_conservation_error
+  analysisModel: factorial_ols
+  comparisonCorrection: holm
+  smallestEffectOfInterest:
+    value: 0.05
+    unit: absolute drawdown fraction
+    rationale: A five-percentage-point change in maximum peak-to-trough treasury drawdown is the smallest practically important resilience effect.
+  analysisFamily: rq4-treasury-resilience
+  experimentalUnit: One seeded DAO simulation replicate under one treasury-policy and yield condition.
+  estimatedRuntimeMinutes: 39
+baseConfig:
+  template: compound
+  population:
+    totalMembers: 200
+  overrides:
+    governance_rule: majority
+    governance_config:
+      quorumPercentage: 0.05
+    voting_activity: 0.25
+    proposal_creation_probability: 0.004
+    proposal_duration_min_steps: 24
+    proposal_duration_max_steps: 96
+    treasury_target_reserve: 10000
+    treasury_target_reserve_fraction: 0.6
+    treasury_buffer_fill_rate: 0.5
+    treasury_emergency_topup_rate: 0.25
+    treasury_max_spend_fraction: 0.15
+    participation_target_rate: 0.2
+    participation_boost_strength: 0.6
+    participation_boost_decay: 0.1
+    participation_boost_max: 0.25
+    participation_inactivity_boost: 0.15
+    participation_reward_per_vote: 0
+    proposal_bond_fraction: 0.01
+    proposal_bond_min: 10
+    proposal_bond_max: 1000
+    proposal_inactivity_steps: 72
+    proposal_temp_check_fraction: 0.25
+    proposal_fast_track_min_steps: 6
+    proposal_fast_track_approval: 0.6
+    proposal_fast_track_quorum: 0.2
+    vote_power_cap_fraction: 0.15
+    vote_power_quadratic_threshold: 250
+    vote_power_velocity_window: 72
+    vote_power_velocity_penalty: 0.5
+    delegation_lock_steps: 48
+    black_swan_enabled: true
+    black_swan_frequency: 0
+    black_swan_categories:
+      - market_contagion
+    simulationStepsPerYear: 8760
+    black_swan_scheduled_events:
+      - step: 720
+        category: market_contagion
+        severity: 0.8
+sweep:
+  grid:
+    - parameter: treasury_stabilization_enabled
+      values:
+        - true
+        - false
+    - parameter: treasury_buffer_fraction
+      values:
+        - 0
+        - 0.2
+        - 0.4
+    - parameter: treasury_max_spend_fraction
+      values:
+        - 0.1
+        - 0.2
+    - parameter: treasuryProtocolAnnualYield
+      values:
+        - 0
+        - 0.03
+        - 0.08
+execution:
+  runsPerConfig: 8
+  stepsPerRun: 2000
+  seedStrategy: fixed
+  workers: 4
+  fixedSeeds:
+    - 910001
+    - 910019
+    - 910031
+    - 910043
+    - 910057
+    - 910069
+    - 910081
+    - 910097
+metrics:
+  - name: Treasury Survival Indicator
+    type: builtin
+    builtin: treasury_survival_indicator
+    description: One when every recorded treasury balance remains strictly positive
+  - name: Maximum Treasury Drawdown
+    type: builtin
+    builtin: max_treasury_drawdown
+    description: Largest running peak-to-trough fractional treasury loss
+  - name: Treasury Recovery Time
+    type: builtin
+    builtin: treasury_recovery_time
+    description: Hours from the largest drawdown trough to recovery or the horizon
+  - name: Token Conservation Error
+    type: builtin
+    builtin: token_conservation_error
+    description: Absolute accounted token-supply reconciliation error
+  - name: Treasury Volatility
+    type: builtin
+    builtin: treasury_volatility
+    description: Coefficient of variation of treasury over time
+  - name: Treasury Growth Rate
+    type: builtin
+    builtin: treasury_growth_rate
+    description: (final - initial) / initial treasury
+  - name: Final Treasury
+    type: builtin
+    builtin: final_treasury
+    description: Treasury balance at simulation end
+  - name: Treasury Trend
+    type: builtin
+    builtin: treasury_trend
+    description: Slope of treasury over time
+  - name: Final Token Price
+    type: builtin
+    builtin: final_token_price
+    description: Token price at simulation end
+  - name: Proposal Pass Rate
+    type: builtin
+    builtin: proposal_pass_rate
+    description: "% of resolved proposals that passed"
+  - name: Quorum Reach Rate
+    type: builtin
+    builtin: quorum_reach_rate
+    description: "% of proposals meeting participation threshold"
+output:
+  directory: results/pilot/06-treasury-resilience
+  formats:
+    - json
+    - csv
+  includeRawRuns: true
+  includeManifest: true
+  includeTimeline: true
+  timelineStride: 24

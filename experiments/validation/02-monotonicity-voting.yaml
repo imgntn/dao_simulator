@@ -6,6 +6,11 @@ description: |
   - Turnout should increase monotonically with voting_activity
 baseConfig:
   template: compound
+  overrides:
+    participation_target_rate: 0
+    participation_boost_strength: 0
+    participation_boost_max: 0
+    participation_inactivity_boost: 0
   population:
     totalMembers: 80
     distribution:
@@ -26,7 +31,7 @@ sweep:
     - 0.7
     - 1
 execution:
-  runsPerConfig: 5
+  runsPerConfig: 10
   stepsPerRun: 150
   seedStrategy: sequential
   baseSeed: 42

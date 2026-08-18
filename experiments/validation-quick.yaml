@@ -37,7 +37,17 @@ output:
     - csv
 metrics:
   - name: proposal_pass_rate
+    type: builtin
+    builtin: proposal_pass_rate
   - name: quorum_reach_rate
+    type: builtin
+    builtin: quorum_reach_rate
   - name: avg_time_to_decision
+    type: builtin
+    builtin: avg_time_to_decision
   - name: voter_participation_rate
+    type: builtin
+    builtin: voter_participation_rate
   - name: total_proposals
+    type: builtin
+    builtin: total_proposals

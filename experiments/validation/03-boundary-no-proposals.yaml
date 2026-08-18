@@ -1,7 +1,7 @@
-name: "Boundary: No Active Voters"
+name: "Boundary: Zero Proposal Creation"
 description: |
-  Test system behavior when there are no active voters (who create proposals).
-  Expected: Fewer proposals created, simulation runs without errors.
+  Test isolated proposal creation with proposal_creation_probability=0 and no
+  proposal-creating archetype. Expected: exactly zero proposals.
 baseConfig:
   template: compound
   overrides:

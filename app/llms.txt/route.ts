@@ -13,7 +13,7 @@ import { NextResponse } from 'next/server';
 
 const CONTENT = `# DAO Simulator
 
-> Actionable governance findings from 21,869 simulation runs across 17 experiment configurations.
+> Reproducible DAO governance simulation; confirmatory findings are currently being regenerated.
 
 ## Author
 
@@ -32,21 +32,25 @@ treasury resilience, inter-DAO cooperation, and LLM-augmented governance.
 The simulation engine models autonomous agents (voters, delegates, whales, builders, proposal creators)
 interacting under configurable governance rules. Digital twins of 14 real DAOs — including Uniswap,
 Compound, Aave, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX,
-and SushiSwap — are calibrated against on-chain data with an average accuracy score of 0.85.
+and SushiSwap — are calibrated against on-chain data. A frozen 2025 temporal holdout
+produced a mean composite similarity score of 0.473. Calibrated runs beat historical
+persistence for 5/14 DAOs and an uncalibrated simulator for 8/14; this is heterogeneous
+generative fidelity, not universal forecasting accuracy.
 
-### Key Findings
+### Current Research Questions
 
-1. **Quorum cliff at 10%**: At 5% quorum, 99.9% of proposals reached quorum. At 20%, only 25.4% did. Set quorum from observed turnout, not aspiration.
-2. **Quadratic voting cut whale power 43%**: Whale influence dropped from 0.449 to 0.256 under quadratic voting with a 250-token threshold. Capture risk fell 42%.
-3. **Temp-check filtering lifts pass rate**: Raising temp-check pressure from 5% to 50% improved pass rate from 96.4% to 98.5%.
-4. **Treasury stabilization halves volatility**: Stabilization mechanisms reduced treasury value swings from 0.45–0.50 to 0.24–0.27.
-5. **Cross-DAO cooperation is fragile but real**: Inter-DAO success rate was 21–23% with designed coordination vs 0% in isolation. Specialized topology outperformed generic.
-6. **Hybrid LLM governance halves latency**: Hybrid mode achieved 808 ms decision latency vs 1,381 ms all-LLM, with equivalent 50% pass rate.
+1. How do quorum and participation rules change valid proposal completion?
+2. Which capture mitigations reduce proposal-time whale vote weight without destroying throughput?
+3. Which proposal-pipeline interventions reduce decision time while preserving completion?
+4. Which governance and treasury policies reduce drawdown under explicit shock and yield assumptions?
+
+Legacy numerical findings are withheld here until the frozen confirmatory campaign and
+claim registry regenerate them from verified raw runs.
 
 ### Methodology
 
 - **Engine**: TypeScript agent-based simulator with Q-learning, policy gradient, and DQN agents
-- **Scale**: 21,869 simulation runs, 17 experiment configurations, N=100 per config
+- **Scale**: Four frozen core confirmatory studies use 100 paired seeds per condition; verified run totals are published only after exact campaign completion
 - **Calibration**: 14 digital twins calibrated against on-chain governance data, Snapshot votes, forum activity, and token prices
 - **Voting mechanisms tested**: Majority, token-weighted, quadratic, instant-runoff (IRV), futarchy (LMSR prediction markets), liquid democracy with decay
 - **Governance rules**: 15 real governance rules modeled including dual governance, bicameral, category quorum, and approval voting

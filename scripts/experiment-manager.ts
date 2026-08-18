@@ -27,6 +27,10 @@ import {
   DEFAULT_OUTPUT_CONFIG,
   DEFAULT_METRICS,
 } from '../lib/research';
+import {
+  indexRunArtifact,
+  recordFailedRun,
+} from '../lib/research/campaign-manifest';
 
 // =============================================================================
 // TYPES
@@ -287,9 +291,22 @@ function calculateTotalRuns(config: ExperimentConfig): number {
 // =============================================================================
 
 async function runExperiment(configFile: string, options: { resume?: boolean } = {}): Promise<void> {
+  process.env.DAO_SIM_RESEARCH_MODE = '1';
   console.log(`Loading config: ${configFile}`);
   const config = loadConfig(configFile);
+  const campaignDir = process.env.DAO_SIM_CAMPAIGN_DIR
+    ? path.resolve(process.env.DAO_SIM_CAMPAIGN_DIR)
+    : undefined;
+  if (campaignDir) {
+    const experimentId = config.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
+    config.output.directory = path.join(campaignDir, 'experiments', experimentId);
+    config.output.includeRawRuns = true;
+    config.output.includeManifest = true;
+  }
   const outputDir = config.output.directory;
+  if (!options.resume && fs.existsSync(outputDir) && fs.readdirSync(outputDir).length > 0) {
+    throw new Error(`Refusing to mix a fresh run into non-empty output directory: ${outputDir}`);
+  }
   const logger = new ExperimentLogger(outputDir, config.name);
 
   // Calculate total runs
@@ -388,6 +405,7 @@ async function runExperiment(configFile: string, options: { resume?: boolean } =
       config,
       {
         concurrency: config.execution.workers || 1,
+        checkpointDir: path.join(outputDir, '.checkpoints'),
         checkpointInterval: Math.max(10, Math.floor(totalRuns / 100)), // Checkpoint every ~1%
         runTimeoutMs: config.execution.runTimeoutMs,
       },
@@ -403,6 +421,31 @@ async function runExperiment(configFile: string, options: { resume?: boolean } =
     logger.log('info', 'Exporting results...');
     const exporter = new ResultsExporter(outputDir, config.output);
     const exportResult = await exporter.exportAll(batchResult.results, batchResult.summary);
+
+    if (campaignDir) {
+      for (const result of batchResult.results) {
+        const runPath = path.join(outputDir, 'runs', `${result.runId}.json`);
+        indexRunArtifact(campaignDir, {
+          runId: result.runId,
+          experimentId: config.name,
+          conditionId: String(result.sweepValue ?? 'baseline'),
+          replicateIndex: result.runIndex,
+          seed: result.seed,
+          path: path.relative(campaignDir, runPath),
+        });
+      }
+      for (const failedRunId of batchResult.failedRunIds) {
+        recordFailedRun(campaignDir, {
+          runId: failedRunId,
+          experimentId: config.name,
+          error: 'Run exhausted configured retries; inspect experiment.log for details',
+        });
+      }
+    }
+
+    if (batchResult.failedRunIds.length > 0) {
+      throw new Error(`Experiment has ${batchResult.failedRunIds.length} failed runs; refusing completion`);
+    }
 
     // Log completion
     const duration = Date.now() - startTime;

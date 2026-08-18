@@ -54,24 +54,26 @@ export type CuratedBriefCopy = {
 };
 
 // ---------------------------------------------------------------------------
-// Digital Twin Calibration Scores (10 episodes, 720 steps)
+// Temporal holdout similarity scores (30 episodes, 1,440 steps, seed 42).
+// Source: results/calibration/runs/temporal-holdout-c4344f749-20260718.
+// These are composite fidelity scores, not universal forecasting accuracy.
 // ---------------------------------------------------------------------------
 
 export const CALIBRATION_SCORES: Record<string, number> = {
-  Gitcoin: 0.922,
-  Lido: 0.887,
-  Curve: 0.878,
-  Aave: 0.875,
-  Balancer: 0.870,
-  SushiSwap: 0.867,
-  dYdX: 0.864,
-  ENS: 0.859,
-  MakerDAO: 0.854,
-  Uniswap: 0.850,
-  Arbitrum: 0.846,
-  Optimism: 0.818,
-  Compound: 0.818,
-  Nouns: 0.780,
+  MakerDAO: 0.771962560408197,
+  Curve: 0.764395236400137,
+  Uniswap: 0.652032426865656,
+  Nouns: 0.627287652757105,
+  Compound: 0.555103040396056,
+  ENS: 0.543434827608189,
+  SushiSwap: 0.414641295473617,
+  Arbitrum: 0.413816207030198,
+  Lido: 0.377107231353203,
+  Aave: 0.356232896508668,
+  Balancer: 0.349000479405748,
+  Gitcoin: 0.323586412110592,
+  Optimism: 0.277131457664926,
+  dYdX: 0.198622034865753,
 };
 
 // ---------------------------------------------------------------------------
@@ -135,7 +137,7 @@ export const DAO_TWIN_FEATURES: Record<string, DAOTwinFeature> = {
   },
   Gitcoin: {
     governance: 'Quorum',
-    features: ['Highest calibration score (92.2%)', '92.6% pass rate, 11.5% turnout', 'Steward-gated quorum modeled'],
+    features: ['Held-out failure case retained', '92.6% training pass rate, 11.5% turnout', 'Steward-gated quorum modeled'],
   },
   MakerDAO: {
     governance: 'Approval Voting',

@@ -7,7 +7,9 @@
  * and a `BASELINE-CHANGE:` line in the commit message.
  */
 
-import { createHash } from 'crypto';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { canonicalJson, sha256 } from './campaign-manifest';
 import {
   CALIBRATION_FAST_SEEDS,
   CALIBRATION_FULL_SEEDS,
@@ -82,7 +84,38 @@ export const BASELINE_CALIBRATION_CONFIG = Object.freeze({
   forumEnabled: true,
   learningEnabled: false,
   useRealGovernance: false,
+  evaluationMode: 'temporal_holdout' as const,
+  includeUncalibratedNull: true,
+  trainingProfileDir: path.join('results', 'historical', 'validation', 'train'),
+  holdoutProfileDir: path.join('results', 'historical', 'validation', 'holdout'),
 });
+
+/**
+ * Hash the exact chronological calibration profiles consumed by the baseline.
+ * This prevents aggregate and temporal evaluations—or two different historical
+ * snapshots—from sharing a config hash and being compared as if equivalent.
+ */
+export function computeCalibrationProfileBundleHash(
+  rootDir: string = process.cwd()
+): string {
+  const profileFiles = BASELINE_DAO_IDS.flatMap(daoId => [
+    path.join(BASELINE_CALIBRATION_CONFIG.trainingProfileDir, `${daoId}_profile.json`),
+    path.join(BASELINE_CALIBRATION_CONFIG.holdoutProfileDir, `${daoId}_profile.json`),
+  ]).sort();
+  const bundle = profileFiles.map(relativePath => {
+    const absolutePath = path.resolve(rootDir, relativePath);
+    if (!fs.existsSync(absolutePath)) {
+      throw new Error(
+        `Missing calibration profile required for baseline hashing: ${absolutePath}`
+      );
+    }
+    return {
+      path: relativePath.replaceAll(path.sep, '/'),
+      sha256: sha256(fs.readFileSync(absolutePath)),
+    };
+  });
+  return sha256(canonicalJson(bundle));
+}
 
 /**
  * Per-metric drift thresholds (multiplied by baseline CI width).
@@ -92,62 +125,45 @@ export const BASELINE_CALIBRATION_CONFIG = Object.freeze({
 export const METRIC_THRESHOLD_MULTIPLIER: number = 1.5;
 
 /**
- * Headline experiment findings to verify on each full-suite run.
- * Each entry maps experiment ID → expected qualitative finding.
- *
- * `magnitudeRange` is the acceptable [min, max] for the headline number
- * (units depend on the experiment — usually a delta vs. baseline in
- * calibration-score points or pass-rate percentage points).
+ * Executable headline-measurement contracts for each full-suite replay.
+ * Expected directions and ranges live only in a measured experiment-baseline
+ * artifact; scientific hypotheses live in the preregistered research metadata.
  */
-export interface ExperimentFinding {
+export interface ExperimentReplayContract {
   description: string;
-  direction: 'positive' | 'negative' | 'neutral';
-  magnitudeRange: [number, number];
   metric: string;
 }
 
-export const EXPERIMENT_BASELINE_FINDINGS: Readonly<Record<string, ExperimentFinding>> = Object.freeze({
+export const EXPERIMENT_REPLAY_CONTRACTS: Readonly<
+  Record<string, ExperimentReplayContract>
+> = Object.freeze({
   'exp-10-calibration-validation': {
     description: '14-DAO calibration validation average score',
-    direction: 'positive',
-    magnitudeRange: [0.82, 0.90],
     metric: 'avg_calibration_score',
   },
   'exp-11-advanced-mechanisms': {
     description: 'Advanced mechanisms (IRV, futarchy, liquid+decay) vs majority: null result',
-    direction: 'neutral',
-    magnitudeRange: [-0.05, 0.05],
     metric: 'mechanism_score_delta',
   },
   'exp-13-cross-dao-governance': {
-    description: 'Cross-DAO governance comparison: scale dominates rule choice',
-    direction: 'positive',
-    magnitudeRange: [0.10, 0.40],
-    metric: 'scale_effect_size',
+    description: 'Range of governance activity across calibrated DAO-rule conditions',
+    metric: 'governance_activity_range',
   },
   'exp-14-black-swan-resilience': {
-    description: 'Black swan reduces participation and approval rate',
-    direction: 'negative',
-    magnitudeRange: [-0.30, -0.05],
+    description: 'Black-swan participation contrast against the no-shock condition',
     metric: 'black_swan_participation_delta',
   },
   'exp-15-counterfactual-expansion': {
-    description: 'Counterfactual governance: most rules within ±0.05 of historical',
-    direction: 'neutral',
-    magnitudeRange: [-0.05, 0.05],
+    description: 'Counterfactual governance pass-rate contrast across rules',
     metric: 'counterfactual_pass_rate_delta',
   },
   'exp-16-rl-activation': {
-    description: 'RL tiers 1–3 progressively improve agent reward',
-    direction: 'positive',
-    magnitudeRange: [0.02, 0.20],
-    metric: 'tier3_vs_baseline_reward',
+    description: 'Full RL stack changes governance activity relative to disabled learning',
+    metric: 'full_rl_governance_activity_delta',
   },
   'exp-17-gemma4-e4b': {
-    description: 'Gemma 4 E4B with enriched DAO briefing + thinking mode improves governance',
-    direction: 'positive',
-    magnitudeRange: [0.04, 0.10],
-    metric: 'llm_thinking_score_delta',
+    description: 'Gemma 4 E4B thinking-mode governance-activity contrast',
+    metric: 'llm_thinking_governance_activity_delta',
   },
 });
 
@@ -158,17 +174,18 @@ export const EXPERIMENT_BASELINE_FINDINGS: Readonly<Record<string, ExperimentFin
  * the validator refuses to compare and exits with code 2.
  */
 export function computeBaselineConfigHash(): string {
-  const payload = JSON.stringify({
+  const payload = {
     daos: BASELINE_DAO_IDS,
     daoSuite: DAO_SUITE_CONFIG,
     config: BASELINE_CALIBRATION_CONFIG,
     fastSeeds: CALIBRATION_FAST_SEEDS,
     fullSeeds: CALIBRATION_FULL_SEEDS,
     smokeSeeds: CALIBRATION_SMOKE_SEEDS,
-    findings: EXPERIMENT_BASELINE_FINDINGS,
+    replayContracts: EXPERIMENT_REPLAY_CONTRACTS,
     metricThresholdMultiplier: METRIC_THRESHOLD_MULTIPLIER,
-  });
-  return createHash('sha256').update(payload).digest('hex').slice(0, 16);
+    calibrationProfileBundleHash: computeCalibrationProfileBundleHash(),
+  };
+  return sha256(canonicalJson(payload));
 }
 
 /**

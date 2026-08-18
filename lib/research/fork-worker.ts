@@ -18,6 +18,10 @@ import { resolveSimulationConfig } from './config-resolver';
 import { setSeed } from '../utils/random';
 import type { RunResult, MetricConfig, BuiltinMetricType, TimelineEntry } from './experiment-config';
 import type { WorkerTask, WorkerResult } from './simulation-worker';
+import { extractBuiltinMetric } from './builtin-metric-extractor';
+import { runLearningEpisodes } from './learning-episodes';
+import { collectLlmRunDiagnostics } from './llm-run-diagnostics';
+import { sampleTimeline } from './timeline-sampling';
 
 // =============================================================================
 // PROCESS MESSAGE HANDLER
@@ -211,7 +215,11 @@ async function runSimulation(task: WorkerTask): Promise<RunResult> {
 
   // Create and run simulation
   const simulation = new DAOSimulation(simConfig);
-  await simulation.run(task.stepsPerRun);
+  await runLearningEpisodes(
+    simulation,
+    task.stepsPerRun,
+    task.learningEpisodesPerRun ?? 1
+  );
 
   // Collect metrics
   const metrics = collectMetrics(simulation, task.metrics);
@@ -219,24 +227,22 @@ async function runSimulation(task: WorkerTask): Promise<RunResult> {
   // Collect timeline if requested
   let timeline: TimelineEntry[] | undefined;
   if (task.includeTimeline) {
-    timeline = collectTimeline(simulation);
+    timeline = sampleTimeline(collectTimeline(simulation), task.timelineStride ?? 1);
   }
 
   const runEndTime = Date.now();
 
-  // Build run ID
-  const sweepPart = task.sweepValue !== undefined ? `-${String(task.sweepValue).replace(/\./g, '_')}` : '';
-  const runId = `${task.experimentName}${sweepPart}-run-${String(task.runIndex + 1).padStart(3, '0')}`;
-
   return {
-    runId,
+    runId: task.runId,
     experimentName: task.experimentName,
+    conditionId: task.conditionId,
     sweepValue: task.sweepValue,
     runIndex: task.runIndex,
     config: simConfig,
     seed: task.seed,
     metrics,
     timeline,
+    llmDiagnostics: collectLlmRunDiagnostics(simulation),
     startedAt: new Date(runStartTime).toISOString(),
     completedAt: new Date(runEndTime).toISOString(),
     durationMs: runEndTime - runStartTime,
@@ -252,6 +258,9 @@ function collectMetrics(simulation: DAOSimulation, metricConfigs: MetricConfig[]
 
   for (const metricConfig of metricConfigs) {
     const value = extractMetric(simulation, metricConfig);
+    if (!Number.isFinite(value)) {
+      throw new Error(`Metric "${metricConfig.name}" produced non-finite value: ${value}`);
+    }
     metrics[metricConfig.name] = value;
   }
 
@@ -272,20 +281,7 @@ function extractMetric(simulation: DAOSimulation, metricConfig: MetricConfig): n
     return extractCustomMetric(simulation, metricConfig.expression);
   }
 
-  // If no type specified, try to infer from name
-  // This allows YAML configs to just specify { name: "proposal_pass_rate" }
-  // without requiring explicit type: builtin and builtin: proposal_pass_rate
-  if (!metricConfig.type && metricConfig.name) {
-    // Try the metric name as a builtin metric (handles both snake_case and PascalCase)
-    const builtinName = metricConfig.name.toLowerCase().replace(/\s+/g, '_') as BuiltinMetricType;
-    try {
-      return extractBuiltinMetric(simulation, builtinName);
-    } catch {
-      // Not a valid builtin metric, fall through to return 0
-    }
-  }
-
-  return 0;
+  throw new Error(`Metric "${metricConfig.name}" has an invalid explicit configuration`);
 }
 
 // =============================================================================
@@ -294,619 +290,6 @@ function extractMetric(simulation: DAOSimulation, metricConfig: MetricConfig): n
 
 /**
  * Extract a builtin metric - comprehensive implementation
- */
-function extractBuiltinMetric(simulation: DAOSimulation, metric: BuiltinMetricType): number {
-  const dao = simulation.dao;
-  const dataCollector = simulation.dataCollector;
-  const latestStats = dataCollector.getLatestStats();
-  const history = dataCollector.history || [];
-  const proposals = dao.proposals || [];
-  const members = dao.members || [];
-
-  switch (metric) {
-    // =========================================================================
-    // BASIC OUTCOME METRICS
-    // =========================================================================
-
-    case 'proposal_pass_rate': {
-      const stats = getProposalStats(proposals);
-      const resolved = stats.passed + stats.rejected;
-      return resolved > 0 ? stats.passed / resolved : 0;
-    }
-
-    case 'average_turnout': {
-      if (proposals.length === 0) return 0;
-
-      let totalTurnout = 0;
-      for (const proposal of proposals) {
-        const totalVotes = (proposal.votesFor || 0) + (proposal.votesAgainst || 0);
-        // Use snapshot supply if available, otherwise current supply
-        const supply = (proposal.snapshotTaken && proposal.totalSupplySnapshot > 0)
-          ? proposal.totalSupplySnapshot
-          : getTotalVotingPower(members);
-        if (supply > 0) {
-          totalTurnout += totalVotes / supply;
-        }
-      }
-      return totalTurnout / proposals.length;
-    }
-
-    case 'final_treasury':
-      return dao.treasury?.getTokenBalance?.('DAO_TOKEN') ?? dao.treasury?.funds ?? 0;
-
-    case 'final_token_price':
-      return dao.treasury?.getTokenPrice?.('DAO_TOKEN') ?? 1;
-
-    case 'final_member_count':
-      return members.length;
-
-    case 'final_gini':
-      return latestStats?.gini ?? calculateGini(members.map(m => m.tokens || 0));
-
-    case 'final_reputation_gini':
-      return latestStats?.repGini ?? calculateGini(members.map(m => m.reputation || 0));
-
-    case 'total_proposals':
-      return proposals.length;
-
-    case 'total_projects':
-      return dao.projects?.length ?? 0;
-
-    case 'average_token_balance': {
-      if (members.length === 0) return 0;
-      const totalTokens = members.reduce((sum, m) => sum + (m.tokens || 0), 0);
-      return totalTokens / members.length;
-    }
-
-    // =========================================================================
-    // GOVERNANCE EFFICIENCY METRICS
-    // =========================================================================
-
-    case 'quorum_reach_rate': {
-      // % of proposals that had enough participation to potentially pass
-      if (proposals.length === 0) return 0;
-      const totalSupply = getTotalVotingPower(members);
-      const quorumThreshold = (simulation.governanceRule as { quorumPercentage?: number } | undefined)?.quorumPercentage
-        ?? simulation.dao?.votingPowerPolicy?.capFraction
-        ?? 0.04;
-
-      let quorumMet = 0;
-      for (const proposal of proposals) {
-        const votes = getProposalVotes(proposal);
-        const votingPower = votes.reduce((sum, v) => sum + v.weight, 0);
-        if (votingPower / totalSupply >= quorumThreshold) {
-          quorumMet++;
-        }
-      }
-      return quorumMet / proposals.length;
-    }
-
-    case 'avg_margin_of_victory': {
-      // Average |votesFor - votesAgainst| / totalVotes
-      const resolvedProposals = proposals.filter(p =>
-        p.status === 'approved' || p.status === 'completed' ||
-        p.status === 'rejected'
-      );
-      if (resolvedProposals.length === 0) return 0;
-
-      let totalMargin = 0;
-      for (const p of resolvedProposals) {
-        const total = (p.votesFor || 0) + (p.votesAgainst || 0);
-        if (total > 0) {
-          totalMargin += Math.abs((p.votesFor || 0) - (p.votesAgainst || 0)) / total;
-        }
-      }
-      return totalMargin / resolvedProposals.length;
-    }
-
-    case 'avg_time_to_decision': {
-      // Average steps from creation to resolution
-      // Include 'expired' proposals since they are also resolved (quorum not met)
-      const resolvedProposals = proposals.filter(p =>
-        p.status === 'approved' || p.status === 'completed' ||
-        p.status === 'rejected' ||
-        p.status === 'expired'
-      );
-      if (resolvedProposals.length === 0) return 0;
-
-      let totalTime = 0;
-      for (const p of resolvedProposals) {
-        const creationTime = p.creationTime || 0;
-        // Use resolvedTime if available (now properly set in simulation.ts)
-        const resolvedTime = p.resolvedTime ?? simulation.currentStep;
-        totalTime += resolvedTime - creationTime;
-      }
-      return totalTime / resolvedProposals.length;
-    }
-
-    case 'proposal_abandonment_rate': {
-      // % of proposals that expired without resolution (exclude still-open proposals)
-      const stats = getProposalStats(proposals);
-      if (stats.total === 0) return 0;
-      return stats.expired / stats.total;
-    }
-
-    case 'proposal_rejection_rate': {
-      // % of resolved proposals that were rejected
-      const stats = getProposalStats(proposals);
-      const resolved = stats.passed + stats.rejected;
-      return resolved > 0 ? stats.rejected / resolved : 0;
-    }
-
-    case 'governance_overhead': {
-      // Total votes cast / proposals resolved
-      const stats = getProposalStats(proposals);
-      const resolved = stats.passed + stats.rejected;
-      if (resolved === 0) return 0;
-
-      let totalVotesCast = 0;
-      for (const p of proposals) {
-        const votes = getProposalVotes(p);
-        totalVotesCast += votes.length;
-      }
-      return totalVotesCast / resolved;
-    }
-
-    // =========================================================================
-    // PARTICIPATION QUALITY METRICS
-    // =========================================================================
-
-    case 'unique_voter_count': {
-      // Number of distinct members who voted at least once
-      const uniqueVoters = new Set<string>();
-      for (const p of proposals) {
-        const votes = getProposalVotes(p);
-        for (const v of votes) {
-          uniqueVoters.add(v.voterId);
-        }
-      }
-      return uniqueVoters.size;
-    }
-
-    case 'voter_participation_rate': {
-      if (proposals.length === 0) return 0;
-
-      let totalRate = 0;
-      let counted = 0;
-
-      for (const p of proposals) {
-        const votes = getProposalVotes(p);
-        const eligible = p.snapshotTaken
-          ? p.votingPowerSnapshot.size
-          : members.length;
-        if (eligible <= 0) continue;
-
-        const uniqueVoters = new Set<string>(votes.map(v => v.voterId));
-        totalRate += uniqueVoters.size / eligible;
-        counted++;
-      }
-
-      return counted > 0 ? totalRate / counted : 0;
-    }
-
-    case 'voter_concentration_gini': {
-      // Gini coefficient of voting activity (votes cast per member)
-      const voterCounts = new Map<string, number>();
-      for (const p of proposals) {
-        const votes = getProposalVotes(p);
-        for (const v of votes) {
-          voterCounts.set(v.voterId, (voterCounts.get(v.voterId) || 0) + 1);
-        }
-      }
-
-      // Include non-voters as 0
-      const allMemberVotes = members.map(m => voterCounts.get(m.uniqueId) || 0);
-      return calculateGini(allMemberVotes);
-    }
-
-    case 'delegate_concentration': {
-      // % of total votes controlled by top 10% of voters (by voting power used)
-      const voterPower = new Map<string, number>();
-      let totalPower = 0;
-
-      for (const p of proposals) {
-        const votes = getProposalVotes(p);
-        for (const v of votes) {
-          voterPower.set(v.voterId, (voterPower.get(v.voterId) || 0) + v.weight);
-          totalPower += v.weight;
-        }
-      }
-
-      if (totalPower === 0) return 0;
-
-      const sortedPowers = Array.from(voterPower.values()).sort((a, b) => b - a);
-      const top10Count = Math.max(1, Math.ceil(sortedPowers.length * 0.1));
-      const top10Power = sortedPowers.slice(0, top10Count).reduce((a, b) => a + b, 0);
-
-      return top10Power / totalPower;
-    }
-
-    case 'avg_votes_per_proposal': {
-      // Average number of unique voters per proposal
-      if (proposals.length === 0) return 0;
-
-      let totalVoters = 0;
-      for (const p of proposals) {
-        const votes = getProposalVotes(p);
-        totalVoters += votes.length;
-      }
-      return totalVoters / proposals.length;
-    }
-
-    case 'voter_retention_rate': {
-      // % of voters who voted in both first and last half of proposals
-      if (proposals.length < 2) return 0;
-
-      const midpoint = Math.floor(proposals.length / 2);
-      const firstHalfVoters = new Set<string>();
-      const secondHalfVoters = new Set<string>();
-
-      for (let i = 0; i < proposals.length; i++) {
-        const votes = getProposalVotes(proposals[i]);
-        for (const v of votes) {
-          if (i < midpoint) {
-            firstHalfVoters.add(v.voterId);
-          } else {
-            secondHalfVoters.add(v.voterId);
-          }
-        }
-      }
-
-      if (firstHalfVoters.size === 0) return 0;
-
-      let retained = 0;
-      for (const voter of firstHalfVoters) {
-        if (secondHalfVoters.has(voter)) {
-          retained++;
-        }
-      }
-      return retained / firstHalfVoters.size;
-    }
-
-    case 'voting_power_utilization': {
-      // % of total voting power actually used across all proposals
-      const totalSupply = getTotalVotingPower(members);
-      if (totalSupply === 0 || proposals.length === 0) return 0;
-
-      let totalUsed = 0;
-      for (const p of proposals) {
-        const votes = getProposalVotes(p);
-        totalUsed += votes.reduce((sum, v) => sum + v.weight, 0);
-      }
-
-      // Normalize by number of proposals (max utilization = 1 per proposal)
-      return totalUsed / (totalSupply * proposals.length);
-    }
-
-    // =========================================================================
-    // ECONOMIC HEALTH METRICS
-    // =========================================================================
-
-    case 'treasury_volatility': {
-      // Coefficient of variation of treasury over time
-      const treasuryHistory = history.map(h => h.treasuryFunds || 0);
-      return calculateCV(treasuryHistory);
-    }
-
-    case 'treasury_growth_rate': {
-      // (final - initial) / initial
-      if (history.length < 2) return 0;
-      const initial = history[0]?.treasuryFunds || 0;
-      const final = history[history.length - 1]?.treasuryFunds || dao.treasury?.funds || 0;
-      return initial > 0 ? (final - initial) / initial : 0;
-    }
-
-    case 'staking_participation': {
-      // stakedTokens / totalTokens
-      let totalTokens = 0;
-      let stakedTokens = 0;
-      for (const m of members) {
-        totalTokens += (m.tokens || 0) + (m.stakedTokens || 0);
-        stakedTokens += m.stakedTokens || 0;
-      }
-      return totalTokens > 0 ? stakedTokens / totalTokens : 0;
-    }
-
-    case 'token_concentration_gini': {
-      // Same as final_gini but explicit
-      const holdings = members.map(m => (m.tokens || 0) + (m.stakedTokens || 0));
-      return calculateGini(holdings);
-    }
-
-    case 'avg_member_wealth': {
-      // Average tokens per member
-      if (members.length === 0) return 0;
-      const totalWealth = members.reduce((sum, m) =>
-        sum + (m.tokens || 0) + (m.stakedTokens || 0), 0);
-      return totalWealth / members.length;
-    }
-
-    case 'wealth_mobility': {
-      // How much token rankings changed (requires tracking initial state)
-      // Approximation: measure current Gini vs theoretical max change
-      // 0 = no mobility, 1 = complete reshuffling
-      const holdings = getMemberTokensSorted(members);
-      if (holdings.length < 2) return 0;
-
-      // Use inverse of rank correlation as proxy
-      // Higher Gini = less mobility typically
-      const gini = calculateGini(holdings.map(h => h.tokens));
-      return 1 - gini; // Simplified: high inequality = low mobility
-    }
-
-    // =========================================================================
-    // ATTACK RESISTANCE METRICS
-    // =========================================================================
-
-    case 'whale_influence': {
-      if (proposals.length === 0) return 0;
-
-      let totalRate = 0;
-      let counted = 0;
-
-      for (const p of proposals) {
-        const votes = getProposalVotes(p);
-        if (votes.length === 0) {
-          totalRate += 0;
-          counted++;
-          continue;
-        }
-
-        let whaleIds: Set<string>;
-        if (p.snapshotTaken && p.votingPowerSnapshot.size > 0) {
-          const snapshotHoldings = Array.from(p.votingPowerSnapshot.entries())
-            .map(([memberId, power]) => ({ memberId, power }))
-            .sort((a, b) => b.power - a.power);
-          const top10Count = Math.max(1, Math.ceil(snapshotHoldings.length * 0.1));
-          whaleIds = new Set(snapshotHoldings.slice(0, top10Count).map(m => m.memberId));
-        } else {
-          const sortedMembers = getMemberTokensSorted(members);
-          const top10Count = Math.max(1, Math.ceil(sortedMembers.length * 0.1));
-          whaleIds = new Set(sortedMembers.slice(0, top10Count).map(m => m.id));
-        }
-
-        let whaleVotes = 0;
-        let totalVotes = 0;
-        for (const v of votes) {
-          totalVotes += v.weight;
-          if (whaleIds.has(v.voterId)) {
-            whaleVotes += v.weight;
-          }
-        }
-
-        totalRate += totalVotes > 0 ? whaleVotes / totalVotes : 0;
-        counted++;
-      }
-
-      return counted > 0 ? totalRate / counted : 0;
-    }
-
-    case 'whale_proposal_rate': {
-      // % of proposals created by top 10% holders
-      if (proposals.length === 0) return 0;
-
-      const sortedMembers = getMemberTokensSorted(members);
-      const top10Count = Math.max(1, Math.ceil(sortedMembers.length * 0.1));
-      const whaleIds = new Set(sortedMembers.slice(0, top10Count).map(m => m.id));
-
-      let whaleProposals = 0;
-      for (const p of proposals) {
-        // Fix: Proposal class uses 'creator' field, not 'proposer' or 'createdBy'
-        if (whaleIds.has(p.creator)) {
-          whaleProposals++;
-        }
-      }
-
-      return whaleProposals / proposals.length;
-    }
-
-    case 'governance_capture_risk': {
-      // Measure voting power concentration affecting outcomes
-      // Calculate what % of winning vote weight came from top 10% of voters
-      const memberInfluence = new Map<string, number>();
-      let totalInfluence = 0;
-
-      for (const p of proposals) {
-        // Only count resolved proposals
-        if (p.status !== 'approved' && p.status !== 'rejected' &&
-            p.status !== 'completed') {
-          continue;
-        }
-
-        const votes = getProposalVotes(p);
-        const isApproved = p.status === 'approved' || p.status === 'completed';
-
-        for (const v of votes) {
-          // Did this voter vote with the winning side?
-          const votedWithWinner = (v.vote && isApproved) || (!v.vote && !isApproved);
-
-          if (votedWithWinner) {
-            memberInfluence.set(v.voterId, (memberInfluence.get(v.voterId) || 0) + v.weight);
-            totalInfluence += v.weight;
-          }
-        }
-      }
-
-      if (totalInfluence === 0) return 0;
-
-      // Sort influences descending and calculate top 10% concentration
-      const influences = Array.from(memberInfluence.values()).sort((a, b) => b - a);
-      const top10Count = Math.max(1, Math.ceil(influences.length * 0.1));
-      const top10Influence = influences.slice(0, top10Count).reduce((a, b) => a + b, 0);
-
-      // Return as 0-1 scale: what fraction of "winning influence" came from top 10%
-      return top10Influence / totalInfluence;
-    }
-
-    case 'vote_buying_vulnerability': {
-      // Average tokens needed to flip a close vote (< 10% margin)
-      const closeVotes = proposals.filter(p => {
-        const total = (p.votesFor || 0) + (p.votesAgainst || 0);
-        if (total === 0) return false;
-        const margin = Math.abs((p.votesFor || 0) - (p.votesAgainst || 0)) / total;
-        return margin < 0.1;
-      });
-
-      if (closeVotes.length === 0) return 0;
-
-      let totalFlipCost = 0;
-      for (const p of closeVotes) {
-        // Tokens needed to flip = margin / 2 + 1
-        const margin = Math.abs((p.votesFor || 0) - (p.votesAgainst || 0));
-        totalFlipCost += margin / 2 + 1;
-      }
-
-      return totalFlipCost / closeVotes.length;
-    }
-
-    case 'single_entity_control': {
-      // Max % of votes any single member could cast
-      const totalSupply = getTotalVotingPower(members);
-      if (totalSupply === 0) return 0;
-
-      let maxPower = 0;
-      for (const m of members) {
-        const power = (m.tokens || 0) + (m.stakedTokens || 0);
-        maxPower = Math.max(maxPower, power);
-      }
-
-      return Math.max(0, Math.min(1, maxPower / totalSupply));
-    }
-
-    case 'collusion_threshold': {
-      // Apply sqrt compression to reflect diminishing marginal voting power
-      const adjustedMembers = members
-        .map(m => {
-          const raw = (m.tokens || 0) + (m.stakedTokens || 0);
-          return { id: m.uniqueId, power: Math.sqrt(Math.max(0, raw)) };
-        })
-        .sort((a, b) => b.power - a.power);
-
-      const totalPower = adjustedMembers.reduce((s, m) => s + m.power, 0);
-      if (totalPower === 0 || adjustedMembers.length === 0) return 1;
-
-      let accumulated = 0;
-      let count = 0;
-
-      for (const m of adjustedMembers) {
-        accumulated += m.power;
-        count++;
-        if (accumulated > totalPower / 2) {
-          break;
-        }
-      }
-
-      return count / members.length;
-    }
-
-    // =========================================================================
-    // TEMPORAL DYNAMICS METRICS
-    // =========================================================================
-
-    case 'participation_trend': {
-      // Slope of participation over time
-      if (proposals.length < 2) return 0;
-
-      const totalSupply = getTotalVotingPower(members);
-      if (totalSupply === 0) return 0;
-
-      const participationOverTime = proposals.map(p => {
-        const votes = getProposalVotes(p);
-        return votes.reduce((sum, v) => sum + v.weight, 0) / totalSupply;
-      });
-
-      return calculateSlope(participationOverTime);
-    }
-
-    case 'treasury_trend': {
-      // Slope of treasury over time
-      const treasuryHistory = history.map(h => h.treasuryFunds || 0);
-      return calculateSlope(treasuryHistory);
-    }
-
-    case 'member_growth_rate': {
-      // (final - initial) / initial members
-      if (history.length < 2) return 0;
-      const initial = history[0]?.memberCount || members.length;
-      const final = history[history.length - 1]?.memberCount || members.length;
-      return initial > 0 ? (final - initial) / initial : 0;
-    }
-
-    case 'proposal_rate': {
-      // Proposals per 100 steps
-      const steps = simulation.currentStep || 1;
-      return (proposals.length / steps) * 100;
-    }
-
-    case 'governance_activity_index': {
-      // Composite: normalized(proposals) * participation * resolution_rate
-      const stats = getProposalStats(proposals);
-      const resolved = stats.passed + stats.rejected;
-      const resolutionRate = stats.total > 0 ? resolved / stats.total : 0;
-
-      const totalSupply = getTotalVotingPower(members);
-      let avgParticipation = 0;
-      if (proposals.length > 0 && totalSupply > 0) {
-        for (const p of proposals) {
-          const votes = getProposalVotes(p);
-          avgParticipation += votes.reduce((sum, v) => sum + v.weight, 0) / totalSupply;
-        }
-        avgParticipation /= proposals.length;
-      }
-
-      const steps = simulation.currentStep || 1;
-      const proposalRate = proposals.length / steps;
-
-      // Combine into composite index (all 0-1 range)
-      return proposalRate * avgParticipation * resolutionRate;
-    }
-
-    case 'emergency_topup_total':
-      return simulation.totalEmergencyTopup || 0;
-
-    // =========================================================================
-    // LLM AGENT METRICS
-    // =========================================================================
-
-    case 'llm_vote_consistency': {
-      const { LLMAgent } = (globalThis as any).__nodeRequire('../agents/llm-agent');
-      const llmAgents = members.filter((m: any) => m instanceof LLMAgent && m.llmVoting);
-      if (llmAgents.length === 0) return 0;
-
-      let totalDecisions = 0;
-      let matchingDecisions = 0;
-      for (const agent of llmAgents) {
-        const llm = agent as any;
-        if (!llm.llmVoting) continue;
-        const history = llm.llmVoting.voteHistory || [];
-        for (const record of history) {
-          if (record.decision.vote === 'abstain') continue;
-          totalDecisions++;
-          const ruleVote = llm.optimism > 0.5 ? 'yes' : 'no';
-          if (record.decision.vote === ruleVote) matchingDecisions++;
-        }
-      }
-      return totalDecisions > 0 ? matchingDecisions / totalDecisions : 0;
-    }
-
-    case 'llm_cache_hit_rate': {
-      if (!simulation.llmCache) return 0;
-      const cacheStats = simulation.llmCache.stats;
-      return cacheStats.hitRate;
-    }
-
-    case 'llm_avg_latency_ms': {
-      if (!simulation.ollamaClient) return 0;
-      return simulation.ollamaClient.avgLatencyMs;
-    }
-
-    default:
-      return 0;
-  }
-}
-
-/**
- * Extract a custom metric using an expression
  */
 function extractCustomMetric(simulation: DAOSimulation, expression: string): number {
   try {
@@ -947,6 +330,7 @@ function collectTimeline(simulation: DAOSimulation): TimelineEntry[] {
       treasuryFunds: entry.treasuryFunds,
       gini: mv?.gini ?? 0,
       reputationGini: mv?.repGini ?? 0,
+      participationRate: mv?.avgParticipationRate ?? 0,
     };
   });
 }

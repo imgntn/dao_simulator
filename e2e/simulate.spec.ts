@@ -69,13 +69,13 @@ test.describe('Simulate Page - Load & Initialization', () => {
     await expect(page.getByRole('heading', { name: /Simulation Control/i })).toBeVisible();
     await expect(page.locator('button[aria-label="Start simulation"]', { hasText: /^Play$/ })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Step' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Reset', exact: true })).toBeVisible();
   });
 
   test('DAO preset dropdown is populated with 14 DAOs', async ({ page }) => {
     await gotoAndWaitForInit(page);
 
-    const daoSelect = page.locator('select').first();
+    const daoSelect = page.getByLabel('DAO preset');
     const options = daoSelect.locator('option');
     await expect(options).toHaveCount(14);
 
@@ -88,12 +88,12 @@ test.describe('Simulate Page - Load & Initialization', () => {
   test('scenario preset dropdown has options', async ({ page }) => {
     await gotoAndWaitForInit(page);
 
-    const govSelect = page.locator('select').nth(1);
-    const options = govSelect.locator('option');
+    const scenarioSelect = page.getByLabel('Scenario preset');
+    const options = scenarioSelect.locator('option');
     await expect(options).toHaveCount(7);
 
-    await expect(govSelect).toContainText('None (manual config)');
-    await expect(govSelect).toContainText('Quadratic vs Majority');
+    await expect(scenarioSelect).toContainText('None (manual config)');
+    await expect(scenarioSelect).toContainText('Quadratic vs Majority');
   });
 });
 
@@ -150,7 +150,7 @@ test.describe('Simulate Page - Controls', () => {
     // Pause first, then reset
     await pauseAndWait(page);
     page.once('dialog', (dialog) => dialog.accept());
-    await page.getByRole('button', { name: 'Reset' }).click();
+    await page.getByRole('button', { name: 'Reset', exact: true }).click();
 
     await expect(async () => {
       const step = await getStep(page);
@@ -232,7 +232,7 @@ test.describe('Simulate Page - Dashboard & Charts', () => {
 
   test('event feed shows entries after simulation produces events', async ({ page }) => {
     await gotoAndWaitForInit(page);
-    await page.locator('select').nth(1).selectOption('black-swan-stress');
+    await page.getByLabel('Scenario preset').selectOption('black-swan-stress');
     await page.getByRole('button', { name: /^Reset$/ }).first().click();
     await expect(async () => {
       const step = await getStep(page);
@@ -309,7 +309,7 @@ test.describe('Simulate Page - DAO Switching', () => {
     expect(stepBefore).toBeGreaterThan(0);
 
     // Switch DAO
-    const daoSelect = page.locator('select').first();
+    const daoSelect = page.getByLabel('DAO preset');
     await daoSelect.selectOption({ index: 3 }); // pick a different DAO
 
     // Step should reset to 0
@@ -323,7 +323,7 @@ test.describe('Simulate Page - DAO Switching', () => {
     await gotoAndWaitForInit(page);
 
     // Switch to a different DAO
-    const daoSelect = page.locator('select').first();
+    const daoSelect = page.getByLabel('DAO preset');
     await daoSelect.selectOption({ index: 5 });
 
     // Wait for reset to complete

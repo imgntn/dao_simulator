@@ -86,6 +86,14 @@ export default defineConfig({
       timeout: 120000,
     },
 
+    /* Optimized production server - CSP, hydration, media, and readiness */
+    {
+      name: 'production',
+      testMatch: /.*production\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      timeout: 120000,
+    },
+
     /* Report-card gates - performance, lifecycle, visual artifacts, UX, explainability */
     {
       name: 'report-card',

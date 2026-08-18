@@ -18,27 +18,40 @@ export const ConfidenceIntervalSchema = z.object({
   ci95Lower: z.number(),
   ci95Upper: z.number(),
   standardError: z.number(),
+  sampleSize: z.number().int().nonnegative().optional(),
 });
 export type ConfidenceIntervalShape = z.infer<typeof ConfidenceIntervalSchema>;
+
+export const AccuracyMetricIdSchema = z.enum([
+  'proposal_frequency_error',
+  'pass_rate_error',
+  'participation_rate_error',
+  'price_level_error',
+  'voter_concentration_error',
+  'forum_activity_error',
+]);
+
+export const MetricConfidenceIntervalsSchema = z.object({
+  overall_score: ConfidenceIntervalSchema,
+  proposal_frequency_error: ConfidenceIntervalSchema,
+  pass_rate_error: ConfidenceIntervalSchema,
+  participation_rate_error: ConfidenceIntervalSchema,
+  price_level_error: ConfidenceIntervalSchema,
+  voter_concentration_error: ConfidenceIntervalSchema,
+  forum_activity_error: ConfidenceIntervalSchema,
+});
 
 export const DaoBaselineSchema = z.object({
   daoId: z.string(),
   score: z.number().min(0).max(1),
-  passRate: z.number().min(0).max(1),
-  participation: z.number().min(0).max(1),
-  proposalFrequency: z.number().min(0),
-  priceRmse: z.number().min(0),
-  voterConcentration: z.number().min(0).max(1),
-  forumActivity: z.number().min(0),
-  ci95: z.object({
-    overall_score: ConfidenceIntervalSchema,
-    proposal_frequency_error: ConfidenceIntervalSchema,
-    pass_rate_error: ConfidenceIntervalSchema,
-    participation_rate_error: ConfidenceIntervalSchema,
-    price_trajectory_rmse: ConfidenceIntervalSchema,
-    voter_concentration_error: ConfidenceIntervalSchema,
-    forum_activity_error: ConfidenceIntervalSchema,
-  }),
+  passRate: z.number().min(0).max(1).nullable(),
+  participation: z.number().min(0).max(1).nullable(),
+  proposalFrequency: z.number().min(0).nullable(),
+  priceLevelError: z.number().min(0).nullable(),
+  voterConcentration: z.number().min(0).max(1).nullable(),
+  forumActivity: z.number().min(0).nullable(),
+  availableMetrics: z.array(AccuracyMetricIdSchema),
+  ci95: MetricConfidenceIntervalsSchema,
 });
 export type DaoBaseline = z.infer<typeof DaoBaselineSchema>;
 
@@ -73,6 +86,9 @@ export const ExperimentBaselineSchema = z.object({
   generatedAt: z.string(),
   gitSha: z.string(),
   configHash: z.string(),
+  suite: z.enum(['full', 'llm']).optional(),
+  sourceRunId: z.string().optional(),
+  description: z.string().optional(),
   findings: z.record(z.string(), ExperimentFindingSchema),
 });
 export type ExperimentBaseline = z.infer<typeof ExperimentBaselineSchema>;
@@ -84,14 +100,16 @@ export type ExperimentBaseline = z.infer<typeof ExperimentBaselineSchema>;
 export const DaoValidationResultSchema = z.object({
   daoId: z.string(),
   score: z.number(),
-  passRate: z.number(),
-  participation: z.number(),
-  proposalFrequency: z.number(),
-  priceRmse: z.number(),
-  voterConcentration: z.number(),
-  forumActivity: z.number(),
+  passRate: z.number().nullable(),
+  participation: z.number().nullable(),
+  proposalFrequency: z.number().nullable(),
+  priceLevelError: z.number().nullable(),
+  voterConcentration: z.number().nullable(),
+  forumActivity: z.number().nullable(),
+  availableMetrics: z.array(AccuracyMetricIdSchema),
   ci95Lower: z.number(),
   ci95Upper: z.number(),
+  ci95: MetricConfidenceIntervalsSchema,
   episodes: z.number().int().positive(),
   stepsPerEpisode: z.number().int().positive(),
 });

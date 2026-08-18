@@ -6,6 +6,9 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { random, setSeed } from '../lib/utils/random';
+
+setSeed(42);
 
 interface MetricSummary {
   name: string;
@@ -53,7 +56,7 @@ function computeBootstrapCI(values: number[], confidence = 0.95, iterations = 10
   for (let i = 0; i < iterations; i++) {
     let sum = 0;
     for (let j = 0; j < n; j++) {
-      sum += values[Math.floor(Math.random() * n)];
+      sum += values[Math.floor(random() * n)];
     }
     means.push(sum / n);
   }

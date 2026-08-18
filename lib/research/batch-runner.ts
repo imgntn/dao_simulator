@@ -18,9 +18,13 @@ import type {
   CityBaseConfig,
   CityScenarioConfig,
 } from './experiment-config';
+import { canonicalJson, sha256 } from './campaign-manifest';
 import { ExperimentRunner, type ProgressCallback } from './experiment-runner';
 import { WorkerPool } from './worker-pool';
 import type { WorkerTask } from './simulation-worker';
+import { assertFiniteRunResults } from './metric-validation';
+import { buildStableRunId } from './run-identity';
+import { campaignConditionId } from './condition-identity';
 
 // =============================================================================
 // TYPES
@@ -65,28 +69,13 @@ export interface BatchCheckpoint {
   timestamp: string;
 }
 
-interface RunTask {
+export interface RunTask {
   id: string;
   daoConfig: ResearchConfig | { baseCityConfig: CityBaseConfig; scenario: CityScenarioConfig };
   sweepValue?: number | string | boolean;
   runIndex: number;
   seed: number;
-}
-
-function shortHash(input: string): string {
-  let hash = 0;
-  for (let i = 0; i < input.length; i++) {
-    hash = ((hash << 5) - hash + input.charCodeAt(i)) | 0;
-  }
-  return Math.abs(hash).toString(16).slice(0, 8);
-}
-
-function compactSweepPart(sweepValue: string): string {
-  const sanitized = sweepValue.replace(/[^a-zA-Z0-9._=-]+/g, '_');
-  if (sanitized.length <= 80) {
-    return sanitized;
-  }
-  return `sweep_${shortHash(sanitized)}`;
+  stepsPerRun: number;
 }
 
 // =============================================================================
@@ -100,6 +89,61 @@ export const DEFAULT_BATCH_CONFIG: BatchConfig = {
   retryDelayMs: 100,
   runTimeoutMs: 60000, // 1 minute per run
 };
+
+const CHECKPOINT_REPLACE_RETRY_DELAYS_MS = [25, 50, 100, 200, 400, 800, 1600];
+const TRANSIENT_CHECKPOINT_REPLACE_CODES = new Set(['EACCES', 'EBUSY', 'EPERM']);
+let checkpointTemporarySequence = 0;
+
+function isTransientCheckpointReplaceError(error: unknown): boolean {
+  return (
+    typeof error === 'object'
+    && error !== null
+    && 'code' in error
+    && TRANSIENT_CHECKPOINT_REPLACE_CODES.has(String(error.code))
+  );
+}
+
+async function replaceCheckpointFile(
+  temporaryPath: string,
+  checkpointPath: string
+): Promise<void> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      await fs.promises.rename(temporaryPath, checkpointPath);
+      return;
+    } catch (error) {
+      const delayMs = CHECKPOINT_REPLACE_RETRY_DELAYS_MS[attempt];
+      if (!isTransientCheckpointReplaceError(error) || delayMs === undefined) {
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new Error(
+          `Checkpoint persistence failed after ${attempt + 1} replace attempts: ${detail}`,
+          { cause: error }
+        );
+      }
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+  }
+}
+
+async function removeCheckpointFile(checkpointPath: string): Promise<void> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      await fs.promises.unlink(checkpointPath);
+      return;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') return;
+      const delayMs = CHECKPOINT_REPLACE_RETRY_DELAYS_MS[attempt];
+      if (!isTransientCheckpointReplaceError(error) || delayMs === undefined) {
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new Error(
+          `Checkpoint cleanup failed after ${attempt + 1} remove attempts: ${detail}`,
+          { cause: error }
+        );
+      }
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+  }
+}
 
 // =============================================================================
 // BATCH RUNNER CLASS
@@ -115,6 +159,7 @@ export class BatchRunner {
   private failedRunIds: Set<string> = new Set();
   private startTime: number = 0;
   private completedCount: number = 0;
+  private checkpointWrite: Promise<void> = Promise.resolve();
 
   constructor(
     experimentConfig: ExperimentConfig,
@@ -141,7 +186,7 @@ export class BatchRunner {
 
     // Check for existing checkpoint
     const checkpoint = await this.loadCheckpoint();
-    let startIndex = 0;
+    let completedIds = new Set<string>();
 
     if (checkpoint) {
       // Resume from checkpoint
@@ -150,18 +195,22 @@ export class BatchRunner {
       checkpoint.failedRunIds.forEach((id) => this.failedRunIds.add(id));
 
       // Find where to resume
-      const completedIds = new Set(checkpoint.completedRunIds);
-      startIndex = tasks.findIndex((t) => !completedIds.has(t.id));
+      completedIds = new Set(checkpoint.completedRunIds);
 
       console.log(`Resuming from checkpoint: ${this.completedCount}/${totalRuns} completed`);
     }
 
     // Run tasks with concurrency control
-    const remainingTasks = tasks.slice(startIndex);
+    const remainingTasks = tasks.filter(task => !completedIds.has(task.id));
     await this.runTasksWithConcurrency(remainingTasks, totalRuns);
 
-    // Sort results by runIndex for deterministic ordering
-    this.completedResults.sort((a, b) => (a.runIndex || 0) - (b.runIndex || 0));
+    // Sort results by the canonical task plan for deterministic ordering.
+    const taskOrder = new Map(tasks.map((task, index) => [task.id, index]));
+    this.completedResults.sort(
+      (a, b) =>
+        (taskOrder.get(a.runId) ?? Number.MAX_SAFE_INTEGER) -
+        (taskOrder.get(b.runId) ?? Number.MAX_SAFE_INTEGER)
+    );
 
     // Generate summary
     const endTime = Date.now();
@@ -182,21 +231,25 @@ export class BatchRunner {
   /**
    * Generate all run tasks
    */
-  private generateTasks(): RunTask[] {
+  generateTasks(): RunTask[] {
     const runner = new ExperimentRunner(this.experimentConfig);
     const configs = runner.generateConfigs();
 
     const tasks: RunTask[] = [];
-    let globalIndex = 0;
-
     for (const { daoConfig, sweepValue } of configs) {
       for (let i = 0; i < this.experimentConfig.execution.runsPerConfig; i++) {
-        const seed = this.getSeed(globalIndex);
-        const sweepPart = sweepValue !== undefined
-          ? `-${compactSweepPart(String(sweepValue).replace(/\./g, '_'))}`
-          : '';
-        const experimentId = this.experimentConfig.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
-        const runId = `${experimentId}${sweepPart}-run-${String(i + 1).padStart(3, '0')}`;
+        // Common random numbers: replicate i uses the same seed in every
+        // condition, enabling paired counterfactual estimates.
+        const seed = runner.getSeedForRun(i, sweepValue);
+        const runId = buildStableRunId(this.experimentConfig, sweepValue, i);
+        const configuredHorizon = 'research_horizon_steps' in daoConfig
+          ? Number(daoConfig.research_horizon_steps)
+          : this.experimentConfig.execution.stepsPerRun;
+        if (!Number.isSafeInteger(configuredHorizon) || configuredHorizon <= 0) {
+          throw new Error(
+            `Invalid research horizon for run ${runId}: expected a positive safe integer`
+          );
+        }
 
         tasks.push({
           id: runId,
@@ -204,32 +257,12 @@ export class BatchRunner {
           sweepValue,
           runIndex: i,
           seed,
+          stepsPerRun: configuredHorizon,
         });
-
-        globalIndex++;
       }
     }
 
     return tasks;
-  }
-
-  /**
-   * Get seed for a run
-   */
-  private getSeed(runIndex: number): number {
-    const { seedStrategy, baseSeed = 12345, fixedSeeds } = this.experimentConfig.execution;
-
-    switch (seedStrategy) {
-      case 'sequential':
-        return baseSeed + runIndex;
-      case 'fixed':
-        return fixedSeeds?.[runIndex] ?? baseSeed;
-      case 'random':
-        console.warn('[batch-runner] Warning: "random" seed strategy is non-deterministic and breaks reproducibility');
-        return Math.floor(Math.random() * 2147483647);
-      default:
-        return baseSeed + runIndex;
-    }
   }
 
   /**
@@ -258,6 +291,7 @@ export class BatchRunner {
       if (result.success && result.result) {
         this.completedResults.push(result.result);
         this.completedCount++;
+        this.failedRunIds.delete(task.id);
       } else {
         this.failedRunIds.add(result.taskId);
       }
@@ -287,15 +321,19 @@ export class BatchRunner {
     try {
       // Convert tasks to worker tasks
       const workerTasks: Omit<WorkerTask, 'taskId'>[] = tasks.map((task) => ({
+        runId: task.id,
+        conditionId: campaignConditionId(task.sweepValue, task.daoConfig),
         config: task.daoConfig as ResearchConfig,
         simConfig: {
           checkpointInterval: this.experimentConfig.baseConfig.simulationOverrides?.checkpointInterval,
           eventLogging: this.experimentConfig.baseConfig.simulationOverrides?.eventLogging,
         },
         seed: task.seed,
-        stepsPerRun: this.experimentConfig.execution.stepsPerRun,
+          stepsPerRun: task.stepsPerRun,
+          learningEpisodesPerRun: this.experimentConfig.execution.learningEpisodesPerRun,
         metrics: this.experimentConfig.metrics,
         includeTimeline: this.experimentConfig.output.includeTimeline ?? false,
+        timelineStride: this.experimentConfig.output.timelineStride,
         sweepValue: task.sweepValue,
         runIndex: task.runIndex,
         experimentName: this.experimentConfig.name,
@@ -303,29 +341,44 @@ export class BatchRunner {
 
       // Submit all tasks and track progress
       let checkpointCounter = 0;
+      let checkpointFailure: unknown;
       const taskPromises = workerTasks.map(async (workerTask, index) => {
+        let result: RunResult;
         try {
-          const result = await pool.submit(workerTask);
-          this.completedResults.push(result);
-          this.completedCount++;
-
-          // Report progress
-          this.reportProgress(totalRuns);
-
-          // Checkpoint periodically
-          checkpointCounter++;
-          if (checkpointInterval && checkpointCounter % checkpointInterval === 0) {
-            await this.saveCheckpoint(tasks.map((t) => t.id), totalRuns);
-          }
-
-          return { success: true, taskId: tasks[index].id, result };
+          result = await pool.submit(workerTask);
         } catch (error) {
+          if (checkpointFailure !== undefined) {
+            throw checkpointFailure;
+          }
           console.error(`Task ${tasks[index].id} failed:`, (error as Error)?.message || error);
           if ((error as Error)?.stack) console.error((error as Error).stack);
           this.failedRunIds.add(tasks[index].id);
           this.reportProgress(totalRuns);
           return { success: false, taskId: tasks[index].id };
         }
+
+        this.completedResults.push(result);
+        this.completedCount++;
+        this.failedRunIds.delete(tasks[index].id);
+
+        // Report progress
+        this.reportProgress(totalRuns);
+
+        // Checkpoint persistence is infrastructure, not simulation execution.
+        // A persistence failure must abort the batch rather than misclassify a
+        // successfully simulated task as a failed scientific run.
+        checkpointCounter++;
+        if (checkpointInterval && checkpointCounter % checkpointInterval === 0) {
+          try {
+            await this.saveCheckpoint(tasks.map((t) => t.id), totalRuns);
+          } catch (error) {
+            checkpointFailure = error;
+            await pool.forceShutdown();
+            throw error;
+          }
+        }
+
+        return { success: true, taskId: tasks[index].id, result };
       });
 
       // Wait for all tasks
@@ -367,7 +420,13 @@ export class BatchRunner {
     const runner = new ExperimentRunner(this.experimentConfig);
 
     if (timeoutMs <= 0) {
-      return runner.runSingle(task.daoConfig, task.seed, task.sweepValue, task.runIndex);
+      return runner.runSingle(
+        task.daoConfig,
+        task.seed,
+        task.sweepValue,
+        task.runIndex,
+        task.stepsPerRun,
+      );
     }
 
     let timer: NodeJS.Timeout;
@@ -377,7 +436,13 @@ export class BatchRunner {
 
     try {
       const result = await Promise.race([
-        runner.runSingle(task.daoConfig, task.seed, task.sweepValue, task.runIndex),
+        runner.runSingle(
+          task.daoConfig,
+          task.seed,
+          task.sweepValue,
+          task.runIndex,
+          task.stepsPerRun,
+        ),
         timeoutPromise,
       ]);
       clearTimeout(timer!);
@@ -415,7 +480,7 @@ export class BatchRunner {
    */
   private generateSummary(totalRuns: number, endTime: number): ExperimentSummary {
     const runner = new ExperimentRunner(this.experimentConfig);
-    return runner.generateSummary(this.completedResults, this.startTime);
+    return runner.generateSummary(this.completedResults, this.startTime, this.failedRunIds.size);
   }
 
   /**
@@ -423,7 +488,21 @@ export class BatchRunner {
    */
   private getCheckpointPath(): string {
     const dir = this.batchConfig.checkpointDir || '.checkpoints';
-    const filename = `${this.experimentConfig.name.replace(/\s+/g, '-')}.checkpoint.json`;
+    let safeName = this.experimentConfig.name
+      .normalize('NFKC')
+      .split('')
+      .map((character) => character.charCodeAt(0) <= 31 ? '-' : character)
+      .join('')
+      .replace(/[<>:"/\\|?*]/g, '-')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/[. ]+$/g, '')
+      .slice(0, 120);
+    if (!safeName) safeName = 'experiment';
+    if (/^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/i.test(safeName)) {
+      safeName = `experiment-${safeName}`;
+    }
+    const filename = `${safeName}.checkpoint.json`;
     return path.join(dir, filename);
   }
 
@@ -431,32 +510,44 @@ export class BatchRunner {
    * Save checkpoint
    */
   private async saveCheckpoint(allTaskIds: string[], totalRuns: number): Promise<void> {
-    const checkpointPath = this.getCheckpointPath();
-    const dir = path.dirname(checkpointPath);
+    const expectedIds = new Set([
+      ...allTaskIds,
+      ...this.completedResults.map(result => result.runId),
+    ]);
+    const checkpointOperation = this.checkpointWrite.then(async () => {
+      const checkpointPath = this.getCheckpointPath();
+      const dir = path.dirname(checkpointPath);
+      await fs.promises.mkdir(dir, { recursive: true });
 
-    // Ensure directory exists
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-
-    // Generate config hash
-    const configStr = JSON.stringify(this.experimentConfig);
-    let configHash = 0;
-    for (let i = 0; i < configStr.length; i++) {
-      configHash = ((configHash << 5) - configHash + configStr.charCodeAt(i)) | 0;
-    }
-
-    const checkpoint: BatchCheckpoint = {
-      experimentName: this.experimentConfig.name,
-      configHash: `hash:${Math.abs(configHash).toString(16)}`,
-      totalRuns,
-      completedRunIds: this.completedResults.map((r) => r.runId),
-      completedResults: this.completedResults,
-      failedRunIds: Array.from(this.failedRunIds),
-      timestamp: new Date().toISOString(),
-    };
-
-    await fs.promises.writeFile(checkpointPath, JSON.stringify(checkpoint, null, 2));
+      const completedResults = this.completedResults.filter(result =>
+        expectedIds.has(result.runId)
+      );
+      assertFiniteRunResults(completedResults, 'Batch checkpoint export');
+      const checkpoint: BatchCheckpoint = {
+        experimentName: this.experimentConfig.name,
+        configHash: `sha256:${sha256(canonicalJson(this.experimentConfig))}`,
+        totalRuns,
+        completedRunIds: completedResults.map(result => result.runId),
+        completedResults,
+        failedRunIds: Array.from(this.failedRunIds).filter(id => expectedIds.has(id)),
+        timestamp: new Date().toISOString(),
+      };
+      const temporaryPath =
+        `${checkpointPath}.${process.pid}.${checkpointTemporarySequence++}.tmp`;
+      try {
+        await fs.promises.writeFile(temporaryPath, JSON.stringify(checkpoint, null, 2));
+        await replaceCheckpointFile(temporaryPath, checkpointPath);
+      } finally {
+        await fs.promises.unlink(temporaryPath).catch(error => {
+          if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+        });
+      }
+    });
+    // Keep the serialization tail recoverable. The caller still receives the
+    // current failure, while a later explicit save is not chained to a
+    // permanently rejected promise.
+    this.checkpointWrite = checkpointOperation.catch(() => undefined);
+    await checkpointOperation;
   }
 
   /**
@@ -474,22 +565,33 @@ export class BatchRunner {
       const checkpoint = JSON.parse(content) as BatchCheckpoint;
 
       // Verify config hash matches
-      const configStr = JSON.stringify(this.experimentConfig);
-      let configHash = 0;
-      for (let i = 0; i < configStr.length; i++) {
-        configHash = ((configHash << 5) - configHash + configStr.charCodeAt(i)) | 0;
-      }
-      const currentHash = `hash:${Math.abs(configHash).toString(16)}`;
+      const currentHash = `sha256:${sha256(canonicalJson(this.experimentConfig))}`;
 
       if (checkpoint.configHash !== currentHash) {
-        console.warn('Checkpoint config hash mismatch - starting fresh');
-        return null;
+        throw new Error('Checkpoint configuration hash mismatch; refusing unsafe resume');
+      }
+      if (checkpoint.experimentName !== this.experimentConfig.name) {
+        throw new Error('Checkpoint experiment name mismatch; refusing unsafe resume');
+      }
+
+      const expectedTasks = this.generateTasks();
+      const expectedIds = new Set(expectedTasks.map(task => task.id));
+      if (checkpoint.totalRuns !== expectedTasks.length) {
+        throw new Error('Checkpoint run count mismatch; refusing unsafe resume');
+      }
+      if (new Set(checkpoint.completedRunIds).size !== checkpoint.completedRunIds.length) {
+        throw new Error('Checkpoint contains duplicate completed run IDs');
+      }
+      if (checkpoint.completedRunIds.some(id => !expectedIds.has(id))) {
+        throw new Error('Checkpoint contains a run outside the current task plan');
+      }
+      if (checkpoint.completedResults.some(result => !expectedIds.has(result.runId))) {
+        throw new Error('Checkpoint contains a result outside the current task plan');
       }
 
       return checkpoint;
     } catch (error) {
-      console.warn('Failed to load checkpoint:', error);
-      return null;
+      throw new Error(`Failed to load checkpoint safely: ${(error as Error).message}`);
     }
   }
 
@@ -498,9 +600,7 @@ export class BatchRunner {
    */
   private async deleteCheckpoint(): Promise<void> {
     const checkpointPath = this.getCheckpointPath();
-    if (fs.existsSync(checkpointPath)) {
-      await fs.promises.unlink(checkpointPath);
-    }
+    await removeCheckpointFile(checkpointPath);
   }
 
   /**
