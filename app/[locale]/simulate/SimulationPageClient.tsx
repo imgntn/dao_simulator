@@ -167,11 +167,16 @@ export default function SimulationPageClient() {
 
   // Mobile: render a compact UI optimized for narrow screens.
   if (isMobile) {
-    return <MobileSimView />;
+    return (
+      <main>
+        <MobileSimView onOpenWizard={() => setShowPresetWizard(true)} />
+        {showPresetWizard && <ScenarioPresetWizard onClose={() => setShowPresetWizard(false)} />}
+      </main>
+    );
   }
 
   return (
-    <div
+    <main
       data-sim-root
       className="sim-layout bg-[var(--sim-bg)] text-[var(--sim-text)]"
     >
@@ -258,7 +263,7 @@ export default function SimulationPageClient() {
       {showHelp && <HelpOverlay onClose={() => setShowHelp(false)} />}
       {showPresetWizard && <ScenarioPresetWizard onClose={() => setShowPresetWizard(false)} />}
       <Tutorial />
-    </div>
+    </main>
   );
 }
 

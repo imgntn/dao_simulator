@@ -445,8 +445,10 @@ export function ControlPanel() {
 
       {/* Seed */}
       <div>
-        <label className="block text-xs text-[var(--sim-text-muted)] mb-1">Random Seed</label>
+        <label htmlFor="simulation-random-seed" className="block text-xs text-[var(--sim-text-muted)] mb-1">Random Seed</label>
         <input
+          id="simulation-random-seed"
+          name="seed"
           type="number"
           value={config.seed ?? 42}
           onChange={e => updateConfig({ seed: parseInt(e.target.value) || 42 })}

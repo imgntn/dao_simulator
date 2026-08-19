@@ -13,15 +13,22 @@ export function StickyNav({ sections }: StickyNavProps) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Show sticky nav when hero nav scrolls out of view
+    // Show this secondary navigation only after the hero navigation has
+    // scrolled above the persistent site header. An IntersectionObserver
+    // alone also fires while the hero navigation is still below the fold,
+    // which caused two stacked headers on initial load.
     const heroNav = document.querySelector('nav[aria-label="Page sections"]');
     if (!heroNav) return;
-
-    const showObserver = new IntersectionObserver(
-      ([entry]) => setVisible(!entry.isIntersecting),
-      { threshold: 0 },
-    );
-    showObserver.observe(heroNav);
+    let frame = 0;
+    const updateVisibility = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        setVisible(heroNav.getBoundingClientRect().bottom < 64);
+      });
+    };
+    updateVisibility();
+    window.addEventListener('scroll', updateVisibility, { passive: true });
+    window.addEventListener('resize', updateVisibility);
 
     // Track active section
     const sectionObserver = new IntersectionObserver(
@@ -41,7 +48,9 @@ export function StickyNav({ sections }: StickyNavProps) {
     }
 
     return () => {
-      showObserver.disconnect();
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', updateVisibility);
+      window.removeEventListener('resize', updateVisibility);
       sectionObserver.disconnect();
     };
   }, [sections]);
@@ -78,7 +87,7 @@ export function StickyNav({ sections }: StickyNavProps) {
     <nav
       ref={menuRef}
       aria-label="Sticky navigation"
-      className="fixed left-0 right-0 top-0 z-40 border-b border-[var(--border-default)] bg-[var(--surface-page)]/90 backdrop-blur-md"
+      className="fixed left-0 right-0 top-16 z-30 border-b border-[var(--border-default)] bg-[var(--surface-page)]/95 backdrop-blur-md"
     >
       {/* Desktop layout (sm and above) — unchanged */}
       <div className="mx-auto hidden max-w-7xl gap-1 overflow-x-auto px-4 py-2 sm:flex sm:justify-center sm:gap-2">

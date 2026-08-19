@@ -34,11 +34,17 @@ import { PipelineFlowChart } from '@/components/home/infographics/PipelineFlowCh
 import { TreasuryVolatilityChart } from '@/components/home/infographics/TreasuryVolatilityChart';
 import { CooperationChart } from '@/components/home/infographics/CooperationChart';
 import { LLMComparisonChart } from '@/components/home/infographics/LLMComparisonChart';
+import { RESEARCH_STATUS, RESEARCH_STATUS_SUMMARY } from '@/lib/home/research-status';
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: rawLocale } = await params;
   const locale: Locale = isValidLocale(rawLocale) ? rawLocale : defaultLocale;
   const m = getMessages(locale);
+  const translationNotice: Partial<Record<Locale, string>> = {
+    es: 'La navegacion principal esta traducida. Algunos informes tecnicos permanecen en ingles mientras se completa la revision editorial.',
+    zh: '主要导航已翻译。部分技术研究简报在编辑审核完成前仍以英文提供。',
+    ja: '主要なナビゲーションは翻訳済みです。一部の技術研究概要は編集レビュー完了まで英語で提供されます。',
+  };
   // ---------------------------------------------------------------------------
   // Data preparation
   // ---------------------------------------------------------------------------
@@ -121,7 +127,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
       {/* ── Hero ── */}
       <header
-        className="relative overflow-hidden rounded-3xl p-7 sm:p-10"
+        className="relative overflow-hidden rounded-3xl p-5 sm:p-10"
         style={{
           background: 'radial-gradient(ellipse at 30% 0%, rgba(128,48,224,0.18) 0%, transparent 55%), radial-gradient(ellipse at 75% 100%, rgba(8,184,216,0.15) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(200,128,24,0.08) 0%, transparent 70%), #040210',
           border: '1px solid rgba(196,144,32,0.28)',
@@ -141,12 +147,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <p className="mucha-section-heading text-xs">
               {m.home?.tagline ?? 'DAO Research · Made Actionable · Self-Published'}
             </p>
-            <h1 className="mt-4 max-w-4xl font-serif-display text-5xl leading-[1.06] sm:text-7xl animate-cave-shimmer">
+            <h1 className="mt-4 max-w-4xl font-serif-display text-4xl leading-[1.06] sm:text-6xl animate-cave-shimmer">
               {m.home?.heroTitle ?? 'DAO Simulator'}
             </h1>
-            <p className="mt-5 max-w-3xl text-[1.15rem] leading-relaxed sm:text-[1.3rem]" style={{ color: '#B8B0D4' }}>
+            <p className="mt-5 max-w-3xl text-lg leading-relaxed sm:text-xl" style={{ color: '#B8B0D4' }}>
               {m.home?.heroDescription ??
-                'Actionable governance findings from 21,869 simulation runs across 14 calibrated DAO digital twins. Start with any research question below.'}
+                `Explore governance hypotheses from ${RESEARCH_STATUS.legacyExploratoryRunsLabel} legacy simulation runs across ${RESEARCH_STATUS.calibratedDaoCount} calibrated DAO digital twins.`}
             </p>
 
             {/* TL;DR — illuminated manuscript callout */}
@@ -161,6 +167,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <a
                 href={`/${locale}/simulate`}
+                data-analytics-event="hero_simulator_clicked"
                 className="sanctum-cta inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-lg"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24" aria-hidden="true">
@@ -170,10 +177,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               </a>
               <a
                 href="#research"
+                data-analytics-event="evidence_opened"
                 className="inline-flex items-center gap-2 rounded-xl px-6 py-3.5 text-base font-semibold transition"
                 style={{ border:'1px solid rgba(196,144,32,0.35)', color:'#E8C050', background:'rgba(196,144,32,0.08)' }}
               >
-                Read the Research
+                Review the Evidence
               </a>
             </div>
           </div>
@@ -185,11 +193,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </div>
             <div className="grid w-full grid-cols-3 gap-2 text-center">
               <div className="rounded-xl p-2.5" style={{ background:'rgba(8,184,216,0.10)', border:'1px solid rgba(64,232,255,0.18)' }}>
-                <p className="crystal-stat text-xl font-bold" style={{ color:'var(--cx-sal-g)' }}>21,869</p>
-                <p className="text-xs uppercase tracking-wide" style={{ color:'var(--cx-sal)' }}>Runs</p>
+                <p className="crystal-stat text-xl font-bold" style={{ color:'var(--cx-sal-g)' }}>{RESEARCH_STATUS.legacyExploratoryRunsLabel}</p>
+                <p className="text-xs uppercase tracking-wide" style={{ color:'var(--cx-sal)' }}>Exploratory runs</p>
               </div>
               <div className="rounded-xl p-2.5" style={{ background:'rgba(128,48,224,0.10)', border:'1px solid rgba(176,104,248,0.18)' }}>
-                <p className="crystal-stat text-xl font-bold" style={{ color:'var(--cx-gov-g)' }}>14</p>
+                <p className="crystal-stat text-xl font-bold" style={{ color:'var(--cx-gov-g)' }}>{RESEARCH_STATUS.calibratedDaoCount}</p>
                 <p className="text-xs uppercase tracking-wide" style={{ color:'var(--cx-gov)' }}>DAOs</p>
               </div>
               <div className="rounded-xl p-2.5" style={{ background:'rgba(200,128,24,0.10)', border:'1px solid rgba(240,184,48,0.18)' }}>
@@ -207,7 +215,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             {sections.length} {m.home?.briefsCount ?? 'briefs covering participation, capture, operations, treasury, coordination, LLM governance, and counterfactual rule comparison.'}
           </InfoCard>
           <InfoCard label={m.home?.evidenceLabel ?? 'Evidence Base'}>
-            {m.home?.evidenceDesc ?? 'The confirmatory campaign is being regenerated from frozen designs and verified raw runs.'}
+            {RESEARCH_STATUS.confirmatoryStatus}. Legacy findings are labeled exploratory.
           </InfoCard>
           <InfoCard label={m.home?.authorLabel ?? 'Author'}>
             {m.home?.authorDesc ?? 'Research direction and systems thinking by'}{' '}
@@ -216,7 +224,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               target="_blank"
               rel="noreferrer"
               className="underline underline-offset-4"
-              style={{ color:'var(--cx-trea-g)', textDecorationColor:'rgba(32,216,192,0.4)' }}
+              style={{ color:'var(--accent-teal)', textDecorationColor:'rgba(23,106,122,0.4)' }}
             >
               James B. Pollack
             </a>
@@ -226,7 +234,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               target="_blank"
               rel="noreferrer"
               className="underline underline-offset-4"
-              style={{ color:'var(--cx-trea-g)', textDecorationColor:'rgba(32,216,192,0.4)' }}
+              style={{ color:'var(--accent-teal)', textDecorationColor:'rgba(23,106,122,0.4)' }}
             >
               GitHub
             </a>
@@ -259,15 +267,33 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </nav>
       </header>
 
+      <aside
+        aria-label="Research evidence status"
+        className="mt-5 rounded-2xl border border-amber-500/35 bg-amber-50 px-5 py-4 text-amber-950 dark:bg-amber-950/30 dark:text-amber-100"
+      >
+        <p className="text-sm font-bold uppercase tracking-[0.12em]">
+          {RESEARCH_STATUS.classification} - {RESEARCH_STATUS.confirmatoryStatus}
+        </p>
+        <p className="mt-1 text-sm leading-relaxed">{RESEARCH_STATUS_SUMMARY}</p>
+        <a href="#consulting" data-analytics-event="consulting_opened" className="mt-2 inline-flex text-sm font-semibold underline underline-offset-4">
+          Discuss a governance question with James
+        </a>
+      </aside>
+      {translationNotice[locale] && (
+        <p className="mt-3 rounded-xl border border-[var(--border-default)] bg-[var(--surface-warm)] px-4 py-3 text-sm text-[var(--text-muted)]" role="note">
+          {translationNotice[locale]}
+        </p>
+      )}
+
       {/* ── Social Proof ── */}
       <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-2xl px-6 py-3 text-sm" style={{ border:'1px solid rgba(196,144,32,0.20)', background:'rgba(10,4,34,0.65)', color:'#B8B0D4' }}>
         <span>Featured on <strong style={{ color:'var(--cx-coun-g)' }}>Green Pill Podcast</strong></span>
         <span className="hidden sm:inline" style={{ color:'rgba(196,144,32,0.35)' }}>◆</span>
         <span><strong style={{ color:'var(--cx-gov-g)' }}>14</strong> DAOs calibrated to real data</span>
         <span className="hidden sm:inline" style={{ color:'rgba(196,144,32,0.35)' }}>◆</span>
-        <span><strong style={{ color:'var(--cx-sal-g)' }}>21,869</strong> simulation runs</span>
+        <span><strong style={{ color:'var(--cx-sal-g)' }}>{RESEARCH_STATUS.legacyExploratoryRunsLabel}</strong> exploratory runs</span>
         <span className="hidden sm:inline" style={{ color:'rgba(196,144,32,0.35)' }}>◆</span>
-        <a href="https://github.com/imgntn/dao_simulator" target="_blank" rel="noreferrer" style={{ color:'var(--cx-trea-g)', fontWeight:600 }}>Open Source</a>
+        <a href="https://github.com/imgntn/dao_simulator" target="_blank" rel="noreferrer" style={{ color:'var(--accent-teal)', fontWeight:600 }}>Open Source</a>
       </div>
 
       {/* ── Key Findings ── */}
@@ -491,7 +517,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </p>
         <a
           href={`/${locale}/simulate`}
-          className="mt-8 inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-cyan-500/25 transition hover:bg-cyan-400 hover:shadow-cyan-400/30"
+          className="mt-8 inline-flex items-center gap-2 rounded-xl bg-cyan-700 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-cyan-700/25 transition hover:bg-cyan-800 hover:shadow-cyan-800/30"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
@@ -542,6 +568,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <div className="mt-6">
               <a
                 href={`/${locale}/simulate`}
+                data-analytics-event="hero_simulator_clicked"
                 className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-teal)] px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-[var(--accent-teal-hover)]"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" aria-hidden="true">
@@ -615,6 +642,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               id={section.id}
               label={sectionLabel(section.id)}
               title={section.title}
+              question={section.question}
             >
               <BriefDetail
                 id={section.id}

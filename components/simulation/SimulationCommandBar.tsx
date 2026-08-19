@@ -2,6 +2,8 @@
 
 import { useSimulationStore } from '@/lib/browser/simulation-store';
 import { ExportButton } from './ExportButton';
+import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
+import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 
 interface SimulationCommandBarProps {
   onOpenWizard: () => void;
@@ -25,6 +27,7 @@ export function SimulationCommandBar({ onOpenWizard }: SimulationCommandBarProps
   const reset = useSimulationStore(s => s.reset);
   const setSpeed = useSimulationStore(s => s.setSpeed);
   const forkState = useSimulationStore(s => s.forkState);
+  const { trackEvent } = useAnalytics();
 
   const isRunning = status === 'running';
   const canRun = status === 'paused' || status === 'running';
@@ -41,10 +44,16 @@ export function SimulationCommandBar({ onOpenWizard }: SimulationCommandBarProps
     >
       <button
         type="button"
-        onClick={() => (isRunning ? pause() : start())}
+        onClick={() => {
+          if (isRunning) pause();
+          else {
+            trackEvent(ANALYTICS_EVENTS.SIMULATION_STARTED);
+            start();
+          }
+        }}
         disabled={!canRun}
         data-testid="command-play"
-        className="h-8 min-w-[4.5rem] rounded border px-3 font-semibold text-[var(--sim-text-secondary)] disabled:opacity-40"
+        className="h-11 min-w-[4.5rem] rounded border px-3 font-semibold text-[var(--sim-text-secondary)] disabled:opacity-40"
         style={{ borderColor: 'var(--sim-border)', background: 'var(--sim-surface)' }}
       >
         {isRunning ? 'Pause' : 'Play'}
@@ -54,16 +63,16 @@ export function SimulationCommandBar({ onOpenWizard }: SimulationCommandBarProps
         onClick={step}
         disabled={status === 'initializing'}
         data-testid="command-step"
-        className="h-8 rounded border px-2.5 text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] disabled:opacity-40"
+        className="h-11 rounded border px-2.5 text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] disabled:opacity-40"
         style={{ borderColor: 'var(--sim-border)' }}
       >
         Step
       </button>
       <button
         type="button"
-        onClick={reset}
+        onClick={() => { trackEvent(ANALYTICS_EVENTS.SIMULATION_RESET); reset(); }}
         data-testid="command-reset"
-        className="h-8 rounded border px-2.5 text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)]"
+        className="h-11 rounded border px-2.5 text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)]"
         style={{ borderColor: 'var(--sim-border)' }}
       >
         Reset
@@ -72,19 +81,19 @@ export function SimulationCommandBar({ onOpenWizard }: SimulationCommandBarProps
         type="button"
         onClick={forkState}
         disabled={!snapshot}
-        className="h-8 rounded border px-2.5 text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] disabled:opacity-40"
+        className="h-11 rounded border px-2.5 text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] disabled:opacity-40"
         style={{ borderColor: 'var(--sim-border)' }}
       >
         Fork
       </button>
       <button
         type="button"
-        onClick={onOpenWizard}
+        onClick={() => { trackEvent(ANALYTICS_EVENTS.GUIDED_SCENARIO_OPENED); onOpenWizard(); }}
         data-testid="command-presets"
-        className="h-8 rounded border px-2.5 text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)]"
+        className="h-11 rounded border px-2.5 text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)]"
         style={{ borderColor: 'var(--sim-border)' }}
       >
-        Presets
+        Guided scenario
       </button>
 
       <div className="mx-1 h-6 w-px bg-[var(--sim-border)] opacity-70" />

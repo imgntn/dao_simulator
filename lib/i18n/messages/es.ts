@@ -611,7 +611,7 @@ export const messages: Messages = {
   home: {
     tagline: 'Investigaci\u00f3n DAO, hecha accionable',
     heroTitle: 'DAO Simulator',
-    heroDescription: 'Hallazgos de gobernanza accionables de 21,869 ejecuciones de simulaci\u00f3n en 17 configuraciones experimentales. Comienza con cualquier pregunta de investigaci\u00f3n a continuaci\u00f3n.',
+    heroDescription: 'Explora hipotesis de gobernanza de 21,869 simulaciones exploratorias heredadas. La validacion confirmatoria esta pendiente.',
     heroCta: 'Explorar investigaci\u00f3n',
     nav: 'Navegaci\u00f3n principal',
     consoleLink: 'Consola',

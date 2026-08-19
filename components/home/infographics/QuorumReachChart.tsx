@@ -22,7 +22,7 @@ export function QuorumReachChart() {
   const maxH = chartH - topPad - botPad;
 
   return (
-    <figure className="flex flex-col items-center" role="img" aria-label="Quorum reach rate by threshold: 5% quorum yields 99.9% reach, dropping to 0% at 40% quorum">
+    <figure className="flex flex-col items-center" aria-label="Quorum reach rate by threshold: 5% quorum yields 99.9% reach, dropping to 0% at 40% quorum">
       <svg
         viewBox={`0 0 ${chartW} ${chartH}`}
         className="w-full max-w-[320px]"

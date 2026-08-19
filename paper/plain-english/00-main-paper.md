@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Non-technical summaries of each research question, written from real experiment data. Every number comes from completed simulation runs — no estimates, no projections.
+Non-technical summaries of each research question, written from a legacy exploratory campaign. Numbers are descriptive evidence for forming hypotheses, not confirmed causal or forecasting results; the confirmatory campaign is still pending.
 
 ## Research Questions
 
@@ -24,7 +24,7 @@ Non-technical summaries of each research question, written from real experiment 
 
 ## Total Experiment Scale
 
-- **21,919 simulation runs** across 13 research areas
+- **21,869 legacy exploratory simulation runs** across 13 research areas; confirmatory validation is pending
 - **18 experiments** covering quorum design, capture mitigation, pipeline effects, treasury policy, inter-DAO cooperation, AI governance, counterfactual rule comparison, scale effects, voting mechanisms, shock resilience, reinforcement learning, calibration validation, and advanced mechanisms
 - **14 calibrated digital twin DAOs** (Aave, Uniswap, Compound, Arbitrum, Optimism, ENS, Lido, Gitcoin, MakerDAO, Curve, Nouns, Balancer, dYdX, SushiSwap)
 - RQ1-RQ5 at N=100 runs/config; RQ6 at N=30/config across 3 models; RQ7 at N=30/config across 14 DAOs × 7 rules; calibration validation at N=300/DAO

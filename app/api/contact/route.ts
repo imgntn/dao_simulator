@@ -47,6 +47,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Request body must be an object' }, { status: 400, headers: noStoreHeaders() });
   }
 
+  // Honeypot field: accept silently so automated submissions receive no signal.
+  if (readStringField(body.website, 200)) {
+    return NextResponse.json({ ok: true }, { headers: noStoreHeaders() });
+  }
+
   const name = sanitizeHeaderValue(body.name, 120);
   const email = readStringField(body.email, 200);
   const message = readStringField(body.message, 4000);

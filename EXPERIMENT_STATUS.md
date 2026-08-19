@@ -13,7 +13,7 @@
 |--------|-------|
 | Complete | 18 |
 | Paused | 1 (12b big-tier LLM, 50%) |
-| Total Runs Completed | 21,919 |
+| Legacy exploratory runs recorded | 21,869 |
 
 ## Experiment Details
 

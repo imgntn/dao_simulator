@@ -91,7 +91,7 @@ test.describe('Tablet Layout (768x1024)', () => {
   });
 
   test('tablet uses the compact dashboard at handheld width', async ({ page }) => {
-    await expect(page.getByText('For the full Sanctum scene, open on desktop')).toBeVisible();
+    await expect(page.getByText('Mobile governance dashboard')).toBeVisible();
   });
 
   test('desktop canvas is omitted at handheld width', async ({ page }) => {
@@ -110,7 +110,7 @@ test.describe('Mobile Layout (375x667)', () => {
   });
 
   test('mobile uses the compact dashboard instead of the desktop scene', async ({ page }) => {
-    await expect(page.getByText('For the full Sanctum scene, open on desktop')).toBeVisible();
+    await expect(page.getByText('Mobile governance dashboard')).toBeVisible();
     await expect(page.locator('canvas')).toHaveCount(0);
   });
 
@@ -170,8 +170,8 @@ test.describe('Touch Interactions', () => {
     const playButton = page.getByRole('button', { name: 'Start simulation', exact: true });
     const buttonBox = await playButton.boundingBox();
     if (buttonBox) {
-      expect(buttonBox.height).toBeGreaterThanOrEqual(32);
-      expect(buttonBox.width).toBeGreaterThanOrEqual(32);
+      expect(buttonBox.height).toBeGreaterThanOrEqual(44);
+      expect(buttonBox.width).toBeGreaterThanOrEqual(44);
     }
   });
 
@@ -182,7 +182,7 @@ test.describe('Touch Interactions', () => {
     const stepButton = page.getByRole('button', { name: 'Advance simulation' });
     const controlBox = await stepButton.boundingBox();
     if (controlBox) {
-      expect(controlBox.height).toBeGreaterThanOrEqual(32);
+      expect(controlBox.height).toBeGreaterThanOrEqual(44);
     }
   });
 });

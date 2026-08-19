@@ -23,7 +23,7 @@ export function TreasuryVolatilityChart() {
   const startY = topPad + (chartH - topPad - botPad - totalH) / 2;
 
   return (
-    <figure className="flex flex-col items-center" role="img" aria-label="Treasury volatility drops roughly 50%: from 0.448–0.500 unstabilized to 0.235–0.271 stabilized">
+    <figure className="flex flex-col items-center" aria-label="Treasury volatility drops roughly 50%: from 0.448–0.500 unstabilized to 0.235–0.271 stabilized">
       <svg
         viewBox={`0 0 ${chartW} ${chartH}`}
         className="w-full max-w-[320px]"

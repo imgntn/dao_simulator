@@ -319,7 +319,9 @@ interface ThreeRuntime {
 function createRuntime(host: HTMLDivElement): ThreeRuntime {
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerPreference: 'high-performance' });
   renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  // Keep the scene crisp without allowing high-DPI devices to multiply every
+  // draw call beyond the interactive budget.
+  renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio || 1));
   renderer.domElement.className = 'h-full w-full';
   renderer.domElement.style.display = 'block';
   host.appendChild(renderer.domElement);

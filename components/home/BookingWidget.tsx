@@ -3,11 +3,13 @@
 import { useState, useCallback } from 'react';
 import { useAnalytics } from '@/components/analytics/AnalyticsProvider';
 import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
+import { useLocale } from '@/lib/i18n/locale-context';
 
 interface ContactFormData {
   name: string;
   email: string;
   message: string;
+  website: string;
 }
 
 export function BookingWidget() {
@@ -15,9 +17,11 @@ export function BookingWidget() {
     name: '',
     email: '',
     message: '',
+    website: '',
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const { trackEvent } = useAnalytics();
+  const { locale } = useLocale();
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +54,7 @@ export function BookingWidget() {
           Thanks for reaching out! I&rsquo;ll get back to you soon.
         </p>
         <button
-          onClick={() => { setStatus('idle'); setForm({ name: '', email: '', message: '' }); }}
+          onClick={() => { setStatus('idle'); setForm({ name: '', email: '', message: '', website: '' }); }}
           className="mt-4 text-sm font-medium text-[var(--accent-teal)] underline underline-offset-4 hover:text-[var(--accent-teal-hover)]"
         >
           Send another message
@@ -64,11 +68,15 @@ export function BookingWidget() {
       <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-[var(--border-default)] bg-[var(--surface-warm)] p-5">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium text-[var(--text-heading)]">
+            <label htmlFor="contact-name" className="mb-1 block text-sm font-medium text-[var(--text-heading)]">
               Name
             </label>
             <input
               type="text"
+              id="contact-name"
+              name="name"
+              autoComplete="name"
+              maxLength={120}
               required
               value={form.name}
               onChange={e => updateField('name', e.target.value)}
@@ -77,11 +85,15 @@ export function BookingWidget() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-[var(--text-heading)]">
+            <label htmlFor="contact-email" className="mb-1 block text-sm font-medium text-[var(--text-heading)]">
               Email
             </label>
             <input
               type="email"
+              id="contact-email"
+              name="email"
+              autoComplete="email"
+              maxLength={200}
               required
               value={form.email}
               onChange={e => updateField('email', e.target.value)}
@@ -91,10 +103,13 @@ export function BookingWidget() {
           </div>
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-[var(--text-heading)]">
+          <label htmlFor="contact-message" className="mb-1 block text-sm font-medium text-[var(--text-heading)]">
             Message
           </label>
           <textarea
+            id="contact-message"
+            name="message"
+            maxLength={4000}
             required
             value={form.message}
             onChange={e => updateField('message', e.target.value)}
@@ -104,11 +119,29 @@ export function BookingWidget() {
           />
         </div>
 
+        <div className="sr-only" aria-hidden="true">
+          <label htmlFor="contact-website">Website</label>
+          <input
+            id="contact-website"
+            name="website"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={form.website}
+            onChange={e => updateField('website', e.target.value)}
+          />
+        </div>
+
         {status === 'error' && (
-          <p className="text-sm text-red-400">
+          <p role="alert" className="text-sm text-red-400">
             Something went wrong. Please try again or email directly at hello@daosimulator.com.
           </p>
         )}
+
+        <p className="text-xs leading-relaxed text-[var(--text-muted)]">
+          Your contact details are used only to respond to this message. See the{' '}
+          <a href={`/${locale}/privacy`} className="underline underline-offset-2">privacy notice</a>.
+        </p>
 
         <button
           type="submit"

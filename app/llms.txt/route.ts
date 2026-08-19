@@ -10,10 +10,11 @@
  */
 
 import { NextResponse } from 'next/server';
+import { RESEARCH_STATUS, RESEARCH_STATUS_SUMMARY } from '@/lib/home/research-status';
 
 const CONTENT = `# DAO Simulator
 
-> Reproducible DAO governance simulation; confirmatory findings are currently being regenerated.
+> Reproducible DAO governance simulation with explicitly labeled exploratory evidence.
 
 ## Author
 
@@ -44,8 +45,7 @@ generative fidelity, not universal forecasting accuracy.
 3. Which proposal-pipeline interventions reduce decision time while preserving completion?
 4. Which governance and treasury policies reduce drawdown under explicit shock and yield assumptions?
 
-Legacy numerical findings are withheld here until the frozen confirmatory campaign and
-claim registry regenerate them from verified raw runs.
+Evidence status: ${RESEARCH_STATUS.classification}. ${RESEARCH_STATUS_SUMMARY}
 
 ### Methodology
 
@@ -66,9 +66,10 @@ Six decision briefs summarize findings in plain language:
 5. [Inter-DAO Cooperation](https://daosimulator.com/en#rq5) — What kinds of cross-DAO coordination actually work?
 6. [LLM Agent Reasoning](https://daosimulator.com/en#rq6) — Where do LLMs help governance, and where do they add risk?
 
-## Papers
+## Draft Research Sources
 
-- [Core Governance Paper (PDF)](https://daosimulator.com/api/artifacts/paper/main.pdf) — Full synthesis across all research questions
+Draft TeX sources are available from the Papers section of the project site. No compiled
+paper PDF is advertised until a verified artifact is published.
 
 ## Digital Twins
 

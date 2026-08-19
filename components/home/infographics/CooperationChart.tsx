@@ -23,7 +23,7 @@ export function CooperationChart() {
   const colors = ['#c4a06a', '#5ba3b0', '#1f7a8c'];
 
   return (
-    <figure className="flex flex-col items-center" role="img" aria-label="Inter-DAO cooperation success: isolated 0%, generic 21.4%, specialized 23.4%">
+    <figure className="flex flex-col items-center" aria-label="Inter-DAO cooperation success: isolated 0%, generic 21.4%, specialized 23.4%">
       <svg
         viewBox={`0 0 ${chartW} ${chartH}`}
         className="w-full max-w-[320px]"

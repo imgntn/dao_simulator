@@ -13,11 +13,12 @@ type RiskKey = 'calm' | 'volatile' | 'crisis';
 type SavedScenario = { name: string; config: BrowserSimConfig };
 type ScenarioImportStatus = { tone: 'success' | 'error'; message: string } | null;
 
-const STRATEGIES: Array<{ id: StrategyKey; label: string; config: Partial<BrowserSimConfig> }> = [
-  { id: 'baseline', label: 'Baseline', config: {} },
+const STRATEGIES: Array<{ id: StrategyKey; label: string; description: string; config: Partial<BrowserSimConfig> }> = [
+  { id: 'baseline', label: 'Understand the baseline', description: 'See how the selected DAO behaves before changing its rules.', config: {} },
   {
     id: 'growth',
-    label: 'Growth',
+    label: 'Test growth pressure',
+    description: 'Add builders, traders, and proposal activity to test throughput.',
     config: {
       numDevelopers: 22,
       numInvestors: 16,
@@ -29,7 +30,8 @@ const STRATEGIES: Array<{ id: StrategyKey; label: string; config: Partial<Browse
   },
   {
     id: 'community',
-    label: 'Community',
+    label: 'Improve participation',
+    description: 'Increase delegation, passive membership, and governance expertise.',
     config: {
       numDelegators: 18,
       numPassiveMembers: 28,
@@ -40,7 +42,8 @@ const STRATEGIES: Array<{ id: StrategyKey; label: string; config: Partial<Browse
   },
   {
     id: 'risk',
-    label: 'Risk Desk',
+    label: 'Protect the treasury',
+    description: 'Increase risk oversight and test a higher governance threshold.',
     config: {
       numRiskManagers: 18,
       numGovernanceExperts: 14,
@@ -282,8 +285,8 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
       <div className="w-full max-w-3xl overflow-hidden rounded border bg-[var(--sim-bg)] text-[var(--sim-text)] shadow-2xl" style={{ borderColor: 'var(--sim-border)' }}>
         <div className="flex items-center justify-between border-b px-4 py-3" style={{ borderColor: 'var(--sim-border)' }}>
           <div>
-            <div className="text-sm font-semibold text-[var(--sim-text-secondary)]">Scenario Presets</div>
-            <div className="text-xs text-[var(--sim-text-muted)]">Configure the next run before the worker resets.</div>
+            <div className="text-sm font-semibold text-[var(--sim-text-secondary)]">What governance question do you want to explore?</div>
+            <div className="text-xs text-[var(--sim-text-muted)]">Choose a goal, DAO, rule, and risk profile. You can refine every value before starting.</div>
           </div>
           <button type="button" onClick={onClose} className="h-8 w-8 rounded border text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)]" style={{ borderColor: 'var(--sim-border)' }} aria-label="Close presets">
             x
@@ -327,21 +330,22 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
           </section>
 
           <section>
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--sim-text-muted)]">Strategy</h3>
-            <div className="grid grid-cols-2 gap-2">
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--sim-text-muted)]">Research goal</h3>
+            <div className="grid gap-2">
               {STRATEGIES.map(item => (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() => setStrategy(item.id)}
-                  className="rounded border px-3 py-2 text-left text-xs"
+                  className="min-h-11 rounded border px-3 py-2 text-left text-xs"
                   style={{
                     borderColor: strategy === item.id ? 'var(--sim-accent)' : 'var(--sim-border)',
                     color: strategy === item.id ? 'var(--sim-accent)' : 'var(--sim-text-muted)',
                     background: strategy === item.id ? 'var(--sim-accent-bg)' : 'transparent',
                   }}
                 >
-                  {item.label}
+                  <span className="block font-semibold">{item.label}</span>
+                  <span className="mt-1 block leading-snug opacity-75">{item.description}</span>
                 </button>
               ))}
             </div>
