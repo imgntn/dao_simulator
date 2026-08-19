@@ -135,7 +135,7 @@ npm run lint         # ESLint
 1. Review [DEPLOYMENT.md](./DEPLOYMENT.md)
 2. Copy `.env.production.example` to `.env.production`
 3. Update with secure credentials
-4. Deploy to Vercel or Docker
+4. Deploy through Coolify (production) or Docker (self-hosted/local parity)
 5. Enable Redis for persistence
 
 ### 🏆 Implementation Summary
