@@ -56,7 +56,7 @@ async function gotoAndWaitForInit(page: Page, options: { performanceLayout?: boo
       }));
     }, { performanceLayout });
   }
-  await page.goto(SIMULATE_URL, { waitUntil: 'domcontentloaded' });
+  await page.goto(`${SIMULATE_URL}${performanceLayout ? '?debug=performance' : ''}`, { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: /Simulation Control/i })).toBeVisible({ timeout: 60000 });
 }
 
@@ -139,7 +139,7 @@ test.describe('Hard-A Report Card Gates', () => {
   });
 
   test('renderer lifecycle remains bounded across fallback switch and reset', async ({ page }) => {
-    await gotoAndWaitForInit(page);
+    await gotoAndWaitForInit(page, { performanceLayout: true });
     await runShortScenario(page);
 
     await page.getByLabel('Renderer mode').selectOption('canvas2d');
@@ -170,7 +170,7 @@ test.describe('Hard-A Report Card Gates', () => {
   test('scenario import gives validation feedback and handles duplicates', async ({ page }) => {
     await gotoAndWaitForInit(page);
     await page.getByTestId('command-presets').click();
-    await expect(page.getByText('Scenario Presets')).toBeVisible();
+    await expect(page.getByText('What governance question do you want to explore?')).toBeVisible();
 
     const input = page.locator('input[type="file"]');
     await input.setInputFiles({
@@ -218,7 +218,7 @@ test.describe('Hard-A Report Card Gates', () => {
       contentType: 'image/png',
     });
 
-    await page.getByRole('button', { name: 'Toggle focus mode' }).click();
+    await page.getByRole('button', { name: 'Reduce or restore contextual overlays' }).click();
     await expect(page.getByText('Cave Chronicle')).toHaveCount(0);
     await test.info().attach('sanctum-focus.png', {
       body: await scene.screenshot(),
@@ -227,7 +227,7 @@ test.describe('Hard-A Report Card Gates', () => {
 
     await page.getByRole('button', { name: 'Zoom in' }).click();
     await page.getByRole('button', { name: 'Zoom in' }).click();
-    await expect(page.getByTestId('performance-hud')).toBeVisible();
+    await expect(page.getByTestId('performance-hud')).toHaveCount(0);
     await test.info().attach('sanctum-focus-zoomed.png', {
       body: await scene.screenshot(),
       contentType: 'image/png',

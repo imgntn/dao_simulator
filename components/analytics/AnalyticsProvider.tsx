@@ -59,6 +59,9 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   const lastPath = useRef<string | null>(null);
   const lastTime = useRef(0);
   const referrerSent = useRef(false);
+  const trackEvent = useCallback((name: string) => {
+    sendBeacon({ type: 'event', name });
+  }, []);
 
   // Track page views on pathname change
   useEffect(() => {
@@ -89,9 +92,17 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
     sendBeacon(payload);
   }, [pathname]);
 
-  const trackEvent = useCallback((name: string) => {
-    sendBeacon({ type: 'event', name });
-  }, []);
+  // Track only explicitly opted-in UI actions. Values are authored event names,
+  // never text or form data, so this remains privacy-minimized by construction.
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      const target = (event.target as HTMLElement | null)?.closest<HTMLElement>('[data-analytics-event]');
+      const name = target?.dataset.analyticsEvent;
+      if (name) trackEvent(name);
+    };
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [trackEvent]);
 
   return (
     <AnalyticsContext.Provider value={{ trackEvent }}>

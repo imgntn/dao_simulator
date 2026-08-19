@@ -34,30 +34,21 @@ Set `ADMIN_USERNAME` and `ADMIN_PASSWORD` in your environment before logging in.
 
 ## 📦 Production Deployment
 
-### Option 1: Vercel
+### Option 1: Coolify (production)
 
-1. **Install Vercel CLI**:
+Coolify is the production deployment path for this repository. The application is connected to GitHub and deploys the `main` branch; GitHub Actions are not used.
+
+1. In Coolify, confirm the repository, `main` branch, build pack, and domain.
+2. Keep production secrets in Coolify's environment settings. Do not copy them into the repository or a shell command.
+3. Deploy the latest commit from the application page and wait for the health check to become healthy.
+4. Verify from Git Bash:
+
 ```bash
-npm i -g vercel
-vercel login
+curl -fsS https://daosimulator.com/api/healthz
+curl -fsS https://daosimulator.com/api/healthz/simulate
 ```
 
-2. **Set Environment Variables**:
-```bash
-vercel env add API_KEY
-vercel env add NEXTAUTH_SECRET
-vercel env add NEXTAUTH_URL
-vercel env add ADMIN_PASSWORD
-```
-
-3. **Add Redis**:
-   - Use Upstash Redis (vercel.com/integrations/upstash)
-   - Or set REDIS_URL manually
-
-4. **Deploy**:
-```bash
-vercel --prod
-```
+If a deploy is unhealthy, use Coolify's deployment history to roll back to the last healthy image, then re-run the readiness checks.
 
 ### Option 2: Docker
 
@@ -172,6 +163,8 @@ curl https://your-domain.com/api/simulation?id=sim_123
 redis-cli INFO stats
 redis-cli KEYS "dao-sim:*"
 ```
+
+Before a release, run `npm run test:e2e:production` locally. It checks CSP, hydration, simulator interactivity, and readiness before the Coolify deploy.
 
 ## 🐛 Troubleshooting
 

@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 const SIMULATE_URL = '/en/simulate';
 
@@ -65,6 +66,11 @@ test.describe('Accessibility', () => {
       });
       expect(['a', 'button', 'input', 'select']).toContain(focusedSelector);
     });
+
+    test('critical automated WCAG scan has no violations', async ({ page }) => {
+      const results = await new AxeBuilder({ page }).analyze();
+      expect(results.violations.filter(v => v.impact === 'critical')).toEqual([]);
+    });
   });
 
   test.describe('Simulator Page', () => {
@@ -120,6 +126,11 @@ test.describe('Accessibility', () => {
     test('step counter is readable', async ({ page }) => {
       const stepDisplay = page.getByText(/Step \d+/);
       await expect(stepDisplay).toBeVisible();
+    });
+
+    test('critical automated simulator WCAG scan has no violations', async ({ page }) => {
+      const results = await new AxeBuilder({ page }).analyze();
+      expect(results.violations.filter(v => v.impact === 'critical')).toEqual([]);
     });
   });
 
@@ -197,8 +208,8 @@ test.describe('Accessibility', () => {
       for (const button of buttons) {
         const box = await button.boundingBox();
         if (box) {
-          expect(box.height).toBeGreaterThanOrEqual(32);
-          expect(box.width).toBeGreaterThanOrEqual(32);
+          expect(box.height).toBeGreaterThanOrEqual(44);
+          expect(box.width).toBeGreaterThanOrEqual(44);
         }
       }
     });

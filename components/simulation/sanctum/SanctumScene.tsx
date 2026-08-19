@@ -1114,7 +1114,7 @@ function ZoomControls({
 }) {
   const btn = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    width: 28, height: 28, borderRadius: 2,
+    width: 44, height: 44, borderRadius: 4,
     background: 'rgba(12,6,28,0.88)',
     border: `1.5px solid ${MG}`,
     color: MG_LT,
@@ -1124,41 +1124,41 @@ function ZoomControls({
     userSelect: 'none' as const,
     transition: 'background 0.1s',
   };
-  const miniBtn = { ...btn, width: 42, fontSize: 9, letterSpacing: '0.05em' };
+  const miniBtn = { ...btn, width: 76, fontSize: 10, letterSpacing: '0.02em' };
   return (
     <div className="absolute right-3 z-30 flex flex-col gap-1" style={{ bottom: '8.25rem' }} data-ui-interactive>
       <button type="button" style={btn} onClick={() => onZoom(Math.min(ZOOM_MAX, zoom + 0.4))} title="Zoom in"    aria-label="Zoom in">+</button>
       <button type="button" style={btn} onClick={() => onZoom(Math.max(ZOOM_MIN, zoom - 0.4))} title="Zoom out"   aria-label="Zoom out">−</button>
       {zoom !== 1 && (
         <button type="button" style={{ ...btn, fontSize: 9, letterSpacing: '0.05em' }}
-          onClick={() => onZoom(1)} title="Reset zoom" aria-label="Reset zoom">FIT</button>
+          onClick={() => onZoom(1)} title="Reset zoom" aria-label="Reset zoom">Reset</button>
       )}
       <button
         type="button"
         style={{ ...miniBtn, background: labelsVisible ? 'rgba(64,232,255,0.16)' : 'rgba(12,6,28,0.72)', opacity: labelsVisible ? 1 : 0.78 }}
         onClick={onToggleLabels}
-        title="Toggle labels"
-        aria-label="Toggle steward labels"
+        title="Show or hide steward labels"
+        aria-label="Show or hide steward labels"
       >
-        LAB
+        Labels
       </button>
       <button
         type="button"
         style={{ ...miniBtn, background: showDelegations ? 'rgba(232,192,80,0.16)' : 'rgba(12,6,28,0.72)', opacity: showDelegations ? 1 : 0.78 }}
         onClick={onToggleDelegations}
-        title="Toggle delegations"
-        aria-label="Toggle delegation overlay"
+        title="Show or hide delegation paths"
+        aria-label="Show or hide delegation paths"
       >
-        DEL
+        Delegation
       </button>
       <button
         type="button"
         style={{ ...miniBtn, background: focusMode ? 'rgba(134,239,172,0.16)' : 'rgba(12,6,28,0.72)', opacity: focusMode ? 1 : 0.78 }}
         onClick={onToggleFocusMode}
-        title="Toggle focus mode"
-        aria-label="Toggle focus mode"
+        title="Reduce or restore contextual overlays"
+        aria-label="Reduce or restore contextual overlays"
       >
-        FOC
+        Focus
       </button>
     </div>
   );
@@ -1599,11 +1599,17 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
   const [hoveredAgent, setHoveredAgent] = useState<VisualAgentDraw | null>(null);
   const [selectedAgentPosition, setSelectedAgentPosition] = useState<{ x: number; y: number } | null>(null);
   const [visualStats, setVisualStats] = useState<SanctumRendererStats | null>(null);
+  const [showPerformanceDiagnostics, setShowPerformanceDiagnostics] = useState(false);
   const dragStart       = useRef<{ mx: number; my: number; px: number; py: number } | null>(null);
   const lastTouchDist   = useRef<number | null>(null);
   const containerRef    = useRef<HTMLDivElement>(null);
   const pendingPan      = useRef<{ x: number; y: number } | null>(null);
   const panFrame        = useRef<number | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setShowPerformanceDiagnostics(params.get('debug') === 'performance');
+  }, []);
 
   useEffect(() => {
     if (!targetHall) return;
@@ -1890,18 +1896,20 @@ export function SanctumScene({ snapshot: snapshotProp }: SanctumSceneProps = {})
 
       {/* HTML overlays — outside zoom wrapper so they stay crisp */}
       <HeaderOverlay snap={snapshot} />
-      <PerformanceHud
-        snapshot={snapshot}
-        zoom={zoom}
-        labelsVisible={labelsVisible}
-        showDelegations={showDelegations}
-        quality={quality}
-        onQualityChange={setQuality}
-        rendererMode={rendererMode}
-        onRendererModeChange={setRendererMode}
-        threeAvailable={threeAvailable}
-        visualStats={visualStats}
-      />
+      {showPerformanceDiagnostics && (
+        <PerformanceHud
+          snapshot={snapshot}
+          zoom={zoom}
+          labelsVisible={labelsVisible}
+          showDelegations={showDelegations}
+          quality={quality}
+          onQualityChange={setQuality}
+          rendererMode={rendererMode}
+          onRendererModeChange={setRendererMode}
+          threeAvailable={threeAvailable}
+          visualStats={visualStats}
+        />
+      )}
       {!focusMode && <VisualLegend />}
       <HoverTooltip agent={hoveredAgent} />
       {!focusMode && <FireLog events={snapshot.recentEvents} />}

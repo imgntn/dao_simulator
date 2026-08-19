@@ -35,7 +35,8 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
   };
 
   return (
-    <div className="flex px-4 overflow-x-auto scrollbar-none -mb-px" role="tablist">
+    <div className="flex items-end">
+      <div className="flex px-4 overflow-x-auto scrollbar-none -mb-px" role="tablist">
       {primaryTabs.map(tab => {
         const isActive = activeTab === tab.id;
         return (
@@ -72,6 +73,7 @@ export function TabBar({ activeTab, onTabChange }: TabBarProps) {
           </button>
         );
       })}
+      </div>
       <details className="relative flex-shrink-0">
         <summary className="list-none cursor-pointer px-4 py-2.5 text-sm font-medium text-[var(--sim-text-muted)]">
           Analysis tools ▾

@@ -7,6 +7,7 @@
 
 import { intlLocaleMap } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
+import { RESEARCH_STATUS, RESEARCH_STATUS_SUMMARY } from './research-status';
 
 const BASE_URL = 'https://daosimulator.com';
 const AUTHOR_ID = `${BASE_URL}/#author`;
@@ -69,7 +70,6 @@ interface BriefMeta {
   abstract: string;
   keywords: string[];
   datePublished: string;
-  pdfUrl: string;
 }
 
 const BRIEF_META: BriefMeta[] = [
@@ -80,7 +80,6 @@ const BRIEF_META: BriefMeta[] = [
       'Agent-based simulation of voter participation across 21,869 runs reveals a quorum cliff: at 5% quorum 99.9% of proposals pass, but at 20% only 25.4% reach quorum. Practical quorum should be set at roughly 80% of observed natural turnout.',
     keywords: ['DAO participation', 'quorum design', 'voter turnout', 'agent-based modeling', 'governance simulation'],
     datePublished: '2025-05-01',
-    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
   {
     id: 'rq2',
@@ -89,7 +88,6 @@ const BRIEF_META: BriefMeta[] = [
       'Quadratic voting with a 250-token threshold cut whale influence 43% (0.449 to 0.256) and capture risk 42% (0.464 to 0.269) while governance throughput improved from 92.7% to 98.5% pass rate. Power-distribution rules outperform activity-only throttles.',
     keywords: ['governance capture', 'quadratic voting', 'whale influence', 'delegation caps', 'DAO security'],
     datePublished: '2025-05-01',
-    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
   {
     id: 'rq3',
@@ -98,7 +96,6 @@ const BRIEF_META: BriefMeta[] = [
       'Moderate temp-check filtering (5% to 50% pressure) raised pass rate from 96.4% to 98.5%. Fast-tracking with a 12-day minimum window kept quorum reach above 99% while accelerating consensus proposals. Zero abandonment across core runs.',
     keywords: ['proposal pipeline', 'temp-check', 'fast-track governance', 'time-to-decision', 'DAO operations'],
     datePublished: '2025-05-01',
-    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
   {
     id: 'rq4',
@@ -107,7 +104,6 @@ const BRIEF_META: BriefMeta[] = [
       'Stabilization mechanisms cut treasury volatility roughly in half (0.45\u20130.50 to 0.24\u20130.27). Reserve buffers of 15\u201320% with spending caps of 2\u20135% per period and emergency triggers produced final treasury values of $10,048\u2013$13,147.',
     keywords: ['treasury management', 'DAO treasury', 'reserve buffers', 'spending limits', 'volatility'],
     datePublished: '2025-05-01',
-    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
   {
     id: 'rq5',
@@ -116,7 +112,6 @@ const BRIEF_META: BriefMeta[] = [
       'Cross-DAO cooperation achieved a 21\u201323% success rate with designed coordination versus 0% in isolation. Specialized topology generated more inter-DAO proposals (75.8 vs 50.3) and higher ecosystem treasury ($26,107 vs $24,071).',
     keywords: ['inter-DAO cooperation', 'cross-DAO coordination', 'cooperation topology', 'DAO ecosystem'],
     datePublished: '2025-05-01',
-    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
   {
     id: 'rq6',
@@ -125,7 +120,6 @@ const BRIEF_META: BriefMeta[] = [
       'Across 52 runs, hybrid LLM governance (30% AI agents) matched baseline participation and pass rates while preserving decision quality. All-LLM mode collapsed participation to 8.8% and pass rates to 23%. Hybrid mode is the recommended default.',
     keywords: ['LLM governance', 'AI voting agents', 'hybrid AI governance', 'large language models', 'DAO automation'],
     datePublished: '2025-09-01',
-    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
   {
     id: 'rq7',
@@ -134,7 +128,6 @@ const BRIEF_META: BriefMeta[] = [
       'Five calibrated DAO digital twins tested under alternative voting rules. Conviction voting universally collapsed pass rates (0\u201320% vs 47\u2013100% baseline). Majority, quadratic, and token-quorum rules were largely interchangeable. Quadratic voting gave a small edge only to the most contentious DAO (Nouns).',
     keywords: ['counterfactual governance', 'conviction voting', 'governance rules', 'digital twins', 'voting mechanisms'],
     datePublished: '2026-01-15',
-    pdfUrl: `${BASE_URL}/api/artifacts/paper/main.pdf`,
   },
 ];
 
@@ -150,6 +143,8 @@ function scholarlyArticleSchemas() {
     keywords: b.keywords,
     url: `${BASE_URL}/en#${b.id}`,
     isPartOf: { '@id': SITE_ID },
+    creativeWorkStatus: 'Exploratory draft',
+    comment: RESEARCH_STATUS_SUMMARY,
   }));
 }
 
@@ -226,7 +221,7 @@ function faqPageSchema() {
       name: qa.q,
       acceptedAnswer: {
         '@type': 'Answer',
-        text: qa.a,
+        text: `${RESEARCH_STATUS.classification}. ${RESEARCH_STATUS.confirmatoryStatus}. ${qa.a}`,
       },
     })),
   };
@@ -242,7 +237,7 @@ function researchProjectSchema(locale: Locale) {
     '@id': `${BASE_URL}/#research`,
     name: 'DAO Simulator',
     description:
-      'Actionable governance findings from 21,869 simulation runs across 17 experiment configurations covering participation, capture, treasury, cooperation, LLM governance, and counterfactual rule comparison.',
+      `Exploratory DAO governance evidence from ${RESEARCH_STATUS.legacyExploratoryRunsLabel} legacy simulation runs. ${RESEARCH_STATUS.confirmatoryStatus}.`,
     url: `${BASE_URL}/${locale}`,
     inLanguage: intlLocaleMap[locale] ?? 'en-US',
     author: { '@id': AUTHOR_ID },

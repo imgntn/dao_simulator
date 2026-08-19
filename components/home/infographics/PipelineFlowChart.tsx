@@ -22,7 +22,7 @@ export function PipelineFlowChart() {
   const colors = ['#1f7a8c', '#2a8d9e', '#5ba3b0', '#8f6f42'];
 
   return (
-    <figure className="flex flex-col items-center" role="img" aria-label="Proposal pipeline: temp-check filter lifts pass rate from 96.4% to 98.5% while keeping quorum reach above 99%">
+    <figure className="flex flex-col items-center" aria-label="Proposal pipeline: temp-check filter lifts pass rate from 96.4% to 98.5% while keeping quorum reach above 99%">
       <svg
         viewBox={`0 0 ${chartW} ${chartH}`}
         className="w-full max-w-[320px]"

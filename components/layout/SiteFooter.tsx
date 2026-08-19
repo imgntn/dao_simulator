@@ -40,6 +40,13 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         >
           AGPL-3.0
         </a>
+        {' · '}
+        <a
+          href={`/${locale}/privacy`}
+          className="text-[var(--text-muted)] hover:text-[var(--accent-teal)]"
+        >
+          Privacy
+        </a>
       </p>
     </footer>
   );

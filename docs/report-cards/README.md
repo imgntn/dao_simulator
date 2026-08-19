@@ -27,6 +27,7 @@ Use `+` and `-` when the area sits near a boundary.
 
 | Date | Report | Commit | Summary |
 | --- | --- | --- | --- |
+| 2026-08-18 | [Hard-A Site Recovery](2026-08-18-hard-a-site-recovery.md) | `60fd2581f` baseline | Regrades the live product under an external-facing bar and sequences trust, navigation, homepage, simulator, accessibility, discovery, and conversion repairs. |
 | 2026-08-17 | [A++ Production Recovery](2026-08-17-a-plus-production-recovery.md) | working tree on `c9b78aa1d` | Fixes production CSP hydration and podcast media, adds an optimized-production browser gate, restores CI browser/security checks, and clears all known npm vulnerabilities. Publication remains the final external gate. |
 | 2026-05-09 | [Hard-A Upgrade](2026-05-09-hard-a-upgrade.md) | `ba7082bbf` | Restores straight As under the harder scale with performance budgets, lifecycle diagnostics, UX validation, visual artifacts, structured explanations, release gates, and clear security checks. |
 | 2026-05-09 | [Harder-A Reassessment](2026-05-09-harder-a-reassessment.md) | `fcf24c409` | Recalibrates the former A grades into B baselines and defines the new harder-A acceptance evidence. |

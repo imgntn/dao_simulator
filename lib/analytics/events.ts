@@ -19,4 +19,8 @@ export const ANALYTICS_EVENTS = {
   RESEARCH_SWEEP_SUBMITTED: 'research_sweep_submitted',
   RESEARCH_EXPERIMENT_RUN: 'research_experiment_run',
   BOOKING_SUBMITTED: 'booking_submitted',
+  HERO_SIMULATOR_CLICKED: 'hero_simulator_clicked',
+  EVIDENCE_OPENED: 'evidence_opened',
+  CONSULTING_OPENED: 'consulting_opened',
+  GUIDED_SCENARIO_OPENED: 'guided_scenario_opened',
 } as const;

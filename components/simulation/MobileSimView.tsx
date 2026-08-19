@@ -35,7 +35,7 @@ function AgentSummary({ agents }: { agents: AgentSnapshot[] }) {
   );
 }
 
-export function MobileSimView() {
+export function MobileSimView({ onOpenWizard }: { onOpenWizard: () => void }) {
   const snapshot = useActiveSnapshot();
 
   return (
@@ -50,11 +50,20 @@ export function MobileSimView() {
         </div>
       </div>
 
-      {/* Desktop recommendation banner */}
-      <div className="mx-3 mt-3 rounded-lg border border-[var(--sim-border)] bg-[var(--sim-accent-bg)] px-3 py-2 text-center">
-        <p className="text-xs text-[var(--sim-accent)]">
-          For the full Sanctum scene, open on desktop
+      {/* Mobile-first orientation */}
+      <div className="mx-3 mt-3 rounded-lg border border-[var(--sim-border)] bg-[var(--sim-accent-bg)] px-3 py-3">
+        <p className="text-sm font-semibold text-[var(--sim-accent)]">Mobile governance dashboard</p>
+        <p className="mt-1 text-xs leading-relaxed text-[var(--sim-text-secondary)]">
+          Choose a governance question, run the model, then inspect proposals, metrics, and events below.
         </p>
+        <button
+          type="button"
+          onClick={onOpenWizard}
+          className="mt-3 min-h-11 rounded border px-4 py-2 text-sm font-semibold text-[var(--sim-accent)]"
+          style={{ borderColor: 'var(--sim-accent)' }}
+        >
+          Choose a guided scenario
+        </button>
       </div>
 
       {/* Scrollable content */}

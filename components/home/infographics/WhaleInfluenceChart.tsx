@@ -31,7 +31,7 @@ export function WhaleInfluenceChart() {
   const maxH = chartH - topPad - botPad;
 
   return (
-    <figure className="flex flex-col items-center" role="img" aria-label="Whale influence dropped 43% from 0.449 to 0.256; capture risk dropped 42% from 0.464 to 0.269">
+    <figure className="flex flex-col items-center" aria-label="Whale influence dropped 43% from 0.449 to 0.256; capture risk dropped 42% from 0.464 to 0.269">
       <svg
         viewBox={`0 0 ${chartW} ${chartH}`}
         className="w-full max-w-[320px]"

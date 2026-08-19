@@ -40,7 +40,7 @@ export function LLMComparisonChart() {
   const startY = topPad + (chartH - topPad - botPad - totalH) / 2;
 
   return (
-    <figure className="flex flex-col items-center" role="img" aria-label="LLM thinking mode improves governance: all-LLM+thinking boosts pass rate from 72.9% to 79.6% (50 runs, Gemma 4 E4B)">
+    <figure className="flex flex-col items-center" aria-label="LLM thinking mode improves governance: all-LLM+thinking boosts pass rate from 72.9% to 79.6% (50 runs, Gemma 4 E4B)">
       <svg
         viewBox={`0 0 ${chartW} ${chartH}`}
         className="w-full max-w-[320px]"
