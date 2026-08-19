@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
 const SIMULATE_URL = '/en/simulate';
+const RUNNING_AGAINST_DEPLOYED_PRODUCTION = process.env.PLAYWRIGHT_BASE_URL?.startsWith('https://') ?? false;
 
 async function prepareSimulator(page: Page) {
   await page.addInitScript(() => {
@@ -62,6 +63,12 @@ test.describe('Smoke Tests', () => {
   test.describe('API Endpoints', () => {
     test('simulation API responds', async ({ request }) => {
       const response = await request.get('/api/simulation');
+      if (RUNNING_AGAINST_DEPLOYED_PRODUCTION) {
+        expect(response.status()).toBe(401);
+        const body = await response.json();
+        expect(body.error).toBe('Unauthorized - API key required');
+        return;
+      }
       expect(response.status()).toBe(200);
       const body = await response.json();
       expect(Array.isArray(body.simulations)).toBeTruthy();
@@ -69,6 +76,12 @@ test.describe('Smoke Tests', () => {
 
     test('simulation data API responds', async ({ request }) => {
       const response = await request.get('/api/simulation/data');
+      if (RUNNING_AGAINST_DEPLOYED_PRODUCTION) {
+        expect(response.status()).toBe(401);
+        const body = await response.json();
+        expect(body.error).toBe('Unauthorized - API key required');
+        return;
+      }
       expect(response.status()).toBe(400);
       const body = await response.json();
       expect(body).toHaveProperty('error');
