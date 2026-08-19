@@ -36,6 +36,7 @@ export function getPanelsByCategory(category: PanelDefinition['category']): Pane
 /** Default panel IDs and their order — metrics/charts first, reference last */
 export const DEFAULT_PANEL_ORDER = [
   'transport',
+  'outcome-summary',
   'floor-nav',
   'metrics-dashboard',
   'explainability',
@@ -53,7 +54,7 @@ export const DEFAULT_PANEL_ORDER = [
 export type SimMode = 'interactive' | 'compare' | 'branch' | 'multirun' | 'research';
 
 export const MODE_PANELS: Record<SimMode, readonly string[]> = {
-  interactive: ['transport', 'floor-nav', 'metrics-dashboard', 'event-feed'],
+  interactive: ['transport', 'outcome-summary', 'floor-nav', 'metrics-dashboard', 'event-feed'],
   compare: ['transport', 'comparison'],
   branch: ['transport', 'branch'],
   multirun: ['multirun'],

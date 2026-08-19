@@ -8,6 +8,7 @@ import { CollapsiblePanel } from './panels/CollapsiblePanel';
 import { ThemeToggle } from './ThemeToggle';
 import { ShareButton } from './ShareButton';
 import { FeedbackButton } from './FeedbackForm';
+import { OutcomeSummary } from './OutcomeSummary';
 import type { AgentSnapshot } from '@/lib/browser/worker-protocol';
 
 function formatNum(n: number): string {
@@ -72,6 +73,12 @@ export function MobileSimView({ onOpenWizard }: { onOpenWizard: () => void }) {
         <ControlPanel />
 
         {/* Live stats summary */}
+        {snapshot && (
+          <CollapsiblePanel id="mobile-outcome" title="Outcome summary">
+            <OutcomeSummary />
+          </CollapsiblePanel>
+        )}
+
         {snapshot && (
           <div className="grid grid-cols-3 gap-2">
             <StatCard label="Step" value={String(snapshot.step)} />

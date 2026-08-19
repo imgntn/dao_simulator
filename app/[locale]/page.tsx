@@ -245,6 +245,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <nav aria-label="Page sections" className="relative mt-8 flex flex-wrap gap-2">
           {([
             ['#why', 'Key Findings'],
+            ['#questions', 'Choose a Question'],
             ['#podcast', m.home?.podcastListen ?? 'Podcast'],
             ['#digital-twins', 'Digital Twins'],
             ['#simulator', 'Simulator'],
@@ -285,6 +286,32 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </p>
       )}
 
+      {/* Start with a question, not a feature tour. */}
+      <section id="questions" aria-labelledby="questions-heading" className="mt-6 rounded-2xl border border-[var(--accent-teal)]/30 bg-[var(--surface-panel)] p-5 sm:p-7">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="mucha-section-heading text-xs">Start with a question</p>
+            <h2 id="questions-heading" className="mt-2 font-serif-display text-2xl text-[var(--text-heading)] sm:text-3xl">What do you want to learn?</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--text-body-secondary)]">Each path opens a guided scenario and a plain-language outcome summary. You can change every assumption after the first run.</p>
+          </div>
+          <a href={`/${locale}/evidence`} data-analytics-event="evidence_registry_opened" className="text-sm font-semibold text-[var(--accent-teal)] underline underline-offset-4">See how claims are classified</a>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          {[
+            ['Participation', 'Will a different quorum or delegation setup bring more voters into the process?', 'community'],
+            ['Capture risk', 'How does power concentration change under alternative voting rules?', 'risk'],
+            ['Shock resilience', 'Which governance design stays usable when the treasury is under stress?', 'growth'],
+          ].map(([title, question, goal]) => (
+            <a key={title} href={`/${locale}/simulate?guided=1&goal=${goal}`} className="group rounded-xl border border-[var(--border-default)] bg-[var(--surface-warm)] p-4 transition hover:border-[var(--accent-teal)] hover:shadow-md">
+              <span className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--accent-teal)]">Guided scenario</span>
+              <h3 className="mt-2 text-base font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-teal)]">{title}</h3>
+              <p className="mt-1 text-sm leading-relaxed text-[var(--text-body-secondary)]">{question}</p>
+              <span className="mt-3 inline-flex text-sm font-semibold text-[var(--accent-teal)]">Start this path &rarr;</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
       {/* ── Social Proof ── */}
       <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-2xl px-6 py-3 text-sm" style={{ border:'1px solid rgba(196,144,32,0.20)', background:'rgba(10,4,34,0.65)', color:'#B8B0D4' }}>
         <span>Featured on <strong style={{ color:'var(--cx-coun-g)' }}>Green Pill Podcast</strong></span>
@@ -302,6 +329,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <h2 id="why-heading" className="font-serif-display text-3xl sm:text-4xl" style={{ color:'var(--mucha-gold-lt)' }}>
           Three Numbers That Should Change How You Design Governance
         </h2>
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed" style={{ color: '#B8B0D4' }}>
+          Exploratory snapshot from the legacy campaign. These figures are hypothesis-generating, not confirmed causal or forecasting results.
+        </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
           <a href="#rq1" className="group rounded-2xl border border-[var(--border-warm)] bg-[var(--surface-warm)] p-6 transition hover:border-[var(--accent-teal)] hover:shadow-md">
             <p className="font-serif-display text-4xl font-bold text-[var(--accent-teal)] sm:text-5xl">99%&rarr;0%</p>

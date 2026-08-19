@@ -22,7 +22,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         >
           James B. Pollack
         </a>
-        {' · '}
+        {' - '}
         <a
           href={GITHUB_REPO_URL}
           target="_blank"
@@ -31,7 +31,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         >
           GitHub
         </a>
-        {' · '}
+        {' - '}
         <a
           href={`${GITHUB_REPO_URL}/blob/main/LICENSE`}
           target="_blank"
@@ -40,12 +40,19 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         >
           AGPL-3.0
         </a>
-        {' · '}
+        {' - '}
         <a
           href={`/${locale}/privacy`}
           className="text-[var(--text-muted)] hover:text-[var(--accent-teal)]"
         >
           Privacy
+        </a>
+        {' - '}
+        <a
+          href={`/${locale}/evidence`}
+          className="text-[var(--text-muted)] hover:text-[var(--accent-teal)]"
+        >
+          Evidence
         </a>
       </p>
     </footer>

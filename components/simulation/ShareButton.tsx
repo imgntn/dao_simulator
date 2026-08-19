@@ -73,8 +73,8 @@ export function ShareButton() {
     trackEvent(ANALYTICS_EVENTS.SHARE_CONFIG);
     const queryString = encodeConfig(config);
     const url = queryString
-      ? `${window.location.origin}${window.location.pathname}?${queryString}`
-      : `${window.location.origin}${window.location.pathname}`;
+      ? `${window.location.origin}${window.location.pathname}?${queryString}&replay=1`
+      : `${window.location.origin}${window.location.pathname}?replay=1`;
 
     navigator.clipboard.writeText(url).then(() => {
       setCopied(true);
@@ -95,8 +95,10 @@ export function ShareButton() {
     <button
       onClick={handleShare}
       className="h-11 w-11 rounded-full border border-[var(--sim-border)] text-[var(--sim-text-muted)] hover:text-[var(--sim-accent)] hover:border-[var(--sim-accent)] text-sm transition-colors"
-      aria-label={copied ? 'Link copied to clipboard' : 'Share simulation config URL'}
-      title={copied ? 'Copied!' : 'Share config URL'}
+      data-testid="share-replay-link"
+      aria-live="polite"
+      aria-label={copied ? 'Replay link copied to clipboard' : 'Copy replay link for this simulation'}
+      title={copied ? 'Replay link copied' : 'Copy replay link'}
     >
       {copied ? (
         <span className="text-green-400 text-xs">&#x2713;</span>
