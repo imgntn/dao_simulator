@@ -35,6 +35,7 @@ import { CollapsiblePanel } from '@/components/simulation/panels/CollapsiblePane
 import { SimulationCommandBar } from '@/components/simulation/SimulationCommandBar';
 import { ScenarioPresetWizard } from '@/components/simulation/ScenarioPresetWizard';
 import { LiveExplainabilityPanel } from '@/components/simulation/LiveExplainabilityPanel';
+import { OutcomeSummary } from '@/components/simulation/OutcomeSummary';
 import { useTutorialStore } from '@/lib/browser/tutorial-store';
 
 export default function SimulationPageClient() {
@@ -93,6 +94,9 @@ export default function SimulationPageClient() {
           updateConfig(otherConfig);
         }
         initialize(profiles, market);
+        if (new URLSearchParams(window.location.search).get('guided') === '1') {
+          setShowPresetWizard(true);
+        }
       })
       .catch(err => {
         console.error('Failed to load simulation data:', err);
@@ -226,6 +230,22 @@ export default function SimulationPageClient() {
                 </div>
               </aside>
             )}
+            {!snapshot && status === 'paused' && (
+              <aside
+                className="absolute left-4 top-4 z-30 w-80 rounded border border-[var(--sim-accent)] bg-[var(--sim-surface)] p-4 shadow-xl"
+                aria-label="Start your first result"
+                data-testid="first-result-prompt"
+              >
+                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--sim-accent)]">Start here</p>
+                <h2 className="mt-1 text-base font-semibold">Get to a meaningful result in about a minute</h2>
+                <p className="mt-1 text-xs leading-relaxed text-[var(--sim-text-muted)]">
+                  Pick a governance question, run the recommended scenario, and compare what changed before tuning the model.
+                </p>
+                <button type="button" className="evidence-button mt-3" data-analytics-event="first_result_prompt_opened" onClick={() => setShowPresetWizard(true)}>
+                  Choose a guided question
+                </button>
+              </aside>
+            )}
           </div>
 
           {/* Non-interactive tabs render as overlays over the scene area */}
@@ -277,6 +297,11 @@ function buildPanelContent(
       <div data-tutorial="transport">
         <ControlPanel />
       </div>
+    ),
+    'outcome-summary': (
+      <CollapsiblePanel id="outcome-summary" title="Outcome summary">
+        <OutcomeSummary />
+      </CollapsiblePanel>
     ),
     'floor-nav': <FloorNav />,
     // --- Charts & Metrics ---

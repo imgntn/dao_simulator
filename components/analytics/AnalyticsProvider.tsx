@@ -92,6 +92,29 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
     sendBeacon(payload);
   }, [pathname]);
 
+  // Lightweight, privacy-preserving performance signal. We record only a
+  // coarse LCP bucket so the product team can see regressions without storing
+  // URLs, timings, or user identifiers.
+  useEffect(() => {
+    if (!pathname || typeof PerformanceObserver === 'undefined') return;
+    let sent = false;
+    const observer = new PerformanceObserver(list => {
+      if (sent) return;
+      const entry = list.getEntries().at(-1) as PerformanceEntry | undefined;
+      if (!entry) return;
+      sent = true;
+      const bucket = entry.startTime <= 2500 ? 'fast' : entry.startTime <= 4000 ? 'moderate' : 'slow';
+      trackEvent(`web_vital_lcp_${bucket}`);
+      observer.disconnect();
+    });
+    try {
+      observer.observe({ type: 'largest-contentful-paint', buffered: true });
+    } catch {
+      observer.disconnect();
+    }
+    return () => observer.disconnect();
+  }, [pathname, trackEvent]);
+
   // Track only explicitly opted-in UI actions. Values are authored event names,
   // never text or form data, so this remains privacy-minimized by construction.
   useEffect(() => {

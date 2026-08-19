@@ -153,7 +153,6 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
   const availableDaos = useSimulationStore(s => s.availableDaos);
   const selectedDao = useSimulationStore(s => s.selectedDao);
   const config = useSimulationStore(s => s.config);
-  const status = useSimulationStore(s => s.status);
   const updateConfig = useSimulationStore(s => s.updateConfig);
   const selectDao = useSimulationStore(s => s.selectDao);
   const reset = useSimulationStore(s => s.reset);
@@ -161,7 +160,11 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
   const importRef = useRef<HTMLInputElement>(null);
 
   const [daoId, setDaoId] = useState(selectedDao || config.daoId);
-  const [strategy, setStrategy] = useState<StrategyKey>('baseline');
+  const [strategy, setStrategy] = useState<StrategyKey>(() => {
+    if (typeof window === 'undefined') return 'baseline';
+    const goal = new URLSearchParams(window.location.search).get('goal');
+    return goal === 'community' || goal === 'risk' || goal === 'growth' ? goal : 'baseline';
+  });
   const [risk, setRisk] = useState<RiskKey>(config.blackSwanEnabled ? 'volatile' : 'calm');
   const [governanceRule, setGovernanceRule] = useState(config.governanceRule || 'majority');
   const [populationScale, setPopulationScale] = useState(1);
@@ -178,7 +181,7 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
       return [];
     }
   });
-  const [autoStart, setAutoStart] = useState(status === 'running');
+  const [autoStart, setAutoStart] = useState(true);
   const [importStatus, setImportStatus] = useState<ScenarioImportStatus>(null);
 
   const preview = useMemo<BrowserSimConfig>(() => {
@@ -470,7 +473,7 @@ export function ScenarioPresetWizard({ onClose }: ScenarioPresetWizardProps) {
           <div className="flex items-center justify-between gap-3">
             <label className="flex items-center gap-2 text-xs text-[var(--sim-text-muted)]">
               <input type="checkbox" checked={autoStart} onChange={e => setAutoStart(e.target.checked)} />
-              Start after apply
+              Run immediately after apply
             </label>
             <div className="flex items-center gap-2">
               <button type="button" onClick={onClose} className="rounded border px-3 py-2 text-xs text-[var(--sim-text-muted)]" style={{ borderColor: 'var(--sim-border)' }}>

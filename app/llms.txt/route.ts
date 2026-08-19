@@ -47,6 +47,9 @@ generative fidelity, not universal forecasting accuracy.
 
 Evidence status: ${RESEARCH_STATUS.classification}. ${RESEARCH_STATUS_SUMMARY}
 
+Public claim registry: https://daosimulator.com/en/evidence
+Every legacy brief is exploratory until the frozen confirmatory campaign is verified.
+
 ### Methodology
 
 - **Engine**: TypeScript agent-based simulator with Q-learning, policy gradient, and DQN agents

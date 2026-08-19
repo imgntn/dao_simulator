@@ -4,7 +4,7 @@ const locales = ['en', 'es', 'zh', 'ja'] as const;
 const baseUrl = 'https://daosimulator.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const corePages = ['', '/simulate', '/privacy'];
+  const corePages = ['', '/simulate', '/evidence', '/privacy'];
 
   const localizedEntries = corePages.flatMap((page) =>
     locales.map((locale) => ({

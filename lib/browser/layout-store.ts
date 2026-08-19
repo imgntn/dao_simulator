@@ -95,10 +95,15 @@ function getDefaultState() {
     defaultVisible[id] = true;
   }
 
+  const persistedOrder = persisted.panelOrder ?? [];
+  const panelOrder = [...persistedOrder, ...DEFAULT_PANEL_ORDER.filter(id => !persistedOrder.includes(id))];
+  const panelCollapsed = { ...defaultCollapsed, ...(persisted.panelCollapsed ?? {}) };
+  const panelVisible = { ...defaultVisible, ...(persisted.panelVisible ?? {}) };
+
   return {
-    panelOrder: persisted.panelOrder ?? [...DEFAULT_PANEL_ORDER],
-    panelCollapsed: persisted.panelCollapsed ?? defaultCollapsed,
-    panelVisible: persisted.panelVisible ?? defaultVisible,
+    panelOrder,
+    panelCollapsed,
+    panelVisible,
     sidebarOpen: true,
     sidebarWidth: persisted.sidebarWidth ?? 380,
     draggedPanel: null,

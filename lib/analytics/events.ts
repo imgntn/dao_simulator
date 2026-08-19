@@ -23,4 +23,8 @@ export const ANALYTICS_EVENTS = {
   EVIDENCE_OPENED: 'evidence_opened',
   CONSULTING_OPENED: 'consulting_opened',
   GUIDED_SCENARIO_OPENED: 'guided_scenario_opened',
+  FIRST_RESULT_PROMPT_OPENED: 'first_result_prompt_opened',
+  OUTCOME_SUMMARY_VIEWED: 'outcome_summary_viewed',
+  EVIDENCE_REGISTRY_OPENED: 'evidence_registry_opened',
+  WEB_VITAL_RECORDED: 'web_vital_recorded',
 } as const;
