@@ -149,7 +149,7 @@ python/             Calibration data ingestion scripts
 - Use `/api/healthz` for readiness checks; it validates runtime configuration and checks Redis/PostgreSQL when those dependencies are configured.
 - For local production parity, set strong secrets in your shell and run `docker compose up --build` to start the app with Redis and PostgreSQL.
 - The simulation engine runs entirely client-side in a Web Worker — no separate server process is needed.
-- See `DEPLOYMENT.md` for Vercel/Docker instructions plus the security checklist.
+- See `DEPLOYMENT.md` for Coolify/Docker instructions plus the security checklist.
 
 ## Development
 
