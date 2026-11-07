@@ -8,6 +8,7 @@ const {
   DEFAULT_PORT,
   buildBaseUrl,
   findAndReserveAvailablePort,
+  reserveExactPort,
 } = require('./port-utils');
 
 function parseArgs(argv) {
@@ -76,7 +77,13 @@ function writePortFile(portFile, payload) {
 async function main() {
   const { dev, hostname, port: requestedPort, portFile } = parseArgs(process.argv.slice(2));
 
-  const portReservation = await findAndReserveAvailablePort(requestedPort, hostname);
+  // A deployed server must stay on its configured port, because the proxy won't follow it
+  // to another one. Failing is visible; moving is a silent outage. A port file means the
+  // caller reads back the chosen port, as the e2e runner does, so it can still negotiate.
+  const useExactPort = !dev && !portFile && process.env.NODE_ENV === 'production';
+  const portReservation = useExactPort
+    ? await reserveExactPort(requestedPort, hostname)
+    : await findAndReserveAvailablePort(requestedPort, hostname);
   const chosenPort = portReservation.port;
   if (chosenPort !== requestedPort) {
     console.warn(`[next-server] Port ${requestedPort} is busy, switching to ${chosenPort}`);
